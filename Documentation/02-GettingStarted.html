@@ -41,7 +41,13 @@
    
    <h3>Flex Builder</h3>
    
-   <p>There is a batch file in Build/FlexBuilder that will launch Flex Builder. Once this is done, right click on the project explorer, choose Import..., then General -> Import Existing Projects.. and point it to the Build/FlexBuilder folder. Select all the projects and import them.</p>
+   <p>There is a batch file in Build/FlexBuilder that will launch Flex Builder with its workspace set to the Build/FlexBuilder folder. If the batch file won't run, all you need to do is open Flex Builder, go to File -> Choose Workspace -> Other... and choose Build/FlexBuilder when it asks. Hit OK and you will get a nice new workspace with a few key settings already prep'ed for you.</p>
+
+   <p>You may want to disable automatic builds (under Project -> Build Automatically), as they tend to slow Flex Builder down dramatically.</p> 
+   
+   <p>Once this is done, right click on the project explorer, choose Import..., then General -> Existing Projects Into Workspace.. and hit Next. Select Build/FlexBuilder as the root directory. You may have to click out of that text box for the list of projects below to update. Once that is done, make sure all the projects are selected and click Finish to import them.</p>
+   
+   <p>The workspace should refresh, and everything should start compiling automatically.</p>
    
    <p>Now you can build, browse projects, and so forth.</p>
    
