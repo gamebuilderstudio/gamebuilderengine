@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:pb="PBLabs.Engine.MXML.*">
+   <pb:ResourceBinding filename="../Assets/testLevel.xml" resourceType="PBLabs.Engine.Resource.XMLResource" resourceClass="@Embed(source='../Assets/testLevel.xml', mimeType='application/octet-stream')"/>
+</mx:Canvas>

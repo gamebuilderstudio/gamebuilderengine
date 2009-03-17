@@ -1,0 +1,458 @@
+<html>
+<head>
+   <link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+   <link rel="stylesheet" type="text/css" href="CodeHighlighter/styles/vs.css"/>
+   <script type="text/javascript" src="TableOfContents/pageToc.js"></script>
+   <script type="text/javascript" src="CodeHighlighter/highlight.pack.js"></script>
+   <script type="text/javascript">
+      hljs.initHighlightingOnLoad();
+   </script>   
+   <title>PushButton Engine Manual - XML Level Format</title>
+</head>
+<body>
+
+   <h1>PushButton Engine Manual - XML Level Format</h1>
+   
+
+   <p class="summary">
+   The PushButton Engine uses XML to store data about a game's objects. This chapter
+   describes the format the engine expects when instantiating objects from XML. Loading
+   XML object descriptions and instantiating them is handled by the TemplateManager
+   class.
+   </p>
+   
+   <div id="pageToc"></div>
+
+   <div id="contentArea">
+
+   <h2>Example Level File</h2>
+   <p class="summary">
+   This level contains examples of everything the XML format supports. A comment is
+   included at relevant points to specify what a given section corresponds to in this
+   document.
+   </p>
+   
+   <pre class="XMLExample">
+   <code>
+   &lt;things version="1"&gt;
+   
+      &lt;!-- Entity Example --&gt;
+      &lt;entity name="PlatformSpriteSheet"&gt;
+         &lt;!-- Component Example --&gt;
+         &lt;component type="PBLabs.Rendering2D.SpriteSheetComponent" name="SpriteSheet"&gt;
+            &lt;!-- Generial Serialization Example (String) --&gt;
+            &lt;ImageFilename&gt;../Assets/Images/platform.png&lt;/ImageFilename&gt;
+         &lt;/component&gt;
+      &lt;/entity&gt;
+      
+      &lt;entity name="DudeSpriteSheet"&gt;
+         &lt;component type="PBLabs.Rendering2D.SpriteSheetComponent" name="SpriteSheet"&gt;
+            &lt;ImageFilename&gt;../Assets/Images/guy.png&lt;/ImageFilename&gt;
+         &lt;/component&gt;
+      &lt;/entity&gt;
+      
+      &lt;!-- Template Example --&gt;
+      &lt;template name="Platform"&gt;
+         &lt;component type="PBLabs.Rendering2D.SpriteRenderComponent" name="Render"&gt;
+            &lt;!-- Component Reference Example --&gt;
+            &lt;Parent componentReference="Scene"/&gt;
+            &lt;SpriteSheet componentReference="PlatformSpriteSheet"/&gt;
+            &lt;!-- Property Reference Example --&gt;
+            &lt;PositionReference&gt;@Spatial.Position&lt;/PositionReference&gt;
+            &lt;RotationReference&gt;@Spatial.Rotation&lt;/RotationReference&gt;
+            &lt;SizeReference&gt;@Spatial.Size&lt;/SizeReference&gt;
+         &lt;/component&gt;
+         &lt;component type="PBLabs.Box2D.Box2DSpatialComponent" name="Spatial"&gt;
+            &lt;Manager componentReference="Box2D"/&gt;
+            &lt;!-- Object Type Example --&gt;
+            &lt;CollisionType&gt;
+               &lt;Type&gt;Platform&lt;/Type&gt;
+            &lt;/CollisionType&gt;
+            &lt;CollidesWithTypes&gt;
+               &lt;Type&gt;Dude&lt;/Type&gt;
+            &lt;/CollidesWithTypes&gt;
+            &lt;!-- Generial Serialization Example (Class) --&gt;
+            &lt;Size&gt;
+               &lt;x&gt;256&lt;/x&gt;
+               &lt;y&gt;64&lt;/y&gt;
+            &lt;/Size&gt;
+            &lt;!-- Generial Serialization Example (Boolean) --&gt;
+            &lt;CanMove&gt;false&lt;/CanMove&gt;
+            &lt;CanRotate&gt;false&lt;/CanRotate&gt;
+            &lt;CanSleep&gt;true&lt;/CanSleep&gt;
+            &lt;CollisionShapes&gt;
+               &lt;!-- Type Specification Example --&gt;
+               &lt;_ type="PBLabs.Box2D.PolygonCollisionShape"&gt;
+                  &lt;!-- Array Example --&gt;
+                  &lt;Vertices childType="flash.geom.Point"&gt;
+                     &lt;_&gt;&lt;x&gt;-1&lt;/x&gt;&lt;y&gt;-1&lt;/y&gt;&lt;/_&gt;
+                     &lt;_&gt;&lt;x&gt;1&lt;/x&gt;&lt;y&gt;-1&lt;/y&gt;&lt;/_&gt;
+                     &lt;_&gt;&lt;x&gt;1&lt;/x&gt;&lt;y&gt;1&lt;/y&gt;&lt;/_&gt;
+                     &lt;_&gt;&lt;x&gt;-1&lt;/x&gt;&lt;y&gt;1&lt;/y&gt;&lt;/_&gt;
+                  &lt;/Vertices&gt;
+               &lt;/_&gt;
+            &lt;/CollisionShapes&gt;
+         &lt;/component&gt;
+      &lt;/template&gt;
+      
+      &lt;entity name="Scene"&gt;
+         &lt;component type="PBLabs.Rendering2D.Scene2DComponent" name="Scene"&gt;
+            &lt;Position&gt;
+               &lt;x&gt;400&lt;/x&gt;
+               &lt;y&gt;300&lt;/y&gt;
+            &lt;/Position&gt;
+         &lt;/component&gt;
+      &lt;/entity&gt;
+      
+      &lt;entity name="Box2D"&gt;
+         &lt;component type="PBLabs.Box2D.Box2DManagerComponent" name="Manager"&gt;
+         &lt;/component&gt;
+         &lt;component type="PBLabs.Box2D.Box2DDebugComponent" name="Debug"&gt;
+            &lt;Scene componentReference="Scene"/&gt;
+         &lt;/component&gt;
+      &lt;/entity&gt;
+      
+      &lt;entity name="Dude"&gt;
+         &lt;component type="PBLabs.Rendering2D.SpriteRenderComponent" name="Render"&gt;
+            &lt;!-- Named Component Reference Example --&gt;
+            &lt;Parent componentReference="Scene" componentName="Scene"/&gt;
+            &lt;SpriteSheet componentReference="DudeSpriteSheet"/&gt;
+            &lt;PositionReference&gt;@Spatial.Position&lt;/PositionReference&gt;
+            &lt;RotationReference&gt;@Spatial.Rotation&lt;/RotationReference&gt;
+            &lt;SizeReference&gt;@Spatial.Size&lt;/SizeReference&gt;
+            &lt;TrackWithCamera&gt;true&lt;/TrackWithCamera&gt;
+         &lt;/component&gt;
+         &lt;component type="PBLabs.Box2D.Box2DSpatialComponent" name="Spatial"&gt;
+            &lt;Manager componentReference="Box2D"/&gt;
+            &lt;CollisionType&gt;
+               &lt;Type&gt;Dude&lt;/Type&gt;
+            &lt;/CollisionType&gt;
+            &lt;CollidesWithTypes&gt;
+               &lt;Type&gt;Platform&lt;/Type&gt;
+            &lt;/CollidesWithTypes&gt;
+            &lt;Position&gt;
+               &lt;x&gt;400&lt;/x&gt;
+               &lt;y&gt;100&lt;/y&gt;
+            &lt;/Position&gt;
+            &lt;Size&gt;
+               &lt;x&gt;64&lt;/x&gt;
+               &lt;y&gt;74&lt;/y&gt;
+            &lt;/Size&gt;
+            &lt;CanRotate&gt;false&lt;/CanRotate&gt;
+            &lt;CanSleep&gt;false&lt;/CanSleep&gt;
+            &lt;CollisionShapes&gt;
+               &lt;_ type="PBLabs.Box2D.CircleCollisionShape"&gt;
+                  &lt;Friction&gt;0&lt;/Friction&gt;
+                  &lt;Radius&gt;0.5&lt;/Radius&gt;
+                  &lt;Offset&gt;&lt;x&gt;0&lt;/x&gt;&lt;y&gt;0.5&lt;/y&gt;&lt;/Offset&gt;
+               &lt;/_&gt;
+            &lt;/CollisionShapes&gt;
+         &lt;/component&gt;
+         &lt;component type="PBLabs.StupidSampleGame.DudeController" name="Controller"&gt;
+            &lt;VelocityReference&gt;@Spatial.LinearVelocity&lt;/VelocityReference&gt;
+            &lt;!-- Input Map Example --&gt;
+            &lt;Input&gt;
+               &lt;GoLeft&gt;37&lt;/GoLeft&gt;
+               &lt;GoRight&gt;39&lt;/GoRight&gt;
+               &lt;Jump&gt;38&lt;/Jump&gt;
+            &lt;/Input&gt;
+         &lt;/component&gt;
+      &lt;/entity&gt;
+      
+      &lt;!-- Template Derivation Example --&gt;
+      &lt;entity name="Platform1" template="Platform"&gt;
+         &lt;!-- Derived Component Example --&gt;
+         &lt;component name="Spatial"&gt;
+            &lt;Position&gt;
+               &lt;x&gt;94&lt;/x&gt;
+               &lt;y&gt;450&lt;/y&gt;
+            &lt;/Position&gt;
+         &lt;/component&gt;
+      &lt;/entity&gt;
+      
+      &lt;entity name="Platform2" template="Platform"&gt;
+         &lt;component name="Spatial"&gt;
+            &lt;Position&gt;
+               &lt;x&gt;400&lt;/x&gt;
+               &lt;y&gt;500&lt;/y&gt;
+            &lt;/Position&gt;
+         &lt;/component&gt;
+      &lt;/entity&gt;
+      
+      &lt;entity name="Platform3" template="Platform"&gt;
+         &lt;component name="Spatial"&gt;
+            &lt;Position&gt;
+               &lt;x&gt;706&lt;/x&gt;
+               &lt;y&gt;450&lt;/y&gt;
+            &lt;/Position&gt;
+         &lt;/component&gt;
+      &lt;/entity&gt;
+      
+      &lt!-- Group Example --&gt;
+      &lt;group name="Managers"&gt;
+         &lt;!-- Object Reference Example --&gt;
+         &lt;objectReference name="Scene"/&gt;
+         &lt;objectReference name="Box2D"/&gt;
+      &lt;/group&gt;
+      
+      &lt;group name="SpriteSheets"&gt;
+         &lt;objectReference name="DudeSpriteSheet"/&gt;
+         &lt;objectReference name="PlatformSpriteSheet"/&gt;
+      &lt;/group&gt;
+      
+      &lt;group name="Objects"&gt;
+         &lt;objectReference name="Dude"/&gt;
+         &lt;objectReference name="Platform1"/&gt;
+         &lt;objectReference name="Platform2"/&gt;
+         &lt;objectReference name="Platform3"/&gt;
+      &lt;/group&gt;
+      
+      &lt;group name="Everything"&gt;
+         &lt;!-- Group Reference Example --&gt;
+         &lt;groupReference name="Managers"/&gt;
+         &lt;groupReference name="SpriteSheets"/&gt;
+         &lt;groupReference name="Objects"/&gt;
+      &lt;/group&gt;
+      
+   &lt;/things&gt;
+   </code>
+   </pre>
+   
+   <h2>Basic Structure</h2>
+   <p class="description">
+   There are three types of objects that can be instantiated from XML using the engine's
+   TemplateManager class. These are entity, template, and group. Each of these can appear
+   any number of times in a single XML file, in any order. They are all contained in the
+   same parent tag that is the root of the XML document.
+   <br/><br/>
+   When an XML file is loaded, everything inside the root tag is added to the TemplateManager
+   for later instantiation. Keep in mind, merely loading a description of an object does not
+   actually create that object. It must be instantiated manually with the TemplateManager.
+   </p>
+   
+   <h3>Entities</h3>
+   
+   <p class="description">
+   The entity tag contains the XML for an IEntity object. An IEntity is essentially
+   a named container for a collection of components. So, the entity tag supports a
+   single child tag, appropriately named component. Any number of component tags
+   can be added to an entity tag, with each one describing a different component.
+   <br/><br/>
+   The name of the entity is set using the <i>name</i> attribute. Additionally, a
+   <i>template</i> attribute is supported. The <i>template</i> attribute should be
+   the name given to an XML object described with a template tag. The deserializer
+   handles templates by first deserializing the new IEntity with the description
+   contained in the template, then deserializing it again with the description
+   contained in the entity. Essentially, this allows a template object to describe
+   a common set of components for the IEntity, and the entity to overwrite or add
+   additional components to the IEnity. The template attribute is optional.
+   </p>
+   
+   <h3>Templates</h3>
+   <p class="description">
+   A template is constructed in identical fashion to an entity, including the optional
+   template tag. The only difference between a template and an entity, once instantiated,
+   is that a template is not registered with the NameManager
+   class, whereas an entity is. The reason for this is templates are designed to be
+   instantiated multiple times, for things like bullets or respawning enemies, whereas
+   an entity is designed to be instantiated once.
+   <br/><br/>
+   Entities cannot be used as templates in XML, however, so any object that is being used
+   as a base description must be created as a template. Template's can be derived from
+   other templates, though, with no limit on how many derivation levels there are.
+   </p>
+   
+   <h3>Components</h3>
+   <p class="description">
+   The component tag goes inside of either a template or entity tag and describes
+   a component that should be added to that template or entity when it is instantiated.
+   <br/><br/>
+   The component tag has two attributes, both of which are required in the normal case
+   (the other case will be described below). The first attribute is <i>type</i>, which
+   specifies the fully qualified class of the component. So, for instance, a component
+   with class DudeController in the namespace PBLabs.StupidSampleGame would have its
+   <i>type</i> attribute set to "PBLabs.StupidSampleGame.DudeController".
+   <br/><br/>
+   The second attribute is <i>name</i>. This specifies the name to assign to the component
+   when it is instantiated. A component's name must be unique across all components on the
+   same entity as it is used to lookup the component on an entity.
+   <br/><br/>
+   The tags inside of a component correspond exactly to the properties of that component.
+   If a component has a property <i>Position</i>, then that property's value can be set
+   with a child tag called <i>Position</i>. More information on this is in the General
+   Serialization section.
+   <br/><br/>
+   Component tags also have the capability of overwriting an existing component rather
+   than instantiating an entirely new one. This would happen when templates are being used.
+   If an entity derives from a template with a component named "MyComponent", that entity
+   can also have a component with name "MyComponent". Instead of creating another instance,
+   the existing component on the template is looked up and its properties are replaced with
+   anything defined by the child component. In this case, the child component should not
+   have a <i>class</i> attribute.
+   </p>
+   
+   <h3>Groups</h3>
+   <p class="description">
+   A group is the third type of object that can be described in XML. It is essentially just
+   a list of other templates, entities, or groups that will all be instantiated when the
+   group is instantiated. For example, if you define a group with two children "MyFirstEntity"
+   and "MySecondEntity", instantiating the group will instantiate both of those entities.
+   <br/><br/>
+   The list of objects to instantiate can contain two different tags. The first is
+   <i>objectReference</i>, which is used for both templates and entities. The second is
+   <i>groupReference</i>, which is used for referencing other groups.
+   <br/><br/>
+   A group has no effect on the actual game once instantiated. It is merely a convenience for
+   instantiating several objects at once.
+   </p>
+   
+   <h2>General Serialization</h2>
+   <p class="description">
+   Component tags can contain any number of child tags that correspond to their properties
+   as defined in code. If a component has a public property named "MyProperty", it's value
+   can be set to 7 by adding &lt;MyProperty&gt;7&lt;/MyProperty&gt; as a child of the
+   component tag.
+   <br/><br/>
+   If a component has a class property that has child properties itself, these can be set
+   as well. For example, to set the value of a Point property called Position, use the XML:
+   <pre>
+   <code>
+   &lt;Position&gt;
+      &lt;x&gt;10&lt;/x&gt;
+      &lt;y&gt;25&lt;/y&gt;
+   &lt;/Position&gt;
+   </code>
+   </pre>
+   Additionally, classes can contain child classes as well, to an infinite depth, using the
+   same method.
+   <br/><br/>
+   By default, the deserialization process will automatically infer the type of the class
+   to create based on the type specified in your code. You can override this behavior using
+   the <i>type</i> attribute. This would allow you to instantiate a subclass of a class that
+   was expected. The <i>type</i> attribute requires a fully qualified class name.
+   </p>
+   
+   <h3>Class References</h3>
+   <p class="description">
+   Properties that store references to IEntity objects or IEntityComponent objects can also be
+   resolved in the XML. This is done with the nameReference, componentReference, and
+   objectReference attributes.
+   <br/><br/>
+   The nameReference attribute is used to assign a reference to an existing IEntity to the
+   property. So, it must be the name of an entity that has already been instantiated.
+   The property type should be IEntity and is resolved before _OnAdd is called on any
+   components.
+   <br/><br/>
+   objectReference works the same way as nameReference, but instead of looking up an
+   existing object, it will instantiate a new one instead.
+   <br/><br/>
+   The componentReference attribute also takes the name of an existing entity, similar to
+   the nameReference. The correct component is retrieved from the entity by inferring the
+   type of component the property expects and looking up a component of that type from
+   the found entity. An additional attribute can be specified to look up a specific
+   component on the entity. This is the componentName attribute and should be set to the
+   name of the component to lookup.
+   </p>
+   
+   <h3>Arrays and Dictionaries</h3>
+   <p class="description">
+   Arrays and Dictionaries are handled in almost the same way by the deserializer. The
+   only difference is Arrays can use default tags to push objects onto them, whereas
+   Dictionaries require a key.
+   <br/><br/>
+   The type of object that is added to a Dictionary or Array is specified by the <i>childType</i>
+   attribute. This attribute value is the default type that will be used when instantiating
+   child tags. Each child tag can optionally include the <i>type</i> attribute to override
+   the type specified by the <i>childType</i> attribute.
+   <br/><br/>
+   The tag for each child corresponds to the key in the dictionary or array that the
+   object will be added to. The handling of this key value has some special rules,
+   however. To begin with, if the key has a leading underscore, it is automatically
+   removed. This is to allow for keys that are just numbers as the XML specification
+   does not allow numbers to be tags. If the key consists of just an underscore, the
+   instantiated class is simply pushed onto the back of the array. For dictionaries,
+   a single underscore is considered invalid.
+   </p>
+   
+   <h3>Custom Serialization</h3>
+   <p class="description">
+   The XML format for every class is as described in the General Serialization section,
+   unless the class implements the ISerializable interface. If this is the case, the format
+   can be anything, since it is defined by the specific ISerializable implementation. The
+   built in classes that implement this are PropertyReference, ObjectType, and InputMap.
+   <br/><br/>
+   PropertyReference fields can be treated exactly like strings. The string value is that
+   is set in XML is set as the value of the PropertyReference.
+   <br/><br/>
+   ObjectType fields can be treated like an array of strings. Each of the child tag values
+   is added as a named type to the ObjectType field.
+   <br/><br/>
+   The InputMap class can be treated exactly like a dictionary. The keys should be the
+   name of a binding on the input map, and the value should be the keycode of the key to
+   use for that binding.
+   </p>
+   
+   <h2>Other Uses for XML</h2>
+   <p class="description">
+   This chapter has described the XML format assuming level files and the TemplateManager
+   are being used to load and instantiate the XML data. This does not have to be the case.
+   The Serialization class provides all the functionality necessary to instantiate any
+   class from an XML description, or serialize any existing class to an XML description.
+   The format outlined in this chapter still applies, but the Serialization class is
+   used directly, rather than loading level files with the TemplateManager.
+   </p>
+   
+   <h2>Complete Tag List</h2>
+   <ul class="definitionList">
+   <li><b>things:</b> The root tag.</li>
+   <li><b>template:</b> A child of the root tag, specifying that the contained XML is a
+   template definition.</li>
+   <li><b>entity:</b> A child of the root tag, specifying that the contained XML is an
+   entity definition.</li>
+   <li><b>group:</b> A child of the root tag, specifying that the contained XML is a
+   group definition.</li>
+   <li><b>component:</b> A child of the template or entity tag, specifying that the
+   contained XML is a component definition.</li>
+   <li><b>objectReference:</b> A child of the group tag, specifying the name of a template
+   or object to instantiate with the group.</li>
+   <li><b>groupReference:</b> A child of the group tag, specifying the name of a group
+   to instantiate with the parent group.</li>
+   </ul>
+   
+   <h2>Complete Attribute List</h2>
+   <ul class="definitionList">
+   <li><b>name:</b>
+   <ul>
+   <li>On template tags, it specifies the name of the template.</li>
+   <li>On entity tags, it specifies both the name of the entity in XML, and the name of
+   the object that is instantiated from it.</li>
+   <li>On group tags, it specifies the name of the group.</li>
+   <li>On component tags, it specifies the name of the component once registered with
+   its owning IEntity.</li>
+   <li>On objectReference tags, it specifies the name of the template or entity to reference.</li>
+   <li>On groupReference tags, it specifies the name of the group to reference.</li>
+   </ul>
+   </li>
+   <li><b>template:</b> Exists on a template or entity tag and specifies the name of a template
+   to inherit component definitions from.</li>
+   <li><b>nameReference:</b> Specifies the name of an entity to lookup and set on the tag.</li>
+   <li><b>objectReference:</b> Specifies the name of a template or entity to instantiate and set
+   on the tag.</li>
+   <li><b>componentReference:</b> Specifies the name of a template or entity to lookup and search
+   for a compatible component to set on the tag.</li>
+   <li><b>componentName:</b> Specifies the name of a component to reference. If used without a
+   componentReference attribute, the component is looked up on the same entity that this attribute
+   is a part of.
+   <li><b>type:</b>
+   <ul>
+   <li>On a component, specifies the fully qualified type to use to instantiate the component.</li>
+   <li>On a field, specifies the type to use when instantiating the field for the parent tag.</li>
+   </ul>
+   </li>
+   <li><b>childType:</b> Specifies the type to use when instantiating objects to add to an array
+   or dictionary.</li>
+   </ul>
+   
+   </div>
+</body>
+</html>

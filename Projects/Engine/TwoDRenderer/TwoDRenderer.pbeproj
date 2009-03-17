@@ -1,0 +1,14 @@
+<Project>
+  <Name>TwoDRenderer</Name>
+  <Type>Library</Type>
+  <Description>Base classes for implementing 2D rendering as well as an orthographic implementation</Description>
+  <Version>1.0.0</Version>
+  <AuthorName>PushButton Labs</AuthorName>
+  <AuthorEmail>pbe@pushbuttonlabs.com</AuthorEmail>
+  <Dependencies>
+    <Dependency>
+      <Name>PBEngine</Name>
+      <Version>1.0.0</Version>
+    </Dependency>
+  </Dependencies>
+</Project>

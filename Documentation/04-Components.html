@@ -1,0 +1,277 @@
+<html>
+<head>
+   <link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+   <link rel="stylesheet" type="text/css" href="CodeHighlighter/styles/vs.css"/>
+   <script type="text/javascript" src="TableOfContents/pageToc.js"></script>
+   <script type="text/javascript" src="CodeHighlighter/highlight.pack.js"></script>
+   <script type="text/javascript">
+      hljs.initHighlightingOnLoad();
+   </script>   
+   <title>PushButton Engine Manual - Components</title>
+</head>
+<body>
+
+   <h1>PushButton Engine Manual - Components</h1>
+   
+   <p>PBEngine lets you build games quickly by breaking functionality down into components. Because components are focused and implement a consistent interface, it is easy to make new functionality by combining them. This chapter discusses why components are desirable, how to write components, and how to distribute them.</p>
+   
+   <p>Components are an important piece of the puzzle but hardly the whole thing! Other chapters in this manual describe the resource manager, XML level format, and other important parts of the engine.</p>
+   
+   <div id="pageToc"></div>
+
+   <div id="contentArea">
+
+   <h2>Why Use Components?</h2>
+   
+   <p>Components are a better way to develop games. They avoid the major problems that come from inheritance-based implementations. Games that are made with components are naturally more modular, maintainable, and extensible. Many design decisions in PBEngine were made to encourage this approach.</p>
+   
+   <p>The first major game to use components and publish about it was <a href="http://en.wikipedia.org/wiki/Dungeon_Siege">Dungeon Siege</a> (Gas Powered Games, 2002). "<a href="http://www.drizzle.com/~scottb/gdc/game-objects_files/frame.htm">A Data-Driven Game Object System</a>" was presented at GDC that year, and gives a thorough discussion of the system they used. The major benefit was that they avoided a complex object hierarchy and were able to manage a very large, complex game world in a "flat" way. They ended up with 21 C++ components, 148 script-based components, and around 10,000 object types.</p>
+   
+   <p>Their C++ components were things like "actor", "conversation", "follower", "physics" and so forth. The 148 script components were much more game specific, implementing things like logic for traps and puzzles, movement for elevators, quest tracking, etc. They were able to focus most of their time on moving the game forward rather than focusing on infratrstructure, and adding a new feature was quick.</p> 
+   
+   <p>The Dungeon Siege experience is very instructive. They avoided tangled object hierarchies and managed to deliver a complex, compelling game world. Since then, a similar component architecture has been used in a few other engines, most notably Unity, TorqueX, and Gamebryo.</p>
+   
+   <h2>Overview of Components and Entities in PushButton Engine</h2>
+   
+   <p>A game object is represented as an IEntity that contains a list of one or more IEntityComponents. For instance, a player entity built from components might look like this:</p>
+   
+   <img src="04-ComponentSystem_SimpleExample.png">
+   
+   <p>As you can see, each component is named, as is the entity. It's straightforward to imagine how the data might flow in this example - mover maintains the position of the object and updates its physical state as time advances. When sprite needs to render, it gets position data from mover. input applies forces to mover so that the player character moves based on the user's actions.</p>
+   
+   <h2>Creating A Component</h2>
+   
+   <p>Creating a new type of component is easy. Here is a minimal component:</p>
+   
+   <pre><code>
+   class SimplestComponent extends EntityComponent
+   {
+   }</code></pre>
+   
+   <p>Several methods are available for you to optionally override. The EntityComponent API docs explain fully, but the following example shows a minimal component that overrides them, with comments briefly explaining when and why they are called.</p>
+   
+   <p>
+   
+   <pre><code>
+   class SimplerComponent extends EntityComponent
+   {
+
+      public override function _OnAdd():void
+      {
+         // Initialize resources.
+         // This will be called when the component is added to an entity.
+      }
+   
+      public override function _OnReset():void
+      {
+         // (Re)acquire references to components inside the same entity.
+         // This will be called after _OnAdd, whenever another component
+         // is added or removed from the owning entity.
+      }
+   
+      public override function _OnRemove():void
+      {
+         // Release resources and references.
+         // Called when the component is removed from its entity, usually
+         // as part of the entity's destruction.
+      }
+      
+   }</code></pre>
+   
+   <p><b>A note on how components are initialized by the deserializer:</b> First all properties are set, some of them more than once if there are multiple templates. Then, _OnAdd() is called for all the components in unspecified order. Finally, _OnReset() is called for each component, to give it a chance to get references to other components.</p>
+   
+   <h2>Accessing Other Components</h2>
+   
+   <p>There are three ways for components to interact: <b>properties</b>, <b>events</b>, or <b>interfaces</b>. These approaches work very similarly whether you are accessing components on another entity or on your own. The only difference is that instead of using Owner, you will use the NameManager or another means to look up an IEntity.</p>
+   
+   <h3>Properties</h3>
+   
+   <p>The best way to share data amongst components is via properties. Properties are good because they don't require any compile-time dependencies between components - in fact, it's easy to reconfigure how data is accessed, allowing components to be used in unanticipated ways. They're great for sharing position, velocity, color, health, and any other kind of data.</p>
+   
+   <p>Adding a property to a component is as easy as adding a new member variable. Accessing properties is done using simple strings that specify what field on what component should be read or written. Here's a quick example of how this looks:</p>
+   
+   <pre><code>
+   class TestComponent extends EntityComponent 
+   {
+      public var AProperty:String = "Hello!";
+   }
+   
+   // Inside another component on an entity which has a TestComponent named Test:
+   var value:String = Owner.GetProperty(new PropertyReference("@Test.AProperty")) as String;
+   
+   trace(value); // Outputs "Hello!"
+   </code></pre>
+   
+   <p>You can also access fields inside complex data types. Suppose AProperty were a Point. You could do the following:</p>
+   
+   <pre><code>
+   var xPosition:Number = Owner.GetProperty(new PropertyReference("@Test.AProperty.x");
+   </code></pre>
+   
+   <p>In fact, you can access any member contained in another component. The only other thing to know is that to access items in Arrays or Dictionaries, you use the same dot syntax:</p>
+   
+   <pre><code>
+   // Equivalent to accessing AnArray[4].x on @Test.
+   var xPosition:Number = Owner.GetProperty(new PropertyReference("@Test.AnArray.4.x"));
+   </code></pre>
+   
+   <p>The property system respects getters and setters, so if you need side effects when you set or get a field, you can implement this quite naturally.</p>
+   
+   <p>What is the purpose of the PropertyReference type? It makes it simple to configure where a component looks to get a property. Consider this:</p>
+   
+   <pre><code>
+   class TestComponent extends EntityComponent
+   {
+      public var PositionProperty:PropertyReference = new PropertyReference("@Spatial.Position");
+      
+      public function DoSomeBehavior():void
+      {
+         var myPos:Point = Owner.GetProperty(PositionProperty) as Point;
+      }
+   }
+   </code></pre>
+   
+   <p>If you need to get your position from some other component, it's very easy to reconfigure TestComponent. In addition, you are saving the overhead of creating a new PropertyReference every time you request the property. Once all the data inputs and outputs for a component are configurable, it's much easier to use components in unexpected situations.</p>
+   
+   <h3>Events</h3>
+   
+   <p>Every IEntity exposes a standard Flash EventDispatcher, so it's easy to dispatch and listen for events. Events make a lot of sense for one-shot scenarios, like detecting when a player jumps, responding to collision events, detecting damage, state machine transitions, and so forth.</p>
+   
+   <pre><code>
+   // Example of dispatching an event from a component.
+   class TestComponent extends EntityComponent
+   {
+      // Declare identifier for the event.
+      static public const SOME_ACTION:String = "SomeAction";
+   
+      public function SomeActionHappens():void
+      {
+         Owner.EventDispatcher.dispatchEvent(new Event(SOME_ACTION));
+      }
+   }
+   
+   // Example of listening for an event in a component.
+   class TestListenerComponent extends EntityComponent
+   {
+      protected function _OnAdd():void
+      {
+         Owner.EventDispatcher.addEventListener(TestComponent.SOME_ACTION, _EventHandler);
+      }
+      
+      private function _EventHandler(e:Event):void
+      {
+         trace("Got an event!");
+      }
+      
+      protected function _OnRemove():void
+      {
+         // Notice that we have to unsubscribe the event when the component
+         // is removed.
+         Owner.EventDispatcher.removeEventListener(TestComponent.SOME_ACTION, _EventHandler);
+      }
+   }
+   </code></pre>
+   
+   <h3>Direct Access</h3>
+   
+   <p>If all else fails, you can <b>directly access another component</b>, either using a common interface or directly. This is the least desirable option, because it introduces compile-time dependencies. Compile-time dependencies are a big problem, because they can make it very difficult to use components from different packages. It's better to use events or properties, as they work entirely by name and do not assume that certain interfaces or parent classes are present.</p>
+   
+   <p>However, it can give better performance, and it can make sense in some situations. For instance, in our player example above, using an interface might make sense for the input component to use to apply forces to the mover.</p>
+   
+   <p>There are three methods to directly access a component in an entity. Use Owner for your own entity, or lookup and use another entity to get components from somewhere else. The methods:</p>
+   
+   <ul>
+   <li><b>LookupComponentByName</b> which looks up a single named component and returns it.
+   <li><b>LookupComponentByType</b> which looks up a single component by type and returns it.
+   <li><b>LookupComponentsByType</b> which finds all components that match the specified type.
+   </ul>
+   
+   <p>Here's a simple example of directly accessing another component:</p>
+   
+   <pre><code>
+   // Interface implemented by another component.
+   interface IExampleInterface
+   {
+      function GetBigArray():Array;
+   }
+   
+   class TestComponent extends EntityComponent
+   {
+      public OtherComponentName:String = "AnotherComponent";
+      
+      public function AccessSomeData():void
+      {
+         var otherItem:IExampleInterface = Owner.LookupComponentByName(OtherComponentName, IExampleInterface) as IExampleInterface;
+         
+         for each(var i:* in otherItem.GetBigArray())
+            trace(i);
+      }
+   }
+   </code></pre>
+   
+   <p>These functions are cheap, and calling them once a tick won't slow anything down. However, if you do need to store a permanent reference to a component, make sure to clear and re-establish it when _OnReset() is called. Otherwise, you may access stale data or cause a memory leak.</p>
+   
+   <pre><code>
+   // Just like the previous component, but it keeps the reference around longer.
+   class TestComponent extends EntityComponentity
+   {
+      public var AnotherComponent:IExampleInterface;
+   
+      protected function _OnAdd():void
+      {
+         AnotherComponent = Owner.LookupComponentByType(IExampleInterface) as IExampleInterface;
+      }
+      
+      protected function _OnReset():void
+      {
+         AnotherComponent = Owner.LookupComponentByType(IExampleInterface) as IExampleInterface;
+      }
+      
+      protected function _OnRemove():void
+      {
+         // Don't forget to clear the reference to prevent memory leaks.
+         AnotherComponent = null;
+      }
+      
+      public function DoSomething():void
+      {
+         for each(var i:* in AnotherComponent.GetBigArray())
+            trace(i);
+      }
+   }
+   </code></pre>
+   
+   <h2>Linkage Issues</h2>
+   
+   <p>When you are using components that are only mentioned in level files, the Flex compiler won't know they are being used and may remove them. To prevent this, you have two options.</p>
+   
+   <h3>ComponentReference MXML Tag</h3>
+   
+   <p>For convenience, there is an MXML tag that lets you force a reference to a component class (or in fact any class) and make sure it will be present at runtime:</p>
+   
+   <pre><code>// Example Components.mxml
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:pb="PBLabs.Engine.MXML.*"&gt;
+   &lt;pb:ComponentReference componentClass="PBLabs.Rendering2D.Scene2DComponent"/&gt;
+&lt;/mx:Canvas&gt;</code></pre>
+   
+   <p>Notice that a custom namespace is defined via the xmlns:pb tag in the mx:Canvas tag.</p>
+
+   <h3>Direct Reference</h3>
+   
+   <p>We recommend the MXML tag approach.</p>
+   
+   <p>However, you can force a reference to a class by putting something like the following in your main application class. This is equivalent to the preceding MXML example.</p>
+   
+   <pre><code>private var forceRef:PBLabs.Rendering2D.Scene2DComponent;</code></pre>
+   
+   <h2>Packaging Components</h2>
+   
+   <p>Components are simple AS3 classes, so packaging them is easy. We recommend compiling them into a SWC, so that sharing them is as easy as dropping a file into your library path.</p>
+   
+   <p>To facilitate this, components should be grouped into libraries and compiled separately from your game. For instance, in Grunts (an isometric tower defense game), the isometric renderer and the pathfinder are in separate libraries from the game. Because of this they are very easy to reuse.</p>
+   
+   </div>
+      
+</body>
+</html>

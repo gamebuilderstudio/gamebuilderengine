@@ -1,0 +1,72 @@
+<html>
+<head>
+   <link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+   <link rel="stylesheet" type="text/css" href="CodeHighlighter/styles/vs.css"/>
+   <script type="text/javascript" src="TableOfContents/pageToc.js"></script>
+   <script type="text/javascript" src="CodeHighlighter/highlight.pack.js"></script>
+   <script type="text/javascript">
+      hljs.initHighlightingOnLoad();
+   </script>   
+   <title>PushButton Engine Manual - Resource Manager</title>
+</head>
+<body>
+
+   <h1>PushButton Engine Manual - Resource Manager</h1>
+   
+   <p>Few games can run without requiring extra data like images, levels, or sound. The ResourceManager lets you access files embedded in your SWF as well as external files. It also lets you indicate what kind of data is in each resource, so that once loading completes, the image or XML or sound (or whatever) is ready to go.</p>
+   
+   <div id="pageToc"></div>
+
+   <div id="contentArea">
+
+   <h2>Loading Resources</h2>
+   
+   <p>Loading a resource is simple. You specify the filename, resource type, and callbacks for when the load completes or fails.</p>
+   
+   <pre><code>
+   // Example of loading an image:
+   ResourceManager.Instance.Load("../Assets/Image/testImage.jpg", ImageResource, _OnImageLoaded, _OnImageFailed);
+   
+   // Callback when the load succeeds.
+   function _OnImageLoaded(resource:ImageResource):void
+   {
+      // Store the loaded resource or do other activity.
+      Image = resource;
+   }
+   
+   // Callback when the load fails.
+   function _OnImageFailed(resource:ImageResource):void
+   {
+      // Report the error.
+      Logger.PrintError(this, "_OnImageFailed", "Couldn't load the image!");
+   }
+   </code></pre>
+   
+   <p>Resource types are subclasses of PBLabs.Engine.Resource.Resource. Commonly used subclasses are XMLResource, ImageResource, and MP3Resource. Typically, these classes process the resource in some way and present you with finished data, such as a BitmapData in the case of the ImageResource.</p>
+   
+   <h2>Embedding Resources</h2>
+   
+   <p>Loading files externally is a bad idea. It makes it harder to distribute your game, and the extra roundtrips to the server can increase loading time significantly. In addition, resources embedded in the SWF can have additional compression put on them.</p>
+   
+   <p>The template application includes a file called Resource.mxml. This is for embedding resources, but you can put the embed tag anywhere.</p>
+   
+   <pre><code>
+   &lt;pb:ResourceBinding filename="../Assets/Levels/level.pbelevel" resourceType="PBLabs.Engine.Resource.XMLResource" resourceClass="@Embed(source='../Assets/Levels/level.pbelevel', mimeType='application/octet-stream')"/&gt;
+   &lt;pb:ResourceBinding filename="../Assets/Images/guy.png" resourceType="PBLabs.Rendering2D.ImageResource" resourceClass="@Embed(source='../Assets/Images/guy.png', mimeType='application/octet-stream')"/&gt;
+   &lt;pb:ResourceBinding filename="../Assets/Sounds/testSound.mp3" resourceType="PBLabs.MP3Sound.MP3Resource" resourceClass="@Embed(source='../Assets/Sounds/testSound.mp3', mimeType='application/octet-stream')"/&gt;</code></pre>
+   
+   <p>There are just a few attributes to set on the ResourceBinding tag:</p>
+   
+   <ul>
+      <li><b>filename</b> is the path that the file will be registered at.
+      <li><b>resourceType</b> is the resource type, as described above.
+      <li><b>resourceClass</b> is a normal MXML @Embed tag, indicating the source to embed the file from.
+   </ul>
+   
+   <h2>Adding New Resource Types</h2>
+   
+   <p>The PBLabs.Engine.Resource.Resource class is subclassed to add support for different resource types. This is very straightforward - just check out the XMLResource to see how it's done. You will want to override _OnContentReady and provide accessors to get at whatever data is needed.</p>
+
+   </div>
+</body>
+</html>

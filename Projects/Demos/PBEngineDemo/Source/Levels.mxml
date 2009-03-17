@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:pb="PBLabs.Engine.MXML.*">
+   <pb:LevelFileReference filename="../Assets/Levels/level.pbelevel" level="0"/>
+   <pb:GroupReference name="Everything" level="0"/>
+</mx:Canvas>

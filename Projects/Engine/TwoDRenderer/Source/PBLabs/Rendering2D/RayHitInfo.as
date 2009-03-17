@@ -1,0 +1,44 @@
+package PBLabs.Rendering2D
+{
+   import flash.geom.Point;
+   
+   /**
+    * Information about the results of a ray cast. Used with 
+    * ISpatialManager2D.CastRay().
+    */ 
+   public final class RayHitInfo
+   {
+      /**
+       * Ranges from 0..1, 0 being at the start of the ray and 1 at the end.
+       * Indicates location of contact along the ray.
+       */ 
+      public var Time:Number;
+      
+      /**
+       * Position of the contact.
+       */ 
+      public var Position:Point;
+      
+      /**
+       * Normal of the contact.
+       */ 
+      public var Normal:Point;
+      
+      /**
+       * The specific object the ray struck.
+       */ 
+      public var HitObject:ISpatialObject2D;
+      
+      /**
+       * Copy state from another RayHitInfo, overwriting the information in this
+       * RayHitInfo.
+       */
+      public function CopyFrom(other:RayHitInfo):void
+      {
+         Time = other.Time;
+         Position = other.Position.clone();
+         Normal = other.Normal.clone();
+         HitObject = other.HitObject;
+      }
+   }
+}

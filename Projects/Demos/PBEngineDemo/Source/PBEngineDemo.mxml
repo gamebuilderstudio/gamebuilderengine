@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" frameRate="60" width="800" height="600" xmlns:local="*">
+   <mx:Canvas bottom="0" top="0" left="0" right="0" id="graphicsCanvas"/>
+   <local:Levels/>
+   <local:Components/>
+   <local:Resources/>
+</mx:Application>

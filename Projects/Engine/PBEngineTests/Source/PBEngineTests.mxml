@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:fluint="http://www.digitalprimates.net/2008/fluint"
+      xmlns:pb="PBLabs.Engine.Debug.*" layout="absolute" creationComplete="_OnStartup()" width="1024" height="768">
+   <fluint:TestRunner id="UnitTestRunner"/>
+   <mx:TabNavigator left="10" right="10" top="10" bottom="10">
+      <mx:Canvas label="Log" width="100%" height="100%">
+         <pb:LogViewer width="100%" height="100%"/>
+      </mx:Canvas>
+      <mx:Canvas label="Unit Test Results" width="100%" height="100%">
+          <fluint:TestResultDisplay width="100%" height="100%"/>
+      </mx:Canvas>
+   </mx:TabNavigator>
+   <mx:Script>
+      <![CDATA[
+         import net.digitalprimates.fluint.ui.TestRunner;
+         import PBLabs.Engine.UnitTests.PBEngineTestSuite;
+         import PBLabs.Engine.Core.*;
+         import PBLabs.Engine.Debug.*;
+         
+         private function _OnStartup():void
+         {
+            Logger.Print(null, "Running Engine Unit Tests");
+            
+            var testSuites:Array = new Array();
+            testSuites.push(new PBEngineTestSuite("../Assets/testLevel.xml"));
+            UnitTestRunner.startTests(testSuites);
+            UnitTestRunner.addEventListener(TestRunner.TESTS_COMPLETE, _TestsDone);
+         }
+         
+         private function _TestsDone(e:Event):void
+         {
+            // Kill the process manager, as we may have registered MANY items in it.
+            Logger.Print(this, "Tests done, stopping the ProcessManager to keep UI interactive.");
+            ProcessManager.Instance.Stop();
+         }
+         
+         private var embeddedResources:Resources = new Resources();
+         private var componentReferences:Components = new Components();
+      ]]>
+   </mx:Script>
+</mx:Application>

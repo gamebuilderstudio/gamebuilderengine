@@ -1,0 +1,147 @@
+<html>
+<head>
+   <link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+   <link rel="stylesheet" type="text/css" href="CodeHighlighter/styles/vs.css"/>
+   <script type="text/javascript" src="TableOfContents/pageToc.js"></script>
+   <script type="text/javascript" src="CodeHighlighter/highlight.pack.js"></script>
+   <script type="text/javascript">
+      hljs.initHighlightingOnLoad();
+   </script>   
+   <title>PushButton Engine Manual - Code Style Guide</title>
+</head>
+<body>
+
+   <h1>PushButton Engine Manual - Code Style Guide</h1>
+   
+   <p>The most important thing about a style guide is that it exists and is enforced. Consistency, even to a suboptimal standard, means that it is easy and simple to navigate a codebase. Of course, we think this standard makes a lot of sense.</p>
+   
+   <div id="pageToc"></div>
+
+   <div id="contentArea">
+
+   <h2 class="section">Naming</h2>
+   
+   <p class="summary">This section defines how all elements in your code should be named, as
+   well as some special cases for specific types of classes.</p>
+   
+   <b>Definitions</b>
+   <ul class="definitionList">
+   <li class="definition">Upper Camel Case: The first letter of every word, including the first, is capitalized.</li>
+   <li class="definition">Lower Camel Case: The first letter of every word, with the exception of the first, is capitalized.</li>
+   </ul>
+   
+   <b>Abbreviations</b>
+   <p>Abbreviations should not be used. Extremely common abbreviations, such as min or max, are okay.</p>
+   <b>Acronyms</b>
+   <p>Acronyms are okay. If the acronym is treated like a word, and the first letter should be capitalized, capitalize every letter in the acronym, otherwise, leave all letters lowercase.</p>
+   <b>Class Names</b>
+   <p>Upper camel case.</p>
+   <b>Interface Names</b>
+   <p>Upper camel case, starting with a capital I</p>
+   <b>Public Functions, Variables, and Properties</b>
+   <p>Upper camel case.</p>
+   <b>Protected and Private Functions and Properties</b>
+   <p>Upper camel case, starting with an underscore.</p>
+   <b>Protected and Private Variables</b>
+   <p>Lower camel case, starting with an underscore.</p>
+   <b>Local Variables and Function Parameters</b>
+   <p>Lower camel case.</p>
+   <b>Constants</b>
+   <p>All caps, with underscores separating each word.</p>
+   <b>Packages and Folders</b>
+   <p>Upper camel case.</p>
+   <b>Component Names</b>
+   <p>All components should have the word 'Component' appended to their name.</p>
+   <b>Event Names</b>
+   <p>All events should have the word 'Event' appended to their name.</p>
+   <b>Callback Names and Event Handlers</b>
+   <p>The first word should always be 'On'.</p>
+   
+   <h3 class="section">Error Reporting</h3>
+   
+   <p class="summary">There are several different ways to indicate runtime problems with the execution of the
+   engine. This section defines the situations in which these different methods should be used. Additionally,
+   the errors should be dispatched at the highest possible level in the call stack. For instance, a lookup
+   method should not report that it failed to find an object. Instead, it should return null, and leave the
+   reporting up to the calling method.</p>
+   
+   <b>Log Messages</b>
+   <p>These should be used to report general information about the state of the engine.</p>
+   <b>Log Warnings</b>
+   <p>These should be used to report problems that don't inhibit the engine's ability to run, but could potentially be a problem.</p>
+   <b>Log Errors</b>
+   <p>These should be used to report problems that could impact the ongoing stability of the engine.</p>
+   <b>Exceptions</b>
+   <p>These should be used in situations that cannot be recovered from.</p>
+      
+   <h3 class="section">Whitespace</h3>
+   
+   <ul>
+   <li>Use 3 spaces for each level of indentation rather than a tab character.</li>
+   <li>All mathematical operators (+, -, =, etc) should be surrounded by spaces.</li>
+   <li>Parentheses do not have spaces immediately inside of them (to the right of opening parens, to the left of closing parens).</li>
+   <li>A space should exist between a keyword (for, if, while, etc) and the opening paren.</li>
+   <li>A space should not exist between a function name and the opening paren.</li>
+   <li>A space should always follow a comma or semi-colon except at the end of lines.</li>
+   <li>A blank line should always follow a closing brace or single line block.</li>
+   <li>Blank lines should be used to logically group sections of code.</li>
+   <li>Ridiculously long lines should be split onto multiple lines, with subsequent lines indented two extra levels.</li>
+   </ul>
+   
+   <h3 class="section">Braces</h3>
+   
+   <ul>
+   <li>A brace should always be the only character on its line.</li>
+   <li>Opening and closing braces are at the same indent level as surrounding code, and each other.</li>
+   <li>Every opening brace indents code by one level (3 spaces).</li>
+   <li>One line blocks do not have braces.</li>
+   <li>One line if statements with multiline else statements, or vice versa, do have braces.</li>
+   </ul>
+   
+   <h3 class="section">Other</h3>
+   
+   <ul>
+   <li>Numbers that can be non integers should always have a decimal, even it if is just '.0'.</li>
+   <li>Use parentheses in complex operations even if order of operations doesn't require it.</li>
+   <li>Do not use implicit boolean conversions. For instance, objects should always be compared to null.</li>
+   <li>Prefer early out returns to nested if statements.</li>
+   <li>One statement per line, in every case.</li>
+   </ul>
+   
+   <h3 class="section">Imports</h3>
+   
+   <ul>
+   <li>Organize imports by library, with a blank line between libraries.</li>
+   <li>Explicitly list imported objects, rather than using package.*</li>
+   </ul>
+   
+   <h3 class="section">Class Layout</h3>
+   
+   <p class="summary">Classes should be layed out in the following order. Additionally,
+   get properties should appear directly before the corresponding set property.</p>
+   
+   <ul>
+   <li>Constants</li>
+   <li>Public Static Properties</li>
+   <li>Public Static Methods</li>
+   <li>Public Static Variables</li>
+   <li>Protected Static Properties</li>
+   <li>Protected Static Methods</li>
+   <li>Protected Static Variables</li>
+   <li>Private Static Properties</li>
+   <li>Private Static Methods</li>
+   <li>Private Static Variables</li>
+   <li>Public Properties</li>
+   <li>Public Methods</li>
+   <li>Public Variables</li>
+   <li>Protected Properties</li>
+   <li>Protected Methods</li>
+   <li>Protected Variables</li>
+   <li>Private Properties</li>
+   <li>Private Methods</li>
+   <li>Private Variables</li>
+   </ul>
+   
+   </div>
+</body>
+</html>

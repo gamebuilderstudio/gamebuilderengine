@@ -1,0 +1,26 @@
+<Project>
+  <Name>PBEngineDemo</Name>
+  <Type>WebApplication</Type>
+  <Description>Feature demo for the PushButton Engine</Description>
+  <Version>1.0.0</Version>
+  <AuthorName>PushButton Labs</AuthorName>
+  <AuthorEmail>pbe@pushbuttonlabs.com</AuthorEmail>
+  <Dependencies>
+    <Dependency>
+      <Name>BoxTwoDPhysics</Name>
+      <Version>1.0.0</Version>
+    </Dependency>
+    <Dependency>
+      <Name>MPThreeSound</Name>
+      <Version>1.0.0</Version>
+    </Dependency>
+    <Dependency>
+      <Name>PBEngine</Name>
+      <Version>1.0.0</Version>
+    </Dependency>
+    <Dependency>
+      <Name>TwoDRenderer</Name>
+      <Version>1.0.0</Version>
+    </Dependency>
+  </Dependencies>
+</Project>

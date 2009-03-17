@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:pb="PBLabs.Engine.MXML.*">
+   <pb:ComponentReference componentClass="PBLabs.Rendering2D.Scene2DComponent"/>
+   <pb:ComponentReference componentClass="PBLabs.Rendering2D.SpriteRenderComponent"/>
+   <pb:ComponentReference componentClass="PBLabs.Rendering2D.SpriteSheetComponent"/>
+   <pb:ComponentReference componentClass="PBLabs.Rendering2D.SimpleSpatialComponent"/>
+   <pb:ComponentReference componentClass="PBLabs.Rendering2D.BasicSpatialManager2D"/>
+   <pb:ComponentReference componentClass="PBLabs.Rendering2D.CellCountDivider"/>
+   <pb:ComponentReference componentClass="PBLabs.Box2D.Box2DDebugComponent"/>
+   <pb:ComponentReference componentClass="PBLabs.Box2D.Box2DManagerComponent"/>
+   <pb:ComponentReference componentClass="PBLabs.Box2D.Box2DSpatialComponent"/>
+   <pb:ComponentReference componentClass="PBLabs.Box2D.PolygonCollisionShape"/>
+   <pb:ComponentReference componentClass="PBLabs.Box2D.CircleCollisionShape"/>
+   <pb:ComponentReference componentClass="PBLabs.StupidSampleGame.DudeController"/>
+</mx:Canvas>
