@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+/*******************************************************************************
+ * PushButton Engine
+ * Copyright (C) 2009 PushButton Labs, LLC
+ * For more information see http://www.pushbuttonengine.com
+ * 
+ * This file is licensed under the terms of the MIT license, which is included
+ * in the License.html file at the root directory of this SDK.
+ ******************************************************************************/
+-->
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:fluint="http://www.digitalprimates.net/2008/fluint"
       xmlns:pb="PBLabs.Engine.Debug.*" layout="absolute" creationComplete="_OnStartup()" width="1024" height="768">
    <fluint:TestRunner id="UnitTestRunner"/>

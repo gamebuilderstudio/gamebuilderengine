@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+/*******************************************************************************
+ * PushButton Engine
+ * Copyright (C) 2009 PushButton Labs, LLC
+ * For more information see http://www.pushbuttonengine.com
+ * 
+ * This file is licensed under the terms of the MIT license, which is included
+ * in the License.html file at the root directory of this SDK.
+ ******************************************************************************/
+-->
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" frameRate="60" width="800" height="600" xmlns:local="*">
    <mx:Canvas bottom="0" top="0" left="0" right="0" id="graphicsCanvas"/>
    <local:Levels/>
