@@ -7,13 +7,13 @@
    <script type="text/javascript">
       hljs.initHighlightingOnLoad();
    </script>   
-   <title>PushButton Engine Manual - Components</title>
+   <title>Components</title>
 </head>
 <body>
 
-   <h1>PushButton Engine Manual - Components</h1>
+   <h1>Components</h1>
    
-   <p>PBEngine lets you build games quickly by breaking functionality down into components. Because components are focused and implement a consistent interface, it is easy to make new functionality by combining them. This chapter discusses why components are desirable, how to write components, and how to distribute them.</p>
+   <p>The PushButton Engine lets you build games quickly by breaking functionality down into components. Because components are focused and implement a consistent interface, it is easy to make new functionality by combining them. This chapter discusses why components are desirable, how to write components, and how to distribute them.</p>
    
    <p>Components are an important piece of the puzzle but hardly the whole thing! Other chapters in this manual describe the resource manager, XML level format, and other important parts of the engine.</p>
    
@@ -25,7 +25,7 @@
    
    <p>Components are a better way to develop games. They avoid the major problems that come from inheritance-based implementations. Games that are made with components are naturally more modular, maintainable, and extensible. Many design decisions in PBEngine were made to encourage this approach.</p>
    
-   <p>The first major game to use components and publish about it was <a href="http://en.wikipedia.org/wiki/Dungeon_Siege">Dungeon Siege</a> (Gas Powered Games, 2002). "<a href="http://www.drizzle.com/~scottb/gdc/game-objects_files/frame.htm">A Data-Driven Game Object System</a>" was presented at GDC that year, and gives a thorough discussion of the system they used. The major benefit was that they avoided a complex object hierarchy and were able to manage a very large, complex game world in a "flat" way. They ended up with 21 C++ components, 148 script-based components, and around 10,000 object types.</p>
+   <p>The first major game to use components and publish about it was <a href="http://en.wikipedia.org/wiki/Dungeon_Siege" target="_blank">Dungeon Siege</a> (Gas Powered Games, 2002). "<a href="http://www.drizzle.com/~scottb/gdc/game-objects_files/frame.htm" target="_blank">A Data-Driven Game Object System</a>" was presented at GDC that year, and gives a thorough discussion of the system they used. The major benefit was that they avoided a complex object hierarchy and were able to manage a very large, complex game world in a "flat" way. They ended up with 21 C++ components, 148 script-based components, and around 10,000 object types.</p>
    
    <p>Their C++ components were things like "actor", "conversation", "follower", "physics" and so forth. The 148 script components were much more game specific, implementing things like logic for traps and puzzles, movement for elevators, quest tracking, etc. They were able to focus most of their time on moving the game forward rather than focusing on infrastructure, and adding a new feature was quick.</p> 
    
