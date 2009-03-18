@@ -1,4 +1,5 @@
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
    <link rel="stylesheet" type="text/css" href="stylesheet.css"/>
    <script type="text/javascript" src="js/pageToc.js"></script>
@@ -41,7 +42,7 @@
    
    <p>A game object is represented as an IEntity that contains a list of one or more IEntityComponents. For instance, a player entity built from components might look like this:</p>
    
-   <img src="images/04-ComponentSystem_SimpleExample.png">
+   <img src="images/04-ComponentSystem_SimpleExample.png" alt="" />
    
    <p>As you can see, each component is named, as is the entity. It's straightforward to imagine how the data might flow in this example - mover maintains the position of the object and updates its physical state as time advances. When sprite needs to render, it gets position data from mover. input applies forces to mover so that the player character moves based on the user's actions.</p>
    
@@ -55,8 +56,6 @@
    }</pre>
    
    <p>Several methods are available for you to optionally override. The EntityComponent API docs explain fully, but the following example shows a minimal component that overrides them, with comments briefly explaining when and why they are called.</p>
-   
-   <p>
    
    <pre class="brush: js">
    class SimplerComponent extends EntityComponent
@@ -187,9 +186,9 @@
    <p>There are three methods to directly access a component in an entity. Use Owner for your own entity, or lookup and use another entity to get components from somewhere else. The methods:</p>
    
    <ul>
-   <li><b>LookupComponentByName</b> which looks up a single named component and returns it.
-   <li><b>LookupComponentByType</b> which looks up a single component by type and returns it.
-   <li><b>LookupComponentsByType</b> which finds all components that match the specified type.
+   <li><b>LookupComponentByName</b> which looks up a single named component and returns it.</li>
+   <li><b>LookupComponentByType</b> which looks up a single component by type and returns it.</li>
+   <li><b>LookupComponentsByType</b> which finds all components that match the specified type.</li>
    </ul>
    
    <p>Here's a simple example of directly accessing another component:</p>

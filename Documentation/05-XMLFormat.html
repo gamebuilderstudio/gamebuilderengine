@@ -1,4 +1,5 @@
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
    <link rel="stylesheet" type="text/css" href="stylesheet.css"/>
    <script type="text/javascript" src="js/pageToc.js"></script>
@@ -192,7 +193,7 @@
          &lt;/component&gt;
       &lt;/entity&gt;
       
-      &lt!-- Group Example --&gt;
+      &lt;!-- Group Example --&gt;
       &lt;group name="Managers"&gt;
          &lt;!-- Object Reference Example --&gt;
          &lt;objectReference name="Scene"/&gt;
@@ -319,14 +320,15 @@
    <br/><br/>
    If a component has a class property that has child properties itself, these can be set
    as well. For example, to set the value of a Point property called Position, use the XML:
+	</p>
    <pre class="brush: xml">
    &lt;Position&gt;
       &lt;x&gt;10&lt;/x&gt;
       &lt;y&gt;25&lt;/y&gt;
    &lt;/Position&gt;
-   
    </pre>
-   Additionally, classes can contain child classes as well, to an infinite depth, using the
+
+   <p>Additionally, classes can contain child classes as well, to an infinite depth, using the
    same method.
    <br/><br/>
    By default, the deserialization process will automatically infer the type of the class
@@ -424,36 +426,36 @@
    
    <h2>Complete Attribute List</h2>
    <ul class="definitionList">
-   <li><b>name:</b>
-   <ul>
-   <li>On template tags, it specifies the name of the template.</li>
-   <li>On entity tags, it specifies both the name of the entity in XML, and the name of
-   the object that is instantiated from it.</li>
-   <li>On group tags, it specifies the name of the group.</li>
-   <li>On component tags, it specifies the name of the component once registered with
-   its owning IEntity.</li>
-   <li>On objectReference tags, it specifies the name of the template or entity to reference.</li>
-   <li>On groupReference tags, it specifies the name of the group to reference.</li>
-   </ul>
-   </li>
-   <li><b>template:</b> Exists on a template or entity tag and specifies the name of a template
-   to inherit component definitions from.</li>
-   <li><b>nameReference:</b> Specifies the name of an entity to lookup and set on the tag.</li>
-   <li><b>objectReference:</b> Specifies the name of a template or entity to instantiate and set
-   on the tag.</li>
-   <li><b>componentReference:</b> Specifies the name of a template or entity to lookup and search
-   for a compatible component to set on the tag.</li>
-   <li><b>componentName:</b> Specifies the name of a component to reference. If used without a
-   componentReference attribute, the component is looked up on the same entity that this attribute
-   is a part of.
-   <li><b>type:</b>
-   <ul>
-   <li>On a component, specifies the fully qualified type to use to instantiate the component.</li>
-   <li>On a field, specifies the type to use when instantiating the field for the parent tag.</li>
-   </ul>
-   </li>
-   <li><b>childType:</b> Specifies the type to use when instantiating objects to add to an array
-   or dictionary.</li>
+	   <li><b>name:</b>
+	   <ul>
+		   <li>On template tags, it specifies the name of the template.</li>
+		   <li>On entity tags, it specifies both the name of the entity in XML, and the name of
+		   the object that is instantiated from it.</li>
+		   <li>On group tags, it specifies the name of the group.</li>
+		   <li>On component tags, it specifies the name of the component once registered with
+		   its owning IEntity.</li>
+		   <li>On objectReference tags, it specifies the name of the template or entity to reference.</li>
+		   <li>On groupReference tags, it specifies the name of the group to reference.</li>
+	   </ul>
+	   </li>
+	   <li><b>template:</b> Exists on a template or entity tag and specifies the name of a template
+	   to inherit component definitions from.</li>
+	   <li><b>nameReference:</b> Specifies the name of an entity to lookup and set on the tag.</li>
+	   <li><b>objectReference:</b> Specifies the name of a template or entity to instantiate and set
+	   on the tag.</li>
+	   <li><b>componentReference:</b> Specifies the name of a template or entity to lookup and search
+	   for a compatible component to set on the tag.</li>
+	   <li><b>componentName:</b> Specifies the name of a component to reference. If used without a
+	   componentReference attribute, the component is looked up on the same entity that this attribute
+	   is a part of.</li>
+	   <li><b>type:</b>
+		   <ul>
+		   <li>On a component, specifies the fully qualified type to use to instantiate the component.</li>
+		   <li>On a field, specifies the type to use when instantiating the field for the parent tag.</li>
+		   </ul>
+	   </li>
+	   <li><b>childType:</b> Specifies the type to use when instantiating objects to add to an array
+	   or dictionary.</li>
    </ul>
    
    </div>
