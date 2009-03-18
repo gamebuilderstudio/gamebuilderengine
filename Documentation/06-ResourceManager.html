@@ -1,12 +1,18 @@
 <html>
 <head>
    <link rel="stylesheet" type="text/css" href="stylesheet.css"/>
-   <link rel="stylesheet" type="text/css" href="CodeHighlighter/styles/vs.css"/>
-   <script type="text/javascript" src="TableOfContents/pageToc.js"></script>
-   <script type="text/javascript" src="CodeHighlighter/highlight.pack.js"></script>
+   <script type="text/javascript" src="js/pageToc.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shCore.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushJScript.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushPhp.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushPlain.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushXml.js"></script>
+   <link type="text/css" rel="stylesheet" href="js/sh/styles/shCore.css"/>
+   <link type="text/css" rel="stylesheet" href="js/sh/styles/shThemeDefault.css"/>
    <script type="text/javascript">
-      hljs.initHighlightingOnLoad();
-   </script>   
+   		SyntaxHighlighter.config.clipboardSwf = 'js/sh/scripts/clipboard.swf';
+   		SyntaxHighlighter.all();
+   </script>
    <title>Resource Manager</title>
 </head>
 <body>
@@ -23,7 +29,7 @@
    
    <p>Loading a resource is simple. You specify the filename, resource type, and callbacks for when the load completes or fails.</p>
    
-   <pre><code>
+   <pre class="brush: js">
    // Example of loading an image:
    ResourceManager.Instance.Load("../Assets/Image/testImage.jpg", ImageResource, _OnImageLoaded, _OnImageFailed);
    
@@ -40,7 +46,7 @@
       // Report the error.
       Logger.PrintError(this, "_OnImageFailed", "Couldn't load the image!");
    }
-   </code></pre>
+   </pre>
    
    <p>Resource types are subclasses of PBLabs.Engine.Resource.Resource. Commonly used subclasses are XMLResource, ImageResource, and MP3Resource. Typically, these classes process the resource in some way and present you with finished data, such as a BitmapData in the case of the ImageResource.</p>
    
@@ -50,10 +56,10 @@
    
    <p>The template application includes a file called Resource.mxml. This is for embedding resources, but you can put the embed tag anywhere.</p>
    
-   <pre><code>
+   <pre class="brush: xml">
    &lt;pb:ResourceBinding filename="../Assets/Levels/level.pbelevel" resourceType="PBLabs.Engine.Resource.XMLResource" resourceClass="@Embed(source='../Assets/Levels/level.pbelevel', mimeType='application/octet-stream')"/&gt;
    &lt;pb:ResourceBinding filename="../Assets/Images/guy.png" resourceType="PBLabs.Rendering2D.ImageResource" resourceClass="@Embed(source='../Assets/Images/guy.png', mimeType='application/octet-stream')"/&gt;
-   &lt;pb:ResourceBinding filename="../Assets/Sounds/testSound.mp3" resourceType="PBLabs.MP3Sound.MP3Resource" resourceClass="@Embed(source='../Assets/Sounds/testSound.mp3', mimeType='application/octet-stream')"/&gt;</code></pre>
+   &lt;pb:ResourceBinding filename="../Assets/Sounds/testSound.mp3" resourceType="PBLabs.MP3Sound.MP3Resource" resourceClass="@Embed(source='../Assets/Sounds/testSound.mp3', mimeType='application/octet-stream')"/&gt;</pre>
    
    <p>There are just a few attributes to set on the ResourceBinding tag:</p>
    

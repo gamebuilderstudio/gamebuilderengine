@@ -1,12 +1,18 @@
 <html>
 <head>
    <link rel="stylesheet" type="text/css" href="stylesheet.css"/>
-   <link rel="stylesheet" type="text/css" href="CodeHighlighter/styles/vs.css"/>
-   <script type="text/javascript" src="TableOfContents/pageToc.js"></script>
-   <script type="text/javascript" src="CodeHighlighter/highlight.pack.js"></script>
+   <script type="text/javascript" src="js/pageToc.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shCore.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushJScript.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushPhp.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushPlain.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushXml.js"></script>
+   <link type="text/css" rel="stylesheet" href="js/sh/styles/shCore.css"/>
+   <link type="text/css" rel="stylesheet" href="js/sh/styles/shThemeDefault.css"/>
    <script type="text/javascript">
-      hljs.initHighlightingOnLoad();
-   </script>   
+   		SyntaxHighlighter.config.clipboardSwf = 'js/sh/scripts/clipboard.swf';
+   		SyntaxHighlighter.all();
+   </script>
    <title>Introduction</title>
 </head>
 <body>

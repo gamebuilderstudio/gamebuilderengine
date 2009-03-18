@@ -1,12 +1,18 @@
 <html>
 <head>
    <link rel="stylesheet" type="text/css" href="stylesheet.css"/>
-   <link rel="stylesheet" type="text/css" href="CodeHighlighter/styles/vs.css"/>
-   <script type="text/javascript" src="TableOfContents/pageToc.js"></script>
-   <script type="text/javascript" src="CodeHighlighter/highlight.pack.js"></script>
+   <script type="text/javascript" src="js/pageToc.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shCore.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushJScript.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushPhp.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushPlain.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushXml.js"></script>
+   <link type="text/css" rel="stylesheet" href="js/sh/styles/shCore.css"/>
+   <link type="text/css" rel="stylesheet" href="js/sh/styles/shThemeDefault.css"/>
    <script type="text/javascript">
-      hljs.initHighlightingOnLoad();
-   </script>   
+   		SyntaxHighlighter.config.clipboardSwf = 'js/sh/scripts/clipboard.swf';
+   		SyntaxHighlighter.all();
+   </script>
    <title>XML Level Format</title>
 </head>
 <body>
@@ -31,8 +37,7 @@
    document.
    </p>
    
-   <pre class="XMLExample">
-   <code>
+   <pre class="brush: xml">
    &lt;things version="1"&gt;
    
       &lt;!-- Entity Example --&gt;
@@ -214,7 +219,7 @@
       &lt;/group&gt;
       
    &lt;/things&gt;
-   </code>
+   
    </pre>
    
    <h2>Basic Structure</h2>
@@ -314,13 +319,12 @@
    <br/><br/>
    If a component has a class property that has child properties itself, these can be set
    as well. For example, to set the value of a Point property called Position, use the XML:
-   <pre>
-   <code>
+   <pre class="brush: xml">
    &lt;Position&gt;
       &lt;x&gt;10&lt;/x&gt;
       &lt;y&gt;25&lt;/y&gt;
    &lt;/Position&gt;
-   </code>
+   
    </pre>
    Additionally, classes can contain child classes as well, to an infinite depth, using the
    same method.
