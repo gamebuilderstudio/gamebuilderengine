@@ -30,19 +30,17 @@
    
    <p>You may want to use the engine without building it yourself. This is easily done. Once you have downloaded our precompiled SWCs, you can add them to your favorite IDE's classpath and start using the engine and components.</p>
    
-   <h2>Step 1 - Running the Project Manager</h2>
+   <h2>Step 1 - Running the PushButton Manager</h2>
    
-   <p>The PushButton Project Manager is an AIR application that is bundled with the SDK. It can automatically add projects to your build environment, package projects for distribution, and create build files (currently Ant build scripts and Flex Builder projects).</p>
+   <p>The PushButton Manager is an AIR application that is bundled with the SDK. It can automatically add projects to your build environment, package projects for distribution, and create build files (currently Ant build scripts and Flex Builder projects).</p>
    
-   <p>To get the SDK ready for use, double click on the ProjectManager.air file included in the root of the SDK to install the Project Manager. You may need to get the Adobe AIR runtime from <a href="http://get.adobe.com/air/" target="_blank">http://get.adobe.com/air/</a> first.</p>
+   <p>To get the SDK ready for use, double click on the ProjectManager.air file included in the root of the SDK to install the PushButton Manager. You may need to get the Adobe AIR runtime from <a href="http://get.adobe.com/air/" target="_blank">http://get.adobe.com/air/</a> first.</p>
    
-   <p>The Project Manager is associated with .pbesln files. Once it has been installed, double click on PBE.pbesln in the root of the SDK. This will launch the Project Manager and let it know where you have installed the SDK.</p>
-      
    <p>The first time you start the Manager it will ask for the location of the Flex SDK and the path for Eclipse/Flex Builder (if you use it). The Flex SDK path should be set to the root of the Flex SDK which has folders called ant, asdoc, bin, and several others. Provide the paths and hit save to continue.</p>
    
-   <p>Now, hit the "Generate Build Files..." option in the left hand column. The Project Manager will regenerate all the build files for the SDK.</p>
+   <p>The PushButton Manager is associated with .pbesln files. Once it has been installed, double click on PBE.pbesln in the root of the SDK. This will launch the PushButton Manager and let it know where you have installed the PushButton Engine SDK. A wizard will automatically start and prompt you to create build files. (If no wizard appears, you can click the "Generate Build Files..." option in the left hand column.)</p>
    
-   <p>At this point you can close the Project Manager and move on to step 2.</p>
+   <p>At this point you can close the PushButton Manager and move on to step 2.</p>
    
    <h2>Step 2 - Compile Using...</h2>
    
@@ -56,7 +54,7 @@
    
    <p>The workspace should refresh, and everything should start compiling automatically.</p>
    
-   <p>Now you can build, browse projects, and so forth.</p>
+   <p>Now you can build, browse project source code, and so forth.</p>
    
    <h3>Ant and the Free Flex SDK</h3>
    
@@ -101,7 +99,7 @@
    
    <h2>Project Layout</h2>
    
-   <p>Each project contained in the Projects folder has the same files structure. This lets the project manager automatically generate build files, and keeps development very modular so it's easy to share components with other developers.</p>
+   <p>Each project contained in the Projects folder has the same files structure. This lets the PushButton Manager automatically generate build files, and keeps development very modular so it's easy to share components with other developers.</p>
    
    <p>Projects cannot be nested within one another. The name of the project is the name of its folder. At its root, every project contains a .pbeproj file named after the project, for instance the PBEngine project contains PBEngine.pbeproj. The .pbeproj is a small XML file that describes the project, what it is, who made it, and what its dependencies are.</p>
    
