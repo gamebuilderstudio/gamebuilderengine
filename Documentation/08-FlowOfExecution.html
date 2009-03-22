@@ -1,0 +1,138 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+   <link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+   <script type="text/javascript" src="js/pageToc.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shCore.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushJScript.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushPhp.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushPlain.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushXml.js"></script>
+   <link type="text/css" rel="stylesheet" href="js/sh/styles/shCore.css"/>
+   <link type="text/css" rel="stylesheet" href="js/sh/styles/shThemeDefault.css"/>
+   <script type="text/javascript">
+   		SyntaxHighlighter.config.clipboardSwf = 'js/sh/scripts/clipboard.swf';
+   		SyntaxHighlighter.all();
+   </script>
+   <title>Flow Of Execution</title>
+</head>
+<body>
+
+   <h1>Flow Of Execution</h1>
+   
+   <p>An important part of understanding PushButton Engine is understanding what is run when. While most of the behavior described in this chapter is completely automated, it is helpful background information when you are developing or debugging components.</p>
+   
+   <p><b>Note:</b> Because PushButton Engine is very modular, different components may execute different code. Components should document this behavior. Most components will build off "core" PushButton Engine code like the ProcessManager and there will have behavior outlined in this document.</p>
+   
+   <div id="pageToc"></div>
+
+   <div id="contentArea">
+
+   <h2>Main Loop</h2>
+   
+   <p>PushButton Engine does not implement its own main loop or take "control" of your game. Everything is instigated by you, the developer, as this chapter outlines. In general, code and managers are created and executed on demand - for instance the first time you use the TemplateManager, it initializes itself. The first time you add the first object to the ProcessManager, it registers for callbacks, and when you unregister the last object it turns itself off.</p>
+   
+   <p>As a rule: you pay for what you use.</p>
+   
+   <h2>Engine Startup</h2>
+   
+   <p>If you are using any of the PushButton Engine MXML tags, these are processed as early as possible in application startup. Level-related tags are processed when the applicationComplete event fires. Resource-related tags are processed as soon as they are processed by Flex - usually in the first few frames.</p>
+   
+   <p>As a side effect of these tags, the ResourceManager, LevelManager, and other managers may be initialized. They are all created on demand, as mentioned above, when you first access them via their static Instance member.</p>
+   
+   <p>If you are manually initializing your game, by directly calling the managers without using the tags, then it's up to you when everything starts.</p>
+   
+   <h2>ProcessManager</h2>
+   
+   <p>The main piece of code that will be run after initialization is done is the ProcessManager, which is called at the start of every frame. The ProcessManager is responsible for managing the processing of time-related code. It does this with two kinds of callbacks - <b>per tick</b> and <b>per frame</b>.</p>
+   
+   <p>The ProcessManager allows you to set a priority for when in the course of processing time your object is called back. Higher priority objects are called first, followed by lower priority objects. Priority defaults to zero.</p>
+
+   <h3>Frame Callbacks</h3>
+   
+   <p>Per-frame callbacks happen via the IAnimatedObject interface. Simply implement the IAnimatedObject interface, and call <i>ProcessManager.Instance.AddAnimatedObject(this);</i> to get callbacks. For example:</p>
+   
+   <pre class="brush: js">
+   // Example of a component that receives per-frame callbacks.
+   public class DemoAnimatedComponent extends EntityComponent implements IAnimatedObject
+   {
+      public function OnFrame(elapsed:Number):void
+      {
+         trace("Frame happened, and " + elapsed + "ms passed since last time.");
+      }
+      
+      protected override function _OnAdd():void
+      {
+         ProcessManager.Instance.AddAnimatedObject(this);
+      }
+      
+      protected override function _OnRemove():void
+      {
+         ProcessManager.Instance.RemoveAnimatedObject(this);
+      }
+   }</pre>
+   
+   <p>Because you have to implement the above logic for every animated object, there is a helper base class provided with the engine, PBLabs.Engine.Components.AnimatedComponent, which not only automatically registers/unregisters for you, but lets you specify a priority.</p>
+   
+   <h3>Ticks</h3>
+   
+   <p><b>Ticks</b> are extremely useful when trying to implement gameplay that doesn't break at very high or low framerates. Ticks are guaranteed to happen at a fixed interval (see ProcessManager API documenation for details on the interval). At the start of each frame, the ProcessManager checks to see how long it has been since the last tick was processed. If it has been one or more tick-intervals, then it processes a tick. If it has been a long time, then it will run many ticks - however are many needed to stay caught up with realtime.</p>
+   
+   <p>The ProcessManager also interpolates between ticks - if the current frame is halfway between the last tick and time when the next tick will happen, then OnInterpolateTick is called with 0.5. 0 would be at the same time as the previous tick, 1 is the next tick.</p>
+   
+   <p>This is great for gameplay because it means the game runs consistently no matter what - internally, everything is processed at 32Hz (or whatever you set it the tick rate to). The rule is to implement any gameplay code in the OnTick callbacks, and any "display" code - for instance updating a particle system or interpolating position for smoother display - in OnInterpolateTick or OnFrame.<p>
+   
+   <p>A simple component that receives ticked looks like this. Notice it implements the ITickedObject interface:</p>
+   
+   <pre class="brush: js">
+   // Example of a component which receives tick callbacks.
+   public class DemoTickedComponent extends EntityComponent implements ITickedObject
+   {
+      public function OnTick(tickRate:Number):void
+      {
+         trace("A tick happened!");
+      }
+      
+      public function OnInterpolateTick(factor:Number):void
+      {
+         trace("Interpolating between ticks - at " + factor);
+      }
+      
+      protected override function _OnAdd():void
+      {
+         ProcessManager.Instance.AddTickedObject(this);
+      }
+      
+      protected override function _OnRemove():void
+      {
+         ProcessManager.Instance.RemoveTickedObject(this);
+      }
+   }</pre>
+    
+    <p>As with the AnimatedComponent base class, there is a TickedComponent base class which simplifies creating a component that creates ticks.</p>
+    
+    <p>To summarize the behavior of ProcessManager, at the start of every frame (on the ENTER_FRAME event), it does the following:</p>
+    
+    <ol>
+    <li>Process IAnimatedObject callbacks.</li>
+    <li>Process any pending ticks by calling ITickedObject OnTick zero or more times.</li>
+    <li>Call OnInterpolateTick on ITickedObject based on where we are "between ticks."</li>
+    </ol>
+    
+    <h3>Managing Time</h3>
+    
+    <p>There are several convenient values the ProcessManager calculates for you. These are VirtualTime, which is milliseconds of simulated time since the game started based on elapsed ticks, and InterpolationFactor, which is identical to the parameter passed to OnInterpolateTick. In general, you should use VirtualTime instead of flash.utils.getTimer() and InterpolationFactor when you need to be aware of where you are relative to ticks.</p>
+    
+    <p>You may want to experiment with altering time scale on the ProcessManager, as this will allow you to do bullet time type effects.</p>
+    
+    <h2>Shutdown</h2>
+    
+    <p>Currently, no code is run at game shutdown time.</p>
+    
+    <h2>Conclusion</h2>
+    
+    <p>PushButton Engine starts its managers on demand. There is no strict main loop. If you are concerned about the specific details of exactly how a specific piece of code is run, you should review its API docs and source code - this will be the most up to date and accurate.</p>
+    
+    </div>
+</body>
+</html>
