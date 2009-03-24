@@ -1,0 +1,241 @@
+   <!-- Root tag - indicates version in case there are breaking changes 
+        in the format. The root tag contains one or more entities, templates
+        or groups.-->
+   <things version="1">
+   
+      <!-- Only one entity of a given name can exist in the world at a time. The
+           TemplateManager will generate warnings if you instantiate them more
+           than once. -->
+      <entity name="PlatformSpriteSheet">
+      
+         <!-- Entities and templates contain components, which are named and
+              have a specified type. -->
+         <component type="PBLabs.Rendering2D.SpriteSheetComponent" name="SpriteSheet">
+            
+            <!-- Fields on the component are dealt with using our normal 
+                 serializer. In this case we are assigning a string to 
+                 ImageFilename on the SpriteSheetComponent. -->
+            <ImageFilename>../Assets/Images/platform.png</ImageFilename>
+         </component>
+      </entity>
+      
+      <!-- Another sprite sheet - just the same as the above one, but with a 
+           different entity name and file. -->
+      <entity name="DudeSpriteSheet">
+         <component type="PBLabs.Rendering2D.SpriteSheetComponent" name="SpriteSheet">
+            <ImageFilename>../Assets/Images/guy.png</ImageFilename>
+         </component>
+      </entity>
+      
+      <!-- Templates are like entities in every respect except two. First, they 
+           can be instantiated more than once w/o warnings. Second, they can be
+           referenced via the template attribute on an entity, which is explained
+           later. -->
+      <template name="Platform">
+      
+         <component type="PBLabs.Rendering2D.SpriteRenderComponent" name="Render">
+            <!-- Parent and SpriteSheet are typed fields. You can assign a
+                 direct reference to another component either on this entity or
+                 another using the componentReference attribute. -->
+            
+            <!-- Look up a named entity called Scene, find the first
+                 component that matches the type of Parent, and assign it. -->
+            <Parent componentReference="Scene"/>
+            
+            <!-- Same for the SpriteSheet field, which happens to want a
+                 SpriteSheetComponent. -->
+            <SpriteSheet componentReference="PlatformSpriteSheet"/>
+
+            <!-- Although PositionReference, RotationReference, and SizeReference
+                 are all of type PropertyReference, PropertyReference implements
+                 ISerializable and does its own custom serialization - in this
+                 case so that you can specify a string property reference. -->
+            <PositionReference>@Spatial.Position</PositionReference>
+            <RotationReference>@Spatial.Rotation</RotationReference>
+            <SizeReference>@Spatial.Size</SizeReference>
+         </component>
+         <component type="PBLabs.Box2D.Box2DSpatialComponent" name="Spatial">
+            <Manager componentReference="Box2D"/>
+            <!-- CollisionType is of type ObjectType, and also implements
+                 ISerializable, in this case to allow you to provide a list of
+                 object types. -->
+            <CollisionType>
+               <Type>Platform</Type>
+            </CollisionType>
+            <CollidesWithTypes>
+               <Type>Dude</Type>
+            </CollidesWithTypes>
+            
+            <!-- Size is of type Point. The serializer lets you set fields by
+                 nesting tags. In this case <Size><x>1</x></Size is equivalent
+                 to saying Size.x = 1; in ActionScript. -->
+            <Size>
+               <x>256</x>
+               <y>64</y>
+            </Size>
+            
+            <!-- Booleans support named values (true/false). -->
+            <CanMove>false</CanMove>
+            <CanRotate>false</CanRotate>
+            <CanSleep>true</CanSleep>
+            
+            <!--CollisionShapes is an array... -->
+            <CollisionShapes>
+               <!-- But you can specify the type of each item in the array. Here
+                    we use the feature in order to distinguish between different
+                    collision shapes. -->
+               <_ type="PBLabs.Box2D.PolygonCollisionShape">
+                  <!-- Vertices is also an array. In this case we can specify 
+                       the type of the items to put into it. In addition, we
+                       are using <_>. The underscore alone tells the serializer
+                       to put the value contained in it at the end of the array.
+                       
+                       Underscore can also escape numerical values, which are not
+                       valid XML tag names. You can'd to <3>, you have to do <_3>.
+                       If you want to do an underscore, do <__>.
+                       -->
+                  <Vertices childType="flash.geom.Point">
+                     <_><x>-1</x><y>-1</y></_>
+                     <_><x>1</x><y>-1</y></_>
+                     <_><x>1</x><y>1</y></_>
+                     <_><x>-1</x><y>1</y></_>
+                  </Vertices>
+               </_>
+            </CollisionShapes>
+         </component>
+      </template>
+      
+      <entity name="Scene">
+         <component type="PBLabs.Rendering2D.Scene2DComponent" name="Scene">
+            <Position>
+               <x>400</x>
+               <y>300</y>
+            </Position>
+         </component>
+      </entity>
+      
+      <entity name="Box2D">
+         <component type="PBLabs.Box2D.Box2DManagerComponent" name="Manager">
+         </component>
+         <component type="PBLabs.Box2D.Box2DDebugComponent" name="Debug">
+            <Scene componentReference="Scene"/>
+         </component>
+      </entity>
+      
+      <entity name="Dude">
+         <component type="PBLabs.Rendering2D.SpriteRenderComponent" name="Render">
+            <!-- In addition to componentReference, you can specify
+                 componentName, which indicates a specific component to 
+                 reference.
+                 
+                 If you use componentName alone, it will reference that component
+                 on the owning entity. -->
+            <Parent componentReference="Scene" componentName="Scene"/>
+            <SpriteSheet componentReference="DudeSpriteSheet"/>
+            <PositionReference>@Spatial.Position</PositionReference>
+            <RotationReference>@Spatial.Rotation</RotationReference>
+            <SizeReference>@Spatial.Size</SizeReference>
+            <TrackWithCamera>true</TrackWithCamera>
+         </component>
+         <component type="PBLabs.Box2D.Box2DSpatialComponent" name="Spatial">
+            <Manager componentReference="Box2D"/>
+            <CollisionType>
+               <Type>Dude</Type>
+            </CollisionType>
+            <CollidesWithTypes>
+               <Type>Platform</Type>
+            </CollidesWithTypes>
+            <Position>
+               <x>400</x>
+               <y>100</y>
+            </Position>
+            <Size>
+               <x>64</x>
+               <y>74</y>
+            </Size>
+            <CanRotate>false</CanRotate>
+            <CanSleep>false</CanSleep>
+            <CollisionShapes>
+               <_ type="PBLabs.Box2D.CircleCollisionShape">
+                  <Friction>0</Friction>
+                  <Radius>0.5</Radius>
+                  <Offset><x>0</x><y>0.5</y></Offset>
+               </_>
+            </CollisionShapes>
+         </component>
+         <component type="PBLabs.StupidSampleGame.DudeController" name="Controller">
+            <VelocityReference>@Spatial.LinearVelocity</VelocityReference>
+            <!-- Input Map Example -->
+            <Input>
+               <GoLeft>37</GoLeft>
+               <GoRight>39</GoRight>
+               <Jump>38</Jump>
+            </Input>
+         </component>
+      </entity>
+      
+      <!-- Often you want one entity to be a clone of another with minor 
+           modifications. You can do this via the template attribute. Everything
+           on Platform is loaded into the entity, then the information in the
+           Platform1 entity is applied on top of it. -->
+      <entity name="Platform1" template="Platform">
+         <!-- Notice that when we reference fields for an existing component 
+              (from the template) we omit the type attribute. -->
+         <component name="Spatial">
+            <Position>
+               <x>94</x>
+               <y>450</y>
+            </Position>
+         </component>
+      </entity>
+      
+      <entity name="Platform2" template="Platform">
+         <component name="Spatial">
+            <Position>
+               <x>400</x>
+               <y>500</y>
+            </Position>
+         </component>
+      </entity>
+      
+      <entity name="Platform3" template="Platform">
+         <component name="Spatial">
+            <Position>
+               <x>706</x>
+               <y>450</y>
+            </Position>
+         </component>
+      </entity>
+      
+      <!-- Groups are lists of templates/entities, so that you can instantiate
+           them all as a single group. TemplateManager.InstantiateGroup returns
+           an array of all the objects that were created. -->
+      <group name="Managers">
+         <!-- Group tags contain one or more objectReference or groupReference
+              tags. These reference groups or entities/templates by name, 
+              indicating what is part of the group. Things can be part of any
+              number of groups. -->
+         <objectReference name="Scene"/>
+         <objectReference name="Box2D"/>
+      </group>
+      
+      <group name="SpriteSheets">
+         <objectReference name="DudeSpriteSheet"/>
+         <objectReference name="PlatformSpriteSheet"/>
+      </group>
+      
+      <group name="Objects">
+         <objectReference name="Dude"/>
+         <objectReference name="Platform1"/>
+         <objectReference name="Platform2"/>
+         <objectReference name="Platform3"/>
+      </group>
+      
+      <group name="Everything">
+         <!-- This is how you reference a group from inside another group. -->
+         <groupReference name="Managers"/>
+         <groupReference name="SpriteSheets"/>
+         <groupReference name="Objects"/>
+      </group>
+      
+   </things>

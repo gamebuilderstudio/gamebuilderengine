@@ -24,71 +24,113 @@
    The PushButton Engine uses XML to store data about a game's objects. This chapter
    describes the format the engine expects when instantiating objects from XML. Loading
    XML object descriptions and instantiating them is handled by the TemplateManager
-   class.
-   </p>
+   class.</p>
    
    <div id="pageToc"></div>
 
    <div id="contentArea">
 
-   <h2>Example Level File</h2>
-   <p class="summary">
-   This level contains examples of everything the XML format supports. A comment is
-   included at relevant points to specify what a given section corresponds to in this
-   document.
-   </p>
+   <h2>XML Format Overview</h2>
+   
+   <p>The easiest way to explain PushButton Engine's XML serialization format is to go through an example. Later sections provide a reference to specific details of the format. Here is an example level with explanatory comments:</p> 
    
    <pre class="brush: xml">
+   &lt;!-- Root tag - indicates version in case there are breaking changes 
+        in the format. The root tag contains one or more entities, templates
+        or groups.--&gt;
    &lt;things version="1"&gt;
    
-      &lt;!-- Entity Example --&gt;
+      &lt;!-- Only one entity of a given name can exist in the world at a time. The
+           TemplateManager will generate warnings if you instantiate them more
+           than once. --&gt;
       &lt;entity name="PlatformSpriteSheet"&gt;
-         &lt;!-- Component Example --&gt;
+      
+         &lt;!-- Entities and templates contain components, which are named and
+              have a specified type. --&gt;
          &lt;component type="PBLabs.Rendering2D.SpriteSheetComponent" name="SpriteSheet"&gt;
-            &lt;!-- Generial Serialization Example (String) --&gt;
+            
+            &lt;!-- Fields on the component are dealt with using our normal 
+                 serializer. In this case we are assigning a string to 
+                 ImageFilename on the SpriteSheetComponent. --&gt;
             &lt;ImageFilename&gt;../Assets/Images/platform.png&lt;/ImageFilename&gt;
          &lt;/component&gt;
       &lt;/entity&gt;
       
+      &lt;!-- Another sprite sheet - just the same as the above one, but with a 
+           different entity name and file. --&gt;
       &lt;entity name="DudeSpriteSheet"&gt;
          &lt;component type="PBLabs.Rendering2D.SpriteSheetComponent" name="SpriteSheet"&gt;
             &lt;ImageFilename&gt;../Assets/Images/guy.png&lt;/ImageFilename&gt;
          &lt;/component&gt;
       &lt;/entity&gt;
       
-      &lt;!-- Template Example --&gt;
+      &lt;!-- Templates are like entities in every respect except two. First, they 
+           can be instantiated more than once w/o warnings. Second, they can be
+           referenced via the template attribute on an entity, which is explained
+           later. --&gt;
       &lt;template name="Platform"&gt;
+      
          &lt;component type="PBLabs.Rendering2D.SpriteRenderComponent" name="Render"&gt;
-            &lt;!-- Component Reference Example --&gt;
+            &lt;!-- Parent and SpriteSheet are typed fields. You can assign a
+                 direct reference to another component either on this entity or
+                 another using the componentReference attribute. --&gt;
+            
+            &lt;!-- Look up a named entity called Scene, find the first
+                 component that matches the type of Parent, and assign it. --&gt;
             &lt;Parent componentReference="Scene"/&gt;
+            
+            &lt;!-- Same for the SpriteSheet field, which happens to want a
+                 SpriteSheetComponent. --&gt;
             &lt;SpriteSheet componentReference="PlatformSpriteSheet"/&gt;
-            &lt;!-- Property Reference Example --&gt;
+
+            &lt;!-- Although PositionReference, RotationReference, and SizeReference
+                 are all of type PropertyReference, PropertyReference implements
+                 ISerializable and does its own custom serialization - in this
+                 case so that you can specify a string property reference. --&gt;
             &lt;PositionReference&gt;@Spatial.Position&lt;/PositionReference&gt;
             &lt;RotationReference&gt;@Spatial.Rotation&lt;/RotationReference&gt;
             &lt;SizeReference&gt;@Spatial.Size&lt;/SizeReference&gt;
          &lt;/component&gt;
          &lt;component type="PBLabs.Box2D.Box2DSpatialComponent" name="Spatial"&gt;
             &lt;Manager componentReference="Box2D"/&gt;
-            &lt;!-- Object Type Example --&gt;
+            &lt;!-- CollisionType is of type ObjectType, and also implements
+                 ISerializable, in this case to allow you to provide a list of
+                 object types. --&gt;
             &lt;CollisionType&gt;
                &lt;Type&gt;Platform&lt;/Type&gt;
             &lt;/CollisionType&gt;
             &lt;CollidesWithTypes&gt;
                &lt;Type&gt;Dude&lt;/Type&gt;
             &lt;/CollidesWithTypes&gt;
-            &lt;!-- Generial Serialization Example (Class) --&gt;
+            
+            &lt;!-- Size is of type Point. The serializer lets you set fields by
+                 nesting tags. In this case &lt;Size&gt;&lt;x&gt;1&lt;/x&gt;&lt;/Size is equivalent
+                 to saying Size.x = 1; in ActionScript. --&gt;
             &lt;Size&gt;
                &lt;x&gt;256&lt;/x&gt;
                &lt;y&gt;64&lt;/y&gt;
             &lt;/Size&gt;
-            &lt;!-- Generial Serialization Example (Boolean) --&gt;
+            
+            &lt;!-- Booleans support named values (true/false). --&gt;
             &lt;CanMove&gt;false&lt;/CanMove&gt;
             &lt;CanRotate&gt;false&lt;/CanRotate&gt;
             &lt;CanSleep&gt;true&lt;/CanSleep&gt;
+            
+            &lt;!--CollisionShapes is an array... --&gt;
             &lt;CollisionShapes&gt;
-               &lt;!-- Type Specification Example --&gt;
+               &lt;!-- But you can specify the type of each item in the array. Here
+                    we use the feature in order to distinguish between different
+                    collision shapes. --&gt;
                &lt;_ type="PBLabs.Box2D.PolygonCollisionShape"&gt;
-                  &lt;!-- Array Example --&gt;
+                  &lt;!-- Vertices is also an array. In this case we can specify 
+                       the type of the items to put into it. In addition, we
+                       are using &lt;_&gt;. The underscore alone tells the serializer
+                       to put the value contained in it at the end of the array.
+                       
+                       Underscore can also escape numerical values, which are not
+                       valid XML tag names. You can'd to &lt;3&gt;, you have to do &lt;_3&gt;.
+                       If you want to do an underscore, do &lt;__&gt;.
+                       --&gt;
                   &lt;Vertices childType="flash.geom.Point"&gt;
                      &lt;_&gt;&lt;x&gt;-1&lt;/x&gt;&lt;y&gt;-1&lt;/y&gt;&lt;/_&gt;
                      &lt;_&gt;&lt;x&gt;1&lt;/x&gt;&lt;y&gt;-1&lt;/y&gt;&lt;/_&gt;
@@ -119,7 +161,12 @@
       
       &lt;entity name="Dude"&gt;
          &lt;component type="PBLabs.Rendering2D.SpriteRenderComponent" name="Render"&gt;
-            &lt;!-- Named Component Reference Example --&gt;
+            &lt;!-- In addition to componentReference, you can specify
+                 componentName, which indicates a specific component to 
+                 reference.
+                 
+                 If you use componentName alone, it will reference that component
+                 on the owning entity. --&gt;
             &lt;Parent componentReference="Scene" componentName="Scene"/&gt;
             &lt;SpriteSheet componentReference="DudeSpriteSheet"/&gt;
             &lt;PositionReference&gt;@Spatial.Position&lt;/PositionReference&gt;
@@ -164,9 +211,13 @@
          &lt;/component&gt;
       &lt;/entity&gt;
       
-      &lt;!-- Template Derivation Example --&gt;
+      &lt;!-- Often you want one entity to be a clone of another with minor 
+           modifications. You can do this via the template attribute. Everything
+           on Platform is loaded into the entity, then the information in the
+           Platform1 entity is applied on top of it. --&gt;
       &lt;entity name="Platform1" template="Platform"&gt;
-         &lt;!-- Derived Component Example --&gt;
+         &lt;!-- Notice that when we reference fields for an existing component 
+              (from the template) we omit the type attribute. --&gt;
          &lt;component name="Spatial"&gt;
             &lt;Position&gt;
                &lt;x&gt;94&lt;/x&gt;
@@ -193,9 +244,14 @@
          &lt;/component&gt;
       &lt;/entity&gt;
       
-      &lt;!-- Group Example --&gt;
+      &lt;!-- Groups are lists of templates/entities, so that you can instantiate
+           them all as a single group. TemplateManager.InstantiateGroup returns
+           an array of all the objects that were created. --&gt;
       &lt;group name="Managers"&gt;
-         &lt;!-- Object Reference Example --&gt;
+         &lt;!-- Group tags contain one or more objectReference or groupReference
+              tags. These reference groups or entities/templates by name, 
+              indicating what is part of the group. Things can be part of any
+              number of groups. --&gt;
          &lt;objectReference name="Scene"/&gt;
          &lt;objectReference name="Box2D"/&gt;
       &lt;/group&gt;
@@ -213,249 +269,140 @@
       &lt;/group&gt;
       
       &lt;group name="Everything"&gt;
-         &lt;!-- Group Reference Example --&gt;
+         &lt;!-- This is how you reference a group from inside another group. --&gt;
          &lt;groupReference name="Managers"/&gt;
          &lt;groupReference name="SpriteSheets"/&gt;
          &lt;groupReference name="Objects"/&gt;
       &lt;/group&gt;
       
-   &lt;/things&gt;
-   
+   &lt;/things&gt;   
    </pre>
    
    <h2>Basic Structure</h2>
-   <p class="description">
-   There are three types of objects that can be instantiated from XML using the engine's
-   TemplateManager class. These are entity, template, and group. Each of these can appear
-   any number of times in a single XML file, in any order. They are all contained in the
-   same parent tag that is the root of the XML document.
-   <br/><br/>
-   When an XML file is loaded, everything inside the root tag is added to the TemplateManager
-   for later instantiation. Keep in mind, merely loading a description of an object does not
-   actually create that object. It must be instantiated manually with the TemplateManager.
-   </p>
+   
+   <p>There are three types of objects that can be instantiated from XML using the engine's TemplateManager class. These are entity, template, and group. Each of these can appear any number of times in a single XML file, in any order. They are all contained in the same parent tag that is the root of the XML document.</p>
+   
+   <p>When an XML file is loaded, everything inside the root tag is added to the TemplateManager for later instantiation. Keep in mind, merely loading a description of an object does not actually create that object. It must be instantiated manually with the TemplateManager.</p>
    
    <h3>Entities</h3>
    
-   <p class="description">
-   The entity tag contains the XML for an IEntity object. An IEntity is essentially
-   a named container for a collection of components. So, the entity tag supports a
-   single child tag, appropriately named component. Any number of component tags
-   can be added to an entity tag, with each one describing a different component.
-   <br/><br/>
-   The name of the entity is set using the <i>name</i> attribute. Additionally, a
-   <i>template</i> attribute is supported. The <i>template</i> attribute should be
-   the name given to an XML object described with a template tag. The deserializer
-   handles templates by first deserializing the new IEntity with the description
-   contained in the template, then deserializing it again with the description
-   contained in the entity. Essentially, this allows a template object to describe
-   a common set of components for the IEntity, and the entity to overwrite or add
-   additional components to the IEnity. The template attribute is optional.
-   </p>
+   <p>The entity tag contains the XML for an IEntity object. An IEntity is essentially a named container for a collection of components. So, the entity tag supports a single child tag, appropriately named component. Any number of component tags can be added to an entity tag, with each one describing a different component.</p>
+   
+   <p>The name of the entity is set using the <i>name</i> attribute. Additionally, a <i>template</i> attribute is supported. The <i>template</i> attribute should be the name given to an XML object described with a template tag. The deserializer handles templates by first deserializing the new IEntity with the description contained in the template, then deserializing it again with the description contained in the entity. Essentially, this allows a template object to describe a common set of components for the IEntity, and the entity to overwrite or add additional components to the IEnity. The template attribute is optional.</p>
    
    <h3>Templates</h3>
-   <p class="description">
-   A template is constructed in identical fashion to an entity, including the optional
-   template tag. The only difference between a template and an entity, once instantiated,
-   is that a template is not registered with the NameManager
-   class, whereas an entity is. The reason for this is templates are designed to be
-   instantiated multiple times, for things like bullets or respawning enemies, whereas
-   an entity is designed to be instantiated once.
-   <br/><br/>
-   Entities cannot be used as templates in XML, however, so any object that is being used
-   as a base description must be created as a template. Template's can be derived from
-   other templates, though, with no limit on how many derivation levels there are.
-   </p>
+   
+   <p>A template is constructed in identical fashion to an entity, including the optional template tag. The only difference between a template and an entity, once instantiated, is that a template is not registered with the NameManager class, whereas an entity is. The reason for this is templates are designed to be instantiated multiple times, for things like bullets or respawning enemies, whereas an entity is designed to be instantiated once.</p>
+   
+   <p>Entities cannot be used as templates in XML, however, so any object that is being used as a base description must be created as a template. Template's can be derived from other templates, though, with no limit on how many derivation levels there are.</p>
    
    <h3>Components</h3>
-   <p class="description">
-   The component tag goes inside of either a template or entity tag and describes
-   a component that should be added to that template or entity when it is instantiated.
-   <br/><br/>
-   The component tag has two attributes, both of which are required in the normal case
-   (the other case will be described below). The first attribute is <i>type</i>, which
-   specifies the fully qualified class of the component. So, for instance, a component
-   with class DudeController in the namespace PBLabs.StupidSampleGame would have its
-   <i>type</i> attribute set to "PBLabs.StupidSampleGame.DudeController".
-   <br/><br/>
-   The second attribute is <i>name</i>. This specifies the name to assign to the component
-   when it is instantiated. A component's name must be unique across all components on the
-   same entity as it is used to lookup the component on an entity.
-   <br/><br/>
-   The tags inside of a component correspond exactly to the properties of that component.
-   If a component has a property <i>Position</i>, then that property's value can be set
-   with a child tag called <i>Position</i>. More information on this is in the General
-   Serialization section.
-   <br/><br/>
-   Component tags also have the capability of overwriting an existing component rather
-   than instantiating an entirely new one. This would happen when templates are being used.
-   If an entity derives from a template with a component named "MyComponent", that entity
-   can also have a component with name "MyComponent". Instead of creating another instance,
-   the existing component on the template is looked up and its properties are replaced with
-   anything defined by the child component. In this case, the child component should not
-   have a <i>class</i> attribute.
-   </p>
+   
+   <p>The component tag goes inside of either a template or entity tag and describes a component that should be added to that template or entity when it is instantiated.</p>
+   
+   <p>The component tag has two attributes, both of which are required in the normal case (the other case will be described below). The first attribute is <i>type</i>, which specifies the fully qualified class of the component. So, for instance, a component with class DudeController in the namespace PBLabs.StupidSampleGame would have its <i>type</i> attribute set to "PBLabs.StupidSampleGame.DudeController".</p>
+   
+   <p>The second attribute is <i>name</i>. This specifies the name to assign to the component when it is instantiated. A component's name must be unique across all components on the same entity as it is used to lookup the component on an entity.</p>
+   
+   <p>The tags inside of a component correspond exactly to the properties of that component. If a component has a property <i>Position</i>, then that property's value can be set with a child tag called <i>Position</i>. More information on this is in the General Serialization section.</p>
+   
+   <p>Component tags also have the capability of overwriting an existing component rather than instantiating an entirely new one. This would happen when templates are being used. If an entity derives from a template with a component named "MyComponent", that entity can also have a component with name "MyComponent". Instead of creating another instance, the existing component on the template is looked up and its properties are replaced with anything defined by the child component. In this case, the child component should not have a <i>class</i> attribute.</p>
    
    <h3>Groups</h3>
-   <p class="description">
-   A group is the third type of object that can be described in XML. It is essentially just
-   a list of other templates, entities, or groups that will all be instantiated when the
-   group is instantiated. For example, if you define a group with two children "MyFirstEntity"
-   and "MySecondEntity", instantiating the group will instantiate both of those entities.
-   <br/><br/>
-   The list of objects to instantiate can contain two different tags. The first is
-   <i>objectReference</i>, which is used for both templates and entities. The second is
-   <i>groupReference</i>, which is used for referencing other groups.
-   <br/><br/>
-   A group has no effect on the actual game once instantiated. It is merely a convenience for
-   instantiating several objects at once.
-   </p>
+   
+   <p>A group is the third type of object that can be described in XML. It is essentially just a list of other templates, entities, or groups that will all be instantiated when the group is instantiated. For example, if you define a group with two children "MyFirstEntity" and "MySecondEntity", instantiating the group will instantiate both of those entities.</p>
+   
+   <p>The list of objects to instantiate can contain two different tags. The first is <i>objectReference</i>, which is used for both templates and entities. The second is <i>groupReference</i>, which is used for referencing other groups.</p>
+   
+   <p>A group has no effect on the actual game once instantiated. It is merely a convenience for instantiating several objects at once.</p>
    
    <h2>General Serialization</h2>
-   <p class="description">
-   Component tags can contain any number of child tags that correspond to their properties
-   as defined in code. If a component has a public property named "MyProperty", it's value
-   can be set to 7 by adding &lt;MyProperty&gt;7&lt;/MyProperty&gt; as a child of the
-   component tag.
-   <br/><br/>
-   If a component has a class property that has child properties itself, these can be set
-   as well. For example, to set the value of a Point property called Position, use the XML:
-	</p>
+   
+   <p>Component tags can contain any number of child tags that correspond to their properties as defined in code. If a component has a public property named "MyProperty", it's value can be set to 7 by adding &lt;MyProperty&gt;7&lt;/MyProperty&gt; as a child of the component tag.</p>
+   
+   <p>If a component has a class property that has child properties itself, these can be set as well. For example, to set the value of a Point property called Position, use the XML:</p>
+
    <pre class="brush: xml">
    &lt;Position&gt;
       &lt;x&gt;10&lt;/x&gt;
       &lt;y&gt;25&lt;/y&gt;
    &lt;/Position&gt;
    </pre>
-
-   <p>Additionally, classes can contain child classes as well, to an infinite depth, using the
-   same method.
-   <br/><br/>
-   By default, the deserialization process will automatically infer the type of the class
-   to create based on the type specified in your code. You can override this behavior using
-   the <i>type</i> attribute. This would allow you to instantiate a subclass of a class that
-   was expected. The <i>type</i> attribute requires a fully qualified class name.
-   </p>
+   
+   <p>Additionally, classes can contain child classes as well, to an infinite depth, using the same method.</p>
+   
+   <p>By default, the deserialization process will automatically infer the type of the class to create based on the type specified in your code. You can override this behavior using the <i>type</i> attribute. This would allow you to instantiate a subclass of a class that was expected. The <i>type</i> attribute requires a fully qualified class name.</p>
    
    <h3>Class References</h3>
-   <p class="description">
-   Properties that store references to IEntity objects or IEntityComponent objects can also be
-   resolved in the XML. This is done with the nameReference, componentReference, and
-   objectReference attributes.
-   <br/><br/>
-   The nameReference attribute is used to assign a reference to an existing IEntity to the
-   property. So, it must be the name of an entity that has already been instantiated.
-   The property type should be IEntity and is resolved before _OnAdd is called on any
-   components.
-   <br/><br/>
-   objectReference works the same way as nameReference, but instead of looking up an
-   existing object, it will instantiate a new one instead.
-   <br/><br/>
-   The componentReference attribute also takes the name of an existing entity, similar to
-   the nameReference. The correct component is retrieved from the entity by inferring the
-   type of component the property expects and looking up a component of that type from
-   the found entity. An additional attribute can be specified to look up a specific
-   component on the entity. This is the componentName attribute and should be set to the
-   name of the component to lookup.
-   </p>
+   
+   <p>Properties that store references to IEntity objects or IEntityComponent objects can also be resolved in the XML. This is done with the nameReference, componentReference, and objectReference attributes.</p>
+
+   <p>The nameReference attribute is used to assign a reference to an existing IEntity to the property. So, it must be the name of an entity that has already been instantiated. The property type should be IEntity and is resolved before _OnAdd is called on any components.</p>
+
+   <p>objectReference works the same way as nameReference, but instead of looking up an existing object, it will instantiate a new one instead.</p>
+
+   <p>The componentReference attribute also takes the name of an existing entity, similar to the nameReference. The correct component is retrieved from the entity by inferring the type of component the property expects and looking up a component of that type from the found entity. An additional attribute can be specified to look up a specific component on the entity. This is the componentName attribute and should be set to the name of the component to lookup.</p>
    
    <h3>Arrays and Dictionaries</h3>
-   <p class="description">
-   Arrays and Dictionaries are handled in almost the same way by the deserializer. The
-   only difference is Arrays can use default tags to push objects onto them, whereas
-   Dictionaries require a key.
-   <br/><br/>
-   The type of object that is added to a Dictionary or Array is specified by the <i>childType</i>
-   attribute. This attribute value is the default type that will be used when instantiating
-   child tags. Each child tag can optionally include the <i>type</i> attribute to override
-   the type specified by the <i>childType</i> attribute.
-   <br/><br/>
-   The tag for each child corresponds to the key in the dictionary or array that the
-   object will be added to. The handling of this key value has some special rules,
-   however. To begin with, if the key has a leading underscore, it is automatically
-   removed. This is to allow for keys that are just numbers as the XML specification
-   does not allow numbers to be tags. If the key consists of just an underscore, the
-   instantiated class is simply pushed onto the back of the array. For dictionaries,
-   a single underscore is considered invalid.
-   </p>
+
+   <p>Arrays and Dictionaries are handled in almost the same way by the deserializer. The only difference is Arrays can use default tags to push objects onto them, whereas Dictionaries require a key.</p>
+
+   <p>The type of object that is added to a Dictionary or Array is specified by the <i>childType</i> attribute. This attribute value is the default type that will be used when instantiating child tags. Each child tag can optionally include the <i>type</i> attribute to override the type specified by the <i>childType</i> attribute.</p>
+
+   <p>The tag for each child corresponds to the key in the dictionary or array that the object will be added to. The handling of this key value has some special rules, however. To begin with, if the key has a leading underscore, it is automatically removed. This is to allow for keys that are just numbers as the XML specification does not allow numbers to be tags. If the key consists of just an underscore, the instantiated class is simply pushed onto the back of the array. For dictionaries, a single underscore is considered invalid.</p>
    
    <h3>Custom Serialization</h3>
-   <p class="description">
-   The XML format for every class is as described in the General Serialization section,
-   unless the class implements the ISerializable interface. If this is the case, the format
-   can be anything, since it is defined by the specific ISerializable implementation. The
-   built in classes that implement this are PropertyReference, ObjectType, and InputMap.
-   <br/><br/>
-   PropertyReference fields can be treated exactly like strings. The string value is that
-   is set in XML is set as the value of the PropertyReference.
-   <br/><br/>
-   ObjectType fields can be treated like an array of strings. Each of the child tag values
-   is added as a named type to the ObjectType field.
-   <br/><br/>
-   The InputMap class can be treated exactly like a dictionary. The keys should be the
-   name of a binding on the input map, and the value should be the key code of the key to
-   use for that binding.
-   </p>
+
+   <p>The XML format for every class is as described in the General Serialization section, unless the class implements the ISerializable interface. If this is the case, the format can be anything, since it is defined by the specific ISerializable implementation. The built in classes that implement this are PropertyReference, ObjectType, and InputMap.</p>
+
+   <p>PropertyReference fields can be treated exactly like strings. The string value is that is set in XML is set as the value of the PropertyReference.</p>
+
+   <p>ObjectType fields can be treated like an array of strings. Each of the child tag values is added as a named type to the ObjectType field.</p>
+
+   <p>The InputMap class can be treated exactly like a dictionary. The keys should be the name of a binding on the input map, and the value should be the key code of the key to use for that binding.</p>
    
    <h2>Other Uses for XML</h2>
-   <p class="description">
-   This chapter has described the XML format assuming level files and the TemplateManager
-   are being used to load and instantiate the XML data. This does not have to be the case.
-   The Serialization class provides all the functionality necessary to instantiate any
-   class from an XML description, or serialize any existing class to an XML description.
-   The format outlined in this chapter still applies, but the Serialization class is
-   used directly, rather than loading level files with the TemplateManager.
-   </p>
+
+   <p>This chapter has described the XML format assuming level files and the TemplateManager are being used to load and instantiate the XML data. This does not have to be the case. The Serialization class provides all the functionality necessary to instantiate any class from an XML description, or serialize any existing class to an XML description. The format outlined in this chapter still applies, but the Serialization class is used directly, rather than loading level files with the TemplateManager.</p>
    
    <h2>Complete Tag List</h2>
-   <ul class="definitionList">
+
+   <ul>
+
    <li><b>things:</b> The root tag.</li>
-   <li><b>template:</b> A child of the root tag, specifying that the contained XML is a
-   template definition.</li>
-   <li><b>entity:</b> A child of the root tag, specifying that the contained XML is an
-   entity definition.</li>
-   <li><b>group:</b> A child of the root tag, specifying that the contained XML is a
-   group definition.</li>
-   <li><b>component:</b> A child of the template or entity tag, specifying that the
-   contained XML is a component definition.</li>
-   <li><b>objectReference:</b> A child of the group tag, specifying the name of a template
-   or object to instantiate with the group.</li>
-   <li><b>groupReference:</b> A child of the group tag, specifying the name of a group
-   to instantiate with the parent group.</li>
+   <li><b>template:</b> A child of the root tag, specifying that the contained XML is a template definition.</li>
+   <li><b>entity:</b> A child of the root tag, specifying that the contained XML is an entity definition.</li>
+   <li><b>group:</b> A child of the root tag, specifying that the contained XML is a group definition.</li>
+   <li><b>component:</b> A child of the template or entity tag, specifying that the contained XML is a component definition.</li>
+   <li><b>objectReference:</b> A child of the group tag, specifying the name of a template or object to instantiate with the group.</li>
+   <li><b>groupReference:</b> A child of the group tag, specifying the name of a group to instantiate with the parent group.</li>
+
    </ul>
    
    <h2>Complete Attribute List</h2>
-   <ul class="definitionList">
+   <ul>
 	   <li><b>name:</b>
 	   <ul>
 		   <li>On template tags, it specifies the name of the template.</li>
-		   <li>On entity tags, it specifies both the name of the entity in XML, and the name of
-		   the object that is instantiated from it.</li>
+		   <li>On entity tags, it specifies both the name of the entity in XML, and the name of the object that is instantiated from it.</li>
 		   <li>On group tags, it specifies the name of the group.</li>
-		   <li>On component tags, it specifies the name of the component once registered with
-		   its owning IEntity.</li>
+		   <li>On component tags, it specifies the name of the component once registered with its owning IEntity.</li>
 		   <li>On objectReference tags, it specifies the name of the template or entity to reference.</li>
 		   <li>On groupReference tags, it specifies the name of the group to reference.</li>
 	   </ul>
 	   </li>
-	   <li><b>template:</b> Exists on a template or entity tag and specifies the name of a template
-	   to inherit component definitions from.</li>
+	   <li><b>template:</b> Exists on a template or entity tag and specifies the name of a template to inherit component definitions from.</li>
 	   <li><b>nameReference:</b> Specifies the name of an entity to lookup and set on the tag.</li>
-	   <li><b>objectReference:</b> Specifies the name of a template or entity to instantiate and set
-	   on the tag.</li>
-	   <li><b>componentReference:</b> Specifies the name of a template or entity to lookup and search
-	   for a compatible component to set on the tag.</li>
-	   <li><b>componentName:</b> Specifies the name of a component to reference. If used without a
-	   componentReference attribute, the component is looked up on the same entity that this attribute
-	   is a part of.</li>
+	   <li><b>objectReference:</b> Specifies the name of a template or entity to instantiate and set on the tag.</li>
+	   <li><b>componentReference:</b> Specifies the name of a template or entity to lookup and search for a compatible component to set on the tag.</li>
+	   <li><b>componentName:</b> Specifies the name of a component to reference. If used without a componentReference attribute, the component is looked up on the same entity that this attribute is a part of.</li>
 	   <li><b>type:</b>
 		   <ul>
 		   <li>On a component, specifies the fully qualified type to use to instantiate the component.</li>
 		   <li>On a field, specifies the type to use when instantiating the field for the parent tag.</li>
 		   </ul>
 	   </li>
-	   <li><b>childType:</b> Specifies the type to use when instantiating objects to add to an array
-	   or dictionary.</li>
+	   <li><b>childType:</b> Specifies the type to use when instantiating objects to add to an array or dictionary.</li>
    </ul>
    
    </div>
