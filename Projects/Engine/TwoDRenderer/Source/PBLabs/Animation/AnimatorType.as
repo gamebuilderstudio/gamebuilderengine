@@ -1,7 +1,5 @@
 package PBLabs.Animation
 {
-   import PBLabs.Engine.Serialization.*;
-   import PBLabs.Engine.Debug.Logger;
    import PBLabs.Engine.Serialization.Enumerable;
    
    import flash.utils.Dictionary;

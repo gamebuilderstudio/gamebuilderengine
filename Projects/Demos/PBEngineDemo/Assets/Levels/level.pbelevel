@@ -133,10 +133,10 @@
     </component>
     <component type="PBLabs.StupidSampleGame.DudeController" name="Controller">
       <VelocityReference>@Spatial.LinearVelocity</VelocityReference>
-      <Input childType="int">
-        <GoLeft>37</GoLeft>
-        <GoRight>39</GoRight>
-        <Jump>38</Jump>
+      <Input childType="PBLabs.Engine.Core.InputKey">
+        <GoLeft>LEFT</GoLeft>
+        <GoRight>RIGHT</GoRight>
+        <Jump>UP</Jump>
       </Input>
     </component>
   </entity>
