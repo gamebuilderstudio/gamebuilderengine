@@ -22,4 +22,5 @@
    <pb:ComponentReference componentClass="PBLabs.Box2D.PolygonCollisionShape"/>
    <pb:ComponentReference componentClass="PBLabs.Box2D.CircleCollisionShape"/>
    <pb:ComponentReference componentClass="PBLabs.StupidSampleGame.DudeController"/>
+   <pb:ComponentReference componentClass="PBLabs.Animation.AnimatorComponent"/>
 </mx:Canvas>

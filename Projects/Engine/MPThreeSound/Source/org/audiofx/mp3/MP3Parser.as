@@ -104,7 +104,6 @@ package org.audiofx.mp3
                var b0:int=mp3Data.readByte()&0x7F;
                var headerLength:int=b0+b1+b2+b3;
                var newPosition:int=mp3Data.position+headerLength;
-               trace("Found id3v2 header, length "+headerLength.toString(16)+" bytes. Moving to "+newPosition.toString(16));
                mp3Data.position=newPosition;
                readPosition=newPosition;
             }
@@ -138,7 +137,6 @@ package org.audiofx.mp3
          {
             if(currentPosition>(mp3Data.length-4))
             {
-               trace("passed eof");
                return null;
             }
             headerByte=mp3Data.readInt();

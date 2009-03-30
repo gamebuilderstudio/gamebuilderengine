@@ -39,8 +39,12 @@ package PBLabs.Engine.Serialization
        * 
        * @param xml The xml containing the serialized definition of the class.
        * 
+       * @return The deserialized object. Usually 'this' should be returned, but in
+       * some cases it may be useful to return something else. The Enumerable class
+       * does this to force all values to be a member of the enumeration.
+       * 
        * @see ../../../../../Examples/DeserializingObjects.html Deserializing Objects
        */
-      function Deserialize(xml:XML):void;
+      function Deserialize(xml:XML):*;
    }
 }

@@ -104,7 +104,7 @@ package PBLabs.Engine.Core
        * 
        * @inheritDoc
        */
-      public function Deserialize(xml:XML):void
+      public function Deserialize(xml:XML):*
       {
          if (xml.hasSimpleContent())
          {
@@ -115,6 +115,8 @@ package PBLabs.Engine.Core
          _bits = 0;
          for each (var childXML:XML in xml.*)
             _bits |= ObjectTypeManager.Instance.GetType(childXML.toString());
+         
+         return this;
       }
       
       private var _bits:int = 0;

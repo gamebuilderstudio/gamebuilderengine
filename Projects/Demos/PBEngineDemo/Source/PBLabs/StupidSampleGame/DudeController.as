@@ -78,7 +78,7 @@ package PBLabs.StupidSampleGame
          Owner.EventDispatcher.removeEventListener(CollisionEvent.COLLISION_EVENT, _OnCollision);
          Owner.EventDispatcher.removeEventListener(CollisionEvent.COLLISION_STOPPED_EVENT, _OnCollisionEnd);
          
-         ResourceManager.Instance.Unload("../Assets/Sounds/testSound.mp3");
+         ResourceManager.Instance.Unload("../Assets/Sounds/testSound.mp3", MP3Resource);
          ProcessManager.Instance.RemoveTickedObject(this);
       }
       

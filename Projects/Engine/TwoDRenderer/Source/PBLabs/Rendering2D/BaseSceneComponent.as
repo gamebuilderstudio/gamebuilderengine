@@ -11,6 +11,7 @@ package PBLabs.Rendering2D
    import PBLabs.Engine.Entity.EntityComponent;
    import PBLabs.Engine.Entity.IEntityComponent;
    import PBLabs.Engine.Core.*;
+   import PBLabs.Engine.Debug.Logger;
    
    import flash.display.*;
    import flash.events.Event;
@@ -25,103 +26,351 @@ package PBLabs.Rendering2D
    public class BaseSceneComponent extends EntityComponent implements IAnimatedObject, IDrawManager2D
    {
       /**
-       * How many layers will we have?
+       * The number of layers to create for each scene.
        */
       public static const LAYER_COUNT:int = 64;
-
+      
       /**
-       * Looks for a DisplayObject with this name in the Application to draw to.
-       */ 
-      public var SpriteName:String;
-
+       * The display object to render scene content in to when a scene view isn't set directly. This
+       * is used by the SceneView Flex component to make creating one view scenes much simpler.
+       * 
+       * @see PBLabs.Rendering2D.UI.SceneView
+       */
+      public static function get DefaultSceneView():DisplayObjectContainer
+      {
+         return _defaultSceneView;
+      }
+      
+      /**
+       * @private
+       */
+      public static function set DefaultSceneView(value:DisplayObjectContainer):void
+      {
+         _defaultSceneView = value;
+      }
+      
+      private static var _defaultSceneView:DisplayObjectContainer = null;
+      
+      /**
+       * The display object to render scene content in to.
+       */
+      public function get SceneView():DisplayObjectContainer
+      {
+         if (_sceneView != null)
+            return _sceneView;
+         
+         if (_sceneViewName != null)
+         {
+            _sceneView = Application.application.getChildByName(_sceneViewName) as DisplayObjectContainer;
+            return _sceneView;
+         }
+         
+         return _defaultSceneView;
+      }
+      
+      /**
+       * @private
+       */
+      public function set SceneView(value:DisplayObjectContainer):void
+      {
+         _sceneView = value;
+      }
+      
+      /**
+       * Sets the name of the component on the application to use as the scene view.
+       */
+      public function set SceneViewName(value:String):void
+      {
+         _sceneViewName = value;
+         _sceneView = null;
+      }
+      
+      /**
+       * @private
+       */
+      public function get SceneViewName():String
+      {
+         return _sceneViewName;
+      }
+      
+      /**
+       * @inheritDoc
+       */
+      public function get LastDrawnItem():IDrawable2D
+      {
+         return _lastDrawn;
+      }
+      
+      /**
+       * @inheritDoc
+       */
+      public function get NextDrawnItem():IDrawable2D
+      {
+         return _nextDrawn;
+      }
+      
       /**
        * Reference to the spatial database for this scene.
-       */  
+       */
       public var SpatialDatabase:ISpatialManager2D;
       
       /**
        * Types of objects that will be considered for rendering.
-       */ 
+       */
       public var RenderMask:ObjectType;
       
       /**
-       * Indexed by layer; if true then we cache to a bitmap.
+       * Array of layers that should be cached to a bitmap. Set the value at the layer
+       * index to true to enable caching for that layer. Caching should only be enabled
+       * on layers that are static or almost static. In the 'almost' case, call InvalidateLayerCache
+       * on the layer to force it to redraw.
        */
       public var CacheLayers:Array = new Array(LAYER_COUNT);
-
+      
+      /**
+       * @inheritDoc
+       */
       public function OnFrame(elapsed:Number):void
       {
-         Render();
+         _Render();
       }
       
-      protected function Render():void
+      /**
+       * @inheritDoc
+       */
+      public function TransformWorldToScreen(p:Point, altitude:Number=0):Point
       {
-         throw new Error("Not implemented by base class.");
+         throw new Error("Derived classes must implement this method!");
+         return null;
+      }
+      
+      /**
+       * @inheritDoc
+       */
+      public function TransformScreenToWorld(p:Point):Point
+      {
+         throw new Error("Derived classes must implement this method!");
+         return null;
+      }
+      
+      /**
+       * @inheritDoc
+       */
+      public function DrawDisplayObject(object:DisplayObject):void
+      {
+         if (_currentRenderTarget == null)
+            SceneView.addChild(object);
+         else
+            _currentRenderTarget.draw(object, object.transform.matrix);
+      }
+      
+      /**
+       * @inheritDoc
+       */
+      public function DrawBitmapData(bitmap:BitmapData, matrix:Matrix):void
+      {
+         if (_currentRenderTarget == null)
+         {
+            // Make a dummy sprite and draw into it.
+            var dummy:UIComponent = new UIComponent();
+            dummy.graphics.beginBitmapFill(bitmap);
+            dummy.graphics.drawRect(0, 0, bitmap.width, bitmap.height);
+            dummy.graphics.endFill();
+            dummy.transform.matrix = matrix;
+            
+            DrawDisplayObject(dummy);            
+         }
+         else
+         {
+            _currentRenderTarget.draw(bitmap, matrix);
+         }
+      }
+      
+      /**
+       * @inheritDoc
+       */
+      public function GetBackBuffer():BitmapData
+      {
+         return _currentRenderTarget;
+      }
+      
+      /**
+       * @inheritDoc
+       */
+      public function AddAlwaysDrawnItem(item:IDrawable2D):void
+      {
+         _alwaysDrawnList.push(item);
+      }
+      
+      /**
+       * @inheritDoc
+       */
+      public function RemoveAlwaysDrawnItem(item:IDrawable2D):void
+      {
+         var index:int = _alwaysDrawnList.indexOf(item);
+         if (index == -1)
+         {
+            Logger.PrintWarning(this, "RemoveInterstitialDrawer", "The object isn't in the always draw list");
+            return;
+         }
+         
+         _alwaysDrawnList.splice(index, 1);
+      }
+      
+      /**
+       * @inheritDoc
+       */
+      public function AddInterstitialDrawer(object:IDrawable2D):void
+      {
+         _interstitialDrawnList.push(object);
+      }
+      
+      /**
+       * @inheritDoc
+       */
+      public function RemoveInterstitialDrawer(object:IDrawable2D):void
+      {
+         var index:int = _interstitialDrawnList.indexOf(object);
+         if (index == -1)
+         {
+            Logger.PrintWarning(this, "RemoveInterstitialDrawer", "The object isn't in the interstitial draw list");
+            return;
+         }
+         
+         _interstitialDrawnList.splice(index, 1);
+      }
+      
+      /**
+       * If the specified layer should be cached to a bitmap, returns true.
+       * 
+       * @param layerIndex The layer to check.
+       * 
+       * @return True if the layer is marked to be cached, false otherwise.
+       */ 
+      public function IsLayerCached(layerIndex:int):Boolean
+      {
+         if (CacheLayers[layerIndex] == null)
+            return false
+         
+         return CacheLayers[layerIndex];
+      }
+      
+      /**
+       * Destroys the cached data for a layer so it will be redrawn on the next frame.
+       * 
+       * @param layerIndex The layer to invalidate.
+       */
+      public function InvalidateLayerCache(layerIndex:int):void
+      {
+         if (!IsLayerCached(layerIndex))
+            return;
+         
+         var bitmap:BitmapData = _layerCache[layerIndex] as BitmapData;
+         if (bitmap == null)
+            return;
+         
+         bitmap.dispose();
+         _layerCache[layerIndex] = null;
+      }
+      
+      /**
+       * Invalidates the cached data for all cached layers.
+       */
+      public function InvalidateAllLayerCaches():void
+      {
+         for (var i:int = 0; i < LAYER_COUNT; i++)
+            InvalidateLayerCache(i);
+      }
+      
+      /**
+       * Checks if a cached layer needs to be drawn.
+       * 
+       * @param layerIndex The layer to check.
+       * 
+       * @return True if the layer should be drawn, false otherwise.
+       */
+      public function DoesLayerNeedUpdate(layerIndex:int):Boolean
+      {
+         if (!IsLayerCached(layerIndex))
+            return false;
+         
+         if (_layerCache[layerIndex] == null)
+            return true;
+         
+         return false;
+      } 
+      
+      /**
+       * Gets the cached bitmap for the specified layer.
+       * 
+       * @param layerIndex The layer to get the cached bitmap for.
+       * 
+       * @return The cached bitmap for the specified layer.
+       */
+      public function GetLayerCacheBitmap(layerIndex:int):BitmapData
+      {
+         if (!IsLayerCached(layerIndex))
+         {
+            Logger.PrintError(this, "GetLayerCacheBitmap", "Cannot get a cached layer for a layer that isn't being cached.");
+            return null;
+         }
+         
+         var bitmap:BitmapData = _layerCache[layerIndex] as BitmapData;
+         
+         // Make sure it is the size of our sprite.
+         if (!bitmap || (bitmap.width != SceneView.width) || (bitmap.height != SceneView.height))
+         {
+            // Dispose & regenerate the bitmap.
+            if (bitmap)
+               bitmap.dispose();
+            
+            bitmap = new BitmapData(SceneView.width, SceneView.height, true, 0x0);
+
+            // Store it into the cache.
+            _layerCache[layerIndex] = bitmap;
+         }
+
+         return bitmap;
+      }
+      
+      protected function _Render():void
+      {
+         throw new Error("Derived classes must implement this method!");
       }
 
       protected override function _OnAdd():void
       {
-         if (Application.application.stage != null)
-            _SetupSprite();
-         else
-            Application.application.addEventListener(Event.ADDED_TO_STAGE, _SetupSprite);
-         
          ProcessManager.Instance.AddAnimatedObject(this, -10);
       }
       
       protected override function _OnRemove():void 
-      {         
-         // Only remove if we created it.
-         if(!SpriteName)
-            Application.application.stage.removeChild(_sprite);
-         _sprite = null;
-
+      {
          ProcessManager.Instance.RemoveAnimatedObject(this);
       }
-
-      /**
-       * Get ahold of a DisplayObject to render to.
-       */ 
-      protected function _SetupSprite(event:Event=null):void
-      {
-         if(!SpriteName)
-         {
-            // Draw to something default.
-            _sprite = Application.application.graphicsCanvas;
-         }
-         else
-         {
-            // We can reuse an existing sprite.
-            _sprite = (Application.application as Application).getChildByName(SpriteName) as Sprite;
-         }
-      }
       
-      /**
-       * Given an array of arrays of IDrawable2Ds, draw them in the right order,
-       * calling back on the interstitial drawer and updating state.
-       */ 
       protected function _DrawSortedLayers(layerList:Array):void
       {
          // Lock for performance.
-         if(_CurrentRenderTarget) _CurrentRenderTarget.lock();
+         if (_currentRenderTarget)
+            _currentRenderTarget.lock();
          
          // Clear last/next state.
          _lastDrawn = _nextDrawn = null;
          
-         var rtStack:BitmapData = _CurrentRenderTarget;
+         var rtStack:BitmapData = _currentRenderTarget;
          var layerBitmap:BitmapData;
          
-         for(var i:int=0; i<layerList.length; i++)
+         for (var i:int = 0; i < layerList.length; i++)
          {
             layerBitmap = null;
             
-            if(IsLayerCached(i))
+            if (IsLayerCached(i))
             {
                // First check if we can reuse the cached image.
-               if(DoesLayerNeedUpdate(i) == false)
+               if (!DoesLayerNeedUpdate(i))
                {
                   // Great, just draw it.
-                  DrawLayerCacheBitmap(i);
+                  _DrawLayerCacheBitmap(i);
                   continue;
                }
                
@@ -129,245 +378,91 @@ package PBLabs.Rendering2D
                // are drawing into it.
                layerBitmap = GetLayerCacheBitmap(i);
                layerBitmap.fillRect(layerBitmap.rect, 0);
-               _CurrentRenderTarget = layerBitmap;
+               _currentRenderTarget = layerBitmap;
             }
 
-            for each(var r:IDrawable2D in layerList[i])
+            for each (var r:IDrawable2D in layerList[i])
             {
                // Do interstitial callbacks.
                _lastDrawn = _nextDrawn;
                _nextDrawn = r;
-               _InterstitialDrawnList.every(function(item:IDrawable2D):void { item.OnDraw(this); });
+               _interstitialDrawnList.every(function(item:IDrawable2D):void { item.OnDraw(this); });
                
                // Do the draw callback.
                r.OnDraw(this);
             }
             
-            if(IsLayerCached(i))
+            if (IsLayerCached(i))
             {
                // Restore render target.
-               _CurrentRenderTarget = rtStack;
+               _currentRenderTarget = rtStack;
                
                // Render the cached bitmap.
-               DrawLayerCacheBitmap(i);
+               _DrawLayerCacheBitmap(i);
             }
          }
          
          // Do final interstitial callback.
-         if(_nextDrawn)
+         if (_nextDrawn)
          {
-               _lastDrawn = _nextDrawn;
-               _nextDrawn = null;
-               _InterstitialDrawnList.every(function(item:IDrawable2D):void { item.OnDraw(this); });            
+            _lastDrawn = _nextDrawn;
+            _nextDrawn = null;
+            _interstitialDrawnList.every(function(item:IDrawable2D):void { item.OnDraw(this); });            
          }
 
          // Clear last/next state.
          _lastDrawn = _nextDrawn = null;
 
          // Clean up render state.
-         if(_CurrentRenderTarget) _CurrentRenderTarget.unlock();
+         if (_currentRenderTarget)
+            _currentRenderTarget.unlock();
       }
       
-      /**
-       * If the specified layer should be cached to a bitmap, returns true.
-       */ 
-      public function IsLayerCached(layerIndex:int):Boolean
+      private function _DrawLayerCacheBitmap(layerIndex:int):void
       {
-         return !(!CacheLayers[layerIndex]);
+         var bitmap:BitmapData = GetLayerCacheBitmap(layerIndex);
+         DrawBitmapData(bitmap, null);
       }
       
-      public function InvalidateLayerCache(layerIndex:int):void
-      {
-         if(!IsLayerCached(layerIndex))
-            return;
-         
-         var bd:BitmapData = _LayerCache[layerIndex] as BitmapData;
-         if(!bd)
-            return;
-         
-         bd.dispose();
-         _LayerCache[layerIndex] = null;
-      }
-      
-      public function InvalidateAllLayerCaches():void
-      {
-         for(var i:int=0; i<LAYER_COUNT; i++)
-            InvalidateLayerCache(i);
-      }
-     
-      public function DoesLayerNeedUpdate(layerIndex:int):Boolean
-      {
-         if(!IsLayerCached(layerIndex))
-            return false;
-         
-         if(!_LayerCache[layerIndex])
-            return true;
-         
-         return false;
-      } 
-      
-      public function GetLayerCacheBitmap(layerIndex:int):BitmapData
-      {
-         // Error if we aren't caching.
-         if(!IsLayerCached(layerIndex))
-            throw new Error("Cannot get cache bitmap for layer with no caching!");
-         
-         var bd:BitmapData = _LayerCache[layerIndex] as BitmapData;
-         
-         // Make sure it is the size of our sprite.
-         if(!bd
-            || bd.width != _sprite.width
-            || bd.height != _sprite.height)
-         {
-            // Dispose & regenerate the bitmap.
-            if(bd) bd.dispose();
-            bd = new BitmapData(_sprite.width, _sprite.height, true, 0x0);
-
-            // Store it into the cache.
-            _LayerCache[layerIndex] = bd;
-         }
-
-         return bd;
-      }
-      
-      private function DrawLayerCacheBitmap(layerIndex:int):void
-      {
-         var bd:BitmapData = GetLayerCacheBitmap(layerIndex);
-         DrawBitmapData(bd, null);
-      }
-      
-      /**
-       * Given a region, query the spatial database and fill the layerList with
-       * arrays containing the items to be drawn in each layer.
-       */ 
       protected function _BuildRenderList(viewRect:Rectangle, layerList:Array):void
       {
          // Get a list of the items that will be rendered.
          var renderList:Array = new Array();
-         if(!SpatialDatabase 
-            || !SpatialDatabase.QueryRectangle(viewRect, RenderMask, renderList))
-         {
-            // Nothing to draw.
+         if ((SpatialDatabase == null) || !SpatialDatabase.QueryRectangle(viewRect, RenderMask, renderList))
             return;
-         }
          
          // Iterate over everything and stuff drawables into the right layers.
-         for each(var obj2:IEntityComponent in renderList)
+         for each (var object:IEntityComponent in renderList)
          {
-            var renderableList:Array = obj2.Owner.LookupComponentsByType(IDrawable2D);
-            for each(var r:IDrawable2D in renderableList)
+            var renderableList:Array = object.Owner.LookupComponentsByType(IDrawable2D);
+            for each (var renderable:IDrawable2D in renderableList)
             {
-               if(!layerList[r.LayerIndex])
-                  layerList[r.LayerIndex] = new Array();
-               layerList[r.LayerIndex].push(r);
+               if (layerList[renderable.LayerIndex] == null)
+                  layerList[renderable.LayerIndex] = new Array();
+               
+               layerList[renderable.LayerIndex].push(renderable);
             }
          }
            
          // Deal with always-drawn stuff.
-         for each(r in _AlwaysDrawnList)
+         for each (var alwaysRenderable:IDrawable2D in _alwaysDrawnList)
          {
-            if(!layerList[r.LayerIndex])
-               layerList[r.LayerIndex] = new Array();
-            layerList[r.LayerIndex].push(r);
-         }
-      }
+            if (layerList[alwaysRenderable.LayerIndex] == null)
+               layerList[alwaysRenderable.LayerIndex] = new Array();
             
-      public virtual function TransformWorldToScreen(p:Point, altitude:Number=0):Point
-      {
-         throw new Error("Not implemented in base class.");
-         return null;
-      }
-      
-      public virtual function TransformScreenToWorld(p:Point):Point
-      {
-         throw new Error("Not implemented in base class.");
-         return null;
-      }
-      
-      public function get LastDrawnItem():IDrawable2D
-      {
-         return _lastDrawn;
-      }
-      
-      public function get NextDrawnItem():IDrawable2D
-      {
-         return _nextDrawn;
-      }
-      
-      public virtual function DrawDisplayObject(object:DisplayObject):void
-      {
-         if(_CurrentRenderTarget == null)
-            (_sprite as DisplayObjectContainer).addChild(object);
-         else
-         {
-            _CurrentRenderTarget.draw(object, object.transform.matrix);
+            layerList[alwaysRenderable.LayerIndex].push(alwaysRenderable);
          }
       }
       
-      public virtual function DrawBitmapData(bd:BitmapData, m:Matrix):void
-      {
-         if(_CurrentRenderTarget == null)
-         {
-            // Make a dummy sprite and draw into it.
-            var dummy:UIComponent = new UIComponent();
-            dummy.graphics.beginBitmapFill(bd);
-            dummy.graphics.drawRect(0, 0, bd.width, bd.height);
-            dummy.graphics.endFill();
-            dummy.transform.matrix = m;
-            
-            DrawDisplayObject(dummy);            
-         }
-         else
-         {
-            _CurrentRenderTarget.draw(bd, m);
-         }
-      }
+      protected var _currentRenderTarget:BitmapData = null;
       
-      public virtual function GetBackBuffer():BitmapData
-      {
-         return _CurrentRenderTarget;
-      }
-
-      public function AddAlwaysDrawnItem(item:IDrawable2D):void
-      {
-         _AlwaysDrawnList.push(item);
-      }
+      private var _sceneView:DisplayObjectContainer = null;
+      private var _sceneViewName:String = null;
       
-      public function RemoveAlwaysDrawnItem(item:IDrawable2D):void
-      {
-         var idx:int = _AlwaysDrawnList.indexOf(item);
-         if(idx == -1)
-            throw new Error("Could not find item in list.");
-         _AlwaysDrawnList.splice(idx, 1);
-      }
-      
-      public function AddInterstitialDrawer(obj:IDrawable2D):void
-      {
-         _InterstitialDrawnList.push(obj);
-      }
-      
-      public function RemoveInterstitialDrawer(obj:IDrawable2D):void
-      {
-         var idx:int = _InterstitialDrawnList.indexOf(obj);
-         if(idx == -1)
-            throw new Error("Could not find item in list.");
-         _InterstitialDrawnList.splice(idx, 1);
-      }
-      
-      private var _AlwaysDrawnList:Array = new Array();
-      private var _InterstitialDrawnList:Array = new Array();
-      protected var _sprite:Sprite = null;
+      private var _alwaysDrawnList:Array = new Array();
+      private var _interstitialDrawnList:Array = new Array();
+      private var _layerCache:Array = new Array(LAYER_COUNT);
       
       private var _lastDrawn:IDrawable2D, _nextDrawn:IDrawable2D;
-
-      /**
-       * Cached bitmaps from each layer, indexed by layer.
-       */ 
-      private var _LayerCache:Array = new Array(LAYER_COUNT);
-
-      /**
-       * When set, we render into the specified bitmapdata.
-       */ 
-      protected var _CurrentRenderTarget:BitmapData = null;
    }
 }

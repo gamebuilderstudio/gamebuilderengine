@@ -54,6 +54,6 @@ package PBLabs.Rendering2D
       /**
        * Cast a ray and (optionally) return information about what it hits in result.
        */
-       function CastRay(start:Point, end:Point, mask:ObjectType, result:RayHitInfo):Boolean;      
+      function CastRay(start:Point, end:Point, mask:ObjectType, result:RayHitInfo):Boolean;      
    }
 }

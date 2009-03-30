@@ -19,47 +19,83 @@ package PBLabs.Rendering2D
     */ 
    public class BaseRenderComponent extends EntityComponent implements IDrawable2D
    {
+      /**
+       * A reference for the position property on the owner entity. This should be a
+       * point.
+       */
       public var PositionReference:PropertyReference;
-      public var PositionOffset:Point = null;
-      public var IsTracked:Boolean = false;
       
+      /**
+       * A reference for the rotation property on the owner entity. This should be a
+       * Number.
+       */
+      public var RotationReference:PropertyReference;
+      
+      /**
+       * A reference for the size property on the owner entity. This should be a
+       * point.
+       */
+      public var SizeReference:PropertyReference;
+      
+      /**
+       * An offset to apply to the position retrieved from the PositionReference.
+       */
+      public var PositionOffset:Point = new Point(0, 0);
+      
+      /**
+       * @inheritDoc
+       */
       public function get RenderSortKey():int
       {
-         return _RenderSortKey;
+         return _renderSortKey;
       }
       
-      public function set RenderSortKey(v:int):void
+      /**
+       * @inheritDoc
+       */
+      public function set RenderSortKey(value:int):void
       {
-         _RenderSortKey = v;
+         _renderSortKey = value;
       }
-
+      
+      /**
+       * @inheritDoc
+       */
       public function get LayerIndex():int
       {
-         return _LayerIndex;
+         return _layerIndex;
       }
       
-      public function set LayerIndex(v:int):void
+      /**
+       * @inheritDoc
+       */
+      public function set LayerIndex(value:int):void
       {
-         _LayerIndex = v;
+         _layerIndex = value;
       }
-
+      
+      /**
+       * @inheritDoc
+       */
       public function get RenderPosition():Point
       {
-         var res:Point = Owner.GetProperty(PositionReference);
+         var position:Point = Owner.GetProperty(PositionReference);
          
-         if(!res)
-            return new Point(0,0);
+         if (position == null)
+            return new Point(0, 0);
          
-         if(PositionOffset)
-            return res.add(PositionOffset);
-         else
-            return res;
+         return position.add(PositionOffset);
       }
       
+      /**
+       * @inheritDoc
+       */
       public function OnDraw(manager:IDrawManager2D):void
       {
+         throw new Error("Derived classes must implement this method!");
       }
       
-      private var _LayerIndex:int, _RenderSortKey:int;
+      private var _layerIndex:int = 0;
+      private var _renderSortKey:int = 0;
    }
 }

@@ -68,7 +68,7 @@ package PBLabs.Rendering2D
        * Add an item that will always receive an opportunity to render.
        */ 
       function AddAlwaysDrawnItem(item:IDrawable2D):void;
-
+      
       /**
        * Remove an item added by AddAlwaysDrawnItem.
        */ 
@@ -88,7 +88,7 @@ package PBLabs.Rendering2D
        * and NextDrawnItem properties to determine what to draw at each call.
        */ 
       function AddInterstitialDrawer(item:IDrawable2D):void;
-     
+      
       /**
        * Remove an interstitial drawer previously registered with 
        * AddInterstitialDrawer.
@@ -96,7 +96,7 @@ package PBLabs.Rendering2D
        * @see AddInterstitialDrawer
        */ 
       function RemoveInterstitialDrawer(item:IDrawable2D):void;
-
+      
       /**
        * Transform a world position to screen space in pixels. Altitude can be 
        * passed, but is only meaning in non-orthographic projections. The results
@@ -112,19 +112,19 @@ package PBLabs.Rendering2D
        * of zero.
        */
       function TransformScreenToWorld(p:Point):Point;
-   
+      
       /**
        * During drawing, set to the last drawn item or null if there is none (if
-       * this is the first rendered object or first interstitial call.
+       * this is the first rendered object or first interstitial call).
        */ 
       function get LastDrawnItem():IDrawable2D;
-
+      
       /**
        * During drawing, set to the item that will be drawn next, or null if we
        * are at the end of the draw list.
        */ 
       function get NextDrawnItem():IDrawable2D;
-   
+      
       /**
        * Called from IDrawable2D.OnDraw to render a DisplayObject to the screen.
        * 
@@ -133,7 +133,7 @@ package PBLabs.Rendering2D
        * May be called multiple times. 
        */ 
       function DrawDisplayObject(object:DisplayObject):void;
-
+      
       /**
        * Called from IDrawable2D.OnDraw to render a BitmapData to the screen.
        * 
@@ -142,7 +142,7 @@ package PBLabs.Rendering2D
        * May be called multiple times.
        */
       function DrawBitmapData(bd:BitmapData, m:Matrix):void;
-   
+      
       /**
        * Get the current results of rendering as a BitmapData. Useful for post
        * processing effects (like glow/blur/motion trails).

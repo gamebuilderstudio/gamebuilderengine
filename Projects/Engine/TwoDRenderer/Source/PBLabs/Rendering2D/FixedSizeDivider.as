@@ -15,30 +15,49 @@ package PBLabs.Rendering2D
    */
    public class FixedSizeDivider implements ISpriteSheetDivider
    {
-      public var Width:int = 30, Height:int = 16;
-
-      public function set OwningSheet(v:SpriteSheetComponent):void
+      /**
+       * The width of each frame.
+       */
+      public var Width:int = 32;
+      
+      /**
+       * The height of each frame.
+       */
+      public var Height:int = 32;
+      
+      /**
+       * @inheritDoc
+       */
+      public function set OwningSheet(value:SpriteSheetComponent):void
       {
-         _OwningSheet = v;
-      }
-
-      public function get FrameCount():int
-      {
-         if(!_OwningSheet) throw new Error("Must have a valid sheet!");
-         
-         return Math.floor(_OwningSheet.ImageData.width / Width) * Math.floor(_OwningSheet.ImageData.height / Height);
+         _owningSheet = value;
       }
       
+      /**
+       * @inheritDoc
+       */
+      public function get FrameCount():int
+      {
+         if (!_owningSheet)
+            throw new Error("OwningSheet must be set before calling this!");
+         
+         return Math.floor(_owningSheet.ImageData.width / Width) * Math.floor(_owningSheet.ImageData.height / Height);
+      }
+      
+      /**
+       * @inheritDoc
+       */
       public function GetFrameArea(index:int):Rectangle
       {
-         if(!_OwningSheet) throw new Error("Must have a valid sheet!");
+         if (!_owningSheet)
+            throw new Error("OwningSheet must be set before calling this!");
 
-         var x:int = index % Math.floor(_OwningSheet.ImageData.width / Width);
-         var y:int = Math.floor(index / Math.floor(_OwningSheet.ImageData.width / Width));
+         var x:int = index % Math.floor(_owningSheet.ImageData.width / Width);
+         var y:int = Math.floor(index / Math.floor(_owningSheet.ImageData.width / Width));
          
          return new Rectangle(x * Width, y * Height, Width, Height);
       }
 
-      private var _OwningSheet:SpriteSheetComponent;
+      private var _owningSheet:SpriteSheetComponent;
    }
 }

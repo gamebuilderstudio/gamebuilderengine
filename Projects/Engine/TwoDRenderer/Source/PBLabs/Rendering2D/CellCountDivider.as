@@ -15,25 +15,42 @@ package PBLabs.Rendering2D
     */
    public class CellCountDivider implements ISpriteSheetDivider
    {
+      /**
+       * The number of cells in the x direction.
+       */
       public var XCount:int = 1;
+      
+      /**
+       * The number of cells in the y direction.
+       */
       public var YCount:int = 1;
       
-      public function set OwningSheet(v:SpriteSheetComponent):void
+      /**
+       * @inheritDoc
+       */
+      public function set OwningSheet(value:SpriteSheetComponent):void
       {
-         _OwningSheet = v;
+         _owningSheet = value;
       }
       
+      /**
+       * @inheritDoc
+       */
       public function get FrameCount():int
       {
          return XCount * YCount;
       }
       
+      /**
+       * @inheritDoc
+       */
       public function GetFrameArea(index:int):Rectangle
       {
-         if(!_OwningSheet) throw new Error("Must have a valid sheet!");
+         if (!_owningSheet)
+            throw new Error("OwningSheet must be set before calling this!");
 
-         var imageWidth:int = _OwningSheet.ImageData.width;
-         var imageHeight:int = _OwningSheet.ImageData.height;
+         var imageWidth:int = _owningSheet.ImageData.width;
+         var imageHeight:int = _owningSheet.ImageData.height;
          
          var width:int = imageWidth / XCount;
          var height:int = imageHeight / YCount;
@@ -47,6 +64,6 @@ package PBLabs.Rendering2D
          return new Rectangle(startX, startY, width, height);
       }
 
-      private var _OwningSheet:SpriteSheetComponent;
+      private var _owningSheet:SpriteSheetComponent;
    }
 }

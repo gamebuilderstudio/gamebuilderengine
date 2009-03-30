@@ -13,8 +13,6 @@ package PBLabs.Engine.Entity
     * functionality required of all components. Custom components should always
     * derive from this class rather than implementing IEntityComponent directly.
     * 
-    * @includeExample SampleComponent.as
-    * 
     * @see IEntity
     * @see ../../../../../Examples/CreatingComponents.html Creating Custom Components
     * @see ../../../../../Reference/ComponentSystem.html Component System Overview

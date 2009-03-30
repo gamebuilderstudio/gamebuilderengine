@@ -94,7 +94,7 @@ package PBLabs.Engine.Core
       public function UnloadFile(filename:String):void
       {
          RemoveXML(filename);
-         ResourceManager.Instance.Unload(filename);
+         ResourceManager.Instance.Unload(filename, XMLResource);
       }
       
       /**

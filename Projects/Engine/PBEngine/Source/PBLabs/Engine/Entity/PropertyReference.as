@@ -60,9 +60,10 @@ package PBLabs.Engine.Entity
       /**
        * @inheritDoc
        */
-      public function Deserialize(xml:XML):void
+      public function Deserialize(xml:XML):*
       {
          _property = xml.toString();
+         return this;
       }
       
       private var _property:String = null;

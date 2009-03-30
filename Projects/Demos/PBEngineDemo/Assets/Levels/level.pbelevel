@@ -2,15 +2,15 @@
   <entity name="PlatformSpriteSheet">
     <component type="PBLabs.Rendering2D.SpriteSheetComponent" name="SpriteSheet">
       <Image filename="../Assets/Images/platform.png"/>
-      <Divider type="PBLabs.Rendering2D.CellCountDivider">
-        <XCount>1</XCount>
-        <YCount>1</YCount>
-      </Divider>
     </component>
   </entity>
   <entity name="DudeSpriteSheet">
     <component type="PBLabs.Rendering2D.SpriteSheetComponent" name="SpriteSheet">
-      <Image filename="../Assets/Images/guy.png"/>
+      <Image filename="../Assets/Images/mannequin.png"/>
+      <Divider type="PBLabs.Rendering2D.CellCountDivider">
+        <XCount>8</XCount>
+        <YCount>8</YCount>
+      </Divider>
     </component>
   </entity>
   <template name="Platform">
@@ -65,6 +65,7 @@
   <entity name="Scene">
     <component type="PBLabs.Rendering2D.Scene2DComponent" name="Scene">
       <SpatialDatabase componentReference="SpatialDB" componentName="Manager"/>
+      <TrackObject componentReference="Dude"/>
       <Position>
         <x>0</x>
         <y>0</y>
@@ -81,12 +82,24 @@
     </component>
   </entity>
   <entity name="Dude">
+    <component type="PBLabs.Animation.AnimatorComponent" name="FrameAnimation">
+      <Reference>@Render.SpriteIndex</Reference>
+      <DefaultAnimation>Idle</DefaultAnimation>
+      <Animations childType="PBLabs.Animation.Animator">
+         <Idle type="PBLabs.Animation.Animator">
+            <StartValue type="int">0</StartValue>
+            <TargetValue type="int">3</TargetValue>
+            <Duration>0.6</Duration>
+            <AnimationType>PingPongAnimation</AnimationType>
+            <RepeatCount>-1</RepeatCount>
+         </Idle>
+      </Animations>
+    </component>
     <component type="PBLabs.Rendering2D.SpriteRenderComponent" name="Render">
       <SpriteSheet componentReference="DudeSpriteSheet"/>
       <PositionReference>@Spatial.Position</PositionReference>
       <RotationReference>@Spatial.Rotation</RotationReference>
       <SizeReference>@Spatial.Size</SizeReference>
-      <IsTracked>true</IsTracked>
     </component>
     <component type="PBLabs.Box2D.Box2DSpatialComponent" name="Spatial">
       <Manager componentReference="SpatialDB"/>

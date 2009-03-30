@@ -64,7 +64,7 @@ package PBLabs.Engine.Resource
        */
       public function Load(filename:String, resourceType:Class, onLoaded:Function = null, onFailed:Function = null):void
       {
-         var resource:Resource = _resources[filename];
+         var resource:Resource = _resources[filename + resourceType];
          if (resource == null)
          {
             var testResource:* = new resourceType();
@@ -76,7 +76,7 @@ package PBLabs.Engine.Resource
             
             resource = testResource;
             resource.Load(filename);
-            _resources[filename] = resource;
+            _resources[filename + resourceType] = resource;
          }
          else if (!(resource is resourceType))
          {
@@ -112,20 +112,21 @@ package PBLabs.Engine.Resource
        * only decrease as a result of this.
        * 
        * @param filename The url of the resource to unload.
+       * @param resourceType The type of the resource to unload.
        */
-      public function Unload(filename:String):void
+      public function Unload(filename:String, resourceType:Class):void
       {
-         if (_resources[filename] == null)
+         if (_resources[filename + resourceType] == null)
          {
-            Logger.PrintWarning(this, "Unload", "The resource from file " + filename + " is not loaded.");
+            Logger.PrintWarning(this, "Unload", "The resource from file " + filename + " of type " + resourceType + " is not loaded.");
             return;
          }
          
-         _resources[filename].DecrementReferenceCount();
-         if (_resources[filename].ReferenceCount < 1)
+         _resources[filename + resourceType].DecrementReferenceCount();
+         if (_resources[filename + resourceType].ReferenceCount < 1)
          {
-            _resources[filename] = null;
-            delete _resources[filename];
+            _resources[filename + resourceType] = null;
+            delete _resources[filename + resourceType];
          }
       }
       
@@ -143,7 +144,7 @@ package PBLabs.Engine.Resource
        */
       public function RegisterEmbeddedResource(filename:String, resourceType:Class, data:ByteArray):void
       {
-         if (_resources[filename] != null)
+         if (_resources[filename + resourceType] != null)
          {
             Logger.PrintWarning(this, "RegisterEmbeddedResource", "A resource from file " + filename + " has already been embedded.");
             return;
@@ -162,7 +163,7 @@ package PBLabs.Engine.Resource
          }
          
          resource.IncrementReferenceCount();
-         _resources[filename] = resource;
+         _resources[filename + resourceType] = resource;
       }
       
       private function _Fail(resource:Resource, onFailed:Function, message:String):void

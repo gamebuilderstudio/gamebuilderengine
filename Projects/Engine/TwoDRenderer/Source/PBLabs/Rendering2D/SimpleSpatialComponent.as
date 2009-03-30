@@ -20,74 +20,98 @@ package PBLabs.Rendering2D
     */ 
    public class SimpleSpatialComponent extends EntityComponent implements ITickedObject, ISpatialObject2D
    {
+      /**
+       * The spatial manager this object belongs to.
+       */
       public var SpatialManager:ISpatialManager2D;
+      
+      /**
+       * The position of the object.
+       */
+      public var Position:Point = new Point(0, 0);
+      
+      /**
+       * The rotation of the object.
+       */
       public var Rotation:Number = 0;
-      public var Size:Point = null;
       
-      public function get Position():Point
-      {
-         return _position;
-      }
+      /**
+       * The size of the object.
+       */
+      public var Size:Point = new Point(100, 100);
       
-      public function set Position(value:Point):void
-      {
-         _position = value;
-      }
+      /**
+       * The linear velocity of the object in world units per second.
+       */
+      public var Velocity:Point = new Point(0, 0);
       
-      public function get Velocity():Point
-      {
-         return _velocity;
-      }
-      
-      public function set Velocity(value:Point):void
-      {
-         _velocity = value;
-      }
-      
+      /**
+       * @inheritDoc
+       */
       public function OnTick(tickRate:Number):void
       {
-         _position.x += _velocity.x * tickRate;
-         _position.y += _velocity.y * tickRate;
+         Position.x += Velocity.x * tickRate;
+         Position.y += Velocity.y * tickRate;
       }
       
+      /**
+       * @inheritDoc
+       */
       public function OnInterpolateTick(factor:Number):void
       {
       }
       
+      /**
+       * @inheritDoc
+       */
       protected override function _OnAdd():void
       {
          SpatialManager.AddSpatialObject(this);
          ProcessManager.Instance.AddTickedObject(this);
       }
       
+      /**
+       * @inheritDoc
+       */
       protected override function _OnRemove():void
       {
          SpatialManager.RemoveSpatialObject(this);
          ProcessManager.Instance.RemoveTickedObject(this);
       }
       
-      public function set QueryMask(v:ObjectType):void
-      {
-         _ObjectMask = v;
-      }
-      
+      /**
+       * @inheritDoc
+       */
       public function get QueryMask():ObjectType
       {
-         return _ObjectMask;
+         return _objectType;
       }
       
+      /**
+       * @private
+       */
+      public function set QueryMask(value:ObjectType):void
+      {
+         _objectType = value;
+      }
+      
+      /**
+       * @inheritDoc
+       */
       public function get WorldExtents():Rectangle
       {
-         return new Rectangle(_position.x - 25, _position.y - 25, 50, 50);         
+         return new Rectangle(Position.x - (Size.x * 0.5), Position.y - (Size.y * 0.5), Size.x, Size.y);         
       }
-
+      
+      /**
+       * Not currently implemented.
+       * @inheritDoc
+       */
       public function CastRay(start:Point, end:Point, info:RayHitInfo):Boolean
       {
          return false;
       }
       
-      private var _position:Point = new Point();
-      private var _velocity:Point = new Point();
-      private var _ObjectMask:ObjectType;
+      private var _objectType:ObjectType;
    }
 }

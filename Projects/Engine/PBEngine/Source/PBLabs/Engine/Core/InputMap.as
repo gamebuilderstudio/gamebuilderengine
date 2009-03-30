@@ -163,10 +163,12 @@ package PBLabs.Engine.Core
        * 
        * @inheritDoc
        */
-      public function Deserialize(xml:XML):void
+      public function Deserialize(xml:XML):*
       {
          for each (var keyXML:XML in xml.children())
             SetKeyMapping(keyXML.name(), parseInt(keyXML.toString()));
+         
+         return this;
       }
       
       /**

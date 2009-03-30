@@ -26,6 +26,21 @@ package PBLabs.Rendering2D
       function get RenderPosition():Point;
       
       /**
+       * Objects are sorted by layer, and this is the index of this object's layer.
+       */
+      function get LayerIndex():int;
+
+      /**
+       * Expose a sort key. This integer is used for general sorting logic.
+       */
+      function get RenderSortKey():int;
+      
+      /**
+       * @private
+       */ 
+      function set RenderSortKey(v:int):void;
+      
+      /**
        * Callback during rendering to give the object an opportunity to give the
        * IDrawManager2D stuff to display.
        * 
@@ -33,16 +48,5 @@ package PBLabs.Rendering2D
        * @see IDrawManager2D.DrawBitmapData
        */ 
       function OnDraw(manager:IDrawManager2D):void;
-      
-      /**
-       * Objects are sorted by layer, and this is the index of this object's layer.
-       */
-      function get LayerIndex():int;
-      
-      /**
-       * Expose a sort key. This integer is used for general sorting logic.
-       */ 
-      function set RenderSortKey(v:int):void;
-      function get RenderSortKey():int;
    }
 }

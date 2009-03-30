@@ -106,8 +106,7 @@ package PBLabs.Engine.Serialization
          // Dispatch our special cases - entities and ISerializables.
          if (object is ISerializable)
          {
-            (object as ISerializable).Deserialize(xml);
-            return object;
+            return (object as ISerializable).Deserialize(xml);
          }
          else if (object is IEntity)
          {
