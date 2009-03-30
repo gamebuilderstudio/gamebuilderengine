@@ -95,7 +95,7 @@ package org.audiofx.mp3
             var str:String=mp3Data.readMultiByte(3,"us-ascii");
             
             
-            if(str=="ID3") //here's an id3v2 header. fuck that for a laugh. skipping
+            if(str=="ID3") //here's an id3v2 header. skipping
             {
                mp3Data.position+=3;
                var b3:int=(mp3Data.readByte()&0x7F)<<21;
