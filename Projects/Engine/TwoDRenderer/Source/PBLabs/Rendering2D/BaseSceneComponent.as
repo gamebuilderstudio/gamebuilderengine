@@ -17,9 +17,6 @@ package PBLabs.Rendering2D
    import flash.events.Event;
    import flash.geom.*;
    
-   import mx.core.Application;
-   import mx.core.UIComponent;
-   
   /**
    * Base class that implements useful functionality for draw managers.
    */
@@ -31,28 +28,11 @@ package PBLabs.Rendering2D
       public static const LAYER_COUNT:int = 64;
       
       /**
-       * The display object to render scene content in to when a scene view isn't set directly. This
-       * is used by the SceneView Flex component to make creating one view scenes much simpler.
+       * The display object to render scene content in to. In most cases this will be
+       * set to an instance of one of FlexSceneView or SceneView
        * 
+       * @see PBLabs.Rendering2D.UI.FlexSceneView
        * @see PBLabs.Rendering2D.UI.SceneView
-       */
-      public static function get DefaultSceneView():DisplayObjectContainer
-      {
-         return _defaultSceneView;
-      }
-      
-      /**
-       * @private
-       */
-      public static function set DefaultSceneView(value:DisplayObjectContainer):void
-      {
-         _defaultSceneView = value;
-      }
-      
-      private static var _defaultSceneView:DisplayObjectContainer = null;
-      
-      /**
-       * The display object to render scene content in to.
        */
       public function get SceneView():DisplayObjectContainer
       {
@@ -60,12 +40,9 @@ package PBLabs.Rendering2D
             return _sceneView;
          
          if (_sceneViewName != null)
-         {
-            _sceneView = Application.application.getChildByName(_sceneViewName) as DisplayObjectContainer;
-            return _sceneView;
-         }
+            _sceneView = Global.FindChild(_sceneViewName) as DisplayObjectContainer;
          
-         return _defaultSceneView;
+         return _sceneView;
       }
       
       /**
@@ -172,7 +149,7 @@ package PBLabs.Rendering2D
          if (_currentRenderTarget == null)
          {
             // Make a dummy sprite and draw into it.
-            var dummy:UIComponent = new UIComponent();
+            var dummy:Sprite = new Sprite();
             dummy.graphics.beginBitmapFill(bitmap);
             dummy.graphics.drawRect(0, 0, bitmap.width, bitmap.height);
             dummy.graphics.endFill();
@@ -346,6 +323,7 @@ package PBLabs.Rendering2D
       protected override function _OnRemove():void 
       {
          ProcessManager.Instance.RemoveAnimatedObject(this);
+         _sceneView = null;
       }
       
       protected function _DrawSortedLayers(layerList:Array):void
@@ -455,7 +433,6 @@ package PBLabs.Rendering2D
       }
       
       protected var _currentRenderTarget:BitmapData = null;
-      
       private var _sceneView:DisplayObjectContainer = null;
       private var _sceneViewName:String = null;
       

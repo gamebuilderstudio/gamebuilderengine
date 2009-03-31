@@ -11,7 +11,7 @@ package PBLabs.Box2D
    import Box2D.Dynamics.b2DebugDraw;
    import PBLabs.Rendering2D.*;
    import flash.geom.Point;
-   import mx.core.*;
+   import flash.display.Sprite;
 
    public class Box2DDebugComponent extends BaseRenderComponent
    {
@@ -64,7 +64,7 @@ package PBLabs.Box2D
       }
       
       private var _scene:IDrawManager2D = null;
-      private var _sprite:UIComponent = new UIComponent();
+      private var _sprite:Sprite = new Sprite();
       private var _drawer:b2DebugDraw = new b2DebugDraw();
    }
 }

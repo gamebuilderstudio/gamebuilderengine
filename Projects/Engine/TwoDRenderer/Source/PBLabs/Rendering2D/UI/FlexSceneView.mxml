@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Container xmlns:mx="http://www.adobe.com/2006/mxml" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+   <mx:Script>
+      <![CDATA[
+         public override function addChild(child:DisplayObject):DisplayObject
+         {
+            return rawChildren.addChild(child);
+         }
+      ]]>
+   </mx:Script>
+</mx:Container>

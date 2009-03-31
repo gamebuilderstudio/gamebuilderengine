@@ -9,11 +9,10 @@
 package PBLabs.Engine.Core
 {
    import PBLabs.Engine.Debug.Logger;
+   import PBLabs.Engine.Core.Global;
    
    import flash.events.Event;
    import flash.utils.getTimer;
-   
-   import mx.core.Application;
    
    /**
     * The process manager manages all time related functionality in the engine.
@@ -123,7 +122,7 @@ package PBLabs.Engine.Core
          
          _lastTime = -1.0;
          _elapsed = 0.0;
-         Application.application.stage.addEventListener(Event.ENTER_FRAME, _OnFrame);
+         Global.MainStage.addEventListener(Event.ENTER_FRAME, _OnFrame);
          _started = true;
       }
       
@@ -141,7 +140,7 @@ package PBLabs.Engine.Core
          }
          
          _started = false;
-         Application.application.stage.removeEventListener(Event.ENTER_FRAME, _OnFrame);
+         Global.MainStage.removeEventListener(Event.ENTER_FRAME, _OnFrame);
       }
       
       /**

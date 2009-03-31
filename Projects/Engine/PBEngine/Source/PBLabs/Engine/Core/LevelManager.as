@@ -16,8 +16,6 @@ package PBLabs.Engine.Core
    import flash.utils.Dictionary;
    import flash.utils.setTimeout;
    
-   import mx.core.Application;
-   
    /**
     * @eventType PBLabs.Engine.Core.LevelEvent.LOADED_EVENT
     */
@@ -50,7 +48,6 @@ package PBLabs.Engine.Core
       public function LevelManager()
       {
          _autoLoadLevels.push(0);
-         _RegisterStartupEvent();
       }
       
       /**
@@ -238,22 +235,6 @@ package PBLabs.Engine.Core
          
          if (_autoLoading)
             _LoadNextAutoLevel();
-      }
-      
-      private function _RegisterStartupEvent():void
-      {
-         if (Application.application != null)
-         {
-            Application.application.addEventListener("applicationComplete", _OnApplicationLoaded);
-            return;
-         }
-         
-         setTimeout(_RegisterStartupEvent, 0);
-      }
-      
-      private function _OnApplicationLoaded(event:Event):void
-      {
-         Start();
       }
       
       private var _currentLevel:int = -1;

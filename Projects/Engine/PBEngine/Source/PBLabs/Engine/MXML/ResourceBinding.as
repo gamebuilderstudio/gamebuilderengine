@@ -70,7 +70,7 @@ package PBLabs.Engine.MXML
             Logger.PrintError("ResourceBinding", "", "Invalid resourceType specified for binding of " + filename + ".");
             return;
          }
-            
+         
          var item:* = new resourceClass();
          
          if (!(item is ByteArray))

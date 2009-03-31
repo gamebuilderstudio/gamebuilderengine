@@ -13,7 +13,7 @@ package PBLabs.Engine.Core
    import flash.events.KeyboardEvent;
    import flash.events.MouseEvent;
    
-   import mx.core.Application;
+   import PBLabs.Engine.Core.Global;
    
    /**
     * The input manager wraps the default input events produced by flash to make
@@ -45,10 +45,11 @@ package PBLabs.Engine.Core
       
       public function InputManager()
       {
-         if (Application.application.stage != null)
-            _SetupEvents();
-         else
-            Application.application.addEventListener(Event.ADDED_TO_STAGE, _SetupEvents);
+         Global.MainStage.addEventListener(KeyboardEvent.KEY_DOWN, _OnKeyDown);
+         Global.MainStage.addEventListener(KeyboardEvent.KEY_UP, _OnKeyUp);
+         Global.MainStage.addEventListener(MouseEvent.MOUSE_DOWN, _OnMouseDown);
+         Global.MainStage.addEventListener(MouseEvent.MOUSE_UP, _OnMouseUp);
+         Global.MainStage.addEventListener(MouseEvent.MOUSE_MOVE, _OnMouseMove);
       }
       
       /**
@@ -110,15 +111,6 @@ package PBLabs.Engine.Core
       public function SimulateMouseMove():void
       {
          dispatchEvent(new MouseEvent(MouseEvent.MOUSE_MOVE));
-      }
-      
-      private function _SetupEvents(event:Event = null):void
-      {
-         Application.application.stage.addEventListener(KeyboardEvent.KEY_DOWN, _OnKeyDown);
-         Application.application.stage.addEventListener(KeyboardEvent.KEY_UP, _OnKeyUp);
-         Application.application.stage.addEventListener(MouseEvent.MOUSE_DOWN, _OnMouseDown);
-         Application.application.stage.addEventListener(MouseEvent.MOUSE_UP, _OnMouseUp);
-         Application.application.stage.addEventListener(MouseEvent.MOUSE_MOVE, _OnMouseMove);
       }
       
       private function _OnKeyDown(event:KeyboardEvent):void

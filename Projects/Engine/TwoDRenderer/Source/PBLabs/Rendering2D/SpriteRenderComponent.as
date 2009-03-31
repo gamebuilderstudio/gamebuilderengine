@@ -13,10 +13,9 @@ package PBLabs.Rendering2D
    import PBLabs.Engine.Core.ProcessManager;
    
    import flash.display.BitmapData;
+   import flash.display.Sprite;
    import flash.geom.Matrix;
    import flash.geom.Point;
-   
-   import mx.core.UIComponent;
 
    /**
     * Simple render component that draws an image from a sprite sheet.
@@ -132,7 +131,7 @@ package PBLabs.Rendering2D
        */
       protected override function _OnAdd():void
       {
-         _sprite = new UIComponent();
+         _sprite = new Sprite();
          _spriteDirty = true;
       }
       
@@ -184,7 +183,7 @@ package PBLabs.Rendering2D
       
       private var _spriteSheet:SpriteSheetComponent = null;
       private var _spriteIndex:int = 0;
-      private var _sprite:UIComponent = null;
+      private var _sprite:Sprite = null;
       private var _spriteDirty:Boolean = false;
       
       private var _baseSize:Point = null;

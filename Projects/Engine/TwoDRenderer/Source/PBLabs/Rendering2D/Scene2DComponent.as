@@ -14,8 +14,6 @@ package PBLabs.Rendering2D
    import flash.display.*;
    import flash.geom.*;
    
-   import mx.core.UIComponent;
-   
    /**
     * Component to manage rendering a 2d scene. It queries a ISpatialManager2D
     * to determine what is visible.
@@ -95,11 +93,14 @@ package PBLabs.Rendering2D
        */
       protected override function _Render():void
       {
-         if (_trackObject)
+         if (_trackObject != null)
          {
             _position.x = _trackObject.RenderPosition.x;
             _position.y = _trackObject.RenderPosition.y;
          }
+         
+         if (SceneView == null)
+            return;
          
          // Wipe all our existing renderables.
          while (SceneView.numChildren)
