@@ -14,10 +14,14 @@ package PBLabs.Engine.Core
    import flash.display.Sprite;
    
    /**
-    * This exists as a helper for retrieving the global Stage object.
+    * This exists as a helper for retrieving the global application object.
     */
    public class Global
    {
+      /**
+       * The stage. This is the root of the display heirarchy and is automatically created by
+       * flash when the application starts up.
+       */
       public static function get MainStage():Stage
       {
          if (_main == null)
@@ -26,16 +30,31 @@ package PBLabs.Engine.Core
          return _main.stage;
       }
       
+      /**
+       * A reference to the main class of the application. This must be set when the application
+       * first loads as several core subsystems rely on it's presence.
+       */
       public static function get MainClass():Sprite
       {
          return _main;
       }
       
+      /**
+       * @private
+       */
       public static function set MainClass(value:Sprite):void
       {
          _main = value;
       }
       
+      /**
+       * Recursively searches for an object with the specified name that has been added to the
+       * display heirarchy.
+       * 
+       * @param name The name of the object to find.
+       * 
+       * @return The display object with the specified name, or null if it wasn't found.
+       */
       public static function FindChild(name:String):DisplayObject
       {
          return _FindChild(name, _main);
