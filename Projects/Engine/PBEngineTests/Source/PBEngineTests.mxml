@@ -29,6 +29,7 @@
          
          private function _OnStartup():void
          {
+            Global.MainClass = this;
             Logger.Print(null, "Running Engine Unit Tests");
             
             var testSuites:Array = new Array();

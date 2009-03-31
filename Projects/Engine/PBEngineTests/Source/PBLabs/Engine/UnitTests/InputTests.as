@@ -8,8 +8,7 @@
  ******************************************************************************/
 package PBLabs.Engine.UnitTests
 {
-   import PBLabs.Engine.Core.InputManager;
-   import PBLabs.Engine.Core.InputMap;
+   import PBLabs.Engine.Core.*;
    
    import net.digitalprimates.fluint.tests.TestCase;
    
@@ -21,17 +20,17 @@ package PBLabs.Engine.UnitTests
       public function testInputMap():void
       {
          var inputMap:InputMap = new InputMap();
-         inputMap.SetKeyMapping("Space", InputMap.SPACE);
-         inputMap.SetKeyMapping("MouseButton", InputMap.MOUSE_BUTTON);
-         inputMap.SetKeyMapping("MouseX", InputMap.MOUSE_X);
+         inputMap.SetKeyMapping("Space", InputKey.SPACE);
+         inputMap.SetKeyMapping("MouseButton", InputKey.MOUSE_BUTTON);
+         inputMap.SetKeyMapping("MouseX", InputKey.MOUSE_X);
          
          inputMap.AddBinding("Space", _OnSpace);
          inputMap.AddBinding("MouseButton", _OnMouseButton);
          inputMap.AddBinding("MouseX", _OnMouseX);
          
-         InputManager.Instance.SimulateKeyDown(InputMap.SPACE);
+         InputManager.Instance.SimulateKeyDown(InputKey.SPACE.KeyCode);
          _ValidateInputs(1, 0, false);
-         InputManager.Instance.SimulateKeyUp(InputMap.SPACE);
+         InputManager.Instance.SimulateKeyUp(InputKey.SPACE.KeyCode);
          _ValidateInputs(0, 0, false);
          
          InputManager.Instance.SimulateMouseDown();
