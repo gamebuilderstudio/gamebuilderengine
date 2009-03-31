@@ -16,15 +16,17 @@ package PBLabs.Engine.Core
       public static const BACKSPACE:InputKey = new InputKey(8);
       public static const TAB:InputKey = new InputKey(9);
       public static const ENTER:InputKey = new InputKey(13);
+      public static const COMMAND:InputKey = new InputKey(15);
       public static const SHIFT:InputKey = new InputKey(16);
       public static const CONTROL:InputKey = new InputKey(17);
+      public static const ALT:InputKey = new InputKey(18);
       public static const PAUSE:InputKey = new InputKey(19);
-      public static const CAPSLOCK:InputKey = new InputKey(20);
+      public static const CAPS_LOCK:InputKey = new InputKey(20);
       public static const ESCAPE:InputKey = new InputKey(27);
       
       public static const SPACE:InputKey = new InputKey(32);
-      public static const PAGEUP:InputKey = new InputKey(33);
-      public static const PAGEDOWN:InputKey = new InputKey(34);
+      public static const PAGE_UP:InputKey = new InputKey(33);
+      public static const PAGE_DOWN:InputKey = new InputKey(34);
       public static const END:InputKey = new InputKey(35);
       public static const HOME:InputKey = new InputKey(36);
       public static const LEFT:InputKey = new InputKey(37);
@@ -86,6 +88,7 @@ package PBLabs.Engine.Core
       
       public static const MULTIPLY:InputKey = new InputKey(106);
       public static const ADD:InputKey = new InputKey(107);
+      public static const NUMENTER:InputKey = new InputKey(108);
       public static const SUBTRACT:InputKey = new InputKey(109);
       public static const DECIMAL:InputKey = new InputKey(110);
       public static const DIVIDE:InputKey = new InputKey(111);
@@ -103,8 +106,8 @@ package PBLabs.Engine.Core
       public static const F11:InputKey = new InputKey(122);
       public static const F12:InputKey = new InputKey(123);
       
-      public static const NUMLOCK:InputKey = new InputKey(144);
-      public static const SCROLLLOCK:InputKey = new InputKey(145);
+      public static const NUM_LOCK:InputKey = new InputKey(144);
+      public static const SCROLL_LOCK:InputKey = new InputKey(145);
       
       public static const COLON:InputKey = new InputKey(186);
       public static const PLUS:InputKey = new InputKey(187);
@@ -134,20 +137,30 @@ package PBLabs.Engine.Core
             _typeMap["BACKSPACE"] = BACKSPACE;
             _typeMap["TAB"] = TAB;
             _typeMap["ENTER"] = ENTER;
+            _typeMap["RETURN"] = ENTER;
             _typeMap["SHIFT"] = SHIFT;
+            _typeMap["COMMAND"] = COMMAND;
             _typeMap["CONTROL"] = CONTROL;
+            _typeMap["ALT"] = ALT;
+            _typeMap["OPTION"] = ALT;
+            _typeMap["ALTERNATE"] = ALT;
             _typeMap["PAUSE"] = PAUSE;
-            _typeMap["CAPSLOCK"] = CAPSLOCK;
+            _typeMap["CAPS_LOCK"] = CAPS_LOCK;
             _typeMap["ESCAPE"] = ESCAPE;
             _typeMap["SPACE"] = SPACE;
-            _typeMap["PAGEUP"] = PAGEUP;
-            _typeMap["PAGEDOWN"] = PAGEDOWN;
+            _typeMap["SPACE_BAR"] = SPACE;
+            _typeMap["PAGE_UP"] = PAGE_UP;
+            _typeMap["PAGE_DOWN"] = PAGE_DOWN;
             _typeMap["END"] = END;
             _typeMap["HOME"] = HOME;
             _typeMap["LEFT"] = LEFT;
             _typeMap["UP"] = UP;
             _typeMap["RIGHT"] = RIGHT;
             _typeMap["DOWN"] = DOWN;
+            _typeMap["LEFT_ARROW"] = LEFT;
+            _typeMap["UP_ARROW"] = UP;
+            _typeMap["RIGHT_ARROW"] = RIGHT;
+            _typeMap["DOWN_ARROW"] = DOWN;
             _typeMap["INSERT"] = INSERT;
             _typeMap["DELETE"] = DELETE;
             _typeMap["ZERO"] = ZERO;
@@ -160,6 +173,26 @@ package PBLabs.Engine.Core
             _typeMap["SEVEN"] = SEVEN;
             _typeMap["EIGHT"] = EIGHT;
             _typeMap["NINE"] = NINE;
+            _typeMap["0"] = ZERO;
+            _typeMap["1"] = ONE;
+            _typeMap["2"] = TWO;
+            _typeMap["3"] = THREE;
+            _typeMap["4"] = FOUR;
+            _typeMap["5"] = FIVE;
+            _typeMap["6"] = SIX;
+            _typeMap["7"] = SEVEN;
+            _typeMap["8"] = EIGHT;
+            _typeMap["9"] = NINE;
+            _typeMap["NUMBER_0"] = ZERO;
+            _typeMap["NUMBER_1"] = ONE;
+            _typeMap["NUMBER_2"] = TWO;
+            _typeMap["NUMBER_3"] = THREE;
+            _typeMap["NUMBER_4"] = FOUR;
+            _typeMap["NUMBER_5"] = FIVE;
+            _typeMap["NUMBER_6"] = SIX;
+            _typeMap["NUMBER_7"] = SEVEN;
+            _typeMap["NUMBER_8"] = EIGHT;
+            _typeMap["NUMBER_9"] = NINE;
             _typeMap["A"] = A;
             _typeMap["B"] = B;
             _typeMap["C"] = C;
@@ -196,11 +229,34 @@ package PBLabs.Engine.Core
             _typeMap["NUM7"] = NUM7;
             _typeMap["NUM8"] = NUM8;
             _typeMap["NUM9"] = NUM9;
+            _typeMap["NUMPAD_0"] = NUM0;
+            _typeMap["NUMPAD_1"] = NUM1;
+            _typeMap["NUMPAD_2"] = NUM2;
+            _typeMap["NUMPAD_3"] = NUM3;
+            _typeMap["NUMPAD_4"] = NUM4;
+            _typeMap["NUMPAD_5"] = NUM5;
+            _typeMap["NUMPAD_6"] = NUM6;
+            _typeMap["NUMPAD_7"] = NUM7;
+            _typeMap["NUMPAD_8"] = NUM8;
+            _typeMap["NUMPAD_9"] = NUM9;
             _typeMap["MULTIPLY"] = MULTIPLY;
+            _typeMap["ASTERISK"] = MULTIPLY;
+            _typeMap["NUMMULTIPLY"] = MULTIPLY;
+            _typeMap["NUMPAD_MULTIPLY"] = MULTIPLY;
             _typeMap["ADD"] = ADD;
+            _typeMap["NUMADD"] = ADD;
+            _typeMap["NUMPAD_ADD"] = ADD;
             _typeMap["SUBTRACT"] = SUBTRACT;
+            _typeMap["NUMSUBTRACT"] = SUBTRACT;
+            _typeMap["NUMPAD_SUBTRACT"] = SUBTRACT;
             _typeMap["DECIMAL"] = DECIMAL;
+            _typeMap["NUMDECIMAL"] = DECIMAL;
+            _typeMap["NUMPAD_DECIMAL"] = DECIMAL;
             _typeMap["DIVIDE"] = DIVIDE;
+            _typeMap["NUMDIVIDE"] = DIVIDE;
+            _typeMap["NUMPAD_DIVIDE"] = DIVIDE;
+            _typeMap["NUMENTER"] = NUMENTER;
+            _typeMap["NUMPAD_ENTER"] = NUMENTER;
             _typeMap["F1"] = F1;
             _typeMap["F2"] = F2;
             _typeMap["F3"] = F3;
@@ -212,18 +268,29 @@ package PBLabs.Engine.Core
             _typeMap["F9"] = F9;
             _typeMap["F11"] = F11;
             _typeMap["F12"] = F12;
-            _typeMap["NUMLOCK"] = NUMLOCK;
-            _typeMap["SCROLLLOCK"] = SCROLLLOCK;
+            _typeMap["NUM_LOCK"] = NUM_LOCK;
+            _typeMap["SCROLL_LOCK"] = SCROLL_LOCK;
             _typeMap["COLON"] = COLON;
+            _typeMap["SEMICOLON"] = COLON;
             _typeMap["PLUS"] = PLUS;
+            _typeMap["EQUAL"] = PLUS;
             _typeMap["COMMA"] = COMMA;
+            _typeMap["LESS_THAN"] = COMMA;
             _typeMap["MINUS"] = MINUS;
+            _typeMap["UNDERSCORE"] = MINUS;
             _typeMap["PERIOD"] = PERIOD;
+            _typeMap["GREATER_THAN"] = PERIOD;
             _typeMap["BACKSLASH"] = BACKSLASH;
+            _typeMap["QUESTION_MARK"] = BACKSLASH;
             _typeMap["TILDE"] = TILDE;
+            _typeMap["BACK_QUOTE"] = TILDE;
             _typeMap["LEFT_BRACKET"] = LEFT_BRACKET;
+            _typeMap["LEFT_BRACE"] = LEFT_BRACKET;
             _typeMap["SLASH"] = SLASH;
+            _typeMap["FORWARD_SLASH"] = SLASH;
+            _typeMap["PIPE"] = SLASH;
             _typeMap["RIGHT_BRACKET"] = RIGHT_BRACKET;
+            _typeMap["RIGHT_BRACE"] = RIGHT_BRACKET;
             _typeMap["QUOTE"] = QUOTE;
             _typeMap["MOUSE_BUTTON"] = MOUSE_BUTTON;
             _typeMap["MOUSE_X"] = MOUSE_X;
@@ -240,8 +307,8 @@ package PBLabs.Engine.Core
       {
          for (var name:String in _typeMap)
          {
-            if (StaticTypeMap[name].KeyCode == value)
-               return name;
+            if (StaticTypeMap[name.toUpperCase()].KeyCode == value)
+               return name.toUpperCase();
          }
          
          return null;
@@ -252,10 +319,10 @@ package PBLabs.Engine.Core
        */
       public static function StringToCode(value:String):int
       {
-         if (StaticTypeMap[value] == null)
+         if (StaticTypeMap[value.toUpperCase()] == null)
             return 0;
          
-         return StaticTypeMap[value].KeyCode;
+         return StaticTypeMap[value.toUpperCase()].KeyCode;
       }
       
       /**
@@ -263,7 +330,7 @@ package PBLabs.Engine.Core
        */
       public static function StringToKey(value:String):InputKey
       {
-         return StaticTypeMap[value];
+         return StaticTypeMap[value.toUpperCase()];
       }
       
       private static var _typeMap:Dictionary = null;

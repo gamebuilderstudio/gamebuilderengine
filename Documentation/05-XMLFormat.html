@@ -204,9 +204,9 @@
             &lt;VelocityReference&gt;@Spatial.LinearVelocity&lt;/VelocityReference&gt;
             &lt;!-- Input Map Example --&gt;
             &lt;Input&gt;
-               &lt;GoLeft&gt;37&lt;/GoLeft&gt;
-               &lt;GoRight&gt;39&lt;/GoRight&gt;
-               &lt;Jump&gt;38&lt;/Jump&gt;
+               &lt;GoLeft&gt;LEFT&lt;/GoLeft&gt;
+               &lt;GoRight&gt;RIGHT&lt;/GoRight&gt;
+               &lt;Jump&gt;UP&lt;/Jump&gt;
             &lt;/Input&gt;
          &lt;/component&gt;
       &lt;/entity&gt;
@@ -359,7 +359,7 @@
 
    <p>ObjectType fields can be treated like an array of strings. Each of the child tag values is added as a named type to the ObjectType field.</p>
 
-   <p>The InputMap class can be treated exactly like a dictionary. The keys should be the name of a binding on the input map, and the value should be the key code of the key to use for that binding.</p>
+   <p>The InputMap class can be treated exactly like a dictionary. The keys should be the name of a binding on the input map, and the value should be the name of the key to use for that binding.</p>
    
    <h2>Other Uses for XML</h2>
 
