@@ -56,11 +56,17 @@
    
    <h3>Ant and the Free Flex SDK</h3>
    
-   <p>To do command line builds with the free Flex SDK and Ant, just go to the Build/FlexAnt and run the batch file contained within. You will need to have Ant installed and in your path to do this.</p>
+   <p>To do command line builds with the free Flex SDK and Ant, you will need to have Ant installed and in your path. Then you can go to Build/Ant and run the batch files to perform commong build tasks (for instance, run Build.bat or Build.command to compile the engine).</p>
    
    <p>To get Ant, go to <a href="http://ant.apache.org/" target="_blank">ant.apache.org</a> and get the appropriate version. You may want to use an installer like <a href="http://code.google.com/p/winant/" target="_blank">WinAnt</a> if you're on Windows, as Ant will need to be in your path.</p>                     
    
-   <p>You can build specific projects by running Ant yourself from the Build/FlexSDK folder via the command line. Do this by typing <i>ant projectname</i>.</p>
+   <p>You can build specific projects by running Ant yourself from the Build/Ant folder via the command line. Do this by typing <i>ant projectname</i>. There are several other convenience targets; read the comments at the top of Build/Ant/build.xml for details, but they include:</p>
+   
+   <ul>
+   <li><b>clean</b> - To clean all build artifacts.</li>
+   <li><b>clean.<i>projectname</i></b> - To clean build artifacts from a specific project.</li>
+   <li><b>-DDEBUG=true</b> - Pass this parameter to do a debug build.</li>
+   </ul>
    
    <h3>FlashDevelop and Other IDEs</h3>
    
