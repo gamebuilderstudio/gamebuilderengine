@@ -9,7 +9,7 @@
             return rawChildren.addChild(child);
          }
          
-         public override function get numChildren():Number
+         public override function get numChildren():int
          {
          	return rawChildren.numChildren;
          }
