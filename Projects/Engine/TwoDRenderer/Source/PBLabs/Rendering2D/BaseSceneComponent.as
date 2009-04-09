@@ -29,7 +29,7 @@ package PBLabs.Rendering2D
       
       /**
        * The display object to render scene content in to. In most cases this will be
-       * set to an instance of one of FlexSceneView or SceneView
+       * set to an instance of either FlexSceneView or SceneView
        * 
        * @see PBLabs.Rendering2D.UI.FlexSceneView
        * @see PBLabs.Rendering2D.UI.SceneView
