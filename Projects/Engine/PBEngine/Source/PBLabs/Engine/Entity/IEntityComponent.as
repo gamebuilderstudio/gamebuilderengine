@@ -28,8 +28,7 @@ package PBLabs.Engine.Entity
     * 
     * @see IEntity
     * @see EntityComponent
-    * @see ../../../../../Examples/CreatingComponents.html Creating Custom Components
-    * @see ../../../../../Reference/ComponentSystem.html Component System Overview
+    * @see http://pushbuttonengine.com/docs/04-Components.html Components chapter in manual.
     */
    public interface IEntityComponent
    {
