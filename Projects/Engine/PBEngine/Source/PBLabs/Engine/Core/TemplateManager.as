@@ -135,6 +135,11 @@ package PBLabs.Engine.Core
          }
          
          Serializer.Instance.Deserialize(entity, xml);
+         
+         Serializer.Instance.ClearCurrentEntity();
+         
+         Serializer.Instance.ReportMissingReferences();
+         
          return entity;
       }
       
@@ -269,6 +274,7 @@ package PBLabs.Engine.Core
             return false;
          
          object.Deserialize(templateXML, false);
+         
          return true;
       }
       
@@ -276,7 +282,7 @@ package PBLabs.Engine.Core
       {
          var xml:XML = GetXML(name, "group");
          if (xml == null)
-            return true;
+            throw new Error("Could not find group '" + name + "'");
          
          for each(var objectXML:XML in xml.*)
          {
@@ -284,14 +290,22 @@ package PBLabs.Engine.Core
             if (objectXML.name() == "groupReference")
             {
                if (tree[childName] != null)
-               {
-                  Logger.PrintWarning(this, "InstantiateGroup", "Cyclical group detected. " + childName + " has already been instantiated.");
-                  return false;
-               }
+                  throw new Error("Cyclical group detected. " + childName + " has already been instantiated.");
                
                tree[childName] = true;
-               if (!_InstantiateGroup(childName, group, tree))
+               
+               // Don't need to check for return value, as it will throw an error 
+               // if something bad happens.
+               try
+               {
+                  if(!_InstantiateGroup(childName, group, tree))
+                     return false;               
+               }
+               catch(err:*)
+               {
+                  Logger.PrintWarning(this, "InstantiateGroup", "Failed to instantiate group '" + childName + "' from groupReference in '" + name + "' due to: " + err);
                   return false;
+               }
             }
             else if (objectXML.name() == "objectReference")
             {
@@ -302,6 +316,8 @@ package PBLabs.Engine.Core
                Logger.PrintWarning(this, "InstantiateGroup", "Encountered unknown tag " + objectXML.name() + " in group.");
             }
          }
+         
+         Serializer.Instance.ReportMissingReferences();
          
          return true;
       }

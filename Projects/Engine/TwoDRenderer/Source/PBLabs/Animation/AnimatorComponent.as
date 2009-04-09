@@ -43,8 +43,11 @@ package PBLabs.Animation
        */
       public override function OnFrame(elapsed:Number):void
       {
-         _currentAnimation.Animate(elapsed);
-         Owner.SetProperty(Reference, _currentAnimation.CurrentValue);
+         if(_currentAnimation)
+         {
+            _currentAnimation.Animate(elapsed);
+            Owner.SetProperty(Reference, _currentAnimation.CurrentValue);            
+         }
       }
       
       /**
@@ -57,6 +60,8 @@ package PBLabs.Animation
       public function Play(animation:String, startValue:*):void
       {
          _currentAnimation = Animations[animation];
+         if(!_currentAnimation)
+            return;
          _currentAnimation.StartValue = startValue;
          _currentAnimation.Reset();
          _currentAnimation.Play();
@@ -71,7 +76,7 @@ package PBLabs.Animation
             return;
          
          var value:* = Owner.GetProperty(Reference);
-         if (value != null)
+         if (value != null && DefaultAnimation != "")
             Play(DefaultAnimation, value);
       }
       

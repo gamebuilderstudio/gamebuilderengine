@@ -91,6 +91,11 @@ package PBLabs.Rendering2D
       }
       
       /**
+       * Modulate alpha. Zero is invisibly translucent, one is normal opacity.
+       */
+      public var Fade:Number = 1.0;
+      
+      /**
        * @inheritDoc
        */
       public override function OnDraw(manager:IDrawManager2D):void
@@ -122,7 +127,13 @@ package PBLabs.Rendering2D
          
          if (_flipY)
             _sprite.scaleY = -_sprite.scaleY;
-            
+         
+         _sprite.alpha = Fade;
+         
+         // Skip drawing if it's so invisible as to be unnoticeable.
+         if(Fade < 1.0/256.0)
+            return;
+         
          manager.DrawDisplayObject(_sprite);         
       }
       
@@ -171,23 +182,23 @@ package PBLabs.Rendering2D
          _baseSize = new Point(bitmap.width, bitmap.height);
 
          var matrix:Matrix = new Matrix();
-         matrix.translate(_baseSize.x * 0.5, _baseSize.y * 0.5);
+         matrix.translate(_spriteSheet.Center.x, _spriteSheet.Center.y);
          
          _sprite.graphics.clear();
          _sprite.graphics.beginBitmapFill(bitmap, matrix);
-         _sprite.graphics.drawRect(-bitmap.width * 0.5, -bitmap.height * 0.5, bitmap.width, bitmap.height);
+         _sprite.graphics.drawRect(-_spriteSheet.Center.x, -_spriteSheet.Center.y, bitmap.width, bitmap.height);
          _sprite.graphics.endFill();
          
          _spriteDirty = false;
       }
       
-      private var _spriteSheet:SpriteSheetComponent = null;
-      private var _spriteIndex:int = 0;
-      private var _sprite:Sprite = null;
-      private var _spriteDirty:Boolean = false;
+      protected var _spriteSheet:SpriteSheetComponent = null;
+      protected var _spriteIndex:int = 0;
+      protected var _sprite:Sprite = null;
+      protected var _spriteDirty:Boolean = false;
       
-      private var _baseSize:Point = null;
-      private var _flipX:Boolean = false;
-      private var _flipY:Boolean = false;
+      protected var _baseSize:Point = null;
+      protected var _flipX:Boolean = false;
+      protected var _flipY:Boolean = false;
    }
 }

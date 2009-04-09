@@ -42,6 +42,31 @@ package PBLabs.Rendering2D
       {
          return ImageData != null;
       }
+
+      /**
+      * Specifies an offset so the sprite is centered correctly. If it is not
+      * set, the sprite is centered.
+      */
+      public function get Center():Point
+      {
+         if(_Center)
+            return _Center;
+         else if(GetFrame(0))
+         {
+            _Center = new Point(GetFrame(0).width * 0.5, GetFrame(0).height * 0.5);
+         }
+         else
+         {
+            _Center = new Point();
+         }
+         
+         return _Center;
+      }
+      
+      public function set Center(v:Point):void
+      {
+         _Center = v;
+      }
       
       /**
        * The filename of the image to use for this sprite sheet.
@@ -271,6 +296,7 @@ package PBLabs.Rendering2D
       private var _image:ImageResource = null;
       private var _divider:ISpriteSheetDivider = null;
       private var _frames:Array = null;
+      private var _Center:Point;
    }
 }
 

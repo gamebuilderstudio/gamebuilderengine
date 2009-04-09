@@ -125,10 +125,10 @@ package PBLabs.Engine.UnitTests
       
       private var _testXML:XML = 
          <entity name="XMLTestEntity">
-            <component type="PBLabs.Engine.UnitTests.TestHelper.TestComponentA" name="A">
+            <component type="PBLabs.Engine.UnitTestHelper.TestComponentA" name="A">
                <TestValue>7</TestValue>
             </component>
-            <component type="PBLabs.Engine.UnitTests.TestHelper.TestComponentB" name="B">
+            <component type="PBLabs.Engine.UnitTestHelper.TestComponentB" name="B">
                <TestComplex>
                   <x>4</x>
                   <y>9.3</y>

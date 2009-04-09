@@ -149,6 +149,16 @@ package PBLabs.Engine.Core
          
          if (_levelInformation[level] == null)
          {
+            if(_groupInformation[level])
+            {
+               // We have groups anyway - so just force them.
+               _loadingLevel = true;
+               UnloadCurrentLevel();
+               _currentLevel = level;
+               _OnLevelInformationLoaded();
+               return;
+            }
+            
             Logger.PrintWarning(this, "LoadLevel", "No level information has been added for level " + level + ".");
             return;
          }

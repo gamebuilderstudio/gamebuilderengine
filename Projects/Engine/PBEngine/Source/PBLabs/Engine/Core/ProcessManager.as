@@ -144,6 +144,14 @@ package PBLabs.Engine.Core
       }
       
       /**
+       * Returns true if the process manager is advancing.
+       */ 
+      public function get IsTicking():Boolean
+      {
+         return _started;
+      }
+      
+      /**
        * Schedules a function to be called at a specified time in the future.
        * 
        * @param delay The number of milliseconds in the future to call the function.

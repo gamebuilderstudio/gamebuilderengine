@@ -9,7 +9,7 @@
 package PBLabs.Engine.Serialization
 {
    import PBLabs.Engine.Debug.Logger;
-   import PBLabs.Engine.Entity.IEntity;
+   import PBLabs.Engine.Entity.*;
    
    import flash.utils.Dictionary;
    
@@ -113,7 +113,7 @@ package PBLabs.Engine.Serialization
             _currentEntity = object as IEntity;
             _currentEntity.Deserialize(xml, true);
             _ResolveReferences();
-            return _currentEntity;
+            return object as IEntity;
          }
          
          // Normal case - determine type and call the right serializer.
@@ -124,9 +124,39 @@ package PBLabs.Engine.Serialization
          return _deserializers[typeName](object, xml, typeHint);
       }
       
+      /**
+       * Set the entity relative to which current serialization work is happening. Mostly for internal use.
+       */
+      public function SetCurrentEntity(e:IEntity):void
+      {
+         _currentEntity = e;
+      }
+      
+      /**
+       * Clear the entity relative to which current serialization work is happening. Mostly for internal use.
+       */
+      public function ClearCurrentEntity():void
+      {
+         _currentEntity = null;
+      }
+      
+      /**
+       * Not all references are resolved immediately. In order to minimize spam,
+       * we only report "dangling references" at certain times. This method 
+       * triggers such a report.
+       */
+      public function ReportMissingReferences():void
+      {
+         for (var i:int = 0; i < _deferredReferences.length; i++)
+         {
+            var reference:ReferenceNote = _deferredReferences[i];
+            reference.ReportMissing();
+         }           
+      }
+      
       private function _IsSimple(xml:XML, typeName:String):Boolean
       {
-         // Complex content is assumed if their are child nodes in the xml, or the xml text is
+         // Complex content is assumed if there are child nodes in the xml, or the xml text is
          // an empty string, unless the type is a string. This is because any simple type that
          // is not a string has to have a value. Otherwise, it must be a class that doesn't have
          // its children specified.
@@ -435,6 +465,7 @@ internal class ReferenceNote
    public var ComponentName:String = null;
    public var ObjectReference:String = null;
    public var CurrentEntity:IEntity = null;
+   public var ReportedMissing:Boolean = false;
    
    public function Resolve():Boolean
    {
@@ -446,6 +477,7 @@ internal class ReferenceNote
             return false;
          
          Owner[FieldName] = namedObject;
+         _ReportSuccess();
          return true;
       }
       
@@ -478,6 +510,7 @@ internal class ReferenceNote
          }
          
          Owner[FieldName] = component;
+         _ReportSuccess();
          return true;
       }
       
@@ -489,6 +522,7 @@ internal class ReferenceNote
             return false;
          
          Owner[FieldName] = localComponent;
+         _ReportSuccess();
          return true;
       }
       
@@ -496,10 +530,75 @@ internal class ReferenceNote
       if (ObjectReference != "")
       {
          Owner[FieldName] = TemplateManager.Instance.InstantiateEntity(ObjectReference);
+         _ReportSuccess();
          return true;
       }
       
       // Nope, none of the above!
       return false;
+   }
+   
+   /**
+    * Trigger a console report about any references that haven't been resolved.
+    */
+   public function ReportMissing():void
+   {
+      // Don't spam.
+      if(ReportedMissing)
+         return;
+      ReportedMissing = true;
+      
+      var firstPart:String = Owner.toString() + "[" + FieldName + "] on entity '" + CurrentEntity.Name + "' - ";
+      
+      // Name reference.
+      if(NameReference)
+      {
+         Logger.PrintWarning(this, "ReportMissing", firstPart + "Couldn't resolve reference to named entity '" + NameReference + "'");
+         return; 
+      }
+
+      // Look up a component on a named object by name (first) or type (second).
+      if (ComponentReference != "")
+      {
+         Logger.PrintWarning(this, "ReportMissing", firstPart + " Couldn't find named entity '" + ComponentReference + "'");
+         return;
+      }
+      
+      // Component reference on the entity being deserialized when the reference was created.
+      if (ComponentName != "")
+      {
+         Logger.PrintWarning(this, "ReportMissing", firstPart + " Couldn't find component on same entity named '" + ComponentName + "'");
+         return;
+      }
+   }
+   
+   private function _ReportSuccess():void
+   {
+      // If we succeeded with no spam then be quiet on success too.
+      if(!ReportedMissing)
+         return;
+
+      var firstPart:String = Owner.toString() + "[" + FieldName + "] on entity '" + CurrentEntity.Name + "' - ";
+      
+      // Name reference.
+      if(NameReference)
+      {
+         Logger.PrintWarning(this, "_ReportSuccess", firstPart + " After failure, was able to resolve reference to named entity '" + NameReference + "'");
+         return; 
+      }
+
+      // Look up a component on a named object by name (first) or type (second).
+      if (ComponentReference != "")
+      {
+         Logger.PrintWarning(this, "_ReportSuccess", firstPart + " After failure, was able to find named entity '" + ComponentReference + "'");
+         return;
+      }
+      
+      // Component reference on the entity being deserialized when the reference was created.
+      if (ComponentName != "")
+      {
+         Logger.PrintWarning(this, "_ReportSuccess", firstPart + " After failure, was able to find component on same entity named '" + ComponentName + "'");
+         return;
+      }
    }
 }

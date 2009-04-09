@@ -80,6 +80,9 @@ class Entity extends EventDispatcher implements IEntity
    
    public function Deserialize(xml:XML, registerComponents:Boolean = true):void
    {
+      // Note what entity we're deserializing to the serializer.
+      Serializer.Instance.SetCurrentEntity(this);
+      
       for each (var componentXML:XML in xml.*)
       {
          var componentName:String = componentXML.attribute("name");
