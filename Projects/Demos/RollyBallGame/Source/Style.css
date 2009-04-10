@@ -1,0 +1,15 @@
+/*******************************************************************************
+ * PushButton Engine
+ * Copyright (C) 2009 PushButton Labs, LLC
+ * For more information see http://www.pushbuttonengine.com
+ * 
+ * This file is property of PushButton Labs, LLC and NOT under the MIT license.
+ ******************************************************************************/
+/* CSS file */
+
+Label
+{
+	color: #F7FF19;
+	fontSize: 20;
+	fontWeight: bold;
+}

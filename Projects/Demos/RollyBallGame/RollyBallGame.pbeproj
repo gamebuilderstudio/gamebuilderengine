@@ -1,0 +1,8 @@
+<Project version="1.0">
+   <Name>RollyBallGame</Name>
+   <Type>WebApplication</Type>
+   <Version>1.0.0</Version>
+   <Description>A game where you roll a ball around.</Description>
+   <AuthorName>Ben Garney</AuthorName>
+   <AuthorEmail>beng@pushbuttonlabs.com</AuthorEmail>
+</Project>

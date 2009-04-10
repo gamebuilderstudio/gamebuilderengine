@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*******************************************************************************
+ * PushButton Engine
+ * Copyright (C) 2009 PushButton Labs, LLC
+ * For more information see http://www.pushbuttonengine.com
+ * 
+ * This file is property of PushButton Labs, LLC and NOT under the MIT license.
+ ******************************************************************************/
+-->
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="640" height="480">
+   <mx:Style source="Style.css"/>
+	<mx:Label x="248" y="195" text="Total Score: 1000000" id="lblScore"/>
+	<mx:Button x="367" y="276" label="Continue" id="btnContinue" enabled="false" click="_OnNextClick(event)"/>
+	<mx:Button x="201" y="276" label="Retry" id="btnRetry" enabled="false" click="_OnRetryClick(event)"/>
+	<mx:Script>
+	   <![CDATA[
+	     import flash.utils.*;
+	     import flash.media.*;
+	     import PBLabs.Engine.Core.*;
+	     import PBLabs.Engine.Resource.*;
+	     import PBLabs.MP3Sound.MP3Resource;
+	     import mx.core.*;
+	     
+	     public var CoinsLeft:int, TotalScore:int;
+	     public var ScoreIncrementSound:Sound;
+	     
+	     public function StartReport(numCoins:int):void
+	     {
+           ResourceManager.Instance.Load("../Assets/Sounds/scorechunk.mp3", MP3Resource, _OnSound);
+
+	        CoinsLeft = numCoins;
+	        TotalScore = 0;
+	        
+           btnContinue.enabled = false;
+           btnRetry.enabled = false;
+           lblScore.text = "Total Score: ";
+           
+	        setTimeout(_DoNextCoin, 500);
+	     }
+	     
+	     private function _DoNextCoin():void
+	     {
+	        if(CoinsLeft <= 0)
+	        {
+	           btnContinue.enabled = true;
+	           btnRetry.enabled = true;
+	           return;
+	        }
+	        
+	        // Play a pleasing chunk noise when score goes up.
+	        if(ScoreIncrementSound)
+	           ScoreIncrementSound.play();
+	        
+	        // Update our state.
+	        CoinsLeft--;
+	        TotalScore += 1000;
+	        lblScore.text = "Total Score: " + TotalScore;
+           setTimeout(_DoNextCoin, Math.min(1000 / CoinsLeft, 250));
+	     }
+	     
+	     private function _OnRetryClick(e:Event):void
+	     {
+	        parent.removeChild(this);
+	        ProcessManager.Instance.Start();
+	        Application.application.ResetLevel();
+	     }
+	     
+	     private function _OnNextClick(e:Event):void
+	     {
+           parent.removeChild(this);
+           ProcessManager.Instance.Start();
+           Application.application.NextLevel();	        
+	     }
+	     
+	     private function _OnSound(mp3:MP3Resource):void
+	     {
+	        ScoreIncrementSound = mp3.SoundObject;
+	     }
+	   ]]>
+	</mx:Script>
+</mx:Canvas>
