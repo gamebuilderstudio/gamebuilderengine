@@ -9,8 +9,7 @@
 package PBLabs.Rendering2D.UI
 {
    import PBLabs.Engine.Core.Global;
-   
-   import flash.display.Sprite;
+   import flash.display.*;
    
    /**
     * This class can be set as the SceneView on the BaseSceneComponent class and is used
@@ -19,7 +18,7 @@ package PBLabs.Rendering2D.UI
     * <p>Currently this is just a stub, and exists for clarity and potential expandability in
     * the future.</p>
     */
-   public class SceneView extends Sprite
+   public class SceneView extends Sprite implements IUITarget
    {
       public override function get width():Number
       {
@@ -44,6 +43,17 @@ package PBLabs.Rendering2D.UI
       public function SceneView()
       {
          Global.MainStage.addChild(this);
+      }
+      
+      public function AddDisplayObject(dobj:DisplayObject):void
+      {
+      	addChild(dobj);
+      }
+      
+      public function ClearDisplayObjects():void
+      {
+      	while(numChildren)
+      	   removeChildAt(0);
       }
       
       private var _width:Number = 0;

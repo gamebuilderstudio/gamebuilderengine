@@ -8,13 +8,13 @@
  ******************************************************************************/
 package PBLabs.Rendering2D
 {
-   import PBLabs.Engine.Entity.EntityComponent;
-   import PBLabs.Engine.Entity.IEntityComponent;
    import PBLabs.Engine.Core.*;
    import PBLabs.Engine.Debug.Logger;
+   import PBLabs.Engine.Entity.EntityComponent;
+   import PBLabs.Engine.Entity.IEntityComponent;
+   import PBLabs.Rendering2D.UI.IUITarget;
    
    import flash.display.*;
-   import flash.events.Event;
    import flash.geom.*;
    
   /**
@@ -34,13 +34,13 @@ package PBLabs.Rendering2D
        * @see PBLabs.Rendering2D.UI.FlexSceneView
        * @see PBLabs.Rendering2D.UI.SceneView
        */
-      public function get SceneView():DisplayObjectContainer
+      public function get SceneView():IUITarget
       {
          if (_sceneView != null)
             return _sceneView;
          
          if (_sceneViewName != null)
-            _sceneView = Global.FindChild(_sceneViewName) as DisplayObjectContainer;
+            _sceneView = Global.FindChild(_sceneViewName) as IUITarget;
          
          return _sceneView;
       }
@@ -48,7 +48,7 @@ package PBLabs.Rendering2D
       /**
        * @private
        */
-      public function set SceneView(value:DisplayObjectContainer):void
+      public function set SceneView(value:IUITarget):void
       {
          _sceneView = value;
       }
@@ -136,7 +136,7 @@ package PBLabs.Rendering2D
       public function DrawDisplayObject(object:DisplayObject):void
       {
          if (_currentRenderTarget == null)
-            SceneView.addChild(object);
+            SceneView.AddDisplayObject(object);
          else
             _currentRenderTarget.draw(object, object.transform.matrix);
       }
@@ -433,7 +433,7 @@ package PBLabs.Rendering2D
       }
       
       protected var _currentRenderTarget:BitmapData = null;
-      private var _sceneView:DisplayObjectContainer = null;
+      private var _sceneView:IUITarget = null;
       private var _sceneViewName:String = null;
       
       private var _alwaysDrawnList:Array = new Array();

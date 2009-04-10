@@ -103,8 +103,7 @@ package PBLabs.Rendering2D
             return;
          
          // Wipe all our existing renderables.
-         while (SceneView.numChildren)
-            SceneView.removeChildAt(0);
+         SceneView.ClearDisplayObjects();
 
          // Figure out what will be drawn.
          var layerList:Array = new Array(LAYER_COUNT);
