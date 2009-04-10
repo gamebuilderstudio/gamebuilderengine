@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="640" height="480">
+	<mx:Label x="226" y="169" text="Game Complete!"/>
+	<mx:Button x="287" y="278" label="Restart" click="button1_clickHandler(event)"/>
+
+	<mx:Script>
+		<![CDATA[
+			import mx.core.*;
+		
+			protected function button1_clickHandler(event:MouseEvent):void
+			{
+				// Go back to level 1.
+				parent.removeChild(this);
+				Application.application.RestartGame();
+			}
+		]]>
+	</mx:Script>
+
+</mx:Canvas>

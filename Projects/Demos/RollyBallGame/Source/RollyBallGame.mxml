@@ -30,6 +30,7 @@
          public var CurrentScore:Number = 0;
          public var StartTimer:Number = 0;
          public var CurrentTime:Number = 60.0;
+         public var LevelDuration:Number = 10000;
          
          public function AddPoints(amount:Number):void
          {
@@ -56,7 +57,7 @@
          {
             stage.focus = stage;
 
-            CurrentTime = 60000 - (ProcessManager.Instance.VirtualTime - StartTimer);
+            CurrentTime = LevelDuration - (ProcessManager.Instance.VirtualTime - StartTimer);
             
             if(CurrentTime >= 0)
                lblTime.text = "Time: " + (CurrentTime/1000).toFixed(2);
@@ -81,7 +82,18 @@
             LevelManager.Instance.UnloadCurrentLevel();
             LevelManager.Instance.LoadLevel(LevelManager.Instance.CurrentLevel);
             
-            // Reset the timer.
+            // Reset the timer and score.
+            StartTimer = ProcessManager.Instance.VirtualTime;
+            AddPoints(-CurrentScore);
+         }
+         
+         public function RestartGame():void
+         {
+            // Reset the level.
+            LevelManager.Instance.UnloadCurrentLevel();
+            LevelManager.Instance.LoadLevel(0);
+            
+            // Reset the timer and score.
             StartTimer = ProcessManager.Instance.VirtualTime;
             AddPoints(-CurrentScore);
          }
@@ -95,20 +107,19 @@
 
                // Reset the timer.
                StartTimer = ProcessManager.Instance.VirtualTime;
+	           ProcessManager.Instance.Start();
                AddPoints(-CurrentScore);
             }
             else
             {
-               Alert.show("You win!", "Victory!");
+            	addChild(new GameOver());
             }
          }
-         
 
          protected function application1_activateHandler(event:Event):void
          {
             ProcessManager.Instance.Start();
          }
-
 
          protected function application1_deactivateHandler(event:Event):void
          {

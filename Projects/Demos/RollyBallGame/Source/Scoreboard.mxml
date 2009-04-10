@@ -69,7 +69,6 @@
 	     private function _OnNextClick(e:Event):void
 	     {
            parent.removeChild(this);
-           ProcessManager.Instance.Start();
            Application.application.NextLevel();	        
 	     }
 	     
