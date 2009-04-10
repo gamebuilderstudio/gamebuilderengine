@@ -11,7 +11,8 @@
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:local="*" xmlns:ui="PBLabs.Rendering2D.UI.*" 
    layout="absolute" frameRate="60" width="640" height="480" applicationComplete="_OnLoaded()"
    activate="application1_activateHandler(event)" deactivate="application1_deactivateHandler(event)"
-    backgroundColor="#000000" backgroundGradientColors="[0,0]">
+   preloader="CustomPreloader"
+   backgroundColor="#FFFFFF" backgroundGradientColors="[0xFFFFFF,0xFFFFFF]">
    <mx:Style source="Style.css"/>
    
    <ui:FlexSceneView name="MainView" bottom="0" top="0" left="0" right="0"/>
@@ -30,7 +31,7 @@
          public var CurrentScore:Number = 0;
          public var StartTimer:Number = 0;
          public var CurrentTime:Number = 60.0;
-         public var LevelDuration:Number = 10000;
+         public var LevelDuration:Number = 45000;
          
          public function AddPoints(amount:Number):void
          {
