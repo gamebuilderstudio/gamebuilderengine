@@ -14,17 +14,113 @@
    		SyntaxHighlighter.config.clipboardSwf = 'js/sh/scripts/clipboard.swf';
    		SyntaxHighlighter.all();
    </script>
-   <title>InputMap Key Names</title>
+   <title>Handling Input</title>
 </head>
 <body>
 
-   <h1>InputMap Key Names</h1>
+   <h1>Handling Input</h1>
    
-   <p>This chapter lists all the keys that can be used with the InputMap class. The label for each key is used both as the name of the constant in the InputKey class and the name to use when defining an InputMap in XML. Additionally, some keys may have one or more aliases listed in parentheses. For the most part these exist to provide compatibility with the names that Flash uses in the flash.ui.Keyboard class. All names are case-insensitive.</p>
+   <p>Flash has a lot of powerful input handling capabilities, but they tend to be too much for a game. The InputManager and InputMap classes work together to provide a few focused capabilities to make it simple to implement controls for your game.</p>
+   
+   <p>Note that for general UI building tasks, you will want to use the normal Flash events.</p>
    
    <div id="pageToc"></div>
 
    <div id="contentArea">
+   
+   <h2>InputManager and InputMap</h2>
+   
+   <p>The InputManager is a clearing house for input events. Mostly, InputMap instance subscribe to it, although your code can do that as well. It also tracks if keys are down, so you can write code like:</p>
+   
+   <pre class="brush: js">
+   if(InputManager.IsKeyDown(InputKey.UP))
+      MoveItemUp();
+   </pre>
+   
+   <p>However, this idiom generally results in brittle, complicated input handling code. A much better option is to use an InputMap, which lets you expose named input events you want to bind, and configure what keys should trigger them. That way if you want to allow users to reconfigure what keys they use, you can do so without having to modify your code.</p>
+   
+   <p>InputMap also lets you handle input in a uniform way. You simply provide it with input names, and callback functions that take a single numerical parameter. Digital inputs (buttons) will be called back with 0 or 1 based on if the button is up or down. Analog inputs (mouse) will be called back with the change in position of the input. In most cases this means you can write code that handles buttons or mouse input identically.</p>
+   
+   <p>In addition, the InputManager gives you an opportunity to handle more exotic input sources in a consistent manner. You might extend it to use a 3rd party utility to handle joystick or Wiimote input events - these would simply be exposed as other input options that can be selected when configuring the InputMap.</p>
+   
+   <p>The following is source code for a simple component that handles input using an InputMap:</p>
+   
+   <pre class="brush: js">
+   public class MyInputHandlingComponent extends TickedComponent
+   {
+      public function get Input():InputMap
+      {
+         return _InputMap;
+      }
+      
+      public function set Input(value:InputMap):void
+      {
+         _InputMap = value;
+         
+         if (_InputMap != null)
+         {
+            _InputMap.AddBinding("GoLeft", _OnLeft);
+            _InputMap.AddBinding("GoRight", _OnRight);
+         }
+      }
+
+      public override function OnTick(tickRate:Number):void
+      {
+         // Normally you would update your position based on this; for simplicity
+         // we just print the direction we are being indicated to move.
+         var direction:Number = _Right - _Left;
+         Logger.Print(this, "I am moving " + direction);
+      }
+      
+      private function _OnLeft(value:Number):void
+      {
+         _Left = value;
+      }
+
+      private function _OnRight(value:Number):void
+      {
+         _Right = value;
+      }
+      
+      
+      private var _InputMap:InputMap;
+      private var _Left:Number = 0;
+      private var _Right:Number = 0;
+   }
+   </pre>
+   
+   <p>And here is the level XML to set it up as part of an entity. Notice that you specify the inputs as part of the level, making it easy to support multiple players on the same keyboard or other customizations of input.</p>
+   
+   <pre class="brush: xml">
+   &lt;entity name="InputHandlingEntity"&gt;
+      &lt;component class="MyInputHandlingComponent" name="Input"/&gt;
+         &lt;Input&gt;
+            &lt;!-- These correspond to the calls to AddBinding above. --&gt;
+            &lt;GoLeft&gt;LEFT&lt;/GoLeft&gt;
+            &lt;GoRight&gt;RIGHT&lt;/GoRight&gt;
+         &lt;/Input&gt;
+      &lt;/component&gt;
+   &lt;/entity&gt;
+   </pre>
+   
+   <p>Notice that you could also bind to mouse movement by doing the following:</p>
+   
+   <pre class="brush: xml">
+   &lt;entity name="MouseInputHandlingEntity"&gt;
+      &lt;component class="MyInputHandlingComponent" name="Input"/&gt;
+         &lt;Input&gt;
+            &lt;!-- These correspond to the calls to AddBinding above.  Only GoLeft needs to be bound because MOUSE_X gives negative as well as positive results. --&gt;
+            &lt;GoLeft&gt;MOUSE_X&lt;/GoLeft&gt;
+         &lt;/Input&gt;
+      &lt;/component&gt;
+   &lt;/entity&gt;
+   </pre>
+   
+   <p>That's all there is to know about InputMap and InputManager! The rest of this chapter is a reference to the supported key names for InputMap.</p>
+
+   <h2>InputMap Key Names</h2>
+   
+   <p>This section lists all the keys that can be used with the InputMap class. The label for each key is used both as the name of the constant in the InputKey class and the name to use when defining an InputMap in XML. Additionally, some keys may have one or more aliases listed in parentheses. For the most part these exist to provide compatibility with the names that Flash uses in the flash.ui.Keyboard class. All names are case-insensitive.</p>
    
    <h2>Navigation Keys</h2>
    
