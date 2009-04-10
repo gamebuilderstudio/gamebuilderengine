@@ -16,8 +16,8 @@ package PBLabs.Engine.Core
    import PBLabs.Engine.Core.Global;
    
    /**
-    * The input manager wraps the default input events produced by flash to make
-    * them more game friendly. For instance, by default, flash will dispatch a
+    * The input manager wraps the default input events produced by Flash to make
+    * them more game friendly. For instance, by default, Flash will dispatch a
     * key down event when a key is pressed, and at a consistent interval while it
     * is still held down. For games, this is not very useful.
     * 
