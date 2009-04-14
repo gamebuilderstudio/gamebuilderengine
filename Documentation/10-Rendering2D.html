@@ -44,7 +44,7 @@
    
    <h3>How Rendering Works</h3>
    
-   <p>Every time the draw manager wants to "paint" the screen, the draw manager queries the spatial manager (an object ISpatialManager2D) to get a list of components implementing ISpatialObject2Ds. Each ISpatialObject2D's entity is queried for any IDrawable2D-implementing components. If an entity has both a spatial component (it's in the world) and a drawing component (it can be displayed), then that entity is marked to be drawn to the screen by adding it to a temporary list. Note: IDrawable2Ds may be gotten from other sources, too, for instance the render always list, which contains objects which should always be drawn regardless of their position.</p>
+   <p>Every time the draw manager wants to "paint" the screen, the draw manager queries the spatial manager (an object implementing ISpatialManager2D) to get a list of components implementing ISpatialObject2Ds. Each ISpatialObject2D's entity is queried for any IDrawable2D-implementing components. If an entity has both a spatial component (denoting that the entity has scene coordinates) and a drawing component (denoting that the entity can be displayed), then that entity is marked to be drawn to the screen by adding it to a temporary list. Note: IDrawable2Ds may be gotten from other sources, too, for instance the render always list, which contains objects which should always be drawn regardless of their position.</p>
    
    <p>The draw manager implements IDrawManager2D. Components which can be drawn implement IDrawable2D. Using information gotten via IDrawable2D, the list of drawable components is sorted by layer, position, or whatever other criteria are desired by the draw manager. The OnDraw method on each IDrawable2D is then called in order, and each IDrawable2D submits BitmapDatas or DisplayObjects to be displayed by the draw manager.</p>
    
@@ -64,7 +64,7 @@
    
    <p>In the default SDK, BaseSceneComponent is provided to manage most of the basic book-keeping related to any scene. Scene2DComponent is a subclass oriented for drawing a 2d scene via adding DisplayObjects to a DisplayObject on the stage.</p>
    
-   <p>For spatial managers, there is a BasicSpatialManager2D, which does the bare minimum to implement ISpatialManager2D. There is also a Box2D spatial manager (Box2DSpatialComponent) as part of the Box2D component library. Either spatial manager works seamlessly with Scene2DComponent.</p>
+   <p>For spatial managers, there is a BasicSpatialManager2D, which does the bare minimum to implement ISpatialManager2D. There is also a Box2D spatial manager (Box2DSpatialComponent) as part of the Box2D component library. Either spatial manager works seamlessly with the Scene2DComponent draw manager.</p>
    
    <h2>Using The System</h2>
    
