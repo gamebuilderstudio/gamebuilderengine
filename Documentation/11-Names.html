@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+   <link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+   <script type="text/javascript" src="js/pageToc.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shCore.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushJScript.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushPhp.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushPlain.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushXml.js"></script>
+   <link type="text/css" rel="stylesheet" href="js/sh/styles/shCore.css"/>
+   <link type="text/css" rel="stylesheet" href="js/sh/styles/shThemeDefault.css"/>
+   <script type="text/javascript">
+   		SyntaxHighlighter.config.clipboardSwf = 'js/sh/scripts/clipboard.swf';
+   		SyntaxHighlighter.all();
+   </script>
+   <title>Names</title>
+</head>
+<body>
+
+   <h1>Names</h1>
+   
+   <p>The best way to identify something is by its name. Because of this, entities and components are required to be named, as are items in the level file and TemplateManager. This chapter discusses how names work and how to look things up by name.</p>
+   
+   <div id="pageToc"></div>
+
+   <div id="contentArea">
+
+   <h2>Names, Templates, and Entities</h2>
+   
+   <p>When you instantiate entities from a level file, they are automatically registered with the NameManager under the name specified in the level data. However, there is a key point to be aware of. No matter what, when you create a new entity, it will be registered under the name specified in the level file.</p>
+   
+   <p>However, the way that the entity was defined controls how closely the engine checks what is going on. If you use an &lt;entity&gt; tag, then the engine assumes you only want one of that entity around at a time. This is what you want for things like the scene, or one-off level elements. If you try to make two of the same &;lt;entity&gt;, then it will report an error.</p>
+   
+   <p>However, for entities like bullets, you will probably want many in the world at a time. For these types of entities, you should use the &lt;template&gt; tag, which causes the engine to simply reassign its name with no error message.</p>
+   
+   <h2>Looking Up Entities</h2>
+   
+   <p>Looking up an entity by name is simple. You can do it from code, or via the level file.</p>
+   
+   <pre class="brush: xml">
+      <!-- An empty, named entity. -->
+      &lt;entity name="NamedEntity"&gt;
+         <!-- Components would go here, although an empty entity is valid. -->
+      &lt;/entity&gt;      
+   </pre>
+
+   <pre class="brush: js">
+      // How to look it up from code: 
+      var namedEntity:IEntity = NameManager.Instance.Lookup("NamedEntity");
+   </pre>
+   
+   <pre class="brush: xml">
+      <!-- How to reference an entity from XML. -->
+      &lt;entity name="ExampleEntity"&gt;
+         &lt;component name="NameExampleComponent"&gt;
+            <!-- EntityReference is a field of type IEntity. The nameReference attribute indicates that we want to set it to a reference to the named entity.-->
+            &lt;EntityReference nameReference="NamedEntity"/&gt;
+         &lt;/component&gt;
+      &lt;/entity&gt;
+   </pre>
+  
+   <h2>Looking Up Components</h2>
+   
+   <p>You can look up components by name in several ways. You can look them up in code or XML. You can also look them up via the NameManager, or via methods on IEntity.</p>
+   
+   <pre class="brush: xml">
+      &lt;!-- A named entity, with some named components. --&gt;
+      &lt;entity name="NamedEntity"&gt;
+         &lt;!-- The type of these components are irrelevant for the examples in this section. --&gt;
+         &lt;component type="ExampleComponent" name="A"/&gt;
+         &lt;component type="AnotherComponent" name="B"/&gt;
+         &lt;component type="AnotherComponent" name="C"/&gt;
+      &lt;/entity&gt;      
+   </pre>
+
+   <pre class="brush: js">
+      // Looking up a component by type and entity name. This returns component "A".
+      var componentA:ExampleComponent = NameManager.Instance.LookupComponentByType("NamedEntity", ExampleComponent) as ExampleComponent;
+      
+      // Look up a component by entity name and component name. This returns component "B".
+      var componentB:AnotherComponent = NameManager.Instance.LookupComponentByName("NamedEntity", "B") as AnotherComponent;
+      
+      // You can also look up components on an entity (either you Owner as shown
+      // here, or a reference gotten via the NameManager or another means). This
+      // code snippet would have to be run from a component in NamedEntity, as
+      // otherwise Owner would not reference the right thing.
+      var componentA:ExampleComponent = Owner.LookupComponentByName("A");
+   </pre>
+   
+   <p>You can also look up another component by type, as mentioned in the component chapter.</p>
+   
+   <pre class="brush: xml">
+      <!-- How to reference a component from XML. -->
+      &lt;entity name="ExampleEntity"&gt;
+      
+         <!-- This is a component that we will reference by name in the other component. -->
+         &lt;component type="AnotherComponent" name="D"/&gt;
+         &lt;component name="ComponentNameExampleComponent"&gt;
+
+             <!-- ComponentReference is a field that has a component type (ExampleComponent in this case). The componentReference attribute indicates that we want to look up the first component with matching type on the named entity.-->
+            &lt;ComponentReference componentReference="NamedEntity"/&gt;
+
+            <!-- AnotherComponentReference is a field that has a component type (AnotherComponent in this case). componentReference is as above, but componentName lets you indicate the specific component you want, based on name. -->
+            &lt;AnotherComponentReference componentReference="NamedEntity" componentName="C"/&gt;
+            
+            <!-- Finally, you can reference components on the same entity as you by only using the componentName attribute. -->
+            &lt;YetAnotherComponentReference componentName="D"/&gt;
+
+         &lt;/component&gt;
+      &lt;/entity&gt;
+   </pre>
+   
+</body>
+</html>

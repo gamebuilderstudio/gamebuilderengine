@@ -36,7 +36,7 @@
    
    <p>Their C++ components were things like "actor", "conversation", "follower", "physics" and so forth. The 148 script components were much more game specific, implementing things like logic for traps and puzzles, movement for elevators, quest tracking, etc. They were able to focus most of their time on moving the game forward rather than focusing on infrastructure, and adding a new feature was quick.</p> 
    
-   <p>The Dungeon Siege experience is very instructive. They avoided tangled object hierarchies and managed to deliver a complex, compelling game world. Since then, a similar component architecture has been used in a few other engines, most notably Unity, TorqueX, and Gamebryo.</p>
+   <p>The Dungeon Siege experience is very instructive. They avoided tangled object hierarchies and managed to deliver a complex, compelling game world. Since then, a similar component architecture has been used in other games and middlewares, most notably Unity, TorqueX, and Gamebryo.</p>
    
    <h2>Overview of Components and Entities in PushButton Engine</h2>
    
@@ -54,6 +54,8 @@
    class SimplestComponent extends EntityComponent
    {
    }</pre>
+   
+   <p>Notice that we use the convention of appending Component to the name of every class that is usable as a component (ie, that extends EntityComponent or implements IEntityComponent). This makes it easy to spot components.</p>
    
    <p>Several methods are available for you to optionally override. The EntityComponent API docs explain fully, but the following example shows a minimal component that overrides them, with comments briefly explaining when and why they are called.</p>
    
@@ -83,11 +85,13 @@
       
    }</pre>
    
-   <p><b>A note on how components are initialized by the deserializer:</b> First all properties are set, some of them more than once if there are multiple templates. Then, _OnAdd() is called for all the components in unspecified order. Finally, _OnReset() is called for each component, to give it a chance to get references to other components.</p>
+   <p><b>A note on how components are initialized by the deserializer:</b> First all properties are set, some of them more than once if there are multiple templates (more on that in the XML Format chapter). Then, _OnAdd() is called for all the components in unspecified order. Finally, _OnReset() is called for each component in unspecified order, to give it a chance to gather references to other components.</p>
    
    <h2>Accessing Other Components</h2>
    
-   <p>There are three ways for components to interact: <b>properties</b>, <b>events</b>, or <b>interfaces</b>. These approaches work very similarly whether you are accessing components on another entity or on your own. The only difference is that instead of using Owner, you will use the NameManager or another means to look up an IEntity.</p>
+   <p>There are three ways for components to interact: <b>properties</b>, <b>events</b>, or <b>interfaces</b>. All of them are based on query methods on IEntity. If you are writing code in a component, the Owner member will return a reference to the IEntity that contains that component.</p>
+   
+   <p>These approaches work very similarly whether you are accessing components on another entity or on your owner.  The only difference is that instead of using Owner, you will use the NameManager or another means to look up an IEntity.</p>
    
    <h3>Properties</h3>
    

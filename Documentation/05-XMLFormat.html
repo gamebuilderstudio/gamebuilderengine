@@ -20,11 +20,7 @@
 
    <h1>XML Level Format</h1>
    
-   <p class="summary">
-   The PushButton Engine uses XML to store data about a game's objects. This chapter
-   describes the format the engine expects when instantiating objects from XML. Loading
-   XML object descriptions and instantiating them is handled by the TemplateManager
-   class.</p>
+   <p class="summary">The PushButton Engine uses XML to store data about a game's objects. This chapter describes the format the engine expects when instantiating objects from XML. Loading XML object descriptions and instantiating them is handled by the TemplateManager class.</p>
    
    <div id="pageToc"></div>
 
@@ -35,67 +31,47 @@
    <p>The easiest way to explain PushButton Engine's XML serialization format is to go through an example. Later sections provide a reference to specific details of the format. Here is an example level with explanatory comments:</p> 
    
    <pre class="brush: xml">
-   &lt;!-- Root tag - indicates version in case there are breaking changes 
-        in the format. The root tag contains one or more entities, templates
-        or groups.--&gt;
+   &lt;!-- Root tag - indicates version in case there are breaking changes  in the format. The root tag contains one or more entities, templates or groups.--&gt;
    &lt;things version="1"&gt;
    
-      &lt;!-- Only one entity of a given name can exist in the world at a time. The
-           TemplateManager will generate warnings if you instantiate them more
-           than once. --&gt;
+      &lt;!-- Only one entity of a given name can exist in the world at a time. The TemplateManager will generate warnings if you instantiate them more than once. --&gt;
       &lt;entity name="PlatformSpriteSheet"&gt;
       
-         &lt;!-- Entities and templates contain components, which are named and
-              have a specified type. --&gt;
+         &lt;!-- Entities and templates contain components, which are named and have a specified type. --&gt;
          &lt;component type="PBLabs.Rendering2D.SpriteSheetComponent" name="SpriteSheet"&gt;
             
-            &lt;!-- Fields on the component are dealt with using our normal 
-                 serializer. In this case we are assigning a string to 
-                 ImageFilename on the SpriteSheetComponent. --&gt;
+            &lt;!-- Fields on the component are dealt with using our normal  serializer. In this case we are assigning a string to  ImageFilename on the SpriteSheetComponent. --&gt;
             &lt;ImageFilename&gt;../Assets/Images/platform.png&lt;/ImageFilename&gt;
          &lt;/component&gt;
       &lt;/entity&gt;
       
-      &lt;!-- Another sprite sheet - just the same as the above one, but with a 
-           different entity name and file. --&gt;
+      &lt;!-- Another sprite sheet - just the same as the above one, but with a  different entity name and file. --&gt;
       &lt;entity name="DudeSpriteSheet"&gt;
          &lt;component type="PBLabs.Rendering2D.SpriteSheetComponent" name="SpriteSheet"&gt;
             &lt;ImageFilename&gt;../Assets/Images/guy.png&lt;/ImageFilename&gt;
          &lt;/component&gt;
       &lt;/entity&gt;
       
-      &lt;!-- Templates are like entities in every respect except two. First, they 
-           can be instantiated more than once w/o warnings. Second, they can be
-           referenced via the template attribute on an entity, which is explained
-           later. --&gt;
+      &lt;!-- Templates are like entities in every respect except two. First, they can be instantiated more than once w/o warnings. Second, they can be referenced via the template attribute on an entity, which is explained later. --&gt;
       &lt;template name="Platform"&gt;
       
          &lt;component type="PBLabs.Rendering2D.SpriteRenderComponent" name="Render"&gt;
-            &lt;!-- Parent and SpriteSheet are typed fields. You can assign a
-                 direct reference to another component either on this entity or
-                 another using the componentReference attribute. --&gt;
+            &lt;!-- Parent and SpriteSheet are typed fields. You can assign a direct reference to another component either on this entity or another using the componentReference attribute. --&gt;
             
-            &lt;!-- Look up a named entity called Scene, find the first
-                 component that matches the type of Parent, and assign it. --&gt;
+            &lt;!-- Look up a named entity called Scene, find the first component that matches the type of Parent, and assign it. --&gt;
             &lt;Parent componentReference="Scene"/&gt;
             
-            &lt;!-- Same for the SpriteSheet field, which happens to want a
-                 SpriteSheetComponent. --&gt;
+            &lt;!-- Same for the SpriteSheet field, which happens to want a SpriteSheetComponent. --&gt;
             &lt;SpriteSheet componentReference="PlatformSpriteSheet"/&gt;
 
-            &lt;!-- Although PositionReference, RotationReference, and SizeReference
-                 are all of type PropertyReference, PropertyReference implements
-                 ISerializable and does its own custom serialization - in this
-                 case so that you can specify a string property reference. --&gt;
+            &lt;!-- Although PositionReference, RotationReference, and SizeReference are all of type PropertyReference, PropertyReference implements ISerializable and does its own custom serialization - in this case so that you can specify a string property reference. --&gt;
             &lt;PositionReference&gt;@Spatial.Position&lt;/PositionReference&gt;
             &lt;RotationReference&gt;@Spatial.Rotation&lt;/RotationReference&gt;
             &lt;SizeReference&gt;@Spatial.Size&lt;/SizeReference&gt;
          &lt;/component&gt;
          &lt;component type="PBLabs.Box2D.Box2DSpatialComponent" name="Spatial"&gt;
             &lt;Manager componentReference="Box2D"/&gt;
-            &lt;!-- CollisionType is of type ObjectType, and also implements
-                 ISerializable, in this case to allow you to provide a list of
-                 object types. --&gt;
+            &lt;!-- CollisionType is of type ObjectType, and also implements ISerializable, in this case to allow you to provide a list of object types. --&gt;
             &lt;CollisionType&gt;
                &lt;Type&gt;Platform&lt;/Type&gt;
             &lt;/CollisionType&gt;
@@ -103,9 +79,7 @@
                &lt;Type&gt;Dude&lt;/Type&gt;
             &lt;/CollidesWithTypes&gt;
             
-            &lt;!-- Size is of type Point. The serializer lets you set fields by
-                 nesting tags. In this case &lt;Size&gt;&lt;x&gt;1&lt;/x&gt;&lt;/Size is equivalent
-                 to saying Size.x = 1; in ActionScript. --&gt;
+            &lt;!-- Size is of type Point. The serializer lets you set fields by nesting tags. In this case &lt;Size&gt;&lt;x&gt;1&lt;/x&gt;&lt;/Size is equivalent to saying Size.x = 1; in ActionScript. --&gt;
             &lt;Size&gt;
                &lt;x&gt;256&lt;/x&gt;
                &lt;y&gt;64&lt;/y&gt;
@@ -122,15 +96,9 @@
                     we use the feature in order to distinguish between different
                     collision shapes. --&gt;
                &lt;_ type="PBLabs.Box2D.PolygonCollisionShape"&gt;
-                  &lt;!-- Vertices is also an array. In this case we can specify 
-                       the type of the items to put into it. In addition, we
-                       are using &lt;_&gt;. The underscore alone tells the serializer
-                       to put the value contained in it at the end of the array.
+                  &lt;!-- Vertices is also an array. In this case we can specify  the type of the items to put into it. In addition, we are using &lt;_&gt;. The underscore alone tells the serializer to put the value contained in it at the end of the array. --&gt;
                        
-                       Underscore can also escape numerical values, which are not
-                       valid XML tag names. You can'd to &lt;3&gt;, you have to do &lt;_3&gt;.
-                       If you want to do an underscore, do &lt;__&gt;.
-                       --&gt;
+                  &lt;!-- Underscore can also escape numerical values, which are not valid XML tag names. You can'd to &lt;3&gt;, you have to do &lt;_3&gt;. If you want to do an underscore, do &lt;__&gt;. --&gt;
                   &lt;Vertices childType="flash.geom.Point"&gt;
                      &lt;_&gt;&lt;x&gt;-1&lt;/x&gt;&lt;y&gt;-1&lt;/y&gt;&lt;/_&gt;
                      &lt;_&gt;&lt;x&gt;1&lt;/x&gt;&lt;y&gt;-1&lt;/y&gt;&lt;/_&gt;
@@ -161,12 +129,9 @@
       
       &lt;entity name="Dude"&gt;
          &lt;component type="PBLabs.Rendering2D.SpriteRenderComponent" name="Render"&gt;
-            &lt;!-- In addition to componentReference, you can specify
-                 componentName, which indicates a specific component to 
-                 reference.
+            &lt;!-- In addition to componentReference, you can specify componentName, which indicates a specific component to reference. -->
                  
-                 If you use componentName alone, it will reference that component
-                 on the owning entity. --&gt;
+            &lt;!-- If you use componentName alone, it will reference that component on the owning entity. --&gt;
             &lt;Parent componentReference="Scene" componentName="Scene"/&gt;
             &lt;SpriteSheet componentReference="DudeSpriteSheet"/&gt;
             &lt;PositionReference&gt;@Spatial.Position&lt;/PositionReference&gt;
@@ -211,10 +176,7 @@
          &lt;/component&gt;
       &lt;/entity&gt;
       
-      &lt;!-- Often you want one entity to be a clone of another with minor 
-           modifications. You can do this via the template attribute. Everything
-           on Platform is loaded into the entity, then the information in the
-           Platform1 entity is applied on top of it. --&gt;
+      &lt;!-- Often you want one entity to be a clone of another with minor  modifications. You can do this via the template attribute. Everything on Platform is loaded into the entity, then the information in the Platform1 entity is applied on top of it. --&gt;
       &lt;entity name="Platform1" template="Platform"&gt;
          &lt;!-- Notice that when we reference fields for an existing component 
               (from the template) we omit the type attribute. --&gt;
@@ -244,14 +206,9 @@
          &lt;/component&gt;
       &lt;/entity&gt;
       
-      &lt;!-- Groups are lists of templates/entities, so that you can instantiate
-           them all as a single group. TemplateManager.InstantiateGroup returns
-           an array of all the objects that were created. --&gt;
+      &lt;!-- Groups are lists of templates/entities, so that you can instantiate them all as a single group. TemplateManager.InstantiateGroup returns an array of all the objects that were created. --&gt;
       &lt;group name="Managers"&gt;
-         &lt;!-- Group tags contain one or more objectReference or groupReference
-              tags. These reference groups or entities/templates by name, 
-              indicating what is part of the group. Things can be part of any
-              number of groups. --&gt;
+         &lt;!-- Group tags contain one or more objectReference or groupReference tags. These reference groups or entities/templates by name, indicating what is part of the group. Things can be part of any number of groups. --&gt;
          &lt;objectReference name="Scene"/&gt;
          &lt;objectReference name="Box2D"/&gt;
       &lt;/group&gt;
@@ -294,7 +251,7 @@
    
    <p>A template is constructed in identical fashion to an entity, including the optional template tag. The only difference between a template and an entity, once instantiated, is that a template is not registered with the NameManager class, whereas an entity is. The reason for this is templates are designed to be instantiated multiple times, for things like bullets or respawning enemies, whereas an entity is designed to be instantiated once.</p>
    
-   <p>Entities cannot be used as templates in XML, however, so any object that is being used as a base description must be created as a template. Template's can be derived from other templates, though, with no limit on how many derivation levels there are.</p>
+   <p>Entities cannot be used as templates in XML, however, so any object that is being used as a base description must be created as a template. Templates can be derived from other templates, though, with no limit on how many derivation levels there are.</p>
    
    <h3>Components</h3>
    
@@ -403,6 +360,7 @@
 		   </ul>
 	   </li>
 	   <li><b>childType:</b> Specifies the type to use when instantiating objects to add to an array or dictionary.</li>
+	   <li><b>filename:</b> For fields that hold resources, this lets you specify a file path. The field must be of a compatible type to the type of the resource as specified to the resource manager. The resource will be loaded and assigned to the field.</li>
    </ul>
    
    </div>
