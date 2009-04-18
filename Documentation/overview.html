@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+   <link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+   <script type="text/javascript" src="js/pageToc.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shCore.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushJScript.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushPhp.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushPlain.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushXml.js"></script>
+   <link type="text/css" rel="stylesheet" href="js/sh/styles/shCore.css"/>
+   <link type="text/css" rel="stylesheet" href="js/sh/styles/shThemeDefault.css"/>
+   <script type="text/javascript">
+   		SyntaxHighlighter.config.clipboardSwf = 'js/sh/scripts/clipboard.swf';
+   		SyntaxHighlighter.all();
+   </script>
+   <title>PushButton Engine At A Glance</title>
+</head>
+<body>
+
+   <h1>PushButton Engine At A Glance</h1>
+   
+   <p>PushButton Engine is an open source, modular framework for Flash game development. Build your game with reusable gameplay, physics, rendering, and networking components - some written by others, and some written by you. There are lots of great libraries for game development on Flash, and PBEngine helps you use them more effectively.</p>
+   
+   <p>This chapter gives an overview of what PBE is, how it is used, and what benefits it brings to your game development.</p>
+   
+   <div id="pageToc"></div>
+
+   <div id="contentArea">
+   
+   <h2>A Simple Component</h2>
+   
+   <p>Games need to be fun, and the way you build fun is by refining and tweaking your game. Code that is hard to work with makes it harder to build a fun game. Components are a better way to build games, because they keep your code easy to modify and reuse.</p>
+   
+   <p>Using components may seem a little more complicated than just hacking some code out. That's true - it can be a little indirect. The benefit isn't when you're starting - it's once you've finished the first draft of your game and you need to start changing things. It's the difference between building a house out of some plywood you found in the woods as opposed to 2x4s and up-to-code materials. The plywood house might get done a little faster, but over the next twenty years the house is standing, going with the good materials will pay off big time.</p>
+
+   <p>Components are small, reusable classes that implement a focused piece of game functionality. Creating a component is simple. Here's an example of a simple component that keeps track of points that the player earns every second they are alive.</p>
+   
+   <pre class="brush: js">
+   class ScoreCounterComponent extends TickedComponent
+   {
+      public var Score:Number = 0;
+      public var PointsPerSecond:Number = 1;
+      
+      public function OnTick(dt:Number):void
+      {
+         Score += PointsPerSecond * dt;
+         Logger.Log(this, "Updating score, score is now " + Score);
+      }
+   }
+   </pre>
+   
+   <p>OK - that's all you have to do to create a component! The next section shows how you would use it in your game.</p>
+   
+   <h2>Building a Game Object</h2>
+   
+   <p>Game objects are called <b>entities</b> and they contain one or more <b>components</b>. The XML level files in PushButton Engine let you define entities and the components in them, as well as set the values of fields on those components. Here's what a player entity using the ScoreCounterComponent would look like in the PushButton Engine XML format:</p>
+   
+   <pre class="brush: xml">
+   &lt;!-- An example player that gets points for being alive. It is named "Player" and we can get it from code with that name. --&gt;
+   &lt;entity name="Player"&gt;
+      &lt;!-- Here's where we include the scorecounter we defined above. Notice that we give it a name - this is required so we can refer to the component. --&gt;
+      &lt;component type="ScoreCounterComponent" name="Score"&gt;
+         &lt;!-- This is all it takes to set a field on the component - just the name and a value. In this case we're setting the rate at which players will accrue points. --&gt;
+         &lt;PointsPerSecond&gt;10&lt;/PointsPerSecond&gt;
+      &lt;/component&gt;
+      
+      &lt;!-- These components would normally have properties set, configuring things like the size, shape, appearance, and movement of the player, but we're skipping that to keep things focused. --&gt;
+      &lt;component type="RenderComponent" name="Render"&gt;
+      &lt;/component&gt;
+      &lt;component type="SpatialComponent" name="Spatial"&gt;
+      &lt;/component&gt;
+      &lt;component type="PlayerControllerComponent" name="Controller"&gt;
+      &lt;/component&gt;
+   &lt;/entity&gt;
+   </pre>
+   
+   <h2>Conclusion</h2>
+   
+   <p>What did we just accomplish? We added a new piece of functionality to our game without touching a single existing line of code. Our new score counter component can be reused with a few lines of XML. We can extend it without having to worry about messing with a bunch of other code.</p>
+   
+   <p>That's not all - there are a ton of components to get you going on your game, including components that integrate Box2D, a networking library (coming soon), and a powerful rendering framework. The serializer and resource manager make it easy to load game data, including level files, images, and sound. There are debugging and performance tuning tools, as well as unit tests. What more could you ask for?</p>
+
+   <p>Well, we'd like to know! Come by our <a href="http://pushbuttonengine.com/forum">forums</a> to post your questions, feedback, and opinions. We want to make PushButton Engine the best possible tool for building Flash games, and the only way we will get there is with lots of feedback from people like you.</p>
+   
+   </div>
+</body>
+</html>
