@@ -1,0 +1,23 @@
+<PBESchema>
+	<Types>
+		<PBLabs.Engine.Core.ObjectType becomeChild="true">
+			<Array type="String">TypeNames</Array>
+		</PBLabs.Engine.Core.ObjectType>
+		<flash.geom.Point>
+			<Number>x</Number>
+			<Number>y</Number>
+		</flash.geom.Point>
+		<flash.geom.Rectangle>
+			<Number>x</Number>
+			<Number>y</Number>
+			<Number value="10">width</Number>
+			<Number value="10">height</Number>
+		</flash.geom.Rectangle>
+		<PBLabs.Engine.Entity.PropertyReference becomeChild="true">
+			<String>Reference</String>
+		</PBLabs.Engine.Entity.PropertyReference>
+		<PBLabs.Engine.Core.InputMap becomeChild="true">
+			<flash.utils.Dictionary type="int">Bindings</flash.utils.Dictionary>
+		</PBLabs.Engine.Core.InputMap>
+	</Types>
+</PBESchema>

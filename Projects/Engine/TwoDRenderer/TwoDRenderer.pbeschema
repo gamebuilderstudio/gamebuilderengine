@@ -1,0 +1,74 @@
+<PBESchema>
+	<Components>
+		<PBLabs.Rendering2D.BasicSpatialManager2D parent="PBLabs.Rendering2D.ISpatialManager2D"/>
+		<PBLabs.Rendering2D.SpriteSheetComponent>
+			<String>ImageFilename</String>
+			<ImageResource type="Resource">Image</ImageResource>
+			<PBLabs.Rendering2D.ISpriteSheetDivider type="Instance">Divider</PBLabs.Rendering2D.ISpriteSheetDivider>
+			<flash.geom.Point>Center</flash.geom.Point>
+			<int>DirectionsPerFrame</int>
+		</PBLabs.Rendering2D.SpriteSheetComponent>
+		<PBLabs.Rendering2D.SpriteRenderComponent parent="PBLabs.Rendering2D.IDrawable2D">
+			<PBLabs.Engine.Entity.PropertyReference type="flash.geom.Point">PositionReference</PBLabs.Engine.Entity.PropertyReference>
+			<PBLabs.Engine.Entity.PropertyReference type="flash.geom.Point">SizeReference</PBLabs.Engine.Entity.PropertyReference>
+			<PBLabs.Engine.Entity.PropertyReference type="Number">RotationReference</PBLabs.Engine.Entity.PropertyReference>
+			<PBLabs.Rendering2D.SpriteSheetComponent type="componentReference">SpriteSheet</PBLabs.Rendering2D.SpriteSheetComponent>
+			<flash.geom.Point>PositionOffset</flash.geom.Point>
+			<int>RenderSortKey</int>
+			<int>LayerIndex</int>
+			<int>SpriteIndex</int>
+			<Boolean>FlipX</Boolean>
+			<Boolean>FlipY</Boolean>
+		</PBLabs.Rendering2D.SpriteRenderComponent>
+		<PBLabs.Rendering2D.Scene2DComponent parent="PBLabs.Rendering2D.IDrawManager2D">
+		   <String>SceneViewName</String>
+			<PBLabs.Rendering2D.ISpatialManager2D type="componentReference">SpatialDatabase</PBLabs.Rendering2D.ISpatialManager2D>
+			<flash.geom.Point>Position</flash.geom.Point>
+			<PBLabs.Engine.Core.ObjectType>RenderMask</PBLabs.Engine.Core.ObjectType>
+			<PBLabs.Rendering2D.IDrawable2D type="componentReference">TrackObject</PBLabs.Rendering2D.IDrawable2D>
+		</PBLabs.Rendering2D.Scene2DComponent>
+		<PBLabs.Rendering2D.SimpleSpatialComponent parent="PBLabs.Rendering2D.ISpatialObject2D">
+			<PBLabs.Rendering2D.ISpatialManager2D type="componentReference">SpatialManager</PBLabs.Rendering2D.ISpatialManager2D>
+			<flash.geom.Point>Position</flash.geom.Point>
+			<flash.geom.Point value="10|10">Size</flash.geom.Point>
+			<Number>Rotation</Number>
+			<flash.geom.Point>Velocity</flash.geom.Point>
+			<PBLabs.Engine.Core.ObjectType>QueryMask</PBLabs.Engine.Core.ObjectType>
+		</PBLabs.Rendering2D.SimpleSpatialComponent>
+		<PBLabs.Animation.AnimatorComponent>
+		   <flash.utils.Dictionary type="PBLabs.Animation.Animator|Instance">Animations</flash.utils.Dictionary>
+		   <String>DefaultAnimation</String>
+		   <Boolean>AutoPlay</Boolean>
+		   <PBLabs.Engine.Entity.PropertyReference>Reference</PBLabs.Engine.Entity.PropertyReference>
+		</PBLabs.Animation.AnimatorComponent>
+	</Components>
+	<Types>
+	   <PBLabs.Animation.Animator>
+	      <*>StartValue</*>
+	      <*>TargetValue</*>
+	      <PBLabs.Animation.AnimatorType>AnimationType</PBLabs.Animation.AnimatorType>
+	      <int>RepeatCount</int>
+	      <Number>Duration</Number>
+	   </PBLabs.Animation.Animator>
+	   <PBLabs.Animation.PointAnimator parent="PBLabs.Animation.Animator">
+	   </PBLabs.Animation.PointAnimator>
+	   <PBLabs.Animation.AnimatorType>
+	      <Enum>NoAnimation</Enum>
+	      <Enum>PlayAnimationOnce</Enum>
+	      <Enum>LoopAnimation</Enum>
+	      <Enum>PingPongAnimation</Enum>
+	   </PBLabs.Animation.AnimatorType>
+		<PBLabs.Rendering2D.IDrawManager2D/>
+		<PBLabs.Rendering2D.ISpriteSheetDivider/>
+		<PBLabs.Rendering2D.IDrawable2D/>
+		<PBLabs.Rendering2D.IRenderQueue2D/>
+		<PBLabs.Rendering2D.ISpatialObject2D/>
+		<PBLabs.Rendering2D.ISpatialManager2D/>
+		<PBLabs.Rendering2D.CellCountDivider parent="PBLabs.Rendering2D.ISpriteSheetDivider">
+			<int value="1">XCount</int>
+			<int value="1">YCount</int>
+		</PBLabs.Rendering2D.CellCountDivider>
+		<PBLabs.Rendering2D.ImageResource>
+		</PBLabs.Rendering2D.ImageResource>
+	</Types>
+</PBESchema>
