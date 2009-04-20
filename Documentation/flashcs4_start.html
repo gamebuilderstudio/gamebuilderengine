@@ -1,0 +1,455 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+   <link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+   <script type="text/javascript" src="js/pageToc.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shCore.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushJScript.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushPhp.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushPlain.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushXml.js"></script>
+   <link type="text/css" rel="stylesheet" href="js/sh/styles/shCore.css"/>
+   <link type="text/css" rel="stylesheet" href="js/sh/styles/shThemeDefault.css"/>
+   <script type="text/javascript">
+   		SyntaxHighlighter.config.clipboardSwf = 'js/sh/scripts/clipboard.swf';
+   		SyntaxHighlighter.all();
+   </script>
+   <title>Getting Started With Flash CS4</title>
+</head>
+<body>
+
+   <h1>Getting Started With Flash CS4</h1>
+   
+   <p>This chapter describes how to use PushButton Engine with Flash CS4.</p>
+   
+   <p><i>Note: Flash CS3 cannot read Flex-compiled SWCs, so the instructions in this chapter won't work. You can work around this by adding each project in the SDK's Source folder to your classpath. Flash CS3 cannot work with the SWC files in the Libraries folder.</i></p>
+   
+   <div id="pageToc"></div>
+
+   <div id="contentArea">
+
+   <h2>The SDK</h2>
+   
+   <p>Go to the <a href="http://pushbuttonengine.com/download">PushButton Engine Download page</a> and get the latest version of the SDK. Download the zip and extract it to your Desktop.</p>
+   
+   <p>Launch Flash CS4 and choose <i>Edit -&gt; Preferences...</i> from the main menu. The <i>Preferences</i> dialog will pop up. Choose <i>ActionScript</i> from the category list. Click on the <i>ActionScript 3.0</i> button. A dialog titled <i>ActionScript 3.0 Advanced Settings</i> will pop up. You will see sections for <i>Source path</i>, <i>Library path</i>, and <i>External library path</i>.</p>
+   
+   <p>In the <i>Library path</i> section, click the plus icon to add a new path, then click the folder icon (the yellow one fourth from the left). You will be prompted to choose a folder. Navigate to the desktop, then to the Engine SDK folder, then choose the Libraries subfolder. You should see the path for this folder appear in the list.</p>
+   
+   <p>Hit OK to close the <i>ActionScript 3.0 Advanced Settings</i> dialog. Then 
+   hit OK to close the <i>Preferences</i> dialog.</p>
+   
+   <p>Congratulations, you have configured Flash CS4 to use the PushButton Engine SDK.</p>
+   
+   <h2>Hello, World!</h2>
+   
+   <p>At this point, it's a good idea to make sure that the SDK is installed and working properly. Let's take 30 seconds to make sure everything is as it should be. If this section doesn't work as expected, you should try to figure out if anything is wrong, and if that doesn't work, go to the <a href="http://pushbuttonengine.com/forum/viewforum.php?f=5">PushButton Engine Forums</a> and ask for help.</p>
+   
+   <p>First, create a new ActionScript 3.0 Flash document by choosing <i>File -&gt; New...</i> from the main menu. The <i>New Document</i> dialog will appear. Make sure the <i>General</i> tab is selected, and choose <i>Flash File (ActionScript 3.0)</i> from the list of document types. Then hit <i>OK</i>. You should have a new blank document to work with.</p>
+   
+   <p>Go to the timeline, right click on the first frame, and choose <i>Actions</i>. The <i>Actions - Frame</i> window will appear. Copy and paste (or type) this code into the window:</p>
+   
+   <pre class="brush: js">
+   // Import some PushButton Engine classes.
+   import PBLabs.Engine.Core.*;
+   import PBLabs.Engine.Debug.*;
+   
+   // Tell PBE where the root of our app is.
+   Global.MainClass = this;
+   
+   // Display a log message via the Logger.
+   Logger.Print(this, "Hello, world!");   
+   </pre>
+   
+   <p>Save your work by choosing <i>File -&gt; Save...</i> from the menu. Then, choose <i>Control -&gt; Test Movie</i> to run your code. A blank window will pop up, and the output pane in Flash CS4 will display the following:</p>
+   
+   <pre class="brush: text">
+   [object MainTimeline] - Hello, world!
+   </pre>
+   
+   <p>If you get that output, then the PushButton Engine SDK is installed and working properly! If you have trouble, try fixing it, and if that doesn't work, visit the <a href="http://pushbuttonengine.com/forum/viewforum.php?f=5">forums</a> for help!</p>
+   
+   <h2>Simple Platformer</h2>
+   
+   <p>Now that we know the SDK is configured, let's build a simple game. We'll make a platformer by writing a few lines of ActionScript to load a PBE level from the disk.</p>
+   
+   <p>Just as before, create a new ActionScript 3.0 Flash document by choosing <i>File -&gt; New...</i> and selecting <i>Flash File (ActionScript 3.0)</i> from the list of document types, then hitting <i>OK</i>.</p>
+   
+   <p>Right click on the first frame in the timeline, then choose <i>Actions</i> to bring up the <i>Actions - Frame</i> window. Paste or type the following code into the window:</p>
+   
+   <pre class="brush: js">
+import PBLabs.Engine.Core.*;
+
+// Tell PBE where the root of our app is.
+Global.MainClass = this;
+
+// Load the level by indicating what file to load, and what group to start with.
+LevelManager.Instance.AddLevelFileReference("level.pbelevel", 0);
+LevelManager.Instance.AddGroupReference("Everything", 0);
+LevelManager.Instance.Start();
+
+// References to components. We have to reference them, otherwise the compiler
+// will remove them from the SWF and the level won't load correctly. Every
+// class the level file references needs to be mentioned here.
+import PBLabs.Rendering2D.Scene2DComponent;PBLabs.Rendering2D.Scene2DComponent;
+import PBLabs.Rendering2D.SpriteRenderComponent;PBLabs.Rendering2D.SpriteRenderComponent;
+import PBLabs.Rendering2D.SpriteSheetComponent;PBLabs.Rendering2D.SpriteSheetComponent;
+import PBLabs.Rendering2D.SimpleSpatialComponent;PBLabs.Rendering2D.SimpleSpatialComponent;
+import PBLabs.Rendering2D.BasicSpatialManager2D;PBLabs.Rendering2D.BasicSpatialManager2D;
+import PBLabs.Rendering2D.CellCountDivider;PBLabs.Rendering2D.CellCountDivider;
+import PBLabs.Box2D.Box2DDebugComponent;PBLabs.Box2D.Box2DDebugComponent;
+import PBLabs.Box2D.Box2DManagerComponent;PBLabs.Box2D.Box2DManagerComponent;
+import PBLabs.Box2D.Box2DSpatialComponent;PBLabs.Box2D.Box2DSpatialComponent;
+import PBLabs.Box2D.PolygonCollisionShape;PBLabs.Box2D.PolygonCollisionShape;
+import PBLabs.Box2D.CircleCollisionShape;PBLabs.Box2D.CircleCollisionShape;
+import PBLabs.StupidSampleGame.DudeController;PBLabs.StupidSampleGame.DudeController;
+import PBLabs.Animation.AnimatorComponent;PBLabs.Animation.AnimatorComponent;
+import PBLabs.Rendering2D.UI.SceneView;PBLabs.Rendering2D.UI.SceneView;
+   </pre>
+   
+   <p>Save your work by choosing <i>File -&gt; Save...</i> from the menu. It doesn't matter what you call the file as long as you know where it is. Then, go to the folder where you saved your <i>.fla</i>, and create a new file called <i>level.pbelevel</i>. This file will contain XML description of all the objects in the game. Open it in your favorite text editor, and paste the following into it:</p>
+   
+   <pre class="brush: xml">
+&lt;things version="1"&gt;
+  &lt;entity name="PlatformSpriteSheet"&gt;
+    &lt;component type="PBLabs.Rendering2D.SpriteSheetComponent" name="SpriteSheet"&gt;
+      &lt;Image filename="platform.png"/&gt;
+    &lt;/component&gt;
+  &lt;/entity&gt;
+  &lt;entity name="DudeSpriteSheet"&gt;
+    &lt;component type="PBLabs.Rendering2D.SpriteSheetComponent" name="SpriteSheet"&gt;
+      &lt;Image filename="mannequin.png"/&gt;
+      &lt;Divider type="PBLabs.Rendering2D.CellCountDivider"&gt;
+        &lt;XCount&gt;8&lt;/XCount&gt;
+        &lt;YCount&gt;8&lt;/YCount&gt;
+      &lt;/Divider&gt;
+    &lt;/component&gt;
+  &lt;/entity&gt;
+  &lt;template name="Platform"&gt;
+    &lt;component type="PBLabs.Rendering2D.SpriteRenderComponent" name="Render"&gt;
+      &lt;SpriteSheet componentReference="PlatformSpriteSheet"/&gt;
+      &lt;PositionReference&gt;@Spatial.Position&lt;/PositionReference&gt;
+      &lt;RotationReference&gt;@Spatial.Rotation&lt;/RotationReference&gt;
+      &lt;SizeReference&gt;@Spatial.Size&lt;/SizeReference&gt;
+    &lt;/component&gt;
+    &lt;component type="PBLabs.Box2D.Box2DSpatialComponent" name="Spatial"&gt;
+      &lt;Manager componentReference="SpatialDB"/&gt;
+      &lt;CollisionType childType="String"&gt;
+        &lt;_0&gt;Platform&lt;/_0&gt;
+        &lt;_1&gt;Renderable&lt;/_1&gt;
+      &lt;/CollisionType&gt;
+      &lt;CollidesWithTypes childType="String"&gt;
+        &lt;_0&gt;Dude&lt;/_0&gt;
+      &lt;/CollidesWithTypes&gt;
+      &lt;Size&gt;
+        &lt;x&gt;256&lt;/x&gt;
+        &lt;y&gt;64&lt;/y&gt;
+      &lt;/Size&gt;
+      &lt;CanMove&gt;false&lt;/CanMove&gt;
+      &lt;CanRotate&gt;false&lt;/CanRotate&gt;
+      &lt;CollisionShapes childType="PBLabs.Box2D.CollisionShape"&gt;
+        &lt;_0 type="PBLabs.Box2D.PolygonCollisionShape"&gt;
+          &lt;Vertices childType="flash.geom.Point"&gt;
+            &lt;_0&gt;
+              &lt;x&gt;-1&lt;/x&gt;
+              &lt;y&gt;-1&lt;/y&gt;
+            &lt;/_0&gt;
+            &lt;_1&gt;
+              &lt;x&gt;1&lt;/x&gt;
+              &lt;y&gt;-1&lt;/y&gt;
+            &lt;/_1&gt;
+            &lt;_2&gt;
+              &lt;x&gt;1&lt;/x&gt;
+              &lt;y&gt;1&lt;/y&gt;
+            &lt;/_2&gt;
+            &lt;_3&gt;
+              &lt;x&gt;-1&lt;/x&gt;
+              &lt;y&gt;1&lt;/y&gt;
+            &lt;/_3&gt;
+          &lt;/Vertices&gt;
+        &lt;/_0&gt;
+      &lt;/CollisionShapes&gt;
+    &lt;/component&gt;
+  &lt;/template&gt;
+  &lt;entity name="SpatialDB"&gt;
+    &lt;component type="PBLabs.Box2D.Box2DManagerComponent" name="Manager"/&gt;
+  &lt;/entity&gt;
+  &lt;entity name="Scene"&gt;
+    &lt;component type="PBLabs.Rendering2D.Scene2DComponent" name="Scene"&gt;
+      &lt;SpatialDatabase componentReference="SpatialDB" componentName="Manager"/&gt;
+      &lt;SceneView type="PBLabs.Rendering2D.UI.SceneView"&gt;
+         &lt;width&gt;800&lt;/width&gt;
+         &lt;height&gt;600&lt;/height&gt;
+      &lt;/SceneView&gt;
+      &lt;TrackObject componentReference="Dude"/&gt;
+      &lt;Position&gt;
+        &lt;x&gt;0&lt;/x&gt;
+        &lt;y&gt;0&lt;/y&gt;
+      &lt;/Position&gt;
+      &lt;RenderMask childType="String"&gt;
+        &lt;_0&gt;Renderable&lt;/_0&gt;
+      &lt;/RenderMask&gt;
+    &lt;/component&gt;
+  &lt;/entity&gt;
+  &lt;entity name="Box2D"&gt;
+    &lt;component type="PBLabs.Box2D.Box2DDebugComponent" name="Debug"&gt;
+      &lt;Scene componentReference="Scene"/&gt;
+      &lt;Manager componentReference="SpatialDB"/&gt;
+    &lt;/component&gt;
+  &lt;/entity&gt;
+  &lt;entity name="Dude"&gt;
+    &lt;component type="PBLabs.Animation.AnimatorComponent" name="FrameAnimation"&gt;
+      &lt;Reference&gt;@Render.SpriteIndex&lt;/Reference&gt;
+      &lt;DefaultAnimation&gt;Idle&lt;/DefaultAnimation&gt;
+      &lt;Animations childType="PBLabs.Animation.Animator"&gt;
+         &lt;Idle type="PBLabs.Animation.Animator"&gt;
+            &lt;StartValue type="int"&gt;0&lt;/StartValue&gt;
+            &lt;TargetValue type="int"&gt;3&lt;/TargetValue&gt;
+            &lt;Duration&gt;0.6&lt;/Duration&gt;
+            &lt;AnimationType&gt;PingPongAnimation&lt;/AnimationType&gt;
+            &lt;RepeatCount&gt;-1&lt;/RepeatCount&gt;
+         &lt;/Idle&gt;
+      &lt;/Animations&gt;
+    &lt;/component&gt;
+    &lt;component type="PBLabs.Rendering2D.SpriteRenderComponent" name="Render"&gt;
+      &lt;SpriteSheet componentReference="DudeSpriteSheet"/&gt;
+      &lt;PositionReference&gt;@Spatial.Position&lt;/PositionReference&gt;
+      &lt;RotationReference&gt;@Spatial.Rotation&lt;/RotationReference&gt;
+      &lt;SizeReference&gt;@Spatial.Size&lt;/SizeReference&gt;
+    &lt;/component&gt;
+    &lt;component type="PBLabs.Box2D.Box2DSpatialComponent" name="Spatial"&gt;
+      &lt;Manager componentReference="SpatialDB"/&gt;
+      &lt;CollisionType childType="String"&gt;
+        &lt;_0&gt;Dude&lt;/_0&gt;
+        &lt;_1&gt;Renderable&lt;/_1&gt;
+      &lt;/CollisionType&gt;
+      &lt;CollidesWithTypes childType="String"&gt;
+        &lt;_0&gt;Platform&lt;/_0&gt;
+      &lt;/CollidesWithTypes&gt;
+      &lt;Position&gt;
+        &lt;x&gt;400&lt;/x&gt;
+        &lt;y&gt;100&lt;/y&gt;
+      &lt;/Position&gt;
+      &lt;Size&gt;
+        &lt;x&gt;64&lt;/x&gt;
+        &lt;y&gt;74&lt;/y&gt;
+      &lt;/Size&gt;
+      &lt;CanRotate&gt;false&lt;/CanRotate&gt;
+      &lt;CanSleep&gt;false&lt;/CanSleep&gt;
+      &lt;CollisionShapes childType="PBLabs.Box2D.CollisionShape"&gt;
+        &lt;_0 type="PBLabs.Box2D.CircleCollisionShape"&gt;
+          &lt;Friction&gt;0&lt;/Friction&gt;
+          &lt;Radius&gt;0.5&lt;/Radius&gt;
+          &lt;Offset&gt;
+            &lt;x&gt;0&lt;/x&gt;
+            &lt;y&gt;0.5&lt;/y&gt;
+          &lt;/Offset&gt;
+        &lt;/_0&gt;
+      &lt;/CollisionShapes&gt;
+    &lt;/component&gt;
+    &lt;component type="PBLabs.StupidSampleGame.DudeController" name="Controller"&gt;
+      &lt;VelocityReference&gt;@Spatial.LinearVelocity&lt;/VelocityReference&gt;
+      &lt;Input childType="PBLabs.Engine.Core.InputKey"&gt;
+        &lt;GoLeft&gt;LEFT&lt;/GoLeft&gt;
+        &lt;GoRight&gt;RIGHT&lt;/GoRight&gt;
+        &lt;Jump&gt;UP&lt;/Jump&gt;
+      &lt;/Input&gt;
+      &lt;JumpSound filename="testSound.mp3"/&gt;
+    &lt;/component&gt;
+  &lt;/entity&gt;
+  &lt;entity name="Platform1" template="Platform"&gt;
+    &lt;component name="Spatial"&gt;
+      &lt;Position&gt;
+        &lt;x&gt;94&lt;/x&gt;
+        &lt;y&gt;450&lt;/y&gt;
+      &lt;/Position&gt;
+    &lt;/component&gt;
+  &lt;/entity&gt;
+  &lt;entity name="Platform2" template="Platform"&gt;
+    &lt;component name="Spatial"&gt;
+      &lt;Position&gt;
+        &lt;x&gt;400&lt;/x&gt;
+        &lt;y&gt;500&lt;/y&gt;
+      &lt;/Position&gt;
+    &lt;/component&gt;
+  &lt;/entity&gt;
+  &lt;entity name="Platform3" template="Platform"&gt;
+    &lt;component name="Spatial"&gt;
+      &lt;Position&gt;
+        &lt;x&gt;706&lt;/x&gt;
+        &lt;y&gt;450&lt;/y&gt;
+      &lt;/Position&gt;
+    &lt;/component&gt;
+  &lt;/entity&gt;
+  &lt;group name="Everything"&gt;
+    &lt;objectReference name="SpatialDB"/&gt;
+    &lt;objectReference name="Scene"/&gt;
+    &lt;objectReference name="Box2D"/&gt;
+    &lt;objectReference name="Dude"/&gt;
+    &lt;objectReference name="Platform1"/&gt;
+    &lt;objectReference name="Platform2"/&gt;
+    &lt;objectReference name="Platform3"/&gt;
+    &lt;objectReference name="DudeSpriteSheet"/&gt;
+    &lt;objectReference name="PlatformSpriteSheet"/&gt;
+  &lt;/group&gt;
+&lt;/things&gt;
+</pre>
+
+   <p>(If you're curious about the level format, read the <a href="05-XMLFormat.html">XML level format chapter</a> of the manual. Later tutorials will cover it in more detail, as well.)</p>
+   
+   <p>Next, we'll create a custom component for our game. Almost every game will be built from a mixture of standard components from the SDK or <a href="http://pushbuttonengine.com/2009/03/component-store-coming-soon/">component store</a>, and custom components written especially for that project. The custom component for the platformer is called DudeController, and it is responsible for taking keyboard input and using it to move the player. To make this component, go to the directory where your .fla is located. Make a new subfolder called <i>PBLabs</i>, and inside that, another subfolder called <i>StupidSampleGame</i>. In <i>StupidSampleGame</i>, create a new text file called DudeController.as and paste the following code into it:</p>
+   
+   <pre class="brush: js">
+/*******************************************************************************
+ * PushButton Engine
+ * Copyright (C) 2009 PushButton Labs, LLC
+ * For more information see http://www.pushbuttonengine.com
+ * 
+ * This file is licensed under the terms of the MIT license, which is included
+ * in the License.html file at the root directory of this SDK.
+ ******************************************************************************/
+package PBLabs.StupidSampleGame
+{
+   import PBLabs.Box2D.CollisionEvent;
+   import PBLabs.Engine.Core.ITickedObject;
+   import PBLabs.Engine.Core.InputMap;
+   import PBLabs.Engine.Core.ObjectTypeManager;
+   import PBLabs.Engine.Core.ProcessManager;
+   import PBLabs.Engine.Entity.EntityComponent;
+   import PBLabs.Engine.Entity.PropertyReference;
+   import PBLabs.Engine.Resource.ResourceManager;
+   import PBLabs.MP3Sound.MP3Resource;
+   
+   import flash.geom.Point;
+   import flash.media.Sound;
+
+   public class DudeController extends EntityComponent implements ITickedObject
+   {
+      public var VelocityReference:PropertyReference;
+      
+      public var JumpSound:MP3Resource;
+      
+      public function get Input():InputMap
+      {
+         return _inputMap;
+      }
+      
+      public function set Input(value:InputMap):void
+      {
+         _inputMap = value;
+         
+         if (_inputMap != null)
+         {
+            _inputMap.AddBinding("GoLeft", _OnLeft);
+            _inputMap.AddBinding("GoRight", _OnRight);
+            _inputMap.AddBinding("Jump", _OnJump);
+         }
+      }
+      
+      public function OnTick(tickRate:Number):void
+      {
+         var move:Number = _right - _left;
+         var velocity:Point = Owner.GetProperty(VelocityReference);
+         velocity.x = move * 100;
+         
+         if (_jump &gt; 0)
+         {
+            if (JumpSound != null && JumpSound.SoundObject)
+               JumpSound.SoundObject.play();
+            
+            velocity.y -= 200;
+            _jump = 0;
+         }
+         
+         Owner.SetProperty(VelocityReference, velocity);
+      }
+      
+      public function OnInterpolateTick(factor:Number):void
+      {
+      }
+      
+      protected override function _OnAdd():void
+      {
+         ProcessManager.Instance.AddTickedObject(this);
+         
+         Owner.EventDispatcher.addEventListener(CollisionEvent.COLLISION_EVENT, _OnCollision);
+         Owner.EventDispatcher.addEventListener(CollisionEvent.COLLISION_STOPPED_EVENT, _OnCollisionEnd);
+      }
+      
+      protected override function _OnRemove():void
+      {
+         Owner.EventDispatcher.removeEventListener(CollisionEvent.COLLISION_EVENT, _OnCollision);
+         Owner.EventDispatcher.removeEventListener(CollisionEvent.COLLISION_STOPPED_EVENT, _OnCollisionEnd);
+         
+         ResourceManager.Instance.Unload("../Assets/Sounds/testSound.mp3", MP3Resource);
+         ProcessManager.Instance.RemoveTickedObject(this);
+      }
+      
+      private function _OnCollision(event:CollisionEvent):void
+      {
+         if (ObjectTypeManager.Instance.DoesTypeOverlap(event.Collidee.CollisionType, "Platform"))
+         {
+            if (event.Normal.y &gt; 0.7)
+               _onGround++;
+         }
+         
+         if (ObjectTypeManager.Instance.DoesTypeOverlap(event.Collider.CollisionType, "Platform"))
+         {
+            if (event.Normal.y &lt; -0.7)
+               _onGround++;
+         }
+      }
+      
+      private function _OnCollisionEnd(event:CollisionEvent):void
+      {
+         if (ObjectTypeManager.Instance.DoesTypeOverlap(event.Collidee.CollisionType, "Platform"))
+         {
+            if (event.Normal.y &gt; 0.7)
+               _onGround--;
+         }
+         
+         if (ObjectTypeManager.Instance.DoesTypeOverlap(event.Collider.CollisionType, "Platform"))
+         {
+            if (event.Normal.y &lt; -0.7)
+               _onGround--;
+         }
+      }
+      
+      private function _OnLeft(value:Number):void
+      {
+         _left = value;
+      }
+      
+      private function _OnRight(value:Number):void
+      {
+         _right = value;
+      }
+      
+      private function _OnJump(value:Number):void
+      {
+         if (_onGround &gt; 0)
+            _jump = value;
+      }
+
+      private var _inputMap:InputMap;
+      private var _left:Number = 0;
+      private var _right:Number = 0;
+      private var _jump:Number = 0;
+      private var _onGround:int = 0;
+   }
+}   
+   </pre>
+   
+   <p>Next, we need to bring in some of the assets for our game. We have one sound effect and two sprite sheets. Save <a href="http://pushbuttonengine.googlecode.com/svn/trunk/Projects/Demos/PBFlexlessEngineDemo/Assets/Sounds/testSound.mp3">this MP3</a> as <i>testSound.mp3</i> in the same folder as the .fla and level.pbelevel files. This sound effect is played when the player jumps. Additionally, download <a href="http://pushbuttonengine.googlecode.com/svn/trunk/Projects/Demos/PBFlexlessEngineDemo/Assets/Images/platform.png">platform.png</a> and <a href="http://pushbuttonengine.googlecode.com/svn/trunk/Projects/Demos/PBFlexlessEngineDemo/Assets/Images/mannequin.png">mannequin.png</a> and put them in the folder as well. They are the art for the platforms and player character respective. (You may need to right click on these links and choose <i>Save As...</i> to download them to your hard drive.)</p>
+   
+   <p>Finally, choose <i>Control -&gt; Test Movie</i> to run the game. If everything went well, you'll see an animated character appear in the Flash app, and he'll drop to the ground. You can click in the window, then use the arrow keys + space to move him around and jump around on the three platforms.</p>
+   
+   <p>Congratulations, you just made your first game with PushButton Engine!</p>
+   
+   <h2>Conclusion</h2>
+   
+   <p>This chapter covered how to set up Flash CS4 to work with PushButton Engine. We walked you through creating a "Hello World" application using the SDK to make sure that everything was installed properly. Then, we covered making a basic platformer. Hopefully, all this worked perfectly for you, but if it didn't, please visit our <a href="http://pushbuttonengine.com/forum/viewforum.php?f=5">forums</a> and we'll sort it out for you.</p>
+
+   </div>
+</body>
+</html>
