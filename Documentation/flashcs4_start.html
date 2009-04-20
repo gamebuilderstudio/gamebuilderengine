@@ -12,6 +12,7 @@
    <link type="text/css" rel="stylesheet" href="js/sh/styles/shThemeDefault.css"/>
    <script type="text/javascript">
    		SyntaxHighlighter.config.clipboardSwf = 'js/sh/scripts/clipboard.swf';
+         SyntaxHighlighter.defaults['gutter'] = false;
    		SyntaxHighlighter.all();
    </script>
    <title>Getting Started With Flash CS4</title>
@@ -61,7 +62,7 @@
    Logger.Print(this, "Hello, world!");   
    </pre>
    
-   <p>Save your work by choosing <i>File -&gt; Save...</i> from the menu. Then, choose <i>Control -&gt; Test Movie</i> to run your code. A blank window will pop up, and the output pane in Flash CS4 will display the following:</p>
+   <p>Save your work by choosing <i>File -&gt; Save...</i> from the menu. Name it <i>HelloWorld.fla</i>. Then, choose <i>Control -&gt; Test Movie</i> to run your code. A blank window will pop up, and the output pane in Flash CS4 will display the following:</p>
    
    <pre class="brush: text">
    [object MainTimeline] - Hello, world!
@@ -107,7 +108,7 @@ import PBLabs.Animation.AnimatorComponent;PBLabs.Animation.AnimatorComponent;
 import PBLabs.Rendering2D.UI.SceneView;PBLabs.Rendering2D.UI.SceneView;
    </pre>
    
-   <p>Save your work by choosing <i>File -&gt; Save...</i> from the menu. It doesn't matter what you call the file as long as you know where it is. Then, go to the folder where you saved your <i>.fla</i>, and create a new file called <i>level.pbelevel</i>. This file will contain XML description of all the objects in the game. Open it in your favorite text editor, and paste the following into it:</p>
+   <p>Save your work by choosing <i>File -&gt; Save...</i> from the menu. Name the file <i>Platformer.fla</i>. Then, go to the folder where you saved <i>Platformer.fla</i>, and create a new file called <i>level.pbelevel</i>. This file will contain XML description of all the objects in the game. Open it in Notepad (on Windows) or TextEdit (on OS X), and paste the following into the file:</p>
    
    <pre class="brush: xml">
 &lt;things version="1"&gt;
@@ -135,11 +136,11 @@ import PBLabs.Rendering2D.UI.SceneView;PBLabs.Rendering2D.UI.SceneView;
     &lt;component type="PBLabs.Box2D.Box2DSpatialComponent" name="Spatial"&gt;
       &lt;Manager componentReference="SpatialDB"/&gt;
       &lt;CollisionType childType="String"&gt;
-        &lt;_0&gt;Platform&lt;/_0&gt;
-        &lt;_1&gt;Renderable&lt;/_1&gt;
+        &lt;_&gt;Platform&lt;/_&gt;
+        &lt;_&gt;Renderable&lt;/_&gt;
       &lt;/CollisionType&gt;
       &lt;CollidesWithTypes childType="String"&gt;
-        &lt;_0&gt;Dude&lt;/_0&gt;
+        &lt;_&gt;Dude&lt;/_&gt;
       &lt;/CollidesWithTypes&gt;
       &lt;Size&gt;
         &lt;x&gt;256&lt;/x&gt;
@@ -187,7 +188,7 @@ import PBLabs.Rendering2D.UI.SceneView;PBLabs.Rendering2D.UI.SceneView;
         &lt;y&gt;0&lt;/y&gt;
       &lt;/Position&gt;
       &lt;RenderMask childType="String"&gt;
-        &lt;_0&gt;Renderable&lt;/_0&gt;
+        &lt;_&gt;Renderable&lt;/_&gt;
       &lt;/RenderMask&gt;
     &lt;/component&gt;
   &lt;/entity&gt;
@@ -220,11 +221,11 @@ import PBLabs.Rendering2D.UI.SceneView;PBLabs.Rendering2D.UI.SceneView;
     &lt;component type="PBLabs.Box2D.Box2DSpatialComponent" name="Spatial"&gt;
       &lt;Manager componentReference="SpatialDB"/&gt;
       &lt;CollisionType childType="String"&gt;
-        &lt;_0&gt;Dude&lt;/_0&gt;
-        &lt;_1&gt;Renderable&lt;/_1&gt;
+        &lt;_&gt;Dude&lt;/_&gt;
+        &lt;_&gt;Renderable&lt;/_&gt;
       &lt;/CollisionType&gt;
       &lt;CollidesWithTypes childType="String"&gt;
-        &lt;_0&gt;Platform&lt;/_0&gt;
+        &lt;_&gt;Platform&lt;/_&gt;
       &lt;/CollidesWithTypes&gt;
       &lt;Position&gt;
         &lt;x&gt;400&lt;/x&gt;
@@ -237,14 +238,14 @@ import PBLabs.Rendering2D.UI.SceneView;PBLabs.Rendering2D.UI.SceneView;
       &lt;CanRotate&gt;false&lt;/CanRotate&gt;
       &lt;CanSleep&gt;false&lt;/CanSleep&gt;
       &lt;CollisionShapes childType="PBLabs.Box2D.CollisionShape"&gt;
-        &lt;_0 type="PBLabs.Box2D.CircleCollisionShape"&gt;
+        &lt;_ type="PBLabs.Box2D.CircleCollisionShape"&gt;
           &lt;Friction&gt;0&lt;/Friction&gt;
           &lt;Radius&gt;0.5&lt;/Radius&gt;
           &lt;Offset&gt;
             &lt;x&gt;0&lt;/x&gt;
             &lt;y&gt;0.5&lt;/y&gt;
           &lt;/Offset&gt;
-        &lt;/_0&gt;
+        &lt;/_&gt;
       &lt;/CollisionShapes&gt;
     &lt;/component&gt;
     &lt;component type="PBLabs.StupidSampleGame.DudeController" name="Controller"&gt;
@@ -297,7 +298,7 @@ import PBLabs.Rendering2D.UI.SceneView;PBLabs.Rendering2D.UI.SceneView;
 
    <p>(If you're curious about the level format, read the <a href="05-XMLFormat.html">XML level format chapter</a> of the manual. Later tutorials will cover it in more detail, as well.)</p>
    
-   <p>Next, we'll create a custom component for our game. Almost every game will be built from a mixture of standard components from the SDK or <a href="http://pushbuttonengine.com/2009/03/component-store-coming-soon/">component store</a>, and custom components written especially for that project. The custom component for the platformer is called DudeController, and it is responsible for taking keyboard input and using it to move the player. To make this component, go to the directory where your .fla is located. Make a new subfolder called <i>PBLabs</i>, and inside that, another subfolder called <i>StupidSampleGame</i>. In <i>StupidSampleGame</i>, create a new text file called DudeController.as and paste the following code into it:</p>
+   <p>Next, we'll create a custom component for our game. Almost every game will be built from a mixture of standard components from the SDK or <a href="http://pushbuttonengine.com/2009/03/component-store-coming-soon/">component store</a>, and custom components written especially for that project. The custom component for the platformer is called DudeController, and it is responsible for taking keyboard input and using it to move the player. To make this component, go to the directory where your .fla is located. Make a new subfolder called <i>PBLabs</i>, and inside that, another subfolder called <i>StupidSampleGame</i>. In <i>StupidSampleGame</i>, create a new empty file called DudeController.as, open it with Flash CS4, and paste the following code into it:</p>
    
    <pre class="brush: js">
 /*******************************************************************************
@@ -440,7 +441,7 @@ package PBLabs.StupidSampleGame
 }   
    </pre>
    
-   <p>Next, we need to bring in some of the assets for our game. We have one sound effect and two sprite sheets. Save <a href="http://pushbuttonengine.googlecode.com/svn/trunk/Projects/Demos/PBFlexlessEngineDemo/Assets/Sounds/testSound.mp3">this MP3</a> as <i>testSound.mp3</i> in the same folder as the .fla and level.pbelevel files. This sound effect is played when the player jumps. Additionally, download <a href="http://pushbuttonengine.googlecode.com/svn/trunk/Projects/Demos/PBFlexlessEngineDemo/Assets/Images/platform.png">platform.png</a> and <a href="http://pushbuttonengine.googlecode.com/svn/trunk/Projects/Demos/PBFlexlessEngineDemo/Assets/Images/mannequin.png">mannequin.png</a> and put them in the folder as well. They are the art for the platforms and player character respective. (You may need to right click on these links and choose <i>Save As...</i> to download them to your hard drive.)</p>
+   <p>Next, we need to bring in some of the assets for our game. We have one sound effect and two sprite sheets. Save <a href="http://pushbuttonengine.googlecode.com/svn/trunk/Projects/Demos/PBFlexlessEngineDemo/Assets/Sounds/testSound.mp3">this MP3</a> as <i>testSound.mp3</i> in the same folder as the .fla and level.pbelevel files. This sound effect is played when the player jumps. Additionally, download <a href="http://pushbuttonengine.googlecode.com/svn/trunk/Projects/Demos/PBFlexlessEngineDemo/Assets/Images/platform.png">platform.png</a> and <a href="http://pushbuttonengine.googlecode.com/svn/trunk/Projects/Demos/PBFlexlessEngineDemo/Assets/Images/mannequin.png">mannequin.png</a> and put them in the folder as well. They are the art for the platforms and player character respectively. (You may need to right click on these links and choose <i>Save As...</i> to download them to your hard drive.)</p>
    
    <p>Finally, choose <i>Control -&gt; Test Movie</i> to run the game. If everything went well, you'll see an animated character appear in the Flash app, and he'll drop to the ground. You can click in the window, then use the arrow keys + space to move him around and jump around on the three platforms.</p>
    
