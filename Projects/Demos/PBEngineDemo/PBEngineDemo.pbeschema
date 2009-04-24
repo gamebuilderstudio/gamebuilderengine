@@ -1,8 +1,8 @@
 <PBESchema>
 	<Components>
-		<PBLabs.PBEngineDemo.DudeController>
+		<PBLabs.StupidSampleGame.DudeController>
 			<PBLabs.Engine.Entity.PropertyReference type="flash.geom.Point">VelocityReference</PBLabs.Engine.Entity.PropertyReference>
 			<PBLabs.Engine.Core.InputMap>Input</PBLabs.Engine.Core.InputMap>
-		</PBLabs.PBEngineDemo.DudeController>
+		</PBLabs.StupidSampleGame.DudeController>
 	</Components>
 </PBESchema>

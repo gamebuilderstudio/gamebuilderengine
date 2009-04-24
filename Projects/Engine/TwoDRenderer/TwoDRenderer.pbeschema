@@ -2,8 +2,7 @@
 	<Components>
 		<PBLabs.Rendering2D.BasicSpatialManager2D parent="PBLabs.Rendering2D.ISpatialManager2D"/>
 		<PBLabs.Rendering2D.SpriteSheetComponent>
-			<String>ImageFilename</String>
-			<ImageResource type="Resource">Image</ImageResource>
+			<PBLabs.Rendering2D.ImageResource type="Resource">Image</PBLabs.Rendering2D.ImageResource>
 			<PBLabs.Rendering2D.ISpriteSheetDivider type="Instance">Divider</PBLabs.Rendering2D.ISpriteSheetDivider>
 			<flash.geom.Point>Center</flash.geom.Point>
 			<int>DirectionsPerFrame</int>
@@ -17,8 +16,8 @@
 			<int>RenderSortKey</int>
 			<int>LayerIndex</int>
 			<int>SpriteIndex</int>
-			<Boolean>FlipX</Boolean>
-			<Boolean>FlipY</Boolean>
+			<Boolean value="false">FlipX</Boolean>
+			<Boolean value="false">FlipY</Boolean>
 		</PBLabs.Rendering2D.SpriteRenderComponent>
 		<PBLabs.Rendering2D.Scene2DComponent parent="PBLabs.Rendering2D.IDrawManager2D">
 		   <String>SceneViewName</String>
@@ -52,11 +51,11 @@
 	   </PBLabs.Animation.Animator>
 	   <PBLabs.Animation.PointAnimator parent="PBLabs.Animation.Animator">
 	   </PBLabs.Animation.PointAnimator>
-	   <PBLabs.Animation.AnimatorType>
-	      <Enum>NoAnimation</Enum>
-	      <Enum>PlayAnimationOnce</Enum>
-	      <Enum>LoopAnimation</Enum>
-	      <Enum>PingPongAnimation</Enum>
+	   <PBLabs.Animation.AnimatorType isEnum="true">
+	      <Entry>NoAnimation</Entry>
+	      <Entry>PlayAnimationOnce</Entry>
+	      <Entry>LoopAnimation</Entry>
+	      <Entry>PingPongAnimation</Entry>
 	   </PBLabs.Animation.AnimatorType>
 		<PBLabs.Rendering2D.IDrawManager2D/>
 		<PBLabs.Rendering2D.ISpriteSheetDivider/>
@@ -69,6 +68,9 @@
 			<int value="1">YCount</int>
 		</PBLabs.Rendering2D.CellCountDivider>
 		<PBLabs.Rendering2D.ImageResource>
+		   <Extension>png</Extension>
+		   <Extension>jpg</Extension>
+		   <Extension>gif</Extension>
 		</PBLabs.Rendering2D.ImageResource>
 	</Types>
 </PBESchema>

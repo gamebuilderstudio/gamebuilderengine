@@ -7,7 +7,7 @@
   <AuthorEmail>pbe@pushbuttonlabs.com</AuthorEmail>
   <Dependencies>
     <Dependency>
-      <Name>BoxTwoDPhysics</Name>
+      <Name>TwoDRenderer</Name>
       <Version>1.0.0</Version>
     </Dependency>
     <Dependency>
@@ -19,7 +19,7 @@
       <Version>1.0.0</Version>
     </Dependency>
     <Dependency>
-      <Name>TwoDRenderer</Name>
+      <Name>BoxTwoDPhysics</Name>
       <Version>1.0.0</Version>
     </Dependency>
   </Dependencies>
