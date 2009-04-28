@@ -10,6 +10,7 @@ package PBLabs.Rendering2D
 {
    import PBLabs.Engine.Entity.*;
    import PBLabs.Engine.Core.*;
+   import PBLabs.Engine.Debug.*;
    
    import flash.display.*;
    import flash.geom.*;
@@ -100,7 +101,10 @@ package PBLabs.Rendering2D
          }
          
          if (SceneView == null)
+         {
+            Logger.PrintWarning(this, "_Render", "No SceneView found!");
             return;
+         }
          
          // Wipe all our existing renderables.
          SceneView.ClearDisplayObjects();
