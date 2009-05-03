@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+   <link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+   <script type="text/javascript" src="js/pageToc.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shCore.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushJScript.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushPhp.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushPlain.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushXml.js"></script>
+   <link type="text/css" rel="stylesheet" href="js/sh/styles/shCore.css"/>
+   <link type="text/css" rel="stylesheet" href="js/sh/styles/shThemeDefault.css"/>
+   <script type="text/javascript">
+   		SyntaxHighlighter.config.clipboardSwf = 'js/sh/scripts/clipboard.swf';
+   		SyntaxHighlighter.all();
+   </script>
+   <title>PushButton Engine Overview from 10,000 Distance Units</title>
+</head>
+<body>
+
+   <h1>PushButton Engine Overview from 10,000 Distance Units</h1>
+   
+   <p>The purpose of this document is to give the reader a grasp of how PBEngine is organized, and to help explain some of the vocabulary for someone who is new to PBEngine (but not necessarily new to programming).</p>
+   
+   <div id="pageToc"></div>
+
+   <div id="contentArea">
+
+   <h2>The PBEngine Level</h2>
+
+   <p>One of the core files in creating a game with PBEngine is the "pbelevel" (or simply "level") file.  A level file defines the "things" that go into a game.</p>
+
+   <p>To start with, there are three things that can go into a level file.  <strong>Entities</strong>, <strong>Templates</strong>, and <strong>Groups</strong>.</p>
+
+   <img src="images/LevelOverview-Structure.png" alt="Overview of a PBEngine level structure" />
+
+   <h2>Entities</h2>
+   <img src="images/LevelOverview-chassis.png" alt="Rolling car chassis (image credit to Exfordy: http://www.flickr.com/photos/exfordy/357409584/ )" align="right"/>
+   <p>An Entity is an object that lives inside of the context of the game.  It either represents something (such as a player or an enemy), or it manages something (such as a physics engine, or a graphical renderer).</p>
+   <p>You can think of an entity as a bare chassis, or as an empty bucket -- it's a solid framework for bolting things to, but by itself, it doesn't do much.</p>
+   
+   <h2>Components</h2>
+      <img src="images/LevelOverview-building_blocks.png" alt="Building Blocks (image credit to Woodleywonderworks: http://www.flickr.com/photos/wwworks/2475349116/ )" align="right"/>
+      <p>The beauty of PushButton Engine lies in its flexibility for modularity and code re-use.  The most common module for such flexibility is the <strong>Component</strong>.  Components are versatile objects that are used to add functionality and behavior to entities.  Code modules are often wrapped up into one or several components.  For example, a physics library might have a manager component to keep track of the physics simulation parameters, and there might be a component to add physics-based movement to game entities.  In this way, the physics engine is modularized into two pieces, to give users a simple yet powerful interface to the behavior.</p>
+
+      <p>Components don't live in the game world by themselves -- they must be attached to an entity.</p>
+      <p>Through the Component Store, PushButton Engine makes it convenient for users to find components to use in projects, as well as providing a way for users to share their own components with other users.</p>
+      <h3>Properties</h3>
+         <p>Many components have configurable settings that can be defined in the level file.  These settings are configured through <strong>Properties</strong>.</p>
+         <p>Properties are flexible, in that they can reference other Components, Entities, Templates or Groups by name, they can hold complex values such as arrays or custom object structures, or they can just hold simple values such as a number or a string.</p>
+         <p>When a property refers to another object in the level, it does so through a Reference that looks up another level object by its name.  This is one of the most important reasons why Entities, Templates, and Groups should all have unique names, so that they can be referred to by that name when needed.</p>
+   <h2>Inheritance</h2>
+      <p>To simplify creation of game levels, game entities can inherit from <strong>Templates</strong>.  See the section below for more information on what templates are.</p>
+      <p>With PB Engine, entities can <em>override</em> the specifications of its parent template.  This means that if both the template and the entity define a property and they differ (such as if the template defines a color as blue, and the entity defines the same color as red), then the entity's value (because it is lower in the chain) will <em>override</em> the template's value (and the final color used in the example would be red).
+   <h2>Templates</h2>
+   <img src="images/LevelOverview-cookie_cutters.png" alt="Cookie Cutters (image credit to Headexplodie: http://www.flickr.com/photos/anniewong/76812536/ )" align="right"/>
+   <p>Templates look almost exactly like Entities.  Just like entities, they are named, they contain components, and <strong>they can even inherit from other templates</strong>.  However, their chief difference is that they don't instantiate and "live" inside of the context of the game world in the same way that Entities do.  They serve merely to define <em>potential</em> objects, as a pattern for quickly making a wide array of similar objects.</p>
+
+   <p>You can think of templates like cookie-cutters or blueprints -- they aren't cookies themselves, but they allow a large number of similar entities to be stamped out very quickly by a single base pattern.</p>
+
+   <p>This doesn't mean that all entities created from a template must be identical in every way, just as cookies cut from a common cutter can all be frosted differently, or even re-shaped afterwards.  The template gives a descendant entity or template a starting point, but any properties can be overridden by children.</p>
+   <p>Inheritance from templates can simplify the structure of Level Files.  For entities or templates that have similarities, they allow the developer to define the identical components of similar entities in a single place.  If a game level had twenty enemy entities in it that shared a common sprite, a template that included the components that were common between all enemy entities, it could greatly simplify the level file, and make it easier to change all enemy entities at once.</p>
+   
+   <h2>Groups</h2>
+   <p>When PushButton Engine needs to access a large number of entities, it often does so through <strong>Groups</strong>.  Groups are just simple lists that reference entities in the level by name.  
+   
+   <h2>Glossary Summary</h2>
+      <ul>
+         <li><strong>PushButton Engine:</strong><ul>
+            <li>An open-source modular game engine that provides a framework for component-based Flash game development.
+            </li></ul>
+         </li>
+         <li><strong>Things:</strong><ul>
+            <li>One of three kinds of objects in a PushButton Engine level -- an <strong>Entity</strong>, a <strong>Template</strong>, or a <strong>Group</strong>.
+            </ul></li>
+         <li><strong>Entities:</strong><ul>
+            <li>An instance of an object that lives inside of the context of the game world.</li>
+            <li>Are foundational structures that components can be bolted to.</li>
+            <li>Have no functionality without components.</li>
+            <li>Represent in-game objects.</li>
+            <li>They can contain components.</li>
+            <li>They can optionally inherit from a template.</li>
+            <li>They can belong to groups.</li>
+            <li>Examples might be a bullet, a bad guy, a world physics manager, or a graphics renderer.</li>
+            </ul>
+         </li>
+
+         <li><strong>Templates:</strong><ul>
+            <li>A pattern for Entities that have similarities, allowing the developer to define the identical components of similar entities in a single place.</li></ul>
+         <li><strong>Groups:</strong><ul>
+            <li>A collection of entities to simplify references to large numbers of entities.
+            </li></ul>
+         </li> 
+         <li><strong>Components:</strong><ul>
+            <li>A modularized piece of game logic that is attached to an entity.</li>
+            <li>Cannot be instantiated on its own -- a component must exist in the context of an owner entity.</li>
+            <li>Components can be bought and sold in the Component Store.</li> 
+            </li></ul>
+         </li>
+         <li><strong>Properties:</strong><ul>
+            <li>Configurable component parameters.</li>
+            <li>Can be simple or complex values, as well as reference other Things in the level by name.
+            </li></ul>
+         </li>
+         <li><strong>References:</strong><ul>
+            <li>A by-name reference to a Thing in a game level.</li>
+            <li>An example might be a rendering component referencing a physics component to obtain drawing position and rotation information.
+            </li></ul>
+         </li>
+         <li><strong>Resources:</strong><ul>
+            <li>A data file that is loaded into a game, either included in the .swf at compile time, or loaded from a URL at run-time.</li>
+            <li>An example might be a bitmap graphic or a sound file.
+            </li></ul>
+         </li>
+         <li><strong>Level Files:</strong><ul>
+            <li>An XML file that is used to define Things for use in a game.
+            </li></ul>
+         </li>
+         <li><strong>Code Files:</strong><ul>
+            <li>An AS3 source file that defines game logic and can be referenced by components to add functionality and behavior to game entities.
+            </li></ul>
+         </li>
+       </ul>
+    </div>
+</body>
+</html>
