@@ -325,8 +325,14 @@ package PBLabs.Engine.Core
       private function _OnLoaded(resource:XMLResource):void
       {
          var version:int = resource.XMLData.attribute("version");
+         var thingCount:int = 0;
          for each(var xml:XML in resource.XMLData.*)
+         {
+            thingCount++;
             AddXML(xml, resource.Filename, version);
+         }
+         
+         Logger.Print(this, "Loaded " + thingCount + " from " + resource.Filename);
          
          dispatchEvent(new Event(LOADED_EVENT));
       }

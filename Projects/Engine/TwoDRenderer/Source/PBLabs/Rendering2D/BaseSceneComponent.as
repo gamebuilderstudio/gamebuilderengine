@@ -150,6 +150,10 @@ package PBLabs.Rendering2D
        */
       public function DrawBitmapData(bitmap:BitmapData, matrix:Matrix):void
       {
+         // Make a dummy matrix if non is provided.
+         if(!matrix)
+            matrix = new Matrix();
+            
          if (_CurrentRenderTarget == null)
          {
             // Make a dummy sprite and draw into it.
