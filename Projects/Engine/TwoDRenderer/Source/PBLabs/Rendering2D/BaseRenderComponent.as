@@ -47,7 +47,7 @@ package PBLabs.Rendering2D
        */
       public function get RenderSortKey():int
       {
-         return _renderSortKey;
+         return _RenderSortKey;
       }
       
       /**
@@ -55,15 +55,30 @@ package PBLabs.Rendering2D
        */
       public function set RenderSortKey(value:int):void
       {
-         _renderSortKey = value;
+         _RenderSortKey = value;
       }
       
+      public function get RenderCacheKey():int
+      {
+         return _RenderCacheKey;
+      }
+      
+      public function set RenderCacheKey(v:int):void
+      {
+         _RenderCacheKey = v;
+      }
+
+      public function InvalidateRenderCache():void
+      {
+         _RenderCacheKey = RenderCacheKeyManager.Token++;
+      }
+
       /**
        * @inheritDoc
        */
       public function get LayerIndex():int
       {
-         return _layerIndex;
+         return _LayerIndex;
       }
       
       /**
@@ -71,7 +86,7 @@ package PBLabs.Rendering2D
        */
       public function set LayerIndex(value:int):void
       {
-         _layerIndex = value;
+         _LayerIndex = value;
       }
       
       /**
@@ -95,7 +110,6 @@ package PBLabs.Rendering2D
          throw new Error("Derived classes must implement this method!");
       }
       
-      private var _layerIndex:int = 0;
-      private var _renderSortKey:int = 0;
+      private var _LayerIndex:int, _RenderSortKey:int, _RenderCacheKey:int;
    }
 }

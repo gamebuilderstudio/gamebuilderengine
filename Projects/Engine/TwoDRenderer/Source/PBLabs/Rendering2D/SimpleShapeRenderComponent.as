@@ -39,6 +39,6 @@ package PBLabs.Rendering2D
         manager.DrawDisplayObject(_DummySprite);
      }
 	   
-	   var _DummySprite:Sprite = new Sprite();
+	  protected var _DummySprite:Sprite = new Sprite();
 	}
 }

@@ -41,6 +41,18 @@ package PBLabs.Rendering2D
       function set RenderSortKey(v:int):void;
       
       /**
+       * Expose a cache key. This integer is used to detect when a display layer
+       * cache has been invalidated.
+       */
+      function set RenderCacheKey(v:int):void;
+      function get RenderCacheKey():int;
+      
+      /**
+       * When called, update the cache key so we force a redraw.
+       */ 
+      function InvalidateRenderCache():void; 
+
+      /**
        * Callback during rendering to give the object an opportunity to give the
        * IDrawManager2D stuff to display.
        * 

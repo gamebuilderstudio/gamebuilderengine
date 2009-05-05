@@ -43,6 +43,18 @@ package PBLabs.Rendering2D
          _objectList.splice(index, 1);
       }
       
+      private function boxVsBox(box1:Rectangle, box2:Rectangle):Boolean
+      {
+         if(box1.containsPoint(box2.topLeft))
+            return true;
+         if(box1.containsPoint(box2.bottomRight))
+            return true;
+         if(box2.containsPoint(box1.topLeft))
+            return true;
+         if(box2.containsPoint(box1.bottomRight))
+            return true;
+         return false;
+      }
       /**
        * @inheritDoc
        */
@@ -54,7 +66,7 @@ package PBLabs.Rendering2D
             if (!ObjectTypeManager.Instance.DoTypesOverlap(object.QueryMask, mask))
                continue;
             
-            if (!object.WorldExtents.intersects(box))
+            if(boxVsBox(object.WorldExtents, box) == false)
                continue;
             
             results.push(object);

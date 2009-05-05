@@ -10,6 +10,7 @@ package PBLabs.Rendering2D
 {
    import PBLabs.Engine.Entity.EntityComponent;
    import PBLabs.Engine.Core.*;
+   import PBLabs.Engine.Components.*;
    
    import flash.geom.Point;
    import flash.geom.Rectangle;
@@ -18,7 +19,7 @@ package PBLabs.Rendering2D
     * Very basic spatial component that exists at a position. Velocity can be
     * applied, but no physical simulation is done.
     */ 
-   public class SimpleSpatialComponent extends EntityComponent implements ITickedObject, ISpatialObject2D
+   public class SimpleSpatialComponent extends TickedComponent implements ISpatialObject2D
    {
       /**
        * The spatial manager this object belongs to.
@@ -48,7 +49,7 @@ package PBLabs.Rendering2D
       /**
        * @inheritDoc
        */
-      public function OnTick(tickRate:Number):void
+      public override function OnTick(tickRate:Number):void
       {
          Position.x += Velocity.x * tickRate;
          Position.y += Velocity.y * tickRate;
@@ -57,17 +58,9 @@ package PBLabs.Rendering2D
       /**
        * @inheritDoc
        */
-      public function OnInterpolateTick(factor:Number):void
-      {
-      }
-      
-      /**
-       * @inheritDoc
-       */
       protected override function _OnAdd():void
       {
          SpatialManager.AddSpatialObject(this);
-         ProcessManager.Instance.AddTickedObject(this);
       }
       
       /**
@@ -76,7 +69,6 @@ package PBLabs.Rendering2D
       protected override function _OnRemove():void
       {
          SpatialManager.RemoveSpatialObject(this);
-         ProcessManager.Instance.RemoveTickedObject(this);
       }
       
       /**

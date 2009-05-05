@@ -19,6 +19,13 @@ package PBLabs.Engine.Components
    public class TickedComponent extends EntityComponent implements ITickedObject
    {
       /**
+       * Will we actually register for ticks? This is provided so that subclasses
+       * can set it to false in their constructors if they don't actually want
+       * ticks.
+       */
+      public var RegisterForTicks:Boolean = true;
+      
+      /**
        * The update priority for this component. Higher numbered priorities have
        * OnInterpolateTick and OnTick called before lower priorities.
        */
@@ -40,12 +47,14 @@ package PBLabs.Engine.Components
       
       protected override function _OnAdd():void
       {
-         ProcessManager.Instance.AddTickedObject(this, UpdatePriority);
+         if(RegisterForTicks)
+            ProcessManager.Instance.AddTickedObject(this, UpdatePriority);
       }
       
       protected override function _OnRemove():void
       {
-         ProcessManager.Instance.RemoveTickedObject(this);
+         if(RegisterForTicks)
+            ProcessManager.Instance.RemoveTickedObject(this);
       }
    }
 }

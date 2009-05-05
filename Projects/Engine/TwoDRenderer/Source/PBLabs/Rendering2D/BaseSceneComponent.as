@@ -36,13 +36,13 @@ package PBLabs.Rendering2D
        */
       public function get SceneView():IUITarget
       {
-         if (_sceneView != null)
-            return _sceneView;
+         if (_SceneView != null)
+            return _SceneView;
          
-         if (_sceneViewName != null)
-            _sceneView = Global.FindChild(_sceneViewName) as IUITarget;
+         if (_SceneViewName != null)
+            _SceneView = Global.FindChild(_SceneViewName) as IUITarget;
          
-         return _sceneView;
+         return _SceneView;
       }
       
       /**
@@ -50,7 +50,7 @@ package PBLabs.Rendering2D
        */
       public function set SceneView(value:IUITarget):void
       {
-         _sceneView = value;
+         _SceneView = value;
       }
       
       /**
@@ -58,8 +58,8 @@ package PBLabs.Rendering2D
        */
       public function set SceneViewName(value:String):void
       {
-         _sceneViewName = value;
-         _sceneView = null;
+         _SceneViewName = value;
+         _SceneView = null;
       }
       
       /**
@@ -67,7 +67,7 @@ package PBLabs.Rendering2D
        */
       public function get SceneViewName():String
       {
-         return _sceneViewName;
+         return _SceneViewName;
       }
       
       /**
@@ -75,7 +75,7 @@ package PBLabs.Rendering2D
        */
       public function get LastDrawnItem():IDrawable2D
       {
-         return _lastDrawn;
+         return _LastDrawn;
       }
       
       /**
@@ -83,7 +83,7 @@ package PBLabs.Rendering2D
        */
       public function get NextDrawnItem():IDrawable2D
       {
-         return _nextDrawn;
+         return _NextDrawn;
       }
       
       /**
@@ -104,6 +104,10 @@ package PBLabs.Rendering2D
        */
       public var CacheLayers:Array = new Array(LAYER_COUNT);
       
+      private var _typeHint_CacheLayers:String = "Boolean";
+      
+      private var _CacheLayerKey:Array = new Array(LAYER_COUNT);
+
       /**
        * @inheritDoc
        */
@@ -135,10 +139,10 @@ package PBLabs.Rendering2D
        */
       public function DrawDisplayObject(object:DisplayObject):void
       {
-         if (_currentRenderTarget == null)
+         if (_CurrentRenderTarget == null)
             SceneView.AddDisplayObject(object);
          else
-            _currentRenderTarget.draw(object, object.transform.matrix);
+            _CurrentRenderTarget.draw(object, object.transform.matrix);
       }
       
       /**
@@ -146,7 +150,7 @@ package PBLabs.Rendering2D
        */
       public function DrawBitmapData(bitmap:BitmapData, matrix:Matrix):void
       {
-         if (_currentRenderTarget == null)
+         if (_CurrentRenderTarget == null)
          {
             // Make a dummy sprite and draw into it.
             var dummy:Sprite = new Sprite();
@@ -159,7 +163,7 @@ package PBLabs.Rendering2D
          }
          else
          {
-            _currentRenderTarget.draw(bitmap, matrix);
+            _CurrentRenderTarget.draw(bitmap, matrix);
          }
       }
       
@@ -168,7 +172,7 @@ package PBLabs.Rendering2D
        */
       public function GetBackBuffer():BitmapData
       {
-         return _currentRenderTarget;
+         return _CurrentRenderTarget;
       }
       
       /**
@@ -176,7 +180,7 @@ package PBLabs.Rendering2D
        */
       public function AddAlwaysDrawnItem(item:IDrawable2D):void
       {
-         _alwaysDrawnList.push(item);
+         _AlwaysDrawnList.push(item);
       }
       
       /**
@@ -184,14 +188,14 @@ package PBLabs.Rendering2D
        */
       public function RemoveAlwaysDrawnItem(item:IDrawable2D):void
       {
-         var index:int = _alwaysDrawnList.indexOf(item);
+         var index:int = _AlwaysDrawnList.indexOf(item);
          if (index == -1)
          {
             Logger.PrintWarning(this, "RemoveInterstitialDrawer", "The object isn't in the always draw list");
             return;
          }
          
-         _alwaysDrawnList.splice(index, 1);
+         _AlwaysDrawnList.splice(index, 1);
       }
       
       /**
@@ -199,7 +203,7 @@ package PBLabs.Rendering2D
        */
       public function AddInterstitialDrawer(object:IDrawable2D):void
       {
-         _interstitialDrawnList.push(object);
+         _InterstitialDrawnList.push(object);
       }
       
       /**
@@ -207,14 +211,14 @@ package PBLabs.Rendering2D
        */
       public function RemoveInterstitialDrawer(object:IDrawable2D):void
       {
-         var index:int = _interstitialDrawnList.indexOf(object);
+         var index:int = _InterstitialDrawnList.indexOf(object);
          if (index == -1)
          {
             Logger.PrintWarning(this, "RemoveInterstitialDrawer", "The object isn't in the interstitial draw list");
             return;
          }
          
-         _interstitialDrawnList.splice(index, 1);
+         _InterstitialDrawnList.splice(index, 1);
       }
       
       /**
@@ -223,6 +227,9 @@ package PBLabs.Rendering2D
        * @param layerIndex The layer to check.
        * 
        * @return True if the layer is marked to be cached, false otherwise.
+       */ 
+      /**
+       * If the specified layer should be cached to a bitmap, returns true.
        */ 
       public function IsLayerCached(layerIndex:int):Boolean
       {
@@ -242,12 +249,12 @@ package PBLabs.Rendering2D
          if (!IsLayerCached(layerIndex))
             return;
          
-         var bitmap:BitmapData = _layerCache[layerIndex] as BitmapData;
+         var bitmap:BitmapData = _LayerCache[layerIndex] as BitmapData;
          if (bitmap == null)
             return;
          
          bitmap.dispose();
-         _layerCache[layerIndex] = null;
+         _LayerCache[layerIndex] = null;
       }
       
       /**
@@ -263,17 +270,28 @@ package PBLabs.Rendering2D
        * Checks if a cached layer needs to be drawn.
        * 
        * @param layerIndex The layer to check.
+       * @param layerContents What's in the layer, if we know.
        * 
        * @return True if the layer should be drawn, false otherwise.
        */
-      public function DoesLayerNeedUpdate(layerIndex:int):Boolean
+      public function DoesLayerNeedUpdate(layerIndex:int, layerContents:Array):Boolean
       {
-         if (!IsLayerCached(layerIndex))
-            return false;
-         
-         if (_layerCache[layerIndex] == null)
+         // Make sure we have a valid bitmap - no bitmap means no cache!
+         if(!_LayerCache[layerIndex])
+            return true;
+
+         // If it's not supposed to be cached, then needs an update.
+         if(!IsLayerCached(layerIndex))
             return true;
          
+         // If contents are provided, check that everything is older than the
+         // cache.
+         var oldCacheKey:int = _CacheLayerKey[layerIndex];
+         for each(var d:IDrawable2D in layerContents)
+            if(d.RenderCacheKey != oldCacheKey)
+               return true;
+         
+         // Nope, no update required!
          return false;
       } 
       
@@ -292,7 +310,7 @@ package PBLabs.Rendering2D
             return null;
          }
          
-         var bitmap:BitmapData = _layerCache[layerIndex] as BitmapData;
+         var bitmap:BitmapData = _LayerCache[layerIndex] as BitmapData;
          
          // Make sure it is the size of our sprite.
          if (!bitmap || (bitmap.width != SceneView.width) || (bitmap.height != SceneView.height))
@@ -304,7 +322,7 @@ package PBLabs.Rendering2D
             bitmap = new BitmapData(SceneView.width, SceneView.height, true, 0x0);
 
             // Store it into the cache.
-            _layerCache[layerIndex] = bitmap;
+            _LayerCache[layerIndex] = bitmap;
          }
 
          return bitmap;
@@ -323,19 +341,19 @@ package PBLabs.Rendering2D
       protected override function _OnRemove():void 
       {
          ProcessManager.Instance.RemoveAnimatedObject(this);
-         _sceneView = null;
+         _SceneView = null;
       }
       
       protected function _DrawSortedLayers(layerList:Array):void
       {
          // Lock for performance.
-         if (_currentRenderTarget)
-            _currentRenderTarget.lock();
+         if (_CurrentRenderTarget)
+            _CurrentRenderTarget.lock();
          
          // Clear last/next state.
-         _lastDrawn = _nextDrawn = null;
+         _LastDrawn = _NextDrawn = null;
          
-         var rtStack:BitmapData = _currentRenderTarget;
+         var rtStack:BitmapData = _CurrentRenderTarget;
          var layerBitmap:BitmapData;
          
          for (var i:int = 0; i < layerList.length; i++)
@@ -345,7 +363,7 @@ package PBLabs.Rendering2D
             if (IsLayerCached(i))
             {
                // First check if we can reuse the cached image.
-               if (!DoesLayerNeedUpdate(i))
+               if (!DoesLayerNeedUpdate(i, layerList[i]))
                {
                   // Great, just draw it.
                   _DrawLayerCacheBitmap(i);
@@ -356,15 +374,20 @@ package PBLabs.Rendering2D
                // are drawing into it.
                layerBitmap = GetLayerCacheBitmap(i);
                layerBitmap.fillRect(layerBitmap.rect, 0);
-               _currentRenderTarget = layerBitmap;
+               _CurrentRenderTarget = layerBitmap;
             }
+            
+            _CacheLayerKey[i] = RenderCacheKeyManager.Token++;
 
             for each (var r:IDrawable2D in layerList[i])
             {
                // Do interstitial callbacks.
-               _lastDrawn = _nextDrawn;
-               _nextDrawn = r;
-               _interstitialDrawnList.every(function(item:IDrawable2D):void { item.OnDraw(this); });
+               _LastDrawn = _NextDrawn;
+               _NextDrawn = r;
+               _InterstitialDrawnList.every(function(item:IDrawable2D):void { item.OnDraw(this); });
+               
+               // Update the cache key.
+               r.RenderCacheKey = _CacheLayerKey[i]; 
                
                // Do the draw callback.
                r.OnDraw(this);
@@ -373,7 +396,7 @@ package PBLabs.Rendering2D
             if (IsLayerCached(i))
             {
                // Restore render target.
-               _currentRenderTarget = rtStack;
+               _CurrentRenderTarget = rtStack;
                
                // Render the cached bitmap.
                _DrawLayerCacheBitmap(i);
@@ -381,19 +404,19 @@ package PBLabs.Rendering2D
          }
          
          // Do final interstitial callback.
-         if (_nextDrawn)
+         if (_NextDrawn)
          {
-            _lastDrawn = _nextDrawn;
-            _nextDrawn = null;
-            _interstitialDrawnList.every(function(item:IDrawable2D):void { item.OnDraw(this); });            
+            _LastDrawn = _NextDrawn;
+            _NextDrawn = null;
+            _InterstitialDrawnList.every(function(item:IDrawable2D):void { item.OnDraw(this); });            
          }
 
          // Clear last/next state.
-         _lastDrawn = _nextDrawn = null;
+         _LastDrawn = _NextDrawn = null;
 
          // Clean up render state.
-         if (_currentRenderTarget)
-            _currentRenderTarget.unlock();
+         if (_CurrentRenderTarget)
+            _CurrentRenderTarget.unlock();
       }
       
       private function _DrawLayerCacheBitmap(layerIndex:int):void
@@ -402,12 +425,20 @@ package PBLabs.Rendering2D
          DrawBitmapData(bitmap, null);
       }
       
+      /**
+       * Given a region, query the spatial database and fill the layerList with
+       * arrays containing the items to be drawn in each layer.
+       */ 
       protected function _BuildRenderList(viewRect:Rectangle, layerList:Array):void
       {
          // Get a list of the items that will be rendered.
          var renderList:Array = new Array();
-         if ((SpatialDatabase == null) || !SpatialDatabase.QueryRectangle(viewRect, RenderMask, renderList))
+         if(!SpatialDatabase 
+            || !SpatialDatabase.QueryRectangle(viewRect, RenderMask, renderList))
+         {
+            // Nothing to draw.
             return;
+         }
          
          // Iterate over everything and stuff drawables into the right layers.
          for each (var object:IEntityComponent in renderList)
@@ -423,7 +454,7 @@ package PBLabs.Rendering2D
          }
            
          // Deal with always-drawn stuff.
-         for each (var alwaysRenderable:IDrawable2D in _alwaysDrawnList)
+         for each (var alwaysRenderable:IDrawable2D in _AlwaysDrawnList)
          {
             if (layerList[alwaysRenderable.LayerIndex] == null)
                layerList[alwaysRenderable.LayerIndex] = new Array();
@@ -432,14 +463,21 @@ package PBLabs.Rendering2D
          }
       }
       
-      protected var _currentRenderTarget:BitmapData = null;
-      private var _sceneView:IUITarget = null;
-      private var _sceneViewName:String = null;
+
+      /**
+       * When set, we render into the specified bitmapdata.
+       */ 
+      protected var _CurrentRenderTarget:BitmapData = null;
+      private var _SceneView:IUITarget = null;
+      private var _SceneViewName:String = null;
       
-      private var _alwaysDrawnList:Array = new Array();
-      private var _interstitialDrawnList:Array = new Array();
-      private var _layerCache:Array = new Array(LAYER_COUNT);
+      private var _AlwaysDrawnList:Array = new Array();
+      private var _InterstitialDrawnList:Array = new Array();
+      /**
+       * Cached bitmaps from each layer, indexed by layer.
+       */ 
+      private var _LayerCache:Array = new Array(LAYER_COUNT);
       
-      private var _lastDrawn:IDrawable2D, _nextDrawn:IDrawable2D;
+      private var _LastDrawn:IDrawable2D, _NextDrawn:IDrawable2D;
    }
 }

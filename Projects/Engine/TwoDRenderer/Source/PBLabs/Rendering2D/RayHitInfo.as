@@ -44,8 +44,16 @@ package PBLabs.Rendering2D
       public function CopyFrom(other:RayHitInfo):void
       {
          Time = other.Time;
-         Position = other.Position.clone();
-         Normal = other.Normal.clone();
+         
+         if(other.Position)
+            Position = other.Position.clone();
+         else
+            Position = null;
+         
+         if(other.Normal)
+            Normal = other.Normal.clone();
+         else
+            Normal = null;
          HitObject = other.HitObject;
       }
    }
