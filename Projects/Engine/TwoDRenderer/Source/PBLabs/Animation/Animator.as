@@ -312,11 +312,15 @@ package PBLabs.Animation
        */
       protected function _Interpolate(start:*, end:*, time:Number):*
       {
-         // gotta do things a little funny or else these things will be treated as strings
-         if ((end - start) < 0)
-            return start - ((start - end) * time);
+         // Have to be careful to convert to numbers.
+         var startN:Number = Number(start);
+         var endN:Number = Number(end);
          
-         return start + ((end - start) * time);
+         // Do the interpolation.
+         if ((endN - startN) < 0)
+            return startN - ((startN - endN) * time);
+         
+         return startN + ((endN - startN) * time);
       }
       
       private var _type:AnimatorType = AnimatorType.NoAnimation;

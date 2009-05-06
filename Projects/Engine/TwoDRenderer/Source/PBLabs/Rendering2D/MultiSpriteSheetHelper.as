@@ -5,8 +5,6 @@ package PBLabs.Rendering2D
    import flash.geom.Point;
    import flash.utils.Dictionary;
 
-;
-
    /**
     * Helper to manage many similar sprite sheets (for instance, multiple sheets
     * for the same character). You can specify a divider and directions-per-frame
