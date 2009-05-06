@@ -1,6 +1,7 @@
 package PBLabs.Rendering2D
 {
    import PBLabs.Engine.Entity.*;
+   import PBLabs.Engine.Debug.*;
    
    import flash.geom.Point;
    import flash.utils.Dictionary;
@@ -24,6 +25,14 @@ package PBLabs.Rendering2D
 	   
 	   protected override function _OnAdd():void
 	   {
+         // Debugging aid - make sure that none of the sheets we will be
+         // creating already exist.
+         for(var key:String in Sheets)
+         {
+            if(Owner.LookupComponentByName(key))
+               Logger.PrintError(this, "_OnAdd", "Already have a component named '" + key + "', but we're going to be registering a sprite sheet with that name!");
+         }
+         
 	      // Create the sheets.
 	      for(var key:String in Sheets)
 	      {

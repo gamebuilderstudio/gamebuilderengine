@@ -325,7 +325,7 @@ package PBLabs.Animation
       
       private var _type:AnimatorType = AnimatorType.NoAnimation;
       private var _previousType:AnimatorType = AnimatorType.NoAnimation;
-      
+                                                                                            
       private var _repeatCount:int = 0;
       private var _totalRepeatCount:int = 0;
       

@@ -48,6 +48,9 @@ package PBLabs.Engine.Entity
        */
       public function Register(owner:IEntity, name:String):void
       {
+         if(IsRegistered)
+            throw new Error("Trying to register an already-registered component!");
+            
          _name = name;
          _owner = owner;
          _OnAdd();
@@ -58,6 +61,9 @@ package PBLabs.Engine.Entity
        */
       public function Unregister():void
       {
+         if(!IsRegistered)
+            throw new Error("Trying to unregister an unregistered component!");
+
          _OnRemove();
          _owner = null;
          _name = null;

@@ -60,14 +60,18 @@ class Entity extends EventDispatcher implements IEntity
    
    public function Destroy():void
    {
+      // Give listeners a chance to act before we start destroying stuff.
       dispatchEvent(new Event("EntityDestroyed"));
       
+      // Get out of the NameManager.
       NameManager.Instance.RemoveEntity(this);
       _name = null;
       
+      // Unregister our components.
       for each(var component:IEntityComponent in _components)
          component.Unregister();
       
+      // And remove their references from the dictionary.
       for (var name:String in _components)
          delete _components[name];
    }
@@ -89,6 +93,13 @@ class Entity extends EventDispatcher implements IEntity
       
       for each (var componentXML:XML in xml.*)
       {
+         // Error if it's an unexpected tag.
+         if(componentXML.name().toString().toLowerCase() != "component")
+         {
+            Logger.PrintError(this, "Deserialize", "Found unexpected tag '" + componentXML.name().toString() + "', only <component/> is valid, ignoring tag. Error in entity '" + Name + "'.");
+            continue;
+         }
+         
          var componentName:String = componentXML.attribute("name");
          var componentClassName:String = componentXML.attribute("type");
          var component:IEntityComponent = null;
@@ -98,7 +109,7 @@ class Entity extends EventDispatcher implements IEntity
             component = TypeUtility.Instantiate(componentClassName) as IEntityComponent;
             if (component == null)
             {
-               Logger.PrintError(this, "Deserialize", "Unable to instantiate component " + componentName + " of type " + componentClassName + ".");
+               Logger.PrintError(this, "Deserialize", "Unable to instantiate component " + componentName + " of type " + componentClassName + " on entity '" + Name + "'.");
                continue;
             }
             
@@ -110,7 +121,7 @@ class Entity extends EventDispatcher implements IEntity
             component = LookupComponentByName(componentName);
             if (component == null)
             {
-               Logger.PrintError(this, "Deserialize", "No type specified for the component " + componentName + " and the component doesn't exist on a parent template.");
+               Logger.PrintError(this, "Deserialize", "No type specified for the component " + componentName + " and the component doesn't exist on a parent template for entity '" + Name + "'.");
                continue;
             }
          }
@@ -229,10 +240,20 @@ class Entity extends EventDispatcher implements IEntity
       return true;
    }
    
+   /**
+    * Register any unregistered components on this entity. Useful when you are
+    * deferring registration (for instance due to template processing).
+    */
    private function _RegisterComponents():void
    {
       for (var name:String in _components)
+      {
+         // Skip ones we have already registered.
+         if(_components[name].IsRegistered)
+            continue;
+         
          _components[name].Register(this, name);
+      }
    }
    
    private function _ResetComponents():void

@@ -91,7 +91,7 @@ package PBLabs.Rendering2D
       }
       
       /**
-       * Modulate alpha. Zero is invisibly translucent, one is normal opacity.
+       * Modulate alpha. Zero is fully translucent, one is fully opaque.
        */
       public var Fade:Number = 1.0;
       
@@ -154,14 +154,22 @@ package PBLabs.Rendering2D
          _sprite = null;
       }
       
+      /**
+       * Update the cached sprite that we use for rendering.
+       */
       private function _GenerateSprite():void
       {
+         // Don't regenerate if we don't need it.
          if (!_spriteDirty)
             return;
          
+         // No sprite, no rendering.
+         if (_sprite == null)
+            return;
+
          if (_spriteSheet == null)
          {
-            // Draw a simple circle.
+            // Draw a simple debug circle.
             _baseSize = new Point(25,25);
             _sprite.graphics.clear();
             _sprite.graphics.beginFill(0xFF00FF, 0.5);
@@ -172,12 +180,10 @@ package PBLabs.Rendering2D
             return;
          }
          
-         if (_sprite == null)
-            return;
-         
          if (!_spriteSheet.IsLoaded)
             return;
          
+         // Set up the matrix for the bitmap.
          var bitmap:BitmapData = _spriteSheet.GetFrame(_spriteIndex);
          _baseSize = new Point(bitmap.width, bitmap.height);
 
@@ -185,7 +191,13 @@ package PBLabs.Rendering2D
          matrix.translate(_spriteSheet.Center.x, _spriteSheet.Center.y);
          
          _sprite.graphics.clear();
-         _sprite.graphics.beginBitmapFill(bitmap, matrix);
+         
+         // Draw a debug color if no bitmap is present.
+         if(bitmap)
+            _sprite.graphics.beginBitmapFill(bitmap, matrix);
+         else
+            _sprite.graphics.beginFill(0xFF00FF, 0.5);
+            
          _sprite.graphics.drawRect(-_spriteSheet.Center.x, -_spriteSheet.Center.y, bitmap.width, bitmap.height);
          _sprite.graphics.endFill();
          

@@ -243,7 +243,7 @@ package PBLabs.Rendering2D
          for (var i:int = 0; i < _divider.FrameCount; i++)
          {
             var area:Rectangle = _divider.GetFrameArea(i);
-            _frames[i] = new BitmapData(area.width, area.height);
+            _frames[i] = new BitmapData(area.width, area.height, true);
             _frames[i].copyPixels(ImageData, area, new Point(0, 0));
          }
       }
