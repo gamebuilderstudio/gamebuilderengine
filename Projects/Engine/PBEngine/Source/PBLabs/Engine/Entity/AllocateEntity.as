@@ -27,10 +27,12 @@ import PBLabs.Engine.Entity.IEntity;
 import PBLabs.Engine.Entity.IEntityComponent;
 import PBLabs.Engine.Entity.PropertyReference;
 import PBLabs.Engine.Core.NameManager;
+import PBLabs.Engine.Core.TemplateManager;
 import PBLabs.Engine.Debug.Logger;
 import PBLabs.Engine.Serialization.Serializer;
 import PBLabs.Engine.Serialization.TypeUtility;
 
+import flash.events.Event;
 import flash.events.EventDispatcher;
 import flash.events.IEventDispatcher;
 import flash.utils.Dictionary;
@@ -58,6 +60,8 @@ class Entity extends EventDispatcher implements IEntity
    
    public function Destroy():void
    {
+      dispatchEvent(new Event("EntityDestroyed"));
+      
       NameManager.Instance.RemoveEntity(this);
       _name = null;
       
@@ -184,7 +188,7 @@ class Entity extends EventDispatcher implements IEntity
    
    public function SetProperty(property:PropertyReference, value:*):void
    {
-      var info:PropertyInfo = _FindProperty(property);
+      var info:PropertyInfo = _FindProperty(property, true);
       if (info != null)
          info.SetValue(value);
    }
@@ -193,13 +197,13 @@ class Entity extends EventDispatcher implements IEntity
    {
       if (component.Owner != null)
       {
-         Logger.PrintError(this, "AddComponent", "The component " + componentName + " already has an owner.");
+         Logger.PrintError(this, "AddComponent", "The component " + componentName + " already has an owner. (" + Name + ")");
          return false;
       }
       
       if (_components[componentName] != null)
       {
-         Logger.PrintError(this, "AddComponent", "A component with name " + componentName + " already exists on this entity.");
+         Logger.PrintError(this, "AddComponent", "A component with name " + componentName + " already exists on this entity (" + Name + ").");
          return false;
       }
       
@@ -211,13 +215,13 @@ class Entity extends EventDispatcher implements IEntity
    {
       if (component.Owner != this)
       {
-         Logger.PrintError(this, "AddComponent", "The component " + component.Name + " is not owned by this entity.");
+         Logger.PrintError(this, "AddComponent", "The component " + component.Name + " is not owned by this entity. (" + Name + ")");
          return false;
       }
       
       if (_components[component.Name] == null)
       {
-         Logger.PrintError(this, "AddComponent", "The component " + component.Name + " was not found on this entity.");
+         Logger.PrintError(this, "AddComponent", "The component " + component.Name + " was not found on this entity. (" + Name + ")");
          return false;
       }
       
@@ -237,66 +241,173 @@ class Entity extends EventDispatcher implements IEntity
          component.Reset();
    }
 
-   private function _FindProperty(reference:PropertyReference):PropertyInfo
+   private function _FindProperty(reference:PropertyReference, willSet:Boolean = false):PropertyInfo
    {
+      // TODO: we use appendChild but relookup the results, can we just use return value?
+      
+      // Early out if we got a null property reference.
       if ((reference == null) || (reference.Property == null) || (reference.Property == ""))
          return null;
-      
+
+      // Split up the property reference.      
       var propertyName:String = reference.Property;
       var path:Array = propertyName.split(".");
-      if (path.length < 2)
-      {
-         Logger.PrintWarning(this, "_FindProperty", "A property path must consist of a component name followed by at least one field name.");
-         return null;
-      }
       
-      var componentName:String = path[0];
-      if (componentName.charAt(0) != "@")
+      // Distinguish if it is a component reference (@), named object ref (#), or
+      // an XML reference (!), and look up the first element in the path.
+      var isTemplateXML:Boolean = false;
+      var itemName:String = path[0];
+      var curIdx:int = 1;
+      var startChar:String = itemName.charAt(0);
+      var curLookup:String = itemName.slice(1);
+      var parentElem:*;
+      if(startChar == "@")
       {
-         Logger.PrintWarning(this, "_FindProperty", "The first part of a property path must be '@' followed by a component name.");
-         return null;
-      }
-      
-      componentName = componentName.slice(1);
-      var parentObject:* = LookupComponentByName(componentName);
-      if (parentObject == null)
-      {
-         Logger.PrintWarning(this, "_FindProperty", "A component named " + componentName + " was not found on this entity.");
-         return null;
-      }
-      
-      var fieldName:String = path[1];
-      
-      for (var i:int = 2; i < path.length; i++)
-      {
-         try
+         // Component reference, look up the component by name.
+         parentElem = LookupComponentByName(curLookup);
+         if(!parentElem)
          {
-            parentObject = parentObject[fieldName];         
-         }
-         catch(e:Error)
-         {
-            parentObject = null;
-         }
-         
-         fieldName = path[i];
-         
-         if (parentObject == null)
-         {
-            Logger.PrintWarning(this, "_FindProperty", "The path " + propertyName + " could not be resolved." + fieldName + " is not a valid field.");
+            Logger.PrintWarning(this, "_FindProperty", "Could not resolve component named '" + curLookup + "'");
             return null;
          }
       }
-      
-      if (!parentObject.hasOwnProperty(fieldName))
+      else if(startChar == "#")
       {
-         Logger.PrintWarning(this, "_FindProperty", "The path " + propertyName + " could not be resolved." + fieldName + " is not a valid field.");
+         // Named object reference. Look up the entity in the NameManager.
+         parentElem = NameManager.Instance.Lookup(curLookup);
+         if(!parentElem)
+         {
+            Logger.PrintWarning(this, "_FindProperty", "Could not resolve named object named '" + curLookup + "'");
+            return null;
+         }
+         
+         // Get the component on it.
+         curIdx++;
+         curLookup = path[1];
+         var comLookup:IEntityComponent = (parentElem as IEntity).LookupComponentByName(curLookup);
+         if(!comLookup)
+         {
+            Logger.PrintWarning(this, "_FindProperty", "Could not find component '" + curLookup + "' on named entity '" + (parentElem as IEntity).Name + "'");
+            return null;
+         }
+         parentElem = comLookup;
+      }
+      else if(startChar == "!")
+      {
+         // XML reference. Look it up inside the TemplateManager. We only support
+         // templates and entities - no groups.
+         parentElem = TemplateManager.Instance.GetXML(curLookup, "template", "entity");
+         if(!parentElem)
+         {
+            Logger.PrintWarning(this, "_FindProperty", "Could not find XML named '" + curLookup + "'");
+            return null;
+         }
+         
+         // Try to find the specified component.
+         curIdx++;
+         var nextElem:* = null;
+         for each(var cTag:* in parentElem.*)
+         {
+            if(cTag.@name == path[1])
+            {
+               nextElem = cTag;
+               break;
+            }
+         }
+         
+         // Create it if appropriate.
+         if(!nextElem && willSet)
+         {
+            // Create component tag.
+            (parentElem as XML).appendChild(<component name={path[1]}/>);
+            
+            // Look it up again.
+            for each(cTag in parentElem.*)
+            {
+               if(cTag.@name == path[1])
+               {
+                  nextElem = cTag;
+                  break;
+               }
+            }
+         }
+         
+         // Error if we don't have it!
+         if(!nextElem)
+         {
+            Logger.PrintWarning(this, "_FindProperty", "Could not find component '" + path[1] + "' in XML template '" + path[0].slice(1) + "'");
+            return null;
+         }
+         
+         // Get ready to search the rest.
+         parentElem = nextElem;
+         
+         // Indicate we are dealing with xml.
+         isTemplateXML = true;
+      }
+      else
+      {
+         Logger.PrintWarning(this, "_FindProperty", "Got a property path that doesn't start with !, #, or @. Started with '" + startChar + "'");
          return null;
       }
+
+      // Make sure we have a field to look up.
+      if(curIdx < path.length)
+         curLookup = path[curIdx++] as String;
+      else
+         curLookup = null;
       
-      var info:PropertyInfo = new PropertyInfo();
-      info.PropertyParent = parentObject;
-      info.PropertyName = fieldName;
-      return info;            
+      // Do the remainder of the look up.
+      while(curIdx < path.length && parentElem)
+      {
+         // Try the next element in the path.
+         var oldParentElem:* = parentElem;
+         try
+         {
+            if(parentElem is XML || parentElem is XMLList)
+               parentElem = parentElem.child(curLookup);
+            else
+               parentElem = parentElem[curLookup];
+         }
+         catch(e:Error)
+         {
+            parentElem = null;
+         }
+         
+         // Several different possibilities that indicate we failed to advance.
+         var gotEmpty:Boolean = false;
+         if(parentElem == undefined) gotEmpty = true;
+         if(parentElem == null) gotEmpty = true;
+         if(parentElem is XMLList && parentElem.length() == 0) gotEmpty = true;
+         
+         // If we're going to set and it's XML, create the field.
+         if(willSet && isTemplateXML && gotEmpty && oldParentElem)
+         {
+            oldParentElem.appendChild(<{curLookup}/>);
+            parentElem = oldParentElem.child(curLookup);
+            gotEmpty = false;
+         }
+         
+         if(gotEmpty)
+         {
+            Logger.PrintWarning(this, "_FindProperty", "Could not resolve property '" + curLookup + "' from property reference '" + reference.Property + "'");
+            return null;
+         }
+         
+         // Advance to next element in the path.
+         curLookup = path[curIdx++] as String;
+      }
+      
+      // Did we end up with a match?
+      if(parentElem)
+      {
+         var pi:PropertyInfo = new PropertyInfo();
+         pi.PropertyParent = parentElem;
+         pi.PropertyName = curLookup;
+         return pi;
+      }
+      
+      return null;
    }
    
    private var _name:String = null;
@@ -310,7 +421,14 @@ class PropertyInfo
    
    public function GetValue():*
    {
-      return PropertyParent[PropertyName];
+      try
+      {
+         return PropertyParent[PropertyName];
+      }
+      catch(e:Error)
+      {
+         return null;
+      }
    }
    
    public function SetValue(value:*):void

@@ -19,10 +19,9 @@ package PBLabs.Engine.Components
    public class TickedComponent extends EntityComponent implements ITickedObject
    {
       /**
-       * Will we actually register for ticks? This is provided so that subclasses
-       * can set it to false in their constructors if they don't actually want
-       * ticks.
-       */
+       * Do we actually want to register for ticks? Useful if a subclass wants
+       * to disable the functionality. Only checked at _OnAdd/_OnRemove time.
+       */       
       public var RegisterForTicks:Boolean = true;
       
       /**
