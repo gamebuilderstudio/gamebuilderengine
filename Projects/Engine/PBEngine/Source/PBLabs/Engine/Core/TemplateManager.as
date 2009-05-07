@@ -135,10 +135,10 @@ package PBLabs.Engine.Core
          }
          
          Serializer.Instance.Deserialize(entity, xml);
-         
          Serializer.Instance.ClearCurrentEntity();
          
-         Serializer.Instance.ReportMissingReferences();
+         if (!_inGroup)
+            Serializer.Instance.ReportMissingReferences();
          
          return entity;
       }
@@ -309,7 +309,9 @@ package PBLabs.Engine.Core
             }
             else if (objectXML.name() == "objectReference")
             {
+               _inGroup = true;
                group.push(InstantiateEntity(childName));
+               _inGroup = false;
             }
             else
             {
@@ -342,6 +344,7 @@ package PBLabs.Engine.Core
          dispatchEvent(new Event(FAILED_EVENT));
       }
       
+      private var _inGroup:Boolean = false;
       private var _entityType:Class = null;
       private var _xmlObjects:Dictionary = new Dictionary();
    }

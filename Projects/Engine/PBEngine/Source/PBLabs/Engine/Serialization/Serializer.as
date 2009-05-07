@@ -151,7 +151,7 @@ package PBLabs.Engine.Serialization
          {
             var reference:ReferenceNote = _deferredReferences[i];
             reference.ReportMissing();
-         }           
+         }
       }
       
       private function _IsSimple(xml:XML, typeName:String):Boolean

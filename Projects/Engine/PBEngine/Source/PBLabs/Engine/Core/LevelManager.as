@@ -45,11 +45,6 @@ package PBLabs.Engine.Core
       
       private static var _instance:LevelManager = null;
       
-      public function LevelManager()
-      {
-         _autoLoadLevels.push(0);
-      }
-      
       /**
        * The level that is currently loaded.
        */
@@ -127,7 +122,6 @@ package PBLabs.Engine.Core
        */
       public function LoadNextLevel():void
       {
-         UnloadCurrentLevel();
          LoadLevel(_currentLevel + 1);
       }
       
@@ -147,26 +141,23 @@ package PBLabs.Engine.Core
             return;
          }
          
+         _loadingLevel = true;
+         UnloadCurrentLevel();
+         _currentLevel = level;
+         
          if (_levelInformation[level] == null)
          {
-            if(_groupInformation[level])
+            if (_groupInformation[level] != null)
             {
                // We have groups anyway - so just force them.
-               _loadingLevel = true;
-               UnloadCurrentLevel();
-               _currentLevel = level;
                _OnLevelInformationLoaded();
                return;
             }
             
             Logger.PrintWarning(this, "LoadLevel", "No level information has been added for level " + level + ".");
+            _loadingLevel = false;
             return;
          }
-         
-         _loadingLevel = true;
-         
-         UnloadCurrentLevel();
-         _currentLevel = level;
          
          _loadedCount = 0;
          _levelFileCount = _levelInformation[level].length;
@@ -228,7 +219,11 @@ package PBLabs.Engine.Core
       {
          _loadedCount++;
          if (_loadedCount == _levelFileCount)
+         {
+            TemplateManager.Instance.addEventListener(TemplateManager.LOADED_EVENT, _OnFileLoaded);
+            TemplateManager.Instance.addEventListener(TemplateManager.FAILED_EVENT, _OnFileLoaded);
             _OnLevelInformationLoaded();
+         }
       }
       
       private function _OnLevelInformationLoaded():void
@@ -247,7 +242,7 @@ package PBLabs.Engine.Core
             _LoadNextAutoLevel();
       }
       
-      private var _currentLevel:int = -1;
+      private var _currentLevel:int = 0;
       private var _levelInformation:Dictionary = new Dictionary();
       private var _groupInformation:Dictionary = new Dictionary();
       

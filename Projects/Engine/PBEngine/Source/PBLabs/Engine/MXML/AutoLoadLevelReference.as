@@ -13,8 +13,8 @@ package PBLabs.Engine.MXML
    import mx.core.IMXMLObject;
    
    /**
-    * The AutoLoadLevelReference class is meant to be used as an MXML tag to inform
-    * the LevelManager that a specific level should be automatically loaded.
+    * The AutoLoadLevelReference class is meant to be used as an MXML tag to tell
+    * the LevelManager which levels should be automatically loaded.
     * 
     * @see PBLabs.Engine.Core.LevelManager
     */
@@ -22,7 +22,13 @@ package PBLabs.Engine.MXML
    {
       [Bindable]
       /**
-       * The level to load automatically.
+       * The levels to load automatically.
+       */
+      public var levels:Array = null;
+      
+      [Bindable]
+      /**
+       * The level to load automatically. If levels is set, this is ignored.
        */
       public var level:int = -1;
       
@@ -31,7 +37,15 @@ package PBLabs.Engine.MXML
        */
       public function initialized(document:Object, id:String):void
       {
-         LevelManager.Instance.AddAutoLoadLevel(level);
+         if (levels == null)
+         {
+            LevelManager.Instance.AddAutoLoadLevel(level);
+         }
+         else
+         {
+            for each (var l:int in levels)
+               LevelManager.Instance.AddAutoLoadLevel(l);
+         }
       }
    }
 }

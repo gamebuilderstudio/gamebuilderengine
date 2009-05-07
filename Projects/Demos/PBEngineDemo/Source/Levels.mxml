@@ -10,6 +10,7 @@
  ******************************************************************************/
 -->
 <mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:pb="PBLabs.Engine.MXML.*">
-   <pb:LevelFileReference filename="../Assets/Levels/level.pbelevel" level="0"/>
-   <pb:GroupReference name="Everything" level="0"/>
+   <pb:AutoLoadLevelReference levels="[ 1 ]"/>
+   <pb:LevelFileReference filename="../Assets/Levels/level.pbelevel" levels="[ 1 ]"/>
+   <pb:GroupReference name="Everything" levels="[ 1 ]"/>
 </mx:Canvas>

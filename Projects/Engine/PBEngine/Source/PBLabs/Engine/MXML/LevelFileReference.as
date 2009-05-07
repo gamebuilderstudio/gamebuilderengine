@@ -28,10 +28,13 @@ package PBLabs.Engine.MXML
       
       [Bindable]
       /**
-       * The level at which the level file will be loaded. A level of 0 means the level
-       * file will be loaded at startup. Otherwise, the level file will be loaded when the
-       * specified level is reached. Negative numbers can be used to initialize the level
-       * file with the level manager but load it manually.
+       * The levels at which the level file will be loaded.
+       */
+      public var levels:Array = new Array();
+      
+      [Bindable]
+      /**
+       * The level at which the level file will be loaded. If levels is set, this is ignored.
        */
       public var level:int = -1;
       
@@ -47,7 +50,15 @@ package PBLabs.Engine.MXML
        */
       public function initialized(document:Object, id:String):void
       {
-         LevelManager.Instance.AddLevelFileReference(filename, level, persist);
+         if (levels == null)
+         {
+            LevelManager.Instance.AddLevelFileReference(filename, level, persist);
+         }
+         else
+         {
+            for each (var l:int in levels)
+               LevelManager.Instance.AddLevelFileReference(filename, l, persist);
+         }
       }
    }
 }

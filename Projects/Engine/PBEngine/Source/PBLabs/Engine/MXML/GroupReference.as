@@ -28,10 +28,13 @@ package PBLabs.Engine.MXML
       
       [Bindable]
       /**
-       * The level at which the group will be instantiated. A level of 0 means the group
-       * will be instantiated at startup. Otherwise, the group will be instantiated when the
-       * specified level is reached. Negative numbers can be used to initialize the group
-       * with the level manager but instantiate it manually.
+       * The levels at which the group will be instantiated.
+       */
+      public var levels:Array = new Array();
+      
+      [Bindable]
+      /**
+       * The level at which the group will be instantiated. If levels is set, this is ignored.
        */
       public var level:int = -1;
       
@@ -47,7 +50,15 @@ package PBLabs.Engine.MXML
        */
       public function initialized(document:Object, id:String):void
       {
-         LevelManager.Instance.AddGroupReference(name, level, persist);
+         if (levels == null)
+         {
+            LevelManager.Instance.AddGroupReference(name, level, persist);
+         }
+         else
+         {
+            for each (var l:int in levels)
+               LevelManager.Instance.AddGroupReference(name, l, persist);
+         }
       }
    }
 }
