@@ -247,7 +247,7 @@ package PBLabs.Engine.Core
       private var _groupInformation:Dictionary = new Dictionary();
       
       private var _autoLoading:Boolean = false;
-      private var _autoLoadLevels:Array = new Array();
+      private var _autoLoadLevels:Array = [ 0 ];
       
       private var _loadingLevel:Boolean = false;
       private var _levelFileCount:int = -1;

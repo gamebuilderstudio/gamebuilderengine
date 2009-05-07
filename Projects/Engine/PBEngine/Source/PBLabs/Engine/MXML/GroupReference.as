@@ -50,7 +50,7 @@ package PBLabs.Engine.MXML
        */
       public function initialized(document:Object, id:String):void
       {
-         if (levels == null)
+         if (levels == null || levels.length == 0)
          {
             LevelManager.Instance.AddGroupReference(name, level, persist);
          }
