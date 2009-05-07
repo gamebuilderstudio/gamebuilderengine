@@ -85,6 +85,7 @@ package PBLabs.Engine.Serialization
          }
          catch (e:Error)
          {
+            Logger.PrintWarning(null, "Instantiate", "Failed to instantiate " + className + " due to " + e.toString());
          }
          
          // If we get here, couldn't new it.

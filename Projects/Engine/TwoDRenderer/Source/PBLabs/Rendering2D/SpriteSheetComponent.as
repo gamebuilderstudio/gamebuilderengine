@@ -185,6 +185,10 @@ package PBLabs.Rendering2D
        */
       public function GetFrame(index:int, direction:Number=0.0):BitmapData
       {
+         if(!ImageData)
+            return null;
+         
+         // Make sure direction is in 0..360.
          while (direction < 0)
             direction += 360;
          
@@ -196,6 +200,7 @@ package PBLabs.Rendering2D
             return _GetRawFrame(index);
          
          // Otherwise we have to do a search.
+         
          // Make sure we have data to fulfill our requests from.
          if (_frameNotes == null)
             _GenerateFrameNotes();

@@ -33,5 +33,11 @@ package PBLabs.Rendering2D
        * image's dimensions.
        */
       function GetFrameArea(index:int):Rectangle;
+      
+      /**
+       * The MultiSpriteSheetHelper has to be able to clone dividers. So we
+       * have a Clone method.
+       */
+      function Clone():ISpriteSheetDivider;
    }
 }

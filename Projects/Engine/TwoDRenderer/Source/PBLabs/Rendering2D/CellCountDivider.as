@@ -9,6 +9,7 @@
 package PBLabs.Rendering2D
 {
    import flash.geom.Rectangle;
+   import PBLabs.Engine.Debug.Logger;
    
    /**
     * Divide a spritesheet into cells based on count - ie, 4 cells by 3 cells.
@@ -30,6 +31,8 @@ package PBLabs.Rendering2D
        */
       public function set OwningSheet(value:SpriteSheetComponent):void
       {
+         if(_owningSheet)
+            Logger.PrintWarning(this, "set OwningSheet", "Already assigned to a sheet, reassigning may result in unexpected behavior.");
          _owningSheet = value;
       }
       
@@ -62,6 +65,17 @@ package PBLabs.Rendering2D
          var startY:int = y * height;
          
          return new Rectangle(startX, startY, width, height);
+      }
+
+      /**
+       * @inheritDoc
+       */
+      public function Clone():ISpriteSheetDivider
+      {
+         var c:CellCountDivider = new CellCountDivider();
+         c.XCount = XCount;
+         c.YCount = YCount;
+         return c;
       }
 
       private var _owningSheet:SpriteSheetComponent;

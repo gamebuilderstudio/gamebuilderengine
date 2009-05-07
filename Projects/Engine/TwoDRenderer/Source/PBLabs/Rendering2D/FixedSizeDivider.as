@@ -9,6 +9,7 @@
 package PBLabs.Rendering2D
 {
    import flash.geom.Rectangle;
+   import PBLabs.Engine.Debug.Logger;
    
   /**
    * Divide a sprite sheet into fixed-size cells.
@@ -30,8 +31,12 @@ package PBLabs.Rendering2D
        */
       public function set OwningSheet(value:SpriteSheetComponent):void
       {
+         if(_owningSheet)
+            Logger.PrintWarning(this, "set OwningSheet", "Already assigned to a sheet, reassigning may result in unexpected behavior.");
          _owningSheet = value;
       }
+      
+      public var _Garbage:Number;
       
       /**
        * @inheritDoc
@@ -56,6 +61,17 @@ package PBLabs.Rendering2D
          var y:int = Math.floor(index / Math.floor(_owningSheet.ImageData.width / Width));
          
          return new Rectangle(x * Width, y * Height, Width, Height);
+      }
+      
+      /**
+       * @inheritDoc
+       */
+      public function Clone():ISpriteSheetDivider
+      {
+         var c:FixedSizeDivider = new FixedSizeDivider();
+         c.Width = Width;
+         c.Height = Height;
+         return c;
       }
 
       private var _owningSheet:SpriteSheetComponent;

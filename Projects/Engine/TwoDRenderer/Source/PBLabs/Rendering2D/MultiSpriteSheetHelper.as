@@ -30,17 +30,17 @@ package PBLabs.Rendering2D
          for(var key:String in Sheets)
          {
             if(Owner.LookupComponentByName(key))
-               Logger.PrintError(this, "_OnAdd", "Already have a component named '" + key + "', but we're going to be registering a sprite sheet with that name!");
+               Logger.PrintError(this, "_OnAdd", "Already have a component named '" + key + "', but we're going to be registering a sprite sheet with that name on entity '" + Owner.Name + "'!");
          }
          
 	      // Create the sheets.
-	      for(var key:String in Sheets)
+	      for(key in Sheets)
 	      {
 	         var file:String = Sheets[key];
 	         
 	         var newSheet:SpriteSheetComponent = new SpriteSheetComponent();
 	         newSheet.DirectionsPerFrame = DirectionsPerFrame;
-	         newSheet.Divider = Divider;
+	         newSheet.Divider = Divider.Clone();
 	         newSheet.ImageFilename = file;
 	         newSheet.Center = Center;
 	         
