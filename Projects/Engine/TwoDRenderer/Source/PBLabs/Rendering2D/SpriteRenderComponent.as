@@ -11,9 +11,9 @@ package PBLabs.Rendering2D
    import PBLabs.Engine.Entity.EntityComponent;
    import PBLabs.Engine.Entity.PropertyReference;
    import PBLabs.Engine.Core.ProcessManager;
+   import PBLabs.Engine.Math.Utility;
    
-   import flash.display.BitmapData;
-   import flash.display.Sprite;
+   import flash.display.*;
    import flash.geom.Matrix;
    import flash.geom.Point;
 
@@ -56,6 +56,16 @@ package PBLabs.Rendering2D
          _spriteDirty = true;
       }
       
+      public function get Smoothing():Boolean
+      {
+         return _smoothing;
+      }
+      
+      public function set Smoothing(value:Boolean):void
+      {
+         _smoothing = value;
+         _spriteDirty = true;
+      }
       /**
        * Whether or not to flip the sprite about the x axis.
        */
@@ -106,35 +116,39 @@ package PBLabs.Rendering2D
          // if things aren't loaded yet, the sprite may still be dirty.
          if (_spriteDirty)
             return;
-         
+            
+         // Skip drawing if it's so invisible as to be unnoticeable.
+         if(Fade < 1.0/256.0)
+           return;
+              
          var position:Point = RenderPosition;
          position = manager.TransformWorldToScreen(position);
-         _sprite.x = position.x;
-         _sprite.y = position.y;
          
          var rotation:Number = Owner.GetProperty(RotationReference);
-         _sprite.rotation = rotation;
          
+         var scale:Point = new Point(1,1);
          var size:Point = Owner.GetProperty(SizeReference);
          if (size)
          {
-            _sprite.scaleX = size.x / _baseSize.x;
-            _sprite.scaleY = size.y / _baseSize.y;
+            scale.x = size.x / _baseSize.x;
+            scale.y = size.y / _baseSize.y;
          }
          
          if (_flipX)
-            _sprite.scaleX = -_sprite.scaleX;
+            scale.x = -_sprite.scaleX;
          
          if (_flipY)
-            _sprite.scaleY = -_sprite.scaleY;
+            scale.y = -_sprite.scaleY;
          
-         _sprite.alpha = Fade;
-         
-         // Skip drawing if it's so invisible as to be unnoticeable.
-         if(Fade < 1.0/256.0)
-            return;
-         
-         manager.DrawDisplayObject(_sprite);         
+         _sprite.alpha = Fade;         
+          
+         _matrix.identity();
+         _matrix.scale(scale.x,scale.y);
+         _matrix.translate(position.x - _spriteSheet.Center.x, position.y - _spriteSheet.Center.y);
+         _matrix.rotate(Utility.GetRadiansFromDegrees(rotation));
+         _sprite.transform.matrix = _matrix;  
+   
+         manager.DrawDisplayObject(_sprite);
       }
       
       /**
@@ -142,7 +156,6 @@ package PBLabs.Rendering2D
        */
       protected override function _OnAdd():void
       {
-         _sprite = new Sprite();
          _spriteDirty = true;
       }
       
@@ -163,51 +176,40 @@ package PBLabs.Rendering2D
          if (!_spriteDirty)
             return;
          
-         // No sprite, no rendering.
-         if (_sprite == null)
-            return;
-
-         if (_spriteSheet == null)
+         if (_spriteSheet == null || !_spriteSheet.IsLoaded)
          {
-            // Draw a simple debug circle.
+            // Draw a simple circle.
             _baseSize = new Point(25,25);
-            _sprite.graphics.clear();
-            _sprite.graphics.beginFill(0xFF00FF, 0.5);
-            _sprite.graphics.drawCircle(0, 0, 25);
-            _sprite.graphics.endFill();
-            
-            _spriteDirty = false;
-            return;
+            var sprite:Sprite = new Sprite();
+            sprite.graphics.clear();
+            sprite.graphics.beginFill(0xFF00FF, 0.5);
+            sprite.graphics.drawCircle(12.5, 12.5, 25);
+            sprite.graphics.endFill();
+            _sprite = sprite;
          }
-         
-         if (!_spriteSheet.IsLoaded)
-            return;
-         
-         // Set up the matrix for the bitmap.
-         var bitmap:BitmapData = _spriteSheet.GetFrame(_spriteIndex);
-         _baseSize = new Point(bitmap.width, bitmap.height);
-
-         var matrix:Matrix = new Matrix();
-         matrix.translate(_spriteSheet.Center.x, _spriteSheet.Center.y);
-         
-         _sprite.graphics.clear();
-         
-         // Draw a debug color if no bitmap is present.
-         if(bitmap)
-            _sprite.graphics.beginBitmapFill(bitmap, matrix);
          else
-            _sprite.graphics.beginFill(0xFF00FF, 0.5);
-            
-         _sprite.graphics.drawRect(-_spriteSheet.Center.x, -_spriteSheet.Center.y, bitmap.width, bitmap.height);
-         _sprite.graphics.endFill();
-         
-         _spriteDirty = false;
+         {
+            var bmpData:BitmapData = _spriteSheet.GetFrame(_spriteIndex);
+            _baseSize = new Point(bmpData.width, bmpData.height);
+            if(_bitmap == null)
+              _bitmap = new Bitmap(bmpData, "auto", _smoothing);
+            else
+            {
+              _bitmap.bitmapData = bmpData;
+              _bitmap.smoothing = _smoothing;
+            }
+            _sprite = _bitmap;
+          }
+          _spriteDirty = false;
       }
       
       protected var _spriteSheet:SpriteSheetComponent = null;
       protected var _spriteIndex:int = 0;
-      protected var _sprite:Sprite = null;
+      protected var _sprite:DisplayObject = null;
       protected var _spriteDirty:Boolean = false;
+      protected var _matrix:Matrix = new Matrix();
+      protected var _smoothing:Boolean = true;
+      protected var _bitmap:Bitmap = null;
       
       protected var _baseSize:Point = null;
       protected var _flipX:Boolean = false;

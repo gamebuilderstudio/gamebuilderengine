@@ -28,6 +28,11 @@ package PBLabs.Rendering2D
       public static const LAYER_COUNT:int = 64;
       
       /**
+       * Enables smooth rendering of bitmaps.
+       */
+      public var Smoothing:Boolean = true;
+      
+      /**
        * The display object to render scene content in to. In most cases this will be
        * set to an instance of either FlexSceneView or SceneView
        * 
@@ -148,7 +153,7 @@ package PBLabs.Rendering2D
       /**
        * @inheritDoc
        */
-      public function DrawBitmapData(bitmap:BitmapData, matrix:Matrix):void
+      public function DrawBitmapData(bitmapData:BitmapData, matrix:Matrix):void
       {
          // Make a dummy matrix if non is provided.
          if(!matrix)
@@ -157,17 +162,13 @@ package PBLabs.Rendering2D
          if (_CurrentRenderTarget == null)
          {
             // Make a dummy sprite and draw into it.
-            var dummy:Sprite = new Sprite();
-            dummy.graphics.beginBitmapFill(bitmap);
-            dummy.graphics.drawRect(0, 0, bitmap.width, bitmap.height);
-            dummy.graphics.endFill();
-            dummy.transform.matrix = matrix;
-            
-            DrawDisplayObject(dummy);            
+            var bitmap:Bitmap = new Bitmap(bitmapData, "auto", Smoothing);
+            bitmap.transform.matrix = matrix;
+            DrawDisplayObject(bitmap);
          }
          else
          {
-            _CurrentRenderTarget.draw(bitmap, matrix);
+            _CurrentRenderTarget.draw(bitmapData, matrix);
          }
       }
       
