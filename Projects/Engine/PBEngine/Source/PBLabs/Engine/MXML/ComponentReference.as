@@ -8,6 +8,10 @@
  ******************************************************************************/
 package PBLabs.Engine.MXML
 {
+   import PBLabs.Engine.Core.SchemaGenerator;
+   
+   import flash.utils.getQualifiedClassName;
+   
    import mx.core.IMXMLObject;
    
    /**
@@ -35,6 +39,11 @@ package PBLabs.Engine.MXML
        */
       public function initialized(document:Object, id:String):void
       {
+         if (Global.IsShippingBuild)
+         {
+            var name:String = getQualifiedClassName(componentClass);
+            SchemaGenerator.Instance.AddClass(name, componentClass);
+         }
       }
    }
 }

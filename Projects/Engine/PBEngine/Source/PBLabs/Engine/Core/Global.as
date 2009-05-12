@@ -19,6 +19,12 @@ package PBLabs.Engine.Core
    public class Global
    {
       /**
+       * Set this to true to get rid of a bunch of development related functionality that isn't
+       * needed in a final release build.
+       */
+      public static const IsShippingBuild:Boolean = false;
+      
+      /**
        * The stage. This is the root of the display heirarchy and is automatically created by
        * flash when the application starts up.
        */
@@ -39,12 +45,14 @@ package PBLabs.Engine.Core
          return _main;
       }
       
-      /**
-       * @private
-       */
-      public static function set MainClass(value:Sprite):void
+      public static function Startup(mainClass:Sprite):void
       {
-         _main = value;
+         _main = mainClass;
+         
+         if (!IsShippingBuild && (_main.loaderInfo.parameters["generateSchema"] == "1"))
+            SchemaGenerator.Instance.GenerateSchema();
+         else
+            LevelManager.Instance.Start();
       }
       
       /**

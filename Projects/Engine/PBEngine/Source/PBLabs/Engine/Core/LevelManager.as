@@ -154,8 +154,13 @@ package PBLabs.Engine.Core
                return;
             }
             
-            Logger.PrintWarning(this, "LoadLevel", "No level information has been added for level " + level + ".");
             _loadingLevel = false;
+            
+            if (_autoLoading)
+               _LoadNextAutoLevel();
+            else
+               Logger.PrintWarning(this, "LoadLevel", "No level information has been added for level " + level + ".");
+            
             return;
          }
          

@@ -9,10 +9,11 @@
  * in the License.html file at the root directory of this SDK.
  ******************************************************************************/
 -->
-<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:local="*" xmlns:ui="PBLabs.Rendering2D.UI.*" layout="absolute" frameRate="60" width="800" height="600" applicationComplete="_OnLoaded()">
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:local="*" xmlns:ui="PBLabs.Rendering2D.UI.*" xmlns:debug="PBLabs.Engine.Debug.*" layout="absolute" frameRate="60" width="800" height="600" applicationComplete="_OnLoaded()">
    <ui:FlexSceneView name="MainView" bottom="0" top="0" left="0" right="0"/>
+   <!--debug:LogViewer width="100%" height="100%"/-->
    <local:Levels/>
-   <local:Components/>
+   <local:References/>
    <local:Resources/>
    <mx:Script>
       <![CDATA[
@@ -20,8 +21,7 @@
          
          private function _OnLoaded():void
          {
-            Global.MainClass = this;
-            LevelManager.Instance.Start();
+            Global.Startup(this);
          }
       ]]>
    </mx:Script>
