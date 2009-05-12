@@ -18,15 +18,15 @@ package
    {
       public function PBFlexlessEngineDemo()
       {
-         Global.MainClass = this;
-         
          _resources = new Resources();
          _components = new Components();
          _levels = new Levels();
+         
+         Global.Startup(this);
       }
       
       private var _resources:Resources;
       private var _components:Components;
-      private var _levels:Levels;;
+      private var _levels:Levels;
    }
 }

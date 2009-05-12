@@ -17,7 +17,7 @@ package PBLabs.Engine.Core
    /**
     * This class generates a schema file for the application so it can be edited by
     * the PBEditor. Classes to generate schema data for are enumerated from the
-    * ComponentReference class. By default, this is only run when launched from the
+    * TypeReference class. By default, this is only run when launched from the
     * PBEngineManager, which does so by adding '?generateSchema=1' to the url.
     */
    public class SchemaGenerator
@@ -43,7 +43,7 @@ package PBLabs.Engine.Core
       }
       
       /**
-       * Adds a class to be included in the schema. The ComponentReference class automatically
+       * Adds a class to be included in the schema. The TypeReference class automatically
        * adds classes it is given.
        */
       public function AddClass(className:String, classObject:Class):void

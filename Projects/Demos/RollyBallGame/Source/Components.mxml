@@ -9,16 +9,16 @@
  ******************************************************************************/
 -->
 <mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:pb="PBLabs.Engine.MXML.*">
-   <pb:ComponentReference componentClass="PBLabs.Rendering2D.Scene2DComponent"/>
-   <pb:ComponentReference componentClass="PBLabs.Rendering2D.SpriteRenderComponent"/>
-   <pb:ComponentReference componentClass="PBLabs.Rendering2D.SpriteSheetComponent"/>
-   <pb:ComponentReference componentClass="PBLabs.Rendering2D.SimpleSpatialComponent"/>
-   <pb:ComponentReference componentClass="PBLabs.Rendering2D.BasicSpatialManager2D"/>
-   <pb:ComponentReference componentClass="PBLabs.Rendering2D.CellCountDivider"/>
-   <pb:ComponentReference componentClass="PBLabs.Animation.AnimatorComponent"/>
-   <pb:ComponentReference componentClass="PBLabs.Rendering2D.UI.SceneView"/>
-   <pb:ComponentReference componentClass="PBLabs.RollyGame.NormalMap"/>
-   <pb:ComponentReference componentClass="PBLabs.RollyGame.BallMover"/>
-   <pb:ComponentReference componentClass="PBLabs.RollyGame.BallShadowRenderer"/>
-   <pb:ComponentReference componentClass="PBLabs.RollyGame.BallSpriteRenderer"/>
+   <pb:TypeReference type="PBLabs.Rendering2D.Scene2DComponent"/>
+   <pb:TypeReference type="PBLabs.Rendering2D.SpriteRenderComponent"/>
+   <pb:TypeReference type="PBLabs.Rendering2D.SpriteSheetComponent"/>
+   <pb:TypeReference type="PBLabs.Rendering2D.SimpleSpatialComponent"/>
+   <pb:TypeReference type="PBLabs.Rendering2D.BasicSpatialManager2D"/>
+   <pb:TypeReference type="PBLabs.Rendering2D.CellCountDivider"/>
+   <pb:TypeReference type="PBLabs.Animation.AnimatorComponent"/>
+   <pb:TypeReference type="PBLabs.Rendering2D.UI.SceneView"/>
+   <pb:TypeReference type="PBLabs.RollyGame.NormalMap"/>
+   <pb:TypeReference type="PBLabs.RollyGame.BallMover"/>
+   <pb:TypeReference type="PBLabs.RollyGame.BallShadowRenderer"/>
+   <pb:TypeReference type="PBLabs.RollyGame.BallSpriteRenderer"/>
 </mx:Canvas>

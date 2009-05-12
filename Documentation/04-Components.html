@@ -254,7 +254,7 @@
    
    <p>When you are using components that are only mentioned in level files, the Flex compiler won't know they are being used and may remove them. To prevent this, you have two options.</p>
    
-   <h3>ComponentReference MXML Tag</h3>
+   <h3>TypeReference MXML Tag</h3>
    
    <p>For convenience, there is an MXML tag that lets you force a reference to a component class (or in fact any class) and make sure it will be present at runtime:</p>
    
@@ -262,7 +262,7 @@
 	// Example Components.mxml
 &lt;?xml version="1.0" encoding="utf-8"?&gt;
 &lt;mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:pb="PBLabs.Engine.MXML.*"&gt;
-   &lt;pb:ComponentReference componentClass="PBLabs.Rendering2D.Scene2DComponent"/&gt;
+   &lt;pb:TypeReference type="PBLabs.Rendering2D.Scene2DComponent"/&gt;
 &lt;/mx:Canvas&gt;</pre>
    
    <p>Notice that a custom namespace is defined via the xmlns:pb tag in the mx:Canvas tag. This is necessary to use any of the PBEngine MXML tags.</p>

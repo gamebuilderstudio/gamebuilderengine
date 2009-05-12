@@ -42,8 +42,7 @@
          private function _OnLoaded():void
          {
             // Initialize level and score.
-            Global.MainClass = this;
-            LevelManager.Instance.Start();
+            Global.Startup(this);
             AddPoints(0);
             
             // Set up the game timer.
