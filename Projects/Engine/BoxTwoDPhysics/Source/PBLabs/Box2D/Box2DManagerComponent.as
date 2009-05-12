@@ -177,7 +177,7 @@ package PBLabs.Box2D
       public function CastRay(start:Point, end:Point, mask:ObjectType, result:RayHitInfo):Boolean
       {
          return _otherItems.CastRay(start, end, mask, result);
-      }      
+      }
       
       private function _CreateWorld():void
       {

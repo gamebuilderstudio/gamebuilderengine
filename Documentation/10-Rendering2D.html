@@ -72,7 +72,7 @@
    
    <ul>
    <li>A scene entity that has a spatial manager and a scene component on it. The scene component needs to have a reference to the spatial manager.</li>
-   <li>Entities that contain both a spatial component and one or more components implementing IDrawable2D. The spatial component has to be hooked to the same spatial manager as the scene component, and have a QueryMask that matches what the scene component will be querying for.</li>
+   <li>Entities that contain both a spatial component and one or more components implementing IDrawable2D. The spatial component has to be hooked to the same spatial manager as the scene component, and have a ObjectMask that matches what the scene component will be querying for.</li>
    <li>A class implementing PBLabs.Rendering2D.UI should be somewhere on the stage - FlexSceneView if you're writing a Flex-based application, or SceneView if you're working with Flash directly - and the scene component should have a reference to it.</li>
    </ul>
    

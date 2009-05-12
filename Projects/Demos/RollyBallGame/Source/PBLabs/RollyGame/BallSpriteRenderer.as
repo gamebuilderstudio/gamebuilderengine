@@ -70,12 +70,20 @@ package PBLabs.RollyGame
          var size:Point = Owner.GetProperty(SizeReference) as Point;
          var scaleFactor:Number = size.x;
 
+         // Make sure we have something valid to draw against.
+         var spriteAsSprite:Sprite = _sprite as Sprite;
+         if(!spriteAsSprite)
+         {
+            _sprite = new Sprite();
+            spriteAsSprite = _sprite as Sprite;
+         }
+
          // Draw the ball. We actually skip any distortion, panning is good 
-         // enough to fool the eye at small size.
-         _sprite.graphics.clear();
-	      _sprite.graphics.beginBitmapFill(_BallChecker, new Matrix(32 / 32, 0, 0, 32 / 32, pos.x * 2, pos.y * 2 ), true, true);
-         _sprite.graphics.drawCircle(pos.x, pos.y, scaleFactor / 2);
-	      _sprite.graphics.endFill();
+         // enough to fool the eye at small size.            
+         spriteAsSprite.graphics.clear();
+	      spriteAsSprite.graphics.beginBitmapFill(_BallChecker, new Matrix(32 / 32, 0, 0, 32 / 32, pos.x * 2, pos.y * 2 ), true, true);
+         spriteAsSprite.graphics.drawCircle(pos.x, pos.y, scaleFactor / 2);
+	      spriteAsSprite.graphics.endFill();
          
          // Draw the ball.
          manager.DrawDisplayObject(_sprite);        

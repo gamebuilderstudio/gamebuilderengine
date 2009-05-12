@@ -49,9 +49,9 @@
   <entity name="WelcomeScreen">
   	<component type="PBLabs.Rendering2D.SimpleSpatialComponent" name="Spatial">
   		<SpatialManager componentReference="SpatialDB"/>
-  		<QueryMask>
+  		<ObjectMask>
   			<_>Renderable</_>
-  		</QueryMask>
+  		</ObjectMask>
       <Position><x>320</x><y>240</y></Position>
       <Size><x>640</x><y>480</y></Size>
   	</component>
@@ -96,9 +96,9 @@
         <x>32</x>
         <y>32</y>
       </Size>
-  		<QueryMask>
+  		<ObjectMask>
   			<_>Renderable</_>
-  		</QueryMask>
+  		</ObjectMask>
       <Input childType="PBLabs.Engine.Core.InputKey">
         <GoLeft>LEFT</GoLeft>
         <GoRight>RIGHT</GoRight>
@@ -111,10 +111,10 @@
   <template name="Coin">
   	<component type="PBLabs.Rendering2D.SimpleSpatialComponent" name="Spatial">
   		<SpatialManager componentReference="SpatialDB"/>
-  		<QueryMask>
+  		<ObjectMask>
   			<_>Renderable</_>
         <_>Coin</_>
-  		</QueryMask>
+  		</ObjectMask>
       <Position><x>320</x><y>240</y></Position>
       <Size><x>24</x><y>24</y></Size>
   	</component>
@@ -146,9 +146,9 @@
     </component>
   	<component type="PBLabs.Rendering2D.SimpleSpatialComponent" name="Spatial">
   		<SpatialManager componentReference="SpatialDB"/>
-  		<QueryMask>
+  		<ObjectMask>
   			<_>Renderable</_>
-  		</QueryMask>
+  		</ObjectMask>
       <Position><x>320</x><y>240</y></Position>
       <Size><x>640</x><y>480</y></Size>
   	</component>

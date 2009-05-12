@@ -122,7 +122,7 @@
         <implementsInterface type="PBLabs.Rendering2D::ISpatialObject2D"/>
         <implementsInterface type="PBLabs.Engine.Core::ITickedObject"/>
         <implementsInterface type="PBLabs.Engine.Entity::IEntityComponent"/>
-        <accessor name="QueryMask" access="readwrite" type="PBLabs.Engine.Core::ObjectType" declaredBy="PBLabs.Rendering2D::SimpleSpatialComponent"/>
+        <accessor name="ObjectMask" access="readwrite" type="PBLabs.Engine.Core::ObjectType" declaredBy="PBLabs.Rendering2D::SimpleSpatialComponent"/>
         <variable name="Size" type="flash.geom::Point"/>
         <variable name="SpatialManager" type="PBLabs.Rendering2D::ISpatialManager2D"/>
         <accessor name="WorldExtents" access="readonly" type="flash.geom::Rectangle" declaredBy="PBLabs.Rendering2D::SimpleSpatialComponent"/>
@@ -215,7 +215,7 @@
         <accessor name="InitialPosition" access="writeonly" type="flash.geom::Point" declaredBy="PBLabs.Rendering2D::Interpolated2DMoverComponent"/>
         <variable name="FaceInMovementDirection" type="Boolean"/>
         <variable name="GoalRotation" type="Number"/>
-        <accessor name="QueryMask" access="readwrite" type="PBLabs.Engine.Core::ObjectType" declaredBy="PBLabs.Rendering2D::SimpleSpatialComponent"/>
+        <accessor name="ObjectMask" access="readwrite" type="PBLabs.Engine.Core::ObjectType" declaredBy="PBLabs.Rendering2D::SimpleSpatialComponent"/>
         <variable name="Size" type="flash.geom::Point"/>
         <variable name="SpatialManager" type="PBLabs.Rendering2D::ISpatialManager2D"/>
         <accessor name="WorldExtents" access="readonly" type="flash.geom::Rectangle" declaredBy="PBLabs.Rendering2D::SimpleSpatialComponent"/>

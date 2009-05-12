@@ -60,6 +60,8 @@ package PBLabs.Rendering2D
        */
       protected override function _OnAdd():void
       {
+         super._OnAdd();
+         
          SpatialManager.AddSpatialObject(this);
       }
       
@@ -68,23 +70,25 @@ package PBLabs.Rendering2D
        */
       protected override function _OnRemove():void
       {
+         super._OnRemove();
+
          SpatialManager.RemoveSpatialObject(this);
       }
       
       /**
        * @inheritDoc
        */
-      public function get QueryMask():ObjectType
+      public function get ObjectMask():ObjectType
       {
-         return _objectType;
+         return _objectMask;
       }
       
       /**
        * @private
        */
-      public function set QueryMask(value:ObjectType):void
+      public function set ObjectMask(value:ObjectType):void
       {
-         _objectType = value;
+         _objectMask = value;
       }
       
       /**
@@ -104,6 +108,6 @@ package PBLabs.Rendering2D
          return false;
       }
       
-      private var _objectType:ObjectType;
+      private var _objectMask:ObjectType;
    }
 }

@@ -144,7 +144,7 @@ package PBLabs.Rendering2D
           
          _matrix.identity();
          _matrix.scale(scale.x,scale.y);
-         _matrix.translate(position.x - _spriteSheet.Center.x, position.y - _spriteSheet.Center.y);
+         _matrix.translate(position.x - _spriteSheet.Center.x * scale.x, position.y - _spriteSheet.Center.y * scale.y);
          _matrix.rotate(Utility.GetRadiansFromDegrees(rotation));
          _sprite.transform.matrix = _matrix;  
    

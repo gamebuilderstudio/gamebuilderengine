@@ -28,7 +28,7 @@ package PBLabs.Rendering2D
       /**
        * This object's collision flags.
        */ 
-      function get QueryMask():ObjectType;
+      function get ObjectMask():ObjectType;
       
       /**
        * Perform a ray cast against this object.

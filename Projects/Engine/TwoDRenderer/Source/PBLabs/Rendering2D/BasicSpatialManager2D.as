@@ -63,7 +63,7 @@ package PBLabs.Rendering2D
          var foundAny:Boolean = false;
          for each (var object:ISpatialObject2D in _objectList)
          {
-            if (!ObjectTypeManager.Instance.DoTypesOverlap(object.QueryMask, mask))
+            if (!ObjectTypeManager.Instance.DoTypesOverlap(object.ObjectMask, mask))
                continue;
             
             if(boxVsBox(object.WorldExtents, box) == false)
@@ -84,7 +84,7 @@ package PBLabs.Rendering2D
          var foundAny:Boolean = false;
          for each (var object:ISpatialObject2D in _objectList)
          {
-            if (!ObjectTypeManager.Instance.DoTypesOverlap(object.QueryMask, mask))
+            if (!ObjectTypeManager.Instance.DoTypesOverlap(object.ObjectMask, mask))
                continue;
             
             var scratchRect:Rectangle = object.WorldExtents.clone();
