@@ -49,7 +49,7 @@ package PBLabs.Engine.Core
       {
          _main = mainClass;
          
-         if (!IsShippingBuild && (_main.loaderInfo.parameters["generateSchema"] == "1"))
+         if (!IsShippingBuild && (_main.loaderInfo && _main.loaderInfo.parameters && _main.loaderInfo.parameters["generateSchema"] == "1"))
             SchemaGenerator.Instance.GenerateSchema();
          else
             LevelManager.Instance.Start();

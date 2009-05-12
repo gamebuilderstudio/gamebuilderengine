@@ -117,6 +117,50 @@ package PBLabs.Engine.UnitTests
          Logger.PrintFooter(null, "");
       }
       
+      public function testSerializationCallbacks():void
+      {
+         Logger.PrintHeader(null, "Running TemplateManager Entity/Group Callbacks Test");
+         
+         TemplateManager.Instance.RegisterEntityCallback("TestEntityCallback", _entityCallback);
+         TemplateManager.Instance.RegisterGroupCallback("TestGroupCallback", _groupCallback);
+         
+         var e:IEntity = TemplateManager.Instance.InstantiateEntity("TestEntityCallback");
+         assertTrue(e != null);
+         assertTrue(e.LookupComponentByType(TestComponentA) != null);
+         assertTrue(e.LookupComponentByType(TestComponentB) != null);
+         
+         var g:Array = TemplateManager.Instance.InstantiateGroup("TestGroupCallback");
+         assertTrue(g.length == 3);
+         
+         TemplateManager.Instance.UnregisterEntityCallback("TestEntityCallback");
+         TemplateManager.Instance.UnregisterGroupCallback("TestGroupCallback");
+         
+         assertTrue(TemplateManager.Instance.InstantiateEntity("TestEntityCallback") == null);
+         assertTrue(TemplateManager.Instance.InstantiateGroup("TestGroupCallback") == null);
+         
+         Logger.PrintFooter(null, "");
+      }
+      
+      private function _entityCallback():IEntity
+      {
+         var entity:IEntity = AllocateEntity();
+         entity.Initialize("CallbackCreatedEntity");
+         entity.AddComponent(new TestComponentA(), "A");
+         entity.AddComponent(new TestComponentB(), "B");
+         return entity;
+      }
+      
+      private function _groupCallback():Array
+      {
+         // Make several entities using the entity callback.
+         var res:Array = new Array();
+         res.push(_entityCallback());
+         res.push(_entityCallback());
+         res.push(_entityCallback());
+         return res;         
+      }
+    
+      
       private var _testValueReference:PropertyReference = new PropertyReference("@A.TestValue");
       private var _testComplexXReference:PropertyReference = new PropertyReference("@B.TestComplex.x");
       private var _testComplexYReference:PropertyReference = new PropertyReference("@B.TestComplex.y");

@@ -40,7 +40,7 @@ package PBLabs.Engine.Entity
        * Initializes the entity, optionally assigning it a name. This should be
        * called immediately after the entity is created.
        * 
-       * @param name The name to assign to the entity. If this is null ar an empty
+       * @param name The name to assign to the entity. If this is null or an empty
        * string, the entity will not register itself with the name manager.
        * 
        * @see PBLabs.Engine.Core.NameManager

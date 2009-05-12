@@ -109,6 +109,15 @@ package PBLabs.Engine.Core
        */
       public function InstantiateEntity(name:String):IEntity
       {
+         // Check for a callback.
+         if(_things[name])
+         {
+            if(_things[name].GroupCallback)
+               throw new Error("Thing '" + name + "' is a group callback!");
+            if(_things[name].EntityCallback)
+               return _things[name].EntityCallback();
+         }
+         
          var xml:XML = GetXML(name, "template", "entity");
          if (xml == null)
          {
@@ -154,16 +163,37 @@ package PBLabs.Engine.Core
        */
       public function InstantiateGroup(name:String):Array
       {
-         var group:Array = new Array();
-         if (!_InstantiateGroup(name, group, new Dictionary()))
+         // Check for a callback.
+         if(_things[name])
          {
-            for each (var entity:IEntity in group)
-               entity.Destroy();
+            if(_things[name].EntityCallback)
+               throw new Error("Thing '" + name + "' is an entity callback!");
+            if(_things[name].GroupCallback)
+               return _things[name].GroupCallback();
+         }
+
+         try
+         {
+            var group:Array = new Array();
+            if (!_InstantiateGroup(name, group, new Dictionary()))
+            {
+               for each (var entity:IEntity in group)
+                  entity.Destroy();
+               
+               return null;
+            }
             
+            return group;            
+         }
+         catch (e:Error)
+         {
+            Logger.PrintError(this, "InstantiateGroup", "Failed to instantiate group '" + name + "' due to: " + e.toString());
             return null;
          }
          
-         return group;
+         // Should never get here, one branch or the other of the try will take it.
+         throw new Error("Somehow skipped both branches of group instantiation try/catch block!");         
+         return null;
       }
       
       /**
@@ -184,7 +214,7 @@ package PBLabs.Engine.Core
             return;
          }
          
-         if (_xmlObjects[name] != null)
+         if (_things[name] != null)
          {
             Logger.PrintWarning(this, "AddXML", "An XML object description with name " + name + " has already been added.");
             return;
@@ -195,7 +225,7 @@ package PBLabs.Engine.Core
          thing.Identifier = identifier;
          thing.Version = version;
          
-         _xmlObjects[name] = thing;
+         _things[name] = thing;
       }
       
       /**
@@ -206,13 +236,13 @@ package PBLabs.Engine.Core
        */
       public function RemoveXML(identifier:String):void
       {
-         for (var name:String in _xmlObjects)
+         for (var name:String in _things)
          {
-            var thing:ThingReference = _xmlObjects[name];
+            var thing:ThingReference = _things[name];
             if (thing.Identifier == identifier)
             {
-               _xmlObjects[name] = null;
-               delete _xmlObjects[name];
+               _things[name] = null;
+               delete _things[name];
             }
          }
       }
@@ -235,12 +265,93 @@ package PBLabs.Engine.Core
          return thing != null ? thing.XMLData : null;
       }
       
+      /**
+       * Register a callback-powered entity with the TemplateManager. Instead of
+       * parsing and returning an entity based on XML, this lets you directly
+       * create the entity from a function you specify.
+       *
+       * Generally, we recommend using XML for entity definitions, but this can
+       * be useful for reducing external dependencies, or providing special
+       * functionality (for instance, a single name that returns several
+       * possible entities based on chance).
+       *
+       * @param name Name of the entity.
+       * @param callback A function which takes no arguments and returns an IEntity.
+       * @see UnregisterEntityCallback, RegisterGroupCallback
+       */
+      public function RegisterEntityCallback(name:String, callback:Function):void
+      {
+         if(!callback)
+            throw new Error("Must pass a callback function!");
+         if(_things[name])
+            throw new Error("Already have a thing registered under '" + name + "'!");
+         
+         var newThing:ThingReference = new ThingReference();
+         newThing.EntityCallback = callback;
+         _things[name] = newThing;
+      }
+      
+      /**
+       * Unregister a callback-powered entity registered with RegisterEntityCallback.
+       * @see RegisterEntityCallback
+       */
+      public function UnregisterEntityCallback(name:String):void
+      {
+         if(!_things[name])
+            throw new Error("No such thing '" + name + "'!");
+         if(!_things[name].EntityCallback)
+            throw new Error("Thing '" + name + "' is not an entity callback!");
+         
+         _things[name] = null;
+         delete _things[name];
+      }
+      
+      /**
+       * Register a function as a group. When the group is requested via InstantiateGroup,
+       * the function is called, and the Array it returns is given to the user.
+       *
+       * @param name NAme of the group.
+       * @param callback A function which takes no arguments and returns an array of IEntity instances.
+       * @see UnregisterGroupCallback, RegisterEntityCallback
+       */
+      public function RegisterGroupCallback(name:String, callback:Function):void
+      {
+         if(!callback)
+            throw new Error("Must pass a callback function!");
+         if(_things[name])
+            throw new Error("Already have a thing registered under '" + name + "'!");
+         
+         var newThing:ThingReference = new ThingReference();
+         newThing.GroupCallback = callback;
+         _things[name] = newThing;
+      }
+      
+      /**
+       * Unregister a function-based group registered with RegisterGroupCallback.
+       * @param name Name passed to RegisterGroupCallback.
+       * @see RegisterGroupCallback
+       */
+      public function UnregisterGroupCallback(name:String):void
+      {
+         if(!_things[name])
+            throw new Error("No such thing '" + name + "'!");
+         if(!_things[name].GroupCallback)
+            throw new Error("Thing '" + name + "' is not a group callback!");
+         
+         _things[name] = null;
+         delete _things[name];
+      }
+      
       private function _GetXML(name:String, xmlType1:String, xmlType2:String):ThingReference
       {
-         var thing:ThingReference = _xmlObjects[name];
+         var thing:ThingReference = _things[name];
          if (thing == null)
             return null;
          
+         // No XML on callbacks.
+         if(thing.EntityCallback || thing.GroupCallback)
+            return null;
+            
          if (xmlType1 != null)
          {
             var type:String = thing.XMLData.name();
@@ -346,13 +457,18 @@ package PBLabs.Engine.Core
       
       private var _inGroup:Boolean = false;
       private var _entityType:Class = null;
-      private var _xmlObjects:Dictionary = new Dictionary();
+      private var _things:Dictionary = new Dictionary();
    }
 }
 
+/**
+ * Helper class to store information about each thing.
+ */
 class ThingReference
 {
    public var Version:int = 0;
    public var XMLData:XML = null;
+   public var EntityCallback:Function = null;
+   public var GroupCallback:Function = null;
    public var Identifier:String = "";
 }

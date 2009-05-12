@@ -59,6 +59,8 @@ package PBLabs.Engine.UnitTests
          ProcessManager.Instance.RemoveTickedObject(tickObject1);
          ProcessManager.Instance.RemoveTickedObject(tickObject2);
          ProcessManager.Instance.RemoveTickedObject(tickObject0);
+         
+         Logger.PrintFooter(null, "");
       }
       
       public function testTickRate():void
@@ -81,6 +83,8 @@ package PBLabs.Engine.UnitTests
          ProcessManager.Instance.TimeScale = 1.0;
          
          ProcessManager.Instance.RemoveTickedObject(tickObject);
+         
+         Logger.PrintFooter(null, "");
       }
       
       public function testSchedule():void
