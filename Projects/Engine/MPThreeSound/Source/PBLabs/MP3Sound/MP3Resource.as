@@ -16,6 +16,8 @@ package PBLabs.MP3Sound
    import org.audiofx.mp3.MP3FileReferenceLoader;
    import org.audiofx.mp3.MP3SoundEvent;
    
+   [EditorData(extensions="mp3")]
+   
    /**
     * This is a Resource subclass for mp3 audio files.
     */

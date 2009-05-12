@@ -19,16 +19,19 @@ package PBLabs.Rendering2D
       /**
        * The number of cells in the x direction.
        */
+      [EditorData(defaultValue="1")]
       public var XCount:int = 1;
       
       /**
        * The number of cells in the y direction.
        */
+      [EditorData(defaultValue="1")]
       public var YCount:int = 1;
       
       /**
        * @inheritDoc
        */
+      [EditorData(ignore="true")]
       public function set OwningSheet(value:SpriteSheetComponent):void
       {
          if(_owningSheet)

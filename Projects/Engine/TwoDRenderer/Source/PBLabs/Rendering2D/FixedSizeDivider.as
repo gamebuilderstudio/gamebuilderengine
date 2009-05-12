@@ -19,16 +19,19 @@ package PBLabs.Rendering2D
       /**
        * The width of each frame.
        */
+      [EditorData(defaultValue="32")]
       public var Width:int = 32;
       
       /**
        * The height of each frame.
        */
+      [EditorData(defaultValue="32")]
       public var Height:int = 32;
       
       /**
        * @inheritDoc
        */
+      [EditorData(ignore="true")]
       public function set OwningSheet(value:SpriteSheetComponent):void
       {
          if(_owningSheet)

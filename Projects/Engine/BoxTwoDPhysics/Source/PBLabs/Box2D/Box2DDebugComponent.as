@@ -23,6 +23,7 @@ package PBLabs.Box2D
          return BaseSceneComponent.LAYER_COUNT - 1;
       }
       
+      [EditorData(referenceType="reference")]
       public function get Scene():IDrawManager2D
       {
          return _scene;

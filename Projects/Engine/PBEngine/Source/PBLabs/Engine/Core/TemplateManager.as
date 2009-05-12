@@ -281,9 +281,10 @@ package PBLabs.Engine.Core
        */
       public function RegisterEntityCallback(name:String, callback:Function):void
       {
-         if(!callback)
+         if (callback == null)
             throw new Error("Must pass a callback function!");
-         if(_things[name])
+         
+         if (_things[name])
             throw new Error("Already have a thing registered under '" + name + "'!");
          
          var newThing:ThingReference = new ThingReference();
@@ -297,9 +298,10 @@ package PBLabs.Engine.Core
        */
       public function UnregisterEntityCallback(name:String):void
       {
-         if(!_things[name])
+         if (!_things[name])
             throw new Error("No such thing '" + name + "'!");
-         if(!_things[name].EntityCallback)
+            
+         if (!_things[name].EntityCallback)
             throw new Error("Thing '" + name + "' is not an entity callback!");
          
          _things[name] = null;
@@ -316,9 +318,10 @@ package PBLabs.Engine.Core
        */
       public function RegisterGroupCallback(name:String, callback:Function):void
       {
-         if(!callback)
+         if (callback == null)
             throw new Error("Must pass a callback function!");
-         if(_things[name])
+         
+         if (_things[name])
             throw new Error("Already have a thing registered under '" + name + "'!");
          
          var newThing:ThingReference = new ThingReference();
@@ -333,9 +336,10 @@ package PBLabs.Engine.Core
        */
       public function UnregisterGroupCallback(name:String):void
       {
-         if(!_things[name])
+         if (!_things[name])
             throw new Error("No such thing '" + name + "'!");
-         if(!_things[name].GroupCallback)
+         
+         if (!_things[name].GroupCallback)
             throw new Error("Thing '" + name + "' is not a group callback!");
          
          _things[name] = null;
@@ -349,7 +353,7 @@ package PBLabs.Engine.Core
             return null;
          
          // No XML on callbacks.
-         if(thing.EntityCallback || thing.GroupCallback)
+         if ((thing.EntityCallback != null) || (thing.GroupCallback != null))
             return null;
             
          if (xmlType1 != null)

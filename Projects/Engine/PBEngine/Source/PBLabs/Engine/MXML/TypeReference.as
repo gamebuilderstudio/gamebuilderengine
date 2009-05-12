@@ -37,7 +37,7 @@ package PBLabs.Engine.MXML
        */
       public function initialized(document:Object, id:String):void
       {
-         if (Global.IsShippingBuild)
+         if (!Global.IsShippingBuild)
          {
             var name:String = getQualifiedClassName(type);
             SchemaGenerator.Instance.AddClass(name, type);

@@ -21,7 +21,8 @@ package PBLabs.Engine.Components
       /**
        * Do we actually want to register for ticks? Useful if a subclass wants
        * to disable the functionality. Only checked at _OnAdd/_OnRemove time.
-       */       
+       */
+      [EditorData(DefaultValue="true")]
       public var RegisterForTicks:Boolean = true;
       
       /**

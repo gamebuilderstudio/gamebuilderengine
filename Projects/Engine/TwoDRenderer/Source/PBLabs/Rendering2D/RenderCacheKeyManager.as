@@ -1,5 +1,7 @@
 package PBLabs.Rendering2D
 {
+   [EditorData(ignore="true")]
+   
    /**
     * Helper class to manage RenderCacheKey values; basically just a global int
     * that we can increment to get new values to trigger cache invalidation.

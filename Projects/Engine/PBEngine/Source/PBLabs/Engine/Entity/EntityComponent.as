@@ -8,6 +8,8 @@
  ******************************************************************************/
 package PBLabs.Engine.Entity
 {
+   [EditorData(ignore="true")]
+   
    /**
     * An implementation of the IEntityComponent interface, providing all the basic
     * functionality required of all components. Custom components should always

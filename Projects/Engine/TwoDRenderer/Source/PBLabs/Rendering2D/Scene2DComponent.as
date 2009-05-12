@@ -24,6 +24,7 @@ package PBLabs.Rendering2D
       /**
        * An optional object that the scene should follow around the world.
        */
+      [EditorData(referenceType="reference")]
       public function get TrackObject():IDrawable2D
       {
          return _trackObject;

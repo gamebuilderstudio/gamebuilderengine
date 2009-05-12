@@ -38,8 +38,8 @@ package PBLabs.Engine.Core
       public function SchemaGenerator()
       {
          // need these built in flash classes - there's probably more we should have
-         AddClass("flash.geom.Point", getDefinitionByName("flash.geom.Point") as Class);
-         AddClass("flash.geom.Rectangle", getDefinitionByName("flash.geom.Rectangle") as Class);
+         AddClassName("flash.geom.Point");
+         AddClassName("flash.geom.Rectangle");
       }
       
       /**
@@ -52,6 +52,14 @@ package PBLabs.Engine.Core
       }
       
       /**
+       * Adds a class to be included in the schema.
+       */
+      public function AddClassName(className:String):void
+      {
+         AddClass(className, getDefinitionByName(className) as Class);
+      }
+      
+      /**
        * Generates the actual schema data by passing the describeType output over a
        * LocalConnection. The connection is named _SchemaConnection and supplies data
        * to the OnSchemaReceived method. This method should receive two parameters.
@@ -61,8 +69,7 @@ package PBLabs.Engine.Core
        * <ul>
        * <li>START - Called before any other data is sent. No data is sent with this message.</li>
        * <li>ERROR - Called to indicate an error in sending data. The data contains the error message.</li>
-       * <li>COMPONENT - Called to specify that the data contains the schema for a component.</li>
-       * <li>TYPE - Called to specify that the data contains the schema for a regular type.</li>
+       * <li>TYPE - Called to specify that the data contains the schema for a type.</li>
        * <li>END - Called when all schema data has been sent. No data is sent with this message.</li>
        * </ul>
        */
@@ -81,24 +88,12 @@ package PBLabs.Engine.Core
          for each (var classObject:Class in _classes)
          {
             var description:XML = describeType(classObject);
-            var isComponent:Boolean = false;
-            
-            var parentInterfaces:XMLList = description.factory.child("implementsInterface");
-            for each (var parentInterface:XML in parentInterfaces)
-            {
-               // anything implementing IEntityComponent is a component
-               if (parentInterface.@type.toString() == "PBLabs.Engine.Entity::IEntityComponent")
-               {
-                  isComponent = true;
-                  break;
-               }
-            }
             
             // if this throws an exception, it's because the description is larger than 40k
             try
             {
                Logger.Print(this, "Sending schema data for " + description.@name);
-               _connection.send("_SchemaConnection", "OnSchemaReceived", isComponent ? "COMPONENT" : "TYPE", description.toString());
+               _connection.send("_SchemaConnection", "OnSchemaReceived", "TYPE", description.toString());
             }
             catch (error:Error)
             {

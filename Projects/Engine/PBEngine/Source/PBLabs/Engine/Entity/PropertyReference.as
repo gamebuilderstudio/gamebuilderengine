@@ -10,6 +10,8 @@ package PBLabs.Engine.Entity
 {
    import PBLabs.Engine.Serialization.ISerializable;
    
+   [EditorData(editAs="String")]
+   
    /**
     * A property reference stores the information necessary to lookup a property
     * on an entity.

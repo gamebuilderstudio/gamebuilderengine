@@ -13,6 +13,8 @@ package PBLabs.Engine.Core
    import flash.utils.Proxy;
    import flash.utils.flash_proxy;
    
+   [EditorData(editAs="flash.utils.Dictionary")]
+   
    /**
     * An ordered associative array with a working length property.
     * 

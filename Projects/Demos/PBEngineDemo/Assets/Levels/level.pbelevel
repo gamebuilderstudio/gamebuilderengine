@@ -86,8 +86,8 @@
     <component type="PBLabs.Animation.AnimatorComponent" name="FrameAnimation">
       <Reference>@Render.SpriteIndex</Reference>
       <DefaultAnimation>Idle</DefaultAnimation>
-      <Animations childType="PBLabs.Animation.Animator">
-         <Idle type="PBLabs.Animation.Animator">
+      <Animations>
+         <Idle>
             <StartValue type="int">0</StartValue>
             <TargetValue type="int">3</TargetValue>
             <Duration>0.6</Duration>

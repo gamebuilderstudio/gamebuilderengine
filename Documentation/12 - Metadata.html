@@ -1,0 +1,44 @@
+EditorData
+   defaultValue="{value}"
+      Default defaultValues are: Boolean=false, number,int,uint=0, String="".
+      Only primitives can have default values, however, classes can have default
+      values that consist of a pipe separated list of values for its children.
+      This only works on simple classes, like flash.geom.Point.
+   
+   ignore="true/false"
+      When used on a class, it tells the editor to not allow instances of this
+      type to be created for instance type fields. When used on a field, it
+      tells the editor to completely ignore the field. Private and protected
+      members, read only properties, and interfaces are automatically ignored.
+   
+   editAs="fully.qualified.class"
+      Tells the editor to treat the class like a different type. The class will
+      have to implement ISerializable to be loaded by the game correctly.
+   
+   typeHint="fully.qualified.class"
+      This is the same as the TypeHint metadata tag, but can be used with other
+      tags. For example, if editAs="Array" is set on a Class, this can specify
+      the child type to use for that array.
+   
+   extensions="comma,separated,list"
+      Only applicable to Resource derived classes, this specifies the file
+      extensions that are valid for the Resource type. If omitted, all
+      extensions are considered valid.
+   
+   referenceType="static/reference/instance"
+      This specifies how a complex class field should be treated. On a complex
+      field, it applies directly to that field. On an Array or Dictionary, it
+      applies to the child fields. A value of reference means the field will
+      be referencing a named object somewhere else. This is the default for
+      IEntity or IEntityComponent types. A value of instance means a new
+      instance of either the fields type or a child type will be created. A
+      value of static means the fields type will be used and cannot be changed.
+
+TypeHint
+   type="fully.qualified.class"
+      This can be used on Array or Dictionary fields to specify the root type
+      to use for children. By default, the type specified and any child types
+      are used. The EditorData-referenceType metadata can be used in conjunction
+      with this to modify that behavior. This can also be used on
+      PropertyReference fields to specify the type of properties that can be
+      referenced. If it is omitted, all types are considered valid.

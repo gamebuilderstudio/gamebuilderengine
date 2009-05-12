@@ -56,6 +56,7 @@ package PBLabs.Rendering2D
          _spriteDirty = true;
       }
       
+      [EditorData(defaultValue="true")]
       public function get Smoothing():Boolean
       {
          return _smoothing;
@@ -103,6 +104,7 @@ package PBLabs.Rendering2D
       /**
        * Modulate alpha. Zero is fully translucent, one is fully opaque.
        */
+      [EditorData(defaultValue="1.0")]
       public var Fade:Number = 1.0;
       
       /**

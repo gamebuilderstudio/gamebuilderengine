@@ -15,6 +15,7 @@ package PBLabs.Box2D
    
    public class PolygonCollisionShape extends CollisionShape
    {
+      [TypeHint(type="flash.geom.Point")]
       public function get Vertices():Array
       {
          return _vertices;

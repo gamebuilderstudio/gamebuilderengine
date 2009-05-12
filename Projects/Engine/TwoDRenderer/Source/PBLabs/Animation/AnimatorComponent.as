@@ -25,6 +25,7 @@ package PBLabs.Animation
       /**
        * A list of all the animation that can be played by this component.
        */
+      [TypeHint(type="PBLabs.Animation.Animator")]
       public var Animations:Dictionary = null;
       
       /**
@@ -36,6 +37,7 @@ package PBLabs.Animation
       /**
        * Whether or not to start the animation when the component is registered.
        */
+      [EditorData(defaultValue="true")]
       public var AutoPlay:Boolean = true;
       
       /**

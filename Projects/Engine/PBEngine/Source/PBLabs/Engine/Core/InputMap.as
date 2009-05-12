@@ -14,6 +14,8 @@ package PBLabs.Engine.Core
    import flash.events.MouseEvent;
    import flash.utils.Dictionary;
    
+   [EditorData(EditAs="flash.utils.Dictionary", typeHint="PBLabs.Engine.Core.InputKey")]
+   
    /**
     * This class wraps the InputManager to allow for better control over
     * input events. It also provides a mechanism for creating custom

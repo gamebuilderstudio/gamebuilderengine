@@ -21,6 +21,8 @@ package PBLabs.Rendering2D
 	   public var Divider:ISpriteSheetDivider;
 	   public var DirectionsPerFrame:int;
 	   public var Center:Point = new Point();
+	   
+      [TypeHint(type="String")]
 	   public var Sheets:Dictionary = new Dictionary();
 	   
 	   protected override function _OnAdd():void

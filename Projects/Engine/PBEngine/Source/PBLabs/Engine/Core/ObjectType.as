@@ -10,6 +10,8 @@ package PBLabs.Engine.Core
 {
    import PBLabs.Engine.Serialization.ISerializable;
    
+   [EditorData(editAs="Array", typeHint="String")]
+   
    /**
     * An ObjectType is an abstraction of a bitmask that can be used to associate
     * objects with type names.

@@ -47,7 +47,7 @@ package PBLabs.Engine.Serialization
          _deserializers["::DefaultComplex"] = _DeserializeComplex;
          _deserializers["Boolean"] = _DeserializeBoolean;
          _deserializers["Array"] = _DeserializeDictionary;
-         _deserializers["Dictionary"] = _DeserializeDictionary;
+         _deserializers["flash.utils::Dictionary"] = _DeserializeDictionary;
          
          _serializers["::DefaultSimple"] = _SerializeSimple;
          _serializers["::DefaultComplex"] = _SerializeComplex;
@@ -101,7 +101,7 @@ package PBLabs.Engine.Serialization
        * Code that calls this method should always use the return value rather than
        * the passed in value for this reason.
        */
-      public function Deserialize(object:*, xml:XML, typeHint:String = null):*
+      public function Deserialize(object:*, xml:XML, typeHint:String=null):*
       {
          // Dispatch our special cases - entities and ISerializables.
          if (object is ISerializable)
@@ -222,17 +222,8 @@ package PBLabs.Engine.Serialization
                if (child != null)
                {
                   // Deal with typehints.
-                  var typeHint:String = null;
-                  try
-                  {
-                     if (object["_typeHint_" + fieldName]) 
-                        typeHint = object["_typeHint_" + fieldName];                  
-                  }
-                  catch(e:Error)
-                  {
-                  }
-                  
-                  child = Deserialize(child, fieldXML, typeHint);
+                  var childTypeHint:String = TypeUtility.GetTypeHint(object, fieldName);
+                  child = Deserialize(child, fieldXML, childTypeHint);
                }
                
                // Assign the new value.
@@ -279,7 +270,7 @@ package PBLabs.Engine.Serialization
             xml.appendChild("false");
       }
       
-      private function _DeserializeDictionary(object:*, xml:XML, typeHint:String = "String"):*
+      private function _DeserializeDictionary(object:*, xml:XML, typeHint:String):*
       {
          for each (var childXML:XML in xml.*)
          {

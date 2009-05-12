@@ -141,6 +141,30 @@ package PBLabs.Engine.Serialization
            return typeXml.@isDynamic == "true";
       }
       
+      public static function GetTypeHint(object:*, field:String):String
+      {
+         var description:XML = GetTypeDescription(object);
+         if (description == null)
+            return null;
+         
+         for each (var variable:XML in description.*)
+         {
+            if ((variable.name() != "variable") && (variable.name() != "accessor"))
+               continue;
+            
+            if (variable.@name == field)
+            {
+               for each (var metadataXML:XML in variable.*)
+               {
+                  if (metadataXML.@name == "TypeHint")
+                     return metadataXML.arg.@value.toString();
+               }
+            }
+         }
+         
+         return null;
+      }
+      
       /**
        * Gets the xml description of an object's type through a call to the
        * flash.utils.describeType method. Results are cached, so only the first

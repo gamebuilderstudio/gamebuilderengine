@@ -108,6 +108,7 @@ package PBLabs.Box2D
             _body.SetXForm(_body.GetPosition(), rotation);
       }
       
+      [EditorData(defaultValue="100|100")]
       public function get Size():Point
       {
          return _size;
@@ -166,6 +167,7 @@ package PBLabs.Box2D
          }
       }
       
+      [EditorData(defaultValue="true")]
       public function get CanMove():Boolean
       {
          return _canMove;
@@ -179,6 +181,7 @@ package PBLabs.Box2D
             UpdateMass();
       }
       
+      [EditorData(defaultValue="true")]
       public function get CanRotate():Boolean
       {
          return _canRotate;
@@ -192,6 +195,7 @@ package PBLabs.Box2D
             UpdateMass();
       }
       
+      [EditorData(defaultValue="true")]
       public function get CanSleep():Boolean
       {
          return _canSleep;
@@ -220,6 +224,7 @@ package PBLabs.Box2D
             _body.SetBullet(value);
       }
       
+      [TypeHint(type="PBLabs.Box2D.CollisionShape")]
       public function get CollisionShapes():Array
       {
          return _collisionShapes;

@@ -12,6 +12,8 @@ package PBLabs.Engine.Serialization
    
    import flash.utils.Dictionary;
    
+   [EditorData(ignore="true")]
+   
    /**
     * Base class that implements common functionality for enumeration classes. An
     * enumeration class is essentially a class that is just a list of constant

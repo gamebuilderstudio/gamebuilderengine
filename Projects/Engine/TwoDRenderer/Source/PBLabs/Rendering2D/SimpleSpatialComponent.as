@@ -24,6 +24,7 @@ package PBLabs.Rendering2D
       /**
        * The spatial manager this object belongs to.
        */
+      [EditorData(referenceType="reference")]
       public var SpatialManager:ISpatialManager2D;
       
       /**
@@ -39,6 +40,7 @@ package PBLabs.Rendering2D
       /**
        * The size of the object.
        */
+      [EditorData(defaultValue="100|100")]
       public var Size:Point = new Point(100, 100);
       
       /**

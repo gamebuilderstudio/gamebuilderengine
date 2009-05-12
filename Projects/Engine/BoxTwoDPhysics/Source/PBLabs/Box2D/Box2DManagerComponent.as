@@ -22,6 +22,7 @@ package PBLabs.Box2D
    
    public class Box2DManagerComponent extends EntityComponent implements ITickedObject, ISpatialManager2D
    {
+      [EditorData(defaultValue="30")]
       public function get Scale():Number
       {
          return _scale;
@@ -37,6 +38,7 @@ package PBLabs.Box2D
          return 1 / _scale;
       }
       
+      [EditorData(defaultValue="true")]
       public function get AllowSleep():Boolean
       {
          return _allowSleep;
@@ -53,6 +55,7 @@ package PBLabs.Box2D
          _allowSleep = value;
       }
       
+      [EditorData(defaultValue="9.81")]
       public function get Gravity():Point
       {
          return _gravity;
@@ -66,6 +69,7 @@ package PBLabs.Box2D
             _world.SetGravity(new b2Vec2(value.x, value.y));
       }
       
+      [EditorData(defaultValue="-10000|-10000|20000|20000")]
       public function get WorldBounds():Rectangle
       {
          return _worldBounds;

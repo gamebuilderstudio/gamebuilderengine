@@ -12,6 +12,8 @@ package PBLabs.Rendering2D
    
    import flash.display.Bitmap;
    
+   [EditorData(extensions="jpg,png,gif")]
+   
    /**
     * This is a Resource subclass for image data.
     */

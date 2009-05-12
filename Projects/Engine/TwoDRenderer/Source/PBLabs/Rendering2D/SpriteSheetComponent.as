@@ -71,6 +71,7 @@ package PBLabs.Rendering2D
       /**
        * The filename of the image to use for this sprite sheet.
        */
+      [EditorData(ignore="true")]
       public function get ImageFilename():String
       {
          return _image == null ? null : _image.Filename;
@@ -140,6 +141,7 @@ package PBLabs.Rendering2D
       /**
        * The number of directions per frame.
        */
+      [EditorData(defaultValue="1")]
       public var DirectionsPerFrame:Number = 1;
       
       /**

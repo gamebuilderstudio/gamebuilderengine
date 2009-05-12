@@ -11,6 +11,8 @@ package PBLabs.Engine.Resource
    import flash.utils.ByteArray;
    import PBLabs.Engine.Debug.*;
    
+   [EditorData(extensions="xml")]
+   
    /**
     * This is a Resource subclass for XML data.
     */

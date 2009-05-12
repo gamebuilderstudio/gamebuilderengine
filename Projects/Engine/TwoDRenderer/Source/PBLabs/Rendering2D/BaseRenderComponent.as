@@ -16,25 +16,29 @@ package PBLabs.Rendering2D
     * Base implementation for a 2d renderable component. This contains some
     * convenient helper logic in order to simplify implementing your own renderable
     * component.
-    */ 
+    */
+   [EditorData(ignore="true")]
    public class BaseRenderComponent extends EntityComponent implements IDrawable2D
    {
       /**
        * A reference for the position property on the owner entity. This should be a
        * point.
        */
+      [TypeHint(type="flash.geom.Point")]
       public var PositionReference:PropertyReference;
       
       /**
        * A reference for the rotation property on the owner entity. This should be a
        * Number.
        */
+      [TypeHint(type="Number")]
       public var RotationReference:PropertyReference;
       
       /**
        * A reference for the size property on the owner entity. This should be a
        * point.
        */
+      [TypeHint(type="flash.geom.Point")]
       public var SizeReference:PropertyReference;
       
       /**
@@ -45,6 +49,7 @@ package PBLabs.Rendering2D
       /**
        * @inheritDoc
        */
+      [EditorData(ignore="true")]
       public function get RenderSortKey():int
       {
          return _RenderSortKey;
@@ -58,6 +63,7 @@ package PBLabs.Rendering2D
          _RenderSortKey = value;
       }
       
+      [EditorData(ignore="true")]
       public function get RenderCacheKey():int
       {
          return _RenderCacheKey;

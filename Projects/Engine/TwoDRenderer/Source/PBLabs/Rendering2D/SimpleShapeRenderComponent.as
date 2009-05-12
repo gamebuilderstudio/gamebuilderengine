@@ -11,12 +11,20 @@ package PBLabs.Rendering2D
 	public class SimpleShapeRenderComponent extends BaseRenderComponent
 	{
 	  public var ShowCircle:Boolean;
+	  
+     [EditorData(defaultValue="true")]
 	  public var ShowSquare:Boolean;
+	  
+     [EditorData(defaultValue="100")]
 	  public var Radius:Number;
 	  
+     [EditorData(defaultValue="2")]
 	  public var BorderThickness:Number = 2.0;
-	  public var BorderColor:Number = 0x000000;
-	  public var FillColor:Number = 0xFF00FF;
+	  
+	  public var BorderColor:uint = 0x000000;
+	  
+     [EditorData(defaultValue="255")]
+	  public var FillColor:uint = 0x0000FF;
 	
      public override function OnDraw(manager:IDrawManager2D):void
      {

@@ -10,8 +10,10 @@ package PBLabs.Box2D
 {
    import Box2D.Collision.Shapes.b2ShapeDef;
    
+   [EditorData(ignore="true")]
    public class CollisionShape
    {
+      [EditorData(defaultValue="1")]
       public function get Density():Number
       {
          return _density;

@@ -16,6 +16,7 @@ package PBLabs.Box2D
    
    public class CircleCollisionShape extends CollisionShape
    {
+      [EditorData(defaultValue="1")]
       public function get Radius():Number
       {
          return _radius;

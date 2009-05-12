@@ -20,6 +20,7 @@ package PBLabs.Rendering2D
   /**
    * Base class that implements useful functionality for draw managers.
    */
+   [EditorData(ignore="true")]
    public class BaseSceneComponent extends EntityComponent implements IAnimatedObject, IDrawManager2D
    {
       /**
@@ -30,6 +31,7 @@ package PBLabs.Rendering2D
       /**
        * Enables smooth rendering of bitmaps.
        */
+      [EditorData(defaultValue="true")]
       public var Smoothing:Boolean = true;
       
       /**
@@ -39,6 +41,7 @@ package PBLabs.Rendering2D
        * @see PBLabs.Rendering2D.UI.FlexSceneView
        * @see PBLabs.Rendering2D.UI.SceneView
        */
+      [EditorData(ignore="true")]
       public function get SceneView():IUITarget
       {
          if (_SceneView != null)
@@ -70,6 +73,7 @@ package PBLabs.Rendering2D
       /**
        * @private
        */
+      [EditorData(defaultValue="MainView")]
       public function get SceneViewName():String
       {
          return _SceneViewName;
@@ -94,6 +98,7 @@ package PBLabs.Rendering2D
       /**
        * Reference to the spatial database for this scene.
        */
+      [EditorData(referenceType="reference")]
       public var SpatialDatabase:ISpatialManager2D;
       
       /**
@@ -107,9 +112,8 @@ package PBLabs.Rendering2D
        * on layers that are static or almost static. In the 'almost' case, call InvalidateLayerCache
        * on the layer to force it to redraw.
        */
+      [TypeHint(type="Boolean")]
       public var CacheLayers:Array = new Array(LAYER_COUNT);
-      
-      private var _typeHint_CacheLayers:String = "Boolean";
       
       private var _CacheLayerKey:Array = new Array(LAYER_COUNT);
 

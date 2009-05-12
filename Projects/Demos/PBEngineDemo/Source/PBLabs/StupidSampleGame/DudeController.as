@@ -23,6 +23,7 @@ package PBLabs.StupidSampleGame
 
    public class DudeController extends EntityComponent implements ITickedObject
    {
+      [TypeHint(type="flash.geom.Point")]
       public var VelocityReference:PropertyReference;
       
       public function get Input():InputMap

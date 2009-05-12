@@ -5,13 +5,21 @@ package PBLabs.Rendering2D
 
    public class Interpolated2DMoverComponent extends SimpleSpatialComponent
    {
+      [EditorData(ignore="true")]
       public var GoalPosition:Point = new Point();
+      
+      [EditorData(ignore="true")]
       public var GoalRotation:Number = 0;
       
+      [EditorData(defaultValue="5")]
       public var TranslationSpeed:Number = 5.0;
+      
+      [EditorData(defaultValue="1")]
       public var RotationSpeed:Number = 1.0;
+      
       public var FaceInMovementDirection:Boolean = false;
       
+      [EditorData(defaultValue="1")]
       public var Nudge:Number = 1.0;
       
       public function set InitialPosition(v:Point):void
