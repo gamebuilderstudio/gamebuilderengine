@@ -45,7 +45,7 @@ package PBLabs.Animation
        */
       public override function OnFrame(elapsed:Number):void
       {
-         if(_currentAnimation)
+         if (_currentAnimation)
          {
             _currentAnimation.Animate(elapsed);
             Owner.SetProperty(Reference, _currentAnimation.CurrentValue);            
@@ -57,14 +57,18 @@ package PBLabs.Animation
        * 
        * @param animation The name of the animation in the Animations dictionary
        * to play.
-       * @param startValue The value to start at.
+       * @param startValue The value to start at. If this is null (the default), the
+       * start value won't be changed.
        */
-      public function Play(animation:String, startValue:*):void
+      public function Play(animation:String, startValue:*=null):void
       {
          _currentAnimation = Animations[animation];
-         if(!_currentAnimation)
+         if (!_currentAnimation)
             return;
-         _currentAnimation.StartValue = startValue;
+         
+         if (startValue)
+            _currentAnimation.StartValue = startValue;
+         
          _currentAnimation.Reset();
          _currentAnimation.Play();
       }
@@ -77,9 +81,7 @@ package PBLabs.Animation
          if (!AutoPlay || (_currentAnimation != null))
             return;
          
-         var value:* = Owner.GetProperty(Reference);
-         if (value != null && DefaultAnimation != "")
-            Play(DefaultAnimation, value);
+         Play(DefaultAnimation);
       }
       
       private var _currentAnimation:Animator = null;
