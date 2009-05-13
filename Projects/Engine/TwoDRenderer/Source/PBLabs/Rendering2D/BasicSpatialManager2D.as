@@ -82,6 +82,7 @@ package PBLabs.Rendering2D
       public function QueryCircle(center:Point, radius:Number, mask:ObjectType, results:Array):Boolean
       {
          var foundAny:Boolean = false;
+         
          for each (var object:ISpatialObject2D in _objectList)
          {
             if (!ObjectTypeManager.Instance.DoTypesOverlap(object.ObjectMask, mask))

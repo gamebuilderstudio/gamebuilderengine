@@ -20,9 +20,6 @@ package PBLabs.Engine.Serialization
     * by class basis by implementing the ISerializable interface.
     * 
     * @see ISerializable
-    * @see ../../../../../Examples/SerializingObjects.html Serializing Objects
-    * @see ../../../../../Examples/DeserializingObjects.html Deserializing Objects
-    * @see ../../../../../Reference/XMLFormat.html The XML Format
     */
    public class Serializer
    {
@@ -52,6 +49,11 @@ package PBLabs.Engine.Serialization
          _serializers["::DefaultSimple"] = _SerializeSimple;
          _serializers["::DefaultComplex"] = _SerializeComplex;
          _serializers["Boolean"] = _SerializeBoolean;
+         
+         // Do a quick sanity check to make sure we are getting metadata.
+         var tmd:TestForMetadata = new TestForMetadata();
+         if(TypeUtility.GetTypeHint(tmd, "SomeArray") != "Number")
+            throw new Error("Metadata is not included in this build of the engine, so serialization will not work!");
       }
       
       /**
@@ -63,7 +65,6 @@ package PBLabs.Engine.Serialization
        * 
        * @return The xml describing the specified object.
        * 
-       * @see ../../../../../Examples/SerializingObjects.html Serializing Objects
        * @see ISerializable
        */
       public function Serialize(object:*, xml:XML):void
@@ -592,4 +593,13 @@ internal class ReferenceNote
          return;
       }
    }
+}
+
+/**
+ * Helper class to make sure metadata is being included.
+ */
+class TestForMetadata
+{
+   [TypeHint(type="Number")]
+   public var SomeArray:Array;
 }

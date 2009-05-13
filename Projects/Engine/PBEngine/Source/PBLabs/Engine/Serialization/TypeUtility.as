@@ -141,6 +141,9 @@ package PBLabs.Engine.Serialization
            return typeXml.@isDynamic == "true";
       }
       
+      /**
+       * Determine the type, specified by metadata, for a container class like an Array.
+       */
       public static function GetTypeHint(object:*, field:String):String
       {
          var description:XML = GetTypeDescription(object);
@@ -149,16 +152,19 @@ package PBLabs.Engine.Serialization
          
          for each (var variable:XML in description.*)
          {
+            // Skip if it's not the field we want.
+            if (variable.@name != field)
+               continue;
+
+            // Only check variables/accessors.
             if ((variable.name() != "variable") && (variable.name() != "accessor"))
                continue;
             
-            if (variable.@name == field)
+            // Scan for TypeHint metadata.
+            for each (var metadataXML:XML in variable.*)
             {
-               for each (var metadataXML:XML in variable.*)
-               {
-                  if (metadataXML.@name == "TypeHint")
-                     return metadataXML.arg.@value.toString();
-               }
+               if (metadataXML.@name == "TypeHint")
+                  return metadataXML.arg.@value.toString();
             }
          }
          

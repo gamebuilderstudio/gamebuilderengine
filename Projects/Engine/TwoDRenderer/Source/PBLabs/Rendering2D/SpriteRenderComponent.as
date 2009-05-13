@@ -47,6 +47,11 @@ package PBLabs.Rendering2D
          return _spriteIndex;
       }
       
+      public function get RawSprite():DisplayObject
+      {
+         return _sprite;
+      }
+      
       /**
        * @private
        */
@@ -169,10 +174,15 @@ package PBLabs.Rendering2D
          _sprite = null;
       }
       
+      protected function GetCurrentFrame():BitmapData
+      {
+         return _spriteSheet.GetFrame(_spriteIndex);
+      }
+      
       /**
        * Update the cached sprite that we use for rendering.
        */
-      private function _GenerateSprite():void
+      protected function _GenerateSprite():void
       {
          // Don't regenerate if we don't need it.
          if (!_spriteDirty)
@@ -182,25 +192,28 @@ package PBLabs.Rendering2D
          {
             // Draw a simple circle.
             _baseSize = new Point(25,25);
-            var sprite:Sprite = new Sprite();
-            sprite.graphics.clear();
-            sprite.graphics.beginFill(0xFF00FF, 0.5);
-            sprite.graphics.drawCircle(12.5, 12.5, 25);
-            sprite.graphics.endFill();
-            _sprite = sprite;
+            
+            if(_sprite == null || !(_sprite is Sprite))
+               _sprite = new Sprite();
+
+            (_sprite as Sprite).graphics.clear();
+            (_sprite as Sprite).graphics.beginFill(0xFF00FF, 0.5);
+            (_sprite as Sprite).graphics.drawCircle(12.5, 12.5, 25);
+            (_sprite as Sprite).graphics.endFill();
          }
          else
          {
-            var bmpData:BitmapData = _spriteSheet.GetFrame(_spriteIndex);
+            var bmpData:BitmapData = GetCurrentFrame();
+            
             _baseSize = new Point(bmpData.width, bmpData.height);
-            if(_bitmap == null)
-              _bitmap = new Bitmap(bmpData, "auto", _smoothing);
+            
+            if(_sprite == null || !(_sprite is Bitmap))
+              _sprite = new Bitmap(bmpData, "auto", _smoothing);
             else
             {
-              _bitmap.bitmapData = bmpData;
-              _bitmap.smoothing = _smoothing;
+              (_sprite as Bitmap).bitmapData = bmpData;
+              (_sprite as Bitmap).smoothing = _smoothing;
             }
-            _sprite = _bitmap;
           }
           _spriteDirty = false;
       }
@@ -211,7 +224,6 @@ package PBLabs.Rendering2D
       protected var _spriteDirty:Boolean = false;
       protected var _matrix:Matrix = new Matrix();
       protected var _smoothing:Boolean = true;
-      protected var _bitmap:Bitmap = null;
       
       protected var _baseSize:Point = null;
       protected var _flipX:Boolean = false;

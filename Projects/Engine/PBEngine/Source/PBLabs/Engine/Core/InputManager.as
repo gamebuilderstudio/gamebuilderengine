@@ -46,10 +46,10 @@ package PBLabs.Engine.Core
       public function InputManager()
       {
          Global.MainStage.addEventListener(KeyboardEvent.KEY_DOWN, _OnKeyDown);
-         Global.MainStage.addEventListener(KeyboardEvent.KEY_UP, _OnKeyUp);
-         Global.MainStage.addEventListener(MouseEvent.MOUSE_DOWN, _OnMouseDown);
-         Global.MainStage.addEventListener(MouseEvent.MOUSE_UP, _OnMouseUp);
-         Global.MainStage.addEventListener(MouseEvent.MOUSE_MOVE, _OnMouseMove);
+         Global.MainStage.addEventListener(KeyboardEvent.KEY_UP,   _OnKeyUp);
+         Global.MainStage.addEventListener(MouseEvent.MOUSE_DOWN,  _OnMouseDown);
+         Global.MainStage.addEventListener(MouseEvent.MOUSE_UP,    _OnMouseUp);
+         Global.MainStage.addEventListener(MouseEvent.MOUSE_MOVE,  _OnMouseMove);
       }
       
       /**
