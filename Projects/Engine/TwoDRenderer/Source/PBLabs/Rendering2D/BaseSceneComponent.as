@@ -98,7 +98,7 @@ package PBLabs.Rendering2D
       /**
        * Reference to the spatial database for this scene.
        */
-      [EditorData(referenceType="reference")]
+      [EditorData(referenceType="componentReference")]
       public var SpatialDatabase:ISpatialManager2D;
       
       /**

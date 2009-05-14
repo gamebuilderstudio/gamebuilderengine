@@ -25,15 +25,23 @@ EditorData
       extensions that are valid for the Resource type. If omitted, all
       extensions are considered valid.
    
-   referenceType="static/reference/instance"
+   referenceType="static/instance componentReference/nameReference/objectReference"
       This specifies how a complex class field should be treated. On a complex
       field, it applies directly to that field. On an Array or Dictionary, it
-      applies to the child fields. A value of reference means the field will
-      be referencing a named object somewhere else. This is the default for
-      IEntity or IEntityComponent types. A value of instance means a new
-      instance of either the fields type or a child type will be created. A
-      value of static means the fields type will be used and cannot be changed.
-      The default is instance.
+      applies to the child fields. A value of instance means a new instance of
+      either the fields type or a child type will be created. A value of static
+      means the fields type will be used and cannot be changed. The default is
+      instance.
+      
+      componentReference indicates that the field will take a reference to an
+      existing component. If the type of the field is a component, then the tag
+      is not necessary. But, sometimes the type is actually an interface, in
+      which case this tag must exist to have the editor properly edit the field.
+      
+      nameReference and objectReference work the same way as componentReference
+      except they apply to fields that expect a reference to an entity. The
+      difference between the two is nameReference will reference an existing
+      entity whereas objectReference will instantiate a new entity.
 
 TypeHint
    type="fully.qualified.class"

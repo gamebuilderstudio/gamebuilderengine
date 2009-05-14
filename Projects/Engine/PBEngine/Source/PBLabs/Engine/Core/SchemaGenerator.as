@@ -40,6 +40,13 @@ package PBLabs.Engine.Core
          // need these built in flash classes - there's probably more we should have
          AddClassName("flash.geom.Point");
          AddClassName("flash.geom.Rectangle");
+         AddClassName("Array");
+         AddClassName("flash.utils.Dictionary");
+         AddClassName("int");
+         AddClassName("uint");
+         AddClassName("Number");
+         AddClassName("Boolean");
+         AddClassName("String");
       }
       
       /**

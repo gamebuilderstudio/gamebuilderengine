@@ -24,7 +24,7 @@ package PBLabs.Rendering2D
       /**
        * The spatial manager this object belongs to.
        */
-      [EditorData(referenceType="reference")]
+      [EditorData(referenceType="componentReference")]
       public var SpatialManager:ISpatialManager2D;
       
       /**
