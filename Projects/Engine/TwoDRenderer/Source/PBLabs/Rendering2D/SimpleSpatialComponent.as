@@ -105,7 +105,7 @@ package PBLabs.Rendering2D
        * Not currently implemented.
        * @inheritDoc
        */
-      public function CastRay(start:Point, end:Point, info:RayHitInfo):Boolean
+      public function CastRay(start:Point, end:Point, mask:ObjectType, info:RayHitInfo):Boolean
       {
          return false;
       }

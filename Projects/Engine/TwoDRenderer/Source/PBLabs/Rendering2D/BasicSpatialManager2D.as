@@ -119,7 +119,7 @@ package PBLabs.Rendering2D
          for each (var object:ISpatialObject2D in results)
          {
             
-            if (object.CastRay(start, end, tempInfo))
+            if (object.CastRay(start, end, mask, tempInfo))
             {
                if (bestInfo == null)
                {

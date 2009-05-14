@@ -33,7 +33,7 @@ package PBLabs.Rendering2D
       /**
        * Perform a ray cast against this object.
        */ 
-      function CastRay(start:Point, end:Point, info:RayHitInfo):Boolean;
+      function CastRay(start:Point, end:Point, flags:ObjectType, result:RayHitInfo):Boolean;
    }
    
 }
