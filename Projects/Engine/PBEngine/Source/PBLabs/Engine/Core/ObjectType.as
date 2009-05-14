@@ -35,6 +35,11 @@ package PBLabs.Engine.Core
          return _bits;
       }
       
+      public function ObjectType(type:String = null)
+      {
+         TypeName = type;
+      }
+      
       /**
        * The name of the type associated with this object type. If multiple names have
        * been assigned, a random one is returned.
@@ -122,5 +127,18 @@ package PBLabs.Engine.Core
       }
       
       private var _bits:int = 0;
+      
+      
+      static private var _Wildcard:ObjectType;
+      static public function get Wildcard():ObjectType
+      {
+         if(!_Wildcard)
+            _Wildcard = new ObjectType();
+            
+         _Wildcard._bits = 0xFFFFFFFF;
+         
+         return _Wildcard;         
+      }
+
    }
 }
