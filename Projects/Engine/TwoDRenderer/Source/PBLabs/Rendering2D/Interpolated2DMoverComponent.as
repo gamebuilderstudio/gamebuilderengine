@@ -44,7 +44,7 @@ package PBLabs.Rendering2D
             moveDelta.normalize(moveAmount);
          
          var didMove:Boolean = false;
-         if(moveDelta.length > 0.05)
+         if(moveDelta.length > 0.001)
          {
             // Only update position if we really need to move.
             Position = Position.add(moveDelta);

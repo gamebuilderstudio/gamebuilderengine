@@ -288,7 +288,7 @@ class Entity extends EventDispatcher implements IEntity
          parentElem = LookupComponentByName(curLookup);
          if(!parentElem)
          {
-            Logger.PrintWarning(this, "_FindProperty", "Could not resolve component named '" + curLookup + "'");
+            Logger.PrintWarning(this, "_FindProperty", "Could not resolve component named '" + curLookup + "' for property '" + reference.Property + "'");
             return null;
          }
       }
@@ -298,7 +298,7 @@ class Entity extends EventDispatcher implements IEntity
          parentElem = NameManager.Instance.Lookup(curLookup);
          if(!parentElem)
          {
-            Logger.PrintWarning(this, "_FindProperty", "Could not resolve named object named '" + curLookup + "'");
+            Logger.PrintWarning(this, "_FindProperty", "Could not resolve named object named '" + curLookup + "' for property '" + reference.Property + "'");
             return null;
          }
          
@@ -308,7 +308,7 @@ class Entity extends EventDispatcher implements IEntity
          var comLookup:IEntityComponent = (parentElem as IEntity).LookupComponentByName(curLookup);
          if(!comLookup)
          {
-            Logger.PrintWarning(this, "_FindProperty", "Could not find component '" + curLookup + "' on named entity '" + (parentElem as IEntity).Name + "'");
+            Logger.PrintWarning(this, "_FindProperty", "Could not find component '" + curLookup + "' on named entity '" + (parentElem as IEntity).Name + "' for property '" + reference.Property + "'");
             return null;
          }
          parentElem = comLookup;
@@ -320,7 +320,7 @@ class Entity extends EventDispatcher implements IEntity
          parentElem = TemplateManager.Instance.GetXML(curLookup, "template", "entity");
          if(!parentElem)
          {
-            Logger.PrintWarning(this, "_FindProperty", "Could not find XML named '" + curLookup + "'");
+            Logger.PrintWarning(this, "_FindProperty", "Could not find XML named '" + curLookup + "' for property '" + reference.Property + "'");
             return null;
          }
          
@@ -356,7 +356,7 @@ class Entity extends EventDispatcher implements IEntity
          // Error if we don't have it!
          if(!nextElem)
          {
-            Logger.PrintWarning(this, "_FindProperty", "Could not find component '" + path[1] + "' in XML template '" + path[0].slice(1) + "'");
+            Logger.PrintWarning(this, "_FindProperty", "Could not find component '" + path[1] + "' in XML template '" + path[0].slice(1) + "' for property '" + reference.Property + "'");
             return null;
          }
          
@@ -368,7 +368,7 @@ class Entity extends EventDispatcher implements IEntity
       }
       else
       {
-         Logger.PrintWarning(this, "_FindProperty", "Got a property path that doesn't start with !, #, or @. Started with '" + startChar + "'");
+         Logger.PrintWarning(this, "_FindProperty", "Got a property path that doesn't start with !, #, or @. Started with '" + startChar + "' for property '" + reference.Property + "'");
          return null;
       }
 
@@ -411,7 +411,7 @@ class Entity extends EventDispatcher implements IEntity
          
          if(gotEmpty)
          {
-            Logger.PrintWarning(this, "_FindProperty", "Could not resolve property '" + curLookup + "' from property reference '" + reference.Property + "'");
+            Logger.PrintWarning(this, "_FindProperty", "Could not resolve property '" + curLookup + "' for property reference '" + reference.Property + "'");
             return null;
          }
          

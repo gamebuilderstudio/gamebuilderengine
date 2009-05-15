@@ -11,6 +11,7 @@ package PBLabs.Rendering2D
    import PBLabs.Engine.Entity.EntityComponent;
    import PBLabs.Engine.Entity.PropertyReference;
    import PBLabs.Engine.Core.ProcessManager;
+   import PBLabs.Engine.Debug.Logger;
    import PBLabs.Engine.Math.Utility;
    
    import flash.display.*;
@@ -151,7 +152,10 @@ package PBLabs.Rendering2D
           
          _matrix.identity();
          _matrix.scale(scale.x,scale.y);
-         _matrix.translate(position.x - _spriteSheet.Center.x * scale.x, position.y - _spriteSheet.Center.y * scale.y);
+         if(_spriteSheet)
+            _matrix.translate(position.x - _spriteSheet.Center.x * scale.x, position.y - _spriteSheet.Center.y * scale.y);
+         else
+            _matrix.translate(position.x, position.y);
          _matrix.rotate(Utility.GetRadiansFromDegrees(rotation));
          _sprite.transform.matrix = _matrix;  
    
@@ -204,6 +208,12 @@ package PBLabs.Rendering2D
          else
          {
             var bmpData:BitmapData = GetCurrentFrame();
+            if(!bmpData)
+            {
+               Logger.PrintError(this, "_GenerateSprite", "Failed to get a valid BitmapData back from GetCurrentFrame!");
+               _sprite = null;
+               return;
+            }
             
             _baseSize = new Point(bmpData.width, bmpData.height);
             
