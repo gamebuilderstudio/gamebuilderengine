@@ -145,6 +145,28 @@ package PBLabs.Engine.Core
          return (type1.Bits & type2.Bits) != 0;
       }
       
+      /**
+       * Forcibly register a specific flag. Throws an error if you overwrite an
+       * existing flag.
+       */
+      public function RegisterFlag(bitIndex:int, name:String):void
+      {
+         // Sanity.
+         if(GetTypeName(bitIndex) != null) 
+            throw new Error("Bit already in use!");
+         if(_typeList[name])
+            throw new Error("Name already assigned to another bit!");
+         
+         // Update typeCount so subsequent updates still work. This may
+         // cause wasted bits.
+         if(bitIndex >= _typeCount)
+            _typeCount = bitIndex + 1;
+         
+         // And stuff into our arrays.
+         _typeList[name] = bitIndex;
+         _bitList[bitIndex] = name;
+      }
+      
       private var _typeCount:uint = 0;
       private var _typeList:Dictionary = new Dictionary();
       private var _bitList:Array = new Array();

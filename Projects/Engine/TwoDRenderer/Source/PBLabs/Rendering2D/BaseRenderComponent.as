@@ -108,6 +108,16 @@ package PBLabs.Rendering2D
          return position.add(PositionOffset);
       }
       
+      public function get RenderScale():Point
+      {
+         var scale:Point = Owner.GetProperty(SizeReference);
+         
+         if(scale = null)
+            return new Point(1,1);
+         
+         return scale;
+      }
+      
       /**
        * @inheritDoc
        */
