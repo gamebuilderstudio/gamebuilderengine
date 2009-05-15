@@ -33,7 +33,7 @@ package PBLabs.Rendering2D
         _DummySprite.graphics.lineStyle(BorderThickness, BorderColor);
         _DummySprite.graphics.beginFill(FillColor);
         
-        var rp:Point = RenderPosition;
+        var rp:Point = manager.TransformWorldToScreen(RenderPosition);
         
         if(ShowSquare)
            _DummySprite.graphics.drawRect(rp.x - Radius, rp.y - Radius, Radius * 2, Radius * 2); 
