@@ -257,7 +257,6 @@ package PBLabs.Rendering2D
       
       protected function _OnImageLoaded(resource:ImageResource):void
       {
-         trace ("Image loaded for sprite sheet component '" + Name + "'");
          Image = resource;
       }
       
