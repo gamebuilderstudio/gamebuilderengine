@@ -272,7 +272,7 @@ package PBLabs.Rendering2D
          if (_frames == null)
             return null;
          
-         if ((index < 0) || (index >= FrameCount))
+         if ((index < 0) || (index >= RawFrameCount))
             return null;
        
          return _frames[index];  

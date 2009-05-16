@@ -71,9 +71,12 @@ package PBLabs.Rendering2D
          }
          
          // Go to default animation if we've nothing better to do.
-         if(!nextAnim)
+         if(nextAnim == null)
            nextAnim = Animations[DefaultAnimation];
          
+         if(!nextAnim)
+            throw new Error("Unable to find default animation '" + DefaultAnimation + "'!");
+           
          // Expire current animation if it has finished playing.
          if(ProcessManager.Instance.VirtualTime > (_CurrentAnimationStartTime + _CurrentAnimationDuration))
             _CurrentAnimation = null;
@@ -122,7 +125,7 @@ package PBLabs.Rendering2D
          _CurrentAnimation = ai;
          
          if(!ai.SpriteSheet)
-            throw new Error("Setting animation to an animation with no sprite sheet!");
+            throw new Error("Animation had no sprite sheet!");
          
          // Note when we started.
          if(CurrentAnimationStartTimeReference)
@@ -131,10 +134,10 @@ package PBLabs.Rendering2D
             _CurrentAnimationStartTime = ProcessManager.Instance.VirtualTime;
          
          // Update our duration information.
-           if(CurrentAnimationDurationReference)
-              _CurrentAnimationDuration = Owner.GetProperty(CurrentAnimationDurationReference) * ProcessManager.TICK_RATE_MS;
-           else
-              _CurrentAnimationDuration = ai.SpriteSheet.FrameCount * ProcessManager.TICK_RATE_MS;
+         if(CurrentAnimationDurationReference)
+            _CurrentAnimationDuration = Owner.GetProperty(CurrentAnimationDurationReference) * ProcessManager.TICK_RATE_MS;
+         else
+            _CurrentAnimationDuration = ai.SpriteSheet.FrameCount * ProcessManager.TICK_RATE_MS;
       }
       
       /**
