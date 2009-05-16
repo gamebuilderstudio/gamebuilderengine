@@ -37,8 +37,6 @@ package PBLabs.Engine.Core
     * should be instantiated when the group is instantiated.</p>
     * 
     * @see PBLabs.Engine.Serialization.Serializer.
-    * @see ../../../../../Reference/XMLFormat.html The XML Format
-    * @see ../../../../../Reference/Levels.html Levels
     */
    public class TemplateManager extends EventDispatcher
    {

@@ -17,8 +17,6 @@ package PBLabs.Engine.Core
    /**
     * The name manager stores references to entites that have been given
     * names. These entities can then be looked up by that name.
-    * 
-    * @see ../../../../../Reference/NameManager.html The Name Manager
     */
    public class NameManager
    {

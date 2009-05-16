@@ -18,7 +18,6 @@ package PBLabs.Engine.Core
     * numbers.
     * 
     * @see ObjectType
-    * @see ../../../../../Examples/ObjectTypes.html Using Object Types 
     */
    public class ObjectTypeManager
    {

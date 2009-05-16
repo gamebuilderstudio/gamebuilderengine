@@ -26,7 +26,6 @@ package PBLabs.Engine.Core
     * (OnSpacePressed) rather than generic key events (OnKeyDown).</p>
     * 
     * @see InputMap
-    * @see ../../../../../Reference/Input.html Input
     */
    public class InputManager extends EventDispatcher
    {

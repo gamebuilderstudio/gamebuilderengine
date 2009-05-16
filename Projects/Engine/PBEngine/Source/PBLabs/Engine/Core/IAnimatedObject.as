@@ -20,7 +20,6 @@ package PBLabs.Engine.Core
     * 
     * @see ProcessManager
     * @see ITickedObject
-    * @see ../../../../../Examples/AnimatingObjects.html Animating Objects
     */
    public interface IAnimatedObject
    {

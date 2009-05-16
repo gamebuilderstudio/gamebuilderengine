@@ -17,7 +17,6 @@ package PBLabs.Engine.Core
     * objects with type names.
     * 
     * @see ObjectTypeManager
-    * @see ../../../../../Examples/ObjectTypes.html Using Object Types 
     */
    public class ObjectType implements ISerializable
    {

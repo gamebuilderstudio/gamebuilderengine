@@ -28,7 +28,6 @@ package PBLabs.Engine.Core
     * @see PBLabs.Engine.MXML.LevelFileReference
     * @see PBLabs.Engine.MXML.GroupReference
     * @see PBLabs.Engine.MXML.AutoLoadLevelReference
-    * @see ../../../../../Reference/Levels.html Levels
     */
    public class LevelManager extends EventDispatcher
    {

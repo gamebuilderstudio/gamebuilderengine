@@ -6,7 +6,7 @@ package PBLabs.Engine.Core
    import flash.utils.Dictionary;
    
    /**
-    * Enumeration class that maps friendly key names to their key code equivalant. This class
+    * Enumeration class that maps friendly key names to their key code equivalent. This class
     * should not be instantiated directly, rather, one of the constants should be used.
     */   
    public class InputKey extends Enumerable
