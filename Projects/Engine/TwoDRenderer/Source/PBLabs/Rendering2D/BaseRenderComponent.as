@@ -112,7 +112,7 @@ package PBLabs.Rendering2D
       {
          var scale:Point = Owner.GetProperty(SizeReference);
          
-         if(scale = null)
+         if(scale == null)
             return new Point(1,1);
          
          return scale;

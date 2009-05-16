@@ -12,8 +12,11 @@
    		
 		public function ClearDisplayObjects():void
 		{
-			for each(var d:DisplayObject in _DisplayList)
-			   rawChildren.removeChild(d);
+			for each(var d:DisplayObject in _DisplayList) {
+				if (rawChildren.contains(d)) {
+				   rawChildren.removeChild(d);
+				}
+			}
 			_DisplayList.length = 0;			
 		}
       ]]>
