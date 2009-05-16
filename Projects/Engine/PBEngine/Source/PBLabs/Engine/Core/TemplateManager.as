@@ -51,6 +51,11 @@ package PBLabs.Engine.Core
       public static const FAILED_EVENT:String = "FAILED_EVENT";
       
       /**
+       * Report every time we create an entity.
+       */
+      public static var VERBOSE_LOGGING:Boolean = false;
+      
+      /**
        * The singleton TemplateManager instance.
        */
       public static function get Instance():TemplateManager

@@ -53,6 +53,9 @@ package PBLabs.Engine.Core
          if (_entities[name] != null)
             Logger.PrintWarning(this, "AddEntity", "An entity with the name " + name + " already exists. Future lookups by this name will return this new entity. Did you mean to make this entity a template?");
          
+         if(TemplateManager.VERBOSE_LOGGING)
+            Logger.Print(this, "Registering entity '" + name + "'");
+            
          _entities[name] = entity;
       }
       
