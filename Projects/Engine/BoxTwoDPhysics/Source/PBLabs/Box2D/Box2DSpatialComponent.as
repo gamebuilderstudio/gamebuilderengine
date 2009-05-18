@@ -40,6 +40,11 @@ package PBLabs.Box2D
          _manager = value;
       }
       
+      public function get Body():b2Body
+      {
+         return _body;
+      }
+      
       public function get CollisionType():ObjectType
       {
          return _collisionType;
