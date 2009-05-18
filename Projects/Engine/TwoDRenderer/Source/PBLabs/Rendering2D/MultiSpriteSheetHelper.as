@@ -25,6 +25,12 @@ package PBLabs.Rendering2D
       [TypeHint(type="String")]
 	   public var Sheets:Dictionary = new Dictionary();
 	   
+      [TypeHint(type="PBLabs.Rendering2D.ISpriteSheetDivider")]
+      public var Dividers:Dictionary = new Dictionary();
+      
+      [TypeHint(type="int")]
+      public var DirectionCount:Dictionary = new Dictionary();
+      
 	   protected override function _OnAdd():void
 	   {
          // Debugging aid - make sure that none of the sheets we will be
@@ -41,8 +47,17 @@ package PBLabs.Rendering2D
 	         var file:String = Sheets[key];
 	         
 	         var newSheet:SpriteSheetComponent = new SpriteSheetComponent();
-	         newSheet.DirectionsPerFrame = DirectionsPerFrame;
-	         newSheet.Divider = Divider.Clone();
+            
+            if(DirectionCount[key] > 0)
+               newSheet.DirectionsPerFrame = DirectionCount[key];
+            else
+   	         newSheet.DirectionsPerFrame = DirectionsPerFrame;
+            
+            if(Dividers[key] is ISpriteSheetDivider)
+   	         newSheet.Divider = Dividers[key];
+            else
+               newSheet.Divider = Divider.Clone();
+            
 	         newSheet.ImageFilename = file;
 	         newSheet.Center = Center;
 	         

@@ -72,7 +72,10 @@ package PBLabs.Rendering2D
          
          // Go to default animation if we've nothing better to do.
          if(nextAnim == null)
+         {
+           Logger.PrintWarning(this, "OnFrame", "Animation '" + nextAnimName + "' not found, going with default animation '" + DefaultAnimation + "'.");
            nextAnim = Animations[DefaultAnimation];
+         }
          
          if(!nextAnim)
             throw new Error("Unable to find default animation '" + DefaultAnimation + "'!");
@@ -97,6 +100,7 @@ package PBLabs.Rendering2D
          
          // Figure out what frame we are on.
          var frameTime:Number = _CurrentAnimationDuration / _CurrentAnimation.SpriteSheet.FrameCount;
+
          var animationAge:Number = ProcessManager.Instance.VirtualTime - _CurrentAnimationStartTime;
          var curFrame:int = Math.floor(animationAge/frameTime);
          
@@ -138,6 +142,7 @@ package PBLabs.Rendering2D
             _CurrentAnimationDuration = Owner.GetProperty(CurrentAnimationDurationReference) * ProcessManager.TICK_RATE_MS;
          else
             _CurrentAnimationDuration = ai.SpriteSheet.FrameCount * ProcessManager.TICK_RATE_MS;
+         
       }
       
       /**
