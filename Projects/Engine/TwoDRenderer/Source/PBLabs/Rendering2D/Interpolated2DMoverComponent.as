@@ -34,6 +34,11 @@ package PBLabs.Rendering2D
          Rotation = v;
       }
       
+      public function get MoveDelta():Point
+      {
+         return GoalPosition.subtract(Position).clone();
+      }
+      
       public override function OnTick(tickRate:Number):void
       {
          // Move towards our position goal.

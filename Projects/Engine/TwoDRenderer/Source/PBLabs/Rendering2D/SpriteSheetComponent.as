@@ -180,8 +180,8 @@ package PBLabs.Rendering2D
        * Gets the bitmap data for a frame at the specified index.
        * 
        * @param index The index of the frame to retrieve.
-       * @param direction The direction of the frame to retrieve. This can be ignored if there
-       * is only 1 direction per frame.
+       * @param direction The direction of the frame to retrieve in degrees. This
+       *                  can be ignored if there is only 1 direction per frame.
        * 
        * @return The bitmap data for the specified frame, or null if it doesn't exist.
        */
