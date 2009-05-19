@@ -9,13 +9,16 @@
  * in the License.html file at the root directory of this SDK.
  ******************************************************************************/
 -->
-<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" creationComplete="_OnLoaded()">
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" label="Log" creationComplete="_OnLoaded()">
    <mx:Text left="10" right="10" top="10" bottom="10" id="MessageText"/>
    <mx:Script>
       <![CDATA[
          private function _OnLoaded():void
          {
             Logger.Instance.addEventListener(LogEvent.ENTRY_ADDED_EVENT, _OnLogMessage);
+            
+            for each (var entry:LogEntry in Logger.Instance.Entries)
+               _OnLogMessage(new LogEvent("STATIC", entry));
          }
          
          private function _OnLogMessage(event:LogEvent):void

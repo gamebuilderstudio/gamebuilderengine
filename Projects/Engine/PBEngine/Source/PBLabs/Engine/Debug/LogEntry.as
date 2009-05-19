@@ -23,21 +23,21 @@ package PBLabs.Engine.Debug
        * 
        * @see Logger#PrintError()
        */
-      public static const ERROR:int = 0;
+      public static const ERROR:String = "ERROR";
       
       /**
        * Entry type given to warnings.
        * 
        * @see Logger#PrintWarning()
        */
-      public static const WARNING:int = 1;
+      public static const WARNING:String = "WARNING";
       
       /**
        * Entry type given to generic messages.
        * 
        * @see Logger#Print()
        */
-      public static const MESSAGE:int = 2;
+      public static const MESSAGE:String = "MESSAGE";
       
       /**
        * The object that printed the message to the log.
@@ -81,7 +81,7 @@ package PBLabs.Engine.Debug
        * @see #WARNING
        * @see #MESSAGE
        */
-      public var Type:int = -1;
+      public var Type:String = null;
       
       /**
        * The depth of the message.

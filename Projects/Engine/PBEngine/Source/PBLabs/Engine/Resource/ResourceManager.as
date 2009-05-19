@@ -59,12 +59,20 @@ package PBLabs.Engine.Resource
        * function should take a single parameter of the type specified in the resourceType
        * parameter. The resource passed to the function will be invalid, but the Filename
        * property will be correct.
+       * @param forceReload Always reload the resource, even if it has already been loaded.
        * 
        * @see Resource
        */
-      public function Load(filename:String, resourceType:Class, onLoaded:Function = null, onFailed:Function = null):void
+      public function Load(filename:String, resourceType:Class, onLoaded:Function = null, onFailed:Function = null, forceReload:Boolean = false):void
       {
          var resource:Resource = _resources[filename + resourceType];
+         if ((resource != null) && forceReload)
+         {
+            _resources[filename + resourceType] = null;
+            delete _resources[filename + resourceType];
+            resource = null;
+         }
+         
          if (resource == null)
          {
             var testResource:* = new resourceType();

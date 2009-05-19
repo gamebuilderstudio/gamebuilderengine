@@ -24,7 +24,6 @@ package PBLabs.Engine.Entity
     * 
     * @see IEntityComponent
     * @see PBLabs.Engine.Entity.AllocateEntity()
-    * @see ../../../../../Reference/ComponentSystem.html Component System Overview
     */
    public interface IEntity extends IPropertyBag
    {

@@ -189,6 +189,32 @@ package PBLabs.Engine.Serialization
          return _typeDescriptions[className];
       }
       
+      /**
+       * Gets the xml description of a class through a call to the
+       * flash.utils.describeType method. Results are cached, so only the first
+       * call will impact performance.
+       * 
+       * @param className The name of the class to describe.
+       * 
+       * @return The xml description of the class.
+       */
+      public static function GetClassDescription(className:String):XML
+      {
+         if (_typeDescriptions[className] == null)
+         {
+            try
+            {
+               _typeDescriptions[className] = describeType(getDefinitionByName(className));
+            }
+            catch (error:Error)
+            {
+               return null;
+            }
+         }
+            
+         return _typeDescriptions[className];
+      }
+      
       private static var _typeDescriptions:Dictionary = new Dictionary();
       private static var _instantiators:Dictionary = new Dictionary();
    }

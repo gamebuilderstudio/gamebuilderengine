@@ -128,6 +128,25 @@ package PBLabs.Engine.Debug
       }
       
       /**
+       * Prints a message to the log. Log enthries created with this method will have
+       * the type specified in the 'type' parameter.
+       * 
+       * @param reporter The object that reported the message. This can be null.
+       * @param method The name of the method that the error was reported from.
+       * @param message The message to print to the log.
+       * @param type The custom type to give the message.
+       */
+      public static function PrintCustom(reporter:*, method:String, message:String, type:String):void
+      {
+         var entry:LogEntry = new LogEntry();
+         entry.Reporter = reporter;
+         entry.Method = method;
+         entry.Message = message;
+         entry.Type = type;
+         Instance._AddEntry(entry);
+      }
+      
+      /**
        * Increases the depth of subsequent messages printed to the log. The depth can
        * be used to format the output of log entries by, for example, indenting messages
        * a number of times equal to their depth. In this way, messages that give more
