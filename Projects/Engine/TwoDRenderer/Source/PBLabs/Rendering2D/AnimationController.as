@@ -69,6 +69,10 @@ package PBLabs.Rendering2D
             var nextAnimName:String = Owner.GetProperty(CurrentAnimationReference);
             nextAnim = Animations[nextAnimName];
          }
+         else
+         {
+            nextAnim = Animations[DefaultAnimation];
+         }
          
          // Go to default animation if we've nothing better to do.
          if(nextAnim == null)

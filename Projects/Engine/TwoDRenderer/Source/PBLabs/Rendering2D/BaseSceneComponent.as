@@ -9,7 +9,8 @@
 package PBLabs.Rendering2D
 {
    import PBLabs.Engine.Core.*;
-   import PBLabs.Engine.Debug.Logger;
+   import PBLabs.Engine.Debug.*;
+   import PBLabs.Engine.Serialization.TypeUtility;
    import PBLabs.Engine.Entity.EntityComponent;
    import PBLabs.Engine.Entity.IEntityComponent;
    import PBLabs.Rendering2D.UI.IUITarget;
@@ -26,7 +27,7 @@ package PBLabs.Rendering2D
       /**
        * The number of layers to create for each scene.
        */
-      public static const LAYER_COUNT:int = 64;
+      public static const LAYER_COUNT:int = 32;
       
       /**
        * Enables smooth rendering of bitmaps.
@@ -355,6 +356,8 @@ package PBLabs.Rendering2D
       
       protected function _DrawSortedLayers(layerList:Array):void
       {
+         Profiler.Enter("_DrawSortedLayers");
+         
          // Lock for performance.
          if (_CurrentRenderTarget)
             _CurrentRenderTarget.lock();
@@ -367,6 +370,8 @@ package PBLabs.Rendering2D
          
          for (var i:int = 0; i < layerList.length; i++)
          {
+            Profiler.Enter("PreCache");
+            
             layerBitmap = null;
             
             if (IsLayerCached(i))
@@ -376,6 +381,7 @@ package PBLabs.Rendering2D
                {
                   // Great, just draw it.
                   _DrawLayerCacheBitmap(i);
+                  Profiler.Exit("PreCache");
                   continue;
                }
                
@@ -385,23 +391,34 @@ package PBLabs.Rendering2D
                layerBitmap.fillRect(layerBitmap.rect, 0);
                _CurrentRenderTarget = layerBitmap;
             }
+
+            Profiler.Exit("PreCache");
             
             _CacheLayerKey[i] = RenderCacheKeyManager.Token++;
+            
+            Profiler.Enter("RenderLayer");
 
             for each (var r:IDrawable2D in layerList[i])
             {
                // Do interstitial callbacks.
                _LastDrawn = _NextDrawn;
                _NextDrawn = r;
-               _InterstitialDrawnList.every(function(item:IDrawable2D):void { item.OnDraw(this); });
+               _InterstitialDrawnList.every(_InterstitialEveryCallback);
                
                // Update the cache key.
                r.RenderCacheKey = _CacheLayerKey[i]; 
                
                // Do the draw callback.
+               var profKey:String = TypeUtility.GetObjectClassName(r);
+               Profiler.Enter(profKey);
                r.OnDraw(this);
+               Profiler.Exit(profKey);
             }
             
+            Profiler.Exit("RenderLayer");
+            
+            Profiler.Enter("PostCache");
+
             if (IsLayerCached(i))
             {
                // Restore render target.
@@ -410,6 +427,8 @@ package PBLabs.Rendering2D
                // Render the cached bitmap.
                _DrawLayerCacheBitmap(i);
             }
+
+            Profiler.Exit("PostCache");
          }
          
          // Do final interstitial callback.
@@ -426,6 +445,13 @@ package PBLabs.Rendering2D
          // Clean up render state.
          if (_CurrentRenderTarget)
             _CurrentRenderTarget.unlock();
+         
+         Profiler.Exit("_DrawSortedLayers");
+      }
+      
+      private function _InterstitialEveryCallback(item:IDrawable2D):void 
+      {
+         item.OnDraw(this); 
       }
       
       private function _DrawLayerCacheBitmap(layerIndex:int):void
@@ -440,12 +466,15 @@ package PBLabs.Rendering2D
        */ 
       protected function _BuildRenderList(viewRect:Rectangle, layerList:Array):void
       {
+         Profiler.Enter("_BuildRenderList");
+         
          // Get a list of the items that will be rendered.
          var renderList:Array = new Array();
          if(!SpatialDatabase 
             || !SpatialDatabase.QueryRectangle(viewRect, RenderMask, renderList))
          {
             // Nothing to draw.
+            Profiler.Exit("_BuildRenderList");
             return;
          }
          
@@ -470,6 +499,8 @@ package PBLabs.Rendering2D
             
             layerList[alwaysRenderable.LayerIndex].push(alwaysRenderable);
          }
+
+         Profiler.Exit("_BuildRenderList");
       }
       
 

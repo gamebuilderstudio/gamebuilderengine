@@ -8,8 +8,9 @@
  ******************************************************************************/
 package PBLabs.Engine.Core
 {
-   import PBLabs.Engine.Debug.Logger;
+   import PBLabs.Engine.Debug.*;
    import PBLabs.Engine.Core.Global;
+   import PBLabs.Engine.Serialization.TypeUtility;
    
    import flash.events.Event;
    import flash.utils.getTimer;
@@ -256,6 +257,7 @@ package PBLabs.Engine.Core
          var processObject:ProcessObject = new ProcessObject();
          processObject.Listener = object;
          processObject.Priority = priority;
+         processObject.ProfilerKey = TypeUtility.GetObjectClassName(object);
          
          if ((position < 0) || (position >= list.length))
             list.push(processObject);
@@ -301,7 +303,10 @@ package PBLabs.Engine.Core
          
          var startTime:Number = _virtualTime;
          
+         Profiler.EnsureAtRoot();
+
          // Process pending events.
+         Profiler.Enter("PendingEvents");
          for (var i:int = 0; i < _scheduleEvents.length; i++)
          {
             var schedule:ScheduleObject = _scheduleEvents[i];
@@ -313,16 +318,25 @@ package PBLabs.Engine.Core
                i--;
             }
          }
+         Profiler.Exit("PendingEvents");
          
          // Perform ticks.
          var tickCount:int = 0;
          while ((_elapsed >= TICK_RATE_MS) && (tickCount < MAX_TICKS_PER_FRAME))
          {
             _interpolationFactor = 0.0;
+
+            Profiler.Enter("Tick");
             
             for each (var object:ProcessObject in _tickedObjects)
+            {
+               Profiler.Enter(object.ProfilerKey);
                object.Listener.OnTick(TICK_RATE);
+               Profiler.Exit(object.ProfilerKey);
+            }
             
+            Profiler.Exit("Tick");
+
             _virtualTime += TICK_RATE_MS;
             _elapsed -= TICK_RATE_MS;
             tickCount++;
@@ -338,13 +352,27 @@ package PBLabs.Engine.Core
          _virtualTime = startTime + elapsed;
          
          // Update objects expecting interpolation between ticks.
+         Profiler.Enter("InterpolateTick");
          _interpolationFactor = _elapsed / TICK_RATE_MS;
          for each (var tickedObject:ProcessObject in _tickedObjects)
+         {
+            Profiler.Enter(tickedObject.ProfilerKey);
             tickedObject.Listener.OnInterpolateTick(_interpolationFactor);
+            Profiler.Exit(tickedObject.ProfilerKey);
+         }
+         Profiler.Exit("InterpolateTick");
          
          // Update objects wanting OnFrame callbacks.
+         Profiler.Enter("Frame");
          for each (var animatedObject:ProcessObject in _animatedObjects)
+         {
+            Profiler.Enter(animatedObject.ProfilerKey);
             animatedObject.Listener.OnFrame(elapsed / 1000);
+            Profiler.Exit(animatedObject.ProfilerKey);
+         }
+         Profiler.Exit("Frame");
+         
+         Profiler.EnsureAtRoot();
       }
       
       private var _started:Boolean = false;
@@ -369,6 +397,7 @@ class ScheduleObject
 
 class ProcessObject
 {
+   public var ProfilerKey:String = null;
    public var Listener:* = null;
    public var Priority:Number = 0.0;
 }
