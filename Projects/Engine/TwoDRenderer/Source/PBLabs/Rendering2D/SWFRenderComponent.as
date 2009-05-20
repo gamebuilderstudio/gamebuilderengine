@@ -4,10 +4,16 @@ package PBLabs.Rendering2D
    import flash.geom.*;
    import PBLabs.Engine.Entity.*;
    import PBLabs.Engine.Core.*;
+   import PBLabs.Engine.Debug.*;
    
    public class SWFRenderComponent extends BaseRenderComponent
    {
       public var FrameRate:Number = 25;
+      public function set ScaleFactor(value:Number):void
+      {
+         _Matrix = new Matrix();
+         _Matrix.scale(value, value);
+      }
 
       /**
        * Subclasses must implement this method; it needs to return the embedded
@@ -24,16 +30,20 @@ package PBLabs.Rendering2D
             _Clip = _GetClipInstance();
          
          // Position and draw.
-         var m:Matrix = new Matrix();
-         m.scale(RenderScale.x, RenderScale.y);
-         m.translate(RenderPosition.x, RenderPosition.y);
-         _Clip.transform.matrix = m;
+         var screenPos:Point = manager.TransformWorldToScreen(RenderPosition);
+         _Matrix.tx = screenPos.x;
+         _Matrix.ty = screenPos.y;
+         _Clip.transform.matrix = _Matrix;
 
          manager.DrawDisplayObject(_Clip);
          
          // If we're on the last frame, self-destruct.
          if(_ClipFrame > _Clip.totalFrames)
+         {
+            Logger.Print(this, "Finished playback, destroying self.");
             Owner.Destroy();
+            return;
+         }
 
          // Update to next frame when appropriate.
          if(ProcessManager.Instance.VirtualTime - _ClipLastUpdate > 1000/FrameRate)
@@ -64,6 +74,7 @@ package PBLabs.Rendering2D
          }
       }
       
+      private var _Matrix:Matrix = new Matrix();
       private var _Clip:MovieClip;
       private var _ClipFrame:int;
       private var _ClipLastUpdate:int;
