@@ -14,6 +14,8 @@ package PBLabs.Engine.Components
     * Container for arbitrary data. As it is dynamic, you can set whatever
     * fields you want. Useful for storing general purpose data.
     */
+   
+   [EditorData(editAs="flash.utils.Dictionary")]
    public dynamic class DataComponent extends EntityComponent
    {
    }

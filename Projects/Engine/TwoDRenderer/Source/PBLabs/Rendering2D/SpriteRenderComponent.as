@@ -152,13 +152,15 @@ package PBLabs.Rendering2D
           
          _matrix.identity();
          _matrix.scale(scale.x,scale.y);
-         if(_spriteSheet)
+         
+         if (_spriteSheet)
             _matrix.translate(position.x - _spriteSheet.Center.x * scale.x, position.y - _spriteSheet.Center.y * scale.y);
          else
             _matrix.translate(position.x, position.y);
+         
          _matrix.rotate(Utility.GetRadiansFromDegrees(rotation));
          _sprite.transform.matrix = _matrix;  
-   
+         
          manager.DrawDisplayObject(_sprite);
       }
       

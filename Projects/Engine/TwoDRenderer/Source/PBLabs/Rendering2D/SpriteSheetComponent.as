@@ -49,23 +49,13 @@ package PBLabs.Rendering2D
       */
       public function get Center():Point
       {
-         if(_Center)
-            return _Center;
-         else if(GetFrame(0))
-         {
-            _Center = new Point(GetFrame(0).width * 0.5, GetFrame(0).height * 0.5);
-         }
-         else
-         {
-            _Center = new Point();
-         }
-         
          return _Center;
       }
       
       public function set Center(v:Point):void
       {
          _Center = v;
+         _defaultCenter = false;
       }
       
       /**
@@ -243,16 +233,20 @@ package PBLabs.Rendering2D
          {
             _frames = new Array(1);
             _frames[0] = ImageData;
-            return;
+         }
+         else
+         {
+            _frames = new Array(_divider.FrameCount);
+            for (var i:int = 0; i < _divider.FrameCount; i++)
+            {
+               var area:Rectangle = _divider.GetFrameArea(i);
+               _frames[i] = new BitmapData(area.width, area.height, true);
+               _frames[i].copyPixels(ImageData, area, new Point(0, 0));
+            }
          }
          
-         _frames = new Array(_divider.FrameCount);
-         for (var i:int = 0; i < _divider.FrameCount; i++)
-         {
-            var area:Rectangle = _divider.GetFrameArea(i);
-            _frames[i] = new BitmapData(area.width, area.height, true);
-            _frames[i].copyPixels(ImageData, area, new Point(0, 0));
-         }
+         if (_defaultCenter)
+            _Center = new Point(_frames[0].width * 0.5, _frames[0].height * 0.5);
       }
       
       protected function _OnImageLoaded(resource:ImageResource):void
@@ -303,7 +297,8 @@ package PBLabs.Rendering2D
       private var _image:ImageResource = null;
       private var _divider:ISpriteSheetDivider = null;
       private var _frames:Array = null;
-      private var _Center:Point;
+      private var _Center:Point = new Point(0, 0);
+      private var _defaultCenter:Boolean = true;
    }
 }
 

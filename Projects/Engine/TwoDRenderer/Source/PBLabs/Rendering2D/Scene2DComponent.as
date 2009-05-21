@@ -43,10 +43,7 @@ package PBLabs.Rendering2D
        */
       public function get Position():Point
       {
-         if (SceneView == null)
-            return _position;
-         
-         return new Point(-SceneView.x + (SceneView.width * 0.5), -SceneView.y + (SceneView.height * 0.5));
+         return _position;
       }
       
       /**
