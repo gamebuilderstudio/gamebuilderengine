@@ -15,7 +15,7 @@
  *	08.02.15		1.2		Mr.doob			+ Class renamed to Stats (previously FPS)
  *	08.01.05		1.2		Mr.doob			+ Click changes the fps of flash (half up increases,
  *											  half down decreases)
- *	08.01.04		1.1		Mr.doob & Theo	+ Log shape for MEM
+ *	08.01.04		1.1		Mr.doob and Theo	+ Log shape for MEM
  *											+ More room for MS
  *											+ Shameless ripoff of Alternativa's FPS look :P
  * 	07.12.13		1.0		Mr.doob			+ First version
