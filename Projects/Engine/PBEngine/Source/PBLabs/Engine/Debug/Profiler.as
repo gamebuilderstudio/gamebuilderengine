@@ -23,7 +23,7 @@ package PBLabs.Engine.Debug
     */
    public class Profiler
    {
-      static public var Enabled:Boolean = true;
+      static public var Enabled:Boolean = false;
       static public var NameFieldWidth:int = 80;
 
       /**
