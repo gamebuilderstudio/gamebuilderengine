@@ -66,6 +66,7 @@ package PBLabs.Engine.Resource
       public function Load(filename:String, resourceType:Class, onLoaded:Function = null, onFailed:Function = null, forceReload:Boolean = false):void
       {
          var resource:Resource = _resources[filename + resourceType];
+
          if ((resource != null) && forceReload)
          {
             _resources[filename + resourceType] = null;
@@ -124,6 +125,11 @@ package PBLabs.Engine.Resource
        */
       public function Unload(filename:String, resourceType:Class):void
       {
+         // Right now unload is unloading embedded resources inappropriately. Since
+         // they are going to be in memory anyway as part of the SWF, I am disabling
+         // Unload for now.
+         return;
+         
          if (_resources[filename + resourceType] == null)
          {
             Logger.PrintWarning(this, "Unload", "The resource from file " + filename + " of type " + resourceType + " is not loaded.");

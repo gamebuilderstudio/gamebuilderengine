@@ -193,7 +193,10 @@ package PBLabs.Engine.Core
                continue;
             
             for each (var entity:IEntity in groupReference.LoadedStuff)
-               entity.Destroy();
+            {
+               if(entity)
+                  entity.Destroy();
+            }
             
             groupReference.LoadedStuff.splice(0, groupReference.LoadedStuff.length);
          }
