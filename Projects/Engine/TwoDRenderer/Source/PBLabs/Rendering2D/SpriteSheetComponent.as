@@ -10,6 +10,7 @@ package PBLabs.Rendering2D
 {
    import PBLabs.Engine.Entity.EntityComponent;
    import PBLabs.Engine.Resource.ResourceManager;
+   import PBLabs.Engine.Debug.Logger;
    
    import flash.display.BitmapData;
    import flash.geom.Point;
@@ -78,7 +79,7 @@ package PBLabs.Rendering2D
             Image = null;
          }
          
-         ResourceManager.Instance.Load(value, ImageResource, _OnImageLoaded);
+         ResourceManager.Instance.Load(value, ImageResource, _OnImageLoaded, _OnImageFailed);
       }
       
       /**
@@ -252,6 +253,11 @@ package PBLabs.Rendering2D
       protected function _OnImageLoaded(resource:ImageResource):void
       {
          Image = resource;
+      }
+      
+      protected function _OnImageFailed(resource:ImageResource):void
+      {
+         Logger.PrintError(this, "_OnImageFailed", "Failed to load '" + resource.Filename + "'");
       }
       
       /**

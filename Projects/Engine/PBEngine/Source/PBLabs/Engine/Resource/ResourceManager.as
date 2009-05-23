@@ -15,7 +15,7 @@ package PBLabs.Engine.Resource
    import flash.utils.ByteArray;
    import flash.utils.Dictionary;
    import flash.utils.setTimeout;
-   
+
    /**
     * The resource manager handles all tasks related to using asset files (images, xml, etc)
     * in a project. This includes loading files, managing embedded resources, and cleaninp up
@@ -158,20 +158,22 @@ package PBLabs.Engine.Resource
             return;
          }
          
+         // Set up the resource, but don't process it yet.
          try
          {
             var resource:Resource = new resourceType();
             resource.Filename = filename;
-            resource.Initialize(data);            
+            resource.Initialize(data);
+            
+            // These can be in the try since the catch will return.
+            resource.IncrementReferenceCount();
+            _resources[filename + resourceType] = resource;
          }
          catch(e:Error)
          {
             Logger.PrintError(this, "RegisterEmbeddedResources", "Could not instantiate resource " + filename + " due to error:\n" + e.toString());
-            return;   
+            return;
          }
-         
-         resource.IncrementReferenceCount();
-         _resources[filename + resourceType] = resource;
       }
       
       private function _Fail(resource:Resource, onFailed:Function, message:String):void

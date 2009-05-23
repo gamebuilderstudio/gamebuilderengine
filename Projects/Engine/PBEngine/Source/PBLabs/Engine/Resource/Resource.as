@@ -125,6 +125,9 @@ package PBLabs.Engine.Resource
          var request:URLRequest = new URLRequest();
          request.url = filename;
          loader.load(request);
+         
+         // Keep reference so the URLLoader isn't GC'ed.
+         _UrlLoader = loader;
       }
       
       /**
@@ -143,6 +146,9 @@ package PBLabs.Engine.Resource
          loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, _OnDownloadError);
          loader.contentLoaderInfo.addEventListener(SecurityErrorEvent.SECURITY_ERROR, _OnDownloadSecurityError);
          loader.loadBytes(data);
+
+         // Keep reference so the Loader isn't GC'ed.
+         _Loader = loader;
       }
       
       /**
@@ -186,11 +192,20 @@ package PBLabs.Engine.Resource
        */
       protected function _OnLoadComplete(event:Event = null):void
       {
-         if (_OnContentReady(event ? event.target.content : null))
+         try
          {
-            _isLoaded = true;
-            dispatchEvent(new ResourceEvent(ResourceEvent.LOADED_EVENT, this));
-            return;
+            if (_OnContentReady(event ? event.target.content : null))
+            {
+               _isLoaded = true;
+               _UrlLoader = null;
+               _Loader = null;
+               dispatchEvent(new ResourceEvent(ResourceEvent.LOADED_EVENT, this));
+               return;
+            }
+         }
+         catch(e:Error)
+         {
+            Logger.PrintError(this, "Load", "Failed to load!");
          }
          
          _OnFailed("The resource type does not match the loaded content.");
@@ -219,11 +234,16 @@ package PBLabs.Engine.Resource
          _didFail = true;
          Logger.PrintError(this, "Load", "Resource " + _filename + " failed to load with error: " + message);
          dispatchEvent(new ResourceEvent(ResourceEvent.FAILED_EVENT, this));
+         
+         _UrlLoader = null;
+         _Loader = null;
       }
       
       private var _filename:String = null;
       private var _isLoaded:Boolean = false;
       private var _didFail:Boolean = false;
+      private var _UrlLoader:URLLoader;
+      private var _Loader:Loader;
       private var _referenceCount:int = 0;
    }
 }
