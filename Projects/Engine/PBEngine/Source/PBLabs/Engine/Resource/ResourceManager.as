@@ -40,6 +40,13 @@ package PBLabs.Engine.Resource
       private static var _instance:ResourceManager = null;
       
       /**
+       * If true, we will never get resources from outside the SWF - only resources
+       * that have been properly embedded and registered with the ResourceManager
+       * will be used.
+       */
+      public var OnlyLoadEmbeddedResources:Boolean = false;
+      
+      /**
        * Loads a resource from a file. If the resource has already been loaded or is embedded, a
        * reference to the existing resource will be given. The resource is not returned directly
        * since loading is asynchronous. Instead, it will be passed to the function specified in
@@ -76,6 +83,12 @@ package PBLabs.Engine.Resource
          
          if (resource == null)
          {
+            if(OnlyLoadEmbeddedResources)
+            {
+               _Fail(null, onFailed, "'" + filename + "' was not loaded because it was not embedded in the SWF.");
+               return;
+            }
+            
             var testResource:* = new resourceType();
             if (!(testResource is Resource))
             {
