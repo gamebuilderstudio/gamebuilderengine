@@ -9,20 +9,31 @@
  * in the License.html file at the root directory of this SDK.
  ******************************************************************************/
 -->
-<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:local="*" xmlns:ui="PBLabs.Rendering2D.UI.*" xmlns:debug="PBLabs.Engine.Debug.*" layout="absolute" frameRate="60" width="800" height="600" applicationComplete="_OnLoaded()">
-   <ui:FlexSceneView name="MainView" bottom="0" top="0" left="0" right="0"/>
-   <debug:LogViewer width="100%" height="100%"/>
-   <local:Levels/>
-   <local:References/>
-   <local:Resources/>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" frameRate="60" width="800" height="600" applicationComplete="_OnLoaded()">
    <mx:Script>
       <![CDATA[
          import PBLabs.Engine.Core.*;
+         import PBLabs.PBEngineDemo.UI.*;
           
          private function _OnLoaded():void
          {
             Global.Startup(this);
+            
+            LevelManager.Instance.addEventListener(LevelEvent.LEVEL_LOADED_EVENT, _OnLevelLoaded);
+            LevelManager.Instance.Load("../Assets/levelDescriptions.xml");
+            
+            addChild(_mainMenu);
          }
+         
+         private function _OnLevelLoaded(event:LevelEvent):void
+         {
+            removeAllChildren();
+            addChild(_gameUI);
+         }
+         
+         private var _mainMenu:MainMenu = new MainMenu();
+         private var _gameUI:GameUI = new GameUI();
+         private var _references:References = new References();
       ]]>
    </mx:Script>
 </mx:Application>

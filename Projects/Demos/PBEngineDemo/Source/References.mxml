@@ -118,7 +118,6 @@
    <pb:TypeReference type="PBLabs.Engine.Entity.IEntityComponent"/>
    <pb:TypeReference type="PBLabs.Engine.Entity.IPropertyBag"/>
    <pb:TypeReference type="PBLabs.Engine.Entity.PropertyReference"/>
-   <pb:TypeReference type="PBLabs.Engine.MXML.AutoLoadLevelReference"/>
    <pb:TypeReference type="PBLabs.Engine.MXML.GroupReference"/>
    <pb:TypeReference type="PBLabs.Engine.MXML.LevelFileReference"/>
    <pb:TypeReference type="PBLabs.Engine.MXML.ResourceBinding"/>

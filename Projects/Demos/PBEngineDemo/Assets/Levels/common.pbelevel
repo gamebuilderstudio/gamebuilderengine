@@ -1,0 +1,83 @@
+<things version="1">
+  <entity name="SpatialDB">
+    <component type="PBLabs.Box2D.Box2DManagerComponent" name="Manager"/>
+  </entity>
+  <entity name="Scene">
+    <component type="PBLabs.Rendering2D.Scene2DComponent" name="Scene">
+      <RenderMask childType="String">
+        <_0>Renderable</_0>
+      </RenderMask>
+      <SpatialDatabase componentReference="SpatialDB" componentName="Manager"/>
+      <TrackObject componentReference="Dude"/>
+    </component>
+  </entity>
+  <entity name="Box2D">
+    <component type="PBLabs.Box2D.Box2DDebugComponent" name="Debug">
+      <Manager componentReference="SpatialDB"/>
+      <Scene componentReference="Scene"/>
+    </component>
+  </entity>
+  <entity name="Dude">
+    <component type="PBLabs.Animation.AnimatorComponent" name="FrameAnimation">
+      <Animations childType="PBLabs.Animation.Animator">
+        <Idle type="">
+          <AnimationType>PingPongAnimation</AnimationType>
+          <Duration>0.6</Duration>
+          <RepeatCount>-1</RepeatCount>
+          <StartValue>0</StartValue>
+          <TargetValue>3</TargetValue>
+        </Idle>
+      </Animations>
+      <DefaultAnimation>Idle</DefaultAnimation>
+      <Reference>@Render.SpriteIndex</Reference>
+    </component>
+    <component type="PBLabs.Box2D.Box2DSpatialComponent" name="Spatial">
+      <CanRotate>false</CanRotate>
+      <CanSleep>false</CanSleep>
+      <CollidesWithTypes childType="String">
+        <_0>Platform</_0>
+      </CollidesWithTypes>
+      <CollisionShapes childType="PBLabs.Box2D.CollisionShape">
+        <_0 type="PBLabs.Box2D.CircleCollisionShape">
+          <Offset type="">
+            <y>0.5</y>
+          </Offset>
+          <Radius>0.5</Radius>
+        </_0>
+      </CollisionShapes>
+      <CollisionType childType="String">
+        <_0>Dude</_0>
+        <_1>Renderable</_1>
+      </CollisionType>
+      <Manager componentReference="SpatialDB"/>
+      <Position type="">
+        <x>400</x>
+        <y>100</y>
+      </Position>
+      <Size type="">
+        <x>64</x>
+        <y>74</y>
+      </Size>
+    </component>
+    <component type="PBLabs.Rendering2D.SpriteRenderComponent" name="Render">
+      <PositionReference>@Spatial.Position</PositionReference>
+      <RotationReference>@Spatial.Rotation</RotationReference>
+      <SizeReference>@Spatial.Size</SizeReference>
+      <SpriteSheet componentReference="DudeSpriteSheet"/>
+    </component>
+    <component type="PBLabs.StupidSampleGame.DudeController" name="Controller">
+      <Input childType="PBLabs.Engine.Core.InputKey">
+        <GoLeft>LEFT</GoLeft>
+        <GoRight>RIGHT</GoRight>
+        <Jump>UP</Jump>
+      </Input>
+      <VelocityReference>@Spatial.LinearVelocity</VelocityReference>
+    </component>
+  </entity>
+  <group name="Common">
+    <objectReference name="SpatialDB"/>
+    <objectReference name="Scene"/>
+    <objectReference name="Box2D"/>
+    <objectReference name="Dude"/>
+  </group>
+</things>

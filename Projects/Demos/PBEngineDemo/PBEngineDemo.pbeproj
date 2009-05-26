@@ -7,14 +7,6 @@
   <AuthorEmail>pbe@pushbuttonlabs.com</AuthorEmail>
   <Dependencies>
     <Dependency>
-      <Name>MPThreeSound</Name>
-      <Version>1.0.0</Version>
-    </Dependency>
-    <Dependency>
-      <Name>BoxTwoDPhysics</Name>
-      <Version>1.0.0</Version>
-    </Dependency>
-    <Dependency>
       <Name>TwoDRenderer</Name>
       <Version>1.0.0</Version>
     </Dependency>
@@ -22,5 +14,21 @@
       <Name>PBEngine</Name>
       <Version>1.0.0</Version>
     </Dependency>
+    <Dependency>
+      <Name>MPThreeSound</Name>
+      <Version>1.0.0</Version>
+    </Dependency>
+    <Dependency>
+      <Name>BoxTwoDPhysics</Name>
+      <Version>1.0.0</Version>
+    </Dependency>
   </Dependencies>
+  <PackageFolders>
+    <Folder>Output</Folder>
+    <Folder>Documentation</Folder>
+  </PackageFolders>
+  <PackageWithSourceFolders>
+    <Folder>Assets</Folder>
+    <Folder>Source</Folder>
+  </PackageWithSourceFolders>
 </Project>

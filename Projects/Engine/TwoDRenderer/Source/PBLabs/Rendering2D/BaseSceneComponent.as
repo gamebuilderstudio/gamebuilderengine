@@ -509,7 +509,7 @@ package PBLabs.Rendering2D
        */ 
       protected var _CurrentRenderTarget:BitmapData = null;
       private var _SceneView:IUITarget = null;
-      private var _SceneViewName:String = null;
+      private var _SceneViewName:String = "MainView";
       
       private var _AlwaysDrawnList:Array = new Array();
       private var _InterstitialDrawnList:Array = new Array();

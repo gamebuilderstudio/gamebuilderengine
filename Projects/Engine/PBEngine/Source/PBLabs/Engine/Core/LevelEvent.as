@@ -19,11 +19,25 @@ package PBLabs.Engine.Core
    public class LevelEvent extends Event
    {
       /**
-       * This event is dispatched by the LevelManager upon loading of a level's data.
+       * This event is dispatched by the LevelManager when it is ready to be used.
        * 
-       * @eventType LOADED_EVENT
+       * @eventType READY_EVENT
        */
-      public static const LOADED_EVENT:String = "LOADED_EVENT";
+      public static const READY_EVENT:String = "ready";
+      
+      /**
+       * This event is dispatched by the LevelManager when a level's data has been loaded.
+       * 
+       * @eventType LEVEL_LOADED_EVENT
+       */
+      public static const LEVEL_LOADED_EVENT:String = "levelLoaded";
+      
+      /**
+       * This event is dispatched by the LevelManager when a level's data has been unloaded.
+       * 
+       * @eventType LEVEL_UNLOADED_EVENT
+       */
+      public static const LEVEL_UNLOADED_EVENT:String = "levelUnloaded";
       
       /**
        * The level associated with this event.

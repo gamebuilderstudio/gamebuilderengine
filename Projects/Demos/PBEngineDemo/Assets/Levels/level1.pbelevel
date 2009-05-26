@@ -1,0 +1,31 @@
+<things version="1">
+  <entity name="Platform1" template="Platform">
+    <component name="Spatial">
+      <Position type="">
+        <x>94</x>
+        <y>450</y>
+      </Position>
+    </component>
+  </entity>
+  <entity name="Platform2" template="Platform">
+    <component name="Spatial">
+      <Position type="">
+        <x>400</x>
+        <y>500</y>
+      </Position>
+    </component>
+  </entity>
+  <entity name="Platform3" template="Platform">
+    <component name="Spatial">
+      <Position type="">
+        <x>706</x>
+        <y>450</y>
+      </Position>
+    </component>
+  </entity>
+  <group name="Level1Data">
+    <objectReference name="Platform1"/>
+    <objectReference name="Platform2"/>
+    <objectReference name="Platform3"/>
+  </group>
+</things>

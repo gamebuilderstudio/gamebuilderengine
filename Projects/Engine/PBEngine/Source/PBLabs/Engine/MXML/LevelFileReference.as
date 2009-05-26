@@ -38,26 +38,19 @@ package PBLabs.Engine.MXML
        */
       public var level:int = -1;
       
-      [Bindable]
-      /**
-       * Setting this to true will keep the level manager from unloading this level file
-       * when advancing to the next level.
-       */
-      public var persist:Boolean = false;
-      
       /**
        * @inheritDoc
        */
       public function initialized(document:Object, id:String):void
       {
-         if (levels == null || levels.length == 0)
+         if ((levels == null) || (levels.length == 0))
          {
-            LevelManager.Instance.AddLevelFileReference(filename, level, persist);
+            LevelManager.Instance.AddFileReference(level, filename);
          }
          else
          {
             for each (var l:int in levels)
-               LevelManager.Instance.AddLevelFileReference(filename, l, persist);
+               LevelManager.Instance.AddFileReference(l, filename);
          }
       }
    }

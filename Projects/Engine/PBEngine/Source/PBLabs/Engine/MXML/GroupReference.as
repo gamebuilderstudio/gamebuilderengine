@@ -38,26 +38,19 @@ package PBLabs.Engine.MXML
        */
       public var level:int = -1;
       
-      [Bindable]
-      /**
-       * Setting this to true will keep the level manager from unloading this group
-       * when advancing to the next level.
-       */
-      public var persist:Boolean = false;
-      
       /**
        * @inheritDoc
        */
       public function initialized(document:Object, id:String):void
       {
-         if (levels == null || levels.length == 0)
+         if ((levels == null) || (levels.length == 0))
          {
-            LevelManager.Instance.AddGroupReference(name, level, persist);
+            LevelManager.Instance.AddGroupReference(level, name);
          }
          else
          {
             for each (var l:int in levels)
-               LevelManager.Instance.AddGroupReference(name, l, persist);
+               LevelManager.Instance.AddGroupReference(l, name);
          }
       }
    }
