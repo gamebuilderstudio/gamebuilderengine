@@ -113,7 +113,7 @@ package PBLabs.Engine.Serialization
          {
             _currentEntity = object as IEntity;
             _currentEntity.Deserialize(xml, true);
-            _ResolveReferences();
+            ResolveReferences();
             return object as IEntity;
          }
          
@@ -394,7 +394,7 @@ package PBLabs.Engine.Serialization
          delete _resources[filename];
       }
       
-      private function _ResolveReferences():void
+      public function ResolveReferences():void
       {
          for (var i:int = 0; i < _deferredReferences.length; i++)
          {

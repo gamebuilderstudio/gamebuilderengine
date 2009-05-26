@@ -206,11 +206,14 @@ package PBLabs.Rendering2D
             (_sprite as Sprite).graphics.beginFill(0xFF00FF, 0.5);
             (_sprite as Sprite).graphics.drawCircle(12.5, 12.5, 25);
             (_sprite as Sprite).graphics.endFill();
+            
+            if (_spriteSheet == null)
+               _spriteDirty = false;
          }
          else
          {
             var bmpData:BitmapData = GetCurrentFrame();
-            if(!bmpData)
+            if (!bmpData)
             {
                Logger.PrintError(this, "_GenerateSprite", "Failed to get a valid BitmapData back from GetCurrentFrame!");
                _sprite = null;
@@ -219,15 +222,18 @@ package PBLabs.Rendering2D
             
             _baseSize = new Point(bmpData.width, bmpData.height);
             
-            if(_sprite == null || !(_sprite is Bitmap))
-              _sprite = new Bitmap(bmpData, "auto", _smoothing);
+            if ((_sprite == null) || !(_sprite is Bitmap))
+            {
+               _sprite = new Bitmap(bmpData, "auto", _smoothing);
+            }
             else
             {
-              (_sprite as Bitmap).bitmapData = bmpData;
-              (_sprite as Bitmap).smoothing = _smoothing;
+               (_sprite as Bitmap).bitmapData = bmpData;
+               (_sprite as Bitmap).smoothing = _smoothing;
             }
-          }
-          _spriteDirty = false;
+            
+            _spriteDirty = false;
+         }
       }
       
       protected var _spriteSheet:SpriteSheetComponent = null;
