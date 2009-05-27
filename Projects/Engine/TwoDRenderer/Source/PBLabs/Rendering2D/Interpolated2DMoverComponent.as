@@ -1,6 +1,7 @@
 package PBLabs.Rendering2D
 {
    import PBLabs.Engine.Core.*;
+   import PBLabs.Engine.Entity.PropertyReference;
    import flash.geom.Point;
 
    public class Interpolated2DMoverComponent extends SimpleSpatialComponent
@@ -22,6 +23,9 @@ package PBLabs.Rendering2D
       [EditorData(defaultValue="1")]
       public var Nudge:Number = 1.0;
       
+      public var AllowMovementProperty:PropertyReference = null;
+      public var AllowMovementValue:String = null;
+      
       public function set InitialPosition(v:Point):void
       {
          GoalPosition = v.clone();
@@ -39,6 +43,14 @@ package PBLabs.Rendering2D
          return GoalPosition.subtract(Position).clone();
       }
       
+      private function get CheckMovementAllowed():Boolean
+      {
+         if(!AllowMovementProperty)
+            return true;
+         
+         return Owner.GetProperty(AllowMovementProperty) == AllowMovementValue;
+      }
+      
       public override function OnTick(tickRate:Number):void
       {
          // Move towards our position goal.
@@ -49,7 +61,7 @@ package PBLabs.Rendering2D
             moveDelta.normalize(moveAmount);
          
          var didMove:Boolean = false;
-         if(moveDelta.length > 0.001)
+         if(moveDelta.length > 0.001 && CheckMovementAllowed)
          {
             // Only update position if we really need to move.
             Position = Position.add(moveDelta);

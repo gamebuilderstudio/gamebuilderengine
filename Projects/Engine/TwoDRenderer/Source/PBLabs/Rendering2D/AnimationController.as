@@ -12,6 +12,7 @@ package PBLabs.Rendering2D
    import PBLabs.Engine.Components.*;
    import PBLabs.Engine.Debug.*;
    import PBLabs.Engine.Core.*;
+   import flash.events.*;
    
    /**
     * Manage sprite sheet and frame selection based on named animation definitions.
@@ -130,7 +131,15 @@ package PBLabs.Rendering2D
        */ 
       public function SetAnimation(ai:AnimationControllerInfo):void
       {
+         // Fire stop event.
+         if(_CurrentAnimation && _CurrentAnimation.CompleteEvent)
+            Owner.EventDispatcher.dispatchEvent(new Event(_CurrentAnimation.CompleteEvent));
+
          _CurrentAnimation = ai;
+         
+         // Fire start event.
+         if(_CurrentAnimation.StartEvent)
+            Owner.EventDispatcher.dispatchEvent(new Event(_CurrentAnimation.StartEvent));
          
          if(!ai.SpriteSheet)
             throw new Error("Animation had no sprite sheet!");

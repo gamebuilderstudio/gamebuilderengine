@@ -298,7 +298,7 @@ package PBLabs.Engine.Serialization
                typeName = typeHint ? typeHint : "String";
             
             // Deserialize the value.
-            if (!_GetChildReference(object, key, childXML) && !_GetResourceObject(object, key, childXML))
+            if (!_GetChildReference(object, key, childXML) && !_GetResourceObject(object, key, childXML, typeHint))
             {
                var value:* = _GetChildObject(object, key, typeName);
                if (value != null)
@@ -369,13 +369,17 @@ package PBLabs.Engine.Serialization
          return childObject;
       }
       
-      private function _GetResourceObject(object:*, fieldName:String, xml:XML):Boolean
+      private function _GetResourceObject(object:*, fieldName:String, xml:XML, typeHint:String = null):Boolean
       {
          var filename:String = xml.attribute("filename");
          if (filename == "")
             return false;
-         
-         var type:Class = TypeUtility.GetClassFromName(TypeUtility.GetFieldType(object, fieldName));
+            
+         var type:Class = null;
+         if(typeHint)
+            type = TypeUtility.GetClassFromName(typeHint);
+         else
+            type = TypeUtility.GetClassFromName(TypeUtility.GetFieldType(object, fieldName));
          
          var resource:ResourceNote = new ResourceNote();
          resource.Owner = object;
