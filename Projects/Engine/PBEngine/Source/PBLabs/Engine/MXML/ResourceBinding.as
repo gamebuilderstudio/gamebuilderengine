@@ -73,13 +73,13 @@ package PBLabs.Engine.MXML
          
          var item:* = new resourceClass();
          
-         if (!(item is ByteArray))
+         /*if (!(item is ByteArray))
          {
-            Logger.PrintError("ResourceBinding", "", "The loaded resourceClass for binding of " + filename + " is not a ByteArray.");
-            return;
-         }
+            //Logger.PrintError("ResourceBinding", "", "The loaded resourceClass for binding of " + filename + " is not a ByteArray.");
+            //return;
+         } */
          
-         ResourceManager.Instance.RegisterEmbeddedResource(filename, resourceType, item as ByteArray);
+         ResourceManager.Instance.RegisterEmbeddedResource(filename, resourceType, item);
       }
    }
 }

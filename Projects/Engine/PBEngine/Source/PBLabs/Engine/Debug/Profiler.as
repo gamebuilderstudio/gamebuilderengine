@@ -17,7 +17,7 @@ package PBLabs.Engine.Debug
     * an early return; statement, you will need to add a call to Profiler.Exit()
     * before the return.
     *
-    * Min/Max/Average times are reported in milliseconds, while self and non-sub
+    * Min/Max/Average times are reported in milliseconds, while total and non-sub
     * times (times including children and excluding children respectively) are
     * reported in percentages of total observed time.
     */
@@ -157,7 +157,7 @@ package PBLabs.Engine.Debug
       {
          _WantReport = false;
          
-         var header:String = sprintf( "%-" + NameFieldWidth + "s%-8s%-8s%-8s%-8s%-8s%-8s", "Name", "Calls", "Self %", "NonSelf%", "AvgMs", "MinMs", "MaxMs" );
+         var header:String = sprintf( "%-" + NameFieldWidth + "s%-8s%-8s%-8s%-8s%-8s%-8s", "Name", "Calls", "Total%", "NonSub%", "AvgMs", "MinMs", "MaxMs" );
          Logger.Print(Profiler, header);
          _Report_R(_RootNode, 0);
       }

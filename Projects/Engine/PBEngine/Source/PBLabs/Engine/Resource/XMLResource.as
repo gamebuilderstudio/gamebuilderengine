@@ -31,8 +31,11 @@ package PBLabs.Engine.Resource
        * so we don't need any special loading. This just converts the byte array to
        * a string and marks the resource as loaded.
        */
-      public override function Initialize(data:ByteArray):void
+      public override function Initialize(data:*):void
       {
+         if(!(data is ByteArray))
+            throw new Error("XMLResource can only initialize from ByteArrays.");
+            
          try
          {
             _xml = new XML(data.toString());

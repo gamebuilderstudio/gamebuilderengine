@@ -18,8 +18,11 @@ package PBLabs.Engine.Resource
       /**
        * @inheritDoc
        */
-      public override function Initialize(data:ByteArray):void
+      public override function Initialize(data:*):void
       {
+         if(!(data is ByteArray))
+            throw new Error("DataResource can only handle ByteArrays.");
+            
          _data = data;
          _OnLoadComplete();
       }

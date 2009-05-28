@@ -34,11 +34,10 @@ package PBLabs.MP3Sound
        * out. The MP3Loader library (from here: http://www.flexiblefactory.co.uk/flexible/?p=46)
        * handles this.
        */
-      public override function Initialize(data:ByteArray):void
+      public override function Initialize(data:*):void
       {
-         var loader:MP3FileReferenceLoader = new MP3FileReferenceLoader();
-         loader.addEventListener(MP3SoundEvent.COMPLETE, _OnLoaded);
-         loader.getSoundFromByteArray(data);
+         SoundObject = data;
+         _OnLoadComplete();
       }
       
       /**
@@ -47,12 +46,6 @@ package PBLabs.MP3Sound
       protected override function _OnContentReady(content:*):Boolean 
       {
          return SoundObject != null;
-      }
-      
-      private function _OnLoaded(event:MP3SoundEvent):void
-      {
-         SoundObject = event.sound;
-         _OnLoadComplete();
       }
    }
 }

@@ -169,7 +169,7 @@ package PBLabs.Engine.Resource
        * 
        * @see PBLabs.Engine.MXML.ResourceBinding
        */
-      public function RegisterEmbeddedResource(filename:String, resourceType:Class, data:ByteArray):void
+      public function RegisterEmbeddedResource(filename:String, resourceType:Class, data:*):void
       {
          if (_resources[filename + resourceType] != null)
          {

@@ -139,8 +139,11 @@ package PBLabs.Engine.Resource
        * 
        * @param data The data to initialize the resource with.
        */
-      public function Initialize(data:ByteArray):void
+      public function Initialize(data:*):void
       {
+         if(!(data is ByteArray))
+            throw new Error("Default Resource can only process ByteArrays!");
+         
          var loader:Loader = new Loader();
          loader.contentLoaderInfo.addEventListener(Event.COMPLETE, _OnLoadComplete);
          loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, _OnDownloadError);
