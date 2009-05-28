@@ -208,7 +208,7 @@ package PBLabs.Engine.Resource
          }
          catch(e:Error)
          {
-            Logger.PrintError(this, "Load", "Failed to load!");
+            Logger.PrintError(this, "Load", "Failed to load! " + e.toString());
          }
          
          _OnFailed("The resource type does not match the loaded content.");

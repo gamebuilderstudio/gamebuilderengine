@@ -138,6 +138,7 @@ package PBLabs.Engine.Core
       private function _OnLevelDescriptionsLoaded(resource:XMLResource):void
       {
          Serializer.Instance.Deserialize(this, resource.XMLData);
+         Logger.Print(this, "Loaded " + _levelDescriptions.length + " level descriptions.");
       }
       
       private function _OnLevelDescriptionsLoadFailed(resource:XMLResource):void
