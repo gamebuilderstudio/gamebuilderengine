@@ -228,7 +228,14 @@ package PBLabs.Engine.Serialization
                }
                
                // Assign the new value.
-               object[fieldName] = child;
+               try
+               {
+                  object[fieldName] = child;
+               }
+               catch(e:Error)
+               {
+                  Logger.PrintError(object, "Deserialize", "The field " + fieldName + " could not be set to '" + child + "' due to:" + e.toString());
+               }
             }
          }
          
