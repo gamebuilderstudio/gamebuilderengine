@@ -184,7 +184,9 @@ package PBLabs.Engine.Serialization
       
       private function _DeserializeSimple(object:*, xml:XML, typeHint:String):*
       {
-         if (xml.toString() == "")
+         // If the tag is empty and we're not a string where """ is a valid value,
+         // just return that value.
+         if (xml.toString() == "" && !(object is String))
             return object;
          
          return xml.toString();
