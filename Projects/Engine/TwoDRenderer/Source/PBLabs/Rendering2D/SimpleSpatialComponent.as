@@ -25,7 +25,27 @@ package PBLabs.Rendering2D
        * The spatial manager this object belongs to.
        */
       [EditorData(referenceType="componentReference")]
-      public var SpatialManager:ISpatialManager2D;
+      public function get SpatialManager():ISpatialManager2D
+      {
+         return _spatialManager;
+      }
+      
+      public function set SpatialManager(value:ISpatialManager2D):void
+      {
+         if (!IsRegistered)
+         {
+            _spatialManager = value;
+            return;
+         }
+         
+         if (_spatialManager)
+            _spatialManager.RemoveSpatialObject(this);
+         
+         _spatialManager = value;
+         
+         if (_spatialManager)
+            _spatialManager.AddSpatialObject(this);
+      }
       
       /**
        * The position of the object.
@@ -64,7 +84,8 @@ package PBLabs.Rendering2D
       {
          super._OnAdd();
          
-         SpatialManager.AddSpatialObject(this);
+         if (_spatialManager)
+            _spatialManager.AddSpatialObject(this);
       }
       
       /**
@@ -74,7 +95,8 @@ package PBLabs.Rendering2D
       {
          super._OnRemove();
 
-         SpatialManager.RemoveSpatialObject(this);
+         if (_spatialManager)
+            _spatialManager.RemoveSpatialObject(this);
       }
       
       /**
@@ -111,5 +133,6 @@ package PBLabs.Rendering2D
       }
       
       private var _objectMask:ObjectType;
+      private var _spatialManager:ISpatialManager2D;
    }
 }

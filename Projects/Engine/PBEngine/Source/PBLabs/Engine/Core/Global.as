@@ -13,6 +13,8 @@ package PBLabs.Engine.Core
    import flash.display.DisplayObjectContainer;
    import flash.display.Sprite;
    
+   import PBLabs.Engine.Debug.Log4PBE.*;
+   
    /**
     * This exists as a helper for retrieving the global application object.
     */
@@ -45,12 +47,19 @@ package PBLabs.Engine.Core
          return _main;
       }
       
-      public static function Startup(mainClass:Sprite):void
+      public static function Startup(mainClass:Sprite, onComplete:Function):void
       {
          _main = mainClass;
-         
+         LogManager.Instance.LoadConfiguration("logConfiguration.xml", function ():void { _StartupPart2(onComplete); });
+      }
+      
+      private static function _StartupPart2(onComplete:Function):void
+      {
          if (!IsShippingBuild && (_main.loaderInfo && _main.loaderInfo.parameters && _main.loaderInfo.parameters["generateSchema"] == "1"))
             SchemaGenerator.Instance.GenerateSchema();
+         
+         if (onComplete != null)
+            onComplete();
       }
       
       /**

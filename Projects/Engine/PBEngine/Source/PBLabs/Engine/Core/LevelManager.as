@@ -65,6 +65,34 @@ package PBLabs.Engine.Core
       }
       
       /**
+       * Returns the number of levels the LevelManager has data for.
+       */
+      public function get LevelCount():int
+      {
+         var count:int = 0;
+         for each (var level:LevelDescription in _levelDescriptions)
+            count++;
+         
+         return count;
+      }
+      
+      /**
+       * Gets an array of filenames that are to be loaded with a specific level.
+       */
+      public function GetLevelFiles(index:int):Array
+      {
+         return _levelDescriptions[index].Files;
+      }
+      
+      /**
+       * Gets an array of group names that are to be loaded with a specific level.
+       */
+      public function GetLevelGroups(index:int):Array
+      {
+         return _levelDescriptions[index].Groups;
+      }
+      
+      /**
        * With this method, you can override the default file loading methods by having
        * custom functions called instead of the defaults.
        * 
@@ -144,6 +172,15 @@ package PBLabs.Engine.Core
       private function _OnLevelDescriptionsLoadFailed(resource:XMLResource):void
       {
          Logger.PrintError(this, "Load", "Failed to load level descriptions file " + resource.Filename + "!");
+      }
+      
+      public function Clear():void
+      {
+         UnloadCurrentLevel();
+         
+         _currentLevel = 0;
+         _levelDescriptions = new Array();
+         _isReady = false;
       }
       
       /**
@@ -472,6 +509,31 @@ package PBLabs.Engine.Core
       }
       
       /**
+       * Remove a file from a level number.
+       * 
+       * @param index The level to remove from
+       * @param filename The file to remove
+       */
+      public function RemoveFileReference(index:int, filename:String):void
+      {
+         if (!_HasLevelData(index))
+         {
+            Logger.PrintError(this, "RemoveFileReference", "No level data exists for level " + index + ".");
+            return;
+         }
+         
+         var levelIndex:int = levelDescription.Files.indexOf(filename);
+         if (levelIndex == -1)
+         {
+            Logger.PrintError(this, "RemoveFileReference", "The file " + filename + " was not found in the level " + index + ".");
+            return;
+         }
+         
+         var levelDescription:LevelDescription = _GetLevelDescription(index);
+         levelDescription.Files.splice(levelIndex, 1);
+      }
+      
+      /**
        * Register a group with a level number. The same group can be registered with several levels.
        * 
        * @param index The level to register with
@@ -487,6 +549,48 @@ package PBLabs.Engine.Core
          
          var levelDescription:LevelDescription = _GetLevelDescription(index);
          levelDescription.Groups.push(name);
+      }
+      
+      /**
+       * Remove a group from a level number.
+       * 
+       * @param index The level to remove from
+       * @param name The group to remove
+       */
+      public function RemoveGroupReference(index:int, name:String):void
+      {
+         if (!_HasLevelData(index))
+         {
+            Logger.PrintError(this, "RemoveGroupReference", "No level data exists for level " + index + ".");
+            return;
+         }
+         
+         var groupIndex:int = levelDescription.Groups.indexOf(name);
+         if (groupIndex == -1)
+         {
+            Logger.PrintError(this, "RemoveFileReference", "The group " + name + " was not found in the level " + index + ".");
+            return;
+         }
+         
+         var levelDescription:LevelDescription = _GetLevelDescription(index);
+         levelDescription.Groups.splice(groupIndex, 1);
+      }
+      
+      /**
+       * Removes the level with the specified index.
+       * 
+       * @param index The index of the level to remove.
+       */
+      public function RemoveLevel(index:int):void
+      {
+         if (!_HasLevelData(index))
+         {
+            Logger.PrintError(this, "RemoveLevel", "No level data exists for level " + index + ".");
+            return;
+         }
+         
+         _levelDescriptions[index] = null;
+         delete _levelDescriptions[index];
       }
       
       private function _GetLevelDescription(index:int):LevelDescription

@@ -498,20 +498,14 @@ internal class ReferenceNote
          {
             component = componentObject.LookupComponentByName(ComponentName);
             if (component == null)
-            {
-               Logger.PrintError(Owner, "Deserialize", "Could not find component with name " + ComponentName + " on object " + ComponentReference + ".");
-               return true;
-            }
+               return false;
          }
          else
          {
             var componentType:String = TypeUtility.GetFieldType(Owner, FieldName);
             component = componentObject.LookupComponentByType(TypeUtility.GetClassFromName(componentType));
             if (component == null)
-            {
-               Logger.PrintError(Owner, "Deserialize", "Could not find component with type " + componentType + " on object " + ComponentReference + ".");
-               return true;
-            }
+               return false;
          }
          
          Owner[FieldName] = component;
