@@ -10,7 +10,7 @@ package PBLabs.Rendering2D
 {
    import flash.geom.*;
    
-   import PBLabs.Engine.Debug.Logger;
+   import PBLabs.Engine.Debug.*;
    import PBLabs.Engine.Entity.*;
    import PBLabs.Engine.Core.*;
  
@@ -81,6 +81,8 @@ package PBLabs.Rendering2D
        */
       public function QueryCircle(center:Point, radius:Number, mask:ObjectType, results:Array):Boolean
       {
+         Profiler.Enter("QueryCircle");
+
          var foundAny:Boolean = false;
          
          for each (var object:ISpatialObject2D in _objectList)
@@ -96,6 +98,8 @@ package PBLabs.Rendering2D
             results.push(object);
             foundAny = true;
          }
+
+         Profiler.Exit("QueryCircle");
 
          return foundAny;
       }

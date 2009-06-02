@@ -42,9 +42,13 @@ package PBLabs.Engine.Entity
        * @param name The name to assign to the entity. If this is null or an empty
        * string, the entity will not register itself with the name manager.
        * 
+       * @param alias An alternate name under which this entity can be looked up.
+       * Useful when you need to distinguish between multiple things but refer
+       * to the active one by a consistent name.
+       *
        * @see PBLabs.Engine.Core.NameManager
        */
-      function Initialize(name:String):void;
+      function Initialize(name:String, alias:String = null):void;
 
       /**
        * Destroys the entity by removing all components and unregistering it from

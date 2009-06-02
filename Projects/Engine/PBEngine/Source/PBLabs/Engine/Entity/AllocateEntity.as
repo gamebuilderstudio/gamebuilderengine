@@ -49,13 +49,17 @@ class Entity extends EventDispatcher implements IEntity
       return this as IEventDispatcher;
    }
    
-   public function Initialize(name:String):void
+   public function Initialize(name:String, alias:String = null):void
    {
       _name = name;
       if ((_name == null) || (_name == ""))
          return;
       
+      _alias = alias;
+         
       NameManager.Instance.AddEntity(this, _name);
+      if(_alias)
+         NameManager.Instance.AddEntity(this, _alias);
    }
    
    public function Destroy():void
@@ -432,6 +436,7 @@ class Entity extends EventDispatcher implements IEntity
    }
    
    private var _name:String = null;
+   private var _alias:String = null;
    private var _components:Dictionary = new Dictionary();
 }
 

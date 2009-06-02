@@ -132,13 +132,16 @@ package PBLabs.Engine.Core
          if (xml.name() == "template")
             name = "";
          
+         var alias:String = xml.attribute("alias");
+         if(alias == "") alias = null;
+
          var entity:IEntity;
          if (_entityType == null)
             entity = AllocateEntity();
          else
             entity = new _entityType();
          
-         entity.Initialize(name);
+         entity.Initialize(name, alias);
          
          if (!_InstantiateTemplate(entity, xml.attribute("template"), new Dictionary()))
          {
