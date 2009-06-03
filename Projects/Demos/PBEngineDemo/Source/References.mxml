@@ -124,6 +124,7 @@
    <pb:TypeReference type="PBLabs.Engine.MXML.TypeReference"/>
    <pb:TypeReference type="PBLabs.Engine.Math.Utility"/>
    <pb:TypeReference type="PBLabs.Engine.Resource.DataResource"/>
+   <pb:TypeReference type="PBLabs.Engine.Resource.MP3Resource"/>
    <pb:TypeReference type="PBLabs.Engine.Resource.Resource"/>
    <pb:TypeReference type="PBLabs.Engine.Resource.ResourceEvent"/>
    <pb:TypeReference type="PBLabs.Engine.Resource.ResourceManager"/>
@@ -132,7 +133,6 @@
    <pb:TypeReference type="PBLabs.Engine.Serialization.ISerializable"/>
    <pb:TypeReference type="PBLabs.Engine.Serialization.Serializer"/>
    <pb:TypeReference type="PBLabs.Engine.Serialization.TypeUtility"/>
-   <pb:TypeReference type="PBLabs.MP3Sound.MP3Resource"/>
    <pb:TypeReference type="PBLabs.Rendering2D.BaseRenderComponent"/>
    <pb:TypeReference type="PBLabs.Rendering2D.BaseSceneComponent"/>
    <pb:TypeReference type="PBLabs.Rendering2D.BasicSpatialManager2D"/>
@@ -157,6 +157,4 @@
    <pb:TypeReference type="PBLabs.Rendering2D.UI.IUITarget"/>
    <pb:TypeReference type="PBLabs.Rendering2D.UI.SceneView"/>
    <pb:TypeReference type="PBLabs.StupidSampleGame.DudeController"/>
-   <pb:TypeReference type="org.audiofx.mp3.MP3FileReferenceLoader"/>
-   <pb:TypeReference type="org.audiofx.mp3.MP3SoundEvent"/>
 </mx:Canvas>

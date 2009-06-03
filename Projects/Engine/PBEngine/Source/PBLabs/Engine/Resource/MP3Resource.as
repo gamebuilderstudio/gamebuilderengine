@@ -6,7 +6,7 @@
  * This file is licensed under the terms of the MIT license, which is included
  * in the License.html file at the root directory of this SDK.
  ******************************************************************************/
-package PBLabs.MP3Sound
+package PBLabs.Engine.Resource
 {
    import flash.media.Sound;
    import flash.events.*;

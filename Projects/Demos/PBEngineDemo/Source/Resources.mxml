@@ -13,5 +13,5 @@
    <pb:ResourceBinding filename="../Assets/Levels/level.pbelevel" resourceType="PBLabs.Engine.Resource.XMLResource" resourceClass="@Embed(source='../Assets/Levels/level.pbelevel', mimeType='application/octet-stream')"/>
    <pb:ResourceBinding filename="../Assets/Images/mannequin.png" resourceType="PBLabs.Rendering2D.ImageResource" resourceClass="@Embed(source='../Assets/Images/mannequin.png', mimeType='application/octet-stream')"/>
    <pb:ResourceBinding filename="../Assets/Images/platform.png" resourceType="PBLabs.Rendering2D.ImageResource" resourceClass="@Embed(source='../Assets/Images/platform.png', mimeType='application/octet-stream')"/>
-   <pb:ResourceBinding filename="../Assets/Sounds/testSound.mp3" resourceType="PBLabs.MP3Sound.MP3Resource" resourceClass="@Embed(source='../Assets/Sounds/testSound.mp3', mimeType='application/octet-stream')"/>
+   <pb:ResourceBinding filename="../Assets/Sounds/testSound.mp3" resourceType="PBLabs.Engine.Resource.MP3Resource" resourceClass="@Embed(source='../Assets/Sounds/testSound.mp3', mimeType='application/octet-stream')"/>
 </mx:Canvas>

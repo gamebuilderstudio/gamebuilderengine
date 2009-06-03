@@ -9,9 +9,7 @@
 
 package
 {
-   import PBLabs.Engine.Resource.ResourceManager;
-   import PBLabs.Engine.Resource.XMLResource;
-   import PBLabs.MP3Sound.MP3Resource;
+   import PBLabs.Engine.Resource.*;
    import PBLabs.Rendering2D.ImageResource;
    
    import flash.utils.ByteArray;

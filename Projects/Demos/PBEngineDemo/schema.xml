@@ -2831,76 +2831,6 @@
       </constructor>
     </factory>
   </type>
-  <type name="org.audiofx.mp3::MP3FileReferenceLoader" base="Class" isDynamic="true" isFinal="true" isStatic="true">
-    <extendsClass type="Class"/>
-    <extendsClass type="Object"/>
-    <accessor name="prototype" access="readonly" type="*" declaredBy="Class"/>
-    <factory type="org.audiofx.mp3::MP3FileReferenceLoader">
-      <implementsInterface type="flash.events::IEventDispatcher"/>
-      <extendsClass type="Object"/>
-      <extendsClass type="flash.events::EventDispatcher"/>
-      <method name="addEventListener" declaredBy="flash.events::EventDispatcher" returnType="void">
-        <parameter index="1" type="String" optional="false"/>
-        <parameter index="2" type="Function" optional="false"/>
-        <parameter index="3" type="Boolean" optional="true"/>
-        <parameter index="4" type="int" optional="true"/>
-        <parameter index="5" type="Boolean" optional="true"/>
-      </method>
-      <method name="dispatchEvent" declaredBy="flash.events::EventDispatcher" returnType="Boolean">
-        <parameter index="1" type="flash.events::Event" optional="false"/>
-      </method>
-      <method name="getSound" declaredBy="org.audiofx.mp3::MP3FileReferenceLoader" returnType="void">
-        <parameter index="1" type="flash.net::FileReference" optional="false"/>
-      </method>
-      <method name="getSoundFromByteArray" declaredBy="org.audiofx.mp3::MP3FileReferenceLoader" returnType="void">
-        <parameter index="1" type="flash.utils::ByteArray" optional="false"/>
-      </method>
-      <method name="hasEventListener" declaredBy="flash.events::EventDispatcher" returnType="Boolean">
-        <parameter index="1" type="String" optional="false"/>
-      </method>
-      <method name="removeEventListener" declaredBy="flash.events::EventDispatcher" returnType="void">
-        <parameter index="1" type="String" optional="false"/>
-        <parameter index="2" type="Function" optional="false"/>
-        <parameter index="3" type="Boolean" optional="true"/>
-      </method>
-      <method name="toString" declaredBy="flash.events::EventDispatcher" returnType="String"/>
-      <method name="willTrigger" declaredBy="flash.events::EventDispatcher" returnType="Boolean">
-        <parameter index="1" type="String" optional="false"/>
-      </method>
-    </factory>
-  </type>
-  <type name="org.audiofx.mp3::MP3SoundEvent" base="Class" isDynamic="true" isFinal="true" isStatic="true">
-    <extendsClass type="Class"/>
-    <extendsClass type="Object"/>
-    <constant name="COMPLETE" type="String"/>
-    <accessor name="prototype" access="readonly" type="*" declaredBy="Class"/>
-    <factory type="org.audiofx.mp3::MP3SoundEvent">
-      <extendsClass type="flash.events::Event"/>
-      <extendsClass type="Object"/>
-      <constructor>
-        <parameter index="1" type="String" optional="false"/>
-        <parameter index="2" type="flash.media::Sound" optional="false"/>
-        <parameter index="3" type="Boolean" optional="true"/>
-        <parameter index="4" type="Boolean" optional="true"/>
-      </constructor>
-      <accessor name="bubbles" access="readonly" type="Boolean" declaredBy="flash.events::Event"/>
-      <accessor name="cancelable" access="readonly" type="Boolean" declaredBy="flash.events::Event"/>
-      <method name="clone" declaredBy="flash.events::Event" returnType="flash.events::Event"/>
-      <accessor name="currentTarget" access="readonly" type="Object" declaredBy="flash.events::Event"/>
-      <accessor name="eventPhase" access="readonly" type="uint" declaredBy="flash.events::Event"/>
-      <method name="formatToString" declaredBy="flash.events::Event" returnType="String">
-        <parameter index="1" type="String" optional="false"/>
-      </method>
-      <method name="isDefaultPrevented" declaredBy="flash.events::Event" returnType="Boolean"/>
-      <method name="preventDefault" declaredBy="flash.events::Event" returnType="void"/>
-      <variable name="sound" type="flash.media::Sound"/>
-      <method name="stopImmediatePropagation" declaredBy="flash.events::Event" returnType="void"/>
-      <method name="stopPropagation" declaredBy="flash.events::Event" returnType="void"/>
-      <accessor name="target" access="readonly" type="Object" declaredBy="flash.events::Event"/>
-      <method name="toString" declaredBy="flash.events::Event" returnType="String"/>
-      <accessor name="type" access="readonly" type="String" declaredBy="flash.events::Event"/>
-    </factory>
-  </type>
   <type name="PBLabs.Animation::AnimationEvent" base="Class" isDynamic="true" isFinal="true" isStatic="true">
     <extendsClass type="Class"/>
     <extendsClass type="Object"/>
@@ -6067,11 +5997,11 @@
       <extendsClass type="Object"/>
     </factory>
   </type>
-  <type name="PBLabs.MP3Sound::MP3Resource" base="Class" isDynamic="true" isFinal="true" isStatic="true">
+  <type name="PBLabs.Engine.Resource::MP3Resource" base="Class" isDynamic="true" isFinal="true" isStatic="true">
     <extendsClass type="Class"/>
     <extendsClass type="Object"/>
     <accessor name="prototype" access="readonly" type="*" declaredBy="Class"/>
-    <factory type="PBLabs.MP3Sound::MP3Resource">
+    <factory type="PBLabs.Engine.Resource::MP3Resource">
       <extendsClass type="Object"/>
       <extendsClass type="PBLabs.Engine.Resource::Resource"/>
       <extendsClass type="flash.events::EventDispatcher"/>
@@ -6096,7 +6026,7 @@
         <parameter index="1" type="String" optional="false"/>
       </method>
       <method name="IncrementReferenceCount" declaredBy="PBLabs.Engine.Resource::Resource" returnType="void"/>
-      <method name="Initialize" declaredBy="PBLabs.MP3Sound::MP3Resource" returnType="void">
+      <method name="Initialize" declaredBy="PBLabs.Engine.Resource::MP3Resource" returnType="void">
         <parameter index="1" type="flash.utils::ByteArray" optional="false"/>
       </method>
       <accessor name="IsLoaded" access="readonly" type="Boolean" declaredBy="PBLabs.Engine.Resource::Resource"/>
