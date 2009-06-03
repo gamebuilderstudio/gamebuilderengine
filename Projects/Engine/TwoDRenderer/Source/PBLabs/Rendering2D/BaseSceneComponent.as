@@ -152,7 +152,7 @@ package PBLabs.Rendering2D
          if (_CurrentRenderTarget == null)
             SceneView.AddDisplayObject(object);
          else
-            _CurrentRenderTarget.draw(object, object.transform.matrix);
+            _CurrentRenderTarget.draw(object, object.transform.matrix, object.transform.colorTransform);
       }
       
       /**
