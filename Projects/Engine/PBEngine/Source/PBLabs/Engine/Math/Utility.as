@@ -38,6 +38,41 @@ package PBLabs.Engine.Math
       }
       
       /**
+       * Take a radian measure and make sure it is between 0..2pi.
+       */
+      public static function UnwrapRadian(r:Number):Number
+      {
+         while(r > Math.PI * 2)
+            r -= Math.PI * 2;
+         while(r < 0)
+            r += Math.PI * 2;
+            
+         return r;
+      }
+     
+      /**
+       * Return the shortest distance to get from from to to, in radians.
+       */
+      public static function GetRadianShortDelta(from:Number, to:Number):Number
+      {
+         // Unwrap both from and to.
+         from = UnwrapRadian(from);
+         to = UnwrapRadian(to);
+         
+         // Calc delta.
+         var delta:Number = to - from;
+         
+         // Make sure delta is shortest path around circle.
+         if(delta > Math.PI)
+            delta -= Math.PI * 2;            
+         if(delta < -Math.PI)
+            delta += Math.PI * 2;            
+            
+         // Done
+         return delta;
+      }
+      
+      /**
        * Get number of bits required to encode values from 0..max.
        *
        * @param max The maximum value to be able to be encoded.

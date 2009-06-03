@@ -1,6 +1,7 @@
 package PBLabs.Rendering2D
 {
    import PBLabs.Engine.Core.*;
+   import PBLabs.Engine.Math.*;
    import PBLabs.Engine.Entity.PropertyReference;
    import flash.geom.Point;
 
@@ -25,6 +26,8 @@ package PBLabs.Rendering2D
       
       public var AllowMovementProperty:PropertyReference = null;
       public var AllowMovementValue:String = null;
+      
+      public var MovementHeadingThreshold:Number = 3.14*2/8;
       
       public function set InitialPosition(v:Point):void
       {
@@ -61,19 +64,24 @@ package PBLabs.Rendering2D
             moveDelta.normalize(moveAmount);
          
          var didMove:Boolean = false;
+         var movementHeading:Number = Math.atan2(moveDelta.y, moveDelta.x);
+
          if(moveDelta.length > 0.001 && CheckMovementAllowed)
          {
+            // Check our heading
+            if(Math.abs(Utility.GetRadianShortDelta(movementHeading, Rotation)) <= MovementHeadingThreshold)
+               Position = Position.add(moveDelta);
+            
             // Only update position if we really need to move.
-            Position = Position.add(moveDelta);
             didMove = true;
          }
          
          // Deal with facing-heading.
          if(didMove && FaceInMovementDirection)
-            GoalRotation = Math.atan2(moveDelta.y, moveDelta.x);
+            GoalRotation = movementHeading
 
          // Interpolate heading.
-         var headingDelta:Number = GoalRotation - Rotation;
+         var headingDelta:Number = Utility.GetRadianShortDelta(Rotation, GoalRotation);
          
          if(headingDelta < -RotationSpeed)
             headingDelta = -RotationSpeed;
