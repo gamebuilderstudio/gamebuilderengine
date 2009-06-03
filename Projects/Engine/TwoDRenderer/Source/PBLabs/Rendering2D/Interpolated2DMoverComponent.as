@@ -17,7 +17,7 @@ package PBLabs.Rendering2D
       public var TranslationSpeed:Number = 5.0;
       
       [EditorData(defaultValue="1")]
-      public var RotationSpeed:Number = 0.02;
+      public var RotationSpeed:Number = 0.2;
       
       public var FaceInMovementDirection:Boolean = false;
       
