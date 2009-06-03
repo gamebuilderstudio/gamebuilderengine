@@ -154,11 +154,11 @@ package PBLabs.Rendering2D
          _matrix.scale(scale.x,scale.y);
          
          if (_spriteSheet)
-            _matrix.translate(position.x - _spriteSheet.Center.x * scale.x, position.y - _spriteSheet.Center.y * scale.y);
-         else
-            _matrix.translate(position.x, position.y);
+            _matrix.translate(-_spriteSheet.Center.x * scale.x, -_spriteSheet.Center.y * scale.y);
          
          _matrix.rotate(Utility.GetRadiansFromDegrees(rotation));
+         _matrix.translate(position.x, position.y);
+         
          _sprite.transform.matrix = _matrix;  
          
          manager.DrawDisplayObject(_sprite);
