@@ -11,10 +11,6 @@
       <Version>1.0.0</Version>
     </Dependency>
     <Dependency>
-      <Name>MPThreeSound</Name>
-      <Version>1.0.0</Version>
-    </Dependency>
-    <Dependency>
       <Name>PBEngine</Name>
       <Version>1.0.0</Version>
     </Dependency>
