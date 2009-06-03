@@ -1,6 +1,6 @@
 package PBLabs.Engine.Debug.Log4PBE
 {
-   internal class LogFilter
+   public class LogFilter
    {
       private static var _logger:Logger = Logger.GetLogger(LogFilter);
       

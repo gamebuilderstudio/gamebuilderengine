@@ -9,6 +9,10 @@
       </RenderMask>
       <SpatialDatabase componentReference="SpatialDB" componentName="Manager"/>
       <TrackObject componentReference="Dude"/>
+      <Position>
+         <x>400</x>
+         <y>100</y>
+      </Position>
     </component>
   </entity>
   <entity name="Box2D">

@@ -47,19 +47,13 @@ package PBLabs.Engine.Core
          return _main;
       }
       
-      public static function Startup(mainClass:Sprite, onComplete:Function):void
+      public static function Startup(mainClass:Sprite):void
       {
          _main = mainClass;
-         LogManager.Instance.LoadConfiguration("logConfiguration.xml", function ():void { _StartupPart2(onComplete); });
-      }
-      
-      private static function _StartupPart2(onComplete:Function):void
-      {
+         LogManager.Instance.LoadConfiguration("logConfiguration.xml");
+         
          if (!IsShippingBuild && (_main.loaderInfo && _main.loaderInfo.parameters && _main.loaderInfo.parameters["generateSchema"] == "1"))
             SchemaGenerator.Instance.GenerateSchema();
-         
-         if (onComplete != null)
-            onComplete();
       }
       
       /**

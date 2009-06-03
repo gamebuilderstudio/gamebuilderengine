@@ -10,6 +10,8 @@ package PBLabs.Engine.Debug
 {
    import flash.events.EventDispatcher;
    
+   import PBLabs.Engine.Debug.Log4PBE.Logger;
+   
    /**
     * @eventType PBLabs.Engine.Debug.LogEvent.ENTRY_ADDED_EVENT
     */
@@ -159,7 +161,6 @@ package PBLabs.Engine.Debug
        */
       public static function Push():void
       {
-         _instance._depth++;
       }
       
       /**
@@ -171,38 +172,22 @@ package PBLabs.Engine.Debug
        */
       public static function Pop():void
       {
-         Instance._depth--;
       }
       
       private static var _instance:Logger = new Logger();
       
-      /**
-       * A list of all the entries that have been printed to the log.
-       */
-      public function get Entries():Array
-      {
-         return _entries;
-      }
-      
       private function _AddEntry(entry:LogEntry):void
       {
-         entry.Depth = _depth;
+         var reporter:* = entry.Reporter ? entry.Reporter : this;
+         var logger:PBLabs.Engine.Debug.Log4PBE.Logger = PBLabs.Engine.Debug.Log4PBE.Logger.GetLogger(reporter);
          
-         var indent:String = "";
-         for (var i:int = 0; i < entry.Depth; i++)
-            indent += "   ";
+         var level:String = "Info";
+         if (entry.Type == LogEntry.ERROR)
+            level = "Error";
+         else if (entry.Type == LogEntry.WARNING)
+            level = "Warn";
          
-         var method:String = "";
-         if (entry.Type != LogEntry.MESSAGE)
-            method = entry.Method + ": ";
-         
-         trace(indent + entry.Reporter + " - " + method + entry.Message);
-         dispatchEvent(new LogEvent(LogEvent.ENTRY_ADDED_EVENT, entry));
-         
-         _entries.push(entry);
+         logger.Log(level, entry.Message);
       }
-      
-      private var _depth:int = 0;
-      private var _entries:Array = new Array();
    }
 }

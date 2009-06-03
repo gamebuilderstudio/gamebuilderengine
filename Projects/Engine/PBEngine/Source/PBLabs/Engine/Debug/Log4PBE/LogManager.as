@@ -135,7 +135,6 @@ package PBLabs.Engine.Debug.Log4PBE
        * until after the file is completely loaded.
        * 
        * @param filename The file to read the configuration from.
-       * @param onComplete The function to call when the configuration is loaded.
        * 
        * <p>The configuration file can contain four different tags. These are appender, level,
        * default, and filter. Additionally, there are two attrubutes that can be specified on
@@ -171,14 +170,11 @@ package PBLabs.Engine.Debug.Log4PBE
        * the loggers to use the filter for.
        * </p>
        */
-      public function LoadConfiguration(filename:String, onComplete:Function):void
+      public function LoadConfiguration(filename:String):void
       {
          // load up the file as an XMLResource
          // forceReload is specified in case the logger is reloaded mid-execution
-         ResourceManager.Instance.Load(filename, XMLResource,
-                                       function (resource:XMLResource):void { _OnConfigurationLoaded(resource); onComplete(); },
-                                       function (resource:XMLResource):void { _OnConfigurationLoadFailed(resource); onComplete(); },
-                                       true);
+         ResourceManager.Instance.Load(filename, XMLResource, _OnConfigurationLoaded, _OnConfigurationLoadFailed, true);
       }
       
       private function _OnConfigurationLoaded(resource:XMLResource):void
@@ -267,7 +263,15 @@ package PBLabs.Engine.Debug.Log4PBE
       
       private function _OnConfigurationLoadFailed(resource:XMLResource):void
       {
-         _logger.Error("Failed to load configuration from file %1", resource.Filename);
+         _logger.Error("Failed to load configuration from file %1.", resource.Filename);
+         
+         AddLogAppender("UI", new UIAppender());
+         AddLogAppender("Trace", new TraceAppender());
+         
+         _rootFilter.AddAppender("UI");
+         _rootFilter.AddAppender("Trace");
+         
+         Start();
       }
       
       /**
