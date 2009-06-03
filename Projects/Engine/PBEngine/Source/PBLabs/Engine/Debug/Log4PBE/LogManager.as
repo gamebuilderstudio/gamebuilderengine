@@ -170,15 +170,22 @@ package PBLabs.Engine.Debug.Log4PBE
        * the loggers to use the filter for.
        * </p>
        */
-      public function LoadConfiguration(filename:String):void
+      public function LoadConfiguration(filename:String, forceReload:Boolean=false):void
       {
+         // force queuing of messages until the configuration is loaded
+         _started = false;
+         _configuring = true;
+         
          // load up the file as an XMLResource
-         // forceReload is specified in case the logger is reloaded mid-execution
-         ResourceManager.Instance.Load(filename, XMLResource, _OnConfigurationLoaded, _OnConfigurationLoadFailed, true);
+         // forceReload can be specified to re-configure mid-execution
+         ResourceManager.Instance.Load(filename, XMLResource, _OnConfigurationLoaded, _OnConfigurationLoadFailed, forceReload);
       }
       
       private function _OnConfigurationLoaded(resource:XMLResource):void
       {
+         // clear out any default configuring
+         _ClearConfiguration();
+         
          // load manager values
          if (resource.XMLData.@trackLevel.toString() != "")
             _trackLevel = resource.XMLData.@trackLevel;
@@ -264,14 +271,39 @@ package PBLabs.Engine.Debug.Log4PBE
       private function _OnConfigurationLoadFailed(resource:XMLResource):void
       {
          _logger.Error("Failed to load configuration from file %1.", resource.Filename);
+         _configuring = false;
+         LoadDefaultConfiguration();
+      }
+      
+      /**
+       * Starts the logging system with default settings. This is a log level of Info with UI and
+       * Trace appenders.
+       */
+      public function LoadDefaultConfiguration():void
+      {
+         // Global calls start in case no configuration is set. If it is, this will be true, and
+         // thus that call will do nothing.
+         if (_configuring)
+            return;
+         
+         _ClearConfiguration();
          
          AddLogAppender("UI", new UIAppender());
          AddLogAppender("Trace", new TraceAppender());
          
-         _rootFilter.AddAppender("UI");
-         _rootFilter.AddAppender("Trace");
+         _RootFilter.AddAppender("UI");
+         _RootFilter.AddAppender("Trace");
          
          Start();
+      }
+      
+      private function _ClearConfiguration():void
+      {
+         for (var appenderName:String in _appenders)
+         {
+            _appenders[appenderName] = null;
+            delete _appenders[appenderName];
+         }
       }
       
       /**
@@ -586,7 +618,10 @@ package PBLabs.Engine.Debug.Log4PBE
       private function get _RootFilter():LogFilter
       {
          if (_rootFilter == null)
+         {
             _rootFilter = new LogFilter("root", "info")
+            _rootFilter._isRoot = true;
+         }
          
          return _rootFilter;
       }
@@ -601,6 +636,7 @@ package PBLabs.Engine.Debug.Log4PBE
       private var _appenders:Dictionary = new Dictionary();
       
       private var _started:Boolean = false;
+      private var _configuring:Boolean = false;
       private var _queuedMessages:Array = new Array();
       
       private var _trackLevel:String = "Warn";

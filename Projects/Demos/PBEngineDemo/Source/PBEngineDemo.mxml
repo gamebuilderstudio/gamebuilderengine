@@ -14,9 +14,12 @@
       <![CDATA[
          import PBLabs.Engine.Core.*;
          import PBLabs.PBEngineDemo.UI.*;
+         import PBLabs.Engine.Debug.Log4PBE.*;
           
          private function _OnLoaded():void
          {
+            LogManager.Instance.LoadConfiguration("logConfiguration.xml");
+            
             Global.Startup(this);
             
             LevelManager.Instance.addEventListener(LevelEvent.LEVEL_LOADED_EVENT, _OnLevelLoaded);

@@ -50,7 +50,7 @@ package PBLabs.Engine.Core
       public static function Startup(mainClass:Sprite):void
       {
          _main = mainClass;
-         LogManager.Instance.LoadConfiguration("logConfiguration.xml");
+         LogManager.Instance.LoadDefaultConfiguration();
          
          if (!IsShippingBuild && (_main.loaderInfo && _main.loaderInfo.parameters && _main.loaderInfo.parameters["generateSchema"] == "1"))
             SchemaGenerator.Instance.GenerateSchema();
