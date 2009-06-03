@@ -105,6 +105,8 @@ package PBLabs.Rendering2D
          
          // Figure out what frame we are on.
          var frameTime:Number = _CurrentAnimationDuration / _CurrentAnimation.SpriteSheet.FrameCount;
+         if(frameTime > _CurrentAnimation.MaxFrameDelay)
+            frameTime = _CurrentAnimation.MaxFrameDelay;
 
          var animationAge:Number = ProcessManager.Instance.VirtualTime - _CurrentAnimationStartTime;
          var curFrame:int = Math.floor(animationAge/frameTime);

@@ -34,5 +34,11 @@ package PBLabs.Rendering2D
        * Name of event to fire on the entity when this animation starts.
        */ 
       public var CompleteEvent:String;
+      
+      /**
+       * The animation playback speed may be affected by many factors; this
+       * set a maximum time period in ms for a frame to be displayed.
+       */
+      public var MaxFrameDelay:Number = 50;
    }
 }
