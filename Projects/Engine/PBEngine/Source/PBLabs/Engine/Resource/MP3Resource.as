@@ -48,6 +48,12 @@ package PBLabs.Engine.Resource
          _OnFailed(event.text);
       }
       
+      public override function Initialize(d:*):void
+      {
+         SoundObject = d;
+         _OnLoadComplete();
+      }
+      
       /**
        * @inheritDoc
        */
