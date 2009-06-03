@@ -28,8 +28,8 @@
           <AnimationType>PingPongAnimation</AnimationType>
           <Duration>0.6</Duration>
           <RepeatCount>-1</RepeatCount>
-          <StartValue>0</StartValue>
-          <TargetValue>3</TargetValue>
+          <StartValue type="int">0</StartValue>
+          <TargetValue type="int">3</TargetValue>
         </Idle>
       </Animations>
       <DefaultAnimation>Idle</DefaultAnimation>

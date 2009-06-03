@@ -231,7 +231,7 @@ package PBLabs.Engine.Resource
          _OnFailed(event.text);
       }
       
-      private function _OnFailed(message:String):void
+      protected function _OnFailed(message:String):void
       {
          _isLoaded = true;
          _didFail = true;
@@ -242,7 +242,7 @@ package PBLabs.Engine.Resource
          _Loader = null;
       }
       
-      private var _filename:String = null;
+      protected var _filename:String = null;
       private var _isLoaded:Boolean = false;
       private var _didFail:Boolean = false;
       private var _UrlLoader:URLLoader;

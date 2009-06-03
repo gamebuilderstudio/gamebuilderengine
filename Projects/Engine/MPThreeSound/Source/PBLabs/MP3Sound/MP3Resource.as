@@ -8,13 +8,11 @@
  ******************************************************************************/
 package PBLabs.MP3Sound
 {
-   import PBLabs.Engine.Resource.Resource;
-   
    import flash.media.Sound;
-   import flash.utils.ByteArray;
+   import flash.events.*;
+   import flash.net.URLRequest;
    
-   import org.audiofx.mp3.MP3FileReferenceLoader;
-   import org.audiofx.mp3.MP3SoundEvent;
+   import PBLabs.Engine.Resource.Resource;
    
    [EditorData(extensions="mp3")]
    
@@ -28,16 +26,26 @@ package PBLabs.MP3Sound
        */
       public var SoundObject:Sound = null;
       
-      /**
-       * In order to get a Sound object from a ByteArray, the data first needs to be
-       * packed in a swf file. Then, from the swf file, a Sound object can be pulled
-       * out. The MP3Loader library (from here: http://www.flexiblefactory.co.uk/flexible/?p=46)
-       * handles this.
-       */
-      public override function Initialize(data:*):void
+      public override function Load(filename:String):void
       {
-         SoundObject = data;
+         _filename = filename;
+         
+         var request:URLRequest = new URLRequest(filename);
+         _loadingSound = new Sound();
+         _loadingSound.addEventListener(Event.COMPLETE, _OnSoundLoadComplete);
+         _loadingSound.addEventListener(IOErrorEvent.IO_ERROR, _OnSoundDownloadError);
+         _loadingSound.load(request);
+      }
+      
+      private function _OnSoundLoadComplete(event:Event):void
+      {
+         SoundObject = _loadingSound;
          _OnLoadComplete();
+      }
+      
+      private function _OnSoundDownloadError(event:IOErrorEvent):void
+      {
+         _OnFailed(event.text);
       }
       
       /**
@@ -47,5 +55,8 @@ package PBLabs.MP3Sound
       {
          return SoundObject != null;
       }
+      
+      // store the sound here until it's loaded
+      private var _loadingSound:Sound;
    }
 }
