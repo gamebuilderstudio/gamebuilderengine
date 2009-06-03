@@ -1,0 +1,188 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+   <link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+   <script type="text/javascript" src="js/pageToc.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shCore.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushJScript.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushPhp.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushPlain.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushXml.js"></script>
+   <link type="text/css" rel="stylesheet" href="js/sh/styles/shCore.css"/>
+   <link type="text/css" rel="stylesheet" href="js/sh/styles/shThemeDefault.css"/>
+   <script type="text/javascript">
+   		SyntaxHighlighter.config.clipboardSwf = 'js/sh/scripts/clipboard.swf';
+   		SyntaxHighlighter.all();
+   </script>
+   <title>PushButton Engine Lesson #2: Adding a Simple Shape</title>
+</head>
+<body>
+
+   <h1>PushButton Engine Lesson #2: Adding a Simple Shape</h1>
+   <p><center><em>"The higher your structure is to be, the deeper must be its foundation."</em> - Augustine of Hippo</center></p>
+   
+   <p>The goal of this lesson is to guide the user through adding a simple shape to be drawn to the screen.</p>
+   
+   <p>These lessons are structured in a series of steps -- small milestones that will provide focused short-term goals for incrementally understanding PushButton Engine.</p>
+   
+   <p>These lessons are targeted at someone who is new to PBEngine, but not necessarily new to programming.</p>
+   <div id="pageToc"></div>
+
+   <div id="contentArea">   
+   
+   <h2>Tutorial Resources:</h2>
+   <p>To follow along with the tutorial, you can download the starter project and use it as your base to implement the tutorial:
+      <ul>
+         <li><a href="/downloads/Lesson2Base.pbepkg">Lesson2Base.pbepkg</a> (4KB)</li>
+      </ul>
+   The completed lesson files are available at the end of the tutorial.
+   </p>
+   
+   <h2>Loading up the starter project.</h2>
+   <p>As covered in Lesson 1, import the example .pbepkg for this lesson into a personal project folder, and ensure that it builds in your build environment.</p>
+   
+   <p>This will give you a bare-bones starter project that includes the most basic PBE project file structure with an empty Actionscript file for creating the game.</p>
+
+   <p>When you build the empty project, it should create an empty Flash file with a light blue-gray background.</p>
+   
+   <p>Now we will cover setting up a basic PBE scene, and adding a circle to be drawn in the center of it.</p>
+   
+   <h2>Editing our Source File</h2>
+   <p>At first blush, our game looks like a fairly standard empty Flash project.</p>
+   <p><strong>File: /Lesson2Base/Source/Level2Base.as</strong></p>
+   <pre class="brush: js">
+   ...
+   [SWF(width="800", height="600", frameRate="60")]
+   public class Lesson2Base extends Sprite
+   {
+      public function Lesson2Base()
+      {
+         Global.Startup(this);                                                // Start up PBE
+      }
+   }
+   ... 
+   </pre>   
+
+   <p>In this example, we will be adding all of our entities and components by hand.  PushButton Engine has some excellent tools for building levels in XML and loading them at runtime, but in the interest of keeping things simple, we will be creating our entities and components in Actionscript.</p>
+
+   <p>Entities don't have much functionality in and of themselves -- the way they gain behavior and properties in the context of a game is through <strong>components</strong>.  Components are modular building blocks that add snippets of functionality to entities, and can often be combined and re-used in powerful ways.</p>
+
+   <p>We will add two entities in this example, each with two components.  The first entity will be our Scene, and the second entity will be our Hero.</p>
+   
+   <p>Let's continue by editing our source file as follows:</p>
+   
+   <p><strong>File: /Lesson2Base/Source/Level2Base.as</strong></p>
+   <pre class="brush: js">
+   ...
+   [SWF(width="800", height="600", frameRate="60")]
+   public class Lesson2Base extends Sprite
+   {
+      public function Lesson2Base()
+      {
+         Global.Startup(this);                                                // Start up PBE
+
+         CreateScene();                                                       // Set up a simple scene entity
+         
+         CreateHero();                                                        // Create a simple avatar entity
+      }
+   </pre>
+   <p>The first entity we will create is the Scene, which will hold two manager components.</p>
+   <p>The first component is the spatial manager -- it will be in charge of tracking where everything in the game world is located.</p>
+   <p>The second component is the render manager -- it will be in charge of drawing all of those tracked entities to the screen.</p>
+
+   <pre class="brush: js">
+      private function CreateScene():void 
+      {
+         var Scene:IEntity = AllocateEntity();                                // Allocate our Scene entity
+         Scene.Initialize("Scene");                                           // Register with the name "Scene"
+         var Spatial:BasicSpatialManager2D = new BasicSpatialManager2D();     // Allocate our Spatial DB component
+         Scene.AddComponent( Spatial, "Spatial" );                            // Add to Scene with name "Spatial"
+
+         var Renderer:Scene2DComponent = new Scene2DComponent();              // Allocate our renderering component 
+        
+         Renderer.SpatialDatabase = Spatial;                                  // Point renderer at Spatial (for entity location information)
+        
+         var View:SceneView = new SceneView();                                // Create a view for our Renderer
+         View.width = 800;                                                    // Set the width of our Scene View
+         View.height = 600;                                                   // Set the height of our Scene View
+         Renderer.SceneView = View;                                           // Point the Renderer's SceneView at the view we just created.
+        
+         Renderer.Position = new Point(0,0);                                  // Point the camera (center of render view) at 0,0
+        
+         Renderer.RenderMask = new ObjectType("Renderable");                  // Set the render mask to only draw entities explicitly marked as "Renderable"
+        
+         Scene.AddComponent( Renderer, "Renderer" );                          // Add our Renderer component to the scene entity with the name "Renderer"
+      }
+   </pre>
+   <p>Next, we will create our hero entity.  Just as the Scene entity had two manager components, this entity will have two components -- one to be tracked by each manager component.</p>
+   <p>The first component is the spatial component -- it registers itself with the spatial manager, and tells the manager where the entity is located.</p>
+   <p>The second component is the render component -- it registers itself with the render manager, and tells the manager how the entity is to be drawn to the screen.  We are just using a simple circle for this lesson, but there are many more powerful options available.</p>
+
+   <pre class="brush: js">
+      private function CreateHero():void
+      {
+         var Hero:IEntity = AllocateEntity();                                 // Allocate an entity for our hero avatar
+         Hero.Initialize("Hero");                                             // Register the entity with PBE under the name "Hero"
+         
+         var Spatial:SimpleSpatialComponent = new SimpleSpatialComponent();   // Create our spatial component
+
+         // Do a named lookup to register our hero with the scene spatial database
+         Spatial.SpatialManager = NameManager.Instance.LookupComponentByName("Scene", "Spatial") as ISpatialManager2D;                            
+         
+         Spatial.ObjectMask = new ObjectType("Renderable");                   // Set a mask flag for this entity as "Renderable" to be seen by the scene Renderer
+         Spatial.Position = new Point(0,0);                                   // Set our hero's spatial position as 0,0
+         Spatial.Size = new Point(50,50);                                     // Set our hero's size as 50,50
+        
+         Hero.AddComponent( Spatial, "Spatial" );                             // Add our spatial component to the Hero entity with the name "Spatial"
+        
+      
+         // Create a simple render component to display our entity
+         var Render:SimpleShapeRenderComponent = new SimpleShapeRenderComponent(); 
+            
+         Render.ShowCircle = true;                                            // Specify to draw the entity as a circle
+         Render.Radius = 25;                                                  // Mark the radius of the circle as 25
+         // Point the render component to this entity's Spatial component for position information
+         Render.PositionReference = new PropertyReference("@Spatial.Position");
+         // Point the render component to this entity's Spatial component for rotation information          
+         Render.RotationReference = new PropertyReference("@Spatial.Rotation");
+        
+         Hero.AddComponent( Render, "Render" );                               // Add our render component to the Hero entity with the name "Render"
+      }
+   }
+   </pre>   
+
+   <p>And we're done!  At this point, things should be all ready to compile and see your new entity displayed on the screen!</p>
+   
+   <h2>Seeing it in action.</h2>
+   <p>After compilation, you should produce a .swf like the following (click to load):</p>
+   <p><a href="downloads/Lesson2Final.swf"><img src="images/Lesson2_1.png" width="204" height="159" alt="Our shiny circle!"></a></p>
+   
+   <h2>In Review</h2>
+   <p>To summarize, to create an entity in Actionscript, one uses the following pattern:</p>
+   <pre class="brush: js">
+   var newEntity:IEntity = AllocateEntity();                                  // Allocate an entity
+   newEntity.Intialize("EntityName");                                         // Register the entity with PBE under the name "EntityName"
+   </pre>   
+   
+   <p>This creates an entity, stored in the variable newEntity.  All entities and components must have string names registered with PushButton Engine, and the call to Initialize() registers that entity with PushButton Engine under the name "EntityName".</p>
+
+   <p>Creating components in Actionscript is a few more lines of code.</p>
+   <pre class="brush: js">
+   var newComponent:IEntityComponent = new WhateverComponent();               // Create a new component
+   newComponent.field = value;                                                // Set values.
+   newEntity.AddComponent(newComponent, "TheComponentName");                  // Add the component to the entity container
+
+   // Repeat the component block for each component and its values.
+   </pre>   
+   
+   <h2>Conclusion</h2>
+   <p>Congratulations!  You have finished lesson #2, loaded your first entities and components into the game, and seen the results.  Future lessons will do more complicated things, but we hope this got you off on the right foot of tinkering with the engine.</p>
+
+   <p>You can download the completed project source files for this project.
+      <ul>
+         <li><a href="/downloads/Lesson2Final.pbepkg">Lesson2Final.pbepkg</a> (4KB)</li>
+      </ul>
+   </p>
+   </div>
+</body>
+</html>
