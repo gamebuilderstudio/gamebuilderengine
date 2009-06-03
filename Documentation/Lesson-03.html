@@ -49,11 +49,28 @@
    <p>The starter project for this lesson is <em>very close</em> to the previous lesson, except that the ball now spawns in the upper left corner of the screen.  The location for the ball is (-375,-275).  The reason for the odd number is to place the ball at half of its radius (25) from the edge of the screen, to be perfectly in the corner.  You can refer to the diagram for an overview of this example's screen coordinates.</p>
    
    <h2>Building a Component</h2>
-   <p>To build a component, one must create a class for it.  Create a new source file in the project Source directory with the name DemoControllerComponent.as. </p>
-   <p>Components that inherit from TickedComponent get their OnTick() method called 30 times per second.  This makes it a logical place to put movement logic.  The tick event is used like a drum beat that keeps each component stepping in time with each other at the same pace.</p>
-   <p>Our component will use the tick event to move its parent entity to the right or the left.  We will also use that event to check to make sure we're not at an edge boundary, and if we are, we will point ourselves in the other direction.</p>
-   <p>This component will make an entity move in a zig-zag fashion down the screen, similar to an Invaders enemy.</p>
-   <p>Use the following code listing in the file:</p>
+   <p>As in the previous example, we will set up a basic scene.  Our Hero component will have three components: a render component, a spatial component, and a controller component (the new DemoControllerComponent).</p>
+   <p>This new controller component will make our entity move in a zig-zag fashion down the screen, similar to an Invaders enemy.</p>
+   <p>To build our new component, we must create a class for it.  To get basic component features, you must inherit from one of the base component classes.  For the type of component that we want in this example, we will inherit from TickedComponent.  Components that descend from TickedComponent get their OnTick() method called 30 times per second.  This makes it a logical place to put movement logic.</p>
+   <p>So every 33 milliseconds, the OnTick() method of the controller component is called.  This method handles the housekeeping for checking boundaries, and moving the parent entity.  It looks at the position of the parent entity (gotten from the spatial component), and then applies some rules to create some simple movement behavior:</p>
+   <p>
+   <ul>
+      <li>If we are on the left edge:
+         <ul>
+            <li>Turn to the right</li>
+            <li>Move down a notch</li>
+         </ul>
+      </li>
+      <li>If we are on the right edge:
+         <ul>
+            <li>Turn to the left</li>
+            <li>Move down a notch</li>
+         </ul>
+      </li>
+      <li>Move in the direction that we're heading</li>
+   </ul>
+   </p>
+   <p>Now that we know the basic plan, let's put it into action!  Create a new source file in the project Source directory with the name DemoControllerComponent.as, and use the following code listing for the file:</p>
    <p><strong>File: /Lesson3Base/Source/DemoControllerComponent.as</strong></p>
    <pre class="brush: js">
 package 
@@ -128,26 +145,6 @@ package
    <h2>Seeing it in action.</h2>
    <p>After compilation, you should produce a .swf like the following (click to load):</p>
    <p><a href="downloads/Lesson3Final.swf"><img src="images/Lesson3_1.png" width="204" height="159" alt="Our shiny circle!"></a></p>
-   
-   <h2>What's happening</h2>
-   <p>As in the previous example, a basic scene is being set up.  Our Hero component has three components -- a render component, a spatial component, and a controller component (the DemoControllerComponent).</p>
-   <p>30 times each second, the OnTick() method of the controller component is called.  This method handles the housekeeping for moving the parent entity.  It looks at the position of the parent entity (gotten from the spatial component), and then applies some rules to create some simple movement behavior:
-   <ul>
-      <li>If we are on the left edge:
-         <ul>
-            <li>Turn to the right</li>
-            <li>Move down a notch</li>
-         </ul>
-      </li>
-      <li>If we are on the right edge:
-         <ul>
-            <li>Turn to the left</li>
-            <li>Move down a notch</li>
-         </ul>
-      </li>
-      <li>Move in the direction that we're heading</li>
-   </ul>
-   </p>
    
    <h2>Conclusion</h2>
    
