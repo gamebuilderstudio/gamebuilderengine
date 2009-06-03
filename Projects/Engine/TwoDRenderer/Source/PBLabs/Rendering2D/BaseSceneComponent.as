@@ -27,7 +27,7 @@ package PBLabs.Rendering2D
       /**
        * The number of layers to create for each scene.
        */
-      public static const LAYER_COUNT:int = 32;
+      public static const LAYER_COUNT:int = 16;
       
       /**
        * Enables smooth rendering of bitmaps.
@@ -160,7 +160,16 @@ package PBLabs.Rendering2D
        */
       public function DrawBitmapData(bitmapData:BitmapData, matrix:Matrix):void
       {
-         // Make a dummy matrix if non is provided.
+         // If we have no matrix + it's to a bitmap target, we can copyPixels.
+         if(!matrix && _CurrentRenderTarget)
+         {
+            Profiler.Enter("DBD_CopyPixelsPath");
+            _CurrentRenderTarget.copyPixels(bitmapData, bitmapData.rect, new Point(0,0));
+            Profiler.Exit("DBD_CopyPixelsPath");
+            return;
+         }
+          
+         // Make a dummy matrix if none is provided.
          if(!matrix)
             matrix = new Matrix();
             
@@ -173,7 +182,9 @@ package PBLabs.Rendering2D
          }
          else
          {
+            Profiler.Enter("DBD_BitmapPath");
             _CurrentRenderTarget.draw(bitmapData, matrix);
+            Profiler.Exit("DBD_BitmapPath");
          }
       }
       
@@ -296,10 +307,16 @@ package PBLabs.Rendering2D
          
          // If contents are provided, check that everything is older than the
          // cache.
+         Profiler.Enter("CheckingLayerUpdateNeed");
          var oldCacheKey:int = _CacheLayerKey[layerIndex];
          for each(var d:IDrawable2D in layerContents)
             if(d.RenderCacheKey != oldCacheKey)
+            {
+               Profiler.Exit("CheckingLayerUpdateNeed");
                return true;
+            }
+
+         Profiler.Exit("CheckingLayerUpdateNeed");
          
          // Nope, no update required!
          return false;
@@ -325,6 +342,8 @@ package PBLabs.Rendering2D
          // Make sure it is the size of our sprite.
          if (!bitmap || (bitmap.width != SceneView.width) || (bitmap.height != SceneView.height))
          {
+            Profiler.Enter("RegeneratingBitmap");
+
             // Dispose & regenerate the bitmap.
             if (bitmap)
                bitmap.dispose();
@@ -333,6 +352,8 @@ package PBLabs.Rendering2D
 
             // Store it into the cache.
             _LayerCache[layerIndex] = bitmap;
+
+            Profiler.Exit("RegeneratingBitmap");
          }
 
          return bitmap;
@@ -370,6 +391,10 @@ package PBLabs.Rendering2D
          
          for (var i:int = 0; i < layerList.length; i++)
          {
+            // Skip if it contains nothing.
+            if(!layerList[i] || layerList[i].length == 0)
+               continue;
+
             Profiler.Enter("PreCache");
             
             layerBitmap = null;
@@ -380,7 +405,9 @@ package PBLabs.Rendering2D
                if (!DoesLayerNeedUpdate(i, layerList[i]))
                {
                   // Great, just draw it.
+                  Profiler.Enter("DrawBitmap");
                   _DrawLayerCacheBitmap(i);
+                  Profiler.Exit("DrawBitmap");
                   Profiler.Exit("PreCache");
                   continue;
                }
@@ -390,6 +417,7 @@ package PBLabs.Rendering2D
                layerBitmap = GetLayerCacheBitmap(i);
                layerBitmap.fillRect(layerBitmap.rect, 0);
                _CurrentRenderTarget = layerBitmap;
+               _CurrentRenderTarget.lock();
             }
 
             Profiler.Exit("PreCache");
@@ -421,11 +449,15 @@ package PBLabs.Rendering2D
 
             if (IsLayerCached(i))
             {
+               _CurrentRenderTarget.unlock();
+
                // Restore render target.
                _CurrentRenderTarget = rtStack;
                
                // Render the cached bitmap.
+               Profiler.Enter("DrawBitmap");
                _DrawLayerCacheBitmap(i);
+               Profiler.Exit("DrawBitmap");
             }
 
             Profiler.Exit("PostCache");
