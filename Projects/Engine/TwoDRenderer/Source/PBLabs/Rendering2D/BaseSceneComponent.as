@@ -123,7 +123,10 @@ package PBLabs.Rendering2D
        */
       public function OnFrame(elapsed:Number):void
       {
+         var oldQuality:String = Global.MainStage.quality;
+         Global.MainStage.quality = StageQuality.LOW;
          _Render();
+         Global.MainStage.quality = oldQuality;
       }
       
       /**
