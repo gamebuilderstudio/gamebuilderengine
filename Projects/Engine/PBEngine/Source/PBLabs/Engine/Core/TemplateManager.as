@@ -11,6 +11,7 @@ package PBLabs.Engine.Core
    import PBLabs.Engine.Entity.AllocateEntity;
    import PBLabs.Engine.Entity.IEntity;
    import PBLabs.Engine.Debug.Logger;
+   import PBLabs.Engine.Debug.Profiler;
    import PBLabs.Engine.Resource.ResourceManager;
    import PBLabs.Engine.Resource.XMLResource;
    import PBLabs.Engine.Serialization.Serializer;
@@ -112,19 +113,26 @@ package PBLabs.Engine.Core
        */
       public function InstantiateEntity(name:String):IEntity
       {
+         Profiler.Enter("InstantiateEntity");
+         
          // Check for a callback.
          if(_things[name])
          {
             if(_things[name].GroupCallback)
                throw new Error("Thing '" + name + "' is a group callback!");
+               
             if(_things[name].EntityCallback)
+            {
+               Profiler.Exit("InstantiateEntity");
                return _things[name].EntityCallback();
+            }
          }
          
          var xml:XML = GetXML(name, "template", "entity");
          if (xml == null)
          {
             Logger.PrintError(this, "InstantiateEntity", "Unable to find a template or entity with the name " + name + ".");
+            Profiler.Exit("InstantiateEntity");
             return null;
          }
          
@@ -146,6 +154,7 @@ package PBLabs.Engine.Core
          if (!_InstantiateTemplate(entity, xml.attribute("template"), new Dictionary()))
          {
             entity.Destroy();
+            Profiler.Exit("InstantiateEntity");
             return null;
          }
          
@@ -155,6 +164,7 @@ package PBLabs.Engine.Core
          if (!_inGroup)
             Serializer.Instance.ReportMissingReferences();
          
+         Profiler.Exit("InstantiateEntity");
          return entity;
       }
       
