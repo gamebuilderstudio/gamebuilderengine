@@ -51,7 +51,7 @@
 	font-family: "Consolas", "Monaco", "Bitstream Vera Sans Mono", "Courier New", Courier, monospace !important;
 	font-weight: normal !important;
 	font-style: normal !important;
-	font-size: 1em !important;
+	font-size: 11px !important;
 }
 
 .syntaxhighlighter
@@ -133,8 +133,11 @@
 	overflow: hidden !important;
 }
 
-/* Adjust some properties when collapsed */
+.syntaxhighlighter .lines{
+	/*padding-top: 33px !important;*/
+}
 
+/* Adjust some properties when collapsed */
 .syntaxhighlighter.collapsed .lines,
 .syntaxhighlighter.collapsed .ruler
 {
