@@ -150,7 +150,7 @@
 {
 	position: absolute !important;
 	right: 0px !important;
-	top: 0px !important;
+	top: -33px !important;
 	font-size: 1px !important;
 	padding: 8px 8px 8px 0 !important; /* in px because images don't scale with ems */
 }
