@@ -115,56 +115,65 @@ package PBLabs.Engine.Core
       {
          Profiler.Enter("InstantiateEntity");
          
-         // Check for a callback.
-         if(_things[name])
+         try
          {
-            if(_things[name].GroupCallback)
-               throw new Error("Thing '" + name + "' is a group callback!");
-               
-            if(_things[name].EntityCallback)
+            // Check for a callback.
+            if(_things[name])
             {
-               Profiler.Exit("InstantiateEntity");
-               return _things[name].EntityCallback();
+               if(_things[name].GroupCallback)
+                  throw new Error("Thing '" + name + "' is a group callback!");
+                  
+               if(_things[name].EntityCallback)
+               {
+                  Profiler.Exit("InstantiateEntity");
+                  return _things[name].EntityCallback();
+               }
             }
-         }
-         
-         var xml:XML = GetXML(name, "template", "entity");
-         if (xml == null)
-         {
-            Logger.PrintError(this, "InstantiateEntity", "Unable to find a template or entity with the name " + name + ".");
+            
+            var xml:XML = GetXML(name, "template", "entity");
+            if (xml == null)
+            {
+               Logger.PrintError(this, "InstantiateEntity", "Unable to find a template or entity with the name " + name + ".");
+               Profiler.Exit("InstantiateEntity");
+               return null;
+            }
+            
+            var name:String = xml.attribute("name");
+            if (xml.name() == "template")
+               name = "";
+            
+            var alias:String = xml.attribute("alias");
+            if(alias == "") alias = null;
+   
+            var entity:IEntity;
+            if (_entityType == null)
+               entity = AllocateEntity();
+            else
+               entity = new _entityType();
+            
+            entity.Initialize(name, alias);
+            
+            if (!_InstantiateTemplate(entity, xml.attribute("template"), new Dictionary()))
+            {
+               entity.Destroy();
+               Profiler.Exit("InstantiateEntity");
+               return null;
+            }
+            
+            Serializer.Instance.Deserialize(entity, xml);
+            Serializer.Instance.ClearCurrentEntity();
+            
+            if (!_inGroup)
+               Serializer.Instance.ReportMissingReferences();
             Profiler.Exit("InstantiateEntity");
-            return null;
          }
-         
-         var name:String = xml.attribute("name");
-         if (xml.name() == "template")
-            name = "";
-         
-         var alias:String = xml.attribute("alias");
-         if(alias == "") alias = null;
-
-         var entity:IEntity;
-         if (_entityType == null)
-            entity = AllocateEntity();
-         else
-            entity = new _entityType();
-         
-         entity.Initialize(name, alias);
-         
-         if (!_InstantiateTemplate(entity, xml.attribute("template"), new Dictionary()))
+         catch(e:Error)
          {
-            entity.Destroy();
+            Logger.PrintError(this, "InstantiateEntity", "Failed instantiating '" + name + "' due to: " + e.toString());
+            entity = null;
             Profiler.Exit("InstantiateEntity");
-            return null;
          }
          
-         Serializer.Instance.Deserialize(entity, xml);
-         Serializer.Instance.ClearCurrentEntity();
-         
-         if (!_inGroup)
-            Serializer.Instance.ReportMissingReferences();
-         
-         Profiler.Exit("InstantiateEntity");
          return entity;
       }
       
