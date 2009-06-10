@@ -133,6 +133,8 @@ package PBLabs.Rendering2D
        */ 
       public function SetAnimation(ai:AnimationControllerInfo):void
       {
+         Profiler.Enter("AnimationController.SetAnimation");
+         
          // Fire stop event.
          if(_CurrentAnimation && _CurrentAnimation.CompleteEvent)
             Owner.EventDispatcher.dispatchEvent(new Event(_CurrentAnimation.CompleteEvent));
@@ -158,6 +160,7 @@ package PBLabs.Rendering2D
          else
             _CurrentAnimationDuration = ai.SpriteSheet.FrameCount * ProcessManager.TICK_RATE_MS;
          
+         Profiler.Exit("AnimationController.SetAnimation");
       }
       
       /**

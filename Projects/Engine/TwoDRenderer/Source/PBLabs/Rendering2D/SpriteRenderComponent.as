@@ -141,6 +141,21 @@ package PBLabs.Rendering2D
             scale.x = size.x / _baseSize.x;
             scale.y = size.y / _baseSize.y;
          }
+         else if(rotation == 0 
+               && !_flipX && !_flipY 
+               && Fade == 1 && RawSprite.filters.length == 0
+               && _spriteSheet && manager.GetBackBuffer())
+         {
+            // Eligible for fast path using copy pixels.
+            if (_spriteSheet)
+            {
+               position.x += -_spriteSheet.Center.x;
+               position.y += -_spriteSheet.Center.y;
+            }
+
+            manager.CopyPixels(GetCurrentFrame(), position);
+            return;
+         }
          
          if (_flipX)
             scale.x = -_sprite.scaleX;

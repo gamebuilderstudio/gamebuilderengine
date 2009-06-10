@@ -148,5 +148,7 @@ package PBLabs.Rendering2D
        * processing effects (like glow/blur/motion trails).
        */ 
       function GetBackBuffer():BitmapData;
+      
+      function CopyPixels(bitmapData:BitmapData, offset:Point):void      
    }
 }

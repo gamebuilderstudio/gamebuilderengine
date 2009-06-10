@@ -29,6 +29,7 @@ import PBLabs.Engine.Entity.PropertyReference;
 import PBLabs.Engine.Core.NameManager;
 import PBLabs.Engine.Core.TemplateManager;
 import PBLabs.Engine.Debug.Logger;
+import PBLabs.Engine.Debug.Profiler;
 import PBLabs.Engine.Serialization.Serializer;
 import PBLabs.Engine.Serialization.TypeUtility;
 
@@ -274,6 +275,8 @@ class Entity extends EventDispatcher implements IEntity
       if ((reference == null) || (reference.Property == null) || (reference.Property == ""))
          return null;
 
+      Profiler.Enter("Entity._FindProperty");
+        
       // Split up the property reference.      
       var propertyName:String = reference.Property;
       var path:Array = propertyName.split(".");
@@ -293,6 +296,7 @@ class Entity extends EventDispatcher implements IEntity
          if(!parentElem)
          {
             Logger.PrintWarning(this, "_FindProperty", "Could not resolve component named '" + curLookup + "' for property '" + reference.Property + "'");
+            Profiler.Exit("Entity._FindProperty");
             return null;
          }
       }
@@ -303,6 +307,7 @@ class Entity extends EventDispatcher implements IEntity
          if(!parentElem)
          {
             Logger.PrintWarning(this, "_FindProperty", "Could not resolve named object named '" + curLookup + "' for property '" + reference.Property + "'");
+            Profiler.Exit("Entity._FindProperty");
             return null;
          }
          
@@ -313,6 +318,7 @@ class Entity extends EventDispatcher implements IEntity
          if(!comLookup)
          {
             Logger.PrintWarning(this, "_FindProperty", "Could not find component '" + curLookup + "' on named entity '" + (parentElem as IEntity).Name + "' for property '" + reference.Property + "'");
+            Profiler.Exit("Entity._FindProperty");
             return null;
          }
          parentElem = comLookup;
@@ -325,6 +331,7 @@ class Entity extends EventDispatcher implements IEntity
          if(!parentElem)
          {
             Logger.PrintWarning(this, "_FindProperty", "Could not find XML named '" + curLookup + "' for property '" + reference.Property + "'");
+            Profiler.Exit("Entity._FindProperty");
             return null;
          }
          
@@ -361,6 +368,7 @@ class Entity extends EventDispatcher implements IEntity
          if(!nextElem)
          {
             Logger.PrintWarning(this, "_FindProperty", "Could not find component '" + path[1] + "' in XML template '" + path[0].slice(1) + "' for property '" + reference.Property + "'");
+            Profiler.Exit("Entity._FindProperty");
             return null;
          }
          
@@ -373,6 +381,7 @@ class Entity extends EventDispatcher implements IEntity
       else
       {
          Logger.PrintWarning(this, "_FindProperty", "Got a property path that doesn't start with !, #, or @. Started with '" + startChar + "' for property '" + reference.Property + "'");
+         Profiler.Exit("Entity._FindProperty");
          return null;
       }
 
@@ -416,6 +425,7 @@ class Entity extends EventDispatcher implements IEntity
          if(gotEmpty)
          {
             Logger.PrintWarning(this, "_FindProperty", "Could not resolve property '" + curLookup + "' for property reference '" + reference.Property + "'");
+            Profiler.Exit("Entity._FindProperty");
             return null;
          }
          
@@ -429,9 +439,11 @@ class Entity extends EventDispatcher implements IEntity
          var pi:PropertyInfo = new PropertyInfo();
          pi.PropertyParent = parentElem;
          pi.PropertyName = curLookup;
+         Profiler.Exit("Entity._FindProperty");
          return pi;
       }
       
+      Profiler.Exit("Entity._FindProperty");
       return null;
    }
    

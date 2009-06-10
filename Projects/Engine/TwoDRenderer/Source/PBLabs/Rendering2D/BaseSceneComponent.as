@@ -158,6 +158,11 @@ package PBLabs.Rendering2D
             _CurrentRenderTarget.draw(object, object.transform.matrix, object.transform.colorTransform);
       }
       
+      public function CopyPixels(bitmapData:BitmapData, offset:Point):void
+      {
+         _CurrentRenderTarget.copyPixels(bitmapData, bitmapData.rect, offset);         
+      }
+      
       /**
        * @inheritDoc
        */
@@ -171,7 +176,7 @@ package PBLabs.Rendering2D
             Profiler.Exit("DBD_CopyPixelsPath");
             return;
          }
-          
+         
          // Make a dummy matrix if none is provided.
          if(!matrix)
             matrix = new Matrix();
