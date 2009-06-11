@@ -47,6 +47,13 @@ package PBLabs.Engine.Resource
       public var OnlyLoadEmbeddedResources:Boolean = false;
       
       /**
+       * Function that will be called if OnlyLoadEmbeddedResources is set and we
+       * fail to find something. Useful for displaying feedback for artists (such
+       * as via a dialog box ;). Passed the filename of the requested resource.
+       */
+      public var OnEmbeddedFail:Function;
+      
+      /**
        * Loads a resource from a file. If the resource has already been loaded or is embedded, a
        * reference to the existing resource will be given. The resource is not returned directly
        * since loading is asynchronous. Instead, it will be passed to the function specified in
@@ -86,6 +93,8 @@ package PBLabs.Engine.Resource
             if(OnlyLoadEmbeddedResources)
             {
                _Fail(null, onFailed, "'" + filename + "' was not loaded because it was not embedded in the SWF.");
+               if(OnEmbeddedFail)
+                  OnEmbeddedFail(filename);
                return;
             }
             
