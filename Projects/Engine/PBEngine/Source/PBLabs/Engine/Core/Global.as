@@ -56,9 +56,21 @@ package PBLabs.Engine.Core
             SchemaGenerator.Instance.GenerateSchema();
       }
       
+      public static function GetHostingDomain():String
+      {
+         // Get at the hosting domain.
+         var urlString:String = _main.stage.loaderInfo.url;
+         var urlParts:Array = urlString.split("://");
+         var wwwPart:Array = urlParts[1].split("/");
+         if(wwwPart.length)
+            return wwwPart[0];
+         else
+            return "[unknown]";
+      }
+      
       /**
        * Recursively searches for an object with the specified name that has been added to the
-       * display heirarchy.
+       * display hierarchy.
        * 
        * @param name The name of the object to find.
        * 
