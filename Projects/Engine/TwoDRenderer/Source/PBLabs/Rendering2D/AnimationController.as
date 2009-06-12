@@ -85,12 +85,13 @@ package PBLabs.Rendering2D
          if(!nextAnim)
             throw new Error("Unable to find default animation '" + DefaultAnimation + "'!");
            
-         // Expire current animation if it has finished playing.
+         // Expire current animation if it has finished playing and it's what we
+         // want to keep playing.
          if(ProcessManager.Instance.VirtualTime > (_CurrentAnimationStartTime + _CurrentAnimationDuration))
             _CurrentAnimation = null;
          
          // If we do not have a current animation, start playing the next.
-         if(!_CurrentAnimation)
+         if(!_CurrentAnimation || nextAnim.Priority > _CurrentAnimation.Priority)
             SetAnimation(nextAnim);
            
          // If no current animation, then abort!

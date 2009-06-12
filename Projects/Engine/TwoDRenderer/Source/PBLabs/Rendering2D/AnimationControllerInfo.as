@@ -21,6 +21,12 @@ package PBLabs.Rendering2D
       public var SpriteSheet:SpriteSheetComponent;
       
       /**
+       * Used when setting animation states; a higher priority
+       * animation will override a lower priority animation.
+       */
+      public var Priority:Number = 0.0;
+      
+      /**
        * If true, then the animation loops.
        */
       public var Loop:Boolean = true; 
