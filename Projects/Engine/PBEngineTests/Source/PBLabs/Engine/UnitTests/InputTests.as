@@ -20,13 +20,13 @@ package PBLabs.Engine.UnitTests
       public function testInputMap():void
       {
          var inputMap:InputMap = new InputMap();
-         inputMap.SetKeyMapping("Space", InputKey.SPACE);
-         inputMap.SetKeyMapping("MouseButton", InputKey.MOUSE_BUTTON);
-         inputMap.SetKeyMapping("MouseX", InputKey.MOUSE_X);
+         inputMap.MapKeyToAction(InputKey.SPACE, "Space");
+         inputMap.MapKeyToAction(InputKey.MOUSE_BUTTON, "MouseButton");
+         inputMap.MapKeyToAction(InputKey.MOUSE_X, "MouseX");
          
-         inputMap.AddBinding("Space", _OnSpace);
-         inputMap.AddBinding("MouseButton", _OnMouseButton);
-         inputMap.AddBinding("MouseX", _OnMouseX);
+         inputMap.MapActionToHandler("Space", _OnSpace);
+         inputMap.MapActionToHandler("MouseButton", _OnMouseButton);
+         inputMap.MapActionToHandler("MouseX", _OnMouseX);
          
          InputManager.Instance.SimulateKeyDown(InputKey.SPACE.KeyCode);
          _ValidateInputs(1, 0, false);
