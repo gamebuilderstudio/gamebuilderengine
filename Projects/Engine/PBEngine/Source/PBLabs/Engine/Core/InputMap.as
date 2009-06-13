@@ -55,7 +55,7 @@ package PBLabs.Engine.Core
       public function Deserialize(xml:XML):*
       {
          for each (var keyXML:XML in xml.children())
-            MapKeyToHandler(InputKey.StringToKey(keyXML.toString()), keyXML.name());
+            MapKeyToAction(InputKey.StringToKey(keyXML.toString()), keyXML.name());
          
          return this;
       }

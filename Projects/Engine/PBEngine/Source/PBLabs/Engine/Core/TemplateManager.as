@@ -169,7 +169,7 @@ package PBLabs.Engine.Core
          }
          catch(e:Error)
          {
-            Logger.PrintError(this, "InstantiateEntity", "Failed instantiating '" + name + "' due to: " + e.toString());
+            Logger.PrintError(this, "InstantiateEntity", "Failed instantiating '" + name + "' due to: " + e.toString() + "\n" + e.getStackTrace());
             entity = null;
             Profiler.Exit("InstantiateEntity");
          }
