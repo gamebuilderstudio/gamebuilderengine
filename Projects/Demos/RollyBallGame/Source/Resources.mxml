@@ -21,6 +21,6 @@
    <pb:ResourceBinding filename="../Assets/Images/level2_normal.png" resourceType="PBLabs.Rendering2D.ImageResource" resourceClass="@Embed(source='../Assets/Images/level2_normal.png', mimeType='application/octet-stream')"/>
    <pb:ResourceBinding filename="../Assets/Images/level2_diffuse.png" resourceType="PBLabs.Rendering2D.ImageResource" resourceClass="@Embed(source='../Assets/Images/level2_diffuse.png', mimeType='application/octet-stream')"/>
 
-   <pb:ResourceBinding filename="../Assets/Sounds/pickup.mp3" resourceType="PBLabs.MP3Sound.MP3Resource" resourceClass="@Embed(source='../Assets/Sounds/pickup.mp3', mimeType='application/octet-stream')"/>
-   <pb:ResourceBinding filename="../Assets/Sounds/scorechunk.mp3" resourceType="PBLabs.MP3Sound.MP3Resource" resourceClass="@Embed(source='../Assets/Sounds/scorechunk.mp3', mimeType='application/octet-stream')"/>
+   <pb:ResourceBinding filename="../Assets/Sounds/pickup.mp3" resourceType="PBLabs.Engine.Resource.MP3Resource" resourceClass="@Embed(source='../Assets/Sounds/pickup.mp3', mimeType='application/octet-stream')"/>
+   <pb:ResourceBinding filename="../Assets/Sounds/scorechunk.mp3" resourceType="PBLabs.Engine.Resource.MP3Resource" resourceClass="@Embed(source='../Assets/Sounds/scorechunk.mp3', mimeType='application/octet-stream')"/>
 </mx:Canvas>

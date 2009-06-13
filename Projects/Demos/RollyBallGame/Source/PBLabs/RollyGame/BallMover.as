@@ -11,9 +11,9 @@ package PBLabs.RollyGame
    import PBLabs.Animation.*;
    import PBLabs.Engine.Core.*;
    import PBLabs.Engine.Entity.*;
+   import PBLabs.Engine.Resource.*;
    import flash.geom.*;
    import mx.controls.*;
-   import PBLabs.MP3Sound.MP3Resource;
 
    public class BallMover extends SimpleSpatialComponent
    {

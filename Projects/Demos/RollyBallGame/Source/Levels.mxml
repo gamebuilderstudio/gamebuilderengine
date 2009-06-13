@@ -9,8 +9,8 @@
  ******************************************************************************/
 -->
 <mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:pb="PBLabs.Engine.MXML.*">
-   <pb:LevelFileReference filename="../Assets/Levels/level.pbelevel" level="0" persist="true" id="D"/>
-   <pb:GroupReference name="Everything" level="0" persist="true" id="A"/>
+   <pb:LevelFileReference filename="../Assets/Levels/level.pbelevel" levels="[0,1]" id="D"/>
+   <pb:GroupReference name="Everything" levels="[0,1]" id="A"/>
    <pb:GroupReference name="Level1" level="0" id="Level1" />
    <pb:GroupReference name="Level2" level="1" id="Level2" />
 </mx:Canvas>

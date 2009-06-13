@@ -19,7 +19,6 @@
 	     import flash.media.*;
 	     import PBLabs.Engine.Core.*;
 	     import PBLabs.Engine.Resource.*;
-	     import PBLabs.MP3Sound.MP3Resource;
 	     import mx.core.*;
 	     
 	     public var CoinsLeft:int, TotalScore:int;

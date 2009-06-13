@@ -93,7 +93,7 @@ package PBLabs.Engine.Resource
             if(OnlyLoadEmbeddedResources)
             {
                _Fail(null, onFailed, "'" + filename + "' was not loaded because it was not embedded in the SWF.");
-               if(OnEmbeddedFail)
+               if(OnEmbeddedFail != null)
                   OnEmbeddedFail(filename);
                return;
             }
