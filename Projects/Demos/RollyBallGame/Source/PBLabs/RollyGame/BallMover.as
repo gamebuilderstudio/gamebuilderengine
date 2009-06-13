@@ -42,11 +42,11 @@ package PBLabs.RollyGame
          
          if (_InputMap != null)
          {
-            _InputMap.AddBinding("GoLeft", _OnLeft);
-            _InputMap.AddBinding("GoRight", _OnRight);
-            _InputMap.AddBinding("GoUp", _OnUp);
-            _InputMap.AddBinding("GoDown", _OnDown);
-            _InputMap.AddBinding("Jump", _OnJump);
+            _InputMap.MapActionToHandler("GoLeft", _OnLeft);
+            _InputMap.MapActionToHandler("GoRight", _OnRight);
+            _InputMap.MapActionToHandler("GoUp", _OnUp);
+            _InputMap.MapActionToHandler("GoDown", _OnDown);
+            _InputMap.MapActionToHandler("Jump", _OnJump);
          }
       }
             

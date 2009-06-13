@@ -55,21 +55,28 @@ package PBLabs.Engine.Core
       public function Deserialize(xml:XML):*
       {
          for each (var keyXML:XML in xml.children())
-            SetKeyMapping(keyXML.name(), InputKey.StringToKey(keyXML.toString()));
+            MapKeyToHandler(InputKey.StringToKey(keyXML.toString()), keyXML.name());
          
          return this;
       }
       
       /**
-       * Maps an input event registered with AddBinding to a specific key.
+       * Maps a specific key to an input action (registered with MapActionToHandler).
        * 
-       * @param keyName The name of the binding to trigger when the key is pressed.
-       * @param key The key that will trigger the binding. This should be one
+       * Note: If you are just binding a specific key directly to a specific handler
+       *  function (with no special key remapping options), then using 
+       *  MapKeyToHandler() will save you a step. Use the MapKeyToAction() and
+       *  MapActionToHandler() pair if you want the flexibility of an abstracted 
+       *  re-usable component or easier key re-binding.
+       *
+       * @param key The key that will trigger the action. This should be one
        * of the constants defined in the InputKey class.
+       * @param actionName The name of the action to trigger when the key is pressed.
        * 
-       * @see #AddBinding()
+       * @see #MapActionToHandler()
+       * @see #MapKeyToHandler()
        */
-      public function SetKeyMapping(keyName:String, key:InputKey):void
+      public function MapKeyToAction(key:InputKey, actionName:String):void
       {
          if (_keymap[key.KeyCode] == null)
          {
@@ -94,26 +101,68 @@ package PBLabs.Engine.Core
             }
          }
          
-         _keymap[key.KeyCode] = keyName;
+         _keymap[key.KeyCode] = actionName;
       }
       
       /**
-       * Binds a function to an input event. When the specified input event is
-       * triggered, the function will be called. If it is a press event, the function
-       * will be passed 1 as its only parameter. If it is a release event, the
+       * Binds an input action to a handler callback. When the specified input action
+       * is triggered, the handler function will be called. If it is a press event, the 
+       * function will be passed 1 as its only parameter. If it is a release event, the
        * function will be passed 0 as its only parameter. If it is an analog event
        * then the analog value will be passed. In the case of mouse movement (currently
        * the only analog event) the value will be the amount the mouse moved on the
        * specific axis.
+       *
+       * Input actions are mapped to specific key or mouse inputs in SetKeyMapping().
+       *
+       * Note: If you are just binding a specific key directly to a specific handler
+       *  function (with no special key remapping options), then using 
+       *  MapKeyToHandler() will save you a step. Use the MapKeyToAction() and
+       *  MapActionToHandler() pair if you want the flexibility of an abstracted 
+       *  re-usable component or easier key re-binding.
        * 
-       * @param keyName The name to give this binding.
-       * @param callback The function to call when the input event defined by keyName
+       * @param actionName The name to give this binding.
+       * @param handler The function to call when the input event defined by actionName
        * is triggered.
+       *
+       * @see #MapKeyToAction()
+       * @see #MapKeyToHandler()
        */
-      public function AddBinding(keyName:String, callback:Function):void
+      public function MapActionToHandler(actionName:String, handler:Function):void
       {
-         _bindings[keyName] = callback;
+         _bindings[actionName] = handler;
       }
+      
+      /**
+       * Maps a specific key to a handler callback. When the specified key or mouse 
+       * input is triggered, the handler function will be called. If it is a press 
+       * event, the function will be passed 1 as its only parameter. If it is a 
+       * release event, the function will be passed 0 as its only parameter. If it 
+       * is an analog event then the analog value will be passed. In the case of 
+       * mouse movement (currently the only analog event) the value will be the 
+       * amount the mouse moved on the specific axis.
+       *
+       * Note: If you need special key remapping options, or are building an
+       *  abstracted re-usable component, you may want the flexibilty offered by 
+       *  using MapKeyToAction() and MapKeyToHandler(), as this lets you separate 
+       *  specific keys from specific callbacks, as they can be bound later in game
+       *  configuration files (such as .pbelevel files). 
+       *
+       * @param key The key that will trigger the handler. This should be one
+       * of the constants defined in the InputKey class.
+       * @param handler The function to call when the input event is triggered.
+       * 
+       * @see #MapActionToHandler()
+       * @see #MapKeyToHandler()
+       */
+      public function MapKeyToHandler(key:InputKey, handler:Function):void
+      {
+         // Use the key name as an intermediate unique action name
+         var action:String = InputKey.CodeToString(key.KeyCode); 
+         
+         MapKeyToAction(key, action);
+         MapActionToHandler(action, handler);
+      }      
       
       private function _OnKeyDown(event:KeyboardEvent):void
       {
@@ -156,11 +205,11 @@ package PBLabs.Engine.Core
       
       private function _OnInputEvent(keyCode:int, value:Number):void
       {
-         var key:String = _keymap[keyCode];
-         if (key == null)
+         var action:String = _keymap[keyCode];
+         if (action == null)
             return;
          
-         var callback:Function = _bindings[key];
+         var callback:Function = _bindings[action];
          if (callback == null)
             return;
          
@@ -169,7 +218,9 @@ package PBLabs.Engine.Core
       
       private var _lastMouseX:Number = Number.NEGATIVE_INFINITY;
       private var _lastMouseY:Number = Number.NEGATIVE_INFINITY;
+      /** _keymap links an key input or mouse input to an action name */
       private var _keymap:Dictionary = new Dictionary();
+      /** _bindings links an action name to a function callback */
       private var _bindings:Dictionary = new Dictionary();
       private var _registeredForKeyEvents:Boolean = false;
    }

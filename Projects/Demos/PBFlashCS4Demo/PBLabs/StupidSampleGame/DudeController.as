@@ -38,9 +38,9 @@ package PBLabs.StupidSampleGame
          
          if (_inputMap != null)
          {
-            _inputMap.AddBinding("GoLeft", _OnLeft);
-            _inputMap.AddBinding("GoRight", _OnRight);
-            _inputMap.AddBinding("Jump", _OnJump);
+            _inputMap.MapActionToHandler("GoLeft", _OnLeft);
+            _inputMap.MapActionToHandler("GoRight", _OnRight);
+            _inputMap.MapActionToHandler("Jump", _OnJump);
          }
       }
       
