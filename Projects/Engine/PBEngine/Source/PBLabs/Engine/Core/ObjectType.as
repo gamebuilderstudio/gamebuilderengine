@@ -115,7 +115,7 @@ package PBLabs.Engine.Core
          if (xml.hasSimpleContent())
          {
             TypeName = xml.toString();
-            return;
+            return this;
          }
          
          _bits = 0;
