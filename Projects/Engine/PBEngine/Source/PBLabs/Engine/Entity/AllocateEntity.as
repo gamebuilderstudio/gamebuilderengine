@@ -195,18 +195,29 @@ class Entity extends EventDispatcher implements IEntity
    
    public function GetProperty(property:PropertyReference):*
    {
-      var info:PropertyInfo = _FindProperty(property);
-      if (info != null)
-         return info.GetValue();
+      // Look up the property.
+      var info:PropertyInfo = _FindProperty(property, false, _tempPropertyInfo);
+      var result:* = null;
       
-      return null;
+      // Get value if any.
+      if (info != null)
+         result = info.GetValue();
+
+      // Clean up to avoid dangling references.
+      _tempPropertyInfo.Clear();
+      
+      return result;
    }
    
    public function SetProperty(property:PropertyReference, value:*):void
    {
-      var info:PropertyInfo = _FindProperty(property, true);
+      // Look up and set.
+      var info:PropertyInfo = _FindProperty(property, true, _tempPropertyInfo);
       if (info != null)
          info.SetValue(value);
+
+      // Clean up to avoid dangling references.
+      _tempPropertyInfo.Clear();
    }
    
    private function _AddComponent(component:IEntityComponent, componentName:String):Boolean
@@ -267,7 +278,7 @@ class Entity extends EventDispatcher implements IEntity
          component.Reset();
    }
 
-   private function _FindProperty(reference:PropertyReference, willSet:Boolean = false):PropertyInfo
+   private function _FindProperty(reference:PropertyReference, willSet:Boolean = false, providedPi:PropertyInfo = null):PropertyInfo
    {
       // TODO: we use appendChild but relookup the results, can we just use return value?
       
@@ -276,6 +287,10 @@ class Entity extends EventDispatcher implements IEntity
          return null;
 
       Profiler.Enter("Entity._FindProperty");
+      
+      // Must have a propertyInfo to operate with.
+      if(!providedPi)
+         providedPi = new PropertyInfo();
       
       // Cached lookups apply only to components.
       if(reference.CachedLookup && reference.CachedLookup.length > 0)
@@ -300,7 +315,7 @@ class Entity extends EventDispatcher implements IEntity
             }
          }
          
-         var cachedPi:PropertyInfo = new PropertyInfo();
+         var cachedPi:PropertyInfo = providedPi;
          cachedPi.PropertyParent = cachedWalk;
          cachedPi.PropertyName = cl[cl.length-1];
          Profiler.Exit("Entity._FindProperty");
@@ -470,7 +485,7 @@ class Entity extends EventDispatcher implements IEntity
       // Did we end up with a match?
       if(parentElem)
       {
-         var pi:PropertyInfo = new PropertyInfo();
+         var pi:PropertyInfo = providedPi;
          pi.PropertyParent = parentElem;
          pi.PropertyName = curLookup;
          Profiler.Exit("Entity._FindProperty");
@@ -484,6 +499,7 @@ class Entity extends EventDispatcher implements IEntity
    private var _name:String = null;
    private var _alias:String = null;
    private var _components:Dictionary = new Dictionary();
+   private var _tempPropertyInfo:PropertyInfo = new PropertyInfo();
 }
 
 class PropertyInfo
@@ -506,5 +522,11 @@ class PropertyInfo
    public function SetValue(value:*):void
    {
       PropertyParent[PropertyName] = value;
+   }
+   
+   public function Clear():void
+   {
+      PropertyParent = null;
+      PropertyName = null;
    }
 }
