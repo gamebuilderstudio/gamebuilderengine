@@ -67,5 +67,6 @@ package PBLabs.Engine.Entity
       }
       
       private var _property:String = null;
+      public var CachedLookup:Array;
    }
 }

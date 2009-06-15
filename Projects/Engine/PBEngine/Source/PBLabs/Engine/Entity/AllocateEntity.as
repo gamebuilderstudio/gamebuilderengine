@@ -276,7 +276,37 @@ class Entity extends EventDispatcher implements IEntity
          return null;
 
       Profiler.Enter("Entity._FindProperty");
-        
+      
+      // Cached lookups apply only to components.
+      if(reference.CachedLookup && reference.CachedLookup.length > 0)
+      {
+         var cl:Array = reference.CachedLookup;
+         var cachedWalk:* = LookupComponentByName(cl[0]);
+         if(!cachedWalk)
+         {
+            Logger.PrintWarning(this, "_FindProperty", "Could not resolve component named '" + cl[0] + "' for property '" + reference.Property + "' with cached reference");
+            Profiler.Exit("Entity._FindProperty");
+            return null;
+         }
+         
+         for(var i:int = 1; i<cl.length - 1; i++)
+         {
+            cachedWalk = cachedWalk[cl[i]];
+            if(!cachedWalk)
+            {
+               Logger.PrintWarning(this, "_FindProperty", "Could not resolve property '" + cl[i] + "' for property reference '" + reference.Property + "' with cached reference");
+               Profiler.Exit("Entity._FindProperty");
+               return null;
+            }
+         }
+         
+         var cachedPi:PropertyInfo = new PropertyInfo();
+         cachedPi.PropertyParent = cachedWalk;
+         cachedPi.PropertyName = cl[cl.length-1];
+         Profiler.Exit("Entity._FindProperty");
+         return cachedPi;
+      }
+      
       // Split up the property reference.      
       var propertyName:String = reference.Property;
       var path:Array = propertyName.split(".");
@@ -299,6 +329,10 @@ class Entity extends EventDispatcher implements IEntity
             Profiler.Exit("Entity._FindProperty");
             return null;
          }
+         
+         // Cache the split out string.
+         path[0] = curLookup;
+         reference.CachedLookup = path;
       }
       else if(startChar == "#")
       {
