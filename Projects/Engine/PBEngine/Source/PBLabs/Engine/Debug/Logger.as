@@ -149,6 +149,23 @@ package PBLabs.Engine.Debug
       }
       
       /**
+       * Utility function to get the current callstack. Only works in debug build.
+       * Useful for noting who called what. Empty when in release build.
+       */
+      public static function GetCallStack():String
+      {
+         try
+         {
+            var e:Error = new Error();
+            return e.getStackTrace();
+         }
+         catch(e:Error)
+         {
+         }
+         return "[no trace available]";
+      }
+      
+      /**
        * Increases the depth of subsequent messages printed to the log. The depth can
        * be used to format the output of log entries by, for example, indenting messages
        * a number of times equal to their depth. In this way, messages that give more

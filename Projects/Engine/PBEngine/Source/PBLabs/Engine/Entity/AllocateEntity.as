@@ -299,7 +299,7 @@ class Entity extends EventDispatcher implements IEntity
          var cachedWalk:* = LookupComponentByName(cl[0]);
          if(!cachedWalk)
          {
-            Logger.PrintWarning(this, "_FindProperty", "Could not resolve component named '" + cl[0] + "' for property '" + reference.Property + "' with cached reference");
+            Logger.PrintWarning(this, "_FindProperty", "Could not resolve component named '" + cl[0] + "' for property '" + reference.Property + "' with cached reference. " + Logger.GetCallStack());
             Profiler.Exit("Entity._FindProperty");
             return null;
          }
@@ -309,7 +309,7 @@ class Entity extends EventDispatcher implements IEntity
             cachedWalk = cachedWalk[cl[i]];
             if(!cachedWalk)
             {
-               Logger.PrintWarning(this, "_FindProperty", "Could not resolve property '" + cl[i] + "' for property reference '" + reference.Property + "' with cached reference");
+               Logger.PrintWarning(this, "_FindProperty", "Could not resolve property '" + cl[i] + "' for property reference '" + reference.Property + "' with cached reference"  + Logger.GetCallStack());
                Profiler.Exit("Entity._FindProperty");
                return null;
             }
