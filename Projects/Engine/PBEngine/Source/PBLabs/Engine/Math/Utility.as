@@ -26,6 +26,16 @@ package PBLabs.Engine.Math
       }
       
       /**
+       * Keep a number between a min and a max.
+       */
+      public static function Clamp(v:Number, min:Number = 0, max:Number = 1):Number
+      {
+         if(v < min) return min;
+         if(v > max) return max;
+         return v;
+      }
+      
+      /**
        * Converts an angle in degrees to an angle in radians.
        * 
        * @param degrees The angle to convert.
