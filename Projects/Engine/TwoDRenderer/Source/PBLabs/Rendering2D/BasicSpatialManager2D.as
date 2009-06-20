@@ -60,6 +60,8 @@ package PBLabs.Rendering2D
        */
       public function QueryRectangle(box:Rectangle, mask:ObjectType, results:Array):Boolean
       {
+         Profiler.Enter("QueryRectangle");
+
          var foundAny:Boolean = false;
          for each (var object:ISpatialObject2D in _objectList)
          {
@@ -72,7 +74,8 @@ package PBLabs.Rendering2D
             results.push(object);
             foundAny = true;
          }
-
+         
+         Profiler.Exit("QueryRectangle");
          return foundAny;
       }
       
@@ -85,13 +88,23 @@ package PBLabs.Rendering2D
 
          var foundAny:Boolean = false;
          
+         var scratchRect:Rectangle = new Rectangle();
+         var tmpRect:Rectangle = new Rectangle();
+         
          for each (var object:ISpatialObject2D in _objectList)
          {
             if (!ObjectTypeManager.Instance.DoTypesOverlap(object.ObjectMask, mask))
                continue;
             
-            var scratchRect:Rectangle = object.WorldExtents.clone();
+            // Avoid allocations - so manually copy.
+            tmpRect = object.WorldExtents;
+            scratchRect.x = tmpRect.x;
+            scratchRect.y = tmpRect.y;
+            scratchRect.width = tmpRect.width;
+            scratchRect.height = tmpRect.height;
+            
             scratchRect.inflate(radius, radius);
+            
             if (!scratchRect.containsPoint(center))
                continue;
             

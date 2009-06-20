@@ -40,7 +40,7 @@ package PBLabs.Rendering2D
          // If we're on the last frame, self-destruct.
          if(_ClipFrame > _Clip.totalFrames)
          {
-            Logger.Print(this, "Finished playback, destroying self.");
+            //Logger.Print(this, "Finished playback, destroying self.");
             Owner.Destroy();
             return;
          }
