@@ -25,7 +25,7 @@ package
       [Embed(source="../Assets/Images/platform.png", mimeType='application/octet-stream')]
       private var _platform:Class;
       
-      [Embed(source="../Assets/Sounds/testSound.mp3", mimeType='application/octet-stream')]
+      [Embed(source="../Assets/Sounds/testSound.mp3")]
       private var _testSound:Class;
       
       public function Resources()
@@ -33,7 +33,7 @@ package
          ResourceManager.Instance.RegisterEmbeddedResource("../Assets/Levels/level.pbelevel", XMLResource, new _level() as ByteArray);
          ResourceManager.Instance.RegisterEmbeddedResource("../Assets/Images/mannequin.png", ImageResource, new _mannequin() as ByteArray);
          ResourceManager.Instance.RegisterEmbeddedResource("../Assets/Images/platform.png", ImageResource, new _platform() as ByteArray);
-         ResourceManager.Instance.RegisterEmbeddedResource("../Assets/Sounds/testSound.mp3", MP3Resource, new _testSound() as ByteArray);
+         ResourceManager.Instance.RegisterEmbeddedResource("../Assets/Sounds/testSound.mp3", MP3Resource, new _testSound());
       }
    }
 }

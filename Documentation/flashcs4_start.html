@@ -56,7 +56,7 @@
    import PBLabs.Engine.Debug.*;
    
    // Tell PBE where the root of our app is.
-   Global.MainClass = this;
+   Global.Startup(this);
    
    // Display a log message via the Logger.
    Logger.Print(this, "Hello, world!");   
@@ -82,11 +82,11 @@
 import PBLabs.Engine.Core.*;
 
 // Tell PBE where the root of our app is.
-Global.MainClass = this;
+Global.Startup(this);
 
 // Load the level by indicating what file to load, and what group to start with.
-LevelManager.Instance.AddLevelFileReference("level.pbelevel", 0);
-LevelManager.Instance.AddGroupReference("Everything", 0);
+LevelManager.Instance.AddFileReference(0, "level.pbelevel");
+LevelManager.Instance.AddGroupReference(0, "Everything");
 LevelManager.Instance.Start();
 
 // References to components. We have to reference them, otherwise the compiler
@@ -318,8 +318,7 @@ package PBLabs.StupidSampleGame
    import PBLabs.Engine.Core.ProcessManager;
    import PBLabs.Engine.Entity.EntityComponent;
    import PBLabs.Engine.Entity.PropertyReference;
-   import PBLabs.Engine.Resource.ResourceManager;
-   import PBLabs.MP3Sound.MP3Resource;
+   import PBLabs.Engine.Resource.*;
    
    import flash.geom.Point;
    import flash.media.Sound;
@@ -327,8 +326,6 @@ package PBLabs.StupidSampleGame
    public class DudeController extends EntityComponent implements ITickedObject
    {
       public var VelocityReference:PropertyReference;
-      
-      public var JumpSound:MP3Resource;
       
       public function get Input():InputMap
       {
@@ -341,9 +338,9 @@ package PBLabs.StupidSampleGame
          
          if (_inputMap != null)
          {
-            _inputMap.AddBinding("GoLeft", _OnLeft);
-            _inputMap.AddBinding("GoRight", _OnRight);
-            _inputMap.AddBinding("Jump", _OnJump);
+            _inputMap.MapActionToHandler("GoLeft", _OnLeft);
+            _inputMap.MapActionToHandler("GoRight", _OnRight);
+            _inputMap.MapActionToHandler("Jump", _OnJump);
          }
       }
       
@@ -355,8 +352,8 @@ package PBLabs.StupidSampleGame
          
          if (_jump &gt; 0)
          {
-            if (JumpSound != null && JumpSound.SoundObject)
-               JumpSound.SoundObject.play();
+            if (_sound != null)
+               _sound.play();
             
             velocity.y -= 200;
             _jump = 0;
@@ -372,6 +369,7 @@ package PBLabs.StupidSampleGame
       protected override function _OnAdd():void
       {
          ProcessManager.Instance.AddTickedObject(this);
+         ResourceManager.Instance.Load("../Assets/Sounds/testSound.mp3", MP3Resource, _OnSoundLoaded);
          
          Owner.EventDispatcher.addEventListener(CollisionEvent.COLLISION_EVENT, _OnCollision);
          Owner.EventDispatcher.addEventListener(CollisionEvent.COLLISION_STOPPED_EVENT, _OnCollisionEnd);
@@ -416,6 +414,11 @@ package PBLabs.StupidSampleGame
          }
       }
       
+      private function _OnSoundLoaded(resource:MP3Resource):void
+      {
+         _sound = resource.SoundObject;
+      }
+      
       private function _OnLeft(value:Number):void
       {
          _left = value;
@@ -431,14 +434,15 @@ package PBLabs.StupidSampleGame
          if (_onGround &gt; 0)
             _jump = value;
       }
-
+      
+      private var _sound:Sound = null;
       private var _inputMap:InputMap;
       private var _left:Number = 0;
       private var _right:Number = 0;
       private var _jump:Number = 0;
       private var _onGround:int = 0;
    }
-}   
+}
    </pre>
    
    <p>Next, we need to bring in some of the assets for our game. We have one sound effect and two sprite sheets. Save <a href="http://pushbuttonengine.googlecode.com/svn/trunk/Projects/Demos/PBFlexlessEngineDemo/Assets/Sounds/testSound.mp3">this MP3</a> as <i>testSound.mp3</i> in the same folder as the .fla and level.pbelevel files. This sound effect is played when the player jumps. Additionally, download <a href="http://pushbuttonengine.googlecode.com/svn/trunk/Projects/Demos/PBFlexlessEngineDemo/Assets/Images/platform.png">platform.png</a> and <a href="http://pushbuttonengine.googlecode.com/svn/trunk/Projects/Demos/PBFlexlessEngineDemo/Assets/Images/mannequin.png">mannequin.png</a> and put them in the folder as well. They are the art for the platforms and player character respectively. (You may need to right click on these links and choose <i>Save As...</i> to download them to your hard drive.)</p>

@@ -17,7 +17,7 @@ package
       {
          LevelManager.Instance.AddFileReference(0, "../Assets/Levels/level.pbelevel");
          LevelManager.Instance.AddGroupReference(0, "Everything");
-         LevelManager.Instance.Start();
+         LevelManager.Instance.Start(0);
       }
    }
 }

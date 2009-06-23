@@ -51,10 +51,13 @@
             
             // Make the game scale properly.
             Application.application.stage.scaleMode = StageScaleMode.SHOW_ALL; 
+            
+            // Load level zero.
+            LevelManager.Instance.Start(0);
          }
          
          private function _UpdateTimer():void
-         {
+         {   
             stage.focus = stage;
 
             CurrentTime = LevelDuration - (ProcessManager.Instance.VirtualTime - StartTimer);

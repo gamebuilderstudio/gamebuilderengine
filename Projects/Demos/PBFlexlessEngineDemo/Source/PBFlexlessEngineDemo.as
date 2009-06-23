@@ -10,6 +10,7 @@
 package
 {
    import PBLabs.Engine.Core.Global;
+   import PBLabs.Engine.Core.LevelManager;
    
    import flash.display.Sprite;
    
