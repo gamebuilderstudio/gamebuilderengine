@@ -10,16 +10,10 @@
  ******************************************************************************/
 -->
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:fluint="http://www.digitalprimates.net/2008/fluint"
-      xmlns:pb="PBLabs.Engine.Debug.*" layout="absolute" creationComplete="_OnStartup()" width="1024" height="768">
+      xmlns:pb="PBLabs.Engine.Debug.Log4PBE.*" layout="absolute" applicationComplete="_OnStartup()" width="1024" height="768">
    <fluint:TestRunner id="UnitTestRunner"/>
-   <mx:TabNavigator left="10" right="10" top="10" bottom="10">
-      <mx:Canvas label="Log" width="100%" height="100%">
-         <pb:LogViewer width="100%" height="100%"/>
-      </mx:Canvas>
-      <mx:Canvas label="Unit Test Results" width="100%" height="100%">
-          <fluint:TestResultDisplay width="100%" height="100%"/>
-      </mx:Canvas>
-   </mx:TabNavigator>
+   <mx:Label text="Press tilde (~) to view log output."/>
+   <fluint:TestResultDisplay width="100%" height="100%"/>
    <mx:Script>
       <![CDATA[
          import net.digitalprimates.fluint.ui.TestRunner;
