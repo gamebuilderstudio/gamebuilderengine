@@ -1,4 +1,4 @@
-/*******************************************************************************
+﻿/*******************************************************************************
  * PushButton Engine
  * Copyright (C) 2009 PushButton Labs, LLC
  * For more information see http://www.pushbuttonengine.com
@@ -16,7 +16,7 @@ package PBLabs.StupidSampleGame
    import PBLabs.Engine.Entity.EntityComponent;
    import PBLabs.Engine.Entity.PropertyReference;
    import PBLabs.Engine.Resource.ResourceManager;
-   import PBLabs.MP3Sound.MP3Resource;
+   import PBLabs.Engine.Resource.MP3Resource;
    
    import flash.geom.Point;
    import flash.media.Sound;
