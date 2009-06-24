@@ -11,7 +11,7 @@ package PBLabs.Engine.Debug.Log4PBE
     * configured by calling the various public methods of this class.
     * 
     * <p>This logging system is conceptually based on the log4j logging framework from
-    * <a href=http://logging.apache.org/log4j/1.2/manual.html>here</a>.
+    * http://logging.apache.org/log4j/1.2/manual.html
     * </p>
     * 
     * <p>There are four main parts of the logging system. Loggers, levels, filters, and appenders. A
