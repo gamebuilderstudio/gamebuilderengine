@@ -601,12 +601,3 @@ internal class ReferenceNote
       }
    }
 }
-
-/**
- * Helper class to make sure metadata is being included.
- */
-class TestForMetadata
-{
-   [TypeHint(type="Number")]
-   public var SomeArray:Array;
-}

@@ -27,7 +27,7 @@ package PBLabs.Rendering2D
       public var AllowMovementProperty:PropertyReference = null;
       public var AllowMovementValue:String = null;
       
-      public var MovementHeadingThreshold:Number = 3.14*2/8;
+      public var MovementHeadingThreshold:Number = 100;
       
       public function set InitialPosition(v:Point):void
       {
