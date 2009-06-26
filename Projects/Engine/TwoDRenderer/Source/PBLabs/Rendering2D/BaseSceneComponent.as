@@ -476,7 +476,7 @@ package PBLabs.Rendering2D
          {
             _LastDrawn = _NextDrawn;
             _NextDrawn = null;
-            _InterstitialDrawnList.every(function(item:IDrawable2D):void { item.OnDraw(this); });            
+            _InterstitialDrawnList.every(_drawItem);
          }
 
          // Clear last/next state.
@@ -487,6 +487,11 @@ package PBLabs.Rendering2D
             _CurrentRenderTarget.unlock();
          
          Profiler.Exit("_DrawSortedLayers");
+      }
+
+      private function _drawItem(item:IDrawable2D):void
+      {
+         item.OnDraw(this);
       }
       
       private function _InterstitialEveryCallback(item:IDrawable2D):void 
