@@ -14,53 +14,55 @@ package PBLabs.Rendering2D
    /**
     * Interface for rendering 2D scenes.
     * 
-    * Objects can be drawn in Flash using BitmapDatas or DisplayObjects. A
+    * <p>Objects can be drawn in Flash using BitmapDatas or DisplayObjects. A
     * rendering component might be implemented using either method (for 
     * instance, an isometric tilemap might composite everything into a 
     * BitmapData while a simpler 2d sprite system might use the DisplayObject
     * hierarchy). However, you may want to introduce a rendering effect that
-    * requires the opposite approach.
+    * requires the opposite approach.</p>
     * 
-    * This API provides a simple way for all these rendering techniques to
+    * <p>This API provides a simple way for all these rendering techniques to
     * co-exist. It provides hooks for both DisplayObjects and BitmapData to be
-    * drawn.
+    * drawn.</p>
     * 
-    * During rendering, each visible IDrawable2D has its OnDraw method called. 
+    * <p>During rendering, each visible IDrawable2D has its OnDraw method called. 
     * The IDrawable2D can then inspect the state of the IDrawManager2D and call
-    * DrawDisplayObject and/or DrawBitmapData one or more times to render itself.
+    * DrawDisplayObject and/or DrawBitmapData one or more times to render itself.</p>
     * 
-    * In the case of complex sets of objects - like a tile map or particle system
+    * <p>In the case of complex sets of objects - like a tile map or particle system
     * - we assume that they will be grouped into a single IDrawable2D and drawn
     * efficiently in an object-specific way by that object before being submitted
     * to the IDrawManager2D. This manager is more of a compositer than a high
-    * performance rendering API.
+    * performance rendering API.</p>
     * 
-    * It additionally provides methods to transform from world space to screen
+    * <p>It additionally provides methods to transform from world space to screen
     * space and back. It supports isometric perspectives by allowing an altitude
     * to be specified when transforming from world to screen space. In an ortho
-    * perspective, the altitude is ignored.
+    * perspective, the altitude is ignored.</p>
     * 
-    * You will notice that there is not a way to register normal scene objects
+    * <p>You will notice that there is not a way to register normal scene objects
     * with the manager. It is assumed that the manager will use a spatial database
     * to determine what needs to be drawn. There is a way to note "always drawn"
     * items. This functionality exists to support things that should always have
     * the opportunity to draw, for instance a physics debug visualization or a 
-    * background layer.
+    * background layer.</p>
     * 
-    * We briefly describe the four rendering possibilities and how to deal with
-    * them:
-    *    * The scene is drawn into DisplayObjects and the IDrawable2D submits
-    *      a DisplayObject. In this case, add it to the end of the display 
-    *      hierarchy.
-    *    * The scene is drawn into DisplayObjects and the IDrawable2D submits
-    *      a BitmapData. In this case, make a Sprite and draw the BitmapData into
-    *      its graphics object. Add the sprite normally.
-    *    * The scene is drawn into a BitmapData and the IDrawable2D submits a
-    *      DisplayObject. All DisplayObjects implement IBitmapDrawable, so draw
-    *      the DisplayObject into the BitmapData using BitmapData.draw().
-    *    * The scene is drawn into a BitmapData and the IDrawable2D submits a
-    *      BitmapData. All BitmapDatas implement IBitmapDrawable, so draw the
-    *      BitmapData into the BitmapData using BitmapData.draw(). 
+    * <p>We briefly describe the four rendering possibilities and how to deal with
+    * them:</p>
+    * <ul>
+    * <li>The scene is drawn into DisplayObjects and the IDrawable2D submits
+    *     a DisplayObject. In this case, add it to the end of the display 
+    *     hierarchy.</li>
+    * <li>The scene is drawn into DisplayObjects and the IDrawable2D submits
+    *     a BitmapData. In this case, make a Sprite and draw the BitmapData into
+    *     its graphics object. Add the sprite normally.</li>
+    * <li>The scene is drawn into a BitmapData and the IDrawable2D submits a
+    *     DisplayObject. All DisplayObjects implement IBitmapDrawable, so draw
+    *     the DisplayObject into the BitmapData using BitmapData.draw().</li>
+    * <li>The scene is drawn into a BitmapData and the IDrawable2D submits a
+    *     BitmapData. All BitmapDatas implement IBitmapDrawable, so draw the
+    *     BitmapData into the BitmapData using BitmapData.draw().</li>
+    * </ul>
     */
    public interface IDrawManager2D
    {
