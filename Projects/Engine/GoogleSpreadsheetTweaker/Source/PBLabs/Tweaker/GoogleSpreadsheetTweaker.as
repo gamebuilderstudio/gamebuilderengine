@@ -18,7 +18,20 @@ package PBLabs.Tweaker
     * source code and recompiling can be a big barrier for them.
     * <p>
     * The GoogleSpreadsheetTweaker lets the game programmer map values on named
-    * objects and in templates to cells on a Google Spreadsheet. 
+    * objects and in templates to cells on a Google Spreadsheet.
+    * <p>
+    * @example Here's an example of how to use this component: <listing version="3.0">
+    * &lt;entity name="Tweaker"&gt;
+    *  &lt;component name="Tweaker" type="PBLabs.Tweaker.GoogleSpreadsheetTweaker"&gt;
+    *    &lt;SpreadsheetUrl&gt;http://spreadsheets.google.com/feeds/cells/abc73bd7db73b73cb73b7c/od7/public/basic&lt;/SpreadsheetUrl&gt;
+    *    &lt;ProxyUrl&gt;http://mydomain.com/game/GoogleSpreadsheetProxy.php&lt;/ProxyUrl&gt;
+    *    &lt;Config&gt;
+    *        &lt;!-- Wave 1 --&gt;
+    *        &lt;_&gt;&lt;Cell&gt;B3&lt;/Cell&gt;&lt;Property&gt;!Waves1.WaveManager.Waves.0.ObserverDescription&lt;/Property&gt;&lt;/_&gt;
+    *    &lt;/Config&gt;
+    *  &lt;/component&gt;
+    * &lt;/entity&gt;
+    * </listing>
     */
    public class GoogleSpreadsheetTweaker extends EntityComponent
    {
