@@ -438,7 +438,12 @@ package PBLabs.Engine.Core
             }
             
             for each (var groupEntity:IEntity in _loadedGroups[groupName])
-               groupEntity.Destroy();
+            {
+               if (groupEntity != null) 
+               {
+                   groupEntity.Destroy();
+               }
+            }
             
             _loadedGroups[groupName] = null;
             delete _loadedGroups[groupName];

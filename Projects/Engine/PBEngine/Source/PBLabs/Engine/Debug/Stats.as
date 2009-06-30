@@ -119,7 +119,9 @@ package PBLabs.Engine.Debug
 				msPrev = timer;
 				mem = Number( ( System.totalMemory * 0.000000954 ).toFixed(3) );
 				
-				var fpsGraph : int = Math.min( 50, 50 / stage.frameRate * fps );
+				var fpsGraph:int;
+				if (stage != null)
+					fpsGraph = Math.min( 50, 50 / stage.frameRate * fps );
 				var memGraph:Number =  Math.min( 50, Math.sqrt( Math.sqrt( mem * 5000 ) ) ) - 2;
 				
 				graph.scroll( 1, 0 );
@@ -135,8 +137,8 @@ package PBLabs.Engine.Debug
 				graph.setPixel32( 0, graph.height - ( ( timer - ms ) >> 1 ), 0x00FF00 );
 				graph.setPixel32( 0, graph.height - memGraph, 0x00FFFF);
 				
-				
-				fpsText.text = "FPS: " + (fps * 4) + " / " + stage.frameRate;
+				if (stage != null)
+					fpsText.text = "FPS: " + (fps * 4) + " / " + stage.frameRate;
 				memText.text = "MEM: " + mem;
 				
 				fps = 0;

@@ -305,7 +305,8 @@ package PBLabs.Engine.Core
        */
       public static function CodeToString(value:int):String
       {
-         for (var name:String in _typeMap)
+      	 var tm:Dictionary = StaticTypeMap;
+         for (var name:String in tm)
          {
             if (StaticTypeMap[name.toUpperCase()].KeyCode == value)
                return name.toUpperCase();

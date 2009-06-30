@@ -158,10 +158,10 @@ package PBLabs.Rendering2D
          }
          
          if (_flipX)
-            scale.x = -_sprite.scaleX;
+            scale.x = -scale.x;
          
          if (_flipY)
-            scale.y = -_sprite.scaleY;
+            scale.y = -scale.y;
          
          _sprite.alpha = Fade;         
           

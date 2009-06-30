@@ -209,7 +209,11 @@ package PBLabs.Rendering2D
        */
       public function AddAlwaysDrawnItem(item:IDrawable2D):void
       {
-         _AlwaysDrawnList.push(item);
+      	 // Only add the item to be drawn if it's not already in the AlwaysRender list
+      	 if (_AlwaysDrawnList.indexOf(item) == -1)
+      	 {
+            _AlwaysDrawnList.push(item);
+         }
       }
       
       /**

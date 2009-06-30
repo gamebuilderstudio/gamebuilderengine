@@ -164,6 +164,17 @@ package PBLabs.Engine.Core
          MapActionToHandler(action, handler);
       }      
       
+      
+      public function Destroy():void
+      {
+        InputManager.Instance.removeEventListener(MouseEvent.MOUSE_DOWN, _OnMouseDown);
+        InputManager.Instance.removeEventListener(MouseEvent.MOUSE_UP, _OnMouseUp);
+        InputManager.Instance.removeEventListener(MouseEvent.MOUSE_MOVE, _OnMouseMove);
+        InputManager.Instance.removeEventListener(MouseEvent.MOUSE_MOVE, _OnMouseMove);
+        InputManager.Instance.removeEventListener(KeyboardEvent.KEY_DOWN, _OnKeyDown);
+        InputManager.Instance.removeEventListener(KeyboardEvent.KEY_UP, _OnKeyUp);
+      }
+      
       private function _OnKeyDown(event:KeyboardEvent):void
       {
          _OnInputEvent(event.keyCode, 1.0);

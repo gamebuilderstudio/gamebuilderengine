@@ -123,6 +123,24 @@ package PBLabs.Engine.Core
       }
       
       /**
+       * Looks up components on an entity that has been registered. The same
+       * conditions apply as with the LookupComponentsByType method on IEntity.
+       * 
+       * @param The name of the entity on which the component exists.
+       * @param componentType The type of the components to lookup.
+       * 
+       * @see PBLabs.Engine.Entity.IEntity#LookupComponentByType()
+       */
+      public function LookupComponentsByType(name:String, componentType:Class):Array
+      {
+         var entity:IEntity = Lookup(name);
+         if (entity == null)
+            return null;
+         
+         return entity.LookupComponentsByType(componentType);
+      }      
+      
+      /**
        * Looks up a component on an entity that has been registered. The same
        * conditions apply as with the LookupComponentByName method on IEntity.
        * 
