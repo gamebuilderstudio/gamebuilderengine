@@ -183,6 +183,31 @@ package PBLabs.Box2D
          return _otherItems.CastRay(start, end, mask, result);
       }
       
+      /**
+       * @inheritDoc
+       */
+      public function ObjectsUnderPoint(point:Point, mask:ObjectType, results:Array, scene:IDrawManager2D):Boolean
+      {
+         var tmpResults:Array = new Array();
+         
+         // First use the normal spatial query...
+         if(!QueryCircle(point, 0.01, mask, tmpResults))
+            return false;
+         
+         // Ok, now pass control to the objects and see what they think.
+         var hitAny:Boolean = false;
+         for each(var tmp:ISpatialObject2D in tmpResults)
+         {
+            if(!tmp.PointOccupied(point, scene))
+               continue;
+            
+            results.push(tmp);
+            hitAny = true;
+         }
+         
+         return hitAny;
+      }
+      
       private function _CreateWorld():void
       {
          var bounds:b2AABB = new b2AABB();

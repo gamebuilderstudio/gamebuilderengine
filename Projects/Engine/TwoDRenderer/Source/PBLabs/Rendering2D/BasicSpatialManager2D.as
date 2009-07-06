@@ -45,15 +45,7 @@ package PBLabs.Rendering2D
       
       private function boxVsBox(box1:Rectangle, box2:Rectangle):Boolean
       {
-         if(box1.containsPoint(box2.topLeft))
-            return true;
-         if(box1.containsPoint(box2.bottomRight))
-            return true;
-         if(box2.containsPoint(box1.topLeft))
-            return true;
-         if(box2.containsPoint(box1.bottomRight))
-            return true;
-         return false;
+         return box1.intersects(box2);
       }
       /**
        * @inheritDoc
@@ -115,6 +107,35 @@ package PBLabs.Rendering2D
          Profiler.Exit("QueryCircle");
 
          return foundAny;
+      }
+      
+      /**
+       * @inheritDoc
+       */
+      public function ObjectsUnderPoint(point:Point, mask:ObjectType, results:Array, scene:IDrawManager2D):Boolean
+      {
+         var tmpResults:Array = new Array();
+         
+         // First use the normal spatial query...
+         if(!QueryCircle(point, 64, mask, tmpResults))
+            return false;
+         
+         // Ok, now pass control to the objects and see what they think.
+         var hitAny:Boolean = false;
+         for each(var tmp:ISpatialObject2D in tmpResults)
+         {
+            if(!tmp.PointOccupied(point, scene))
+               continue;
+            
+            results.push(tmp);
+            hitAny = true;
+         }
+         
+         // Sort the results.
+         if(scene)
+            scene.SortSpatials(results);
+         
+         return hitAny;
       }
       
       /**

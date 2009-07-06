@@ -54,6 +54,16 @@ package PBLabs.Rendering2D
       /**
        * Cast a ray and (optionally) return information about what it hits in result.
        */
-      function CastRay(start:Point, end:Point, flags:ObjectType, result:RayHitInfo):Boolean;      
+      function CastRay(start:Point, end:Point, flags:ObjectType, result:RayHitInfo):Boolean;
+
+      /**
+       * Return all the objects under a given point. Objects can optionally implement
+       * pixel-level collision checking.
+       *
+       * @param point Point in worldspace to check.
+       * @param mask Only consider objects that match this ObjectType.
+       * @param results An array into which ISpatialObject2Ds are added based on what is under point.
+       */
+      function ObjectsUnderPoint(point:Point, mask:ObjectType, results:Array, scene:IDrawManager2D):Boolean;
    }
 }

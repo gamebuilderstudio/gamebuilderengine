@@ -255,6 +255,16 @@ package PBLabs.Rendering2D
       }
       
       /**
+       * @inheritDoc
+       */
+      public function SortSpatials(items:Array):void
+      {
+         // No sorting for basic ortho case, as we would have to know layer indices
+         // which ISpatialObject2D doesn't have... and I don't need it right now 
+         // for Grunts. :) -- BJG
+      }
+
+      /**
        * If the specified layer should be cached to a bitmap, returns true.
        * 
        * @param layerIndex The layer to check.

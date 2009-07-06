@@ -48,6 +48,12 @@ package PBLabs.Rendering2D
       }
       
       /**
+       * If set, a SpriteRenderComponent we can use to fulfill point occupied
+       * tests.
+       */
+      public var SpriteForPointChecks:SpriteRenderComponent;
+      
+      /**
        * The position of the object.
        */
       public var Position:Point = new Point(0, 0);
@@ -130,6 +136,20 @@ package PBLabs.Rendering2D
       public function CastRay(start:Point, end:Point, mask:ObjectType, info:RayHitInfo):Boolean
       {
          return false;
+      }
+
+      /**
+       * All points in our bounding box are occupied.
+       * @inheritDoc
+       */
+      public function PointOccupied(pos:Point, scene:IDrawManager2D):Boolean
+      {
+         // If no sprite then we just test our bounds.
+         if(!SpriteForPointChecks || !scene)
+            return WorldExtents.containsPoint(pos);
+         
+         // OK, so pass it over to the sprite.
+         return SpriteForPointChecks.PointOccupied(pos, scene);
       }
       
       private var _objectMask:ObjectType;

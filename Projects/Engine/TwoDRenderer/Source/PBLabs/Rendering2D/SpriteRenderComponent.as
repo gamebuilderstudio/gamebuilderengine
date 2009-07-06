@@ -180,6 +180,29 @@ package PBLabs.Rendering2D
       }
       
       /**
+       * Given a point in worldspace, check if the sprite is opaque there.
+       */
+      public function PointOccupied(point:Point, scene:IDrawManager2D):Boolean
+      {
+         // First, get the relative positions in screenspace. Don't deal with 
+         // rotation yet.
+         var pointInScreenSpace:Point = scene.TransformWorldToScreen(point);
+         var spriteUpperLeftInScreenSpace:Point = scene.TransformWorldToScreen(RenderPosition);
+         if (_spriteSheet)
+         {
+            spriteUpperLeftInScreenSpace.x += -_spriteSheet.Center.x;
+            spriteUpperLeftInScreenSpace.y += -_spriteSheet.Center.y;
+         }
+         
+         // Then we can get the current frame and inquire of it.
+         var bd:BitmapData = GetCurrentFrame();
+         if(!bd)
+            return false;
+         
+         return bd.hitTest(spriteUpperLeftInScreenSpace, 0xF0, pointInScreenSpace);
+      }
+      
+      /**
        * @inheritDoc
        */
       protected override function _OnAdd():void

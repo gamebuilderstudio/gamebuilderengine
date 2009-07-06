@@ -151,6 +151,19 @@ package PBLabs.Rendering2D
        */ 
       function GetBackBuffer():BitmapData;
       
-      function CopyPixels(bitmapData:BitmapData, offset:Point):void      
+      /**
+       * Fast path for direct pixel copying (only works when drawing to a 
+       * render target).
+       *
+       * @param bitmapData Source image to copy.
+       * @param offset     Location on screen to copy to.
+       */
+      function CopyPixels(bitmapData:BitmapData, offset:Point):void
+
+      /**
+       * Sort a limited set of objects into draw order, so that we can match
+       * them when doing objects under checks. Does sort in-place in array.
+       */
+      function SortSpatials(items:Array):void;
    }
 }
