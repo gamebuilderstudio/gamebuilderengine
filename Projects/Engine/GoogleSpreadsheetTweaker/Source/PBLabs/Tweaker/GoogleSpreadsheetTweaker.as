@@ -51,7 +51,7 @@ package PBLabs.Tweaker
        * The URL for the proxy script, described in the web subfolder of this
        * project.
        */
-      public var ProxyUrl:String = "http://coderhump.com/pbe/latestSkirmish/GoogleSpreadsheetProxy.php";
+      public var ProxyUrl:String = "http://yoururl.com/yourproxyscript.php";
       
       /**
        * List of TweakerMapEntry instances mapping cells to properties.
