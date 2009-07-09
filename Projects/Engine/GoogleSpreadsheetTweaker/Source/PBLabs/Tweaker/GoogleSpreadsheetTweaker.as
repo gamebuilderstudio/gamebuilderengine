@@ -59,8 +59,44 @@ package PBLabs.Tweaker
       [TypeHint(type="PBLabs.Tweaker.TweakerMapEntry")]
       public var Config:Array = new Array();
 
+      /**
+       * Groups let you assign patterns of cells and properties to multiple items.
+       */
+      [TypeHint(type="PBLabs.Tweaker.TweakerMapGroup")]
+      public var Groups:Array = new Array();
+      
       protected override function _OnAdd():void
       {
+         // Process the groups.
+         for each(var tmg:TweakerMapGroup in Groups)
+         {
+            for each(var tmgoffset:TweakerMapEntry in tmg.Offsets)
+            {
+               // Figure base cell position.
+               var baseX:int = tmgoffset.Cell.charCodeAt(0) - "A".charCodeAt(0);
+               var baseY:int = parseInt(tmgoffset.Cell.substr(1));
+               
+               // Generate the entries for this offset.
+               for each(var tmgp:TweakerMapEntry in tmg.Entries)
+               {
+                  // Concatenate the property reference.
+                  var groupProp:String = tmgoffset.Property.Property + tmgp.Property.Property;
+                  
+                  // Add the cell references.
+                  var cellX:String = String.fromCharCode(baseX + (tmgp.Cell.charCodeAt(0) - "A".charCodeAt(0)) + "A".charCodeAt(0));
+                  var cellY:int = parseInt(tmgp.Cell.substr(1)) + baseY;
+                  var cell:String = cellX + cellY.toString();
+                  
+                  // Note the new entry.
+                  var newEntry:TweakerMapEntry = new TweakerMapEntry();
+                  newEntry.Cell = cell;
+                  newEntry.Property = new PropertyReference(groupProp);
+                  trace(" made property " + newEntry);
+                  Config.push(newEntry);
+               }               
+            }
+         }
+         
          // Request the URL via our proxy.
          var ur:URLRequest = new URLRequest(ProxyUrl);
          ur.method = URLRequestMethod.POST;
