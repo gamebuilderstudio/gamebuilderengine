@@ -91,7 +91,9 @@ package PBLabs.Tweaker
                   var newEntry:TweakerMapEntry = new TweakerMapEntry();
                   newEntry.Cell = cell;
                   newEntry.Property = new PropertyReference(groupProp);
-                  trace(" made property " + newEntry);
+                  
+                  //trace(" made property " + newEntry);
+                  
                   Config.push(newEntry);
                }               
             }
