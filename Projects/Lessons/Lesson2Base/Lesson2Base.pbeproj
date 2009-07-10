@@ -1,0 +1,26 @@
+<Project>
+  <Name>Lesson2Base</Name>
+  <Type>WebApplication</Type>
+  <Description>The base project for Lesson 2</Description>
+  <Version>1.0.0</Version>
+  <AuthorName>PushButton Labs</AuthorName>
+  <AuthorEmail/>
+  <Dependencies>
+    <Dependency>
+      <Name>TwoDRenderer</Name>
+      <Version>1.0.0</Version>
+    </Dependency>
+    <Dependency>
+      <Name>PBEngine</Name>
+      <Version>1.0.0</Version>
+    </Dependency>
+  </Dependencies>
+  <PackageFolders>
+    <Folder>Output</Folder>
+    <Folder>Documentation</Folder>
+  </PackageFolders>
+  <PackageWithSourceFolders>
+    <Folder>Assets</Folder>
+    <Folder>Source</Folder>
+  </PackageWithSourceFolders>
+</Project>

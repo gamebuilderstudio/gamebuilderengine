@@ -39,6 +39,11 @@ package PBLabs.Engine.Core
          
          return _instance;
       }
+
+      public static function IsKeyDown(key:InputKey):Boolean
+      {
+         return Instance.IsKeyDown(key.KeyCode);
+      }
       
       private static var _instance:InputManager = null;
       
