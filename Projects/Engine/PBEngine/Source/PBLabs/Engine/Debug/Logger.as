@@ -106,7 +106,7 @@ package PBLabs.Engine.Debug
          var entry:LogEntry = new LogEntry();
          entry.Reporter = reporter;
          entry.Method = method;
-         entry.Message = message;
+         entry.Message = method + " - " + message;
          entry.Type = LogEntry.WARNING;
          Instance._AddEntry(entry);
       }
@@ -124,7 +124,7 @@ package PBLabs.Engine.Debug
          var entry:LogEntry = new LogEntry();
          entry.Reporter = reporter;
          entry.Method = method;
-         entry.Message = message;
+         entry.Message = method + " - " + message;
          entry.Type = LogEntry.ERROR;
          Instance._AddEntry(entry);
       }
@@ -143,7 +143,7 @@ package PBLabs.Engine.Debug
          var entry:LogEntry = new LogEntry();
          entry.Reporter = reporter;
          entry.Method = method;
-         entry.Message = message;
+         entry.Message = method + " - " + message;
          entry.Type = type;
          Instance._AddEntry(entry);
       }

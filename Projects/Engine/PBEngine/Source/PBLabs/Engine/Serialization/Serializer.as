@@ -207,7 +207,7 @@ package PBLabs.Engine.Serialization
             var fieldName:String = fieldXML.name().toString();
             if (!object.hasOwnProperty(fieldName) && !isDynamic)
             {
-               Logger.PrintWarning(object, "Deserialize", "The field " + fieldName + " does not exist on the class " + TypeUtility.GetObjectClassName(object) + ".");
+               Logger.PrintWarning(object, "Deserialize", "The field '" + fieldName + "' does not exist on the class " + TypeUtility.GetObjectClassName(object) + ".");
                continue;
             }
             
