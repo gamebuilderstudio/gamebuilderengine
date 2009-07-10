@@ -234,7 +234,7 @@
       
    &lt;/things&gt;   
    </pre>
-   
+
    <h2>Basic Structure</h2>
    
    <p>There are three types of objects that can be instantiated from XML using the engine's TemplateManager class. These are entity, template, and group. Each of these can appear any number of times in a single XML file, in any order. They are all contained in the same parent tag that is the root of the XML document.</p>
@@ -317,6 +317,68 @@
    <p>ObjectType fields can be treated like an array of strings. Each of the child tag values is added as a named type to the ObjectType field.</p>
 
    <p>The InputMap class can be treated exactly like a dictionary. The keys should be the name of a binding on the input map, and the value should be the name of the key to use for that binding.</p>
+   
+   <h2>Loading a Level File</h2>
+
+   <p>To load a level file you use the <a href="http://pushbuttonengine.googlecode.com/svn/site/APIDocs/PBLabs/Engine/Core/LevelManager.html">LevelManager</a>. It's job is to manage the loading and unloading of level files. It also provides an interface to add and remove file and group references. You can also override the default file loading and unloading methods to customize this behavior.</p>
+   
+   <h3>Loading via MXML</h3>
+
+   <p>There are two MXML tags available for prepping levels and groups for use with the LevelManager. <a href="http://pushbuttonengine.googlecode.com/svn/site/APIDocs/PBLabs/Engine/MXML/LevelFileReference.html">LevelFileReference</a> is used to associate level files with level numbers and <a href="http://pushbuttonengine.googlecode.com/svn/site/APIDocs/PBLabs/Engine/MXML/GroupReference.html">GroupReference</a> maps groups to level numbers.</p>
+
+   <p>To add the level file shown above in MXML we would do the following:</p>
+
+   <pre class="brush: xml">
+   &lt;mx:Canvas xmlns:mx="http://www.adobe.com.2006/mxml" xmlns:pb="PBLabs.Engine.MXML.*"&gt;
+      &lt;pb:LevelFileReference filename="..Assets/Levels/level.pbelevel" level="0" id="myLevelReference" /&gt;
+      &lt;pb:GroupReference name="Managers" level="0" id="managerGroup" /&gt;
+      &lt;pb:GroupReference name="SpriteSheets" level="0" id="spriteSheetsGroup" /&gt;
+      &lt;pb:GroupReference name="Objects" level="0" id="objectsGroup" /&gt;
+      &lt;pb:GroupReference name="Everything" level="0" id="everythingGroup" /&gt;
+   &lt;/mx:Canvas&gt;
+   </pre>
+
+   <p>This will ensure that all four groups get their objects instantiated when LevelManager loads the level and has it's Start method called. The 'level' attribute shared by both classes is simply an index used to define sets of groups or files to have loaded.</p>
+  
+   <pre class="brush: javascript">
+   // Load level 0 and start game.
+   LevelManager.Instance.LoadLevel(0);
+   LevelManager.Instance.Start();
+   </pre>
+
+   <p>At this point, level 0 is loaded, the objects have been created and the game can begin. LevelManager also dispatches events based on the loading and unloading of level files.To be notified that a level has finished loading you would do the following:</p>
+  
+   <pre class="brush: javascript">
+   // Add a listener to respond to level loaded event
+   LevelManager.Instance.addEventListener(LevelEvent.LEVEL_LOADED_EVENT, levelLoadedHandler, false, 0, true);
+   // Load level 0 and start game.
+   LevelManager.Instance.LoadLevel(0);
+   LevelManager.Instance.Start();
+
+   private function levelLoadedHandler(event:LevelEvent):void
+   {
+      // level is loaded!
+   }
+   </pre>
+   
+   <h3>Loading via ActionScript</h3>
+
+   <p>As one would expect, the process of loading level files in ActionScript is very similar to doing so in MXML:</p>
+
+   <pre class="brush: javascript">
+   // Add file and group references
+   LevelManager.Instance.AddFileReference(0, "../Assets/Levels/level.pbelevel");
+   LevelManager.Instance.AddGroupReference(0, "Managers");
+   LevelManager.Instance.AddGroupReference(0, "SpriteSheets");
+   LevelManager.Instance.AddGroupReference(0, "Objects");
+   LevelManager.Instance.AddGroupReference(0, "Everything");
+
+   // Load level 0 and start game.
+   LoadManager.Instance.LoadLevel(0);
+   LoadManager.Instance.Start();
+   </pre>
+
+   <p>You'll notice the method arguments reflect the 'name' and 'level' attributes mentioned above.</p>
    
    <h2>Other Uses for XML</h2>
 
