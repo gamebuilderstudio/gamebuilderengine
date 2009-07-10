@@ -45,7 +45,18 @@ package PBLabs.Rendering2D
       
       private function boxVsBox(box1:Rectangle, box2:Rectangle):Boolean
       {
-         return box1.intersects(box2);
+         // box1.intersect(box2) doesn't work for Grunts rayacsts. Theory is that
+         // a box completely contained by another box doesn't return true, but
+         // don't have an exact repro case. -- BJG
+         if(box1.containsPoint(box2.topLeft))
+            return true;
+         if(box1.containsPoint(box2.bottomRight))
+            return true;
+         if(box2.containsPoint(box1.topLeft))
+            return true;
+         if(box2.containsPoint(box1.bottomRight))
+            return true;
+         return false;
       }
       /**
        * @inheritDoc
