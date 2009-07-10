@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+   <link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+   <script type="text/javascript" src="js/pageToc.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shCore.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushJScript.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushPhp.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushPlain.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushXml.js"></script>
+   <link type="text/css" rel="stylesheet" href="js/sh/styles/shCore.css"/>
+   <link type="text/css" rel="stylesheet" href="js/sh/styles/shThemeDefault.css"/>
+   <script type="text/javascript">
+   		SyntaxHighlighter.config.clipboardSwf = 'js/sh/scripts/clipboard.swf';
+   		SyntaxHighlighter.all();
+   </script>
+   <title>PushButton Engine Lesson #4: Keyboard Input for Player Control</title>
+</head>
+<body>
+
+   <h1>PushButton Engine Lesson #4: Keyboard Input for Player Control</h1>
+   <p><center><em>"Human beings, vegetables, or comic dust, we all dance to a mysterious tune, intoned in the distance by an invisible player."</em> - Albert Einstein</center></p>
+   
+   <p>The goal of this lesson is to guide the user through creating a custom component that uses keyboard input to move a simple shape around the screen.</p>
+   
+   <p>These lessons are structured in a series of steps -- small milestones that will provide focused short-term goals for incrementally understanding PushButton Engine.</p>
+   
+   <p>These lessons are targeted at someone who is new to PBEngine, but not necessarily new to programming.</p>
+   <div id="pageToc"></div>
+
+   <div id="contentArea">   
+   
+   <h2>Tutorial Resources:</h2>
+   <p>To follow along with the tutorial, you can download the starter project and use it as your base to implement the tutorial:
+      <ul>
+         <li><a href="/downloads/Lesson4Base.pbepkg">Lesson4Base.pbepkg</a> (8KB)</li>
+      </ul>
+   The completed lesson files are available at the end of the tutorial.
+   </p>
+   <p>As covered in Lesson 1, import the example .pbepkg into a personal project folder, and ensure that it builds in your build environment.</p>
+   
+   <p>The built .swf of the base starter project should display a blue circle in the center of the screen.</p>
+   
+   <h2>Introduction to the Tutorial</h2>
+   
+   <p>In the last lesson, we saw how to create a simple controller component that moves the character based on a behavioral pattern.  Next, we'll add keyboard input, so that the movements are controlled by the player.</p>
+   <p>To help streamline user input, PBE provides a flexible component called the InputManager.  This lets us easily poll to see which keys are being pressed.</p>
+   <p>For more advanced input configurations (such as allowing key remappings or special event notifications for keys), then PBE also provides an InputMap class that will be covered later on in the tutorial.  For now, we will try to keep things simpel.</p>
+   
+   <p><h2>Building a Component</h2></p>
+   <p>Just like in our last lesson, we will again set up a basic scene, with three basic components: render, spatial, and controller.  This time, we will be creating another custom ticked component that updates every frame.  This new component will utilize the InputManager to let a player use the left and right keys to move an entity in two directions.</p>
+
+   <p>The various keys are referenced through the InputKey class:</p>
+   <pre class="brush: js">
+   // Input keys can be referenced through static class members:
+   InputKey.LEFT
+   // Or they can be referenced by a named string lookup:
+   InputKey.StringToKey("LEFT")
+   </pre>   
+
+   <p>In the base lesson directory, you will find the simple stub class HeroControllerComponent.  To make it respond to keyboard events, we will have the OnTick() method look at keys to see which are being pressed.  You can do this through the InputManager.IsKeyDown() method, like so:</p>
+
+   <pre class="brush: js">
+   // IsKeyDown() returns a boolean -- false means the key is up, and true means that the key is down.
+   if (InputManager.IsKeyDown(InputKey.SPACE))
+   {
+      // React to the key being depressed:
+      trace("Hey, cheer up!");
+   }
+   </pre>
+
+   <p>Depending on which keys are down, depends on how we will modify our position.  Modify the HeroControllerComponent to look like the following:</p>
+   <p><strong>File: /Lesson4Base/Source/HeroControllerComponent.as</strong></p>
+   <pre class="brush: js">
+package 
+{
+   import PBLabs.Engine.Components.TickedComponent;
+   import PBLabs.Engine.Core.InputManager;
+   import PBLabs.Engine.Core.InputKey;
+   import PBLabs.Engine.Entity.PropertyReference;
+
+   import flash.geom.Point;
+
+   // Make a ticked component so that it can update itself every frame with OnTick() 
+   public class HeroControllerComponent extends TickedComponent
+   {
+      // Keep a property reference to our entity's position.
+      public var PositionReference:PropertyReference;
+
+      // OnTick() is called every frame
+      public override function OnTick(tickRate:Number):void
+      {
+         // Get references for our spatial position.
+         var position:Point = Owner.GetProperty(PositionReference);
+
+         // Look at our input keys to see which direction we should move. Left is -x, right is +x.
+         if (InputManager.IsKeyDown(InputKey.RIGHT))
+         {
+            // Move our hero to the right
+            position.x += 15;
+         }
+         if (InputManager.IsKeyDown(InputKey.LEFT))
+         {
+            // Move our hero to the left
+            position.x -= 15;
+         }
+         
+         // Finally, add some boundary limits so that we don't go off the edge of the screen.
+         if (position.x &gt 375)
+         {
+            // Set our position at the wall edge
+            position.x = 375;               
+         } 
+         else if (position.x &lt -375)
+         {
+            // Set our position at the wall edge
+            position.x = -375;
+         }
+
+         // Send our manipulated spatial variables back to the spatial manager
+         Owner.SetProperty(PositionReference, position);
+      }    
+   }
+}
+   </pre>   
+   
+   <p>And that should do it!</p>
+
+   <p><h2>Putting your oar in.</h2></p>
+   <p>After it's all compiled, you should have an .swf like the following (click to load):</p>
+   <p><a href="downloads/Lesson4Final.swf"><img src="images/Lesson4_1.png" width="204" height="159" alt="I like to move it move it!"></a></p>
+   
+   <p><h2>Going Further: Advanced Input Control</h2></p>
+   <p>To do more advanced input functionality, PBEngine provides an InputMap class.</p>
+   
+   <p>The InputMap acts as an intermediary, and creates the distinction of Keys, Actions, and Handlers.</p>
+
+   <p><img src="images/Lesson4_KeyTerms.png" alt="A brief glossary of key key terms." align="right"></a></p>
+
+   <p>If you want to have more than one entity on the screen controlled by different keys on the keyboard (such as for a two-player pong game, or a multiplayer racing game), then the InputMap provides a very flexible way of dealing with this.  Instead of assigning keys directly to method calls, you can use an intermediate step to assign keys to <em>actions</em>, and then from inside your component you can assign actions to method calls in your component.</p>
+   
+   <p>Many games won't need this level of flexibility, but it's a powerful class to have around nonetheless.  It also has some handy methods for handling mouse input, but covering it all is beyond the scope of this lesson.</p>
+   
+   <p><h2>Conclusion</h2></p>
+   
+   <p>Congratulations!  You have finished lesson #4, and given your game its first reaction to user input.  Further up, and further in!</p>
+
+   <p>You can download the completed project source files for this project.
+      <ul>
+         <li><a href="/downloads/Lesson4Final.pbepkg">Lesson4Final.pbepkg</a> (8KB)</li>
+      </ul>
+   </p>
+   </div>
+</body>
+</html>
