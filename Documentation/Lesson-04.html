@@ -44,13 +44,17 @@
    <h2>Introduction to the Tutorial</h2>
    
    <p>In the last lesson, we saw how to create a simple controller component that moves the character based on a behavioral pattern.  Next, we'll add keyboard input, so that the movements are controlled by the player.</p>
+   
    <p>To help streamline user input, PBE provides a flexible component called the InputManager.  This lets us easily poll to see which keys are being pressed.</p>
-   <p>For more advanced input configurations (such as allowing key remappings or special event notifications for keys), then PBE also provides an InputMap class that will be covered later on in the tutorial.  For now, we will try to keep things simpel.</p>
+   
+   <p>For more advanced input configurations (such as allowing key remappings or special event notifications for keys), then PBE also provides an InputMap class that will be covered later on in the tutorial.  For now, we will try to keep things simpler by just focusing on the InputManager.</p>
    
    <p><h2>Building a Component</h2></p>
-   <p>Just like in our last lesson, we will again set up a basic scene, with three basic components: render, spatial, and controller.  This time, we will be creating another custom ticked component that updates every frame.  This new component will utilize the InputManager to let a player use the left and right keys to move an entity in two directions.</p>
+   <p>Just like in our last lesson, we again set up a basic scene with three basic components: render, spatial, and controller.  And again, we will be creating a custom component that inherits from TickedComponent so that it updates itself every frame.</p>
 
-   <p>The various keys are referenced through the InputKey class:</p>
+   <p>This new component will utilize the InputManager to let a player use the left and right keys to move an entity in two directions.</p>
+
+   <p>The various keys that we can poll are referenced through the InputKey class:</p>
    <pre class="brush: js">
    // Input keys can be referenced through static class members:
    InputKey.LEFT
@@ -58,7 +62,7 @@
    InputKey.StringToKey("LEFT")
    </pre>   
 
-   <p>In the base lesson directory, you will find the simple stub class HeroControllerComponent.  To make it respond to keyboard events, we will have the OnTick() method look at keys to see which are being pressed.  You can do this through the InputManager.IsKeyDown() method, like so:</p>
+   <p>In the base lesson directory, you will find the simple stub class HeroControllerComponent.  To make it respond to keyboard events, we will have the OnTick() method ask the InputManager if the keys we are interested in are being pressed.  You can do this through the InputManager.IsKeyDown() method, like so:</p>
 
    <pre class="brush: js">
    // IsKeyDown() returns a boolean -- false means the key is up, and true means that the key is down.
@@ -69,7 +73,35 @@
    }
    </pre>
 
-   <p>Depending on which keys are down, depends on how we will modify our position.  Modify the HeroControllerComponent to look like the following:</p>
+   <p>Depending on which keys are down, we will modify our owner's spatial component's position.  Just like last time, we will retrieve the spatial position through a PropertyReference, make adjustments according to a set of rules, and then set the position property to the new position value.  The only things that are different are the rules by which we change the position.</p>
+
+   <p>These are the rules that we will follow this time to move our character back and forth:</p>
+   <p>
+   <ul>
+      <li>If the right key is being pressed:
+         <ul>
+            <li>Move ourselves to the right</li>
+         </ul>
+      </li>
+      <li>If the left key is being pressed:
+         <ul>
+            <li>Move ourselves to the left</li>
+         </ul>
+      </li>
+      <li>If we are past the right edge:
+         <ul>
+            <li>Clamp ourselves to the right edge</li>
+         </ul>
+      </li>
+      <li>If we are past the left edge:
+         <ul>
+            <li>Clamp ourselves to the left edge</li>
+         </ul>
+      </li>
+   </ul>
+   </p>
+
+   <p>Now that we know how we want it to act, let's actually implement it.  Modify the HeroControllerComponent to look like the following:</p>
    <p><strong>File: /Lesson4Base/Source/HeroControllerComponent.as</strong></p>
    <pre class="brush: js">
 package 
@@ -143,8 +175,8 @@ package
    
    <p><h2>Conclusion</h2></p>
    
-   <p>Congratulations!  You have finished lesson #4, and given your game its first reaction to user input.  Further up, and further in!</p>
-
+   <p>Congratulations!  You have finished lesson #4, and given your game its first reaction to user input.</p>
+   
    <p>You can download the completed project source files for this project.
       <ul>
          <li><a href="downloads/Lesson4Final.zip">Lesson4Final.zip</a> (8KB)</li>
