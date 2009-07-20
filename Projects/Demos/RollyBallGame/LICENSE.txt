@@ -1,5 +1,0 @@
-The RollyBallGame demo game code and art are included with this SDK for
-educational use only. Please contact us if you would like to use any art
-or code for other purposes (including use in your own projects).
-
-(c) 2009 PushButton Labs, LLC

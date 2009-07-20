@@ -1,8 +1,0 @@
-<Project version="1.0">
-   <Name>FlexLib</Name>
-   <Type>Library</Type>
-   <Version>1.0.0</Version>
-   <Description>The flexlib library from http://code.google.com/p/flexlib/</Description>
-   <AuthorName>PushButton Labs</AuthorName>
-   <AuthorEmail>pbe@pushbuttonlabs.com</AuthorEmail>
-</Project>
