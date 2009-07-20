@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Container xmlns:mx="http://www.adobe.com/2006/mxml" horizontalScrollPolicy="off" verticalScrollPolicy="off" implements="PBLabs.Rendering2D.UI.IUITarget" resize="_OnResize()">
+   <mx:Script>
+      <![CDATA[
+        private var _DisplayList:Array = new Array();
+        
+   		public function AddDisplayObject(dobj:DisplayObject):void
+   		{
+   		   _DisplayList.push(dobj);
+   		   rawChildren.addChild(dobj);	
+   		}
+   		
+   		public function ClearDisplayObjects():void
+   		{
+   			for each(var d:DisplayObject in _DisplayList)
+   			{
+   				if (rawChildren.contains(d))
+   				   rawChildren.removeChild(d);
+   			}
+   			
+   			_DisplayList.length = 0;
+   		}
+   		
+   		private function _OnResize():void
+   		{
+   		   scrollRect = new Rectangle(0, 0, width, height);
+   		}
+      ]]>
+   </mx:Script>
+</mx:Container>
