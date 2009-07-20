@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*******************************************************************************
+ * PushButton Engine
+ * Copyright (C) 2009 PushButton Labs, LLC
+ * For more information see http://www.pushbuttonengine.com
+ * 
+ * This file is property of PushButton Labs, LLC and NOT under the MIT license.
+ ******************************************************************************/
+-->
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:pb="PBLabs.Engine.MXML.*">
+   <pb:ResourceBinding filename="../Assets/Levels/level.pbelevel" resourceType="PBLabs.Engine.Resource.XMLResource" resourceClass="@Embed(source='../Assets/Levels/level.pbelevel', mimeType='application/octet-stream')"/>
+   <pb:ResourceBinding filename="../Assets/Images/coin.png" resourceType="PBLabs.Rendering2D.ImageResource" resourceClass="@Embed(source='../Assets/Images/coin.png', mimeType='application/octet-stream')"/>
+   <pb:ResourceBinding filename="../Assets/Images/welcome.png" resourceType="PBLabs.Rendering2D.ImageResource" resourceClass="@Embed(source='../Assets/Images/welcome.png', mimeType='application/octet-stream')"/>
+
+   <pb:ResourceBinding filename="../Assets/Images/level1_height.png" resourceType="PBLabs.Rendering2D.ImageResource" resourceClass="@Embed(source='../Assets/Images/level1_height.png', mimeType='application/octet-stream')"/>
+   <pb:ResourceBinding filename="../Assets/Images/level1_normal.png" resourceType="PBLabs.Rendering2D.ImageResource" resourceClass="@Embed(source='../Assets/Images/level1_normal.png', mimeType='application/octet-stream')"/>
+   <pb:ResourceBinding filename="../Assets/Images/level1_diffuse.png" resourceType="PBLabs.Rendering2D.ImageResource" resourceClass="@Embed(source='../Assets/Images/level1_diffuse.png', mimeType='application/octet-stream')"/>
+
+   <pb:ResourceBinding filename="../Assets/Images/level2_height.png" resourceType="PBLabs.Rendering2D.ImageResource" resourceClass="@Embed(source='../Assets/Images/level2_height.png', mimeType='application/octet-stream')"/>
+   <pb:ResourceBinding filename="../Assets/Images/level2_normal.png" resourceType="PBLabs.Rendering2D.ImageResource" resourceClass="@Embed(source='../Assets/Images/level2_normal.png', mimeType='application/octet-stream')"/>
+   <pb:ResourceBinding filename="../Assets/Images/level2_diffuse.png" resourceType="PBLabs.Rendering2D.ImageResource" resourceClass="@Embed(source='../Assets/Images/level2_diffuse.png', mimeType='application/octet-stream')"/>
+
+   <pb:ResourceBinding filename="../Assets/Sounds/pickup.mp3" resourceType="PBLabs.Engine.Resource.MP3Resource" resourceClass="@Embed(source='../Assets/Sounds/pickup.mp3')"/>
+   <pb:ResourceBinding filename="../Assets/Sounds/scorechunk.mp3" resourceType="PBLabs.Engine.Resource.MP3Resource" resourceClass="@Embed(source='../Assets/Sounds/scorechunk.mp3')"/>
+</mx:Canvas>

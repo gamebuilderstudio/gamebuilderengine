@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*******************************************************************************
+ * PushButton Engine
+ * Copyright (C) 2009 PushButton Labs, LLC
+ * For more information see http://www.pushbuttonengine.com
+ * 
+ * This file is licensed under the terms of the MIT license, which is included
+ * in the License.html file at the root directory of this SDK.
+ ******************************************************************************/
+-->
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" frameRate="60" width="800" height="600" applicationComplete="_OnLoaded()">
+   <mx:Script>
+      <![CDATA[
+         import PBLabs.Engine.Core.*;
+         import PBLabs.PBEngineDemo.UI.*;
+         import PBLabs.Engine.Debug.Log4PBE.*;
+          
+         private function _OnLoaded():void
+         {
+            LogManager.Instance.LoadConfiguration("logConfiguration.xml");
+            
+            Global.Startup(this);
+            
+            LevelManager.Instance.addEventListener(LevelEvent.LEVEL_LOADED_EVENT, _OnLevelLoaded);
+            LevelManager.Instance.Load("../Assets/levelDescriptions.xml");
+            
+            // Load level zero.
+            LevelManager.Instance.Start(1);
+
+            addChild(_mainMenu);
+         }
+         
+         private function _OnLevelLoaded(event:LevelEvent):void
+         {
+            removeAllChildren();
+            addChild(_gameUI);
+         }
+         
+         private var _mainMenu:MainMenu = new MainMenu();
+         private var _gameUI:GameUI = new GameUI();
+         private var _references:References = new References();
+      ]]>
+   </mx:Script>
+</mx:Application>
