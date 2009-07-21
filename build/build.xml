@@ -1,0 +1,106 @@
+<!-- 
+
+   Welcome to the PushButton Engine Ant build file.
+   
+   If you are building your own application you probably just need the SWC
+   or else you need to copy the src/ folder's contents into your project.
+   
+   If you are a more advanced user or a PBEngine SDK developer, then this file
+   will be of interest to you. :)
+   
+   This file is based on the PaperVision3D Ant build file, subsequently modified
+   to fit PBEngine.
+   
+   How to use build.properties file:
+
+    Your checkout should include a build.template.properties file. This is where
+    variables that change from system to system are stored. Simply rename the file
+    to build.properties and place it in the same directory as your build.xml. When 
+    you run the build.xml it will automatically import the build.properties file.
+
+    Make sure you change the path of the Flex SDK and if you are on a PC you will need
+    to add ".exe" to the asdoc.exe and compc.exe properties.
+-->
+<project name="PBEngine SDK" default="compile" basedir="..">
+
+    <!-- import our build properties file -->
+    <property file="${basedir}/build/build.properties" />
+
+    <property name="windowtitle" value="PushButton Engine Documentation" />
+    <property name="maintitle" value="PushButton Engine Documentation" />
+    <property name="footer" value="http://pushbuttonengine.com/" />
+
+    <property name="bindir" value="${basedir}/bin" />
+    <property name="classesdir" value="${basedir}/src" />
+    <property name="docsdir" value="${basedir}/docs/api" />
+
+    <property name="testdocsdir" value="${basedir}/testdocs" />
+    <property name="asdoctemplate" value="${basedir}/asdoc/templates" />
+
+    <property name="flex3bindir" value="${flex3dir}/bin" />
+    <property name="flex3libsdir" value="${flex3dir}/frameworks/libs" />
+    <property name="asdoc" value="${flex3bindir}/${asdoc.exe}" />
+    <property name="compc" value="${flex3bindir}/${compc.exe}" />
+
+    <target name="compile" description="Creates SWC and docs" unless="isUpToDate" depends="printUpToDate">
+        <antcall target="generateSWC" />
+        <antcall target="generateDocs" />
+    </target>
+    
+    <target name="identifyClasses" description="Generates list of classes that will be compiled.">
+        <path id="path.source"> 
+           <fileset dir="${classesdir}" includes="**/*.as,**/*.mxml"/> 
+        </path>
+        <pathconvert property="path.classes" refid="path.source" pathsep=" "> 
+           <chainedmapper> 
+              <globmapper from="${classesdir}/*" to="*" casesensitive="false" handledirsep="true"/> 
+              <mapper type="regexp" from="^PBLabs(.*)\.((mxml)|(as))" to="PBLabs\1"/> 
+              <mapper type="package" from="*" to="*"/> 
+           </chainedmapper> 
+        </pathconvert> 
+    </target>
+
+    <target name="cleanDocs" description="Clean the documentation directory.">
+        <echo>Cleaning out docs from '${docsdir}'...</echo>
+        <delete includeemptydirs="true">
+            <fileset dir="${docsdir}" includes="**/*">
+            </fileset>
+        </delete>
+    </target>
+
+    <target name="generateDocs" description="Generates docs" depends="cleanDocs,identifyClasses">
+        <echo>Generating documentation for '${docsdir}'...</echo>
+        <exec executable="${asdoc}">
+            <arg line="-source-path ${classesdir}" />
+            <arg line="-doc-classes ${path.classes}" />
+            <arg line="-exclude-dependencies=true" />
+            <arg line="-window-title '${windowtitle}'" />
+            <arg line="-main-title '${maintitle}'" />
+            <arg line="-footer '${footer}'" />
+            <arg line="-output '${docsdir}'" />
+        </exec>
+    </target>
+
+    <target name="checkSWCUpToDate"> 
+      <uptodate property="isUpToDate" targetfile="bin/PBEngine.swc"> 
+        <srcfiles dir="${classesdir}"> 
+          <include name="**/*.as"/> 
+          <include name="**/*.mxml"/> 
+        </srcfiles> 
+      </uptodate> 
+    </target>
+
+  <target name="printUpToDate" depends="checkSWCUpToDate" if="isUpToDate"> 
+    <echo>PBEngine.swc is up to date, skipping.</echo> 
+  </target>     
+    
+    <target name="generateSWC" description="Generates PBEngine SWC." unless="isUpToDate" depends="printUpToDate,identifyClasses">
+        <echo>Generating PBEngine.SWC using '${classesdir}'</echo>
+        <exec executable="${compc}">
+            <arg line="-source-path ${classesdir}" />
+            <arg line="-output ${bindir}/PBEngine.swc" />
+            <arg line="-include-classes ${path.classes}" />
+        </exec>
+    </target>
+
+</project>
