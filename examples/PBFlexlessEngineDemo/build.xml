@@ -1,0 +1,10 @@
+<project name="PBFlexlessEngineDemo" default="compileSwf" basedir=".">
+   <import file="../../build/build.xml"/>
+   <target name="compileSwf">
+      <antcall target="buildSWF">
+         <param name="currentProjectRootDir" value="${basedir}" />
+         <param name="currentProjectName" value="PBFlexlessEngineDemo" />
+         <param name="currentProjectRootFile" value="PBFlexlessEngineDemo.as"/>
+      </antcall>
+   </target>
+</project>

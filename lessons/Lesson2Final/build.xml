@@ -1,0 +1,10 @@
+<project name="Lesson2Final" default="compileSwf" basedir=".">
+   <import file="../../build/build.xml"/>
+   <target name="compileSwf">
+      <antcall target="buildSWF">
+         <param name="currentProjectRootDir" value="${basedir}" />
+         <param name="currentProjectName" value="Lesson2Final" />
+         <param name="currentProjectRootFile" value="Lesson2Final.as"/>
+      </antcall>
+   </target>
+</project>

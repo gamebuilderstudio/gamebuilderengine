@@ -21,33 +21,36 @@
     Make sure you change the path of the Flex SDK and if you are on a PC you will need
     to add ".exe" to the asdoc.exe and compc.exe properties.
 -->
-<project name="PBEngine SDK" default="compile" basedir="..">
+<project name="PBEngineSDK" default="compile" basedir=".">
+   <dirname property="buildFilesDir" file="${ant.file.PBEngineSDK}" />
+   <dirname property="rootDir" file="${buildFilesDir}" />
+   
+   <!-- import our build properties file -->
+   <property file="${buildFilesDir}/build.properties" />
 
-    <!-- import our build properties file -->
-   <property file="${basedir}/build/build.properties" />
-
-    <!-- Docs appearance settings. -->
+   <!-- Docs appearance settings. -->
    <property name="windowtitle" value="PushButton Engine Documentation" />
    <property name="maintitle" value="PushButton Engine Documentation" />
    <property name="footer" value="http://pushbuttonengine.com/" />
 
     <!-- Paths for the PBEngine SDK. -->
-   <property name="bindir" value="${basedir}/bin" />
-   <property name="classesdir" value="${basedir}/src" />
-   <property name="docsdir" value="${basedir}/docs/api" />
+   <property name="bindir" value="${rootDir}/bin" />
+   <property name="classesdir" value="${rootDir}/src" />
+   <property name="docsdir" value="${rootDir}/docs/api" />
 
     <!-- Paths for the Flex SDK. -->
    <property name="flex3bindir" value="${flex3dir}/bin" />
    <property name="flex3libsdir" value="${flex3dir}/frameworks/libs" />
    <property name="asdoc" value="${flex3bindir}/${asdoc.exe}" />
    <property name="compc" value="${flex3bindir}/${compc.exe}" />
+   <property name="mxmlc" value="${flex3bindir}/${mxmlc.exe}" />
    
    <target name="ensureValidEnvironment">
       <condition property="buildPropertiesIsValid">
-         <available file="${basedir}/build/build.properties"/>
+         <available file="${buildFilesDir}/build.properties"/>
       </condition>
       <fail unless="buildPropertiesIsValid">
-         No build/build.properties file is present!
+         No ${buildFilesDir}/build.properties file is present!
          
          Copy build/build.template.properties to build/build.properties and
          set the values in it appropriate to your build environment.
@@ -58,11 +61,11 @@
            <available file="${flex3dir}"/> 
          </and> 
        </condition>
-    <fail unless="flexSdkIsValid">Either flex3dir is not set, or it points to a missing directory.
+    <fail unless="flexSdkIsValid">Either flex3dir is not set, or it points to an absent directory.
       
       flex3dir appears to be set to: '${flex3dir}'
     
-      Set the flex3dir parameter by adding it to the build.properties file.
+      Set the flex3dir parameter by editing the build.properties file.
     </fail> 
    </target>
 
@@ -105,7 +108,7 @@
    </target>
 
    <target name="checkSWCUpToDate" depends="ensureValidEnvironment">
-      <uptodate property="isUpToDate" targetfile="bin/PBEngine.swc">
+      <uptodate property="isUpToDate" targetfile="${bindir}/PBEngine.swc">
          <srcfiles dir="${classesdir}">
             <include name="**/*.as"/>
             <include name="**/*.mxml"/>
@@ -146,6 +149,25 @@
       <!-- Package it all into a zip with appropriate name. -->
       <delete file="PushButtonEngine-r${svn.revision}.zip" quiet="true"/>
       <zip destfile="PushButtonEngine-r${svn.revision}.zip" level="9" basedir="." excludes="*svn*"/>
+   </target>
+   
+   <target name="buildSWF" description="Build a SWF for a project given a few properties. Used by per-project Ant files." depends="generateSWC">
+      <!--
+         We expect a few properties.
+         
+         currentProject.rootDir - root directory (like examples/PBEngineDemo).
+         currentProject.name    - name of current project.
+         currentProject.rootFile - .as or .mxml file that is entry point.
+      -->
+      <echo>Building ${currentProjectName} in ${currentProjectRootDir} from ${currentProjectRootFile}</echo>
+      <exec executable="${mxmlc}">
+         <arg line="-source-path+=${currentProjectRootDir}/src " />
+         <arg line="-library-path+=${buildFilesDir}/../bin" />
+         <arg line="--keep-as3-metadata+=TypeHint,EditorData,Embed" />
+         <arg line="-compiler.optimize=true -use-network=false" />
+         <arg line="-output ${currentProjectRootDir}/bin/${currentProjectName}.swf" />
+         <arg line="${currentProjectRootDir}/src/${currentProjectRootFile}" />
+      </exec>
    </target>
 
 </project>

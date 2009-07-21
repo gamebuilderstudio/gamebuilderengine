@@ -1,0 +1,10 @@
+<project name="RollyBallGame" default="compileSwf" basedir=".">
+   <import file="../../build/build.xml"/>
+   <target name="compileSwf">
+      <antcall target="buildSWF">
+         <param name="currentProjectRootDir" value="${basedir}" />
+         <param name="currentProjectName" value="RollyBallGame" />
+         <param name="currentProjectRootFile" value="RollyBallGame.mxml"/>
+      </antcall>
+   </target>
+</project>
