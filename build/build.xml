@@ -133,10 +133,19 @@
    <target name="doFullPackagedBuild" description="Build a packaged ZIP of the whole SDK, ready for distribution.">
       <!-- Build everything. -->
       <antcall target="compile" />
+      <ant dir="${rootDir}/examples/PBEngineDemo"/>
+      <ant dir="${rootDir}/examples/PBFlexlessEngineDemo"/>
+      <ant dir="${rootDir}/examples/RollyBallGame"/>
+      <ant dir="${rootDir}/lessons/Lesson2Base"/>
+      <ant dir="${rootDir}/lessons/Lesson2Final"/>
+      <ant dir="${rootDir}/lessons/Lesson3Base"/>
+      <ant dir="${rootDir}/lessons/Lesson3Final"/>
+      <ant dir="${rootDir}/lessons/Lesson4Base"/>
+      <ant dir="${rootDir}/lessons/Lesson4Final"/>
       
-      <!-- Get the latest revision. -->
+      <!-- Get the current revision. -->
       <path id="svnant.classpath"  >
-        <fileset dir="./build/" >
+        <fileset dir="${buildFilesDir}" >
             <include name="*.jar" />
         </fileset>
       </path> 
@@ -147,8 +156,8 @@
       <echo>Packaging version ${svn.revision} of PBEngine SDK from repo</echo>
       
       <!-- Package it all into a zip with appropriate name. -->
-      <delete file="PushButtonEngine-r${svn.revision}.zip" quiet="true"/>
-      <zip destfile="PushButtonEngine-r${svn.revision}.zip" level="9" basedir="." excludes="*svn*"/>
+      <delete file="${rootDir}/PushButtonEngine-r${svn.revision}.zip" quiet="true"/>
+      <zip destfile="${rootDir}/PushButtonEngine-r${svn.revision}.zip" level="9" basedir="${rootDir}" excludes="*svn*,PushButtonEngine-r*.zip"/>
    </target>
    
    <target name="buildSWF" description="Build a SWF for a project given a few properties. Used by per-project Ant files." depends="generateSWC">
