@@ -40,14 +40,23 @@
    <property name="bindir" value="${rootDir}/bin" />
    <property name="classesdir" value="${rootDir}/src" />
    <property name="docsdir" value="${rootDir}/docs/api" />
+   
+   <!-- Infer the binary extensions. -->
+   <condition property="binaryExtension" value=".exe" else="">
+      <or>
+         <os family="windows"/>
+         <os family="win9x"/>
+         <os family="dos"/>
+      </or>
+   </condition>
 
     <!-- Paths for the Flex SDK. -->
    <property name="flex3bindir" value="${flex3dir}/bin" />
    <property name="flex3libsdir" value="${flex3dir}/frameworks/libs" />
-   <property name="asdoc" value="${flex3bindir}/${asdoc.exe}" />
-   <property name="compc" value="${flex3bindir}/${compc.exe}" />
-   <property name="mxmlc" value="${flex3bindir}/${mxmlc.exe}" />
-   
+   <property name="asdoc" value="${flex3bindir}/asdoc${binaryExtension}" />
+   <property name="compc" value="${flex3bindir}/compc${binaryExtension}" />
+   <property name="mxmlc" value="${flex3bindir}/mxmlc${binaryExtension}" />
+
    <target name="ensureValidEnvironment">
       <condition property="buildPropertiesIsValid">
          <available file="${buildFilesDir}/build.properties"/>
