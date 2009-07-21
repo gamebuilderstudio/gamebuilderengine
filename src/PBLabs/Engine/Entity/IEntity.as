@@ -21,7 +21,7 @@ package PBLabs.Engine.Entity
     * <p>An event with type "EntityDestroyed" will be fired when the entity is
     * destroyed via the Destroy() method. This event is fired before any cleanup
     * is done.</p>
-    * 
+    *  
     * @see IEntityComponent
     * @see PBLabs.Engine.Entity.AllocateEntity()
     */
