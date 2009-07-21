@@ -123,6 +123,7 @@
          <arg line="-source-path ${classesdir}" />
          <arg line="-output ${bindir}/PBEngine.swc" />
          <arg line="-include-classes ${path.classes}" />
+         <arg line="--keep-as3-metadata+=TypeHint,EditorData,Embed" />
       </exec>
    </target>
    
