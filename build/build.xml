@@ -28,6 +28,9 @@
    <!-- import our build properties file -->
    <property file="${buildFilesDir}/build.properties" />
 
+   <!-- Build settings -->
+   <property name="DEBUG" value="false"/>
+   
    <!-- Docs appearance settings. -->
    <property name="windowtitle" value="PushButton Engine Documentation" />
    <property name="maintitle" value="PushButton Engine Documentation" />
@@ -127,6 +130,7 @@
          <arg line="-output ${bindir}/PBEngine.swc" />
          <arg line="-include-classes ${path.classes}" />
          <arg line="--keep-as3-metadata+=TypeHint,EditorData,Embed" />
+         <arg line="-debug=${DEBUG}"/>
       </exec>
    </target>
    
@@ -176,6 +180,7 @@
          <arg line="-compiler.optimize=true -use-network=false" />
          <arg line="-output ${currentProjectRootDir}/bin/${currentProjectName}.swf" />
          <arg line="${currentProjectRootDir}/src/${currentProjectRootFile}" />
+         <arg line="-debug=${DEBUG}"/>
       </exec>
    </target>
 
