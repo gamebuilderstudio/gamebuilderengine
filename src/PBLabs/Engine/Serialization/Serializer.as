@@ -53,7 +53,8 @@ package PBLabs.Engine.Serialization
          // Do a quick sanity check to make sure we are getting metadata.
          var tmd:TestForMetadata = new TestForMetadata();
          if(TypeUtility.GetTypeHint(tmd, "SomeArray") != "Number")
-            throw new Error("Metadata is not included in this build of the engine, so serialization will not work!\nYou probably need to regenerate your projects with the latest version of the engine manager, and recompile.\nMake sure that metadata is enabled in your compiler settings if you are not using the engine manager.");
+            throw new Error("Metadata is not included in this build of the engine, so serialization will not work!\n" + 
+            "Add --keep-as3-metadata+=TypeHint,EditorData,Embed to your compiler arguments to get around this.");
       }
       
       /**
