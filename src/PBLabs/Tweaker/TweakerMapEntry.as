@@ -8,7 +8,7 @@ package PBLabs.Tweaker
     * <p>
     * Most of the time you will want to set a value in a template, which can
     * be done using a PropertyReference in the form of 
-    * !TemplateName.ComponentName.PropertyName.
+    * !TemplateName.ComponentName.PropertyName.</p>
     */
    public class TweakerMapEntry
    {

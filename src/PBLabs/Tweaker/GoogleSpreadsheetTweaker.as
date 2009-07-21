@@ -15,12 +15,14 @@ package PBLabs.Tweaker
     * changes in timing, forces, or scores can have big impacts on how fun a
     * game is. The process of making a game fun involves endless tweaking and
     * testing. Often the people doing that work are not programmers, so editing
-    * source code and recompiling can be a big barrier for them.
+    * source code and recompiling can be a big barrier for them.</p>
     * <p>
     * The GoogleSpreadsheetTweaker lets the game programmer map values on named
-    * objects and in templates to cells on a Google Spreadsheet.
-    * <p>
-    * @example Here's an example of how to use this component: <listing version="3.0">
+    * objects and in templates to cells on a Google Spreadsheet.</p>
+    * 
+    * @example Here's an example of how to use this component: 
+    * 
+    * <listing version="3.0">
     * &lt;entity name="Tweaker"&gt;
     *  &lt;component name="Tweaker" type="PBLabs.Tweaker.GoogleSpreadsheetTweaker"&gt;
     *    &lt;SpreadsheetUrl&gt;http://spreadsheets.google.com/feeds/cells/abc73bd7db73b73cb73b7c/od7/public/basic&lt;/SpreadsheetUrl&gt;
@@ -38,12 +40,12 @@ package PBLabs.Tweaker
       /**
        * The feed for a publicly accessible Google Spreadsheet.
        *
-       * The naming convention for these feeds is described at 
-       * http://code.google.com/apis/spreadsheets/docs/3.0/reference.html#ConstructingURIs
+       * <p>The naming convention for these feeds is described at 
+       * http://code.google.com/apis/spreadsheets/docs/3.0/reference.html#ConstructingURIs</p>
        *
-       * Example of a working URL (key changed to protect the innocent):
+       * <p>Example of a working URL (key changed to protect the innocent):
        * http://spreadsheets.google.com/feeds/cells/pZ6iqteeevF7uf4J123yqSw/od6/public/basic
-       * This gets the first sheet of the specified document.
+       * This gets the first sheet of the specified document.</p>
        */
       public var SpreadsheetUrl:String = "";
       
