@@ -11,7 +11,7 @@
    This file is based on the PaperVision3D Ant build file, subsequently modified
    to fit PBEngine.
    
-   How to use build.properties file:
+   How to use the build.properties file:
 
     Your checkout should include a build.template.properties file. This is where
     variables that change from system to system are stored. Simply rename the file
@@ -24,83 +24,106 @@
 <project name="PBEngine SDK" default="compile" basedir="..">
 
     <!-- import our build properties file -->
-    <property file="${basedir}/build/build.properties" />
+   <property file="${basedir}/build/build.properties" />
 
-    <property name="windowtitle" value="PushButton Engine Documentation" />
-    <property name="maintitle" value="PushButton Engine Documentation" />
-    <property name="footer" value="http://pushbuttonengine.com/" />
+    <!-- Docs appearance settings. -->
+   <property name="windowtitle" value="PushButton Engine Documentation" />
+   <property name="maintitle" value="PushButton Engine Documentation" />
+   <property name="footer" value="http://pushbuttonengine.com/" />
 
-    <property name="bindir" value="${basedir}/bin" />
-    <property name="classesdir" value="${basedir}/src" />
-    <property name="docsdir" value="${basedir}/docs/api" />
+    <!-- Paths for the PBEngine SDK. -->
+   <property name="bindir" value="${basedir}/bin" />
+   <property name="classesdir" value="${basedir}/src" />
+   <property name="docsdir" value="${basedir}/docs/api" />
 
-    <property name="testdocsdir" value="${basedir}/testdocs" />
-    <property name="asdoctemplate" value="${basedir}/asdoc/templates" />
-
-    <property name="flex3bindir" value="${flex3dir}/bin" />
-    <property name="flex3libsdir" value="${flex3dir}/frameworks/libs" />
-    <property name="asdoc" value="${flex3bindir}/${asdoc.exe}" />
-    <property name="compc" value="${flex3bindir}/${compc.exe}" />
-
-    <target name="compile" description="Creates SWC and docs" unless="isUpToDate" depends="printUpToDate">
-        <antcall target="generateSWC" />
-        <antcall target="generateDocs" />
-    </target>
+    <!-- Paths for the Flex SDK. -->
+   <property name="flex3bindir" value="${flex3dir}/bin" />
+   <property name="flex3libsdir" value="${flex3dir}/frameworks/libs" />
+   <property name="asdoc" value="${flex3bindir}/${asdoc.exe}" />
+   <property name="compc" value="${flex3bindir}/${compc.exe}" />
+   
+   <target name="ensureValidEnvironment">
+      <condition property="buildPropertiesIsValid">
+         <available file="${basedir}/build/build.properties"/>
+      </condition>
+      <fail unless="buildPropertiesIsValid">
+         No build/build.properties file is present!
+         
+         Copy build/build.template.properties to build/build.properties and
+         set the values in it appropriate to your build environment.
+      </fail>
+      <condition property="flexSdkIsValid"> 
+         <and> 
+           <isset property="flex3dir"/> 
+           <available file="${flex3dir}"/> 
+         </and> 
+       </condition>
+    <fail unless="flexSdkIsValid">Either flex3dir is not set, or it points to a missing directory.
+      
+      flex3dir appears to be set to: '${flex3dir}'
     
-    <target name="identifyClasses" description="Generates list of classes that will be compiled.">
-        <path id="path.source"> 
-           <fileset dir="${classesdir}" includes="**/*.as,**/*.mxml"/> 
-        </path>
-        <pathconvert property="path.classes" refid="path.source" pathsep=" "> 
-           <chainedmapper> 
-              <globmapper from="${classesdir}/*" to="*" casesensitive="false" handledirsep="true"/> 
-              <mapper type="regexp" from="^PBLabs(.*)\.((mxml)|(as))" to="PBLabs\1"/> 
-              <mapper type="package" from="*" to="*"/> 
-           </chainedmapper> 
-        </pathconvert> 
-    </target>
+      Set the flex3dir parameter by adding it to the build.properties file.
+    </fail> 
+   </target>
 
-    <target name="cleanDocs" description="Clean the documentation directory.">
-        <echo>Cleaning out docs from '${docsdir}'...</echo>
-        <delete includeemptydirs="true">
-            <fileset dir="${docsdir}" includes="**/*">
-            </fileset>
-        </delete>
-    </target>
+   <target name="compile" description="Creates SWC and API docs." unless="isUpToDate" depends="printUpToDate,ensureValidEnvironment">
+       <antcall target="generateSWC" />
+      <antcall target="generateDocs" />
+   </target>
 
-    <target name="generateDocs" description="Generates docs" depends="cleanDocs,identifyClasses">
-        <echo>Generating documentation for '${docsdir}'...</echo>
-        <exec executable="${asdoc}">
-            <arg line="-source-path ${classesdir}" />
-            <arg line="-doc-classes ${path.classes}" />
-            <arg line="-exclude-dependencies=true" />
-            <arg line="-window-title '${windowtitle}'" />
-            <arg line="-main-title '${maintitle}'" />
-            <arg line="-footer '${footer}'" />
-            <arg line="-output '${docsdir}'" />
-        </exec>
-    </target>
+   <target name="identifyClasses" description="Generates list of classes that will be compiled." depends="ensureValidEnvironment">
+      <path id="path.source">
+         <fileset dir="${classesdir}" includes="**/*.as,**/*.mxml"/>
+      </path>
+      <pathconvert property="path.classes" refid="path.source" pathsep=" ">
+         <chainedmapper>
+            <globmapper from="${classesdir}/*" to="*" casesensitive="false" handledirsep="true"/>
+            <mapper type="regexp" from="^PBLabs(.*)\.((mxml)|(as))" to="PBLabs\1"/>
+            <mapper type="package" from="*" to="*"/>
+         </chainedmapper>
+      </pathconvert>
+   </target>
 
-    <target name="checkSWCUpToDate"> 
-      <uptodate property="isUpToDate" targetfile="bin/PBEngine.swc"> 
-        <srcfiles dir="${classesdir}"> 
-          <include name="**/*.as"/> 
-          <include name="**/*.mxml"/> 
-        </srcfiles> 
-      </uptodate> 
-    </target>
+   <target name="cleanDocs" description="Clean the documentation directory.">
+      <echo>Cleaning out docs from '${docsdir}'...</echo>
+      <delete includeemptydirs="true">
+         <fileset dir="${docsdir}" includes="**/*"></fileset>
+      </delete>
+   </target>
 
-  <target name="printUpToDate" depends="checkSWCUpToDate" if="isUpToDate"> 
-    <echo>PBEngine.swc is up to date, skipping.</echo> 
-  </target>     
-    
-    <target name="generateSWC" description="Generates PBEngine SWC." unless="isUpToDate" depends="printUpToDate,identifyClasses">
-        <echo>Generating PBEngine.SWC using '${classesdir}'</echo>
-        <exec executable="${compc}">
-            <arg line="-source-path ${classesdir}" />
-            <arg line="-output ${bindir}/PBEngine.swc" />
-            <arg line="-include-classes ${path.classes}" />
-        </exec>
-    </target>
+   <target name="generateDocs" description="Generates docs" depends="cleanDocs,identifyClasses">
+      <echo>Generating documentation for '${docsdir}'...</echo>
+      <exec executable="${asdoc}">
+         <arg line="-source-path ${classesdir}" />
+         <arg line="-doc-classes ${path.classes}" />
+         <arg line="-exclude-dependencies=true" />
+         <arg line="-window-title '${windowtitle}'" />
+         <arg line="-main-title '${maintitle}'" />
+         <arg line="-footer '${footer}'" />
+         <arg line="-output '${docsdir}'" />
+      </exec>
+   </target>
+
+   <target name="checkSWCUpToDate" depends="ensureValidEnvironment">
+      <uptodate property="isUpToDate" targetfile="bin/PBEngine.swc">
+         <srcfiles dir="${classesdir}">
+            <include name="**/*.as"/>
+            <include name="**/*.mxml"/>
+         </srcfiles>
+      </uptodate>
+   </target>
+
+   <target name="printUpToDate" depends="checkSWCUpToDate" if="isUpToDate">
+      <echo>PBEngine.swc is up to date, skipping.</echo>
+   </target>
+
+   <target name="generateSWC" description="Generates PBEngine SWC." unless="isUpToDate" depends="printUpToDate,identifyClasses">
+      <echo>Generating PBEngine.SWC using '${classesdir}'</echo>
+      <exec executable="${compc}">
+         <arg line="-source-path ${classesdir}" />
+         <arg line="-output ${bindir}/PBEngine.swc" />
+         <arg line="-include-classes ${path.classes}" />
+      </exec>
+   </target>
 
 </project>
