@@ -20,120 +20,140 @@
 
    <h1>Getting Started</h1>
    
-   <p>PushButton Engine is designed to be easy to start using. This chapter will give you a quick introduction to some of the tools we recommend for Flash development, talk about how to install and use the Engine Manager, and how to compile the Engine.</p>
-   
-   <p>If you already have a favored development environment and don't need to rebuild the Engine from source, you can go to the Library folder, copy the provided SWCs into your class path, and start developing.</p>
+   <p>PushButton Engine is designed to be very easy to drop and start using. This chapter explains how you can start using it immediately with a variety of Flash development tools.</p>
    
    <p>The rest of the chapters in this manual explain how to use the Engine.</p>
-      
+   
    <div id="pageToc"></div>
 
    <div id="contentArea">
    
-   <h2>Precompiled SWCs?</h2>
+   <h2>Precompiled SWC?</h2>
    
-   <p>If you already have a Flash development environment set up, all you need to do is grab the precompiled SWCs from the Library folder and go.</p>
+   <p>If you already have a Flash development environment set up and want to use PBEngine as a library, all you need to do is grab the precompiled PBEngine.swc from the bin/ folder. The swc is only included in the zip'ed downloads from our <a href="http://www.pushbuttonengine.com/download/">download page</a>, and is not checked in to SVN. <a href="http://www.pushbuttonengine.com/download/">Go to the download page to get a zip with a precompiled PBEngine.swc.</a></p>
    
-   <p>If you are newer to Flash development, or need to compile the Engine from scratch, read the rest of this chapter for more information.</p>
+   <p>If you don't have a Flash development environment setup, keep reading.</p>
    
-   <h2>ActionScript or Flex?</h2>
+   <h2>ActionScript or Flex/MXML?</h2>
    
-   <p>The Engine will work in projects that only use ActionScript as well as projects that use the Flex SDK. You are free to do whatever best fits the needs of your project.</p>
+   <p>The Engine will work in projects that only use ActionScript as well as projects that use the Flex SDK. You are free to do whatever best fits the needs of your project. If this doesn't mean anything to you, skip to the next section.</p>
    
-   <p>We include two basic demos/game templates. <a href="http://code.google.com/p/pushbuttonengine/source/browse/trunk#trunk/Projects/Demos/PBFlexlessEngineDemo">PBFlexlessEngineDemo</a> is an example of how you will want to set up your ActionScript files for a basic game that does not use Flex. <a href="http://code.google.com/p/pushbuttonengine/source/browse/trunk#trunk/Projects/Demos/PBEngineDemo">PBEngineDemo</a> is the same, but using Flex. Both demos are included in the SDK download, in Projects/Demos.</p>
-
+   <p>We include two basic demos/game templates. <a href="http://code.google.com/p/pushbuttonengine/source/browse/trunk#trunk/examples/PBFlexlessEngineDemo">PBFlexlessEngineDemo</a> is an example of how you will want to set up your ActionScript files for a basic game that does not use Flex. <a href="http://code.google.com/p/pushbuttonengine/source/browse/trunk#trunk/examples/PBEngineDemo">PBEngineDemo</a> is the same, but using Flex. Both demos are included in the SDK download, in the examples/ folder.</p>
+   
    <h2>The Tools</h2>
    
-   <p>There are three tiers of support for development tools.</p>
+   <p>We've broken up the instructions on how to get set up into several sections, one for each supported tool. These are very brief explanations of how to get set up. See the <a href="index.html#GettingStartedTutorials">main documentation page</a> for in-depth explanations of how to get started with different tools.</p>
    
-   <p><b>The first tier</b> are tools that the Engine works with, and that we use to build the engine from scratch. They are supported by the Engine Manager, which automates a lot of project management tasks. If you will be doing development of new component libraries or modifying the engine you will want to use them. These tools are:</p>
+   <p>When you get your environment set up, the next step is to look at the <a href="index.html#Lessons">PBE Lessons</a>, which are a series of short tutorials on how to get going with PBE.</p>
    
-   <ul>
-   <li><a href="http://www.adobe.com/products/flex/">Adobe Flex Builder</a>, an Eclipse-based IDE for ActionScript development.</li>
-   <li><a href="http://ant.apache.org/">Apache Ant</a>, a command line make-like tool which along with the free <a href="http://opensource.adobe.com/wiki/display/flexsdk/Flex+SDK">Flex SDK</a> can compile the Engine and applications.</li>
-   </ul>
+   <h3>Building with FlashDevelop</h3>
    
-   <p><b>The second tier</b> are tools that will work with the Engine, but cannot rebuild it on their own. We provide documentation on how set them up. They are:</p>
+   <p><a href="http://www.flashdevelop.org/community/">FlashDevelop</a> is a free Windows-based IDE for developing in Flash. To start a PBEngine project with it:</p>
    
-   <ul>
-   <li><a href="http://www.adobe.com/products/flash/">Adobe Flash</a>, a visual tool for creating Flash content.</li>
-   <li><a href="http://www.flashdevelop.org/community/">FlashDevelop</a>, a free Windows-based ActionScript IDE.</li>
-   </ul>
+   <ol>
+      <li>Launch FlashDevelop.</li>
+      <li>Choose Project -&gt; New Project...</li>
+      <li>Choose the "AS3 Project" template. Fill in the name/path textboxes with appropriate values (like TestProject or the name of your game).</li>
+      <li>Copy bin/PBEngine.swc into the project by drag-and-dropping it onto the lib/ folder in FlashDevelop's Project pane. Right click on it and choose "Add To Library." The item will turn a bright blue, so that you know that PushButton Engine is available for your use.</li>
+   </ol>
    
-   <p><b>The third tier</b> is made up of tools that can work with the Engine, but that we have not tested with or written specific documentation for:</p>
+   <p>If you'd like to run a simple example game, paste the following code into your Main.as file in the project pane's src/ folder:</p>
    
-   <ul>
-   <li><a href="http://fdt.powerflasher.com/">FDT</a>, a 3rd party Eclipse-based ActionScript IDE.</li>
-   <li>Any other Flash development tool that supports using SWCs.</li>
-   </ul>
-   
-   <p>You may want to take a look at each of these tools before deciding what to use for your day to day development. Some of them are free, and the rest have time-limited trials. Choose one that you are comfortable with and that fits in your budget.</p>
-   
-   <h2>Installation For Second And Third Tier Tools</h2>
-   
-   <p>For FlashDevelop, read <a href="http://www.jeremyeasoz.com/flex/pbengine/pbefdsetup/pbefdsetup.html">Jeremy Easoz's tutorial on Getting Started With FlashDevelop</a>.</p>
-   
-   <p>For Adobe Flash, follow the instructions in <a href="http://help.adobe.com/en_US/Flash/10.0_UsingFlash/WS3e7c64e37a1d85e1e229110db38dec34-7fa4a.html#WSFE27EB8F-735F-423e-BF7A-56E47357EBD8">Set the Library path for ActionScript 3.0 files</a> in the Flash CS4 documentation to add the SWCs in the Library folder from the SDK to your class path. </p>
-   
-   <p>For any other tool, simply add the SWCs from the Library/ folder to your classpath, and you can start development immediately.</p>
-   
-   <p>Most other IDEs do not have support for multiple projects, so using them with the PushButton Engine SDK can be difficult, since it uses many projects to keep things modular. However, editing any individual project is easy - create the project, point the source path of your project to the Source/ folder of the project, and include the Library/ folder in your classpath.</p>
-   
-   <h2>Installation For First Tier Tools</h2>
-   
-   <p>With the first tier tools, if you are already familiar with them and want to start using the Engine immediately, you can add the Library/ folder to your class path and start right away. However, if you are not as familiar with them, want to rebuild the engine from source, or want to develop component libraries for distribution, you should follow these steps in order to get set up with the Engine Manager.</p>
-   
-   <p>First, go to the <a href="http://pushbuttonengine.com/download/">PushButton Engine download page</a> and get the latest version of the engine. Extract the SDK somewhere that you'll be able to find it again later - the desktop is often a good choice if you don't already have a place for such things.</p>
+<pre class="brush: js">package 
+{
+	import flash.display.Sprite;
+	import PBLabs.Engine.Core.*;
+	import PBLabs.Engine.Debug.*;
+	
+	public class Main extends Sprite 
+	{
+		public function Main():void 
+		{
+			Global.Startup(this);
+			Logger.Print(this, "Hello, world!");
+		}
+	}
+}</pre>
 
-   <p>The PushButton Engine Manager is a small AIR application meant to simplify development of complex multiproject applications built around PushButton Engine. It provides several features:</p>
+   <p>If you run this, you'll see the "Hello, world!" message show up in the log pane at the bottom of FlashDevelop.</p>
    
-   <ul>
+   <h3>Using the Flex SDK</h3>
    
-   <li><b>Simplifies generating build files for multiple tools.</b> Maintaining build files for Ant and Flex Builder by hand is guaranteed to result in inconsistencies, especially when hardcoded paths may be required (for instance, Flex Builder requires a hardcoded path to the root of the SDK). Using a tool simplifies all this.</li>
+   <p>Once you have installed the free, cross-platform <a href="http://opensource.adobe.com/wiki/display/flexsdk/Flex+SDK">Flex SDK</a>, it's easy to use PBEngine. Just copy the contents of the src/ folder to whever you are building your MXML or .as files.</p>
    
-   <li><b>Simplifies managing component packages.</b> The Engine Manager allows you to package component libraries for distribution as well as download component packages and add them to your solutions.</li>
+   <p>For instance, if you create the following HelloWorld.mxml file and copy everything from src/ into the same directory:</p>
    
-   <li><b>Automates creating new projects.</b> The Engine Manager automatically creates everything needed for a new project based on your choice of templates. This helps simplify creation of new component libraries or applications.</li>
-   
-   </ul>
-   
-   <p>To get the SDK ready for use, double click on the ProjectManager.air file included in the root of the SDK to install the PushButton Manager. You may need to get the Adobe AIR runtime from <a href="http://get.adobe.com/air/" target="_blank">http://get.adobe.com/air/</a> first.</p>
-   
-   <p>The PushButton Manager is associated with .pbesln files. Once it has been installed, double click on PBE.pbesln in the root of the SDK. This will launch the PushButton Manager and let it know where you have installed the PushButton Engine SDK. A wizard will automatically start and prompt you to create build files.</p>
-   
-   <p>It will also prompt you to specify the location of your Flex SDK. This should be set to the root of the Flex SDK path which has folders called ant, asdoc, bin, and several others. If you have installed Flex Builder (see step 2), then the Flex SDK is located under the sdks subfolder of Flex Builder. If you have installed just the Flex SDK, select its location. The Engine Manager will check if you have a valid SDK selected. (If no wizard appears, you can click the "Generate Build Files..." option in the left hand column.)</p>
-   
-   <p>At this point you can close the PushButton Manager and move on to the next step.</p>
-   
-   <h3>Setting Up Flex Builder</h3>
-   
-   <p><i>Note: This section applies whether you are using Flex Builder, or have installed <a href="http://coderhump.com/archives/280">Eclipse and added the Flex Builder Plugin</a>. For simplicity, we will only refer to Flex Builder.</i></p>
-   
-   <p>If you haven't yet, go to <a href="http://www.adobe.com/products/flex/flexdownloads/">the Adobe Flex Builder download page</a> and download and install Flex Builder.</p>
-   
-   <p>Open Flex Builder, go to File -> Choose Workspace -> Other... and choose Build/FlexBuilder in the SDK folder when it asks for a path. Hit OK and you will get a nice new workspace with a few key settings already prep'ed for you.</p>
+<pre class="brush: xml">&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" applicationComplete="kickoff()"&gt;
+   &lt;mx:Script&gt;
+      &lt;![CDATA[
+         import PBLabs.Engine.Core.*;
+         import PBLabs.Engine.Debug.*;
+         
+         public function kickoff():void
+         {
+            Global.Startup(this);
+            Logger.Print(this, "Hello, world!");
+         }
+      ]]&gt;
+   &lt;/mx:Script&gt;
+&lt;/mx:Application&gt;
+</pre>
 
-   <p>You may want to disable automatic builds (under Project -> Build Automatically), as they tend to slow Flex Builder down dramatically.</p> 
+   <p>You can compile it with <i>mxmlc HelloWorld.mxml</i> to produce HelloWorld.as. If you hit tilde you will be able to see "Hello, world!" show up in the log.</p>
    
-   <p>Once this is done, right click on the project explorer, choose Import..., then General -> Existing Projects Into Workspace.. and hit Next. Select Build/FlexBuilder as the root directory. You may have to change focus away from that text box (by clicking on another text box or hitting tab) for the list of projects below to update. Make sure all the projects in the list on the bottom part of the dialog are checked and click Finish to import them.</p>
+   <p>You can also compile .as files with MXMLC. Consider this file, HelloWorld.as:</p>
    
-   <p>The workspace should refresh, and everything should start compiling automatically. If a build doesn't happen automatically, you can press CTRL-B to trigger one.</p>
+<pre class="brush: js">package
+{
+	import flash.display.Sprite;
+	import PBLabs.Engine.Core.*;
+	import PBLabs.Engine.Debug.*;
+	
+	public class HelloWorld extends Sprite 
+	{
+		public function Main():void 
+		{
+			Global.Startup(this);
+			Logger.Print(this, "Hello, world!");
+		}
+	}
+}</pre>
+
+   <p>You can compile this into HelloWorld.swf by running <i>mxmlc HelloWorld.as</i>.</p>
+
+   <h3>Using Ant</h3>
    
-   <p>Now you can build, browse project source code, and run/debug the demo applications.</p>
+   <p>The official SDK release is built using Ant. To build the SDK, have the 
+
+   <p><a href="http://ant.apache.org/">Apache Ant</a> is a command line, make-like tool which along with the free <a href="http://opensource.adobe.com/wiki/display/flexsdk/Flex+SDK">Flex SDK</a> can compile the Engine and related demos and lessons. Go to the build/ folder and type <i>ant</i> to build the SDK.</p>
    
-   <h3>Setting Up Ant and the Free Flex SDK</h3>
+   <p>You will notice <i>build.xml</i> files in each demo and lesson folder. Running ant in these folders will compile the respective demo or lesson.</p>
    
-   <p>To do command line builds with the free Flex SDK and Ant, you will need to have Ant installed and in your path. Then you can go to Build/Ant and run the batch files to perform common build tasks (for instance, run Build.bat or Build.command to compile the engine).</p>
+   <p>You can add and compile your own applications by copying one of the demos or lessons. To get a fresh project to modify, rename the folder (for instance from PBEngineDemo/ to MySweetGame/), then rename the root class in src/ (for instance from PBEngineDemo.mxml to MySweetGame.mxml). Finally, open the build.xml file in the folder (ie MySweetGame/build.xml) and replace every instance of the original project name with the new name (for instance PBEngineDemo to MySweetGame). Now when you run ant in the project's folder, it will compile the project for you using the Flex SDK.</p>
    
-   <p>To get Ant, go to <a href="http://ant.apache.org/" target="_blank">ant.apache.org</a> and get the appropriate version. You may want to use an installer like <a href="http://code.google.com/p/winant/" target="_blank">WinAnt</a> if you're on Windows, as Ant will need to be in your path.</p>                     
+   <h3>Using Flex Builder</h3>
    
-   <p>You can build specific projects by running Ant yourself from the Build/Ant folder via the command line. Do this by typing <i>ant projectname</i>. There are several other convenience targets; read the comments at the top of Build/Ant/build.xml for details, but they include:</p>
+   <a href="http://www.adobe.com/products/flex/">Adobe Flex Builder</a> is an Eclipse-based IDE for ActionScript development. It's very easy to use with PBEngine.</p>
    
-   <ul>
-   <li><b>clean</b> - To clean all build artifacts.</li>
-   <li><b>clean.<i>projectname</i></b> - To clean build artifacts from a specific project.</li>
-   <li><b>-DDEBUG=true</b> - Pass this parameter to do a debug build.</li>
-   </ul>
+   <p>To open a project with Flex Builder, perform the following steps:</p>
+   
+   <ol>
+   <li>Launch Flex Builder.</li>
+   <li>Right click in the project browser and choose New -&gt; Flex Project...</li>
+   <li>Enter the name of the project you are going to open (for instance, PBEngineDemo).</li>
+   <li>For the project location, uncheck "use default location", then for the location enter the path to or browse to the project's folder (for instance C:\PBEngine\examples\PBEngineDemo).</li>
+   <li>Click Next several times to get through the rest of the wizard.</li>
+   </ol>
+   
+   <p>You have include PushButton Engine in one of two ways so you can compile the example. There are two options:</p>
+   
+   <ol>
+   <li>If you don't intend to modify the core engine code, you can take this option. Flex Builder will create a lib/ folder in the project directory. Copy PBEngine.swc into this folder, then right click the project in Flex Builder and choose Refresh. The SWC will show up, and the project will compile succesfully.</li>
+   <li>If you intend to modify/browse core engine code, take this option. Right click the project, choose Properties, then select Flex Build Path, go to the Source Path pane, and hit Add Folder. Select the root PBEngine src/ folder. Now you can modify the core engine files, and the changes will take effect when you recompile.</li>
+   </ol>
+   
+   <p>After doing either option 1 or 2, you should be able to compile and run your project.</p>
    
    <h2>SDK Layout</h2>
    
@@ -141,76 +161,37 @@
    
    <ul>
    
-   <li><b>Build/</b> - Contains project and build files for various development tools generated by the project manager. There is a subdirectory for each support development tool.
-      <ul>
-         <li><b>FlexBuilder/</b> - Contains FlexBuilder related build files.</li>
-         
-         <li><b>FlexSDK/</b> - Contains Ant build files to build using the free Flex SDK.</li>
-      </ul>
-   </li>
+   <li><b>build/</b> - Contains Ant files used to build SDK releases.</li>
    
-   <li><b>Documentation/</b> - Contains this manual, which covers the core engine released by PushButton Labs. Third-party components' documentation is in that component's project folder (see below).</li>
+   <li><b>docs/</b> - Contains this manual, which covers the core engine released by PushButton Labs. docs/api contains ASDoc-generate API references.</li>
    
-   <li><b>Libraries/</b> - Compiled SWCs from each library project are stored here. This is in the classpath for every project so they can access components.</li>
+   <li><b>bin/</b> - PBEngine.swc is built here.</li>
    
-   <li><b>Projects/</b> - One or more projects are stored in here. The project generator scans for directories with .pbeproj files when it is generating build files. Note they can be nested as deep as you like to keep things organized, and relative location doesn't matter.
-      <ul>
-         <li><b>Demos/</b> - Contains projects that demonstrate component libraries.</li>
-         <li><b>Engine/</b> - Contains projects that implement core engine features.</li>
-      </ul>
-   </li>
+   <li><b>src/</b> - The source for the core PushButton Engine libraries. If you get source for additional components, drop it in here.</li>
    
-   <li><b>Templates/</b> - Stores template projects for the Engine Manager's use. Templates are stored as ZIPs and their format is discussed later.</li> 
+   <li><b>examples/</b> - Contains several example games.</li>
+   
+   <li><b>lessons/</b> - Contains projects related to the PBE lessons.</li>
    
    </ul>
    
    <h2>Project Layout</h2>
    
-   <p>Each project contained in the Projects folder has the same file structure. This lets the Engine Manager automatically generate build files, and keeps development very modular so it's easy to share components with others.</p>
+   <p>Each project contained in the SDK has the same file structure. The structure is based on standard Flash project structure, so it can be easily opened in Flex Builder, Flash, or other tools. Projects compile to SWFs.</p>
    
-   <p>Projects cannot be nested within one another. The name of the project is the name of its folder. At its root, every project contains a .pbeproj file named after the project, for instance the PBEngine project contains PBEngine.pbeproj. The .pbeproj is a small XML file that describes the project, what it is, who made it, and what its dependencies are.</p>
-   
-   <p>Projects have a type, specified in their .pbeproj file. The type can be one of:</p>
+   <p>There are three main folders for each project.</p>
    
    <ul>
-   
-   <li><b>Library</b> - indicating that the project produces a SWC, named after the project. So for the RenderingTwoD project, RenderingTwoD.swc.</li>
-   
-   <li><b>WebApplication</b> - indicating that the project should build a SWF, in that project's Output/ subdirectory. The Source/ folder should contain a .mxml or .as file named after the application, which is what will be compiled to produce the SWF. For the PBEngineDemo, Source/PBEngineDemo.mxml is compiled to produce Output/PBEngineDemo.swf. For PBFlexlessEngineDemo, Source/PBFlexlessEngineDemo.as is compiled to produce Output/PBFlexlessEngineDemo.swf.</li>
-   
+   <li><b>src/</b> -  contains the project's source code.</li>
+   <li><b>assets/</b> - holds the various art, sound, and level files for the project.</li>
+   <li><b>bin/</b> - holds the compiled SWF for the project.</li>
    </ul>
    
-   <p>The type influences the directories that are used. For a library, the structure looks like this:</p>
+   <h2>Next Steps</h2>
+
+   <p>Now that you have your environment set up, the next step is to look at the <a href="index.html#Lessons">PBE Lessons</a>, which are a series of short tutorials on how to get going with PBE.</p>
    
-   <ul>
-   
-   <li><b><i>LibraryName</i>.pbeproj</b> - The project description file for this library. Note it will be named after the library.</li>
-   
-   <li><b>Documentation/</b> - Contains an index.html that contains or links to documentation for that library.</li>
-   
-   <li><b>Source/</b> - Source files for the library. Every file in this folder or any subdirectory will be included in the library.</li>
-   
-   </ul>
-   
-   <p>The results of building the library are stored as a SWC in the root Libraries folder in the SDK.</p>
-   
-   <p>For an application, the structure is a little more complex:</p>
-   
-   <ul>
-   
-   <li><b>Assets/</b> - The assets used by this project.
-      <ul>
-         <li><b>Images/</b> - Image files (jpg, png, gif, etc).</li>
-         <li><b>Levels/</b> - Level XML files.</li>
-         <li><b>Sounds/</b> - Sound files (mp3).</li>
-      </ul>
-   </li>
-   
-   <li><b>Output/</b> - The SWF output from the project.</li>
-   
-   <li><b>Source/</b> - Source code for the project.</li>
-   
-   </ul>
+   <p>You might also want to read the other chapters in <a href="index.html">this manual</a> or visit the <a href="http://pushbuttonengine.com/community">PBEngine Community</a> for help and advice. We'd love to hear how the PushButton Engine is working out for you.</p>
    
    </div>
 </body>
