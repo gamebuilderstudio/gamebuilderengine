@@ -125,5 +125,26 @@
          <arg line="-include-classes ${path.classes}" />
       </exec>
    </target>
+   
+   <target name="doFullPackagedBuild" description="Build a packaged ZIP of the whole SDK, ready for distribution.">
+      <!-- Build everything. -->
+      <antcall target="compile" />
+      
+      <!-- Get the latest revision. -->
+      <path id="svnant.classpath"  >
+        <fileset dir="./build/" >
+            <include name="*.jar" />
+        </fileset>
+      </path> 
+      <typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="svnant.classpath" />
+      <svn>
+         <status path="." revisionProperty="svn.revision"/>
+      </svn>
+      <echo>Packaging version ${svn.revision} of PBEngine SDK from repo</echo>
+      
+      <!-- Package it all into a zip with appropriate name. -->
+      <delete file="PushButtonEngine-r${svn.revision}.zip" quiet="true"/>
+      <zip destfile="PushButtonEngine-r${svn.revision}.zip" level="9" basedir="." excludes="*svn*"/>
+   </target>
 
 </project>
