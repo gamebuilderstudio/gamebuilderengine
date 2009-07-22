@@ -85,6 +85,10 @@
        <antcall target="generateSWC" />
       <antcall target="generateDocs" />
    </target>
+   
+   <target name="clean" description="Delete build artifacts." depends="cleanDocs">
+      <delete file="${bindir}/PBEngine.swc"/>
+   </target>
 
    <target name="identifyClasses" description="Generates list of classes that will be compiled." depends="ensureValidEnvironment">
       <path id="path.source">
@@ -101,7 +105,7 @@
 
    <target name="cleanDocs" description="Clean the documentation directory.">
       <echo>Cleaning out docs from '${docsdir}'...</echo>
-      <delete includeemptydirs="true">
+      <delete includeemptydirs="true" quiet="true">
          <fileset dir="${docsdir}" includes="**/*"></fileset>
       </delete>
    </target>
@@ -109,7 +113,7 @@
    <target name="generateDocs" description="Generates docs" depends="cleanDocs,identifyClasses">
       <echo>Generating documentation for '${docsdir}'...</echo>
       <exec executable="${asdoc}">
-         <arg line="-source-path ${classesdir}" />
+         <arg line="-source-path &quot;${classesdir}&quot;" />
          <arg line="-doc-classes ${path.classes}" />
          <arg line="-exclude-dependencies=true" />
          <arg line="-window-title '${windowtitle}'" />
@@ -135,26 +139,31 @@
    <target name="generateSWC" description="Generates PBEngine SWC." unless="isUpToDate" depends="printUpToDate,identifyClasses">
       <echo>Generating PBEngine.SWC using '${classesdir}'</echo>
       <exec executable="${compc}">
-         <arg line="-source-path ${classesdir}" />
-         <arg line="-output ${bindir}/PBEngine.swc" />
+         <arg line="-source-path &quot;${classesdir}&quot;" />
+         <arg line="-output &quot;${bindir}/PBEngine.swc&quot;" />
          <arg line="-include-classes ${path.classes}" />
          <arg line="--keep-as3-metadata+=TypeHint,EditorData,Embed" />
          <arg line="-debug=${DEBUG}"/>
       </exec>
    </target>
    
-   <target name="doFullPackagedBuild" description="Build a packaged ZIP of the whole SDK, ready for distribution.">
-      <!-- Build everything. -->
-      <antcall target="compile" />
-      <ant dir="${rootDir}/examples/PBEngineDemo"/>
-      <ant dir="${rootDir}/examples/PBFlexlessEngineDemo"/>
-      <ant dir="${rootDir}/examples/RollyBallGame"/>
+   <target name="lessons" depends="compile" description="Compile all the lessons.">
       <ant dir="${rootDir}/lessons/Lesson2Base"/>
       <ant dir="${rootDir}/lessons/Lesson2Final"/>
       <ant dir="${rootDir}/lessons/Lesson3Base"/>
       <ant dir="${rootDir}/lessons/Lesson3Final"/>
       <ant dir="${rootDir}/lessons/Lesson4Base"/>
       <ant dir="${rootDir}/lessons/Lesson4Final"/>
+   </target>
+   
+   <target name="examples" depends="compile" description="Compile all the examples.">
+      <ant dir="${rootDir}/examples/PBEngineDemo"/>
+      <ant dir="${rootDir}/examples/PBFlexlessEngineDemo"/>
+      <ant dir="${rootDir}/examples/RollyBallGame"/>
+   </target>
+   
+   <target name="doFullPackagedBuild" description="Build a packaged ZIP of the whole SDK, ready for distribution." depends="clean,compile,lessons,examples">
+      <!-- Build everything from scratch - dependencies do this. -->
       
       <!-- Get the current revision. -->
       <path id="svnant.classpath"  >
@@ -183,12 +192,12 @@
       -->
       <echo>Building ${currentProjectName} in ${currentProjectRootDir} from ${currentProjectRootFile}</echo>
       <exec executable="${mxmlc}">
-         <arg line="-source-path+=${currentProjectRootDir}/src " />
-         <arg line="-library-path+=${buildFilesDir}/../bin" />
+         <arg line="-source-path+=&quot;${currentProjectRootDir}/src&quot; " />
+         <arg line="-library-path+=&quot;${buildFilesDir}/../bin&quot;" />
          <arg line="--keep-as3-metadata+=TypeHint,EditorData,Embed" />
          <arg line="-compiler.optimize=true -use-network=false" />
-         <arg line="-output ${currentProjectRootDir}/bin/${currentProjectName}.swf" />
-         <arg line="${currentProjectRootDir}/src/${currentProjectRootFile}" />
+         <arg line="-output &quot;${currentProjectRootDir}/bin/${currentProjectName}.swf&quot;" />
+         <arg line="&quot;${currentProjectRootDir}/src/${currentProjectRootFile}&quot;" />
          <arg line="-debug=${DEBUG}"/>
       </exec>
    </target>
