@@ -97,7 +97,7 @@
       <pathconvert property="path.classes" refid="path.source" pathsep=" ">
          <chainedmapper>
             <globmapper from="${classesdir}/*" to="*" casesensitive="false" handledirsep="true"/>
-            <mapper type="regexp" from="^com/pblabs(.*)\.((mxml)|(as))" to="com/pblabs\1"/>
+            <mapper type="regexp" from="^com[/\\]pblabs(.*)\.((mxml)|(as))" to="com\\pblabs\1"/>
             <mapper type="package" from="*" to="*"/>
          </chainedmapper>
       </pathconvert>
