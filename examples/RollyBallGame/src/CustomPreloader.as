@@ -10,7 +10,7 @@ package
  
     public class CustomPreloader extends DownloadProgressBar
     {
-        [Embed(source="../Assets/Preloader.swf")]
+        [Embed(source="../assets/Preloader.swf")]
         private var FlashPreloader:Class;
         	
         public var wcs:MovieClip;
