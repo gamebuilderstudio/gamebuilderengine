@@ -142,7 +142,7 @@
          <arg line="-source-path &quot;${classesdir}&quot;" />
          <arg line="-output &quot;${bindir}/PBEngine.swc&quot;" />
          <arg line="-include-classes ${path.classes}" />
-         <arg line="--keep-as3-metadata+=TypeHint,EditorData,Embed" />
+         <arg line="--keep-as3-metadata+=TypeHint,EditorData,Embed,ResourceType" />
          <arg line="-debug=${DEBUG}"/>
       </exec>
    </target>
