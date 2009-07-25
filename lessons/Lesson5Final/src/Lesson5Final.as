@@ -27,7 +27,7 @@ package
          Global.Startup(this);
          
          // Load up our embedded resources
-         new MyResourceLinker( );
+         new MyResources( );
 
          // Set up a simple scene entity
          CreateScene();
@@ -142,13 +142,13 @@ package
          var Spatial:SimpleSpatialComponent = new SimpleSpatialComponent();
          
          // Do a named lookup to register our background with the scene spatial database
-         Spatial.SpatialManager = NameManager.Instance.LookupComponentByName("Scene", "Spatial") as ISpatialManager2D;                            
+         Spatial.SpatialManager = NameManager.Instance.LookupComponentByName("Scene", "Spatial") as ISpatialManager2D;
          
          // Set a mask flag for this object as "Renderable" to be seen by the scene Renderer
          Spatial.ObjectMask = new ObjectType("Renderable");
          // Set our background position in space
          Spatial.Position = new Point(0,0);
-        
+         
          // Add our spatial component to the background entity with the name "Spatial"
          BG.AddComponent( Spatial, "Spatial" );
         
@@ -169,6 +169,5 @@ package
          // Add our render component to the BG entity with the name "Render"
          BG.AddComponent( Render, "Render" );
       }
-      
    }
 }

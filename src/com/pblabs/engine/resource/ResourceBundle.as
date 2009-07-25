@@ -15,15 +15,15 @@ package com.pblabs.engine.resource
    import flash.utils.ByteArray;
    
    /**
-    * The resource linker handles automatic loading of embedded resources.
+    * The resource bundle handles automatic loading and registering of embedded resources.
     * To use, create a descendant class and embed resources as public variables, then
-    *  instantiate your new class.  ResourceLinker will handle loading all of those resources
+    *  instantiate your new class.  ResourceBundle will handle loading all of those resources
     *  into the ResourceManager. 
     * 
     * @see ../../../../../Reference/ResourceManager.html The Resource Manager
     * @see ../../../../../Examples/UsingResources.html Using Resources
     */
-   public class ResourceLinker
+   public class ResourceBundle
    {
     
       /**
@@ -34,7 +34,7 @@ package com.pblabs.engine.resource
        *  and png is the (lower-case) extension.
        *
        * This array can be extended at runtime, such as:
-       *  ResourceLinker.ExtensionTypes.mycustomext = "com.mydomain.customresource"
+       *  ResourceBundle.ExtensionTypes.mycustomext = "com.mydomain.customresource"
        */
       public static var ExtensionTypes:Object = {
                                                  png:"com.pblabs.rendering2D.ImageResource",
@@ -48,10 +48,10 @@ package com.pblabs.engine.resource
                                                  
       /**
        * The constructor is where all of the magic happens.  
-       * This is where the ResourceLinker loops through all of its public properties
+       * This is where the ResourceBundle loops through all of its public properties
        *  and registers any embedded resources with the ResourceManager.
        */
-      public function ResourceLinker( )
+      public function ResourceBundle( )
       {
          var desc:XML= describeType(this);
          var res:Class;
@@ -113,7 +113,7 @@ package com.pblabs.engine.resource
             // Sanity check:
             if ( !resIsEmbedded || resSource == "" || res == null ) 
             {
-               Logger.PrintError(this, "ResourceLinker", "A resource in the resource linker with the name '" + v.@name + "' has failed to embed properly.  Please check the metadata syntax, and ensure that the path is correct."); 
+               Logger.PrintError(this, "ResourceBundle", "A resource in the resource bundle with the name '" + v.@name + "' has failed to embed properly.  Please check the metadata syntax, and ensure that the path is correct."); 
                continue;
             }
 
@@ -129,7 +129,7 @@ package com.pblabs.engine.resource
                // If the extension type is recognized or not...
                if ( !ExtensionTypes.hasOwnProperty(ext) )
                {
-                  Logger.PrintWarning(this, "ResourceLinker", "No resource type specified for extension '." + ext + "'.  In the extTypes parameter, expected to see something in the form of 'png:\"com.pblabs.rendering2D.ImageResource\"' where png is the (lower-case) extension, and \"com.pblabs.rendering2D.ImageResource\" is a string of the fully qualified resource class name.  Defaulting to generic DataResource.");
+                  Logger.PrintWarning(this, "ResourceBundle", "No resource type specified for extension '." + ext + "'.  In the extTypes parameter, expected to see something in the form of 'png:\"PBLabs.Rendering2D.ImageResource\"' where png is the (lower-case) extension, and \"PBLabs.Rendering2D.ImageResource\" is a string of the fully qualified resource class name.  Defaulting to generic DataResource.");
 
                   // Default to a DataResource if no other name is specified.
                   resTypeName = "com.pblabs.engine.resource.DataResource";
@@ -154,7 +154,7 @@ package com.pblabs.engine.resource
 
             if ( resType == null )
             {
-               Logger.PrintError(this, "ResourceLinker", "The resource type '" + resTypeName + "' specified for the embedded asset '" + resSource + "' could not be found.  Please ensure that the path name is correct, and that the class is explicity referenced somewhere in the project, so that it is available at runtime.");
+               Logger.PrintError(this, "ResourceBundle", "The resource type '" + resTypeName + "' specified for the embedded asset '" + resSource + "' could not be found.  Please ensure that the path name is correct, and that the class is explicity referenced somewhere in the project, so that it is available at runtime.");
                continue;
             }
             
@@ -163,7 +163,7 @@ package com.pblabs.engine.resource
             var testResource:* = new resType();
             if (!(testResource is Resource))
             {
-               Logger.PrintError(this, "ResourceLinker", "The resource type '" + resTypeName + "' specified for the embedded asset '" + resSource + "' is not a descendant from Resource.  Please ensure that the resource class descends properly from com.pblabs.engine.resource.Resource, and is defined correctly.");
+               Logger.PrintError(this, "ResourceBundle", "The resource type '" + resTypeName + "' specified for the embedded asset '" + resSource + "' is not a descendant from Resource.  Please ensure that the resource class descends properly from com.pblabs.engine.resource.Resource, and is defined correctly.");
                continue;
             }
 
