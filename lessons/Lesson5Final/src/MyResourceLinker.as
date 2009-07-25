@@ -12,7 +12,7 @@ package
    import PBLabs.Engine.Resource.*;
    import PBLabs.Rendering2D.*;
    
-   public class MyResourceLinker extends ResourceLinker
+   public class MyResources extends ResourceLinker
    {
       [Embed(source="bg.jpg", mimeType='application/octet-stream')]
       public var resBg:Class;
