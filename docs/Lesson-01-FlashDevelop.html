@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+   <link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+   <script type="text/javascript" src="js/pageToc.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shCore.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushJScript.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushPhp.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushPlain.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushXml.js"></script>
+   <link type="text/css" rel="stylesheet" href="js/sh/styles/shCore.css"/>
+   <link type="text/css" rel="stylesheet" href="js/sh/styles/shThemeDefault.css"/>
+   <script type="text/javascript">
+   		SyntaxHighlighter.config.clipboardSwf = 'js/sh/scripts/clipboard.swf';
+   		SyntaxHighlighter.all();
+   </script>
+   <title>PushButton Engine Lesson #1 - Setup using FlashDevelop</title>
+</head>
+<body>
+
+   <h1>PushButton Engine Lesson #1 - Setup using FlashDevelop</h1>
+   
+   <p>Welcome, in this lesson you will learn how to use the PushButton Engine with the FlashDevelop IDE.</p>
+   
+   <div id="pageToc"></div>
+
+   <div id="contentArea">
+   
+   <h2>Tutorial Requirements</h2>
+   <p>To complete this lesson you will need to download and install a few pieces of software.</p>
+   <ul>
+	   <li>Adobe Flash 10 Project Content Debugger - <a href="http://www.adobe.com/support/flashplayer/downloads.html">Download</a> - Execute one time to have it register with your system. </li>
+	   <li>Adobe Flash 10 Debug Player - <a href="http://www.adobe.com/support/flashplayer/downloads.html">Download</a> - <a href="http://www.adobe.com/support/flashplayer/downloads.html">Installation</a> </li>
+	   <li>Adobe Flex 3 SDK - <a href="http://www.adobe.com/cfusion/entitlement/index.cfm?e=flex3sdk">Download</a> - To install just extract it to your own personal development folder.</li>
+	   <li>FlashDevelop - <a href="http://www.flashdevelop.org/community/viewforum.php?f=11">Download</a> - <a href="http://www.flashdevelop.org/wikidocs/index.php?title=Installation">Installation</a> </li>
+	   <li>PushButton Engine - <a href="http://pushbuttonengine.com/download/">Download</a> - To install just extract it to your own personal development folder.</li>
+   </ul>
+   
+   <h2>Setting up FlashDevelop</h2>
+   <p>The first time you run FlashDevelop after installation you need to point it to the Flex 3 SDK. In the menu click Tools->Program Settings.
+      In the list box on the left, under the plugins section click AS3Context. This brings up the properties for all ActionScript 3 development in FlashDevelop.
+      Under the language section look for Flex SDK Location. Type in or navigate to the root folder of the Flex 3 SDK you downloaded and extracted earlier.</p>
+   
+	  <img src="images/Lesson1FlashDevelop_1.png" width="700px" />
+	  
+   <p>Your FlashDevelop IDE is now ready for any ActionScript or Flex development.</p>
+
+   <h2>Creating a New Project</h2>
+   <p>Now we need to setup a project for the lesson. Click Project->New Project in the menu.
+	  This opens a project template window with the various types of projects for FlashDevelop.
+	  For this lesson we are only worried about creating an AS3 Project. Name it Lesson1FlashDevelop
+	  and check Create Directory for Project checkbox. Click Ok to continue.</p>
+   
+   <img src="images/Lesson1FlashDevelop_2.png" width="700px" />
+	  
+   <p>You should now have FlashDevelop setup with a new project ready to go.</p>
+   
+   <h2>PushButton Engine</h2>
+   <p>With our current setup when can do pure ActionScript or Flex development. For this lesson we created a pure ActionScript project
+      but everything applies to a Flex project as well. To use the PushButton Engine we need to link the PBEngine.swc to our project.
+	  Let's do that now.</p>
+   
+   <p>Open Windows Explorer and navigate to where you extracted the PushButton Engine. In PushButton Engine\Bin you should have PBEngine.swc, right click and copy it.</p>
+   
+   <img src="images/Lesson1FlashDevelop_3.png" width="700px" />
+   
+   <p>In FlashDevelop, click the project tab on the right side. Locate the lib folder and paste PBEngine.swc into it. Your lib folder should now contain PBEngine.swc.</p>
+   
+   <img src="images/Lesson1FlashDevelop_4.png" width="700px" />
+   
+   <p>Right click the PBEngine.swc and click Add to Library. This tells FlashDevelop that we want to link this library with our project</p>
+   
+   <img src="images/Lesson1FlashDevelop_5.png" width="700px" />
+   
+   <h2>Hello, World!</h2>
+   <p>That's right, it's time for some code!</p>
+   
+   <p>In FlashDevelop click the projects tab if it's not already selected. In the src folder you will have Main.as. Go ahead and right click
+      and rename Main.as to Lesson1FlashDevelop.as.</p>
+	  
+   <img src="images/Lesson1FlashDevelop_6.png" width="700px" />
+  
+   </p>Double click Lesson1FlashDevelop.as to open it and delete everything inside replacing it with the code below.</p>
+   <pre class="brush: js">
+	   ...
+	   package
+	   {
+	       // Flash Imports
+		   import flash.display.Sprite;
+		   // PushButton Engine Imports
+		   import PBLabs.Engine.Core.*;
+		   import PBLabs.Engine.Debug.*;
+		   
+		   public class Lesson1FlashDevelop extends Sprite 
+		   {
+		      public function Lesson1FlashDevelop():void 
+		      {
+			     Global.Startup(this);
+			     Logger.Print(this, "Hello, World!");
+		      }	
+	       }	
+	   }
+	   ...
+   </pre>
+   
+   <p>The above code is basically the minimal application for the PushButton Engine. When executed it prints the below message in the FlashDevelop Output Window.</p>
+   <pre class="brush: plain">
+	   INFO: Lesson1FlashDevelop - Hello, World!
+   </pre>
+   
+   <p>Let's Build the project and test it now. Click Project->Test Movie. This will build our application
+      and if we didn't make any mistakes a window should pop up and you should be greeted with a message in the Output Window.</p>
+	  
+   <img src="images/Lesson1FlashDevelop_8.png" width="700px" />
+   
+   <h2>In Review</h2>
+   <p>To summarize the steps of using the PushButtonEngine with the FlashDevelop IDE.</p>
+   <ul>
+	   <li>Create a new project - Project->New Project</li>
+	   <li>ActionScript 3 Section - Select AS3 Project or Flex 3 Project</li>
+	   <li>PushButton Engine Library - Copy PBEngine.swc to the project lib folder.</li>
+	   <li>Activate the Library - Right Click PBEngine.swc and Add to Library.</li>
+   </ul>
+   <p></p>
+   
+   <h2>Conclusion</h2>
+   <p>Congratulations! You just completed lesson #1, creating a project and loading the PushButton Engine Library.</p>
+   <p>This can be used as a base for lesson #2 or any future projects of your own.</p>
+   
+   <p>You can download the completed project source files for this project below.</p>
+   <ul>
+	   <li><a href="downloads/Lesson1FlashDevelopFinal.zip">Lesson1FlashDevelopFinal.zip</a> </li>
+   </ul>
+
+   </div>
+</body>
+</html>

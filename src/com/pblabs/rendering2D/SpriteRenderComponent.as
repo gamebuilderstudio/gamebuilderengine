@@ -73,6 +73,21 @@ package com.pblabs.rendering2D
          _smoothing = value;
          _spriteDirty = true;
       }
+      
+      /**
+       * <p>Set this property to create a new SpriteSheetComponent that loads
+       * the specified image, and to use that as the source for rendering.</p>
+       *
+       * <p>You probably won't want to use this in production code, but it greatly
+       * simplifies getting started.</p>
+       */
+      public function set LoadFromImage(path:String):void
+      {
+         var imageAsSpriteSheet:SpriteSheetComponent = new SpriteSheetComponent();
+         imageAsSpriteSheet.ImageFilename = path;
+         SpriteSheet = imageAsSpriteSheet;
+      }      
+      
       /**
        * Whether or not to flip the sprite about the x axis.
        */

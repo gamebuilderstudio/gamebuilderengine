@@ -113,7 +113,7 @@ package com.pblabs.rendering2D
          _DrawSortedLayers(layerList);
       }
       
-      private var _position:Point = new Point(0, 0);
-      private var _trackObject:IDrawable2D = null;
+      protected var _position:Point = new Point(0, 0);
+      protected var _trackObject:IDrawable2D = null;
    }
 }
