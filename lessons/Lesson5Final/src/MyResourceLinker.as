@@ -18,12 +18,6 @@ package
       public var resBg:Class;
       
       [Embed(source="fanship.png", mimeType='application/octet-stream')]
-      [ResourceType(className = "PBLabs.Rendering2D.ImageResource")]
       public var resShip:Class;
-
-      [Embed(source="fanship.png", mimeType='application/octet-stream')]
-      [ResourceType(className = "PBLabs.Rendering2D.ImageResourceASDF")]
-      public var resShip2:Class;
-
    }
 }
