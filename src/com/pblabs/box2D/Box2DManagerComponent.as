@@ -89,7 +89,7 @@ package com.pblabs.box2D
       protected override function onAdd():void
       {
          ProcessManager.instance.addTickedObject(this);
-         _CreateWorld();
+         createWorld();
       }
       
       protected override function onRemove():void 
@@ -208,7 +208,7 @@ package com.pblabs.box2D
          return hitAny;
       }
       
-      private function _CreateWorld():void
+      private function createWorld():void
       {
          var bounds:b2AABB = new b2AABB();
          bounds.lowerBound.Set(_worldBounds.x / _scale, _worldBounds.y / _scale);

@@ -397,9 +397,9 @@ package com.pblabs.rendering2D
          _SceneView = null;
       }
       
-      protected function _DrawSortedLayers(layerList:Array):void
+      protected function drawSortedLayers(layerList:Array):void
       {
-         Profiler.enter("_DrawSortedLayers");
+         Profiler.enter("drawSortedLayers");
          
          // Lock for performance.
          if (_CurrentRenderTarget)
@@ -428,7 +428,7 @@ package com.pblabs.rendering2D
                {
                   // Great, just draw it.
                   Profiler.enter("DrawBitmap");
-                  _DrawLayerCacheBitmap(i);
+                  drawLayerCacheBitmap(i);
                   Profiler.exit("DrawBitmap");
                   Profiler.exit("PreCache");
                   continue;
@@ -453,7 +453,7 @@ package com.pblabs.rendering2D
                // Do interstitial callbacks.
                _LastDrawn = _NextDrawn;
                _NextDrawn = r;
-               _InterstitialDrawnList.every(_InterstitialEveryCallback);
+               _InterstitialDrawnList.every(interstitialEveryCallback);
                
                // Update the cache key.
                r.renderCacheKey = _CacheLayerKey[i]; 
@@ -478,7 +478,7 @@ package com.pblabs.rendering2D
                
                // Render the cached bitmap.
                Profiler.enter("DrawBitmap");
-               _DrawLayerCacheBitmap(i);
+               drawLayerCacheBitmap(i);
                Profiler.exit("DrawBitmap");
             }
 
@@ -490,7 +490,7 @@ package com.pblabs.rendering2D
          {
             _LastDrawn = _NextDrawn;
             _NextDrawn = null;
-            _InterstitialDrawnList.every(_drawItem);
+            _InterstitialDrawnList.every(drawItem);
          }
 
          // Clear last/next state.
@@ -500,20 +500,20 @@ package com.pblabs.rendering2D
          if (_CurrentRenderTarget)
             _CurrentRenderTarget.unlock();
          
-         Profiler.exit("_DrawSortedLayers");
+         Profiler.exit("drawSortedLayers");
       }
 
-      private function _drawItem(item:IDrawable2D):void
+      private function drawItem(item:IDrawable2D):void
       {
          item.onDraw(this);
       }
       
-      private function _InterstitialEveryCallback(item:IDrawable2D):void 
+      private function interstitialEveryCallback(item:IDrawable2D):void 
       {
          item.onDraw(this); 
       }
       
-      private function _DrawLayerCacheBitmap(layerIndex:int):void
+      private function drawLayerCacheBitmap(layerIndex:int):void
       {
          var bitmap:BitmapData = getLayerCacheBitmap(layerIndex);
          drawBitmapData(bitmap, null);
@@ -523,9 +523,9 @@ package com.pblabs.rendering2D
        * Given a region, query the spatial database and fill the layerList with
        * arrays containing the items to be drawn in each layer.
        */ 
-      protected function _BuildRenderList(viewRect:Rectangle, layerList:Array):void
+      protected function buildRenderList(viewRect:Rectangle, layerList:Array):void
       {
-         Profiler.enter("_BuildRenderList");
+         Profiler.enter("buildRenderList");
          
          // Get a list of the items that will be rendered.
          var renderList:Array = new Array();
@@ -533,7 +533,7 @@ package com.pblabs.rendering2D
             || !SpatialDatabase.queryRectangle(viewRect, renderMask, renderList))
          {
             // Nothing to draw.
-            Profiler.exit("_BuildRenderList");
+            Profiler.exit("buildRenderList");
             return;
          }
          
@@ -559,7 +559,7 @@ package com.pblabs.rendering2D
             layerList[alwaysRenderable.layerIndex].push(alwaysRenderable);
          }
 
-         Profiler.exit("_BuildRenderList");
+         Profiler.exit("buildRenderList");
       }
       
 

@@ -153,7 +153,7 @@ package com.pblabs.engine.core
             
             entity.initialize(name, alias);
             
-            if (!_instantiateTemplate(entity, xml.attribute("template"), new Dictionary()))
+            if (!doInstantiateTemplate(entity, xml.attribute("template"), new Dictionary()))
             {
                entity.destroy();
                Profiler.exit("instantiateEntity");
@@ -200,7 +200,7 @@ package com.pblabs.engine.core
          try
          {
             var group:Array = new Array();
-            if (!_instantiateGroup(name, group, new Dictionary()))
+            if (!doInstantiateGroup(name, group, new Dictionary()))
             {
                for each (var entity:IEntity in group)
                   entity.destroy();
@@ -286,7 +286,7 @@ package com.pblabs.engine.core
        */
       public function getXML(name:String, xmlType1:String = null, xmlType2:String = null):XML
       {
-         var thing:ThingReference = _getXML(name, xmlType1, xmlType2);
+         var thing:ThingReference = doGetXML(name, xmlType1, xmlType2);
          return thing ? thing.XMLData : null;
       }
       
@@ -371,7 +371,7 @@ package com.pblabs.engine.core
          delete _things[name];
       }
       
-      private function _getXML(name:String, xmlType1:String, xmlType2:String):ThingReference
+      private function doGetXML(name:String, xmlType1:String, xmlType2:String):ThingReference
       {
          var thing:ThingReference = _things[name];
          if (!thing)
@@ -391,7 +391,7 @@ package com.pblabs.engine.core
          return thing;
       }
       
-      private function _instantiateTemplate(object:IEntity, templateName:String, tree:Dictionary):Boolean
+      private function doInstantiateTemplate(object:IEntity, templateName:String, tree:Dictionary):Boolean
       {
          if (templateName == null || templateName.length == 0)
             return true;
@@ -410,7 +410,7 @@ package com.pblabs.engine.core
          }
          
          tree[templateName] = true;
-         if (!_instantiateTemplate(object, templateXML.attribute("template"), tree))
+         if (!doInstantiateTemplate(object, templateXML.attribute("template"), tree))
             return false;
          
          object.deserialize(templateXML, false);
@@ -418,7 +418,7 @@ package com.pblabs.engine.core
          return true;
       }
       
-      private function _instantiateGroup(name:String, group:Array, tree:Dictionary):Boolean
+      private function doInstantiateGroup(name:String, group:Array, tree:Dictionary):Boolean
       {
          var xml:XML = getXML(name, "group");
          if (!xml)
@@ -438,7 +438,7 @@ package com.pblabs.engine.core
                // if something bad happens.
                try
                {
-                  if(!_instantiateGroup(childName, group, tree))
+                  if(!doInstantiateGroup(childName, group, tree))
                      return false;               
                }
                catch(err:*)

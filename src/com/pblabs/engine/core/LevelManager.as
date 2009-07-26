@@ -303,7 +303,7 @@ package com.pblabs.engine.core
        */
       public function loadLevel(index:int):void
       {
-         if (!_HasLevelData(index))
+         if (!hasLevelData(index))
          {
             Logger.printError(this, "LoadLevel", "Level data for level " + index + " does not exist.");
             return;
@@ -314,15 +314,15 @@ package com.pblabs.engine.core
          var filesToUnload:Array = new Array();
          
          var doUnload:Boolean = _isLevelLoaded && (_currentLevel != 0);
-         _GetLoadLists(doUnload ? _levelDescriptions[_currentLevel].Files : null, _levelDescriptions[index].Files, filesToLoad, filesToUnload);
+         getLoadLists(doUnload ? _levelDescriptions[_currentLevel].Files : null, _levelDescriptions[index].Files, filesToLoad, filesToUnload);
          
          // find group differences between the levels
          _groupsToLoad = new Array();
          var groupsToUnload:Array = new Array();
-         _GetLoadLists(doUnload ? _levelDescriptions[_currentLevel].Groups : null, _levelDescriptions[index].Groups, _groupsToLoad, groupsToUnload);
+         getLoadLists(doUnload ? _levelDescriptions[_currentLevel].Groups : null, _levelDescriptions[index].Groups, _groupsToLoad, groupsToUnload);
          
          // unload previous data
-         _Unload(filesToUnload, groupsToUnload);
+         unload(filesToUnload, groupsToUnload);
          dispatchEvent(new LevelEvent(LevelEvent.LEVEL_UNLOADED_EVENT, _currentLevel));
          
          _currentLevel = index;
@@ -334,26 +334,26 @@ package com.pblabs.engine.core
          {
             _pendingFiles++;
             if (_loadFileCallback != null)
-               _loadFileCallback(filename, _FinishLoad)
+               _loadFileCallback(filename, finishLoad)
             else
                TemplateManager.instance.loadFile(filename);
          }
          
-         _FinishLoad();
+         finishLoad();
       }
       
       private function onFileLoaded(event:Event):void
       {
-         _FinishLoad();
+         finishLoad();
       }
       
       private function onFileLoadFailed(event:Event):void
       {
          Logger.printError(this, "LoadLevel", "One of the files for level " + _currentLevel + " failed to load.");
-         _FinishLoad();
+         finishLoad();
       }
       
-      private function _FinishLoad():void
+      private function finishLoad():void
       {
          _pendingFiles--;
          if (_pendingFiles > 0)
@@ -405,19 +405,19 @@ package com.pblabs.engine.core
          }
          
          var filesToUnload:Array = new Array();
-         _GetLoadLists(_levelDescriptions[_currentLevel].Files, null, null, filesToUnload);
+         getLoadLists(_levelDescriptions[_currentLevel].Files, null, null, filesToUnload);
          
          var groupsToUnload:Array = new Array();
-         _GetLoadLists(_levelDescriptions[_currentLevel].Groups, null, null, groupsToUnload);
+         getLoadLists(_levelDescriptions[_currentLevel].Groups, null, null, groupsToUnload);
          
-         _Unload(filesToUnload, groupsToUnload);
+         unload(filesToUnload, groupsToUnload);
          dispatchEvent(new LevelEvent(LevelEvent.LEVEL_UNLOADED_EVENT, _currentLevel));
          
          _currentLevel = -1;
          _isLevelLoaded = false;
       }
       
-      private function _Unload(filesToUnload:Array, groupsToUnload:Array):void
+      private function unload(filesToUnload:Array, groupsToUnload:Array):void
       {
          // cleanup extra loaded stuff
          for each (var extraEntity:IEntity in _loadedEntities)
@@ -464,7 +464,7 @@ package com.pblabs.engine.core
          }
       }
       
-      private function _GetLoadLists(previousList:Array, nextList:Array, loadList:Array, unloadList:Array):void
+      private function getLoadLists(previousList:Array, nextList:Array, loadList:Array, unloadList:Array):void
       {
          if (nextList)
          {
@@ -509,7 +509,7 @@ package com.pblabs.engine.core
             return;
          }
          
-         var levelDescription:LevelDescription = _GetLevelDescription(index);
+         var levelDescription:LevelDescription = getLevelDescription(index);
          levelDescription.Files.push(filename);
       }
       
@@ -521,7 +521,7 @@ package com.pblabs.engine.core
        */
       public function removeFileReference(index:int, filename:String):void
       {
-         if (!_HasLevelData(index))
+         if (!hasLevelData(index))
          {
             Logger.printError(this, "RemoveFileReference", "No level data exists for level " + index + ".");
             return;
@@ -534,7 +534,7 @@ package com.pblabs.engine.core
             return;
          }
          
-         var levelDescription:LevelDescription = _GetLevelDescription(index);
+         var levelDescription:LevelDescription = getLevelDescription(index);
          levelDescription.Files.splice(levelIndex, 1);
       }
       
@@ -552,7 +552,7 @@ package com.pblabs.engine.core
             return;
          }
          
-         var levelDescription:LevelDescription = _GetLevelDescription(index);
+         var levelDescription:LevelDescription = getLevelDescription(index);
          levelDescription.Groups.push(name);
       }
       
@@ -564,7 +564,7 @@ package com.pblabs.engine.core
        */
       public function removeGroupReference(index:int, name:String):void
       {
-         if (!_HasLevelData(index))
+         if (!hasLevelData(index))
          {
             Logger.printError(this, "RemoveGroupReference", "No level data exists for level " + index + ".");
             return;
@@ -577,7 +577,7 @@ package com.pblabs.engine.core
             return;
          }
          
-         var levelDescription:LevelDescription = _GetLevelDescription(index);
+         var levelDescription:LevelDescription = getLevelDescription(index);
          levelDescription.Groups.splice(groupIndex, 1);
       }
       
@@ -588,7 +588,7 @@ package com.pblabs.engine.core
        */
       public function removeLevel(index:int):void
       {
-         if (!_HasLevelData(index))
+         if (!hasLevelData(index))
          {
             Logger.printError(this, "RemoveLevel", "No level data exists for level " + index + ".");
             return;
@@ -598,7 +598,7 @@ package com.pblabs.engine.core
          delete _levelDescriptions[index];
       }
       
-      private function _GetLevelDescription(index:int):LevelDescription
+      private function getLevelDescription(index:int):LevelDescription
       {
          var levelDescription:LevelDescription = _levelDescriptions[index];
          if (!levelDescription)
@@ -611,7 +611,7 @@ package com.pblabs.engine.core
          return levelDescription;
       }
       
-      private function _HasLevelData(index:int):Boolean
+      private function hasLevelData(index:int):Boolean
       {
          return _levelDescriptions[index];
       }

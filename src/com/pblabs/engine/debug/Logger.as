@@ -56,7 +56,7 @@ package com.pblabs.engine.debug
          entry.Reporter = reporter;
          entry.Message = message;
          entry.Type = LogEntry.MESSAGE;
-         instance._AddEntry(entry);
+         instance.addEntry(entry);
       }
       
       /**
@@ -108,7 +108,7 @@ package com.pblabs.engine.debug
          entry.Method = method;
          entry.Message = method + " - " + message;
          entry.Type = LogEntry.WARNING;
-         instance._AddEntry(entry);
+         instance.addEntry(entry);
       }
       
       /**
@@ -126,7 +126,7 @@ package com.pblabs.engine.debug
          entry.Method = method;
          entry.Message = method + " - " + message;
          entry.Type = LogEntry.ERROR;
-         instance._AddEntry(entry);
+         instance.addEntry(entry);
       }
       
       /**
@@ -145,7 +145,7 @@ package com.pblabs.engine.debug
          entry.Method = method;
          entry.Message = method + " - " + message;
          entry.Type = type;
-         instance._AddEntry(entry);
+         instance.addEntry(entry);
       }
       
       /**
@@ -193,7 +193,7 @@ package com.pblabs.engine.debug
       
       private static var _instance:Logger = new Logger();
       
-      private function _AddEntry(entry:LogEntry):void
+      private function addEntry(entry:LogEntry):void
       {
          var reporter:* = entry.Reporter ? entry.Reporter : this;
          var logger:com.pblabs.engine.debug.log4PBE.Logger = com.pblabs.engine.debug.log4PBE.Logger.getLogger(reporter);

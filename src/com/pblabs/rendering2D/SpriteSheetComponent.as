@@ -190,13 +190,13 @@ package com.pblabs.rendering2D
          
          // Easy case if we only have one direction per frame.
          if (DirectionsPerFrame == 1)
-            return _GetRawFrame(index);
+            return getRawFrame(index);
          
          // Otherwise we have to do a search.
          
          // Make sure we have data to fulfill our requests from.
          if (!_frameNotes)
-            _GenerateFrameNotes();
+            generateFrameNotes();
          
          // Look for best match.
          var bestMatchIndex:int = -1;
@@ -218,12 +218,12 @@ package com.pblabs.rendering2D
          
          // Return the bitmap.
          if (bestMatchIndex >= 0)
-            return _GetRawFrame(bestMatchIndex);
+            return getRawFrame(bestMatchIndex);
          
          return null;
       }
       
-      protected function _BuildFrames():void
+      protected function buildFrames():void
       {
          // image isn't loaded, can't do anything yet
          if (!imageData)
@@ -264,11 +264,11 @@ package com.pblabs.rendering2D
        * Gets the frame at the specified index. This does not take direction into
        * account.
        */
-      protected function _GetRawFrame(index:int):BitmapData
+      protected function getRawFrame(index:int):BitmapData
       {
          if (!_frames)
 		 {
-            _BuildFrames();
+            buildFrames();
 			return null;
 		 }
          
@@ -278,7 +278,7 @@ package com.pblabs.rendering2D
          return _frames[index];  
       }
       
-      private function _GenerateFrameNotes():void
+      private function generateFrameNotes():void
       {
          _frameNotes = new Array();
          

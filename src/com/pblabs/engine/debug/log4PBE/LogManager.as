@@ -184,7 +184,7 @@ package com.pblabs.engine.debug.log4PBE
       private function onConfigurationLoaded(resource:XMLResource):void
       {
          // clear out any default configuring
-         _ClearConfiguration();
+         clearConfiguration();
          
          // load manager values
          if (resource.XMLData.@trackLevel.toString() != "")
@@ -286,7 +286,7 @@ package com.pblabs.engine.debug.log4PBE
          if (_configuring)
             return;
          
-         _ClearConfiguration();
+         clearConfiguration();
          
          addLogAppender("UI", new UIAppender());
          addLogAppender("Trace", new TraceAppender());
@@ -297,7 +297,7 @@ package com.pblabs.engine.debug.log4PBE
          start();
       }
       
-      private function _ClearConfiguration():void
+      private function clearConfiguration():void
       {
          for (var appenderName:String in _appenders)
          {
@@ -530,7 +530,7 @@ package com.pblabs.engine.debug.log4PBE
             errorNumber = logTable.getErrorNumber(message);
             
             // check if this message has been printed recently
-            if (!_ShouldAdd(level, errorNumber))
+            if (!shouldAdd(level, errorNumber))
                return;
             
             message = logTable.translateMessage(message, errorNumber);
@@ -549,7 +549,7 @@ package com.pblabs.engine.debug.log4PBE
          }
       }
       
-      private function _ShouldAdd(level:LogLevel, errorNumber:int):Boolean
+      private function shouldAdd(level:LogLevel, errorNumber:int):Boolean
       {
          // not going to compare messages, so only decline if there's a valid error number
          if (errorNumber < 0)
@@ -649,7 +649,7 @@ class LogTable
 {
    public function LogTable(table:Array)
    {
-      _offset = _ParseIndex(table[0]);
+      _offset = parseIndex(table[0]);
       _table = table;
    }
    
@@ -658,7 +658,7 @@ class LogTable
       return _offset >= 0 && _table;
    }
    
-   private function _ParseIndex(message:String):int
+   private function parseIndex(message:String):int
    {
       // messages referencing tables use # followed by the number
       if (message.charAt(0) != "#")
@@ -683,7 +683,7 @@ class LogTable
    
    public function getErrorNumber(message:String):int
    {
-      var index:int = _ParseIndex(message);
+      var index:int = parseIndex(message);
       return index >= 0 ? index + _offset : -1;
    }
    

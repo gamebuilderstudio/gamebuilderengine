@@ -19,15 +19,15 @@ package com.pblabs.rendering2D
        * Subclasses must implement this method; it needs to return the embedded
        * SWF's class.
        */
-      protected function _GetClipinstance():MovieClip
+      protected function getClipInstance():MovieClip
       {
-         throw new Error("SWFRenderComponent must be subclassed and _GetClipinstance implemented to return a MovieClip from a SWF.");
+         throw new Error("SWFRenderComponent must be subclassed and getClipInstance implemented to return a MovieClip from a SWF.");
       }
       
       public override function onDraw(manager:IDrawManager2D):void
       {
          if(!_Clip)
-            _Clip = _GetClipinstance();
+            _Clip = getClipInstance();
          
          // Position and draw.
          var screenPos:Point = manager.transformWorldToScreen(renderPosition);
@@ -52,7 +52,7 @@ package com.pblabs.rendering2D
             _Clip.gotoAndStop(_ClipFrame);
             
             // Update child clips as well.
-            _UpdateChildClips(_Clip);
+            updateChildClips(_Clip);
             
             _ClipLastUpdate = ProcessManager.instance.virtualTime;
          }
@@ -61,7 +61,7 @@ package com.pblabs.rendering2D
       /**
        * Recursively advance a clip's children to the next frame.
        */
-      protected function _UpdateChildClips(parent:MovieClip):void
+      protected function updateChildClips(parent:MovieClip):void
       {
          for (var j:int=0; j<parent.numChildren; j++)
          {
@@ -70,7 +70,7 @@ package com.pblabs.rendering2D
                continue;
             
             mc.nextFrame();
-            _UpdateChildClips(mc);
+            updateChildClips(mc);
          }
       }
       

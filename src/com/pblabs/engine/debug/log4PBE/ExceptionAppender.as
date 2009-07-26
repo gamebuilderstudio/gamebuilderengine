@@ -11,7 +11,7 @@ package com.pblabs.engine.debug.log4PBE
          if (errorNumber >= 0)
             numberString = "Error #" + errorNumber;
          
-         throw new Error(numberString + _Replace(message, arguments));
+         throw new Error(numberString + replace(message, arguments));
       }
    }
 }

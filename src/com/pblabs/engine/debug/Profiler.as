@@ -159,10 +159,10 @@ package com.pblabs.engine.debug
          
          var header:String = sprintf( "%-" + NameFieldWidth + "s%-8s%-8s%-8s%-8s%-8s%-8s", "Name", "Calls", "Total%", "NonSub%", "AvgMs", "MinMs", "MaxMs" );
          Logger.print(Profiler, header);
-         _Report_R(_RootNode, 0);
+         report_R(_RootNode, 0);
       }
       
-      static private function _Report_R(pi:ProfileInfo, indent:int):void
+      static private function report_R(pi:ProfileInfo, indent:int):void
       {
          // Figure our display values.
          var selfTime:Number = pi.totalTime;
@@ -199,7 +199,7 @@ package com.pblabs.engine.debug
             tmpArray.push(childPi);
          tmpArray.sortOn("totalTime", Array.NUMERIC | Array.DESCENDING);
          for each(childPi in tmpArray)
-            _Report_R(childPi, indent + 1);
+            report_R(childPi, indent + 1);
       }
 
       static private function doWipe(pi:ProfileInfo = null):void

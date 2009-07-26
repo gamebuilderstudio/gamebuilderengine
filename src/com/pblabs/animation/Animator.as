@@ -294,7 +294,7 @@ package com.pblabs.animation
             dispatchEvent(new AnimationEvent(AnimationEvent.ANIMATION_REPEATED_EVENT, this));
          }
       
-         _current = _Interpolate(_start, _target, _elapsedTime / _duration);
+         _current = interpolate(_start, _target, _elapsedTime / _duration);
       }
       
       /**
@@ -310,7 +310,7 @@ package com.pblabs.animation
        * 
        * @return The interpolated value.
        */
-      protected function _Interpolate(start:*, end:*, time:Number):*
+      protected function interpolate(start:*, end:*, time:Number):*
       {
          // Have to be careful to convert to numbers.
          var startN:Number = Number(start);

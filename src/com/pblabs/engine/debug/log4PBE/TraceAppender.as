@@ -8,7 +8,7 @@ package com.pblabs.engine.debug.log4PBE
          if (errorNumber >= 0)
             numberString = " - " + errorNumber;
          
-         trace(level + ": " + loggerName + numberString + " - " + _Replace(message, arguments));
+         trace(level + ": " + loggerName + numberString + " - " + replace(message, arguments));
       }
    }
 }

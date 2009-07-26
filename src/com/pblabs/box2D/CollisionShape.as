@@ -70,7 +70,7 @@ package com.pblabs.box2D
       {
          _parent = parent;
          
-         var shape:b2ShapeDef = _CreateShape();
+         var shape:b2ShapeDef = doCreateShape();
          shape.friction = _friction;
          shape.density = _density;
          shape.restitution = _restitution;
@@ -86,7 +86,7 @@ package com.pblabs.box2D
          return shape;
       }
       
-      protected function _CreateShape():b2ShapeDef
+      protected function doCreateShape():b2ShapeDef
       {
          return new b2ShapeDef();
       }

@@ -134,7 +134,7 @@ package com.pblabs.rendering2D
       public override function onDraw(manager:IDrawManager2D):void
       {
          // create the sprite data - this only does anything if necessary
-         _GenerateSprite();
+         generateSprite();
          
          // if things aren't loaded yet, the sprite may still be dirty.
          if (_spriteDirty)
@@ -241,7 +241,7 @@ package com.pblabs.rendering2D
       /**
        * Update the cached sprite that we use for rendering.
        */
-      protected function _GenerateSprite():void
+      protected function generateSprite():void
       {
          // Don't regenerate if we don't need it.
          if (!_spriteDirty)
@@ -268,7 +268,7 @@ package com.pblabs.rendering2D
             var bmpData:BitmapData = getCurrentFrame();
             if (!bmpData)
             {
-               Logger.printError(this, "_GenerateSprite", "Failed to get a valid BitmapData back from GetCurrentFrame!");
+               Logger.printError(this, "generateSprite", "Failed to get a valid BitmapData back from GetCurrentFrame!");
                _sprite = null;
                return;
             }

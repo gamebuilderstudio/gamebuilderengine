@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" backgroundAlpha="0.6" backgroundColor="#000000">
 	<mx:TextArea backgroundAlpha="0.0" color="#FFFFFF" top="38" bottom="0" left="0" right="0" id="LogText" editable="false" creationComplete="onTextCreated()" valueCommit="LogText.verticalScrollPosition=LogText.maxVerticalScrollPosition"/>
-	<mx:Button right="10" y="8" label="X" click="_Close()"/>
+	<mx:Button right="10" y="8" label="X" click="close()"/>
 	<mx:Label x="10" y="8" text="Log - Show" color="#FFFFFF" fontSize="14"/>
-	<mx:ComboBox id="LogFilter" x="105" y="8" dataProvider="{_loggerCollection}" change="_Refresh()"/>
+	<mx:ComboBox id="LogFilter" x="105" y="8" dataProvider="{_loggerCollection}" change="refresh()"/>
    <mx:Script>
       <![CDATA[
          import mx.collections.ArrayCollection;
@@ -33,25 +33,25 @@
          
          private function onTextCreated():void
          {
-            _Refresh();
+            refresh();
          }
          
-         private function _Refresh():void
+         private function refresh():void
          {
             LogText.text = "";
             for each (var item:Object in _messageQueue)
             {
-               if (_IsDisplayed(item))
+               if (isDisplayed(item))
                   LogText.text += item.message + "\n";
             }
          }
          
-         private function _IsDisplayed(item:Object):Boolean
+         private function isDisplayed(item:Object):Boolean
          {
             return LogFilter.selectedItem == "*" || item.logger.indexOf(LogFilter.selectedItem) != -1;
          }
          
-         private function _Close():void
+         private function close():void
          {
             parent.removeChild(this);
          }

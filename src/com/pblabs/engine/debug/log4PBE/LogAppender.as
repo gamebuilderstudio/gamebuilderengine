@@ -34,7 +34,7 @@ package com.pblabs.engine.debug.log4PBE
        * 
        * @param The input string with replacements made.
        */
-      protected function _Replace(message:String, arguments:Array):String
+      protected function replace(message:String, arguments:Array):String
       {
          var newMessage:String = message;
          for (var i:int = 0; i < arguments.length; i++)

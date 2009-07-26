@@ -182,7 +182,7 @@ package com.pblabs.engine.core
        */
       public function addAnimatedObject(object:IAnimatedObject, priority:Number = 0.0):void
       {
-         _AddObject(object, priority, _animatedObjects);
+         addObject(object, priority, _animatedObjects);
       }
       
       /**
@@ -194,7 +194,7 @@ package com.pblabs.engine.core
        */
       public function addTickedObject(object:ITickedObject, priority:Number = 0.0):void
       {
-         _AddObject(object, priority, _tickedObjects);
+         addObject(object, priority, _tickedObjects);
       }
       
       /**
@@ -204,7 +204,7 @@ package com.pblabs.engine.core
        */
       public function removeAnimatedObject(object:IAnimatedObject):void
       {
-         _RemoveObject(object, _animatedObjects);
+         removeObject(object, _animatedObjects);
       }
       
       /**
@@ -214,7 +214,7 @@ package com.pblabs.engine.core
        */
       public function removeTickedObject(object:ITickedObject):void
       {
-         _RemoveObject(object, _tickedObjects);
+         removeObject(object, _tickedObjects);
       }
       
       /**
@@ -225,7 +225,7 @@ package com.pblabs.engine.core
        */
       public function testAdvance(amount:Number):void
       {
-         _Advance(amount * _timeScale);
+         advance(amount * _timeScale);
       }
       
       private function get _ListenerCount():int
@@ -233,7 +233,7 @@ package com.pblabs.engine.core
          return _tickedObjects.length + _animatedObjects.length;
       }
       
-      private function _AddObject(object:*, priority:Number, list:Array):void
+      private function addObject(object:*, priority:Number, list:Array):void
       {
          if (!_started)
             start();
@@ -265,7 +265,7 @@ package com.pblabs.engine.core
             list.splice(position, 0, processObject);
       }
       
-      private function _RemoveObject(object:*, list:Array):void
+      private function removeObject(object:*, list:Array):void
       {
          if (_ListenerCount == 1 && _scheduleEvents.length == 0)
             stop();
@@ -292,12 +292,12 @@ package com.pblabs.engine.core
          }
          
          var elapsed:Number = (currentTime - _lastTime) * _timeScale;
-         _Advance(elapsed);
+         advance(elapsed);
          
          _lastTime = currentTime;
       }
       
-      private function _Advance(elapsed:Number):void
+      private function advance(elapsed:Number):void
       {
          _elapsed += elapsed;
          

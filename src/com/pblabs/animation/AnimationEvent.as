@@ -55,11 +55,11 @@ package com.pblabs.animation
 	   /**
 	    * The Animator that triggered the event.
 	    */
-	   public var Animation:Animator = null;
+	public var animation:Animator = null;
 	   
    	public function AnimationEvent(type:String, animation:Animator, bubbles:Boolean=true, cancelable:Boolean=false)
    	{
-   	   Animation = animation;
+   	   animation = animation;
    		super(type, bubbles, cancelable);
    	}
    }

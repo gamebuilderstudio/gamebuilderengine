@@ -28,7 +28,7 @@ package com.pblabs.engine.debug.log4PBE
       
       public override function addLogMessage(level:String, loggerName:String, errorNumber:int, message:String, arguments:Array):void
       {
-         _logViewer.addLogMessage(level, loggerName, errorNumber, _Replace(message, arguments));
+         _logViewer.addLogMessage(level, loggerName, errorNumber, replace(message, arguments));
       }
       
       private var _logViewer:LogViewer = new LogViewer();

@@ -40,15 +40,15 @@ package com.pblabs.engine.serialization
       {
          // initialize our default Serializers. Note "special" cases get a double
          // colon so there can be no overlap w/ any real type.
-         _deSerializers["::DefaultSimple"] = _deserializeSimple;
-         _deSerializers["::DefaultComplex"] = _deserializeComplex;
-         _deSerializers["Boolean"] = _deserializeBoolean;
-         _deSerializers["Array"] = _deserializeDictionary;
-         _deSerializers["flash.utils::Dictionary"] = _deserializeDictionary;
+         _deSerializers["::DefaultSimple"] = deserializeSimple;
+         _deSerializers["::DefaultComplex"] = dserializeComplex;
+         _deSerializers["Boolean"] = deserializeBoolean;
+         _deSerializers["Array"] = deserializeDictionary;
+         _deSerializers["flash.utils::Dictionary"] = deserializeDictionary;
          
-         _Serializers["::DefaultSimple"] = _serializeSimple;
-         _Serializers["::DefaultComplex"] = _serializeComplex;
-         _Serializers["Boolean"] = _serializeBoolean;
+         _Serializers["::DefaultSimple"] = serializeSimple;
+         _Serializers["::DefaultComplex"] = serializeComplex;
+         _Serializers["Boolean"] = serializeBoolean;
          
          // Do a quick sanity check to make sure we are getting metadata.
          var tmd:TestForMetadata = new TestForMetadata();
@@ -84,7 +84,7 @@ package com.pblabs.engine.serialization
             // Normal case - determine type and call the right Serializer.
             var typeName:String = TypeUtility.getObjectClassName(object);
             if (!_Serializers[typeName])
-               typeName = _IsSimpleType(object) ? "::DefaultSimple" : "::DefaultComplex";
+               typeName = isSimpleType(object) ? "::DefaultSimple" : "::DefaultComplex";
             
             _Serializers[typeName](object, xml);
          }
@@ -156,7 +156,7 @@ package com.pblabs.engine.serialization
          }
       }
       
-      private function _IsSimple(xml:XML, typeName:String):Boolean
+      private function isSimple(xml:XML, typeName:String):Boolean
       {
          // Complex content is assumed if there are child nodes in the xml, or the xml text is
          // an empty string, unless the type is a string. This is because any simple type that
@@ -174,7 +174,7 @@ package com.pblabs.engine.serialization
          return true;
       }
       
-      private function _IsSimpleType(object:*):Boolean
+      private function isSimpleType(object:*):Boolean
       {
          var typeName:String = TypeUtility.getObjectClassName(object);
          if (typeName == "String" || typeName == "int" || typeName == "Number" || typeName == "uint" || typeName == "Boolean")
@@ -183,7 +183,7 @@ package com.pblabs.engine.serialization
          return false;
       }
       
-      private function _deserializeSimple(object:*, xml:XML, typeHint:String):*
+      private function deserializeSimple(object:*, xml:XML, typeHint:String):*
       {
          // If the tag is empty and we're not a string where """ is a valid value,
          // just return that value.
@@ -193,12 +193,12 @@ package com.pblabs.engine.serialization
          return xml.toString();
       }
       
-      private function _serializeSimple(object:*, xml:XML):void
+      private function serializeSimple(object:*, xml:XML):void
       {
          xml.appendChild(object.toString());
       }
       
-      private function _deserializeComplex(object:*, xml:XML, typeHint:String):*
+      private function dserializeComplex(object:*, xml:XML, typeHint:String):*
       {
          var isDynamic:Boolean = (object is Array) || (object is Dictionary) || (TypeUtility.isDynamic(object));
          
@@ -220,9 +220,9 @@ package com.pblabs.engine.serialization
                typeName = "String";
             
             // deserialize into the child.
-            if (!_GetChildReference(object, fieldName, fieldXML) && !getResourceObject(object, fieldName, fieldXML))
+            if (!getChildReference(object, fieldName, fieldXML) && !getResourceObject(object, fieldName, fieldXML))
             {
-               var child:* = _GetChildObject(object, fieldName, typeName);
+               var child:* = getChildObject(object, fieldName, typeName);
                if (child)
                {
                   // Deal with typehints.
@@ -245,7 +245,7 @@ package com.pblabs.engine.serialization
          return object;
       }
       
-      private function _serializeComplex(object:*, xml:XML):void
+      private function serializeComplex(object:*, xml:XML):void
       {
          var classDescription:XML = TypeUtility.getTypeDescription(object);
          for each (var property:XML in classDescription.child("accessor"))
@@ -268,12 +268,12 @@ package com.pblabs.engine.serialization
          }
       }
       
-      private function _deserializeBoolean(object:*, xml:XML, typeHint:String):*
+      private function deserializeBoolean(object:*, xml:XML, typeHint:String):*
       {
          return (xml.toString() == "true")
       }
       
-      private function _serializeBoolean(object:*, xml:XML):void
+      private function serializeBoolean(object:*, xml:XML):void
       {
          if (object)
             xml.appendChild("true");
@@ -281,7 +281,7 @@ package com.pblabs.engine.serialization
             xml.appendChild("false");
       }
       
-      private function _deserializeDictionary(object:*, xml:XML, typeHint:String):*
+      private function deserializeDictionary(object:*, xml:XML, typeHint:String):*
       {
          for each (var childXML:XML in xml.*)
          {
@@ -308,9 +308,9 @@ package com.pblabs.engine.serialization
                typeName = typeHint ? typeHint : "String";
             
             // deserialize the value.
-            if (!_GetChildReference(object, key, childXML) && !getResourceObject(object, key, childXML, typeHint))
+            if (!getChildReference(object, key, childXML) && !getResourceObject(object, key, childXML, typeHint))
             {
-               var value:* = _GetChildObject(object, key, typeName);
+               var value:* = getChildObject(object, key, typeName);
                if (value != null)
                   value = deserialize(value, childXML);
                
@@ -325,7 +325,7 @@ package com.pblabs.engine.serialization
          return object;
       }
       
-      private function _GetChildReference(object:*, fieldName:String, xml:XML):Boolean
+      private function getChildReference(object:*, fieldName:String, xml:XML):Boolean
       {
          var nameReference:String = xml.attribute("nameReference");
          var componentReference:String = xml.attribute("componentReference");
@@ -355,7 +355,7 @@ package com.pblabs.engine.serialization
       /**
        * Find or instantiate the value that should go in a field.
        */
-      private function _GetChildObject(object:*, fieldName:String, typeName:String):*
+      private function getChildObject(object:*, fieldName:String, typeName:String):*
       {
          var childObject:*;
          
@@ -402,7 +402,7 @@ package com.pblabs.engine.serialization
       }
       
       // internal doesn't work here for some reason. It's just being referenced in the ResourceNote support class
-      public function _RemoveResource(filename:String):void
+      public function removeResource(filename:String):void
       {
          _resources[filename] = null;
          delete _resources[filename];
@@ -452,13 +452,13 @@ internal class ResourceNote
    public function onLoaded(resource:Resource):void
    {
       owner[fieldName] = resource;
-      Serializer.instance._RemoveResource(resource.filename);
+      Serializer.instance.removeResource(resource.filename);
    }
    
    public function onFailed(resource:Resource):void
    {
       Logger.printError(owner, "set " + fieldName, "No resource was found with filename " + resource.filename + ".");
-      Serializer.instance._RemoveResource(resource.filename);
+      Serializer.instance.removeResource(resource.filename);
    }
 }
 
@@ -483,7 +483,7 @@ internal class ReferenceNote
             return false;
          
          owner[FieldName] = namedObject;
-         _ReportSuccess();
+         reportSuccess();
          return true;
       }
       
@@ -510,7 +510,7 @@ internal class ReferenceNote
          }
          
          owner[FieldName] = component;
-         _ReportSuccess();
+         reportSuccess();
          return true;
       }
       
@@ -522,7 +522,7 @@ internal class ReferenceNote
             return false;
          
          owner[FieldName] = localComponent;
-         _ReportSuccess();
+         reportSuccess();
          return true;
       }
       
@@ -530,7 +530,7 @@ internal class ReferenceNote
       if (ObjectReference != "")
       {
          owner[FieldName] = TemplateManager.instance.instantiateEntity(ObjectReference);
-         _ReportSuccess();
+         reportSuccess();
          return true;
       }
       
@@ -572,7 +572,7 @@ internal class ReferenceNote
       }
    }
    
-   private function _ReportSuccess():void
+   private function reportSuccess():void
    {
       // If we succeeded with no spam then be quiet on success too.
       if(!ReportedMissing)
@@ -583,21 +583,21 @@ internal class ReferenceNote
       // Name reference.
       if(NameReference)
       {
-         Logger.printWarning(this, "_ReportSuccess", firstPart + " After failure, was able to resolve reference to named entity '" + NameReference + "'");
+         Logger.printWarning(this, "reportSuccess", firstPart + " After failure, was able to resolve reference to named entity '" + NameReference + "'");
          return; 
       }
 
       // Look up a component on a named object by name (first) or type (second).
       if (ComponentReference != "")
       {
-         Logger.printWarning(this, "_ReportSuccess", firstPart + " After failure, was able to find named entity '" + ComponentReference + "'");
+         Logger.printWarning(this, "reportSuccess", firstPart + " After failure, was able to find named entity '" + ComponentReference + "'");
          return;
       }
       
       // Component reference on the entity being deserialized when the reference was created.
       if (ComponentName != "")
       {
-         Logger.printWarning(this, "_ReportSuccess", firstPart + " After failure, was able to find component on same entity named '" + ComponentName + "'");
+         Logger.printWarning(this, "reportSuccess", firstPart + " After failure, was able to find component on same entity named '" + ComponentName + "'");
          return;
       }
    }

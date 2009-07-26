@@ -107,10 +107,10 @@ package com.pblabs.rendering2D
          // Figure out what will be drawn.
          var layerList:Array = new Array(LAYER_COUNT);
          var viewRect:Rectangle = new Rectangle(_position.x - sceneView.width * 0.5, _position.y - sceneView.height * 0.5, sceneView.width, sceneView.height);
-         _BuildRenderList(viewRect, layerList);
+         buildRenderList(viewRect, layerList);
 
          // So draw the layers in order.
-         _DrawSortedLayers(layerList);
+         drawSortedLayers(layerList);
       }
       
       protected var _position:Point = new Point(0, 0);

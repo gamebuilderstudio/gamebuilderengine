@@ -121,8 +121,8 @@ package com.pblabs.engine.unitTests
       {
          Logger.printHeader(null, "Running TemplateManager Entity/Group Callbacks Test");
          
-         TemplateManager.instance.registerEntityCallback("TestEntityCallback", _entityCallback);
-         TemplateManager.instance.registerGroupCallback("TestGroupCallback", _groupCallback);
+         TemplateManager.instance.registerEntityCallback("TestEntityCallback", entityCallback);
+         TemplateManager.instance.registerGroupCallback("TestGroupCallback", groupCallback);
          
          var e:IEntity = TemplateManager.instance.instantiateEntity("TestEntityCallback");
          assertTrue(e);
@@ -141,7 +141,7 @@ package com.pblabs.engine.unitTests
          Logger.printFooter(null, "");
       }
       
-      private function _entityCallback():IEntity
+      private function entityCallback():IEntity
       {
          var entity:IEntity = AllocateEntity();
          entity.initialize("CallbackCreatedEntity");
@@ -150,13 +150,13 @@ package com.pblabs.engine.unitTests
          return entity;
       }
       
-      private function _groupCallback():Array
+      private function groupCallback():Array
       {
          // Make several entities using the entity callback.
          var res:Array = new Array();
-         res.push(_entityCallback());
-         res.push(_entityCallback());
-         res.push(_entityCallback());
+         res.push(entityCallback());
+         res.push(entityCallback());
+         res.push(entityCallback());
          return res;         
       }
     
