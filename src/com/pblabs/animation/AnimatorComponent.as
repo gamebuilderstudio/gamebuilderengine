@@ -43,7 +43,7 @@ package com.pblabs.animation
       /**
        * @inheritDoc
        */
-      public override function onFrame(elapsed:Number):void
+      override public function onFrame(elapsed:Number):void
       {
          if (_currentAnimation)
          {
@@ -76,7 +76,7 @@ package com.pblabs.animation
       /**
        * @inheritDoc
        */
-      protected override function onReset():void
+      override protected function onReset():void
       {
          if (!autoPlay || _currentAnimation)
             return;

@@ -16,7 +16,7 @@ package com.pblabs.box2D
 
    public class ContactListener extends b2ContactListener
    {
-      public override function Add(point:b2ContactPoint):void
+      override public function Add(point:b2ContactPoint):void
       {
          var spatial1:Box2DSpatialComponent = point.shape1.m_userData as Box2DSpatialComponent;
          var spatial2:Box2DSpatialComponent = point.shape2.m_userData as Box2DSpatialComponent;
@@ -34,11 +34,11 @@ package com.pblabs.box2D
          shape1Dictionary[spatial2]++;
       }
       
-      public override function Persist(point:b2ContactPoint):void
+      override public function Persist(point:b2ContactPoint):void
       {
       }
       
-      public override function Remove(point:b2ContactPoint):void
+      override public function Remove(point:b2ContactPoint):void
       {
          var spatial1:Box2DSpatialComponent = point.shape1.m_userData as Box2DSpatialComponent;
          var spatial2:Box2DSpatialComponent = point.shape2.m_userData as Box2DSpatialComponent;
@@ -50,7 +50,7 @@ package com.pblabs.box2D
          spatial2.owner.eventDispatcher.dispatchEvent(new CollisionEvent(CollisionEvent.COLLISION_STOPPED_EVENT, point));
       }
       
-      public override function Result(point:b2ContactResult):void
+      override public function Result(point:b2ContactResult):void
       {
       }
       

@@ -31,7 +31,7 @@ package com.pblabs.rendering2D
       [TypeHint(type="int")]
       public var directionCount:Dictionary = new Dictionary();
       
-	   protected override function onAdd():void
+	   override protected function onAdd():void
 	   {
          // Debugging aid - make sure that none of the sheets we will be
          // creating already exist.

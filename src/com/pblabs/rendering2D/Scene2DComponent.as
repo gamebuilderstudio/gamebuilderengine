@@ -57,7 +57,7 @@ package com.pblabs.rendering2D
       /**
        * @inheritDoc
        */
-      public override function transformWorldToScreen(point:Point, altitude:Number = 0):Point
+      override public function transformWorldToScreen(point:Point, altitude:Number = 0):Point
       {
          var newPoint:Point = new Point();
          newPoint.x = (point.x - _position.x) + sceneView.width * 0.5;
@@ -68,7 +68,7 @@ package com.pblabs.rendering2D
       /**
        * @inheritDoc
        */
-      public override function transformScreenToWorld(point:Point):Point
+      override public function transformScreenToWorld(point:Point):Point
       {
          var newPoint:Point = new Point();
          newPoint.x = (point.x + _position.x) - sceneView.width * 0.5;
@@ -79,7 +79,7 @@ package com.pblabs.rendering2D
       /**
        * @inheritDoc
        */
-      protected override function onRemove():void 
+      override protected function onRemove():void 
       {
          super.onRemove();
          
@@ -90,7 +90,7 @@ package com.pblabs.rendering2D
       /**
        * @inheritDoc
        */
-      protected override function render():void
+      override protected function render():void
       {
          if (_trackObject)
          {

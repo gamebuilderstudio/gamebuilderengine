@@ -13,7 +13,7 @@ package com.pblabs.box2D
 
    public class ContactFilter extends b2ContactFilter
    {
-      public override function ShouldCollide(shape1:b2Shape, shape2:b2Shape):Boolean
+      override public function ShouldCollide(shape1:b2Shape, shape2:b2Shape):Boolean
       {
          if (!super.ShouldCollide(shape1, shape2))
             return false;

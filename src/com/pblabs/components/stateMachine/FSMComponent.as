@@ -11,7 +11,7 @@ package com.pblabs.components.stateMachine
    {
       public var stateMachine:Machine;
       
-      protected override function onAdd():void
+      override protected function onAdd():void
       {
          super.onAdd();
          
@@ -19,7 +19,7 @@ package com.pblabs.components.stateMachine
             stateMachine.propertyBag = owner;
       }
       
-      protected override function onRemove():void
+      override protected function onRemove():void
       {
          super.onRemove();
          
@@ -27,7 +27,7 @@ package com.pblabs.components.stateMachine
             stateMachine.propertyBag = null;
       }
       
-      public override function onTick(tickRate:Number) : void
+      override public function onTick(tickRate:Number) : void
       {
          if(stateMachine)
             stateMachine.tick();

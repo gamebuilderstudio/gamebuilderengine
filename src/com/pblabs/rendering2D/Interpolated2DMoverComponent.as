@@ -54,7 +54,7 @@ package com.pblabs.rendering2D
          return owner.getProperty(allowMovementProperty) == allowMovementValue;
       }
       
-      public override function onTick(tickRate:Number):void
+      override public function onTick(tickRate:Number):void
       {
          // Move towards our position goal.
          var moveDelta:Point = goalPosition.subtract(position);

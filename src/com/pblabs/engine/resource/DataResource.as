@@ -18,7 +18,7 @@ package com.pblabs.engine.resource
       /**
        * @inheritDoc
        */
-      public override function initialize(data:*):void
+      override public function initialize(data:*):void
       {
          if(!(data is ByteArray))
             throw new Error("DataResource can only handle ByteArrays.");
@@ -30,7 +30,7 @@ package com.pblabs.engine.resource
       /**
        * @inheritDoc
        */
-      protected override function onContentReady(content:*):Boolean 
+      override protected function onContentReady(content:*):Boolean 
       {
          return _data != null;
       }

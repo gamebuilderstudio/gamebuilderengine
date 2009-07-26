@@ -61,7 +61,7 @@ package com.pblabs.rendering2D
        */
       public var currentAnimationStartTimeReference:PropertyReference;
       
-      public override function onFrame(elapsed:Number) : void
+      override public function onFrame(elapsed:Number) : void
       {
          // Check for a new animation.
          var nextAnim:AnimationControllerInfo = null;

@@ -24,7 +24,7 @@ package com.pblabs.rendering2D
          throw new Error("SWFRenderComponent must be subclassed and getClipInstance implemented to return a MovieClip from a SWF.");
       }
       
-      public override function onDraw(manager:IDrawManager2D):void
+      override public function onDraw(manager:IDrawManager2D):void
       {
          if(!_clip)
             _clip = getClipInstance();

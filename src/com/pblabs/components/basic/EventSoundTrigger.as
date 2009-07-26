@@ -23,7 +23,7 @@ package com.pblabs.components.basic
       
       private var DidSchedule:Boolean = false, FiredStartSound:Boolean = false
       
-		protected override function onAdd():void
+		override protected function onAdd():void
 		{
 			// Register events.
 			var ed:IEventDispatcher = owner.eventDispatcher;
@@ -43,7 +43,7 @@ package com.pblabs.components.basic
          }
 		}
 		
-		protected override function onRemove():void
+		override protected function onRemove():void
 		{
 			// Unregister events.
 			var ed:IEventDispatcher = owner.eventDispatcher;
@@ -51,7 +51,7 @@ package com.pblabs.components.basic
 				ed.removeEventListener(key, soundEventHandler);
 		}
       
-      protected override function onReset():void
+      override protected function onReset():void
       {
          // Since we get callbacks from setTimeout, we have to sanity check.
          if(!owner)

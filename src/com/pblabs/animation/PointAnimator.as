@@ -15,7 +15,7 @@ package com.pblabs.animation
     */
    public class PointAnimator extends Animator
    {
-      protected override function interpolate(start:*, end:*, time:Number):*
+      override protected function interpolate(start:*, end:*, time:Number):*
       {
          var result:Point = new Point();
          result.x = super.interpolate(start.x, end.x, time);

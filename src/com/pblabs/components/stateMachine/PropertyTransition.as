@@ -11,7 +11,7 @@ package com.pblabs.components.stateMachine
       public var property:PropertyReference;
       public var value:String;
       
-      public override function evaluate(fsm:IMachine):Boolean
+      override public function evaluate(fsm:IMachine):Boolean
       {
          if(!fsm.propertyBag)
             return false;

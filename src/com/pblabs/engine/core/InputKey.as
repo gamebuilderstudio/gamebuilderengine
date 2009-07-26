@@ -349,12 +349,12 @@ package com.pblabs.engine.core
          _keyCode = keyCode;
       }
       
-      public override function get typeMap():Dictionary
+      override public function get typeMap():Dictionary
       {
          return staticTypeMap;
       }
       
-      public override function get defaultType():Enumerable
+      override public function get defaultType():Enumerable
       {
          return INVALID;
       }

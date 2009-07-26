@@ -77,7 +77,7 @@ package com.pblabs.rendering2D
       /**
        * @inheritDoc
        */
-      public override function onTick(tickRate:Number):void
+      override public function onTick(tickRate:Number):void
       {
          position.x += velocity.x * tickRate;
          position.y += velocity.y * tickRate;
@@ -86,7 +86,7 @@ package com.pblabs.rendering2D
       /**
        * @inheritDoc
        */
-      protected override function onAdd():void
+      override protected function onAdd():void
       {
          super.onAdd();
          
@@ -97,7 +97,7 @@ package com.pblabs.rendering2D
       /**
        * @inheritDoc
        */
-      protected override function onRemove():void
+      override protected function onRemove():void
       {
          super.onRemove();
 

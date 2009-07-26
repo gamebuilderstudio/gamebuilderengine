@@ -82,7 +82,7 @@ package com.pblabs.engine.core
        */
       public function generateSchema():void
       {
-         if (Global.IsShippingBuild)
+         if (Global.IS_SHIPPING_BUILD)
             return;
          
          _connection = new LocalConnection();

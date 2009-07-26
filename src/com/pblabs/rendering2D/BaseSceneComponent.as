@@ -386,12 +386,12 @@ package com.pblabs.rendering2D
          throw new Error("Derived classes must implement this method!");
       }
 
-      protected override function onAdd():void
+      override protected function onAdd():void
       {
          ProcessManager.instance.addAnimatedObject(this, -10);
       }
       
-      protected override function onRemove():void 
+      override protected function onRemove():void 
       {
          ProcessManager.instance.removeAnimatedObject(this);
          _sceneView = null;

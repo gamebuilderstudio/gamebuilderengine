@@ -31,12 +31,12 @@ package com.pblabs.engine.components
       {
       }
       
-      protected override function onAdd():void
+      override protected function onAdd():void
       {
          ProcessManager.instance.addAnimatedObject(this, updatePriority);
       }
       
-      protected override function onRemove():void
+      override protected function onRemove():void
       {
          ProcessManager.instance.removeAnimatedObject(this);
       }

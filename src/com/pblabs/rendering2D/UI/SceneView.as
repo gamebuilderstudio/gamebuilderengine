@@ -20,22 +20,22 @@ package com.pblabs.rendering2D.UI
     */
    public class SceneView extends Sprite implements IUITarget
    {
-      public override function get width():Number
+      override public function get width():Number
       {
          return _width;
       }
       
-      public override function set width(value:Number):void
+      override public function set width(value:Number):void
       {
          _width = value;
       }
       
-      public override function get height():Number
+      override public function get height():Number
       {
          return _height;
       }
       
-      public override function set height(value:Number):void
+      override public function set height(value:Number):void
       {
          _height = value;
       }

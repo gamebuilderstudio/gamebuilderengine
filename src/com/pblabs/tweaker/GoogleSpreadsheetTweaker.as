@@ -67,7 +67,7 @@ package com.pblabs.tweaker
       [TypeHint(type="com.pblabs.tweaker.TweakerMapGroup")]
       public var groups:Array = new Array();
       
-      protected override function onAdd():void
+      override protected function onAdd():void
       {
          // Process the groups.
          for each(var tmg:TweakerMapGroup in groups)

@@ -23,13 +23,13 @@ package com.pblabs.engine.debug
     */
    public class Profiler
    {
-      static public var enabled:Boolean = false;
-      static public var nameFieldWidth:int = 80;
+      public static var enabled:Boolean = false;
+      public static var nameFieldWidth:int = 80;
 
       /**
        * Indicate we are entering a named execution block.
        */
-      static public function enter(blockName:String):void
+      public static function enter(blockName:String):void
       {
          if(!_currentNode)
          {
@@ -91,7 +91,7 @@ package com.pblabs.engine.debug
       /**
        * Indicate we are exiting a named exection block.
        */
-      static public function exit(blockName:String):void
+      public static function exit(blockName:String):void
       {
          // Update stack depth and early out.
          _stackDepth--;
@@ -115,7 +115,7 @@ package com.pblabs.engine.debug
       /**
        * Dumps statistics to the log next time we reach bottom of stack.
        */
-      static public function report():void
+      public static function report():void
       {
          if(_stackDepth)
          {
@@ -129,7 +129,7 @@ package com.pblabs.engine.debug
       /**
        * Reset all statistics to zero.
        */
-      static public function wipe():void
+      public static function wipe():void
       {
          if(_stackDepth)
          {
@@ -147,13 +147,13 @@ package com.pblabs.engine.debug
        *
        * Useful for ensuring that profiler statements aren't mismatched.
        */
-      static public function ensureAtRoot():void
+      public static function ensureAtRoot():void
       {
          if(_stackDepth)
             throw new Error("Not at root!");
       }
       
-      static private function doReport():void
+      private static function doReport():void
       {
          _wantReport = false;
          
@@ -162,7 +162,7 @@ package com.pblabs.engine.debug
          report_R(_rootNode, 0);
       }
       
-      static private function report_R(pi:ProfileInfo, indent:int):void
+      private static function report_R(pi:ProfileInfo, indent:int):void
       {
          // Figure our display values.
          var selfTime:Number = pi.totalTime;
@@ -202,7 +202,7 @@ package com.pblabs.engine.debug
             report_R(childPi, indent + 1);
       }
 
-      static private function doWipe(pi:ProfileInfo = null):void
+      private static function doWipe(pi:ProfileInfo = null):void
       {
          _wantWipe = false;
          
@@ -221,12 +221,12 @@ package com.pblabs.engine.debug
        * Because we have to keep the stack balanced, we can only enabled/disable
        * when we return to the root node. So we keep an internal flag.
        */
-      static private var _reallyEnabled:Boolean = true;
-      static private var _wantReport:Boolean = false, _wantWipe:Boolean = false;
-      static private var _stackDepth:int = 0;
+      private static var _reallyEnabled:Boolean = true;
+      private static var _wantReport:Boolean = false, _wantWipe:Boolean = false;
+      private static var _stackDepth:int = 0;
       
-      static private var _rootNode:ProfileInfo;
-      static private var _currentNode:ProfileInfo;
+      private static var _rootNode:ProfileInfo;
+      private static var _currentNode:ProfileInfo;
    }
 }
 

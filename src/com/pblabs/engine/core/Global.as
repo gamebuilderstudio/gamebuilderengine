@@ -24,7 +24,7 @@ package com.pblabs.engine.core
        * Set this to true to get rid of a bunch of development related functionality that isn't
        * needed in a final release build.
        */
-      public static const IsShippingBuild:Boolean = false;
+      public static const IS_SHIPPING_BUILD:Boolean = false;
       
       /**
        * The stage. This is the root of the display heirarchy and is automatically created by
@@ -52,7 +52,7 @@ package com.pblabs.engine.core
          _main = mainClass;
          LogManager.instance.loadDefaultConfiguration();
          
-         if (!IsShippingBuild && (_main.loaderInfo && _main.loaderInfo.parameters && _main.loaderInfo.parameters["generateSchema"] == "1"))
+         if (!IS_SHIPPING_BUILD && (_main.loaderInfo && _main.loaderInfo.parameters && _main.loaderInfo.parameters["generateSchema"] == "1"))
             SchemaGenerator.instance.generateSchema();
       }
       

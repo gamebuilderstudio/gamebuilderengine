@@ -288,7 +288,7 @@ package com.pblabs.box2D
          }
       }
       
-      protected override function onAdd():void
+      override protected function onAdd():void
       {
          if (!_manager)
          {
@@ -307,7 +307,7 @@ package com.pblabs.box2D
          buildCollisionShapes();
       }
       
-      protected override function onRemove():void 
+      override protected function onRemove():void 
       {
          _manager.remove(_body);
          _body = null;

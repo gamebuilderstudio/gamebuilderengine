@@ -26,7 +26,7 @@ package com.pblabs.rendering2D
      [EditorData(defaultValue="255")]
 	  public var fillColor:uint = 0x0000FF;
 	
-     public override function onDraw(manager:IDrawManager2D):void
+     override public function onDraw(manager:IDrawManager2D):void
      {
         // Draw to the dummy sprite.
         _dummySprite.graphics.clear();

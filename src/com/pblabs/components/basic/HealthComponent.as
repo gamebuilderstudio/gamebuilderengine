@@ -22,7 +22,7 @@ package com.pblabs.components.basic
 		public static var DAMAGED:String = "HealthDamaged";
 		public static var HEALED:String = "HealthHealed";
 		
-		protected override function onAdd():void
+		override protected function onAdd():void
 		{
 			_health = maxHealth;
          _timeOfLastDamage = -1000;

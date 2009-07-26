@@ -128,8 +128,8 @@ package com.pblabs.engine.core
       private var _bits:int = 0;
       
       
-      static private var _wildcard:ObjectType;
-      static public function get wildcard():ObjectType
+      private static var _wildcard:ObjectType;
+      public static function get wildcard():ObjectType
       {
          if(!_wildcard)
             _wildcard = new ObjectType();

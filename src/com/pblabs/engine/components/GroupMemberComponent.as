@@ -30,7 +30,7 @@ package com.pblabs.engine.components
          return _groupName;
       }
       
-      protected override function onAdd():void
+      override protected function onAdd():void
       {
          var curM:GroupManagerComponent = groupManager;
          if(!_currentManager && curM)
@@ -40,13 +40,13 @@ package com.pblabs.engine.components
          }
       }
       
-      protected override function onReset():void
+      override protected function onReset():void
       {
          onRemove();
          onAdd();
       }
       
-      protected override function onRemove():void
+      override protected function onRemove():void
       {
          if(_currentManager)
          {

@@ -26,7 +26,7 @@ package com.pblabs.engine.debug.log4PBE
             Global.mainClass.addChild(_logViewer);
       }
       
-      public override function addLogMessage(level:String, loggerName:String, errorNumber:int, message:String, arguments:Array):void
+      override public function addLogMessage(level:String, loggerName:String, errorNumber:int, message:String, arguments:Array):void
       {
          _logViewer.addLogMessage(level, loggerName, errorNumber, replace(message, arguments));
       }

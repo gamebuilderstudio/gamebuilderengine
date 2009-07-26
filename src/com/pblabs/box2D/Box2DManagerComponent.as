@@ -86,13 +86,13 @@ package com.pblabs.box2D
          _worldBounds = value;
       }
       
-      protected override function onAdd():void
+      override protected function onAdd():void
       {
          ProcessManager.instance.addTickedObject(this);
          createWorld();
       }
       
-      protected override function onRemove():void 
+      override protected function onRemove():void 
       {
          var body:b2Body = _world.GetBodyList();
          while (body)

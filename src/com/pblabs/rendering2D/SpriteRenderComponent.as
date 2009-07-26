@@ -131,7 +131,7 @@ package com.pblabs.rendering2D
       /**
        * @inheritDoc
        */
-      public override function onDraw(manager:IDrawManager2D):void
+      override public function onDraw(manager:IDrawManager2D):void
       {
          // create the sprite data - this only does anything if necessary
          generateSprite();
@@ -220,7 +220,7 @@ package com.pblabs.rendering2D
       /**
        * @inheritDoc
        */
-      protected override function onAdd():void
+      override protected function onAdd():void
       {
          _spriteDirty = true;
       }
@@ -228,7 +228,7 @@ package com.pblabs.rendering2D
       /**
        * @inheritDoc
        */
-      protected override function onRemove():void 
+      override protected function onRemove():void 
       {
          _sprite = null;
       }

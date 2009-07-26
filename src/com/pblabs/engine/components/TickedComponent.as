@@ -45,13 +45,13 @@ package com.pblabs.engine.components
       {
       }
       
-      protected override function onAdd():void
+      override protected function onAdd():void
       {
          if(registerForTicks)
             ProcessManager.instance.addTickedObject(this, updatePriority);
       }
       
-      protected override function onRemove():void
+      override protected function onRemove():void
       {
          if(registerForTicks)
             ProcessManager.instance.removeTickedObject(this);

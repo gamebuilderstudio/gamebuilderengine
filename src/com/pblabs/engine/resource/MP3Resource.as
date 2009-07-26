@@ -26,7 +26,7 @@ package com.pblabs.engine.resource
        */
       public var soundObject:Sound = null;
       
-      public override function load(filename:String):void
+      override public function load(filename:String):void
       {
          _filename = filename;
          
@@ -48,7 +48,7 @@ package com.pblabs.engine.resource
          onFailed(event.text);
       }
       
-      public override function initialize(d:*):void
+      override public function initialize(d:*):void
       {
          soundObject = d;
          onLoadComplete();
@@ -57,7 +57,7 @@ package com.pblabs.engine.resource
       /**
        * @inheritDoc
        */
-      protected override function onContentReady(content:*):Boolean 
+      override protected function onContentReady(content:*):Boolean 
       {
          return soundObject != null;
       }

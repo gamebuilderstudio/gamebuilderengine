@@ -17,12 +17,12 @@ package com.pblabs.engine.unitTests
     */
    public class PBEngineTestSuite extends TestSuite
    {
-      static public function get testLevel():String
+      public static function get testLevel():String
       {
          return _testLevel;
       }
       
-      static private var _testLevel:String = "";
+      private static var _testLevel:String = "";
       
       public function PBEngineTestSuite(testLevel:String)
       {

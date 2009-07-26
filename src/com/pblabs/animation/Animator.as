@@ -166,7 +166,7 @@ package com.pblabs.animation
        */
       public function get isAnimating():Boolean
       {
-         return _type != AnimatorType.NoAnimation;
+         return _type != AnimatorType.NO_ANIMATION;
       }
       
       /**
@@ -197,7 +197,7 @@ package com.pblabs.animation
             return;
          
          _type = _previousType;
-         _previousType = AnimatorType.NoAnimation;
+         _previousType = AnimatorType.NO_ANIMATION;
          
          if (_elapsedTime == 0.0)
             dispatchEvent(new AnimationEvent(AnimationEvent.ANIMATION_STARTED_EVENT, this));
@@ -214,7 +214,7 @@ package com.pblabs.animation
             return;
          
          _previousType = _type;
-         _type = AnimatorType.NoAnimation;
+         _type = AnimatorType.NO_ANIMATION;
          
          dispatchEvent(new AnimationEvent(AnimationEvent.ANIMATION_STOPPED_EVENT, this));
       }
@@ -227,13 +227,13 @@ package com.pblabs.animation
          if (!isAnimating)
             return;
          
-         if (_type == AnimatorType.PingPongAnimation && _repeatCount & 1)
+         if (_type == AnimatorType.PING_PONG_ANIMATION && _repeatCount & 1)
             _current = _start;
          else
             _current = _target;
          
          _previousType = _type;
-         _type = AnimatorType.NoAnimation;
+         _type = AnimatorType.NO_ANIMATION;
          
          dispatchEvent(new AnimationEvent(AnimationEvent.ANIMATION_FINISHED_EVENT, this));
       }
@@ -269,19 +269,19 @@ package com.pblabs.animation
        */
       public function animate(elapsed:Number):void
       {
-         if (_type == AnimatorType.NoAnimation)
+         if (_type == AnimatorType.NO_ANIMATION)
             return;
       
          _elapsedTime += elapsed;
          if (_elapsedTime > _duration)
          {
-            if (_type == AnimatorType.PlayAnimationOnce || _repeatCount == 0)
+            if (_type == AnimatorType.PLAY_ANIMATION_ONCE || _repeatCount == 0)
             {
                finish();
                return;
             }
          
-            if (_type == AnimatorType.PingPongAnimation)
+            if (_type == AnimatorType.PING_PONG_ANIMATION)
                reverse();
          
             // set the elapsed time to the leftover time
@@ -323,8 +323,8 @@ package com.pblabs.animation
          return startN + ((endN - startN) * time);
       }
       
-      private var _type:AnimatorType = AnimatorType.NoAnimation;
-      private var _previousType:AnimatorType = AnimatorType.NoAnimation;
+      private var _type:AnimatorType = AnimatorType.NO_ANIMATION;
+      private var _previousType:AnimatorType = AnimatorType.NO_ANIMATION;
                                                                                             
       private var _repeatCount:int = 0;
       private var _totalRepeatCount:int = 0;

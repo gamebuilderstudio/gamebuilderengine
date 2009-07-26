@@ -29,7 +29,7 @@ package com.pblabs.box2D
             _parent.buildCollisionShapes();
       }
       
-      protected override function doCreateShape():b2ShapeDef
+      override protected function doCreateShape():b2ShapeDef
       {
          var halfSize:Point = new Point(_parent.size.x * 0.5, _parent.size.y * 0.5);
          var scale:Number = _parent.manager.inverseScale;

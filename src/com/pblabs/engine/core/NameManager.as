@@ -23,7 +23,7 @@ package com.pblabs.engine.core
       /**
        * The singleton NameManager instance.
        */
-      static public function get instance():NameManager
+      public static function get instance():NameManager
       {
          if (!_instance)
             _instance = new NameManager();
@@ -31,7 +31,7 @@ package com.pblabs.engine.core
          return _instance;
       }
       
-      static private var _instance:NameManager = null;
+      private static var _instance:NameManager = null;
       
       /**
        * The list of registered entities.
