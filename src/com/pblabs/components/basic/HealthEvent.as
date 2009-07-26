@@ -32,7 +32,7 @@ package com.pblabs.components.basic
 			super(type, bubbles, cancelable);
 		}
 		
-		public function IsDead():Boolean
+		public function isDead():Boolean
 		{
 			return Amount == 0;
 		}

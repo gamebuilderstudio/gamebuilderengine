@@ -17,7 +17,7 @@ package com.pblabs.engine.unitTests
     */
    public class PBEngineTestSuite extends TestSuite
    {
-      static public function get TestLevel():String
+      static public function get testLevel():String
       {
          return _testLevel;
       }

@@ -20,7 +20,7 @@ package com.pblabs.engine.components
    {
       /**
        * Do we actually want to register for ticks? Useful if a subclass wants
-       * to disable the functionality. Only checked at _OnAdd/_OnRemove time.
+       * to disable the functionality. Only checked at onAdd/onRemove time.
        */
       [EditorData(DefaultValue="true")]
       public var RegisterForTicks:Boolean = true;
@@ -34,27 +34,27 @@ package com.pblabs.engine.components
       /**
        * @inheritDoc
        */
-      public function OnTick(tickRate:Number):void
+      public function onTick(tickRate:Number):void
       {
       }
       
       /**
        * @inheritDoc
        */
-      public function OnInterpolateTick(factor:Number):void
+      public function onInterpolateTick(factor:Number):void
       {
       }
       
-      protected override function _OnAdd():void
+      protected override function onAdd():void
       {
          if(RegisterForTicks)
-            ProcessManager.Instance.AddTickedObject(this, UpdatePriority);
+            ProcessManager.instance.addTickedObject(this, UpdatePriority);
       }
       
-      protected override function _OnRemove():void
+      protected override function onRemove():void
       {
          if(RegisterForTicks)
-            ProcessManager.Instance.RemoveTickedObject(this);
+            ProcessManager.instance.removeTickedObject(this);
       }
    }
 }

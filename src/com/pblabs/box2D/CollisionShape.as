@@ -14,59 +14,59 @@ package com.pblabs.box2D
    public class CollisionShape
    {
       [EditorData(defaultValue="1")]
-      public function get Density():Number
+      public function get density():Number
       {
          return _density;
       }
       
-      public function set Density(value:Number):void
+      public function set density(value:Number):void
       {
          _density = value;
          
          if (_parent)
-            _parent.BuildCollisionShapes();
+            _parent.buildCollisionShapes();
       }
       
-      public function get Friction():Number
+      public function get friction():Number
       {
          return _friction;
       }
       
-      public function set Friction(value:Number):void
+      public function set friction(value:Number):void
       {
          _friction = value;
          
          if (_parent)
-            _parent.BuildCollisionShapes();
+            _parent.buildCollisionShapes();
       }
       
-      public function get Restitution():Number
+      public function get restitution():Number
       {
          return _restitution;
       }
       
-      public function set Restitution(value:Number):void
+      public function set restitution(value:Number):void
       {
          _restitution = value;
          
          if (_parent)
-            _parent.BuildCollisionShapes();
+            _parent.buildCollisionShapes();
       }
       
-      public function get IsTrigger():Boolean
+      public function get isTrigger():Boolean
       {
          return _isTrigger;
       }
       
-      public function set IsTrigger(value:Boolean):void
+      public function set isTrigger(value:Boolean):void
       {
          _isTrigger = value;
          
          if (_parent)
-            _parent.BuildCollisionShapes();
+            _parent.buildCollisionShapes();
       }
       
-      public function CreateShape(parent:Box2DSpatialComponent):b2ShapeDef
+      public function createShape(parent:Box2DSpatialComponent):b2ShapeDef
       {
          _parent = parent;
          
@@ -77,11 +77,11 @@ package com.pblabs.box2D
          shape.isSensor = _isTrigger;
          shape.userData = parent;
          
-         if (parent.CollisionType)
-            shape.filter.categoryBits = parent.CollisionType.Bits;
+         if (parent.collisionType)
+            shape.filter.categoryBits = parent.collisionType.bits;
          
-         if (parent.CollidesWithTypes)
-            shape.filter.maskBits = parent.CollidesWithTypes.Bits;
+         if (parent.collidesWithTypes)
+            shape.filter.maskBits = parent.collidesWithTypes.bits;
          
          return shape;
       }

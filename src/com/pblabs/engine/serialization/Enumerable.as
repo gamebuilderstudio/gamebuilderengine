@@ -29,7 +29,7 @@ package com.pblabs.engine.serialization
        * This must be implemented by subclasses. It is a dictionary that maps the names
        * of enumerable values to the instance of the enumerable they represent.
        */
-      public function get TypeMap():Dictionary
+      public function get typeMap():Dictionary
       {
          throw new Error("Derived classes must implement this!");
       }
@@ -38,7 +38,7 @@ package com.pblabs.engine.serialization
        * This must be implemented by subclasses. It is the type to use when a string
        * isn't found in the TypeMap.
        */
-      public function get DefaultType():Enumerable
+      public function get defaultType():Enumerable
       {
          throw new Error("Derived classes must implement this!");
       }
@@ -46,11 +46,11 @@ package com.pblabs.engine.serialization
       /**
        * @inheritDoc
        */
-      public function Serialize(xml:XML):void
+      public function serialize(xml:XML):void
       {
-         for (var typeName:String in TypeMap)
+         for (var typeName:String in typeMap)
          {
-            if (TypeMap[typeName] == this)
+            if (typeMap[typeName] == this)
             {
                xml.appendChild(typeName);
                break;
@@ -61,16 +61,16 @@ package com.pblabs.engine.serialization
       /**
        * @inheritDoc
        */
-      public function Deserialize(xml:XML):*
+      public function deserialize(xml:XML):*
       {
          var stringValue:String = xml.toString();
-         if (!TypeMap[stringValue])
+         if (!typeMap[stringValue])
          {
-            Logger.PrintError(this, "Deserialize", stringValue + " is not a valid value for this enumeration.");
-            return DefaultType;
+            Logger.printError(this, "deserialize", stringValue + " is not a valid value for this enumeration.");
+            return defaultType;
          }
          
-         return TypeMap[stringValue];
+         return typeMap[stringValue];
       }
    }
 }

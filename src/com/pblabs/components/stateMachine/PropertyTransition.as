@@ -11,12 +11,12 @@ package com.pblabs.components.stateMachine
       public var Property:PropertyReference;
       public var Value:String;
       
-      public override function Evaluate(fsm:IMachine):Boolean
+      public override function evaluate(fsm:IMachine):Boolean
       {
-         if(!fsm.PropertyBag)
+         if(!fsm.propertyBag)
             return false;
          
-         return fsm.PropertyBag.GetProperty(Property).toString() == Value;
+         return fsm.propertyBag.getProperty(Property).toString() == Value;
       }
    }
 }

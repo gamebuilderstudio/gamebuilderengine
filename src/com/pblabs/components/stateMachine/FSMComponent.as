@@ -11,26 +11,26 @@ package com.pblabs.components.stateMachine
    {
       public var StateMachine:Machine;
       
-      protected override function _OnAdd():void
+      protected override function onAdd():void
       {
-         super._OnAdd();
+         super.onAdd();
          
          if(StateMachine)
-            StateMachine.PropertyBag = Owner;
+            StateMachine.propertyBag = owner;
       }
       
-      protected override function _OnRemove():void
+      protected override function onRemove():void
       {
-         super._OnRemove();
+         super.onRemove();
          
          if(StateMachine)
-            StateMachine.PropertyBag = null;
+            StateMachine.propertyBag = null;
       }
       
-      public override function OnTick(tickRate:Number) : void
+      public override function onTick(tickRate:Number) : void
       {
          if(StateMachine)
-            StateMachine.Tick();
+            StateMachine.tick();
       }
    }
 }

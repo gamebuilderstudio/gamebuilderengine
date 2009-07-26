@@ -8,7 +8,7 @@ package com.pblabs.engine.debug.log4PBE
     */
    public class LogAppender
    {
-      private static var _logger:Logger = Logger.GetLogger(LogAppender);
+      private static var _logger:Logger = Logger.getLogger(LogAppender);
       
       /**
        * Called by the LogManager to add a message to this appender. If this is called, the
@@ -20,9 +20,9 @@ package com.pblabs.engine.debug.log4PBE
        * @param message The message text.
        * @param arguments A list of values to insert into the message text. Use the _Replace method.
        */
-      public function AddLogMessage(level:String, loggerName:String, errorNumber:int, message:String, arguments:Array):void
+      public function addLogMessage(level:String, loggerName:String, errorNumber:int, message:String, arguments:Array):void
       {
-         _logger.Error("The LogAppender.AddLogMessage method doesn't do anything. Subclasses should implement it to make it useful.");
+         _logger.error("The LogAppender.addLogMessage method doesn't do anything. Subclasses should implement it to make it useful.");
       }
       
       /**

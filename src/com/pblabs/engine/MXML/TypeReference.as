@@ -40,7 +40,7 @@ package com.pblabs.engine.MXML
          if (!Global.IsShippingBuild)
          {
             var name:String = getQualifiedClassName(type);
-            SchemaGenerator.Instance.AddClass(name, type);
+            SchemaGenerator.instance.addClass(name, type);
          }
       }
    }

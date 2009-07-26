@@ -12,23 +12,23 @@ package com.pblabs.engine.debug.log4PBE
    {
       public function UIAppender()
       {
-         InputManager.Instance.addEventListener(KeyboardEvent.KEY_DOWN, _OnKeyDown);
+         InputManager.instance.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
       }
       
-      private function _OnKeyDown(event:KeyboardEvent):void
+      private function onKeyDown(event:KeyboardEvent):void
       {
-         if (event.keyCode != InputKey.TILDE.KeyCode)
+         if (event.keyCode != InputKey.TILDE.keyCode)
             return;
          
          if (_logViewer.parent)
             _logViewer.parent.removeChild(_logViewer);
          else
-            Global.MainClass.addChild(_logViewer);
+            Global.mainClass.addChild(_logViewer);
       }
       
-      public override function AddLogMessage(level:String, loggerName:String, errorNumber:int, message:String, arguments:Array):void
+      public override function addLogMessage(level:String, loggerName:String, errorNumber:int, message:String, arguments:Array):void
       {
-         _logViewer.AddLogMessage(level, loggerName, errorNumber, _Replace(message, arguments));
+         _logViewer.addLogMessage(level, loggerName, errorNumber, _Replace(message, arguments));
       }
       
       private var _logViewer:LogViewer = new LogViewer();

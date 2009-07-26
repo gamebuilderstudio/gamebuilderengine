@@ -20,7 +20,7 @@ package com.pblabs.engine.math
        * 
        * @return The converted value.
        */
-      public static function GetDegreesFromRadians(radians:Number):Number
+      public static function getDegreesFromRadians(radians:Number):Number
       {
          return radians * 180 / Math.PI;
       }
@@ -28,7 +28,7 @@ package com.pblabs.engine.math
       /**
        * Keep a number between a min and a max.
        */
-      public static function Clamp(v:Number, min:Number = 0, max:Number = 1):Number
+      public static function clamp(v:Number, min:Number = 0, max:Number = 1):Number
       {
          if(v < min) return min;
          if(v > max) return max;
@@ -42,7 +42,7 @@ package com.pblabs.engine.math
        * 
        * @return The converted value.
        */
-      public static function GetRadiansFromDegrees(degrees:Number):Number
+      public static function getRadiansFromDegrees(degrees:Number):Number
       {
          return degrees * Math.PI / 180;
       }
@@ -50,7 +50,7 @@ package com.pblabs.engine.math
       /**
        * Take a radian measure and make sure it is between 0..2pi.
        */
-      public static function UnwrapRadian(r:Number):Number
+      public static function unwrapRadian(r:Number):Number
       {
          while(r > Math.PI * 2)
             r -= Math.PI * 2;
@@ -63,11 +63,11 @@ package com.pblabs.engine.math
       /**
        * Return the shortest distance to get from from to to, in radians.
        */
-      public static function GetRadianShortDelta(from:Number, to:Number):Number
+      public static function getRadianShortDelta(from:Number, to:Number):Number
       {
          // Unwrap both from and to.
-         from = UnwrapRadian(from);
-         to = UnwrapRadian(to);
+         from = unwrapRadian(from);
+         to = unwrapRadian(to);
          
          // Calc delta.
          var delta:Number = to - from;
@@ -88,7 +88,7 @@ package com.pblabs.engine.math
        * @param max The maximum value to be able to be encoded.
        * @return Bitcount required to encode max value.
        */
-      public static function GetBitCountForRange(max:int):int
+      public static function getBitCountForRange(max:int):int
       {
          // TODO: Make this use bits and be fast.
          return Math.ceil(Math.log(max) / Math.log(2.0));

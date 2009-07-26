@@ -11,12 +11,12 @@ package com.pblabs.rendering2D.UI
 	  /**
 	   * Add a DisplayObject as a child of this control.
 	   */ 
-      function AddDisplayObject(dobj:DisplayObject):void;
+      function addDisplayObject(dobj:DisplayObject):void;
       
       /**
        * Remove all the DisplayObjects that were added by AddDisplayObject.
        */ 
-      function ClearDisplayObjects():void;
+      function clearDisplayObjects():void;
       
       function get width():Number;
       function get height():Number;

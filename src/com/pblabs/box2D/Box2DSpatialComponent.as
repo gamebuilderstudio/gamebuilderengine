@@ -24,89 +24,89 @@ package com.pblabs.box2D
 
    public class Box2DSpatialComponent extends EntityComponent
    {
-      public function get Manager():Box2DManagerComponent
+      public function get manager():Box2DManagerComponent
       {
          return _manager;
       }
       
-      public function set Manager(value:Box2DManagerComponent):void
+      public function set manager(value:Box2DManagerComponent):void
       {
          if (_body)
          {
-            Logger.PrintWarning(this, "set Manager", "The manager can only be set before the component is registered.");
+            Logger.printWarning(this, "set Manager", "The manager can only be set before the component is registered.");
             return; 
          }
          
          _manager = value;
       }
       
-      public function get Body():b2Body
+      public function get body():b2Body
       {
          return _body;
       }
       
-      public function get CollisionType():ObjectType
+      public function get collisionType():ObjectType
       {
          return _collisionType;
       }
       
-      public function set CollisionType(value:ObjectType):void
+      public function set collisionType(value:ObjectType):void
       {
          _collisionType = value;
          
          if (_body)
-            BuildCollisionShapes();
+            buildCollisionShapes();
       }
       
-      public function get CollidesWithTypes():ObjectType
+      public function get collidesWithTypes():ObjectType
       {
          return _collidesWithTypes;
       }
       
-      public function set CollidesWithTypes(value:ObjectType):void
+      public function set collidesWithTypes(value:ObjectType):void
       {
          _collidesWithTypes = value;
          
          if (_body)
-            BuildCollisionShapes();
+            buildCollisionShapes();
       }
       
-      public function get Position():Point
+      public function get position():Point
       {
          if (_body)
          {
             var position:b2Vec2 = _body.GetPosition();
-            return new Point(position.x * _manager.Scale, position.y * _manager.Scale);
+            return new Point(position.x * _manager.scale, position.y * _manager.scale);
          }
          
          return new Point(_bodyDef.position.x, _bodyDef.position.y);
       }
       
-      public function set Position(value:Point):void
+      public function set position(value:Point):void
       {
          var position:b2Vec2 = new b2Vec2(value.x, value.y);
          _bodyDef.position = position;
          
          if (_body)
          {
-            position.Multiply(_manager.InverseScale);
+            position.Multiply(_manager.inverseScale);
             _body.SetXForm(position, _body.GetAngle());
          }
       }
       
-      public function get Rotation():Number
+      public function get rotation():Number
       {
          var rotation:Number = _bodyDef.angle;
          
          if (_body)
             rotation = _body.GetAngle();
          
-         return Utility.GetDegreesFromRadians(rotation);
+         return Utility.getDegreesFromRadians(rotation);
       }
       
-      public function set Rotation(value:Number):void
+      public function set rotation(value:Number):void
       {
-         var rotation:Number = Utility.GetRadiansFromDegrees(value);
+         var rotation:Number = Utility.getRadiansFromDegrees(value);
          _bodyDef.angle = rotation;
          
          if (_body)
@@ -114,99 +114,99 @@ package com.pblabs.box2D
       }
       
       [EditorData(defaultValue="100|100")]
-      public function get Size():Point
+      public function get size():Point
       {
          return _size;
       }
       
-      public function set Size(value:Point):void
+      public function set size(value:Point):void
       {
          _size = value;
          
          if (_body)
-            BuildCollisionShapes();
+            buildCollisionShapes();
       }
       
-      public function get LinearVelocity():Point
+      public function get linearVelocity():Point
       {
          if (_body)
          {
             var velocity:b2Vec2 = _body.GetLinearVelocity();
-            _linearVelocity.x = velocity.x * _manager.Scale;
-            _linearVelocity.y = velocity.y * _manager.Scale;
+            _linearVelocity.x = velocity.x * _manager.scale;
+            _linearVelocity.y = velocity.y * _manager.scale;
          }
          
          return _linearVelocity;
       }
       
-      public function set LinearVelocity(value:Point):void
+      public function set linearVelocity(value:Point):void
       {
          _linearVelocity = value;
          
          if (_body)
          {
-            var velocity:b2Vec2 = new b2Vec2(value.x * _manager.InverseScale, value.y * _manager.InverseScale);
+            var velocity:b2Vec2 = new b2Vec2(value.x * _manager.inverseScale, value.y * _manager.inverseScale);
             _body.SetLinearVelocity(velocity);
          }
       }
       
-      public function get AngularVelocity():Number
+      public function get angularVelocity():Number
       {
          if (_body)
          {
             var velocity:Number = _body.GetAngularVelocity();
-            _angularVelocity = Utility.GetDegreesFromRadians(velocity);
+            _angularVelocity = Utility.getDegreesFromRadians(velocity);
          }
          
          return _angularVelocity;
       }
       
-      public function set AngularVelocity(value:Number):void
+      public function set angularVelocity(value:Number):void
       {
          _angularVelocity = value;
          
          if (_body)
          {
-            var velocity:Number = Utility.GetRadiansFromDegrees(value);
+            var velocity:Number = Utility.getRadiansFromDegrees(value);
             _body.SetAngularVelocity(velocity);
          }
       }
       
       [EditorData(defaultValue="true")]
-      public function get CanMove():Boolean
+      public function get canMove():Boolean
       {
          return _canMove;
       }
       
-      public function set CanMove(value:Boolean):void
+      public function set canMove(value:Boolean):void
       {
          _canMove = value;
          
          if (_body)
-            UpdateMass();
+            updateMass();
       }
       
       [EditorData(defaultValue="true")]
-      public function get CanRotate():Boolean
+      public function get canRotate():Boolean
       {
          return _canRotate;
       }
       
-      public function set CanRotate(value:Boolean):void
+      public function set canRotate(value:Boolean):void
       {
          _canRotate = value;
          
          if (_body)
-            UpdateMass();
+            updateMass();
       }
       
       [EditorData(defaultValue="true")]
-      public function get CanSleep():Boolean
+      public function get canSleep():Boolean
       {
          return _canSleep;
       }
       
-      public function set CanSleep(value:Boolean):void
+      public function set canSleep(value:Boolean):void
       {
          _canSleep = value;
          _bodyDef.allowSleep = value;
@@ -214,7 +214,7 @@ package com.pblabs.box2D
             _body.AllowSleeping(value);
       }
       
-      public function get CollidesContinuously():Boolean
+      public function get collidesContinuously():Boolean
       {
          if (_body)
             return _body.IsBullet();
@@ -222,7 +222,7 @@ package com.pblabs.box2D
          return _bodyDef.isBullet
       }
       
-      public function set CollidesContinuously(value:Boolean):void
+      public function set collidesContinuously(value:Boolean):void
       {
          _bodyDef.isBullet = value;
          if (_body)
@@ -230,23 +230,23 @@ package com.pblabs.box2D
       }
       
       [TypeHint(type="com.pblabs.box2D.CollisionShape")]
-      public function get CollisionShapes():Array
+      public function get collisionShapes():Array
       {
          return _collisionShapes;
       }
       
-      public function set CollisionShapes(value:Array):void
+      public function set collisionShapes(value:Array):void
       {
          _collisionShapes = value;
          if (_body)
-            BuildCollisionShapes();
+            buildCollisionShapes();
       }
       
-      public function BuildCollisionShapes():void
+      public function buildCollisionShapes():void
       {
          if (!_body)
          {
-            Logger.PrintWarning(this, "BuildCollisionShapes", "Cannot build collision shapes prior to registration.");
+            Logger.printWarning(this, "buildCollisionShapes", "Cannot build collision shapes prior to registration.");
             return;
          }
          
@@ -261,13 +261,13 @@ package com.pblabs.box2D
          if (_collisionShapes)
          {
             for each (var newShape:CollisionShape in _collisionShapes)
-               _body.CreateShape(newShape.CreateShape(this));
+               _body.CreateShape(newShape.createShape(this));
          }
          
-         UpdateMass();
+         updateMass();
       }
       
-      public function UpdateMass():void
+      public function updateMass():void
       {
          _body.SetMassFromShapes();
          if (!_canMove || !_canRotate)
@@ -288,28 +288,28 @@ package com.pblabs.box2D
          }
       }
       
-      protected override function _OnAdd():void
+      protected override function onAdd():void
       {
          if (!_manager)
          {
-            Logger.PrintWarning(this, "_OnAdd", "A Box2DSpatialComponent cannot be registered without a manager.");
+            Logger.printWarning(this, "onAdd", "A Box2DSpatialComponent cannot be registered without a manager.");
             return;
          }
          
-         _bodyDef.position.Multiply(_manager.InverseScale);
-         _body = _manager.Add(_bodyDef);
+         _bodyDef.position.Multiply(_manager.inverseScale);
+         _body = _manager.add(_bodyDef);
          _body.SetUserData(this);
-         _bodyDef.position.Multiply(_manager.Scale);
+         _bodyDef.position.Multiply(_manager.scale);
          
-         LinearVelocity = _linearVelocity;
-         AngularVelocity = _angularVelocity;
+         linearVelocity = _linearVelocity;
+         angularVelocity = _angularVelocity;
          
-         BuildCollisionShapes();
+         buildCollisionShapes();
       }
       
-      protected override function _OnRemove():void 
+      protected override function onRemove():void 
       {
-         _manager.Remove(_body);
+         _manager.remove(_body);
          _body = null;
       }
       

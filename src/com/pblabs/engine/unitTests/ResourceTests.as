@@ -19,14 +19,14 @@ package com.pblabs.engine.unitTests
    {
       public function testResourceLoad():void
       {
-         Logger.PrintHeader(null, "Running Resource Load Test");
-         Logger.PrintFooter(null, "");
+         Logger.printHeader(null, "Running Resource Load Test");
+         Logger.printFooter(null, "");
       }
       
       public function testReferenceCounting():void
       {
-         Logger.PrintHeader(null, "Running Resource Reference Count Test");
-         Logger.PrintFooter(null, "");
+         Logger.printHeader(null, "Running Resource Reference Count Test");
+         Logger.printFooter(null, "");
       }
    }
 }

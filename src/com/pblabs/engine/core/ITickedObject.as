@@ -31,7 +31,7 @@ package com.pblabs.engine.core
        * 
        * @see ProcessManager#AddTickedObject()
        */
-      function OnTick(tickRate:Number):void;
+      function onTick(tickRate:Number):void;
       
       /**
        * This method is called every frame by the ProcessManager on any objects
@@ -46,6 +46,6 @@ package com.pblabs.engine.core
        * 
        * @see ProcessManager#AddTickedObject()
        */
-      function OnInterpolateTick(factor:Number):void;
+      function onInterpolateTick(factor:Number):void;
    }
 }

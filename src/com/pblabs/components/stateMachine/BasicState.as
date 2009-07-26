@@ -26,23 +26,23 @@ package com.pblabs.components.stateMachine
        */ 
       public var EnterEvent:String = null;
       
-      public function AddTransition(t:ITransition):void
+      public function addTransition(t:ITransition):void
       {
          Transitions.push(t);
       }
       
-      public function Tick(fsm:IMachine):void
+      public function tick(fsm:IMachine):void
       {
-         // Evaluate transitions in order until one goes.
+         // evaluate transitions in order until one goes.
          for each(var t:ITransition in Transitions)
          {
-            //Logger.Print(this, "Evaluating transition '" + t); 
-            if(t.Evaluate(fsm) && fsm.SetCurrentState(t.GetTargetState()))
+            //Logger.print(this, "Evaluating transition '" + t); 
+            if(t.evaluate(fsm) && fsm.setCurrentState(t.getTargetState()))
                return;
          }
       }
       
-      public function Enter(fsm:IMachine):void
+      public function enter(fsm:IMachine):void
       {
          // Dispatch the enter event if we've got one.
          if(!EnterEvent)
@@ -50,10 +50,10 @@ package com.pblabs.components.stateMachine
          
          // And fire the event.
          var e:Event = new Event(EnterEvent);
-         fsm.PropertyBag.EventDispatcher.dispatchEvent(e);
+         fsm.propertyBag.eventDispatcher.dispatchEvent(e);
       }
       
-      public function Exit(fsm:IMachine):void
+      public function exit(fsm:IMachine):void
       {
           // NOP.
       }

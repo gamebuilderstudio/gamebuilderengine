@@ -50,7 +50,7 @@ package com.pblabs.rendering2D
        * @inheritDoc
        */
       [EditorData(ignore="true")]
-      public function get RenderSortKey():int
+      public function get renderSortKey():int
       {
          return _RenderSortKey;
       }
@@ -58,23 +58,23 @@ package com.pblabs.rendering2D
       /**
        * @inheritDoc
        */
-      public function set RenderSortKey(value:int):void
+      public function set renderSortKey(value:int):void
       {
          _RenderSortKey = value;
       }
       
       [EditorData(ignore="true")]
-      public function get RenderCacheKey():int
+      public function get renderCacheKey():int
       {
          return _RenderCacheKey;
       }
       
-      public function set RenderCacheKey(value:int):void
+      public function set renderCacheKey(value:int):void
       {
          _RenderCacheKey = value;
       }
 
-      public function InvalidateRenderCache():void
+      public function invalidateRenderCache():void
       {
          _RenderCacheKey = RenderCacheKeyManager.Token++;
       }
@@ -82,7 +82,7 @@ package com.pblabs.rendering2D
       /**
        * @inheritDoc
        */
-      public function get LayerIndex():int
+      public function get layerIndex():int
       {
          return _LayerIndex;
       }
@@ -90,7 +90,7 @@ package com.pblabs.rendering2D
       /**
        * @inheritDoc
        */
-      public function set LayerIndex(value:int):void
+      public function set layerIndex(value:int):void
       {
          _LayerIndex = value;
       }
@@ -98,9 +98,9 @@ package com.pblabs.rendering2D
       /**
        * @inheritDoc
        */
-      public function get RenderPosition():Point
+      public function get renderPosition():Point
       {
-         var position:Point = Owner.GetProperty(PositionReference);
+         var position:Point = owner.getProperty(PositionReference);
          
          if (!position)
             return new Point(0, 0);
@@ -108,9 +108,9 @@ package com.pblabs.rendering2D
          return position.add(PositionOffset);
       }
       
-      public function get RenderScale():Point
+      public function get renderScale():Point
       {
-         var scale:Point = Owner.GetProperty(SizeReference);
+         var scale:Point = owner.getProperty(SizeReference);
          
          if(!scale)
             return new Point(1,1);
@@ -121,7 +121,7 @@ package com.pblabs.rendering2D
       /**
        * @inheritDoc
        */
-      public function OnDraw(manager:IDrawManager2D):void
+      public function onDraw(manager:IDrawManager2D):void
       {
          throw new Error("Derived classes must implement this method!");
       }

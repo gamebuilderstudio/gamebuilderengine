@@ -29,7 +29,7 @@ package com.pblabs.engine.resource
       /**
        * The singleton instance of the resource manager.
        */
-      public static function get Instance():ResourceManager
+      public static function get instance():ResourceManager
       {
          if (!_instance)
             _instance = new ResourceManager();
@@ -71,13 +71,13 @@ package com.pblabs.engine.resource
        * parameter.
        * @param onFailed A function that will be called if loading of the resource fails. The
        * function should take a single parameter of the type specified in the resourceType
-       * parameter. The resource passed to the function will be invalid, but the Filename
+       * parameter. The resource passed to the function will be invalid, but the filename
        * property will be correct.
        * @param forceReload Always reload the resource, even if it has already been loaded.
        * 
        * @see Resource
        */
-      public function Load(filename:String, resourceType:Class, onLoaded:Function = null, onFailed:Function = null, forceReload:Boolean = false):void
+      public function load(filename:String, resourceType:Class, onLoaded:Function = null, onFailed:Function = null, forceReload:Boolean = false):void
       {
          var resource:Resource = _resources[filename + resourceType];
 
@@ -92,7 +92,7 @@ package com.pblabs.engine.resource
          {
             if(OnlyLoadEmbeddedResources)
             {
-               _Fail(null, onFailed, "'" + filename + "' was not loaded because it was not embedded in the SWF.");
+               fail(null, onFailed, "'" + filename + "' was not loaded because it was not embedded in the SWF.");
                if(OnEmbeddedFail != null)
                   OnEmbeddedFail(filename);
                return;
@@ -101,25 +101,25 @@ package com.pblabs.engine.resource
             var testResource:* = new resourceType();
             if (!(testResource is Resource))
             {
-               _Fail(null, onFailed, "Failed to load resource from file " + filename + ". The specified resource type " + resourceType + " is not a Resource subclass.");
+               fail(null, onFailed, "Failed to load resource from file " + filename + ". The specified resource type " + resourceType + " is not a Resource subclass.");
                return;
             }
             
             resource = testResource;
-            resource.Load(filename);
+            resource.load(filename);
             _resources[filename + resourceType] = resource;
          }
          else if (!(resource is resourceType))
          {
-            _Fail(resource, onFailed, "The resource " + filename + " is already loaded, but is of type " + TypeUtility.GetObjectClassName(resource) + " rather than the specified " + resourceType + ".");
+            fail(resource, onFailed, "The resource " + filename + " is already loaded, but is of type " + TypeUtility.getObjectClassName(resource) + " rather than the specified " + resourceType + ".");
             return;
          }
          
-         if (resource.DidFail)
+         if (resource.didFail)
          {
-            _Fail(resource, onFailed, "The resource " + filename + " has previously failed to load");
+            fail(resource, onFailed, "The resource " + filename + " has previously failed to load");
          }
-         else if (resource.IsLoaded)
+         else if (resource.isLoaded)
          {
             if (onLoaded != null)
                setTimeout(onLoaded, 1, resource);
@@ -133,7 +133,7 @@ package com.pblabs.engine.resource
                resource.addEventListener(ResourceEvent.FAILED_EVENT, function (event:Event):void { onFailed(resource); } );
          }
          
-         resource.IncrementReferenceCount();
+         resource.incrementReferenceCount();
       }
       
       /**
@@ -145,7 +145,7 @@ package com.pblabs.engine.resource
        * @param filename The url of the resource to unload.
        * @param resourceType The type of the resource to unload.
        */
-      public function Unload(filename:String, resourceType:Class):void
+      public function unload(filename:String, resourceType:Class):void
       {
          // Right now unload is unloading embedded resources inappropriately. Since
          // they are going to be in memory anyway as part of the SWF, I am disabling
@@ -154,7 +154,7 @@ package com.pblabs.engine.resource
          
          if (!_resources[filename + resourceType])
          {
-            Logger.PrintWarning(this, "Unload", "The resource from file " + filename + " of type " + resourceType + " is not loaded.");
+            Logger.printWarning(this, "Unload", "The resource from file " + filename + " of type " + resourceType + " is not loaded.");
             return;
          }
          
@@ -178,11 +178,11 @@ package com.pblabs.engine.resource
        * 
        * @see com.pblabs.engine.MXML.ResourceBinding
        */
-      public function RegisterEmbeddedResource(filename:String, resourceType:Class, data:*):void
+      public function registerEmbeddedResource(filename:String, resourceType:Class, data:*):void
       {
          if (_resources[filename + resourceType])
          {
-            Logger.PrintWarning(this, "RegisterEmbeddedResource", "A resource from file " + filename + " has already been embedded.");
+            Logger.printWarning(this, "registerEmbeddedResource", "A resource from file " + filename + " has already been embedded.");
             return;
          }
          
@@ -190,23 +190,23 @@ package com.pblabs.engine.resource
          try
          {
             var resource:Resource = new resourceType();
-            resource.Filename = filename;
-            resource.Initialize(data);
+            resource.filename = filename;
+            resource.initialize(data);
             
             // These can be in the try since the catch will return.
-            resource.IncrementReferenceCount();
+            resource.incrementReferenceCount();
             _resources[filename + resourceType] = resource;
          }
          catch(e:Error)
          {
-            Logger.PrintError(this, "RegisterEmbeddedResources", "Could not instantiate resource " + filename + " due to error:\n" + e.toString());
+            Logger.printError(this, "registerEmbeddedResources", "Could not instantiate resource " + filename + " due to error:\n" + e.toString());
             return;
          }
       }
       
-      private function _Fail(resource:Resource, onFailed:Function, message:String):void
+      private function fail(resource:Resource, onFailed:Function, message:String):void
       {
-         Logger.PrintError(this, "Load", message);
+         Logger.printError(this, "Load", message);
          if (onFailed != null)
             setTimeout(onFailed, 1, resource);
       }

@@ -32,7 +32,7 @@ package com.pblabs.engine.core
       /**
        * The singleton InputManager instance.
        */
-      public static function get Instance():InputManager
+      public static function get instance():InputManager
       {
          if (!_instance)
             _instance = new InputManager();
@@ -40,26 +40,26 @@ package com.pblabs.engine.core
          return _instance;
       }
 
-      public static function IsKeyDown(key:InputKey):Boolean
+      public static function isKeyDown(key:InputKey):Boolean
       {
-         return Instance.IsKeyDown(key.KeyCode);
+         return instance.isKeyDown(key.keyCode);
       }
       
       private static var _instance:InputManager = null;
       
       public function InputManager()
       {
-         Global.MainStage.addEventListener(KeyboardEvent.KEY_DOWN, _OnKeyDown);
-         Global.MainStage.addEventListener(KeyboardEvent.KEY_UP,   _OnKeyUp);
-         Global.MainStage.addEventListener(MouseEvent.MOUSE_DOWN,  _OnMouseDown);
-         Global.MainStage.addEventListener(MouseEvent.MOUSE_UP,    _OnMouseUp);
-         Global.MainStage.addEventListener(MouseEvent.MOUSE_MOVE,  _OnMouseMove);
+         Global.mainStage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+         Global.mainStage.addEventListener(KeyboardEvent.KEY_UP,   onKeyUp);
+         Global.mainStage.addEventListener(MouseEvent.MOUSE_DOWN,  onMouseDown);
+         Global.mainStage.addEventListener(MouseEvent.MOUSE_UP,    onMouseUp);
+         Global.mainStage.addEventListener(MouseEvent.MOUSE_MOVE,  onMouseMove);
       }
       
       /**
        * Returns whether or not a specific key is down.
        */
-      public function IsKeyDown(keyCode:int):Boolean
+      public function isKeyDown(keyCode:int):Boolean
       {
          return _keyState[keyCode];
       }
@@ -73,7 +73,7 @@ package com.pblabs.engine.core
        * 
        * @see InputMap
        */
-      public function SimulateKeyDown(keyCode:int):void
+      public function simulateKeyDown(keyCode:int):void
       {
          dispatchEvent(new KeyboardEvent(KeyboardEvent.KEY_DOWN, true, false, 0, keyCode));
       }
@@ -86,7 +86,7 @@ package com.pblabs.engine.core
        * 
        * @see InputMap
        */
-      public function SimulateKeyUp(keyCode:int):void
+      public function simulateKeyUp(keyCode:int):void
       {
          dispatchEvent(new KeyboardEvent(KeyboardEvent.KEY_UP, true, false, 0, keyCode));
       }
@@ -94,7 +94,7 @@ package com.pblabs.engine.core
       /**
        * Simulates clicking the mouse button.
        */
-      public function SimulateMouseDown():void
+      public function simulateMouseDown():void
       {
          dispatchEvent(new MouseEvent(MouseEvent.MOUSE_DOWN));
       }
@@ -102,7 +102,7 @@ package com.pblabs.engine.core
       /**
        * Simulates releasing the mouse button.
        */
-      public function SimulateMouseUp():void
+      public function simulateMouseUp():void
       {
          dispatchEvent(new MouseEvent(MouseEvent.MOUSE_UP));
       }
@@ -112,12 +112,12 @@ package com.pblabs.engine.core
        * move event since there is no way to change the current cursor position
        * of the mouse.
        */
-      public function SimulateMouseMove():void
+      public function simulateMouseMove():void
       {
          dispatchEvent(new MouseEvent(MouseEvent.MOUSE_MOVE));
       }
       
-      private function _OnKeyDown(event:KeyboardEvent):void
+      private function onKeyDown(event:KeyboardEvent):void
       {
          if (_keyState[event.keyCode])
             return;
@@ -126,23 +126,23 @@ package com.pblabs.engine.core
          dispatchEvent(event);
       }
       
-      private function _OnKeyUp(event:KeyboardEvent):void
+      private function onKeyUp(event:KeyboardEvent):void
       {
          _keyState[event.keyCode] = false;
          dispatchEvent(event);
       }
       
-      private function _OnMouseDown(event:MouseEvent):void
+      private function onMouseDown(event:MouseEvent):void
       {
          dispatchEvent(event);
       }
       
-      private function _OnMouseUp(event:MouseEvent):void
+      private function onMouseUp(event:MouseEvent):void
       {
          dispatchEvent(event);
       }
       
-      private function _OnMouseMove(event:MouseEvent):void
+      private function onMouseMove(event:MouseEvent):void
       {
          dispatchEvent(event);
       }

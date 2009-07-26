@@ -2,7 +2,7 @@ package com.pblabs.engine.debug.log4PBE
 {
    public class LogFilter
    {
-      private static var _logger:Logger = Logger.GetLogger(LogFilter);
+      private static var _logger:Logger = Logger.getLogger(LogFilter);
       
       public function LogFilter(name:String, level:String)
       {
@@ -10,61 +10,61 @@ package com.pblabs.engine.debug.log4PBE
          _level = level;
       }
       
-      public function get Parent():LogFilter
+      public function get parent():LogFilter
       {
          // the root node doesn't have a parent
          if (_isRoot)
             return null;
          
          var name:String = _name.substring(0, _name.lastIndexOf("."));
-         return LogManager.Instance.GetLogFilterFor(name);
+         return LogManager.instance.getLogFilterFor(name);
       }
       
-      public function get Name():String
+      public function get name():String
       {
          return _name;
       }
       
-      public function get Appenders():Array
+      public function get appenders():Array
       {
          // append the parent appenders to this list of appenders
-         var parent:LogFilter = Parent;
+         var parent:LogFilter = this.parent;
          if (!parent)
             return _appenders.concat();
          
-         return _appenders.concat(parent.Appenders);
+         return _appenders.concat(parent.appenders);
       }
       
-      public function AddAppender(name:String):void
+      public function addAppender(name:String):void
       {
          // validate
          if (name == null || name == "")
          {
-            _logger.Warn("Cannot add an empty appender to the filter %1.", _name);
+            _logger.warn("Cannot add an empty appender to the filter %1.", _name);
             return;
          }
          
          if (_appenders.indexOf(name) != -1)
          {
-            _logger.Warn("The appender %1 has already been added to the filter %2.", name, _name);
+            _logger.warn("The appender %1 has already been added to the filter %2.", name, _name);
             return;
          }
          
          _appenders.push(name);
       }
       
-      public function ShouldFilter(level:LogLevel):Boolean
+      public function shouldFilter(level:LogLevel):Boolean
       {
-         var myLevel:LogLevel = LogManager.Instance.GetLogLevel(_level);
+         var myLevel:LogLevel = LogManager.instance.getLogLevel(_level);
          
          // validate
          if (!myLevel)
          {
-            _logger.Error("Unable to find the level %1 for the filter %2.", _level, _name);
+            _logger.error("Unable to find the level %1 for the filter %2.", _level, _name);
             return false;
          }
          
-         return myLevel.Compare(level) < 0;
+         return myLevel.compare(level) < 0;
       }
       
       // set in LogManager.SetRootFilter

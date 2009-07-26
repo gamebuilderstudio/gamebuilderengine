@@ -48,7 +48,7 @@ package com.pblabs.animation
       /**
        * The value the animation should start at.
        */
-      public function get StartValue():*
+      public function get startValue():*
       {
          return _start;
       }
@@ -56,7 +56,7 @@ package com.pblabs.animation
       /**
        * @private
        */
-      public function set StartValue(value:*):void
+      public function set startValue(value:*):void
       {
          _start = value;
       }
@@ -64,7 +64,7 @@ package com.pblabs.animation
       /**
        * The value to animate to.
        */
-      public function get TargetValue():*
+      public function get targetValue():*
       {
          return _target;
       }
@@ -72,7 +72,7 @@ package com.pblabs.animation
       /**
        * @private
        */
-      public function set TargetValue(value:*):void
+      public function set targetValue(value:*):void
       {
          _target = value;
       }
@@ -80,7 +80,7 @@ package com.pblabs.animation
       /**
        * The current value of the animation.
        */
-      public function get CurrentValue():*
+      public function get currentValue():*
       {
          return _current;
       }
@@ -88,9 +88,9 @@ package com.pblabs.animation
       /**
        * The type of playback to use for the animation.
        */
-      public function get AnimationType():AnimatorType
+      public function get animationType():AnimatorType
       {
-         if (IsAnimating)
+         if (isAnimating)
             return _type;
          
          return _previousType;
@@ -99,9 +99,9 @@ package com.pblabs.animation
       /**
        * @private
        */
-      public function set AnimationType(value:AnimatorType):void
+      public function set animationType(value:AnimatorType):void
       {
-         if (IsAnimating)
+         if (isAnimating)
             _type = value;
          else
             _previousType = value;
@@ -110,7 +110,7 @@ package com.pblabs.animation
       /**
        * The total number of times to repeat the animation.
        */
-      public function get TotalRepeatCount():int
+      public function get totalRepeatCount():int
       {
          return _totalRepeatCount;
       }
@@ -118,9 +118,9 @@ package com.pblabs.animation
       /**
        * The remaining number of times the animation will be repeated.
        */
-      public function get RepeatCount():int
+      public function get repeatCount():int
       {
-         if (IsAnimating)
+         if (isAnimating)
             return _repeatCount;
          
          return _totalRepeatCount;
@@ -129,9 +129,9 @@ package com.pblabs.animation
       /**
        * @private
        */
-      public function set RepeatCount(value:int):void
+      public function set repeatCount(value:int):void
       {
-         if (IsAnimating)
+         if (isAnimating)
             _repeatCount = value;
          else
             _totalRepeatCount = value;
@@ -140,7 +140,7 @@ package com.pblabs.animation
       /**
        * The time it should take to animate from the start value to the target value.
        */
-      public function get Duration():Number
+      public function get duration():Number
       {
          return _duration;
       }
@@ -148,7 +148,7 @@ package com.pblabs.animation
       /**
        * @private
        */
-      public function set Duration(value:Number):void
+      public function set duration(value:Number):void
       {
          _duration = value;
       }
@@ -156,7 +156,7 @@ package com.pblabs.animation
       /**
        * The amount of time that has passed since the animation started.
        */
-      public function get Elapsed():Number
+      public function get elapsed():Number
       {
          return _elapsedTime;
       }
@@ -164,7 +164,7 @@ package com.pblabs.animation
       /**
        * Whether or not the animation is currently playing.
        */
-      public function get IsAnimating():Boolean
+      public function get isAnimating():Boolean
       {
          return _type != AnimatorType.NoAnimation;
       }
@@ -173,10 +173,10 @@ package com.pblabs.animation
        * Starts the animation. This is simply a shorthand way to specify all the necessary parameters
        * for playback. Play can be called instead if the properties are already set.
        */
-      public function Start(startValue:*, targetValue:*, duration:Number, type:AnimatorType, repeatCount:int = 0):void
+      public function start(startValue:*, targetValue:*, duration:Number, type:AnimatorType, repeatCount:int = 0):void
       {
-         if (IsAnimating)
-            Stop();
+         if (isAnimating)
+            stop();
          
          _start = startValue;
          _target = targetValue;
@@ -184,16 +184,16 @@ package com.pblabs.animation
          _previousType = type;
          _totalRepeatCount = repeatCount;
          
-         Reset();
-         Play();
+         reset();
+         play();
       }
       
       /**
        * Starts playback.
        */
-      public function Play():void
+      public function play():void
       {
-         if (IsAnimating)
+         if (isAnimating)
             return;
          
          _type = _previousType;
@@ -208,9 +208,9 @@ package com.pblabs.animation
       /**
        * Stops playback. It can be resumed by calling Play.
        */
-      public function Stop():void
+      public function stop():void
       {
-         if (!IsAnimating)
+         if (!isAnimating)
             return;
          
          _previousType = _type;
@@ -222,9 +222,9 @@ package com.pblabs.animation
       /**
        * Set the current value to the target value instantly.
        */
-      public function Finish():void
+      public function finish():void
       {
-         if (!IsAnimating)
+         if (!isAnimating)
             return;
          
          if (_type == AnimatorType.PingPongAnimation && _repeatCount & 1)
@@ -241,10 +241,10 @@ package com.pblabs.animation
       /**
        * Resets the animation to all the values it had before it started playing.
        */
-      public function Reset():void
+      public function reset():void
       {
-         if (IsAnimating)
-            Stop();
+         if (isAnimating)
+            stop();
          
          _current = _start;
          _elapsedTime = 0.0;
@@ -255,7 +255,7 @@ package com.pblabs.animation
        * Reverses the animation, effectively setting the start value to the target value and
        * the target value to the start value.
        */
-      public function Reverse():void
+      public function reverse():void
       {
          var swap:* = _target;
          _target = _start;
@@ -267,7 +267,7 @@ package com.pblabs.animation
        * 
        * @param elapsed The amount of time that has elapsed since the last call to this.
        */
-      public function Animate(elapsed:Number):void
+      public function animate(elapsed:Number):void
       {
          if (_type == AnimatorType.NoAnimation)
             return;
@@ -277,12 +277,12 @@ package com.pblabs.animation
          {
             if (_type == AnimatorType.PlayAnimationOnce || _repeatCount == 0)
             {
-               Finish();
+               finish();
                return;
             }
          
             if (_type == AnimatorType.PingPongAnimation)
-               Reverse();
+               reverse();
          
             // set the elapsed time to the leftover time
             _elapsedTime = Math.abs(_duration - _elapsedTime);

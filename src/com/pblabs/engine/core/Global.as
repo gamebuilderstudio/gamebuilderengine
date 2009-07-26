@@ -30,10 +30,10 @@ package com.pblabs.engine.core
        * The stage. This is the root of the display heirarchy and is automatically created by
        * flash when the application starts up.
        */
-      public static function get MainStage():Stage
+      public static function get mainStage():Stage
       {
          if (!_main)
-            throw new Error("Cannot retrieve the global stage instance until MainClass has been set to the startup class!");
+            throw new Error("Cannot retrieve the global stage instance until mainClass has been set to the startup class!");
          
          return _main.stage;
       }
@@ -42,21 +42,21 @@ package com.pblabs.engine.core
        * A reference to the main class of the application. This must be set when the application
        * first loads as several core subsystems rely on it's presence.
        */
-      public static function get MainClass():Sprite
+      public static function get mainClass():Sprite
       {
          return _main;
       }
       
-      public static function Startup(mainClass:Sprite):void
+      public static function startup(mainClass:Sprite):void
       {
          _main = mainClass;
-         LogManager.Instance.LoadDefaultConfiguration();
+         LogManager.instance.loadDefaultConfiguration();
          
          if (!IsShippingBuild && (_main.loaderInfo && _main.loaderInfo.parameters && _main.loaderInfo.parameters["generateSchema"] == "1"))
-            SchemaGenerator.Instance.GenerateSchema();
+            SchemaGenerator.instance.generateSchema();
       }
       
-      public static function GetHostingDomain():String
+      public static function gethostingDomain():String
       {
          // Get at the hosting domain.
          var urlString:String = _main.stage.loaderInfo.url;
@@ -76,7 +76,7 @@ package com.pblabs.engine.core
        * 
        * @return The display object with the specified name, or null if it wasn't found.
        */
-      public static function FindChild(name:String):DisplayObject
+      public static function findChild(name:String):DisplayObject
       {
          return _FindChild(name, _main);
       }

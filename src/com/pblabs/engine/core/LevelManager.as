@@ -43,7 +43,7 @@ package com.pblabs.engine.core
       /**
        * The singleton LevelManager instance.
        */
-      public static function get Instance():LevelManager
+      public static function get instance():LevelManager
       {
          if (!_instance)
             _instance = new LevelManager();
@@ -56,7 +56,7 @@ package com.pblabs.engine.core
       /**
        * The level that is currently loaded.
        */
-      public function get CurrentLevel():int
+      public function get currentLevel():int
       {
          if (_isLevelLoaded)
             return _currentLevel;
@@ -67,7 +67,7 @@ package com.pblabs.engine.core
       /**
        * Returns the number of levels the LevelManager has data for.
        */
-      public function get LevelCount():int
+      public function get levelCount():int
       {
          var count:int = 0;
          for each (var level:LevelDescription in _levelDescriptions)
@@ -79,7 +79,7 @@ package com.pblabs.engine.core
       /**
        * Gets an array of filenames that are to be loaded with a specific level.
        */
-      public function GetLevelFiles(index:int):Array
+      public function getlevelFiles(index:int):Array
       {
          return _levelDescriptions[index].Files;
       }
@@ -87,7 +87,7 @@ package com.pblabs.engine.core
       /**
        * Gets an array of group names that are to be loaded with a specific level.
        */
-      public function GetLevelGroups(index:int):Array
+      public function getlevelGroups(index:int):Array
       {
          return _levelDescriptions[index].Groups;
       }
@@ -99,7 +99,7 @@ package com.pblabs.engine.core
        * @param load The function to call to load files
        * @param unload The function to call to unload files
        */
-      public function SetLoadFileCallbacks(load:Function, unload:Function):void
+      public function setLoadFileCallbacks(load:Function, unload:Function):void
       {
          _loadFileCallback = load;
          _unloadFileCallback = unload;
@@ -112,7 +112,7 @@ package com.pblabs.engine.core
        * @param load The function to call to load groups
        * @param unload The function to call to unload groups
        */
-      public function SetLoadGroupCallbacks(load:Function, unload:Function):void
+      public function setLoadGroupCallbacks(load:Function, unload:Function):void
       {
          _loadGroupCallback = load;
          _unloadGroupCallback = unload;
@@ -126,22 +126,22 @@ package com.pblabs.engine.core
        * 
        * @param initialLevel The level to load once everything is set up
        */
-      public function Start(initialLevel:int=-1):void
+      public function start(initialLevel:int=-1):void
       {
          if (_isReady)
          {
-            Logger.PrintError(this, "Start", "The LevelManager has already been started.");
+            Logger.printError(this, "Start", "The LevelManager has already been started.");
             return;
          }
          
-         TemplateManager.Instance.addEventListener(TemplateManager.LOADED_EVENT, _OnFileLoaded);
-         TemplateManager.Instance.addEventListener(TemplateManager.FAILED_EVENT, _OnFileLoadFailed);
+         TemplateManager.instance.addEventListener(TemplateManager.LOADED_EVENT, onFileLoaded);
+         TemplateManager.instance.addEventListener(TemplateManager.FAILED_EVENT, onFileLoadFailed);
          
          _isReady = true;
          dispatchEvent(new LevelEvent(LevelEvent.READY_EVENT, -1));
          
          if (initialLevel != -1)
-            LoadLevel(initialLevel);
+            loadLevel(initialLevel);
       }
       
       /**
@@ -151,32 +151,32 @@ package com.pblabs.engine.core
        * @param filename The file to load level descriptions from
        * @param initialLevel The level to load once everything is set up
        */
-      public function Load(filename:String, initialLevel:int=-1):void
+      public function load(filename:String, initialLevel:int=-1):void
       {
          if (_isReady)
          {
-            Logger.PrintError(this, "Load", "The LevelManager has already been started.");
+            Logger.printError(this, "Load", "The LevelManager has already been started.");
             return;
          }
          
          _initialLevel = initialLevel;
-         ResourceManager.Instance.Load(filename, XMLResource, _OnLevelDescriptionsLoaded, _OnLevelDescriptionsLoadFailed);
+         ResourceManager.instance.load(filename, XMLResource, onLevelDescriptionsLoaded, onLevelDescriptionsLoadFailed);
       }
       
-      private function _OnLevelDescriptionsLoaded(resource:XMLResource):void
+      private function onLevelDescriptionsLoaded(resource:XMLResource):void
       {
-         Serializer.Instance.Deserialize(this, resource.XMLData);
-         Logger.Print(this, "Loaded " + _levelDescriptions.length + " level descriptions.");
+         Serializer.instance.deserialize(this, resource.XMLData);
+         Logger.print(this, "Loaded " + _levelDescriptions.length + " level descriptions.");
       }
       
-      private function _OnLevelDescriptionsLoadFailed(resource:XMLResource):void
+      private function onLevelDescriptionsLoadFailed(resource:XMLResource):void
       {
-         Logger.PrintError(this, "Load", "Failed to load level descriptions file " + resource.Filename + "!");
+         Logger.printError(this, "Load", "Failed to load level descriptions file " + resource.filename + "!");
       }
       
-      public function Clear():void
+      public function clear():void
       {
-         UnloadCurrentLevel();
+         unloadCurrentLevel();
          
          _currentLevel = 0;
          _levelDescriptions = new Array();
@@ -186,7 +186,7 @@ package com.pblabs.engine.core
       /**
        * @inheritDoc
        */
-      public function Serialize(xml:XML):void
+      public function serialize(xml:XML):void
       {
          for each (var levelDescription:LevelDescription in _levelDescriptions)
          {
@@ -205,7 +205,7 @@ package com.pblabs.engine.core
       /**
        * @inheritDoc
        */
-      public function Deserialize(xml:XML):*
+      public function deserialize(xml:XML):*
       {
          for each (var levelDescriptionXML:XML in xml.*)
          {
@@ -219,26 +219,26 @@ package com.pblabs.engine.core
             for each (var itemXML:XML in levelDescriptionXML.*)
             {
                if (itemXML.name() == "file")
-                  AddFileReference(index, itemXML.@filename);
+                  addFileReference(index, itemXML.@filename);
                else if (itemXML.name() == "group")
-                  AddGroupReference(index, itemXML.@name);
+                  addGroupReference(index, itemXML.@name);
                else
-                  Logger.PrintError(this, "Load", "Encountered unknown tag " + itemXML.name() + " in level description.");
+                  Logger.printError(this, "Load", "Encountered unknown tag " + itemXML.name() + " in level description.");
             }
          }
          
-         Start(_initialLevel);
+         start(_initialLevel);
       }
       
       /**
        * NOT IMPLEMENTED! The intention is to have the level manager serialize everything that is
        * currently loaded to xml.
        */
-      public function SaveState(xml:XML):void
+      public function saveState(xml:XML):void
       {
          if (!_isLevelLoaded)
          {
-            Logger.PrintError(this, "SaveState", "Cannot save state. No level is loaded.");
+            Logger.printError(this, "SaveState", "Cannot save state. No level is loaded.");
             return;
          }
          
@@ -249,11 +249,11 @@ package com.pblabs.engine.core
        * NOT IMPLEMENTED! The intention is to have the level manager deserialize saved data from an
        * xml file.
        */
-      public function LoadState(xml:XML):void
+      public function loadState(xml:XML):void
       {
          if (!_isReady)
          {
-            Logger.PrintError(this, "LoadState", "Cannot load state. The LevelManager has not been started.");
+            Logger.printError(this, "LoadState", "Cannot load state. The LevelManager has not been started.");
             return;
          }
          
@@ -268,28 +268,28 @@ package com.pblabs.engine.core
        * 
        * @return The created entity.
        */
-      public function LoadEntity(name:String):IEntity
+      public function loadEntity(name:String):IEntity
       {
          if (!_isReady)
          {
-            Logger.PrintError(this, "LoadEntity", "Cannot load entities. The LevelManager has not been started.");
+            Logger.printError(this, "LoadEntity", "Cannot load entities. The LevelManager has not been started.");
             return null;
          }
          
          if (!_isLevelLoaded)
          {
-            Logger.PrintError(this, "LoadEntity", "Cannot load entities. No level is loaded.");
+            Logger.printError(this, "LoadEntity", "Cannot load entities. No level is loaded.");
             return null;
          }
          
-         var entity:IEntity = TemplateManager.Instance.InstantiateEntity(name);
+         var entity:IEntity = TemplateManager.instance.instantiateEntity(name);
          if (!entity)
          {
-            Logger.PrintError(this, "LoadEntity", "Failed to instantiate an entity with name " + name + ".");
+            Logger.printError(this, "LoadEntity", "Failed to instantiate an entity with name " + name + ".");
             return null;
          }
          
-         entity.EventDispatcher.addEventListener("EntityDestroyed", _OnEntityDestroyed);
+         entity.eventDispatcher.addEventListener("EntityDestroyed", onEntityDestroyed);
          _loadedEntities.push(entity);
          
          return entity;
@@ -301,11 +301,11 @@ package com.pblabs.engine.core
        * 
        * @param index The level number to load.
        */
-      public function LoadLevel(index:int):void
+      public function loadLevel(index:int):void
       {
          if (!_HasLevelData(index))
          {
-            Logger.PrintError(this, "LoadLevel", "Level data for level " + index + " does not exist.");
+            Logger.printError(this, "LoadLevel", "Level data for level " + index + " does not exist.");
             return;
          }
          
@@ -336,20 +336,20 @@ package com.pblabs.engine.core
             if (_loadFileCallback != null)
                _loadFileCallback(filename, _FinishLoad)
             else
-               TemplateManager.Instance.LoadFile(filename);
+               TemplateManager.instance.loadFile(filename);
          }
          
          _FinishLoad();
       }
       
-      private function _OnFileLoaded(event:Event):void
+      private function onFileLoaded(event:Event):void
       {
          _FinishLoad();
       }
       
-      private function _OnFileLoadFailed(event:Event):void
+      private function onFileLoadFailed(event:Event):void
       {
-         Logger.PrintError(this, "LoadLevel", "One of the files for level " + _currentLevel + " failed to load.");
+         Logger.printError(this, "LoadLevel", "One of the files for level " + _currentLevel + " failed to load.");
          _FinishLoad();
       }
       
@@ -368,10 +368,10 @@ package com.pblabs.engine.core
                continue;
             }
             
-            var groupEntities:Array = TemplateManager.Instance.InstantiateGroup(groupName);
+            var groupEntities:Array = TemplateManager.instance.instantiateGroup(groupName);
             if (!groupEntities)
             {
-               Logger.PrintError(this, "LoadLevel", "Failed to instantiate the group " + groupName + ".");
+               Logger.printError(this, "LoadLevel", "Failed to instantiate the group " + groupName + ".");
                continue;
             }
             
@@ -387,20 +387,20 @@ package com.pblabs.engine.core
       /**
        * Loads the next level after the current level.
        */
-      public function LoadNextLevel():void
+      public function loadNextLevel():void
       {
-         LoadLevel(_currentLevel + 1);
+         loadLevel(_currentLevel + 1);
       }
       
       /**
        * Unloads all the currently loaded data. Do not use this when another level is being loaded. Allow
        * the Load method to handle unloading old data.
        */
-      public function UnloadCurrentLevel():void
+      public function unloadCurrentLevel():void
       {
          if (!_isLevelLoaded)
          {
-            Logger.PrintError(this, "UnloadCurrentLevel", "No level is loaded.");
+            Logger.printError(this, "UnloadCurrentLevel", "No level is loaded.");
             return;
          }
          
@@ -422,8 +422,8 @@ package com.pblabs.engine.core
          // cleanup extra loaded stuff
          for each (var extraEntity:IEntity in _loadedEntities)
          {
-            extraEntity.EventDispatcher.removeEventListener("EntityDestroyed", _OnEntityDestroyed);
-            extraEntity.Destroy();
+            extraEntity.eventDispatcher.removeEventListener("EntityDestroyed", onEntityDestroyed);
+            extraEntity.destroy();
          }
          
          _loadedEntities.splice(0, _loadedEntities.length);
@@ -441,7 +441,7 @@ package com.pblabs.engine.core
             {
                if (groupEntity) 
                {
-                   groupEntity.Destroy();
+                   groupEntity.destroy();
                }
             }
             
@@ -458,7 +458,7 @@ package com.pblabs.engine.core
                continue;
             }
             
-            TemplateManager.Instance.UnloadFile(filename);
+            TemplateManager.instance.unloadFile(filename);
             _loadedFiles[filename] = null;
             delete _loadedFiles[filename];
          }
@@ -491,7 +491,7 @@ package com.pblabs.engine.core
          }
       }
       
-      private function _OnEntityDestroyed(event:Event):void
+      private function onEntityDestroyed(event:Event):void
       {
       }
       
@@ -501,11 +501,11 @@ package com.pblabs.engine.core
        * @param index The level to register with
        * @param filename The file to register
        */
-      public function AddFileReference(index:int, filename:String):void
+      public function addFileReference(index:int, filename:String):void
       {
          if (_isLevelLoaded && (_currentLevel == index))
          {
-            Logger.PrintError(this, "AddFileReference", "Cannot add level information to a level that is loaded.");
+            Logger.printError(this, "AddFileReference", "Cannot add level information to a level that is loaded.");
             return;
          }
          
@@ -519,18 +519,18 @@ package com.pblabs.engine.core
        * @param index The level to remove from
        * @param filename The file to remove
        */
-      public function RemoveFileReference(index:int, filename:String):void
+      public function removeFileReference(index:int, filename:String):void
       {
          if (!_HasLevelData(index))
          {
-            Logger.PrintError(this, "RemoveFileReference", "No level data exists for level " + index + ".");
+            Logger.printError(this, "RemoveFileReference", "No level data exists for level " + index + ".");
             return;
          }
          
          var levelIndex:int = levelDescription.Files.indexOf(filename);
          if (levelIndex == -1)
          {
-            Logger.PrintError(this, "RemoveFileReference", "The file " + filename + " was not found in the level " + index + ".");
+            Logger.printError(this, "RemoveFileReference", "The file " + filename + " was not found in the level " + index + ".");
             return;
          }
          
@@ -544,11 +544,11 @@ package com.pblabs.engine.core
        * @param index The level to register with
        * @param name The name of the group to register
        */
-      public function AddGroupReference(index:int, name:String):void
+      public function addGroupReference(index:int, name:String):void
       {
          if (_isLevelLoaded && (_currentLevel == index))
          {
-            Logger.PrintError(this, "AddGroupReference", "Cannot add level information to a level that is loaded.");
+            Logger.printError(this, "AddGroupReference", "Cannot add level information to a level that is loaded.");
             return;
          }
          
@@ -562,18 +562,18 @@ package com.pblabs.engine.core
        * @param index The level to remove from
        * @param name The group to remove
        */
-      public function RemoveGroupReference(index:int, name:String):void
+      public function removeGroupReference(index:int, name:String):void
       {
          if (!_HasLevelData(index))
          {
-            Logger.PrintError(this, "RemoveGroupReference", "No level data exists for level " + index + ".");
+            Logger.printError(this, "RemoveGroupReference", "No level data exists for level " + index + ".");
             return;
          }
          
          var groupIndex:int = levelDescription.Groups.indexOf(name);
          if (groupIndex == -1)
          {
-            Logger.PrintError(this, "RemoveFileReference", "The group " + name + " was not found in the level " + index + ".");
+            Logger.printError(this, "RemoveFileReference", "The group " + name + " was not found in the level " + index + ".");
             return;
          }
          
@@ -586,11 +586,11 @@ package com.pblabs.engine.core
        * 
        * @param index The index of the level to remove.
        */
-      public function RemoveLevel(index:int):void
+      public function removeLevel(index:int):void
       {
          if (!_HasLevelData(index))
          {
-            Logger.PrintError(this, "RemoveLevel", "No level data exists for level " + index + ".");
+            Logger.printError(this, "RemoveLevel", "No level data exists for level " + index + ".");
             return;
          }
          

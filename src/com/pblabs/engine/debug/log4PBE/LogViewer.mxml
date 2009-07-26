@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" backgroundAlpha="0.6" backgroundColor="#000000">
-	<mx:TextArea backgroundAlpha="0.0" color="#FFFFFF" top="38" bottom="0" left="0" right="0" id="LogText" editable="false" creationComplete="_OnTextCreated()" valueCommit="LogText.verticalScrollPosition=LogText.maxVerticalScrollPosition"/>
+	<mx:TextArea backgroundAlpha="0.0" color="#FFFFFF" top="38" bottom="0" left="0" right="0" id="LogText" editable="false" creationComplete="onTextCreated()" valueCommit="LogText.verticalScrollPosition=LogText.maxVerticalScrollPosition"/>
 	<mx:Button right="10" y="8" label="X" click="_Close()"/>
 	<mx:Label x="10" y="8" text="Log - Show" color="#FFFFFF" fontSize="14"/>
 	<mx:ComboBox id="LogFilter" x="105" y="8" dataProvider="{_loggerCollection}" change="_Refresh()"/>
@@ -8,7 +8,7 @@
       <![CDATA[
          import mx.collections.ArrayCollection;
          
-         public function AddLogMessage(level:String, loggerName:String, errorNumber:int, message:String):void
+         public function addLogMessage(level:String, loggerName:String, errorNumber:int, message:String):void
          {
             var loggerPath:String = loggerName;
             while (loggerPath != null)
@@ -31,7 +31,7 @@
                LogText.text += text + "\n";
          }
          
-         private function _OnTextCreated():void
+         private function onTextCreated():void
          {
             _Refresh();
          }

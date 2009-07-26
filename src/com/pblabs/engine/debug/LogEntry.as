@@ -21,7 +21,7 @@ package com.pblabs.engine.debug
       /**
        * Entry type given to errors.
        * 
-       * @see Logger#PrintError()
+       * @see Logger#printError()
        */
       public static const ERROR:String = "ERROR";
       
@@ -57,7 +57,7 @@ package com.pblabs.engine.debug
       /**
        * The full message, formatted to include the reporter and method if they exist.
        */
-      public function get FormattedMessage():String
+      public function get formattedMessage():String
       {
          var depth:String = "";
          for (var i:int = 0; i < Depth; i++)

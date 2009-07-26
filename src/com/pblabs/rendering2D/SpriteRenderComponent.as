@@ -26,7 +26,7 @@ package com.pblabs.rendering2D
       /**
        * The sprite sheet to use to draw this sprite.
        */
-      public function get SpriteSheet():SpriteSheetComponent
+      public function get spriteSheet():SpriteSheetComponent
       {
          return _spriteSheet;
       }
@@ -34,7 +34,7 @@ package com.pblabs.rendering2D
       /**
        * @private
        */
-      public function set SpriteSheet(value:SpriteSheetComponent):void
+      public function set spriteSheet(value:SpriteSheetComponent):void
       {
          _spriteSheet = value;
          _spriteDirty = true;
@@ -43,12 +43,12 @@ package com.pblabs.rendering2D
       /**
        * The index in the sprite sheet of the frame to draw.
        */
-      public function get SpriteIndex():int
+      public function get spriteIndex():int
       {
          return _spriteIndex;
       }
       
-      public function get RawSprite():DisplayObject
+      public function get rawSprite():DisplayObject
       {
          return _sprite;
       }
@@ -56,19 +56,19 @@ package com.pblabs.rendering2D
       /**
        * @private
        */
-      public function set SpriteIndex(value:int):void
+      public function set spriteIndex(value:int):void
       {
          _spriteIndex = value;
          _spriteDirty = true;
       }
       
       [EditorData(defaultValue="true")]
-      public function get Smoothing():Boolean
+      public function get smoothing():Boolean
       {
          return _smoothing;
       }
       
-      public function set Smoothing(value:Boolean):void
+      public function set smoothing(value:Boolean):void
       {
          _smoothing = value;
          _spriteDirty = true;
@@ -81,17 +81,17 @@ package com.pblabs.rendering2D
        * <p>You probably won't want to use this in production code, but it greatly
        * simplifies getting started.</p>
        */
-      public function set LoadFromImage(value:String):void
+      public function set loadFromImage(value:String):void
       {
          var imageAsSpriteSheet:SpriteSheetComponent = new SpriteSheetComponent();
-         imageAsSpriteSheet.ImageFilename = value;
-         SpriteSheet = imageAsSpriteSheet;
+         imageAsSpriteSheet.imageFilename = value;
+         spriteSheet = imageAsSpriteSheet;
       }      
       
       /**
        * Whether or not to flip the sprite about the x axis.
        */
-      public function get FlipX():Boolean
+      public function get flipX():Boolean
       {
          return _flipX;
       }
@@ -99,7 +99,7 @@ package com.pblabs.rendering2D
       /**
        * @private
        */
-      public function set FlipX(value:Boolean):void
+      public function set flipX(value:Boolean):void
       {
          _flipX = value;
          _spriteDirty = true;
@@ -108,7 +108,7 @@ package com.pblabs.rendering2D
       /**
        * Whether or not to flip the sprite about the y axis.
        */
-      public function get FlipY():Boolean
+      public function get flipY():Boolean
       {
          return _flipY;
       }
@@ -116,7 +116,7 @@ package com.pblabs.rendering2D
       /**
        * @private
        */
-      public function set FlipY(value:Boolean):void
+      public function set flipY(value:Boolean):void
       {
          _flipY = value;
          _spriteDirty = true;
@@ -131,7 +131,7 @@ package com.pblabs.rendering2D
       /**
        * @inheritDoc
        */
-      public override function OnDraw(manager:IDrawManager2D):void
+      public override function onDraw(manager:IDrawManager2D):void
       {
          // create the sprite data - this only does anything if necessary
          _GenerateSprite();
@@ -144,13 +144,13 @@ package com.pblabs.rendering2D
          if(Fade < 1.0/256.0)
            return;
               
-         var position:Point = RenderPosition;
-         position = manager.TransformWorldToScreen(position);
+         var position:Point = renderPosition;
+         position = manager.transformWorldToScreen(position);
          
-         var rotation:Number = Owner.GetProperty(RotationReference);
+         var rotation:Number = owner.getProperty(RotationReference);
          
          var scale:Point = new Point(1,1);
-         var size:Point = Owner.GetProperty(SizeReference);
+         var size:Point = owner.getProperty(SizeReference);
          if (size)
          {
             scale.x = size.x / _baseSize.x;
@@ -158,17 +158,17 @@ package com.pblabs.rendering2D
          }
          else if(rotation == 0 
                && !_flipX && !_flipY 
-               && Fade == 1 && RawSprite.filters.length == 0
-               && _spriteSheet && manager.GetBackBuffer())
+               && Fade == 1 && rawSprite.filters.length == 0
+               && _spriteSheet && manager.getBackBuffer())
          {
             // Eligible for fast path using copy pixels.
             if (_spriteSheet)
             {
-               position.x += -_spriteSheet.Center.x;
-               position.y += -_spriteSheet.Center.y;
+               position.x += -_spriteSheet.center.x;
+               position.y += -_spriteSheet.center.y;
             }
 
-            manager.CopyPixels(GetCurrentFrame(), position);
+            manager.copyPixels(getCurrentFrame(), position);
             return;
          }
          
@@ -184,33 +184,33 @@ package com.pblabs.rendering2D
          _matrix.scale(scale.x,scale.y);
          
          if (_spriteSheet)
-            _matrix.translate(-_spriteSheet.Center.x * scale.x, -_spriteSheet.Center.y * scale.y);
+            _matrix.translate(-_spriteSheet.center.x * scale.x, -_spriteSheet.center.y * scale.y);
          
-         _matrix.rotate(Utility.GetRadiansFromDegrees(rotation));
+         _matrix.rotate(Utility.getRadiansFromDegrees(rotation));
          _matrix.translate(position.x, position.y);
          
          _sprite.transform.matrix = _matrix;  
          
-         manager.DrawDisplayObject(_sprite);
+         manager.drawDisplayObject(_sprite);
       }
       
       /**
        * Given a point in worldspace, check if the sprite is opaque there.
        */
-      public function PointOccupied(point:Point, scene:IDrawManager2D):Boolean
+      public function pointOccupied(point:Point, scene:IDrawManager2D):Boolean
       {
          // First, get the relative positions in screenspace. Don't deal with 
          // rotation yet.
-         var pointInScreenSpace:Point = scene.TransformWorldToScreen(point);
-         var spriteUpperLeftInScreenSpace:Point = scene.TransformWorldToScreen(RenderPosition);
+         var pointInScreenSpace:Point = scene.transformWorldToScreen(point);
+         var spriteUpperLeftInScreenSpace:Point = scene.transformWorldToScreen(renderPosition);
          if (_spriteSheet)
          {
-            spriteUpperLeftInScreenSpace.x += -_spriteSheet.Center.x;
-            spriteUpperLeftInScreenSpace.y += -_spriteSheet.Center.y;
+            spriteUpperLeftInScreenSpace.x += -_spriteSheet.center.x;
+            spriteUpperLeftInScreenSpace.y += -_spriteSheet.center.y;
          }
          
          // Then we can get the current frame and inquire of it.
-         var bd:BitmapData = GetCurrentFrame();
+         var bd:BitmapData = getCurrentFrame();
          if(!bd)
             return false;
          
@@ -220,7 +220,7 @@ package com.pblabs.rendering2D
       /**
        * @inheritDoc
        */
-      protected override function _OnAdd():void
+      protected override function onAdd():void
       {
          _spriteDirty = true;
       }
@@ -228,14 +228,14 @@ package com.pblabs.rendering2D
       /**
        * @inheritDoc
        */
-      protected override function _OnRemove():void 
+      protected override function onRemove():void 
       {
          _sprite = null;
       }
       
-      protected function GetCurrentFrame():BitmapData
+      protected function getCurrentFrame():BitmapData
       {
-         return _spriteSheet.GetFrame(_spriteIndex);
+         return _spriteSheet.getFrame(_spriteIndex);
       }
       
       /**
@@ -247,7 +247,7 @@ package com.pblabs.rendering2D
          if (!_spriteDirty)
             return;
          
-         if (!_spriteSheet || !_spriteSheet.IsLoaded)
+         if (!_spriteSheet || !_spriteSheet.isLoaded)
          {
             // Draw a simple circle.
             _baseSize = new Point(25,25);
@@ -265,10 +265,10 @@ package com.pblabs.rendering2D
          }
          else
          {
-            var bmpData:BitmapData = GetCurrentFrame();
+            var bmpData:BitmapData = getCurrentFrame();
             if (!bmpData)
             {
-               Logger.PrintError(this, "_GenerateSprite", "Failed to get a valid BitmapData back from GetCurrentFrame!");
+               Logger.printError(this, "_GenerateSprite", "Failed to get a valid BitmapData back from GetCurrentFrame!");
                _sprite = null;
                return;
             }

@@ -33,29 +33,29 @@ package com.pblabs.engine.core
    public class InputMap implements ISerializable
    {
       /**
-       * Serializes the InputMap to a format containing just key value pairs with
+       * serializes the InputMap to a format containing just key value pairs with
        * the key representing the name of an input event and the value representing
        * the name of the key from the InputKey class.
        * 
        * @inheritDoc
        */
-      public function Serialize(xml:XML):void
+      public function serialize(xml:XML):void
       {
          for (var keyCode:String in _keymap)
-            xml.appendChild(new XML("<" + _keymap[keyCode] + ">" + InputKey.CodeToString(parseInt(keyCode)) + "</" + _keymap[keyCode] +">"));
+            xml.appendChild(new XML("<" + _keymap[keyCode] + ">" + InputKey.codeToString(parseInt(keyCode)) + "</" + _keymap[keyCode] +">"));
       }
       
       /**
-       * Deserializes the InputMap from the format described in the Serialize method.
+       * deserializes the InputMap from the format described in the serialize method.
        * 
-       * @see #Serialize()
+       * @see #serialize()
        * 
        * @inheritDoc
        */
-      public function Deserialize(xml:XML):*
+      public function deserialize(xml:XML):*
       {
          for each (var keyXML:XML in xml.children())
-            MapKeyToAction(InputKey.StringToKey(keyXML.toString()), keyXML.name());
+            mapKeyToAction(InputKey.stringToKey(keyXML.toString()), keyXML.name());
          
          return this;
       }
@@ -76,32 +76,32 @@ package com.pblabs.engine.core
        * @see #MapActionToHandler()
        * @see #MapKeyToHandler()
        */
-      public function MapKeyToAction(key:InputKey, actionName:String):void
+      public function mapKeyToAction(key:InputKey, actionName:String):void
       {
-         if (!_keymap[key.KeyCode])
+         if (!_keymap[key.keyCode])
          {
             if (key == InputKey.MOUSE_BUTTON)
             {
-               InputManager.Instance.addEventListener(MouseEvent.MOUSE_DOWN, _OnMouseDown);
-               InputManager.Instance.addEventListener(MouseEvent.MOUSE_UP, _OnMouseUp);
+               InputManager.instance.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+               InputManager.instance.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
             }
             else if ((key == InputKey.MOUSE_X) && !(_keymap[InputKey.MOUSE_Y]))
             {
-               InputManager.Instance.addEventListener(MouseEvent.MOUSE_MOVE, _OnMouseMove);
+               InputManager.instance.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
             }
             else if ((key == InputKey.MOUSE_Y) && !(_keymap[InputKey.MOUSE_X]))
             {
-               InputManager.Instance.addEventListener(MouseEvent.MOUSE_MOVE, _OnMouseMove);
+               InputManager.instance.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
             }
             else if (!_registeredForKeyEvents)
             {
-               InputManager.Instance.addEventListener(KeyboardEvent.KEY_DOWN, _OnKeyDown);
-               InputManager.Instance.addEventListener(KeyboardEvent.KEY_UP, _OnKeyUp);
+               InputManager.instance.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+               InputManager.instance.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
                _registeredForKeyEvents = true;
             }
          }
          
-         _keymap[key.KeyCode] = actionName;
+         _keymap[key.keyCode] = actionName;
       }
       
       /**
@@ -128,7 +128,7 @@ package com.pblabs.engine.core
        * @see #MapKeyToAction()
        * @see #MapKeyToHandler()
        */
-      public function MapActionToHandler(actionName:String, handler:Function):void
+      public function mapActionToHandler(actionName:String, handler:Function):void
       {
          _bindings[actionName] = handler;
       }
@@ -155,47 +155,47 @@ package com.pblabs.engine.core
        * @see #MapActionToHandler()
        * @see #MapKeyToHandler()
        */
-      public function MapKeyToHandler(key:InputKey, handler:Function):void
+      public function mapKeyToHandler(key:InputKey, handler:Function):void
       {
          // Use the key name as an intermediate unique action name
-         var action:String = InputKey.CodeToString(key.KeyCode); 
+         var action:String = InputKey.codeToString(key.keyCode); 
          
-         MapKeyToAction(key, action);
-         MapActionToHandler(action, handler);
+         mapKeyToAction(key, action);
+         mapActionToHandler(action, handler);
       }      
       
       
-      public function Destroy():void
+      public function destroy():void
       {
-        InputManager.Instance.removeEventListener(MouseEvent.MOUSE_DOWN, _OnMouseDown);
-        InputManager.Instance.removeEventListener(MouseEvent.MOUSE_UP, _OnMouseUp);
-        InputManager.Instance.removeEventListener(MouseEvent.MOUSE_MOVE, _OnMouseMove);
-        InputManager.Instance.removeEventListener(MouseEvent.MOUSE_MOVE, _OnMouseMove);
-        InputManager.Instance.removeEventListener(KeyboardEvent.KEY_DOWN, _OnKeyDown);
-        InputManager.Instance.removeEventListener(KeyboardEvent.KEY_UP, _OnKeyUp);
+        InputManager.instance.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+        InputManager.instance.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+        InputManager.instance.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+        InputManager.instance.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+        InputManager.instance.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+        InputManager.instance.removeEventListener(KeyboardEvent.KEY_UP, onKeyUp);
       }
       
-      private function _OnKeyDown(event:KeyboardEvent):void
+      private function onKeyDown(event:KeyboardEvent):void
       {
-         _OnInputEvent(event.keyCode, 1.0);
+         onInputEvent(event.keyCode, 1.0);
       }
       
-      private function _OnKeyUp(event:KeyboardEvent):void
+      private function onKeyUp(event:KeyboardEvent):void
       {
-         _OnInputEvent(event.keyCode, 0.0);
+         onInputEvent(event.keyCode, 0.0);
       }
       
-      private function _OnMouseDown(event:MouseEvent):void
+      private function onMouseDown(event:MouseEvent):void
       {
-         _OnInputEvent(InputKey.MOUSE_BUTTON.KeyCode, 1.0);
+         onInputEvent(InputKey.MOUSE_BUTTON.keyCode, 1.0);
       }
       
-      private function _OnMouseUp(event:MouseEvent):void
+      private function onMouseUp(event:MouseEvent):void
       {
-         _OnInputEvent(InputKey.MOUSE_BUTTON.KeyCode, 0.0);
+         onInputEvent(InputKey.MOUSE_BUTTON.keyCode, 0.0);
       }
       
-      private function _OnMouseMove(event:MouseEvent):void
+      private function onMouseMove(event:MouseEvent):void
       {
          if (_lastMouseX == Number.NEGATIVE_INFINITY)
          {
@@ -205,16 +205,16 @@ package com.pblabs.engine.core
          }
          
          if (event.stageX != _lastMouseX)
-            _OnInputEvent(InputKey.MOUSE_X.KeyCode, event.stageX - _lastMouseX);
+            onInputEvent(InputKey.MOUSE_X.keyCode, event.stageX - _lastMouseX);
          
          if (event.stageY != _lastMouseY)
-            _OnInputEvent(InputKey.MOUSE_Y.KeyCode, event.stageY - _lastMouseY);
+            onInputEvent(InputKey.MOUSE_Y.keyCode, event.stageY - _lastMouseY);
          
          _lastMouseX = event.stageX;
          _lastMouseY = event.stageY;
       }
       
-      private function _OnInputEvent(keyCode:int, value:Number):void
+      private function onInputEvent(keyCode:int, value:Number):void
       {
          var action:String = _keymap[keyCode];
          if (action == null)

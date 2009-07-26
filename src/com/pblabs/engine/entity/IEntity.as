@@ -28,15 +28,15 @@ package com.pblabs.engine.entity
    public interface IEntity extends IPropertyBag
    {
       /**
-       * The name of the entity. This is set by passing a name to the Initialize
+       * The name of the entity. This is set by passing a name to the initialize
        * method after the entity is first created.
        * 
-       * @see #Initialize()
+       * @see #initialize()
        */
-      function get Name():String;
+      function get name():String;
       
       /**
-       * Initializes the entity, optionally assigning it a name. This should be
+       * initializes the entity, optionally assigning it a name. This should be
        * called immediately after the entity is created.
        * 
        * @param name The name to assign to the entity. If this is null or an empty
@@ -48,7 +48,7 @@ package com.pblabs.engine.entity
        *
        * @see com.pblabs.engine.core.NameManager
        */
-      function Initialize(name:String, alias:String = null):void;
+      function initialize(name:String, alias:String = null):void;
 
       /**
        * Destroys the entity by removing all components and unregistering it from
@@ -58,34 +58,34 @@ package com.pblabs.engine.entity
        * so the entity will only be cleaned up by the garbage collector if those
        * are set to null manually.</p>
        */
-      function Destroy():void;
+      function destroy():void;
       
       /**
        * Adds a component to the entity.
        * 
        * <p>When a component is added, it will have its Register method called
-       * (or _OnAdd if it is derived from EntityComponent). Also, Reset will be
-       * called on all components currently attached to the entity (or _OnReset
+       * (or onAdd if it is derived from EntityComponent). Also, Reset will be
+       * called on all components currently attached to the entity (or onReset
        * if it is derived from EntityComponent).</p>
        * 
        * @param component The component to add.
        * @param componentName The name to set for the component. This is the value
-       * to use in LookupComponentByName to get a reference to the component. The
+       * to use in lookupComponentByName to get a reference to the component. The
        * name must be unique across all components on this entity.
        */
-      function AddComponent(component:IEntityComponent, componentName:String):void;
+      function addComponent(component:IEntityComponent, componentName:String):void;
       
       /**
        * Removes a component from the entity.
        * 
        * <p>When a component is removed, it will have its Unregister method called
-       * (or _OnRemove if it is derived from EntityComponent). Also, Reset will be
-       * called on all components currently attached to the entity (or _OnReset
+       * (or onRemove if it is derived from EntityComponent). Also, Reset will be
+       * called on all components currently attached to the entity (or onReset
        * if it is derived from EntityComponent).</p>
        * 
        * @param component The component to remove.
        */
-      function RemoveComponent(component:IEntityComponent):void;
+      function removeComponent(component:IEntityComponent):void;
       
       /**
        * Creates an XML description of this entity, including all currently attached
@@ -99,7 +99,7 @@ package com.pblabs.engine.entity
        * 
        * @see ../../../../../Reference/XMLFormat.html The XML Format
        */
-      function Serialize(xml:XML):void;
+      function serialize(xml:XML):void;
       
       /**
        * Sets up this entity from an xml description.
@@ -112,21 +112,21 @@ package com.pblabs.engine.entity
        * @see ../../../../../Reference/XMLFormat.html The XML Format
        * @see ../../../../../Reference/Levels.html Levels
        */
-      function Deserialize(xml:XML, registerComponents:Boolean = true):void;
+      function deserialize(xml:XML, registerComponents:Boolean = true):void;
       
       /**
        * Gets a component of a specific type from this entity. If more than one
        * component of a specific type exists, there is no guarantee which one
        * will be returned. To retrieve all components of a specified type, use
-       * LookupComponentsByType.
+       * lookupComponentsByType.
        * 
        * @param componentType The type of the component to retrieve.
        * 
        * @return The component, or null if none of the specified type were found.
        * 
-       * @see #LookupComponentsByType()
+       * @see #lookupComponentsByType()
        */
-      function LookupComponentByType(componentType:Class):IEntityComponent;
+      function lookupComponentByType(componentType:Class):IEntityComponent;
       
       /**
        * Gets a list of all the components of a specific type that are on this
@@ -137,7 +137,7 @@ package com.pblabs.engine.entity
        * @return An array containing all the components of the specified type on
        * this entity.
        */
-      function LookupComponentsByType(componentType:Class):Array;
+      function lookupComponentsByType(componentType:Class):Array;
       
       /**
        * Gets a component that was registered with a specific name on this entity.
@@ -149,6 +149,6 @@ package com.pblabs.engine.entity
        * 
        * @see #AddComponent()
        */
-      function LookupComponentByName(componentName:String):IEntityComponent;
+      function lookupComponentByName(componentName:String):IEntityComponent;
    }
 }

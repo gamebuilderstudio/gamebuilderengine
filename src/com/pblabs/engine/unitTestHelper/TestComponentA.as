@@ -17,10 +17,10 @@ package com.pblabs.engine.unitTestHelper
     */
    public class TestComponentA extends EntityComponent
    {
-      public var TestValue:int = 0;
-      public var NamedReference:IEntity = null;
-      public var InstantiatedReference:IEntity = null;
-      public var ComponentReference:TestComponentB = null;
-      public var NamedComponentReference:IEntityComponent = null;
+      public var testValue:int = 0;
+      public var namedReference:IEntity = null;
+      public var instantiatedReference:IEntity = null;
+      public var componentReference:TestComponentB = null;
+      public var namedComponentReference:IEntityComponent = null;
    }
 }

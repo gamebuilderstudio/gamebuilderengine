@@ -24,7 +24,7 @@ package com.pblabs.engine.core
       /**
        * The singleton ObjectTypeManager instance.
        */
-      public static function get Instance():ObjectTypeManager
+      public static function get instance():ObjectTypeManager
       {
          if (!_instance)
             _instance = new ObjectTypeManager();
@@ -37,7 +37,7 @@ package com.pblabs.engine.core
       /**
        * The number of object types that have been registered.
        */
-      public function get TypeCount():uint
+      public function get typeCount():uint
       {
          return _typeCount;
       }
@@ -50,13 +50,13 @@ package com.pblabs.engine.core
        * 
        * @return The number associated with the specified type.
        */
-      public function GetType(typeName:String):uint
+      public function getType(typeName:String):uint
       {
          if (!_typeList[typeName])
          {
             if (_typeCount == 64)
             {
-               Logger.PrintWarning(this, "GetObjectType", "Only 64 unique object types can be created.");
+               Logger.printWarning(this, "GetObjectType", "Only 64 unique object types can be created.");
                return 0;
             }
             
@@ -76,7 +76,7 @@ package com.pblabs.engine.core
        * @return The name of the type with the specified number, or null if 
        * the number is not assigned to any type.
        */
-      public function GetTypeName(number:uint):String
+      public function getTypeName(number:uint):String
       {
          return _bitList[number];
       }
@@ -93,9 +93,9 @@ package com.pblabs.engine.core
        * 
        * @see #DoesTypeOverlap()
        */
-      public function DoesTypeMatch(type:ObjectType, typeName:String):Boolean
+      public function doesTypeMatch(type:ObjectType, typeName:String):Boolean
       {
-         return type.Bits == 1 << _typeList[typeName];
+         return type.bits == 1 << _typeList[typeName];
       }
       
       /**
@@ -110,9 +110,9 @@ package com.pblabs.engine.core
        * 
        * @see #DoesTypeMatch()
        */
-      public function DoesTypeOverlap(type:ObjectType, typeName:String):Boolean
+      public function doesTypeOverlap(type:ObjectType, typeName:String):Boolean
       {
-         return (type.Bits & (1 << _typeList[typeName])) != 0;
+         return (type.bits & (1 << _typeList[typeName])) != 0;
       }
       
       /**
@@ -123,9 +123,9 @@ package com.pblabs.engine.core
        * 
        * @return True if type1 and type2 contain the exact same types.
        */
-      public function DoTypesMatch(type1:ObjectType, type2:ObjectType):Boolean
+      public function doTypesMatch(type1:ObjectType, type2:ObjectType):Boolean
       {
-         return type1.Bits == type2.Bits;
+         return type1.bits == type2.bits;
       }
       
       /**
@@ -136,22 +136,22 @@ package com.pblabs.engine.core
        * 
        * @return True if type1 has any of the type contained in type2.
        */
-      public function DoTypesOverlap(type1:ObjectType, type2:ObjectType):Boolean
+      public function doTypesOverlap(type1:ObjectType, type2:ObjectType):Boolean
       {
          if (!type1 || !type2)
             return false;
          
-         return (type1.Bits & type2.Bits) != 0;
+         return (type1.bits & type2.bits) != 0;
       }
       
       /**
        * Forcibly register a specific flag. Throws an error if you overwrite an
        * existing flag.
        */
-      public function RegisterFlag(bitIndex:int, name:String):void
+      public function registerFlag(bitIndex:int, name:String):void
       {
          // Sanity.
-         if(GetTypeName(bitIndex) != null) 
+         if(getTypeName(bitIndex) != null) 
             throw new Error("Bit already in use!");
          if(_typeList[name])
             throw new Error("Name already assigned to another bit!");

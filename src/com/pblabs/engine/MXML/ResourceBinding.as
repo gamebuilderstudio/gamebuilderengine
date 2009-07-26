@@ -60,14 +60,14 @@ package com.pblabs.engine.MXML
       {
          if (!resourceClass)
          {
-            Logger.PrintError("ResourceBinding", "", "Invalid resourceClass specified for binding of " + filename + ".");
+            Logger.printError("ResourceBinding", "", "Invalid resourceClass specified for binding of " + filename + ".");
             return;
          }
          
          var resource:* = new resourceType();
          if (!(resource is Resource))
          {
-            Logger.PrintError("ResourceBinding", "", "Invalid resourceType specified for binding of " + filename + ".");
+            Logger.printError("ResourceBinding", "", "Invalid resourceType specified for binding of " + filename + ".");
             return;
          }
          
@@ -75,11 +75,11 @@ package com.pblabs.engine.MXML
          
          /*if (!(item is ByteArray))
          {
-            //Logger.PrintError("ResourceBinding", "", "The loaded resourceClass for binding of " + filename + " is not a ByteArray.");
+            //Logger.printError("ResourceBinding", "", "The loaded resourceClass for binding of " + filename + " is not a ByteArray.");
             //return;
          } */
          
-         ResourceManager.Instance.RegisterEmbeddedResource(filename, resourceType, item);
+         ResourceManager.instance.registerEmbeddedResource(filename, resourceType, item);
       }
    }
 }

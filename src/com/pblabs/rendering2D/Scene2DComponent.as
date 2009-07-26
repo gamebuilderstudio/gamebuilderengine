@@ -25,7 +25,7 @@ package com.pblabs.rendering2D
        * An optional object that the scene should follow around the world.
        */
       [EditorData(referenceType="componentReference")]
-      public function get TrackObject():IDrawable2D
+      public function get trackObject():IDrawable2D
       {
          return _trackObject;
       }
@@ -33,7 +33,7 @@ package com.pblabs.rendering2D
       /**
        * @private
        */
-      public function set TrackObject(value:IDrawable2D):void
+      public function set trackObject(value:IDrawable2D):void
       {
          _trackObject = value;
       }
@@ -41,7 +41,7 @@ package com.pblabs.rendering2D
       /**
        * The position of the center of the scene in the world.
        */
-      public function get Position():Point
+      public function get position():Point
       {
          return _position;
       }
@@ -49,7 +49,7 @@ package com.pblabs.rendering2D
       /**
        * @private
        */
-      public function set Position(value:Point):void
+      public function set position(value:Point):void
       {
          _position = new Point(value.x, value.y);
       }
@@ -57,31 +57,31 @@ package com.pblabs.rendering2D
       /**
        * @inheritDoc
        */
-      public override function TransformWorldToScreen(point:Point, altitude:Number = 0):Point
+      public override function transformWorldToScreen(point:Point, altitude:Number = 0):Point
       {
          var newPoint:Point = new Point();
-         newPoint.x = (point.x - _position.x) + SceneView.width * 0.5;
-         newPoint.y = (point.y - _position.y) + SceneView.height * 0.5;
+         newPoint.x = (point.x - _position.x) + sceneView.width * 0.5;
+         newPoint.y = (point.y - _position.y) + sceneView.height * 0.5;
          return newPoint;
       }
       
       /**
        * @inheritDoc
        */
-      public override function TransformScreenToWorld(point:Point):Point
+      public override function transformScreenToWorld(point:Point):Point
       {
          var newPoint:Point = new Point();
-         newPoint.x = (point.x + _position.x) - SceneView.width * 0.5;
-         newPoint.y = (point.y + _position.y) - SceneView.height * 0.5;
+         newPoint.x = (point.x + _position.x) - sceneView.width * 0.5;
+         newPoint.y = (point.y + _position.y) - sceneView.height * 0.5;
          return newPoint;
       }
       
       /**
        * @inheritDoc
        */
-      protected override function _OnRemove():void 
+      protected override function onRemove():void 
       {
-         super._OnRemove();
+         super.onRemove();
          
          // make sure we get rid of any potential references
          _trackObject = null;
@@ -90,23 +90,23 @@ package com.pblabs.rendering2D
       /**
        * @inheritDoc
        */
-      protected override function _Render():void
+      protected override function render():void
       {
          if (_trackObject)
          {
-            _position.x = _trackObject.RenderPosition.x;
-            _position.y = _trackObject.RenderPosition.y;
+            _position.x = _trackObject.renderPosition.x;
+            _position.y = _trackObject.renderPosition.y;
          }
          
-         if (!SceneView)
+         if (!sceneView)
             return;
          
          // Wipe all our existing renderables.
-         SceneView.ClearDisplayObjects();
+         sceneView.clearDisplayObjects();
 
          // Figure out what will be drawn.
          var layerList:Array = new Array(LAYER_COUNT);
-         var viewRect:Rectangle = new Rectangle(_position.x - SceneView.width * 0.5, _position.y - SceneView.height * 0.5, SceneView.width, SceneView.height);
+         var viewRect:Rectangle = new Rectangle(_position.x - sceneView.width * 0.5, _position.y - sceneView.height * 0.5, sceneView.width, sceneView.height);
          _BuildRenderList(viewRect, layerList);
 
          // So draw the layers in order.

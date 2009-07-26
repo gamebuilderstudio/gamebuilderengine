@@ -32,6 +32,6 @@ package com.pblabs.engine.core
        * 
        * @see ProcessManager#AddAnimatedObject()
        */
-      function OnFrame(elapsed:Number):void;
+      function onFrame(elapsed:Number):void;
    }
 }

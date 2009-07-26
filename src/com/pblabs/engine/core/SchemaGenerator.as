@@ -25,7 +25,7 @@ package com.pblabs.engine.core
       /**
        * The singleton instance.
        */
-      public static function get Instance():SchemaGenerator
+      public static function get instance():SchemaGenerator
       {
          if (!_instance)
             _instance = new SchemaGenerator();
@@ -38,22 +38,22 @@ package com.pblabs.engine.core
       public function SchemaGenerator()
       {
          // need these built in flash classes - there's probably more we should have
-         AddClassName("flash.geom.Point");
-         AddClassName("flash.geom.Rectangle");
-         AddClassName("Array");
-         AddClassName("flash.utils.Dictionary");
-         AddClassName("int");
-         AddClassName("uint");
-         AddClassName("Number");
-         AddClassName("Boolean");
-         AddClassName("String");
+         addClassName("flash.geom.Point");
+         addClassName("flash.geom.Rectangle");
+         addClassName("Array");
+         addClassName("flash.utils.Dictionary");
+         addClassName("int");
+         addClassName("uint");
+         addClassName("Number");
+         addClassName("Boolean");
+         addClassName("String");
       }
       
       /**
        * Adds a class to be included in the schema. The TypeReference class automatically
        * adds classes it is given.
        */
-      public function AddClass(className:String, classObject:Class):void
+      public function addClass(className:String, classObject:Class):void
       {
          _classes[className.replace("::", ".")] = classObject;
       }
@@ -61,9 +61,9 @@ package com.pblabs.engine.core
       /**
        * Adds a class to be included in the schema.
        */
-      public function AddClassName(className:String):void
+      public function addClassName(className:String):void
       {
-         AddClass(className, getDefinitionByName(className) as Class);
+         addClass(className, getDefinitionByName(className) as Class);
       }
       
       /**
@@ -80,13 +80,13 @@ package com.pblabs.engine.core
        * <li>END - Called when all schema data has been sent. No data is sent with this message.</li>
        * </ul>
        */
-      public function GenerateSchema():void
+      public function generateSchema():void
       {
          if (Global.IsShippingBuild)
             return;
          
          _connection = new LocalConnection();
-         _connection.addEventListener(StatusEvent.STATUS, _OnConnectionStatus);
+         _connection.addEventListener(StatusEvent.STATUS, onConnectionStatus);
          _connection.send("_SchemaConnection", "OnSchemaReceived", "START", "");
          
          _failed = false;
@@ -99,20 +99,20 @@ package com.pblabs.engine.core
             // if this throws an exception, it's because the description is larger than 40k
             try
             {
-               Logger.Print(this, "Sending schema data for " + description.@name);
+               Logger.print(this, "Sending schema data for " + description.@name);
                _connection.send("_SchemaConnection", "OnSchemaReceived", "TYPE", description.toString());
             }
             catch (error:Error)
             {
                _connection.send("_SchemaConnection", "OnSchemaReceived", "ERROR", "Schema data for " + description.@name + " is too big!");
-               Logger.PrintError(this, "GenerateSchema", "Schema data for " + description.@name + " is too big!");
+               Logger.printError(this, "GenerateSchema", "Schema data for " + description.@name + " is too big!");
             }
          }
          
          _connection.send("_SchemaConnection", "OnSchemaReceived", "END", "");
       }
       
-      private function _OnConnectionStatus(event:StatusEvent):void
+      private function onConnectionStatus(event:StatusEvent):void
       {
          // if things already failed, it doesn't need to be reported again
          if (_failed)
@@ -126,7 +126,7 @@ package com.pblabs.engine.core
          }
          
          if (_failed)
-            Logger.PrintError(this, "GenerateSchema", "Schema generation failed!");
+            Logger.printError(this, "GenerateSchema", "Schema generation failed!");
       }
       
       private var _failed:Boolean = false;

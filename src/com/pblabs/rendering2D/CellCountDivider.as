@@ -32,17 +32,17 @@ package com.pblabs.rendering2D
        * @inheritDoc
        */
       [EditorData(ignore="true")]
-      public function set OwningSheet(value:SpriteSheetComponent):void
+      public function set owningSheet(value:SpriteSheetComponent):void
       {
          if(_owningSheet)
-            Logger.PrintWarning(this, "set OwningSheet", "Already assigned to a sheet, reassigning may result in unexpected behavior.");
+            Logger.printWarning(this, "set OwningSheet", "Already assigned to a sheet, reassigning may result in unexpected behavior.");
          _owningSheet = value;
       }
       
       /**
        * @inheritDoc
        */
-      public function get FrameCount():int
+      public function get frameCount():int
       {
          return XCount * YCount;
       }
@@ -50,13 +50,13 @@ package com.pblabs.rendering2D
       /**
        * @inheritDoc
        */
-      public function GetFrameArea(index:int):Rectangle
+      public function getFrameArea(index:int):Rectangle
       {
          if (!_owningSheet)
             throw new Error("OwningSheet must be set before calling this!");
 
-         var imageWidth:int = _owningSheet.ImageData.width;
-         var imageHeight:int = _owningSheet.ImageData.height;
+         var imageWidth:int = _owningSheet.imageData.width;
+         var imageHeight:int = _owningSheet.imageData.height;
          
          var width:int = imageWidth / XCount;
          var height:int = imageHeight / YCount;
@@ -73,7 +73,7 @@ package com.pblabs.rendering2D
       /**
        * @inheritDoc
        */
-      public function Clone():ISpriteSheetDivider
+      public function clone():ISpriteSheetDivider
       {
          var c:CellCountDivider = new CellCountDivider();
          c.XCount = XCount;

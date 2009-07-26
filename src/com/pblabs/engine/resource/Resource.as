@@ -50,7 +50,7 @@ package com.pblabs.engine.resource
       /**
        * The filename the resource data was loaded from.
        */
-      public function get Filename():String
+      public function get filename():String
       {
          return _filename;
       }
@@ -58,11 +58,11 @@ package com.pblabs.engine.resource
       /**
        * @private
        */
-      public function set Filename(value:String):void
+      public function set filename(value:String):void
       {
          if (_filename != null)
          {
-            Logger.PrintWarning(this, "set Filename", "Can't change the filename of a resource once it has been set.");
+            Logger.printWarning(this, "set filename", "Can't change the filename of a resource once it has been set.");
             return;
          }
          
@@ -76,7 +76,7 @@ package com.pblabs.engine.resource
        * 
        * @see #DidFail 
        */
-      public function get IsLoaded():Boolean
+      public function get isLoaded():Boolean
       {
          return _isLoaded;
       }
@@ -87,7 +87,7 @@ package com.pblabs.engine.resource
        * 
        * @see #IsLoaded
        */
-      public function get DidFail():Boolean
+      public function get didFail():Boolean
       {
          return _didFail;
       }
@@ -96,7 +96,7 @@ package com.pblabs.engine.resource
        * The number of places this resource is currently referenced from. When this reaches
        * zero, the resource will be unloaded.
        */
-      public function get ReferenceCount():int
+      public function get referenceCount():int
       {
          return _referenceCount;
       }
@@ -112,15 +112,15 @@ package com.pblabs.engine.resource
        * dispatched when the load completes - LOADED_EVENT on successful load, or
        * FAILED_EVENT if the load fails.
        */
-      public function Load(filename:String):void
+      public function load(filename:String):void
       {
          _filename = filename;
          
          var loader:URLLoader = new URLLoader();
          loader.dataFormat = URLLoaderDataFormat.BINARY;
-         loader.addEventListener(Event.COMPLETE, _OnDownloadComplete);
-         loader.addEventListener(IOErrorEvent.IO_ERROR, _OnDownloadError);
-         loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, _OnDownloadSecurityError);
+         loader.addEventListener(Event.COMPLETE, onDownloadComplete);
+         loader.addEventListener(IOErrorEvent.IO_ERROR, onDownloadError);
+         loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onDownloadSecurityError);
          
          var request:URLRequest = new URLRequest();
          request.url = filename;
@@ -131,23 +131,23 @@ package com.pblabs.engine.resource
       }
       
       /**
-       * Initializes the resource with data from a byte array. This implementation loads
+       * initializes the resource with data from a byte array. This implementation loads
        * the data with a content loader. If that behavior is not needed (XML doesn't need
        * this, for example), this method can be overridden. Subclasses that do override this
-       * method must call _OnLoadComplete when they have finished loading and conditioning
+       * method must call onLoadComplete when they have finished loading and conditioning
        * the byte array.
        * 
        * @param data The data to initialize the resource with.
        */
-      public function Initialize(data:*):void
+      public function initialize(data:*):void
       {
          if(!(data is ByteArray))
             throw new Error("Default Resource can only process ByteArrays!");
          
          var loader:Loader = new Loader();
-         loader.contentLoaderInfo.addEventListener(Event.COMPLETE, _OnLoadComplete);
-         loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, _OnDownloadError);
-         loader.contentLoaderInfo.addEventListener(SecurityErrorEvent.SECURITY_ERROR, _OnDownloadSecurityError);
+         loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onLoadComplete);
+         loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onDownloadError);
+         loader.contentLoaderInfo.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onDownloadSecurityError);
          loader.loadBytes(data);
 
          // Keep reference so the Loader isn't GC'ed.
@@ -158,7 +158,7 @@ package com.pblabs.engine.resource
        * Increments the number of references to the resource. This should only ever be
        * called by the ResourceManager.
        */
-      public function IncrementReferenceCount():void
+      public function incrementReferenceCount():void
       {
          _referenceCount++;
       }
@@ -167,7 +167,7 @@ package com.pblabs.engine.resource
        * Decrements the number of references to the resource. This should only ever be
        * called by the ResourceManager.
        */
-      public function DecrementReferenceCount():void
+      public function decrementReferenceCount():void
       {
          _referenceCount--;
       }
@@ -181,23 +181,23 @@ package com.pblabs.engine.resource
        * 
        * @return True if content contains valid data, false otherwise.
        */
-      protected function _OnContentReady(content:*):Boolean
+      protected function onContentReady(content:*):Boolean
       {
          return false;
       }
       
       /**
        * Called when loading and conditioning of the resource data is complete. This
-       * must be called by, and only by, subclasses that override the Initialize
+       * must be called by, and only by, subclasses that override the initialize
        * method.
        * 
        * @param event This can be ignored by subclasses.
        */
-      protected function _OnLoadComplete(event:Event = null):void
+      protected function onLoadComplete(event:Event = null):void
       {
          try
          {
-            if (_OnContentReady(event ? event.target.content : null))
+            if (onContentReady(event ? event.target.content : null))
             {
                _isLoaded = true;
                _UrlLoader = null;
@@ -208,34 +208,34 @@ package com.pblabs.engine.resource
          }
          catch(e:Error)
          {
-            Logger.PrintError(this, "Load", "Failed to load! " + e.toString());
+            Logger.printError(this, "Load", "Failed to load! " + e.toString());
          }
          
-         _OnFailed("The resource type does not match the loaded content.");
+         onFailed("The resource type does not match the loaded content.");
          return;
       }
       
-      private function _OnDownloadComplete(event:Event):void
+      private function onDownloadComplete(event:Event):void
       {
          var data:ByteArray = ((event.target) as URLLoader).data as ByteArray;
-         Initialize(data);
+         initialize(data);
       }
       
-      private function _OnDownloadError(event:IOErrorEvent):void
+      private function onDownloadError(event:IOErrorEvent):void
       {
-         _OnFailed(event.text);
+         onFailed(event.text);
       }
       
-      private function _OnDownloadSecurityError(event:SecurityErrorEvent):void
+      private function onDownloadSecurityError(event:SecurityErrorEvent):void
       {
-         _OnFailed(event.text);
+         onFailed(event.text);
       }
       
-      protected function _OnFailed(message:String):void
+      protected function onFailed(message:String):void
       {
          _isLoaded = true;
          _didFail = true;
-         Logger.PrintError(this, "Load", "Resource " + _filename + " failed to load with error: " + message);
+         Logger.printError(this, "Load", "Resource " + _filename + " failed to load with error: " + message);
          dispatchEvent(new ResourceEvent(ResourceEvent.FAILED_EVENT, this));
          
          _UrlLoader = null;

@@ -39,21 +39,21 @@ package com.pblabs.rendering2D
       /**
        * True if the image data associated with this sprite sheet has been loaded.
        */
-      public function get IsLoaded():Boolean
+      public function get isLoaded():Boolean
       {
-         return ImageData != null;
+         return imageData != null;
       }
 
       /**
       * Specifies an offset so the sprite is centered correctly. If it is not
       * set, the sprite is centered.
       */
-      public function get Center():Point
+      public function get center():Point
       {
          return _Center;
       }
       
-      public function set Center(value:Point):void
+      public function set center(value:Point):void
       {
          _Center = value;
          _defaultCenter = false;
@@ -63,29 +63,29 @@ package com.pblabs.rendering2D
        * The filename of the image to use for this sprite sheet.
        */
       [EditorData(ignore="true")]
-      public function get ImageFilename():String
+      public function get imageFilename():String
       {
-         return _image == null ? null : _image.Filename;
+         return _image == null ? null : _image.filename;
       }
       
       /**
        * @private
        */
-      public function set ImageFilename(value:String):void
+      public function set imageFilename(value:String):void
       {
          if (_image)
          {
-            ResourceManager.Instance.Unload(_image.Filename, ImageResource);
-            Image = null;
+            ResourceManager.instance.unload(_image.filename, ImageResource);
+            image = null;
          }
          
-         ResourceManager.Instance.Load(value, ImageResource, _OnImageLoaded, _OnImageFailed);
+         ResourceManager.instance.load(value, ImageResource, onImageLoaded, onImageFailed);
       }
       
       /**
        * The image resource to use for this sprite sheet.
        */
-      public function get Image():ImageResource
+      public function get image():ImageResource
       {
          return _image;
       }
@@ -93,7 +93,7 @@ package com.pblabs.rendering2D
       /**
        * @private
        */
-      public function set Image(value:ImageResource):void
+      public function set image(value:ImageResource):void
       {
          _frames = null;
          _image = value;
@@ -102,19 +102,19 @@ package com.pblabs.rendering2D
       /**
        * The bitmap data of the loaded image.
        */
-      public function get ImageData():BitmapData
+      public function get imageData():BitmapData
       {
          if (!_image)
             return null;
          
-         return _image.Image.bitmapData;
+         return _image.image.bitmapData;
       }
       
       /**
        * The divider to use to chop up the sprite sheet into frames. If the divider
        * isn't set, the image will be treated as one whole frame.
        */
-      public function get Divider():ISpriteSheetDivider
+      public function get divider():ISpriteSheetDivider
       {
          return _divider;
       }
@@ -122,10 +122,10 @@ package com.pblabs.rendering2D
       /**
        * @private
        */
-      public function set Divider(value:ISpriteSheetDivider):void
+      public function set divider(value:ISpriteSheetDivider):void
       {
          _divider = value;
-         _divider.OwningSheet = this;
+         _divider.owningSheet = this;
          _frames = null;
       }
       
@@ -138,7 +138,7 @@ package com.pblabs.rendering2D
       /**
        * The number of degrees separating each direction.
        */
-      public function get DegreesPerDirection():Number
+      public function get degreesPerDirection():Number
       {
          return 360 / DirectionsPerFrame;
       }
@@ -147,24 +147,24 @@ package com.pblabs.rendering2D
        * The total number of frames the sprite sheet has. This counts each
        * direction separately.
        */
-      public function get RawFrameCount():int
+      public function get rawFrameCount():int
       {
-         if (!ImageData)
+         if (!imageData)
             return 0;
          
          if (!_divider)
             return 1;
          
-         return _divider.FrameCount;
+         return _divider.frameCount;
       }
       
       /**
        * The number of frames the sprite sheet has. This counts each set of
        * directions as one frame.
        */
-      public function get FrameCount():int
+      public function get frameCount():int
       {
-         return RawFrameCount / DirectionsPerFrame;
+         return rawFrameCount / DirectionsPerFrame;
       }
       
       /**
@@ -176,9 +176,9 @@ package com.pblabs.rendering2D
        * 
        * @return The bitmap data for the specified frame, or null if it doesn't exist.
        */
-      public function GetFrame(index:int, direction:Number=0.0):BitmapData
+      public function getFrame(index:int, direction:Number=0.0):BitmapData
       {
-         if(!ImageData)
+         if(!imageData)
             return null;
          
          // Make sure direction is in 0..360.
@@ -226,23 +226,23 @@ package com.pblabs.rendering2D
       protected function _BuildFrames():void
       {
          // image isn't loaded, can't do anything yet
-         if (!ImageData)
+         if (!imageData)
             return;
          
          // no divider means treat the image as a single frame
          if (!_divider)
          {
             _frames = new Array(1);
-            _frames[0] = ImageData;
+            _frames[0] = imageData;
          }
          else
          {
-            _frames = new Array(_divider.FrameCount);
-            for (var i:int = 0; i < _divider.FrameCount; i++)
+            _frames = new Array(_divider.frameCount);
+            for (var i:int = 0; i < _divider.frameCount; i++)
             {
-               var area:Rectangle = _divider.GetFrameArea(i);
+               var area:Rectangle = _divider.getFrameArea(i);
                _frames[i] = new BitmapData(area.width, area.height, true);
-               _frames[i].copyPixels(ImageData, area, new Point(0, 0));
+               _frames[i].copyPixels(imageData, area, new Point(0, 0));
             }
          }
          
@@ -250,14 +250,14 @@ package com.pblabs.rendering2D
             _Center = new Point(_frames[0].width * 0.5, _frames[0].height * 0.5);
       }
       
-      protected function _OnImageLoaded(resource:ImageResource):void
+      protected function onImageLoaded(resource:ImageResource):void
       {
-         Image = resource;
+         image = resource;
       }
       
-      protected function _OnImageFailed(resource:ImageResource):void
+      protected function onImageFailed(resource:ImageResource):void
       {
-         Logger.PrintError(this, "_OnImageFailed", "Failed to load '" + resource.Filename + "'");
+         Logger.printError(this, "onImageFailed", "Failed to load '" + resource.filename + "'");
       }
       
       /**
@@ -272,7 +272,7 @@ package com.pblabs.rendering2D
 			return null;
 		 }
          
-         if (index < 0 || index >= RawFrameCount)
+         if (index < 0 || index >= rawFrameCount)
             return null;
        
          return _frames[index];  
@@ -282,16 +282,16 @@ package com.pblabs.rendering2D
       {
          _frameNotes = new Array();
          
-         var totalStates:int = FrameCount / DegreesPerDirection;
+         var totalStates:int = frameCount / degreesPerDirection;
          
          for (var direction:int = 0; direction < DirectionsPerFrame; direction++)
          {
-            for (var frame:int = 0; frame < FrameCount; frame++)
+            for (var frame:int = 0; frame < frameCount; frame++)
             {
                var note:FrameNote = new FrameNote();
                note.Frame = frame;
-               note.Direction = direction * DegreesPerDirection;
-               note.RawFrame = (direction * FrameCount) + frame;
+               note.Direction = direction * degreesPerDirection;
+               note.RawFrame = (direction * frameCount) + frame;
                
                _frameNotes.push(note);
             }

@@ -8,12 +8,12 @@ package com.pblabs.engine.debug.log4PBE
          _level = level;
       }
       
-      public function get Name():String
+      public function get name():String
       {
          return _name;
       }
       
-      public function Compare(level:LogLevel):int
+      public function compare(level:LogLevel):int
       {
          if (level._level < _level)
             return -1;

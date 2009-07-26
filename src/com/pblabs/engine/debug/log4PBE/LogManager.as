@@ -16,11 +16,11 @@ package com.pblabs.engine.debug.log4PBE
     * 
     * <p>There are four main parts of the logging system. Loggers, levels, filters, and appenders. A
     * logger is the main class that is used to log messages. Each class has its own logger that
-    * can be retrieved by calling Logger.GetLogger(class), where class is the class that the logger
+    * can be retrieved by calling Logger.getLogger(class), where class is the class that the logger
     * will be used for. Typically this is stored in a static variable on each class that uses
     * logging. Like this:
     * <pre>
-    *    private static var _logger:Logger = Logger.GetLogger(MyClass);
+    *    private static var _logger:Logger = Logger.getLogger(MyClass);
     * </pre>
     * </p>
     * 
@@ -58,12 +58,12 @@ package com.pblabs.engine.debug.log4PBE
       /**
        * The singleton instance.
        */
-      public static function get Instance():LogManager
+      public static function get instance():LogManager
       {
          if (!_instance)
          {
             _instance = new LogManager(new LogManagerKey());
-            _logger = _instance.GetLogger(LogManager);
+            _logger = _instance.getLogger(LogManager);
          }
          
          return _instance;
@@ -73,24 +73,24 @@ package com.pblabs.engine.debug.log4PBE
       private static var _logger:Logger;
       
       /**
-       * Creates a LogManager. Use the static Instance property to retrieve the LogManager rather
+       * Creates a LogManager. Use the static instance property to retrieve the LogManager rather
        * than using this directly.
        */
       public function LogManager(key:LogManagerKey)
       {
          if (!key)
-            throw new Error("LogManagers cannot be created manually! Use the static Instance property.");
+            throw new Error("LogManagers cannot be created manually! Use the static instance property.");
          
          ExceptionAppender;
          TraceAppender;
          UIAppender;
          
-         AddLogLevel("trace", 0);
-         AddLogLevel("debug", 20);
-         AddLogLevel("info", 40);
-         AddLogLevel("warn", 60);
-         AddLogLevel("error", 80);
-         AddLogLevel("fatal", 100);
+         addLogLevel("trace", 0);
+         addLogLevel("debug", 20);
+         addLogLevel("info", 40);
+         addLogLevel("warn", 60);
+         addLogLevel("error", 80);
+         addLogLevel("fatal", 100);
       }
       
       /**
@@ -105,12 +105,12 @@ package com.pblabs.engine.debug.log4PBE
        * the best match packageName when searching for a log table.
        * @param table An array of strings containing log messages to use for the specified package.
        */
-      public function RegisterMessageTable(packageName:String, table:Array):void
+      public function registerMessageTable(packageName:String, table:Array):void
       {
          // validate
          if (_logTables[packageName])
          {
-            _logger.Warn("A log table has already been registered for the package %1.", packageName);
+            _logger.warn("A log table has already been registered for the package %1.", packageName);
             return;
          }
          
@@ -118,9 +118,9 @@ package com.pblabs.engine.debug.log4PBE
          var logTable:LogTable = new LogTable(table);
          
          // make sure the table is of the correct form
-         if (!logTable.IsValid)
+         if (!logTable.isValid)
          {
-            _logger.Warn("The log table registered for the package %1 is invalid.", packageName);
+            _logger.warn("The log table registered for the package %1 is invalid.", packageName);
             return;
          }
          
@@ -170,7 +170,7 @@ package com.pblabs.engine.debug.log4PBE
        * the loggers to use the filter for.
        * </p>
        */
-      public function LoadConfiguration(filename:String, forceReload:Boolean=false):void
+      public function loadConfiguration(filename:String, forceReload:Boolean=false):void
       {
          // force queuing of messages until the configuration is loaded
          _started = false;
@@ -178,10 +178,10 @@ package com.pblabs.engine.debug.log4PBE
          
          // load up the file as an XMLResource
          // forceReload can be specified to re-configure mid-execution
-         ResourceManager.Instance.Load(filename, XMLResource, _OnConfigurationLoaded, _OnConfigurationLoadFailed, forceReload);
+         ResourceManager.instance.load(filename, XMLResource, onConfigurationLoaded, onConfigurationLoadFailed, forceReload);
       }
       
-      private function _OnConfigurationLoaded(resource:XMLResource):void
+      private function onConfigurationLoaded(resource:XMLResource):void
       {
          // clear out any default configuring
          _ClearConfiguration();
@@ -199,22 +199,22 @@ package com.pblabs.engine.debug.log4PBE
             var appenderName:String = appenderXML.@name;
             var appenderType:String = appenderXML.@type;
             
-            var appender:* = TypeUtility.Instantiate(appenderType);
+            var appender:* = TypeUtility.instantiate(appenderType);
             if (appender == null)
             {
-               _logger.Error("Unable to instantiate the type %1 for the appender %2. The class was not found.", appenderType, appenderName);
+               _logger.error("Unable to instantiate the type %1 for the appender %2. The class was not found.", appenderType, appenderName);
                continue;
             }
             
             // make sure it's an appender
             if (!(appender is LogAppender))
             {
-               _logger.Error("The type %1 for the appender %2 is not a LogAppender subclass.", appenderType, appenderName);
+               _logger.error("The type %1 for the appender %2 is not a LogAppender subclass.", appenderType, appenderName);
                continue;
             }
             
             // add it - this will validate the name
-            AddLogAppender(appenderName, appender as LogAppender);
+            addLogAppender(appenderName, appender as LogAppender);
          }
          
          // create the levels
@@ -224,12 +224,12 @@ package com.pblabs.engine.debug.log4PBE
             var levelValue:int = parseInt(levelXML.@value);
             if (isNaN(levelValue))
             {
-               _logger.Error("The value for the log level %1 is not a number.", levelName);
+               _logger.error("The value for the log level %1 is not a number.", levelName);
                continue;
             }
             
             // add it - this will validate the name
-            AddLogLevel(levelName, levelValue);
+            addLogLevel(levelName, levelValue);
          }
          
          // create the default filter
@@ -243,9 +243,9 @@ package com.pblabs.engine.debug.log4PBE
             var defaultFilter:LogFilter = new LogFilter(defaultName, defaultLevel);
             
             for each (var defaultAppenderXML:XML in defaultXML.child("appender"))
-               defaultFilter.AddAppender(defaultAppenderXML.toString());
+               defaultFilter.addAppender(defaultAppenderXML.toString());
             
-            SetRootFilter(defaultFilter);
+            setRootFilter(defaultFilter);
          }
          
          // create the custom filters
@@ -259,27 +259,27 @@ package com.pblabs.engine.debug.log4PBE
             var filter:LogFilter = new LogFilter(filterName, filterLevel);
             
             for each (var filterAppenderXML:XML in filterXML.child("appender"))
-               filter.AddAppender(filterAppenderXML.toString());
+               filter.addAppender(filterAppenderXML.toString());
             
             // add it - this will validate the name
-            AddLogFilter(filterName, filter);
+            addLogFilter(filterName, filter);
          }
          
-         Start();
+         start();
       }
       
-      private function _OnConfigurationLoadFailed(resource:XMLResource):void
+      private function onConfigurationLoadFailed(resource:XMLResource):void
       {
-         _logger.Error("Failed to load configuration from file %1.", resource.Filename);
+         _logger.error("Failed to load configuration from file %1.", resource.filename);
          _configuring = false;
-         LoadDefaultConfiguration();
+         loadDefaultConfiguration();
       }
       
       /**
        * Starts the logging system with default settings. This is a log level of Info with UI and
        * Trace appenders.
        */
-      public function LoadDefaultConfiguration():void
+      public function loadDefaultConfiguration():void
       {
          // Global calls start in case no configuration is set. If it is, this will be true, and
          // thus that call will do nothing.
@@ -288,13 +288,13 @@ package com.pblabs.engine.debug.log4PBE
          
          _ClearConfiguration();
          
-         AddLogAppender("UI", new UIAppender());
-         AddLogAppender("Trace", new TraceAppender());
+         addLogAppender("UI", new UIAppender());
+         addLogAppender("Trace", new TraceAppender());
          
-         _RootFilter.AddAppender("UI");
-         _RootFilter.AddAppender("Trace");
+         _RootFilter.addAppender("UI");
+         _RootFilter.addAppender("Trace");
          
-         Start();
+         start();
       }
       
       private function _ClearConfiguration():void
@@ -313,11 +313,11 @@ package com.pblabs.engine.debug.log4PBE
        * 
        * <p>This is called automatically when the configuration file has finished loading.</p>
        */
-      public function Start():void
+      public function start():void
       {
          _started = true;
          for each (var message:Object in _queuedMessages)
-            AddLogMessage(message.levelName, message.logger, message.message, message.arguments);
+            addLogMessage(message.levelName, message.logger, message.message, message.arguments);
          
          _queuedMessages.splice(0, _queuedMessages.length);
       }
@@ -328,31 +328,31 @@ package com.pblabs.engine.debug.log4PBE
        * @param name The name to assign the appender.
        * @param appender The LogAppender to add.
        */
-      public function AddLogAppender(name:String, appender:LogAppender):void
+      public function addLogAppender(name:String, appender:LogAppender):void
       {
          // validate
          if (!appender)
          {
-            _logger.Error("Cannot register a null appender with name %1.", name);
+            _logger.error("Cannot register a null appender with name %1.", name);
             return;
          }
          
          if (name == null || name == "")
          {
-            _logger.Error("An empty name cannot be used for appenders.");
+            _logger.error("An empty name cannot be used for appenders.");
             return;
          }
          
          if (_appenders[name])
          {
-            _logger.Warn("An appender with name %1 already exists.", name);
+            _logger.warn("An appender with name %1 already exists.", name);
             return;
          }
          
          _appenders[name] = appender;
       }
       
-      internal function GetLogAppender(name:String):LogAppender
+      internal function getLogAppender(name:String):LogAppender
       {
          return _appenders[name];
       }
@@ -363,7 +363,7 @@ package com.pblabs.engine.debug.log4PBE
        * @param name The name to assign the level. Names are not case-sensitive.
        * @param level The severity to assign the level.
        */
-      public function AddLogLevel(name:String, level:int):void
+      public function addLogLevel(name:String, level:int):void
       {
          // convert to upper case to maintain case insensitivity
          var cappedName:String = name.toUpperCase();
@@ -371,20 +371,20 @@ package com.pblabs.engine.debug.log4PBE
          // validate
          if (name == null || name == "")
          {
-            _logger.Error("An empty name cannot be used for levels.");
+            _logger.error("An empty name cannot be used for levels.");
             return;
          }
          
          if (_levels[cappedName])
          {
-            _logger.Warn("A level with name %1 already exists.", name);
+            _logger.warn("A level with name %1 already exists.", name);
             return;
          }
          
          _levels[cappedName] = new LogLevel(cappedName, level);
       }
       
-      internal function GetLogLevel(name:String):LogLevel
+      internal function getLogLevel(name:String):LogLevel
       {
          // convert to upper case to maintain case insensitivity
          name = name.toUpperCase();
@@ -397,12 +397,12 @@ package com.pblabs.engine.debug.log4PBE
        * 
        * @param filter The filter to use as the root.
        */
-      public function SetRootFilter(filter:LogFilter):void
+      public function setRootFilter(filter:LogFilter):void
       {
          // validate
          if (!filter)
          {
-            _logger.Error("Cannot register a null filter as the root filter.");
+            _logger.error("Cannot register a null filter as the root filter.");
             return;
          }
          
@@ -417,36 +417,36 @@ package com.pblabs.engine.debug.log4PBE
        * logger if it is registered, even if a filter with name com.pblabs.engine.entity is also
        * registered.
        */
-      public function AddLogFilter(name:String, filter:LogFilter):void
+      public function addLogFilter(name:String, filter:LogFilter):void
       {
          // validate
          if (!filter)
          {
-            _logger.Error("Cannot register a null filter with name %1.", name);
+            _logger.error("Cannot register a null filter with name %1.", name);
             return;
          }
          
          if (name == null || name == "")
          {
-            _logger.Error("An empty name cannot be used for filters.");
+            _logger.error("An empty name cannot be used for filters.");
             return;
          }
          
          if (_filters[name])
          {
-            _logger.Warn("A filter with name %1 already exists.", name);
+            _logger.warn("A filter with name %1 already exists.", name);
             return;
          }
          
          _filters[name] = filter;
       }
       
-      internal function GetLogFilter(name:String):LogFilter
+      internal function getLogFilter(name:String):LogFilter
       {
          return _filters[name];
       }
       
-      internal function GetLogFilterFor(name:String):LogFilter
+      internal function getLogFilterFor(name:String):LogFilter
       {
          while (!_filters[name])
          {
@@ -463,11 +463,11 @@ package com.pblabs.engine.debug.log4PBE
          return _filters[name];
       }
       
-      internal function GetLogger(classType:*):Logger
+      internal function getLogger(classType:*):Logger
       {
          if (classType == null)
          {
-            _logger.Error("Unable to create a logger with a null class type.");
+            _logger.error("Unable to create a logger with a null class type.");
             return null;
          }
          
@@ -478,7 +478,7 @@ package com.pblabs.engine.debug.log4PBE
          {
             if (classType == "")
             {
-               _logger.Error("Unable to create a logger with an empty class type.");
+               _logger.error("Unable to create a logger with an empty class type.");
                return null;
             }
             
@@ -487,7 +487,7 @@ package com.pblabs.engine.debug.log4PBE
          else
          {
             // for Class objects, this returns the correct class name, rather than 'Class'.
-            className = TypeUtility.GetObjectClassName(classType);
+            className = TypeUtility.getObjectClassName(classType);
             
             // the package and type name is separated by :: instead of .
             className = className.replace("::", ".");
@@ -495,12 +495,12 @@ package com.pblabs.engine.debug.log4PBE
          
          // don't recreate if it already exists
          if (!_loggers[className])
-            _loggers[className] = Logger.Create(className);
+            _loggers[className] = Logger.create(className);
          
          return _loggers[className];
       }
       
-      internal function AddLogMessage(levelName:String, logger:Logger, message:String, arguments:Array):void
+      internal function addLogMessage(levelName:String, logger:Logger, message:String, arguments:Array):void
       {
          if (!_started)
          {
@@ -509,43 +509,43 @@ package com.pblabs.engine.debug.log4PBE
          }
          
          // get and validate the filter and level
-         var filter:LogFilter = GetLogFilterFor(logger.Name);
+         var filter:LogFilter = getLogFilterFor(logger.name);
          
-         var level:LogLevel = GetLogLevel(levelName);
+         var level:LogLevel = getLogLevel(levelName);
          if (!level)
          {
-            _logger.Error("Unable to find the level with name %1 for the logger %2.", levelName, logger.Name);
+            _logger.error("Unable to find the level with name %1 for the logger %2.", levelName, logger.name);
             return;
          }
          
-         // we could call IsLoggerEnabledFor, but we need the filter and level anyway
+         // we could call isLoggerEnabledFor, but we need the filter and level anyway
          // if the logger isn't enabled for the specified level, just ignore the message
-         if (filter.ShouldFilter(level))
+         if (filter.shouldFilter(level))
             return;
          
          var errorNumber:int = -1;
-         var logTable:LogTable = _GetLogTable(logger);
+         var logTable:LogTable = getLogTable(logger);
          if (logTable)
          {
-            errorNumber = logTable.GetErrorNumber(message);
+            errorNumber = logTable.getErrorNumber(message);
             
             // check if this message has been printed recently
             if (!_ShouldAdd(level, errorNumber))
                return;
             
-            message = logTable.TranslateMessage(message, errorNumber);
+            message = logTable.translateMessage(message, errorNumber);
          }
          
-         for each (var appenderName:String in filter.Appenders)
+         for each (var appenderName:String in filter.appenders)
          {
-            var appender:LogAppender = GetLogAppender(appenderName);
+            var appender:LogAppender = getLogAppender(appenderName);
             if (!appender)
             {
-               _logger.Error("The appender %1 was not found for the filter %2.", appenderName, filter.Name);
+               _logger.error("The appender %1 was not found for the filter %2.", appenderName, filter.name);
                continue;
             }
             
-            appender.AddLogMessage(levelName.toUpperCase(), logger.Name, errorNumber, message, arguments);
+            appender.addLogMessage(levelName.toUpperCase(), logger.name, errorNumber, message, arguments);
          }
       }
       
@@ -555,14 +555,14 @@ package com.pblabs.engine.debug.log4PBE
          if (errorNumber < 0)
             return true;
          
-         var trackLevel:LogLevel = GetLogLevel(_trackLevel);
+         var trackLevel:LogLevel = getLogLevel(_trackLevel);
          
          // check if tracking is turned off
          if (!trackLevel || _trackNumber < 1)
             return true;
          
          // only watch things with levels higher than the track level
-         if (trackLevel.Compare(level) < 0)
+         if (trackLevel.compare(level) < 0)
             return true;
          
          var add:Boolean = true;
@@ -584,22 +584,22 @@ package com.pblabs.engine.debug.log4PBE
          return add;
       }
       
-      internal function IsLoggerEnabledFor(logger:Logger, levelName:String):Boolean
+      internal function isLoggerEnabledFor(logger:Logger, levelName:String):Boolean
       {
-         var level:LogLevel = GetLogLevel(levelName);
+         var level:LogLevel = getLogLevel(levelName);
          if (!level)
          {
-            _logger.Error("Unable to find the level with name %1 for the class %2.", levelName, logger.Name);
+            _logger.error("Unable to find the level with name %1 for the class %2.", levelName, logger.name);
             return false;
          }
          
-         var filter:LogFilter = GetLogFilterFor(logger.Name);
-         return !filter.ShouldFilter(level);
+         var filter:LogFilter = getLogFilterFor(logger.name);
+         return !filter.shouldFilter(level);
       }
       
-      private function _GetLogTable(logger:Logger):LogTable
+      private function getLogTable(logger:Logger):LogTable
       {
-         var name:String = logger.Name;
+         var name:String = logger.name;
          while (!_logTables[name])
          {
             var dotIndex:int = name.lastIndexOf(".");
@@ -653,7 +653,7 @@ class LogTable
       _table = table;
    }
    
-   public function get IsValid():Boolean
+   public function get isValid():Boolean
    {
       return _offset >= 0 && _table;
    }
@@ -681,13 +681,13 @@ class LogTable
       return index;
    }
    
-   public function GetErrorNumber(message:String):int
+   public function getErrorNumber(message:String):int
    {
       var index:int = _ParseIndex(message);
       return index >= 0 ? index + _offset : -1;
    }
    
-   public function TranslateMessage(message:String, errorNumber:int):String
+   public function translateMessage(message:String, errorNumber:int):String
    {
       var index:int = errorNumber - _offset;
       if (index < 0 || index >= _table.length)

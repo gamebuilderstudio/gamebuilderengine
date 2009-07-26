@@ -31,14 +31,14 @@ package com.pblabs.rendering2D
       [TypeHint(type="int")]
       public var DirectionCount:Dictionary = new Dictionary();
       
-	   protected override function _OnAdd():void
+	   protected override function onAdd():void
 	   {
          // Debugging aid - make sure that none of the sheets we will be
          // creating already exist.
          for(var key:String in Sheets)
          {
-            if(Owner.LookupComponentByName(key))
-               Logger.PrintError(this, "_OnAdd", "Already have a component named '" + key + "', but we're going to be registering a sprite sheet with that name on entity '" + Owner.Name + "'!");
+            if(owner.lookupComponentByName(key))
+               Logger.printError(this, "onAdd", "Already have a component named '" + key + "', but we're going to be registering a sprite sheet with that name on entity '" + owner.name + "'!");
          }
          
 	      // Create the sheets.
@@ -54,14 +54,14 @@ package com.pblabs.rendering2D
    	         newSheet.DirectionsPerFrame = DirectionsPerFrame;
             
             if(Dividers[key] is ISpriteSheetDivider)
-   	         newSheet.Divider = Dividers[key];
+   	         newSheet.divider = Dividers[key];
             else
-               newSheet.Divider = Divider.Clone();
+               newSheet.divider = Divider.clone();
             
-	         newSheet.ImageFilename = file;
-	         newSheet.Center = Center;
+	         newSheet.imageFilename = file;
+	         newSheet.center = Center;
 	         
-	         Owner.AddComponent(newSheet, key);
+	         owner.addComponent(newSheet, key);
 	      }
 	   }
 	}

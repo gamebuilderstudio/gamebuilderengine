@@ -41,7 +41,7 @@ package com.pblabs.engine.entity
        * 
        * @see #Register() 
        */
-      function get Owner():IEntity;
+      function get owner():IEntity;
       
       /**
        * The name given to the component when it is added to an entity.
@@ -51,12 +51,12 @@ package com.pblabs.engine.entity
        * 
        * @see #Register() 
        */
-      function get Name():String;
+      function get name():String;
       
       /**
        * Whether or not the component is currently registered with an entity.
        */
-      function get IsRegistered():Boolean;
+      function get isRegistered():Boolean;
       
       /**
        * Registers the component with an entity. This should only ever be called by
@@ -65,19 +65,19 @@ package com.pblabs.engine.entity
        * @param owner The entity to register the component with.
        * @param name The name to assign to the component.
        */
-      function Register(owner:IEntity, name:String):void;
+      function register(owner:IEntity, name:String):void;
       
       /**
        * Unregisters the component from an entity. This should only ever be called by
        * an entity class from the RemoveComponent method.
        */
-      function Unregister():void;
+      function unregister():void;
       
       /**
        * This is called by an entity on all of its components any time a component
        * is added or removed. In this method, any references to properties on the
        * owner entity should be purged and re-looked up.
        */
-      function Reset():void;
+      function reset():void;
    }
 }

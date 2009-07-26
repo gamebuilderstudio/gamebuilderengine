@@ -22,9 +22,9 @@ package com.pblabs.engine.unitTestHelper
       
       public var ATestValueReference:PropertyReference = new PropertyReference();
       
-      public function GetTestValueFromA():int
+      public function getTestValueFromA():int
       {
-         return Owner.GetProperty(ATestValueReference);
+         return owner.getProperty(ATestValueReference);
       }
    }
 }

@@ -16,23 +16,23 @@ package com.pblabs.box2D
    public class PolygonCollisionShape extends CollisionShape
    {
       [TypeHint(type="flash.geom.Point")]
-      public function get Vertices():Array
+      public function get vertices():Array
       {
          return _vertices;
       }
       
-      public function set Vertices(value:Array):void
+      public function set vertices(value:Array):void
       {
          _vertices = value;
          
          if (_parent)
-            _parent.BuildCollisionShapes();
+            _parent.buildCollisionShapes();
       }
       
       protected override function _CreateShape():b2ShapeDef
       {
-         var halfSize:Point = new Point(_parent.Size.x * 0.5, _parent.Size.y * 0.5);
-         var scale:Number = _parent.Manager.InverseScale;
+         var halfSize:Point = new Point(_parent.size.x * 0.5, _parent.size.y * 0.5);
+         var scale:Number = _parent.manager.inverseScale;
          
          var shape:b2PolygonDef = new b2PolygonDef();
          

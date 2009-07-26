@@ -11,46 +11,46 @@ package com.pblabs.engine.components
       private var _GroupName:String = null;
       private var _CurrentManager:GroupManagerComponent = null;
       
-      public function get GroupManager():GroupManagerComponent
+      public function get groupManager():GroupManagerComponent
       {
-         return NameManager.Instance.LookupComponentByType(GroupName, GroupManagerComponent) as GroupManagerComponent;
+         return NameManager.instance.lookupComponentByType(groupName, GroupManagerComponent) as GroupManagerComponent;
       }
 
-      public function set GroupName(value:String):void
+      public function set groupName(value:String):void
       {
-         _OnRemove();
+         onRemove();
 
          _GroupName = value;
 
-         _OnAdd();
+         onAdd();
       }
       
-      public function get GroupName():String
+      public function get groupName():String
       {
          return _GroupName;
       }
       
-      protected override function _OnAdd():void
+      protected override function onAdd():void
       {
-         var curM:GroupManagerComponent = GroupManager;
+         var curM:GroupManagerComponent = groupManager;
          if(!_CurrentManager && curM)
          {
             _CurrentManager = curM;
-            _CurrentManager.AddMember(this);
+            _CurrentManager.addMember(this);
          }
       }
       
-      protected override function _OnReset():void
+      protected override function onReset():void
       {
-         _OnRemove();
-         _OnAdd();
+         onRemove();
+         onAdd();
       }
       
-      protected override function _OnRemove():void
+      protected override function onRemove():void
       {
          if(_CurrentManager)
          {
-            _CurrentManager.RemoveMember(this);
+            _CurrentManager.removeMember(this);
             _CurrentManager = null;            
          }
       }

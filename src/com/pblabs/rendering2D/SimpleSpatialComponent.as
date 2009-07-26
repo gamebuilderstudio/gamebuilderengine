@@ -25,26 +25,26 @@ package com.pblabs.rendering2D
        * The spatial manager this object belongs to.
        */
       [EditorData(referenceType="componentReference")]
-      public function get SpatialManager():ISpatialManager2D
+      public function get spatialManager():ISpatialManager2D
       {
          return _spatialManager;
       }
       
-      public function set SpatialManager(value:ISpatialManager2D):void
+      public function set spatialManager(value:ISpatialManager2D):void
       {
-         if (!IsRegistered)
+         if (!isRegistered)
          {
             _spatialManager = value;
             return;
          }
          
          if (_spatialManager)
-            _spatialManager.RemoveSpatialObject(this);
+            _spatialManager.removeSpatialObject(this);
          
          _spatialManager = value;
          
          if (_spatialManager)
-            _spatialManager.AddSpatialObject(this);
+            _spatialManager.addSpatialObject(this);
       }
       
       /**
@@ -77,7 +77,7 @@ package com.pblabs.rendering2D
       /**
        * @inheritDoc
        */
-      public override function OnTick(tickRate:Number):void
+      public override function onTick(tickRate:Number):void
       {
          Position.x += Velocity.x * tickRate;
          Position.y += Velocity.y * tickRate;
@@ -86,29 +86,29 @@ package com.pblabs.rendering2D
       /**
        * @inheritDoc
        */
-      protected override function _OnAdd():void
+      protected override function onAdd():void
       {
-         super._OnAdd();
+         super.onAdd();
          
          if (_spatialManager)
-            _spatialManager.AddSpatialObject(this);
+            _spatialManager.addSpatialObject(this);
       }
       
       /**
        * @inheritDoc
        */
-      protected override function _OnRemove():void
+      protected override function onRemove():void
       {
-         super._OnRemove();
+         super.onRemove();
 
          if (_spatialManager)
-            _spatialManager.RemoveSpatialObject(this);
+            _spatialManager.removeSpatialObject(this);
       }
       
       /**
        * @inheritDoc
        */
-      public function get ObjectMask():ObjectType
+      public function get objectMask():ObjectType
       {
          return _objectMask;
       }
@@ -116,7 +116,7 @@ package com.pblabs.rendering2D
       /**
        * @private
        */
-      public function set ObjectMask(value:ObjectType):void
+      public function set objectMask(value:ObjectType):void
       {
          _objectMask = value;
       }
@@ -124,7 +124,7 @@ package com.pblabs.rendering2D
       /**
        * @inheritDoc
        */
-      public function get WorldExtents():Rectangle
+      public function get worldExtents():Rectangle
       {
          return new Rectangle(Position.x - (Size.x * 0.5), Position.y - (Size.y * 0.5), Size.x, Size.y);         
       }
@@ -133,7 +133,7 @@ package com.pblabs.rendering2D
        * Not currently implemented.
        * @inheritDoc
        */
-      public function CastRay(start:Point, end:Point, mask:ObjectType, info:RayHitInfo):Boolean
+      public function castRay(start:Point, end:Point, mask:ObjectType, info:RayHitInfo):Boolean
       {
          return false;
       }
@@ -142,14 +142,14 @@ package com.pblabs.rendering2D
        * All points in our bounding box are occupied.
        * @inheritDoc
        */
-      public function PointOccupied(pos:Point, scene:IDrawManager2D):Boolean
+      public function pointOccupied(pos:Point, scene:IDrawManager2D):Boolean
       {
          // If no sprite then we just test our bounds.
          if(!SpriteForPointChecks || !scene)
-            return WorldExtents.containsPoint(pos);
+            return worldExtents.containsPoint(pos);
          
          // OK, so pass it over to the sprite.
-         return SpriteForPointChecks.PointOccupied(pos, scene);
+         return SpriteForPointChecks.pointOccupied(pos, scene);
       }
       
       private var _objectMask:ObjectType;

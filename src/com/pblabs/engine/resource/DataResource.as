@@ -10,7 +10,7 @@ package com.pblabs.engine.resource
       /**
        * The loaded data. This will be null until loading of the resource has completed.
        */
-      public function get Data():ByteArray
+      public function get data():ByteArray
       {
          return _data;
       }
@@ -18,19 +18,19 @@ package com.pblabs.engine.resource
       /**
        * @inheritDoc
        */
-      public override function Initialize(data:*):void
+      public override function initialize(data:*):void
       {
          if(!(data is ByteArray))
             throw new Error("DataResource can only handle ByteArrays.");
             
          _data = data;
-         _OnLoadComplete();
+         onLoadComplete();
       }
       
       /**
        * @inheritDoc
        */
-      protected override function _OnContentReady(content:*):Boolean 
+      protected override function onContentReady(content:*):Boolean 
       {
          return _data != null;
       }

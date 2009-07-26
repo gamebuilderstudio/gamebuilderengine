@@ -13,11 +13,11 @@ package com.pblabs.tweaker
    public class TweakerMapEntry
    {
       public var Cell:String;
-      public var Property:PropertyReference;
+      public var property:PropertyReference;
       
       public function toString():String
       {
-         return "[TweakerMapEntry " + Cell + " = " + Property.Property + "]";
+         return "[TweakerMapEntry " + Cell + " = " + property.property + "]";
       }
    }
 }

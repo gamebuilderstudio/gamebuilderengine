@@ -23,7 +23,7 @@ package com.pblabs.engine.core
       /**
        * The singleton NameManager instance.
        */
-      static public function get Instance():NameManager
+      static public function get instance():NameManager
       {
          if (!_instance)
             _instance = new NameManager();
@@ -36,7 +36,7 @@ package com.pblabs.engine.core
       /**
        * The list of registered entities.
        */
-      public function get EntityList():Dictionary
+      public function get entityList():Dictionary
       {
          return _entities;
       }
@@ -48,13 +48,13 @@ package com.pblabs.engine.core
        * @param entity The entity to add.
        * @param name The name to register the entity under.
        */
-      public function AddEntity(entity:IEntity, name:String):void
+      public function addEntity(entity:IEntity, name:String):void
       {
          if (_entities[name])
-            Logger.PrintWarning(this, "AddEntity", "An entity with the name " + name + " already exists. Future lookups by this name will return this new entity. Did you mean to make this entity a template?");
+            Logger.printWarning(this, "AddEntity", "An entity with the name " + name + " already exists. Future lookups by this name will return this new entity. Did you mean to make this entity a template?");
          
          if(TemplateManager.VERBOSE_LOGGING)
-            Logger.Print(this, "Registering entity '" + name + "'");
+            Logger.print(this, "Registering entity '" + name + "'");
             
          _entities[name] = entity;
       }
@@ -64,10 +64,10 @@ package com.pblabs.engine.core
        * 
        * @param entity The entity to remove.
        */
-      public function RemoveEntity(entity:IEntity):void
+      public function removeEntity(entity:IEntity):void
       {
-         _entities[entity.Name] = null;
-         delete _entities[entity.Name];
+         _entities[entity.name] = null;
+         delete _entities[entity.name];
       }
       
       /**
@@ -77,7 +77,7 @@ package com.pblabs.engine.core
        * 
        * @return The entity with the specified name, or null if it wasn't found.
        */
-      public function Lookup(name:String):IEntity
+      public function lookup(name:String):IEntity
       {
          return _entities[name];
       }
@@ -91,7 +91,7 @@ package com.pblabs.engine.core
        * 
        * @return The validated name. This is guaranteed to not be in use.
        */
-      public function ValidateName(name:String):String
+      public function validateName(name:String):String
       {
          if (!_entities[name])
             return name;
@@ -106,56 +106,56 @@ package com.pblabs.engine.core
       
       /**
        * Looks up a component on an entity that has been registered. The same
-       * conditions apply as with the LookupComponentByType method on IEntity.
+       * conditions apply as with the lookupComponentByType method on IEntity.
        * 
        * @param The name of the entity on which the component exists.
        * @param componentType The type of the component to lookup.
        * 
-       * @see com.pblabs.engine.entity.IEntity#LookupComponentByType()
+       * @see com.pblabs.engine.entity.IEntity#lookupComponentByType()
        */
-      public function LookupComponentByType(name:String, componentType:Class):IEntityComponent
+      public function lookupComponentByType(name:String, componentType:Class):IEntityComponent
       {
-         var entity:IEntity = Lookup(name);
+         var entity:IEntity = lookup(name);
          if (!entity)
             return null;
          
-         return entity.LookupComponentByType(componentType);
+         return entity.lookupComponentByType(componentType);
       }
       
       /**
        * Looks up components on an entity that has been registered. The same
-       * conditions apply as with the LookupComponentsByType method on IEntity.
+       * conditions apply as with the lookupComponentsByType method on IEntity.
        * 
        * @param The name of the entity on which the component exists.
        * @param componentType The type of the components to lookup.
        * 
-       * @see com.pblabs.engine.entity.IEntity#LookupComponentByType()
+       * @see com.pblabs.engine.entity.IEntity#lookupComponentByType()
        */
-      public function LookupComponentsByType(name:String, componentType:Class):Array
+      public function lookupComponentsByType(name:String, componentType:Class):Array
       {
-         var entity:IEntity = Lookup(name);
+         var entity:IEntity = lookup(name);
          if (!entity)
             return null;
          
-         return entity.LookupComponentsByType(componentType);
+         return entity.lookupComponentsByType(componentType);
       }      
       
       /**
        * Looks up a component on an entity that has been registered. The same
-       * conditions apply as with the LookupComponentByName method on IEntity.
+       * conditions apply as with the lookupComponentByName method on IEntity.
        * 
        * @param The name of the entity on which the component exists.
        * @param componentName The name of the component to lookup.
        * 
-       * @see com.pblabs.engine.entity.IEntity#LookupComponentByName()
+       * @see com.pblabs.engine.entity.IEntity#lookupComponentByName()
        */
-      public function LookupComponentByName(name:String, componentName:String):IEntityComponent
+      public function lookupComponentByName(name:String, componentName:String):IEntityComponent
       {
-         var entity:IEntity = Lookup(name);
+         var entity:IEntity = lookup(name);
          if (!entity)
             return null;
          
-         return entity.LookupComponentByName(componentName);
+         return entity.lookupComponentByName(componentName);
       }
       
       private var _entities:Dictionary = new Dictionary();

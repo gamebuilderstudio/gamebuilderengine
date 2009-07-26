@@ -9,12 +9,12 @@ package com.pblabs.engine.components
    {
       private var _Members:Array = new Array();
       
-      public function AddMember(member:GroupMemberComponent):void
+      public function addMember(member:GroupMemberComponent):void
       {
          _Members.push(member);
       }   
       
-      public function RemoveMember(member:GroupMemberComponent):void
+      public function removeMember(member:GroupMemberComponent):void
       {
          var idx:int = _Members.indexOf(member);
          if(idx == -1)
@@ -22,12 +22,12 @@ package com.pblabs.engine.components
          _Members.splice(idx, 1);
       }
       
-      public function get EntityList():Array
+      public function get entityList():Array
       {
          var a:Array = new Array();
          
          for each(var m:GroupMemberComponent in _Members)
-            a.push(m.Owner);
+            a.push(m.owner);
             
          return a;
       }

@@ -51,7 +51,7 @@ package com.pblabs.engine.resource
        * This is where the ResourceBundle loops through all of its public properties
        *  and registers any embedded resources with the ResourceManager.
        */
-      public function ResourceBundle( )
+      public function ResourceBundle()
       {
          var desc:XML= describeType(this);
          var res:Class;
@@ -113,7 +113,7 @@ package com.pblabs.engine.resource
             // Sanity check:
             if ( !resIsEmbedded || resSource == "" || res == null ) 
             {
-               Logger.PrintError(this, "ResourceBundle", "A resource in the resource bundle with the name '" + v.@name + "' has failed to embed properly.  Please check the metadata syntax, and ensure that the path is correct."); 
+               Logger.printError(this, "ResourceBundle", "A resource in the resource bundle with the name '" + v.@name + "' has failed to embed properly.  Please check the metadata syntax, and ensure that the path is correct."); 
                continue;
             }
 
@@ -129,7 +129,7 @@ package com.pblabs.engine.resource
                // If the extension type is recognized or not...
                if ( !ExtensionTypes.hasOwnProperty(ext) )
                {
-                  Logger.PrintWarning(this, "ResourceBundle", "No resource type specified for extension '." + ext + "'.  In the extTypes parameter, expected to see something in the form of 'png:\"PBLabs.Rendering2D.ImageResource\"' where png is the (lower-case) extension, and \"PBLabs.Rendering2D.ImageResource\" is a string of the fully qualified resource class name.  Defaulting to generic DataResource.");
+                  Logger.printWarning(this, "ResourceBundle", "No resource type specified for extension '." + ext + "'.  In the extTypes parameter, expected to see something in the form of 'png:\"PBLabs.Rendering2D.ImageResource\"' where png is the (lower-case) extension, and \"PBLabs.Rendering2D.ImageResource\" is a string of the fully qualified resource class name.  Defaulting to generic DataResource.");
 
                   // Default to a DataResource if no other name is specified.
                   resTypeName = "com.pblabs.engine.resource.DataResource";
@@ -154,7 +154,7 @@ package com.pblabs.engine.resource
 
             if (!resType)
             {
-               Logger.PrintError(this, "ResourceBundle", "The resource type '" + resTypeName + "' specified for the embedded asset '" + resSource + "' could not be found.  Please ensure that the path name is correct, and that the class is explicity referenced somewhere in the project, so that it is available at runtime.");
+               Logger.printError(this, "ResourceBundle", "The resource type '" + resTypeName + "' specified for the embedded asset '" + resSource + "' could not be found.  Please ensure that the path name is correct, and that the class is explicity referenced somewhere in the project, so that it is available at runtime.");
                continue;
             }
             
@@ -163,12 +163,12 @@ package com.pblabs.engine.resource
             var testResource:* = new resType();
             if (!(testResource is Resource))
             {
-               Logger.PrintError(this, "ResourceBundle", "The resource type '" + resTypeName + "' specified for the embedded asset '" + resSource + "' is not a descendant from Resource.  Please ensure that the resource class descends properly from com.pblabs.engine.resource.Resource, and is defined correctly.");
+               Logger.printError(this, "ResourceBundle", "The resource type '" + resTypeName + "' specified for the embedded asset '" + resSource + "' is not a descendant from Resource.  Please ensure that the resource class descends properly from com.pblabs.engine.resource.Resource, and is defined correctly.");
                continue;
             }
 
             // Everything so far is hunky-dory -- go ahead and register the embedded resource!
-            ResourceManager.Instance.RegisterEmbeddedResource( resSource, resType, new res() as ByteArray );
+            ResourceManager.instance.registerEmbeddedResource( resSource, resType, new res() as ByteArray );
          }
       }
    }

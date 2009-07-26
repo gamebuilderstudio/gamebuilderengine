@@ -42,15 +42,15 @@ package com.pblabs.rendering2D.UI
       
       public function SceneView()
       {
-         Global.MainStage.addChild(this);
+         Global.mainStage.addChild(this);
       }
       
-      public function AddDisplayObject(dobj:DisplayObject):void
+      public function addDisplayObject(dobj:DisplayObject):void
       {
       	addChild(dobj);
       }
       
-      public function ClearDisplayObjects():void
+      public function clearDisplayObjects():void
       {
       	while(numChildren)
       	   removeChildAt(0);

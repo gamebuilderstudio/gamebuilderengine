@@ -21,22 +21,22 @@ package com.pblabs.engine.unitTests
       public function testAnimatedProcess():void
       {
          var animatedObject:AnimateTest = new AnimateTest();
-         ProcessManager.Instance.AddAnimatedObject(animatedObject);
+         ProcessManager.instance.addAnimatedObject(animatedObject);
          
-         ProcessManager.Instance.TestAdvance(200);
-         assertEquals(animatedObject.Elapsed, 200 / 1000);
+         ProcessManager.instance.testAdvance(200);
+         assertEquals(animatedObject.elapsed, 200 / 1000);
          
-         ProcessManager.Instance.TimeScale = 0.5;
-         ProcessManager.Instance.TestAdvance(200);
-         assertEquals(animatedObject.Elapsed, 100 / 1000);
-         ProcessManager.Instance.TimeScale = 1.0;
+         ProcessManager.instance.timeScale = 0.5;
+         ProcessManager.instance.testAdvance(200);
+         assertEquals(animatedObject.elapsed, 100 / 1000);
+         ProcessManager.instance.timeScale = 1.0;
          
-         ProcessManager.Instance.RemoveAnimatedObject(animatedObject);
+         ProcessManager.instance.removeAnimatedObject(animatedObject);
       }
       
       public function testPriority():void
       {
-         Logger.PrintHeader(null, "Running Process Priority Test");
+         Logger.printHeader(null, "Running Process Priority Test");
          
          var tickObject0:TickTest = new TickTest(0);
          var tickObject1:TickTest = new TickTest(1);
@@ -44,71 +44,71 @@ package com.pblabs.engine.unitTests
          var tickObject3:TickTest = new TickTest(3);
          var tickObject4:TickTest = new TickTest(4);
          var tickObject5:TickTest = new TickTest(5);
-         ProcessManager.Instance.AddTickedObject(tickObject4, 4.0);
-         ProcessManager.Instance.AddTickedObject(tickObject3, 3.0);
-         ProcessManager.Instance.AddTickedObject(tickObject5, 5.0);
-         ProcessManager.Instance.AddTickedObject(tickObject1, 1.0);
-         ProcessManager.Instance.AddTickedObject(tickObject2, 2.0);
-         ProcessManager.Instance.AddTickedObject(tickObject0, 0.0);
+         ProcessManager.instance.addTickedObject(tickObject4, 4.0);
+         ProcessManager.instance.addTickedObject(tickObject3, 3.0);
+         ProcessManager.instance.addTickedObject(tickObject5, 5.0);
+         ProcessManager.instance.addTickedObject(tickObject1, 1.0);
+         ProcessManager.instance.addTickedObject(tickObject2, 2.0);
+         ProcessManager.instance.addTickedObject(tickObject0, 0.0);
          
-         ProcessManager.Instance.TestAdvance(ProcessManager.TICK_RATE_MS);
+         ProcessManager.instance.testAdvance(ProcessManager.TICK_RATE_MS);
          
-         ProcessManager.Instance.RemoveTickedObject(tickObject4);
-         ProcessManager.Instance.RemoveTickedObject(tickObject3);
-         ProcessManager.Instance.RemoveTickedObject(tickObject5);
-         ProcessManager.Instance.RemoveTickedObject(tickObject1);
-         ProcessManager.Instance.RemoveTickedObject(tickObject2);
-         ProcessManager.Instance.RemoveTickedObject(tickObject0);
+         ProcessManager.instance.removeTickedObject(tickObject4);
+         ProcessManager.instance.removeTickedObject(tickObject3);
+         ProcessManager.instance.removeTickedObject(tickObject5);
+         ProcessManager.instance.removeTickedObject(tickObject1);
+         ProcessManager.instance.removeTickedObject(tickObject2);
+         ProcessManager.instance.removeTickedObject(tickObject0);
          
-         Logger.PrintFooter(null, "");
+         Logger.printFooter(null, "");
       }
       
       public function testTickRate():void
       {
-         Logger.PrintHeader(null, "Running Process Tick Rate Test");
+         Logger.printHeader(null, "Running Process Tick Rate Test");
          
          var tickObject:TickTest = new TickTest(0);
          tickObject.TestPriority = false;
          tickObject.TestCount = true;
-         ProcessManager.Instance.AddTickedObject(tickObject);
+         ProcessManager.instance.addTickedObject(tickObject);
          
-         ProcessManager.Instance.TestAdvance((ProcessManager.TICK_RATE_MS * 4) + 8);
-         assertEquals(tickObject.TickCount, 4);
-         assertTrue(Math.abs(tickObject.InterpolationFactor - 8.0 / ProcessManager.TICK_RATE_MS) < 0.001);
+         ProcessManager.instance.testAdvance((ProcessManager.TICK_RATE_MS * 4) + 8);
+         assertEquals(tickObject.tickCount, 4);
+         assertTrue(Math.abs(tickObject.interpolationFactor - 8.0 / ProcessManager.TICK_RATE_MS) < 0.001);
          
-         ProcessManager.Instance.TimeScale = 0.5;
-         ProcessManager.Instance.TestAdvance((ProcessManager.TICK_RATE_MS * 4) + 8);
-         assertEquals(tickObject.TickCount, 6);
-         assertTrue(Math.abs(tickObject.InterpolationFactor - 12.0 / ProcessManager.TICK_RATE_MS) < 0.001);
-         ProcessManager.Instance.TimeScale = 1.0;
+         ProcessManager.instance.timeScale = 0.5;
+         ProcessManager.instance.testAdvance((ProcessManager.TICK_RATE_MS * 4) + 8);
+         assertEquals(tickObject.tickCount, 6);
+         assertTrue(Math.abs(tickObject.interpolationFactor - 12.0 / ProcessManager.TICK_RATE_MS) < 0.001);
+         ProcessManager.instance.timeScale = 1.0;
          
-         ProcessManager.Instance.RemoveTickedObject(tickObject);
+         ProcessManager.instance.removeTickedObject(tickObject);
          
-         Logger.PrintFooter(null, "");
+         Logger.printFooter(null, "");
       }
       
       public function testSchedule():void
       {
-         ProcessManager.Instance.Schedule(1000, this, _OnSchedule, 2, 7, 4, 3);
-         ProcessManager.Instance.TestAdvance(999);
+         ProcessManager.instance.schedule(1000, this, onSchedule, 2, 7, 4, 3);
+         ProcessManager.instance.testAdvance(999);
          assertEquals(_scheduleCount, 0);
-         ProcessManager.Instance.TestAdvance(1);
+         ProcessManager.instance.testAdvance(1);
          assertEquals(_scheduleCount, 1);
-         ProcessManager.Instance.TestAdvance(1000);
+         ProcessManager.instance.testAdvance(1000);
          assertEquals(_scheduleCount, 1);
          
-         ProcessManager.Instance.TimeScale = 0.5;
-         ProcessManager.Instance.Schedule(500, this, _OnSchedule, 2, 7, 4, 3);
-         ProcessManager.Instance.TestAdvance(900);
+         ProcessManager.instance.timeScale = 0.5;
+         ProcessManager.instance.schedule(500, this, onSchedule, 2, 7, 4, 3);
+         ProcessManager.instance.testAdvance(900);
          assertEquals(_scheduleCount, 1);
-         ProcessManager.Instance.TestAdvance(100);
+         ProcessManager.instance.testAdvance(100);
          assertEquals(_scheduleCount, 2);
-         ProcessManager.Instance.TestAdvance(1000);
+         ProcessManager.instance.testAdvance(1000);
          assertEquals(_scheduleCount, 2);
-         ProcessManager.Instance.TimeScale = 1.0;
+         ProcessManager.instance.timeScale = 1.0;
       }
       
-      private function _OnSchedule(two:int, seven:int, four:int, three:int):void
+      private function onSchedule(two:int, seven:int, four:int, three:int):void
       {
          _scheduleCount++;
          
@@ -127,12 +127,12 @@ import com.pblabs.engine.core.IAnimatedObject;
 
 class AnimateTest implements IAnimatedObject
 {
-   public function get Elapsed():Number
+   public function get elapsed():Number
    {
       return _elapsed;
    }
    
-   public function OnFrame(elapsed:Number):void
+   public function onFrame(elapsed:Number):void
    {
       _elapsed = elapsed;
    }
@@ -147,12 +147,12 @@ class TickTest implements ITickedObject
    public var TestPriority:Boolean = true;
    public var TestCount:Boolean = false;
    
-   public function get TickCount():int
+   public function get tickCount():int
    {
       return _tickCount;
    }
    
-   public function get InterpolationFactor():Number
+   public function get interpolationFactor():Number
    {
       return _interpolationFactor;
    }
@@ -162,7 +162,7 @@ class TickTest implements ITickedObject
       _priority = priority;
    }
    
-   public function OnTick(tickRate:Number):void
+   public function onTick(tickRate:Number):void
    {
       if (TestPriority)
       {
@@ -180,7 +180,7 @@ class TickTest implements ITickedObject
       }
    }
    
-   public function OnInterpolateTick(factor:Number):void
+   public function onInterpolateTick(factor:Number):void
    {
       _interpolationFactor = factor;
    }

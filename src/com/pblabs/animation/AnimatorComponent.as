@@ -43,12 +43,12 @@ package com.pblabs.animation
       /**
        * @inheritDoc
        */
-      public override function OnFrame(elapsed:Number):void
+      public override function onFrame(elapsed:Number):void
       {
          if (_currentAnimation)
          {
-            _currentAnimation.Animate(elapsed);
-            Owner.SetProperty(Reference, _currentAnimation.CurrentValue);            
+            _currentAnimation.animate(elapsed);
+            owner.setProperty(Reference, _currentAnimation.currentValue);            
          }
       }
       
@@ -60,28 +60,28 @@ package com.pblabs.animation
        * @param startValue The value to start at. If this is null (the default), the
        * start value won't be changed.
        */
-      public function Play(animation:String, startValue:*=null):void
+      public function play(animation:String, startValue:*=null):void
       {
          _currentAnimation = Animations[animation];
          if (!_currentAnimation)
             return;
          
          if (startValue)
-            _currentAnimation.StartValue = startValue;
+            _currentAnimation.startValue = startValue;
          
-         _currentAnimation.Reset();
-         _currentAnimation.Play();
+         _currentAnimation.reset();
+         _currentAnimation.play();
       }
       
       /**
        * @inheritDoc
        */
-      protected override function _OnReset():void
+      protected override function onReset():void
       {
          if (!AutoPlay || _currentAnimation)
             return;
          
-         Play(DefaultAnimation);
+         play(DefaultAnimation);
       }
       
       private var _currentAnimation:Animator = null;

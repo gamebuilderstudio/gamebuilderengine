@@ -31,7 +31,7 @@ package com.pblabs.engine.resource
        * so we don't need any special loading. This just converts the byte array to
        * a string and marks the resource as loaded.
        */
-      public override function Initialize(data:*):void
+      public override function initialize(data:*):void
       {
          if(!(data is ByteArray))
             throw new Error("XMLResource can only initialize from ByteArrays.");
@@ -42,17 +42,17 @@ package com.pblabs.engine.resource
          }
          catch (e:TypeError)
          {
-            Logger.Print(this, "Got type error parsing XML: " + e.toString());
+            Logger.print(this, "Got type error parsing XML: " + e.toString());
             _valid = false;
          }
          
-         _OnLoadComplete();
+         onLoadComplete();
       }
       
       /**
        * @inheritDoc
        */
-      protected override function _OnContentReady(content:*):Boolean 
+      protected override function onContentReady(content:*):Boolean 
       {
          return _valid;
       }

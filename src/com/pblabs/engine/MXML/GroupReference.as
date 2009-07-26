@@ -45,12 +45,12 @@ package com.pblabs.engine.MXML
       {
          if (!levels || levels.length == 0)
          {
-            LevelManager.Instance.AddGroupReference(level, name);
+            LevelManager.instance.addGroupReference(level, name);
          }
          else
          {
             for each (var l:int in levels)
-               LevelManager.Instance.AddGroupReference(l, name);
+               LevelManager.instance.addGroupReference(l, name);
          }
       }
    }

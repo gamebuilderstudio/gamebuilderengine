@@ -28,125 +28,125 @@ package com.pblabs.engine.unitTests
    {
       public function testComponents():void
       {
-         Logger.PrintHeader(null, "Running Component Test");
+         Logger.printHeader(null, "Running Component Test");
          
          var entity:IEntity = AllocateEntity();
-         entity.Initialize("TestEntity");
+         entity.initialize("TestEntity");
          
-         assertEquals(entity, NameManager.Instance.Lookup("TestEntity"));
+         assertEquals(entity, NameManager.instance.lookup("TestEntity"));
          
          var a:TestComponentA = new TestComponentA();
          var b:TestComponentB = new TestComponentB();
          
-         entity.AddComponent(a, "A");
-         assertTrue(a.IsRegistered);
-         assertFalse(b.IsRegistered);
+         entity.addComponent(a, "A");
+         assertTrue(a.isRegistered);
+         assertFalse(b.isRegistered);
          
-         entity.AddComponent(b, "B");
+         entity.addComponent(b, "B");
          
-         assertEquals(a, entity.LookupComponentByName("A"));
-         assertEquals(a, entity.LookupComponentByType(TestComponentA));
-         assertEquals(null, entity.LookupComponentByName("C"));
+         assertEquals(a, entity.lookupComponentByName("A"));
+         assertEquals(a, entity.lookupComponentByType(TestComponentA));
+         assertEquals(null, entity.lookupComponentByName("C"));
          
-         entity.RemoveComponent(a);
-         assertTrue(b.IsRegistered);
-         assertFalse(a.IsRegistered);
-         assertEquals(null, entity.LookupComponentByName("A"));
-         assertEquals(null, entity.LookupComponentByType(TestComponentA));
+         entity.removeComponent(a);
+         assertTrue(b.isRegistered);
+         assertFalse(a.isRegistered);
+         assertEquals(null, entity.lookupComponentByName("A"));
+         assertEquals(null, entity.lookupComponentByType(TestComponentA));
          
-         entity.Destroy();
-         assertEquals(null, entity.LookupComponentByName("B"));
-         assertEquals(null, NameManager.Instance.Lookup("TestEntity"));
+         entity.destroy();
+         assertEquals(null, entity.lookupComponentByName("B"));
+         assertEquals(null, NameManager.instance.lookup("TestEntity"));
          
-         Logger.PrintFooter(null, "");
+         Logger.printFooter(null, "");
       }
       
       public function testProperties():void
       {
-         Logger.PrintHeader(null, "Running Component Property Test");
+         Logger.printHeader(null, "Running Component Property Test");
          
          var entity:IEntity = AllocateEntity();
-         entity.Initialize("TestEntity");
+         entity.initialize("TestEntity");
          
          var a:TestComponentA = new TestComponentA();
          var b:TestComponentB = new TestComponentB();
-         entity.AddComponent(a, "A");
-         entity.AddComponent(b, "B");
+         entity.addComponent(a, "A");
+         entity.addComponent(b, "B");
          
-         a.TestValue = 126;
-         assertEquals(126, entity.GetProperty(_testValueReference));
-         entity.SetProperty(_testValueReference, 834);
-         assertEquals(834, a.TestValue);
+         a.testValue = 126;
+         assertEquals(126, entity.getProperty(_testValueReference));
+         entity.setProperty(_testValueReference, 834);
+         assertEquals(834, a.testValue);
          
          b.TestComplex = new Point(4.593, 81.287);
-         assertEquals(4.593, entity.GetProperty(_testComplexXReference));
-         assertEquals(81.287, entity.GetProperty(_testComplexYReference));
-         entity.SetProperty(_testComplexXReference, 7.239);
-         entity.SetProperty(_testComplexYReference, 212.923);
+         assertEquals(4.593, entity.getProperty(_testComplexXReference));
+         assertEquals(81.287, entity.getProperty(_testComplexYReference));
+         entity.setProperty(_testComplexXReference, 7.239);
+         entity.setProperty(_testComplexYReference, 212.923);
          assertEquals(7.239, b.TestComplex.x);
          assertEquals(212.923, b.TestComplex.y);
          
-         assertEquals(null, entity.GetProperty(_nonexistentReference));
-         assertEquals(null, entity.GetProperty(_malformedReference));
+         assertEquals(null, entity.getProperty(_nonexistentReference));
+         assertEquals(null, entity.getProperty(_malformedReference));
          
-         Logger.PrintFooter(null, "");
+         Logger.printFooter(null, "");
       }
       
       public function testSerialization():void
       {
-         Logger.PrintHeader(null, "Running Component Serialization Test");
+         Logger.printHeader(null, "Running Component Serialization Test");
          
-         TemplateManager.Instance.AddXML(_testXML, "UnitTestXML", 1);
-         var entity:IEntity = TemplateManager.Instance.InstantiateEntity("XMLTestEntity");
-         assertEquals(entity, NameManager.Instance.Lookup("XMLTestEntity"));
+         TemplateManager.instance.addXML(_testXML, "UnitTestXML", 1);
+         var entity:IEntity = TemplateManager.instance.instantiateEntity("XMLTestEntity");
+         assertEquals(entity, NameManager.instance.lookup("XMLTestEntity"));
          
-         var a:TestComponentA = entity.LookupComponentByName("A") as TestComponentA;
-         var b:TestComponentB = entity.LookupComponentByType(TestComponentB) as TestComponentB;
+         var a:TestComponentA = entity.lookupComponentByName("A") as TestComponentA;
+         var b:TestComponentB = entity.lookupComponentByType(TestComponentB) as TestComponentB;
          assertTrue(a);
          assertTrue(b);
          
-         assertEquals(7, a.TestValue);
+         assertEquals(7, a.testValue);
          assertEquals(4, b.TestComplex.x);
          assertEquals(9.3, b.TestComplex.y);
          
-         entity.Destroy();
+         entity.destroy();
          
-         TemplateManager.Instance.RemoveXML("UnitTestXML");
-         assertEquals(null, TemplateManager.Instance.GetXML("XMLTestEntity"));
+         TemplateManager.instance.removeXML("UnitTestXML");
+         assertEquals(null, TemplateManager.instance.getXML("XMLTestEntity"));
          
-         Logger.PrintFooter(null, "");
+         Logger.printFooter(null, "");
       }
       
       public function testSerializationCallbacks():void
       {
-         Logger.PrintHeader(null, "Running TemplateManager Entity/Group Callbacks Test");
+         Logger.printHeader(null, "Running TemplateManager Entity/Group Callbacks Test");
          
-         TemplateManager.Instance.RegisterEntityCallback("TestEntityCallback", _entityCallback);
-         TemplateManager.Instance.RegisterGroupCallback("TestGroupCallback", _groupCallback);
+         TemplateManager.instance.registerEntityCallback("TestEntityCallback", _entityCallback);
+         TemplateManager.instance.registerGroupCallback("TestGroupCallback", _groupCallback);
          
-         var e:IEntity = TemplateManager.Instance.InstantiateEntity("TestEntityCallback");
+         var e:IEntity = TemplateManager.instance.instantiateEntity("TestEntityCallback");
          assertTrue(e);
-         assertTrue(e.LookupComponentByType(TestComponentA));
-         assertTrue(e.LookupComponentByType(TestComponentB));
+         assertTrue(e.lookupComponentByType(TestComponentA));
+         assertTrue(e.lookupComponentByType(TestComponentB));
          
-         var g:Array = TemplateManager.Instance.InstantiateGroup("TestGroupCallback");
+         var g:Array = TemplateManager.instance.instantiateGroup("TestGroupCallback");
          assertTrue(g.length == 3);
          
-         TemplateManager.Instance.UnregisterEntityCallback("TestEntityCallback");
-         TemplateManager.Instance.UnregisterGroupCallback("TestGroupCallback");
+         TemplateManager.instance.unregisterEntityCallback("TestEntityCallback");
+         TemplateManager.instance.unregisterGroupCallback("TestGroupCallback");
          
-         assertTrue(!TemplateManager.Instance.InstantiateEntity("TestEntityCallback"));
-         assertTrue(!TemplateManager.Instance.InstantiateGroup("TestGroupCallback"));
+         assertTrue(!TemplateManager.instance.instantiateEntity("TestEntityCallback"));
+         assertTrue(!TemplateManager.instance.instantiateGroup("TestGroupCallback"));
          
-         Logger.PrintFooter(null, "");
+         Logger.printFooter(null, "");
       }
       
       private function _entityCallback():IEntity
       {
          var entity:IEntity = AllocateEntity();
-         entity.Initialize("CallbackCreatedEntity");
-         entity.AddComponent(new TestComponentA(), "A");
-         entity.AddComponent(new TestComponentB(), "B");
+         entity.initialize("CallbackCreatedEntity");
+         entity.addComponent(new TestComponentA(), "A");
+         entity.addComponent(new TestComponentB(), "B");
          return entity;
       }
       

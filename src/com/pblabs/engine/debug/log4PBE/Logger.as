@@ -20,27 +20,27 @@ package com.pblabs.engine.debug.log4PBE
        * one.
        * </p>
        */
-      public static function GetLogger(classType:*):Logger
+      public static function getLogger(classType:*):Logger
       {
          // grab from the logger so it can return a cached version if necessary
-         return LogManager.Instance.GetLogger(classType);
+         return LogManager.instance.getLogger(classType);
       }
       
-      internal static function Create(name:String):Logger
+      internal static function create(name:String):Logger
       {
          // this exists so the LogManager can create Loggers, but nothing outside can
          return new Logger(name, new LoggerKey());
       }
       
       /**
-       * Creates a Logger. Use the static GetLogger method to create a Logger rather than
+       * Creates a Logger. Use the static getLogger method to create a Logger rather than
        * using this directly.
        */
       public function Logger(name:String, key:LoggerKey)
       {
          // uncomment this when we move to flex style - right now there's a conflict with the error method
          //if (!key)
-         //   throw new Error("Loggers cannot be created manually! Use the static GetLogger method instead.");
+         //   throw new Error("Loggers cannot be created manually! Use the static getLogger method instead.");
          
          _name = name;
       }
@@ -48,7 +48,7 @@ package com.pblabs.engine.debug.log4PBE
       /**
        * The name of the Logger.
        */
-      public function get Name():String
+      public function get name():String
       {
          return _name;
       }
@@ -60,9 +60,9 @@ package com.pblabs.engine.debug.log4PBE
        * 
        * @return True if the logger is enabled, false otherwise.
        */
-      public function IsEnabledFor(level:String):Boolean
+      public function isEnabledFor(level:String):Boolean
       {
-         return LogManager.Instance.IsLoggerEnabledFor(this, level);
+         return LogManager.instance.isLoggerEnabledFor(this, level);
       }
       
       /**
@@ -72,9 +72,9 @@ package com.pblabs.engine.debug.log4PBE
        * for subsequent arguments. For instance, '%1' would be replaced by the first additional
        * parameter passed to the method, and '%4' would be replaced by the fourth.
        */
-      public function Trace(message:String, ...arguments:Array):void
+      public function trace(message:String, ...arguments:Array):void
       {
-         LogManager.Instance.AddLogMessage("trace", this, message, arguments);
+         LogManager.instance.addLogMessage("trace", this, message, arguments);
       }
       
       /**
@@ -84,9 +84,9 @@ package com.pblabs.engine.debug.log4PBE
        * for subsequent arguments. For instance, '%1' would be replaced by the first additional
        * parameter passed to the method, and '%4' would be replaced by the fourth.
        */
-      public function Debug(message:String, ...arguments:Array):void
+      public function debug(message:String, ...arguments:Array):void
       {
-         LogManager.Instance.AddLogMessage("debug", this, message, arguments);
+         LogManager.instance.addLogMessage("debug", this, message, arguments);
       }
       
       /**
@@ -96,9 +96,9 @@ package com.pblabs.engine.debug.log4PBE
        * for subsequent arguments. For instance, '%1' would be replaced by the first additional
        * parameter passed to the method, and '%4' would be replaced by the fourth.
        */
-      public function Info(message:String, ...arguments:Array):void
+      public function info(message:String, ...arguments:Array):void
       {
-         LogManager.Instance.AddLogMessage("info", this, message, arguments);
+         LogManager.instance.addLogMessage("info", this, message, arguments);
       }
       
       /**
@@ -108,9 +108,9 @@ package com.pblabs.engine.debug.log4PBE
        * for subsequent arguments. For instance, '%1' would be replaced by the first additional
        * parameter passed to the method, and '%4' would be replaced by the fourth.
        */
-      public function Warn(message:String, ...arguments:Array):void
+      public function warn(message:String, ...arguments:Array):void
       {
-         LogManager.Instance.AddLogMessage("warn", this, message, arguments);
+         LogManager.instance.addLogMessage("warn", this, message, arguments);
       }
       
       /**
@@ -120,9 +120,9 @@ package com.pblabs.engine.debug.log4PBE
        * for subsequent arguments. For instance, '%1' would be replaced by the first additional
        * parameter passed to the method, and '%4' would be replaced by the fourth.
        */
-      public function Error(message:String, ...arguments:Array):void
+      public function error(message:String, ...arguments:Array):void
       {
-         LogManager.Instance.AddLogMessage("error", this, message, arguments);
+         LogManager.instance.addLogMessage("error", this, message, arguments);
       }
       
       /**
@@ -132,9 +132,9 @@ package com.pblabs.engine.debug.log4PBE
        * for subsequent arguments. For instance, '%1' would be replaced by the first additional
        * parameter passed to the method, and '%4' would be replaced by the fourth.
        */
-      public function Fatal(message:String, ...arguments:Array):void
+      public function fatal(message:String, ...arguments:Array):void
       {
-         LogManager.Instance.AddLogMessage("fatal", this, message, arguments);
+         LogManager.instance.addLogMessage("fatal", this, message, arguments);
       }
       
       /**
@@ -145,9 +145,9 @@ package com.pblabs.engine.debug.log4PBE
        * for subsequent arguments. For instance, '%1' would be replaced by the first additional
        * parameter passed to the method, and '%4' would be replaced by the fourth.
        */
-      public function Log(level:String, message:String, ...arguments:Array):void
+      public function log(level:String, message:String, ...arguments:Array):void
       {
-         LogManager.Instance.AddLogMessage(level, this, message, arguments);
+         LogManager.instance.addLogMessage(level, this, message, arguments);
       }
       
       private var _name:String;

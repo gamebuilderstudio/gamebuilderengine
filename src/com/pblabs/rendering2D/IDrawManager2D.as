@@ -25,7 +25,7 @@ package com.pblabs.rendering2D
     * co-exist. It provides hooks for both DisplayObjects and BitmapData to be
     * drawn.</p>
     * 
-    * <p>During rendering, each visible IDrawable2D has its OnDraw method called. 
+    * <p>During rendering, each visible IDrawable2D has its onDraw method called. 
     * The IDrawable2D can then inspect the state of the IDrawManager2D and call
     * DrawDisplayObject and/or DrawBitmapData one or more times to render itself.</p>
     * 
@@ -69,12 +69,12 @@ package com.pblabs.rendering2D
       /**
        * Add an item that will always receive an opportunity to render.
        */ 
-      function AddAlwaysDrawnItem(item:IDrawable2D):void;
+      function addAlwaysDrawnItem(item:IDrawable2D):void;
       
       /**
        * Remove an item added by AddAlwaysDrawnItem.
        */ 
-      function RemoveAlwaysDrawnItem(item:IDrawable2D):void;
+      function removeAlwaysDrawnItem(item:IDrawable2D):void;
       
       /**
        * Some renderers need to draw in between everything else in order to 
@@ -89,7 +89,7 @@ package com.pblabs.rendering2D
        * at the beginning and ending of rendering. It can use the LastDrawnItem
        * and NextDrawnItem properties to determine what to draw at each call.
        */ 
-      function AddInterstitialDrawer(item:IDrawable2D):void;
+      function addInterstitialDrawer(item:IDrawable2D):void;
       
       /**
        * Remove an interstitial drawer previously registered with 
@@ -97,7 +97,7 @@ package com.pblabs.rendering2D
        * 
        * @see AddInterstitialDrawer
        */ 
-      function RemoveInterstitialDrawer(item:IDrawable2D):void;
+      function removeInterstitialDrawer(item:IDrawable2D):void;
       
       /**
        * Transform a world position to screen space in pixels. Altitude can be 
@@ -105,7 +105,7 @@ package com.pblabs.rendering2D
        * from this can be passed directly into the x/y properties on a 
        * DisplayObject.
        */ 
-      function TransformWorldToScreen(p:Point, altitude:Number = 0):Point;
+      function transformWorldToScreen(p:Point, altitude:Number = 0):Point;
       
       /**
        * Transform a screen position in pixels into a worldspace coordinate. We
@@ -113,43 +113,43 @@ package com.pblabs.rendering2D
        * reconstruct a Z coordinate. Results can be assumed to have an altitude
        * of zero.
        */
-      function TransformScreenToWorld(p:Point):Point;
+      function transformScreenToWorld(p:Point):Point;
       
       /**
        * During drawing, set to the last drawn item or null if there is none (if
        * this is the first rendered object or first interstitial call).
        */ 
-      function get LastDrawnItem():IDrawable2D;
+      function get lastDrawnItem():IDrawable2D;
       
       /**
        * During drawing, set to the item that will be drawn next, or null if we
        * are at the end of the draw list.
        */ 
-      function get NextDrawnItem():IDrawable2D;
+      function get nextDrawnItem():IDrawable2D;
       
       /**
-       * Called from IDrawable2D.OnDraw to render a DisplayObject to the screen.
+       * Called from IDrawable2D.onDraw to render a DisplayObject to the screen.
        * 
        * Uses the transform on the DisplayObject for rendering.
        * 
        * May be called multiple times. 
        */ 
-      function DrawDisplayObject(object:DisplayObject):void;
+      function drawDisplayObject(object:DisplayObject):void;
       
       /**
-       * Called from IDrawable2D.OnDraw to render a BitmapData to the screen.
+       * Called from IDrawable2D.onDraw to render a BitmapData to the screen.
        * 
        * The BitmapData is placed via the passed matrix.
        * 
        * May be called multiple times.
        */
-      function DrawBitmapData(bd:BitmapData, m:Matrix):void;
+      function drawBitmapData(bd:BitmapData, m:Matrix):void;
       
       /**
        * Get the current results of rendering as a BitmapData. Useful for post
        * processing effects (like glow/blur/motion trails).
        */ 
-      function GetBackBuffer():BitmapData;
+      function getBackBuffer():BitmapData;
       
       /**
        * Fast path for direct pixel copying (only works when drawing to a 
@@ -158,12 +158,12 @@ package com.pblabs.rendering2D
        * @param bitmapData Source image to copy.
        * @param offset     Location on screen to copy to.
        */
-      function CopyPixels(bitmapData:BitmapData, offset:Point):void
+      function copyPixels(bitmapData:BitmapData, offset:Point):void
 
       /**
        * Sort a limited set of objects into draw order, so that we can match
        * them when doing objects under checks. Does sort in-place in array.
        */
-      function SortSpatials(items:Array):void;
+      function sortSpatials(items:Array):void;
    }
 }

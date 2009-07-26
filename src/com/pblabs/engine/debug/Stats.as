@@ -36,7 +36,7 @@ package com.pblabs.engine.debug
     public class Stats extends UIComponent
     {
 
-        public function Stats():void
+        public function stats():void
         {
             addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
         }

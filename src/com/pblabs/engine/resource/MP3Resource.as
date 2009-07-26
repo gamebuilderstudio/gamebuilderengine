@@ -26,38 +26,38 @@ package com.pblabs.engine.resource
        */
       public var SoundObject:Sound = null;
       
-      public override function Load(filename:String):void
+      public override function load(filename:String):void
       {
          _filename = filename;
          
          var request:URLRequest = new URLRequest(filename);
          _loadingSound = new Sound();
-         _loadingSound.addEventListener(Event.COMPLETE, _OnSoundLoadComplete);
-         _loadingSound.addEventListener(IOErrorEvent.IO_ERROR, _OnSoundDownloadError);
+         _loadingSound.addEventListener(Event.COMPLETE, onSoundLoadComplete);
+         _loadingSound.addEventListener(IOErrorEvent.IO_ERROR, onSoundDownloadError);
          _loadingSound.load(request);
       }
       
-      private function _OnSoundLoadComplete(event:Event):void
+      private function onSoundLoadComplete(event:Event):void
       {
          SoundObject = _loadingSound;
-         _OnLoadComplete();
+         onLoadComplete();
       }
       
-      private function _OnSoundDownloadError(event:IOErrorEvent):void
+      private function onSoundDownloadError(event:IOErrorEvent):void
       {
-         _OnFailed(event.text);
+         onFailed(event.text);
       }
       
-      public override function Initialize(d:*):void
+      public override function initialize(d:*):void
       {
          SoundObject = d;
-         _OnLoadComplete();
+         onLoadComplete();
       }
       
       /**
        * @inheritDoc
        */
-      protected override function _OnContentReady(content:*):Boolean 
+      protected override function onContentReady(content:*):Boolean 
       {
          return SoundObject != null;
       }

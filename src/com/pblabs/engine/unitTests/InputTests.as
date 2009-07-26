@@ -20,43 +20,43 @@ package com.pblabs.engine.unitTests
       public function testInputMap():void
       {
          var inputMap:InputMap = new InputMap();
-         inputMap.MapKeyToAction(InputKey.SPACE, "Space");
-         inputMap.MapKeyToAction(InputKey.MOUSE_BUTTON, "MouseButton");
-         inputMap.MapKeyToAction(InputKey.MOUSE_X, "MouseX");
+         inputMap.mapKeyToAction(InputKey.SPACE, "Space");
+         inputMap.mapKeyToAction(InputKey.MOUSE_BUTTON, "MouseButton");
+         inputMap.mapKeyToAction(InputKey.MOUSE_X, "MouseX");
          
-         inputMap.MapActionToHandler("Space", _OnSpace);
-         inputMap.MapActionToHandler("MouseButton", _OnMouseButton);
-         inputMap.MapActionToHandler("MouseX", _OnMouseX);
+         inputMap.mapActionToHandler("Space", onSpace);
+         inputMap.mapActionToHandler("MouseButton", onMouseButton);
+         inputMap.mapActionToHandler("MouseX", onMouseX);
          
-         InputManager.Instance.SimulateKeyDown(InputKey.SPACE.KeyCode);
-         _ValidateInputs(1, 0, false);
-         InputManager.Instance.SimulateKeyUp(InputKey.SPACE.KeyCode);
-         _ValidateInputs(0, 0, false);
+         InputManager.instance.simulateKeyDown(InputKey.SPACE.keyCode);
+         validateInputs(1, 0, false);
+         InputManager.instance.simulateKeyUp(InputKey.SPACE.keyCode);
+         validateInputs(0, 0, false);
          
-         InputManager.Instance.SimulateMouseDown();
-         InputManager.Instance.SimulateMouseMove();
-         InputManager.Instance.SimulateMouseMove();
-         _ValidateInputs(0, 1, true);
-         InputManager.Instance.SimulateMouseUp();
-         _ValidateInputs(0, 0, true);
+         InputManager.instance.simulateMouseDown();
+         InputManager.instance.simulateMouseMove();
+         InputManager.instance.simulateMouseMove();
+         validateInputs(0, 1, true);
+         InputManager.instance.simulateMouseUp();
+         validateInputs(0, 0, true);
       }
       
-      private function _OnSpace(value:Number):void
+      private function onSpace(value:Number):void
       {
          _spacePressed = value;
       }
       
-      private function _OnMouseButton(value:Number):void
+      private function onMouseButton(value:Number):void
       {
          _mousePressed = value;
       }
       
-      private function _OnMouseX(value:Number):void
+      private function onMouseX(value:Number):void
       {
          _mouseMoved = true;
       }
       
-      private function _ValidateInputs(space:Number, mouseButton:Number, mouseX:Boolean):void
+      private function validateInputs(space:Number, mouseButton:Number, mouseX:Boolean):void
       {
          assertEquals(_spacePressed, space);
          assertEquals(_mousePressed, mouseButton);

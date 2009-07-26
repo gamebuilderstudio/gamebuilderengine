@@ -19,7 +19,7 @@ package com.pblabs.engine.unitTests
     {
       public function testNumericalStability():void
       {
-         Logger.PrintHeader(null, "Running Numeric Stability Test");
+         Logger.printHeader(null, "Running Numeric Stability Test");
          
          var tickDuration:Number = 1.0 / 32.0;
          var amounts:Array = [0, 0, 0, 0];
@@ -33,14 +33,14 @@ package com.pblabs.engine.unitTests
          for (var k:int = 0; k < 4; k++)
             assertEquals(2.0, amounts[k]);
             
-         Logger.PrintFooter(null, "");
+         Logger.printFooter(null, "");
       }
       
       public function testMathDiscontinuities():void
       {
-         Logger.PrintHeader(null, "Running Math Continuity Test");
+         Logger.printHeader(null, "Running Math Continuity Test");
          assertEquals(1.0 / 0.0, Number.POSITIVE_INFINITY);
-         Logger.PrintFooter(null, "");
+         Logger.printFooter(null, "");
       }
     }
 }

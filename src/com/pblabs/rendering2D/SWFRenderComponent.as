@@ -9,7 +9,7 @@ package com.pblabs.rendering2D
    public class SWFRenderComponent extends BaseRenderComponent
    {
       public var FrameRate:Number = 25;
-      public function set ScaleFactor(value:Number):void
+      public function set scaleFactor(value:Number):void
       {
          _Matrix = new Matrix();
          _Matrix.scale(value, value);
@@ -19,34 +19,34 @@ package com.pblabs.rendering2D
        * Subclasses must implement this method; it needs to return the embedded
        * SWF's class.
        */
-      protected function _GetClipInstance():MovieClip
+      protected function _GetClipinstance():MovieClip
       {
-         throw new Error("SWFRenderComponent must be subclassed and _GetClipInstance implemented to return a MovieClip from a SWF.");
+         throw new Error("SWFRenderComponent must be subclassed and _GetClipinstance implemented to return a MovieClip from a SWF.");
       }
       
-      public override function OnDraw(manager:IDrawManager2D):void
+      public override function onDraw(manager:IDrawManager2D):void
       {
          if(!_Clip)
-            _Clip = _GetClipInstance();
+            _Clip = _GetClipinstance();
          
          // Position and draw.
-         var screenPos:Point = manager.TransformWorldToScreen(RenderPosition);
+         var screenPos:Point = manager.transformWorldToScreen(renderPosition);
          _Matrix.tx = screenPos.x;
          _Matrix.ty = screenPos.y;
          _Clip.transform.matrix = _Matrix;
 
-         manager.DrawDisplayObject(_Clip);
+         manager.drawDisplayObject(_Clip);
          
          // If we're on the last frame, self-destruct.
          if(_ClipFrame > _Clip.totalFrames)
          {
-            //Logger.Print(this, "Finished playback, destroying self.");
-            Owner.Destroy();
+            //Logger.print(this, "Finished playback, destroying self.");
+            owner.destroy();
             return;
          }
 
          // Update to next frame when appropriate.
-         if(ProcessManager.Instance.VirtualTime - _ClipLastUpdate > 1000/FrameRate)
+         if(ProcessManager.instance.virtualTime - _ClipLastUpdate > 1000/FrameRate)
          {
             _ClipFrame++;
             _Clip.gotoAndStop(_ClipFrame);
@@ -54,7 +54,7 @@ package com.pblabs.rendering2D
             // Update child clips as well.
             _UpdateChildClips(_Clip);
             
-            _ClipLastUpdate = ProcessManager.Instance.VirtualTime;
+            _ClipLastUpdate = ProcessManager.instance.virtualTime;
          }
       }
       

@@ -27,18 +27,18 @@ package com.pblabs.engine.components
       /**
        * @inheritDoc
        */
-      public function OnFrame(elapsed:Number):void
+      public function onFrame(elapsed:Number):void
       {
       }
       
-      protected override function _OnAdd():void
+      protected override function onAdd():void
       {
-         ProcessManager.Instance.AddAnimatedObject(this, UpdatePriority);
+         ProcessManager.instance.addAnimatedObject(this, UpdatePriority);
       }
       
-      protected override function _OnRemove():void
+      protected override function onRemove():void
       {
-         ProcessManager.Instance.RemoveAnimatedObject(this);
+         ProcessManager.instance.removeAnimatedObject(this);
       }
    }
 }

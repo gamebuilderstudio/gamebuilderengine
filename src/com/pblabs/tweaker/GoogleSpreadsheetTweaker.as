@@ -67,7 +67,7 @@ package com.pblabs.tweaker
       [TypeHint(type="com.pblabs.tweaker.TweakerMapGroup")]
       public var Groups:Array = new Array();
       
-      protected override function _OnAdd():void
+      protected override function onAdd():void
       {
          // Process the groups.
          for each(var tmg:TweakerMapGroup in Groups)
@@ -82,7 +82,7 @@ package com.pblabs.tweaker
                for each(var tmgp:TweakerMapEntry in tmg.Entries)
                {
                   // Concatenate the property reference.
-                  var groupProp:String = tmgoffset.Property.Property + tmgp.Property.Property;
+                  var groupProp:String = tmgoffset.property.property + tmgp.property.property;
                   
                   // Add the cell references.
                   var cellX:String = String.fromCharCode(baseX + (tmgp.Cell.charCodeAt(0) - "A".charCodeAt(0)) + "A".charCodeAt(0));
@@ -92,7 +92,7 @@ package com.pblabs.tweaker
                   // Note the new entry.
                   var newEntry:TweakerMapEntry = new TweakerMapEntry();
                   newEntry.Cell = cell;
-                  newEntry.Property = new PropertyReference(groupProp);
+                  newEntry.property = new PropertyReference(groupProp);
                   
                   //trace(" made property " + newEntry);
                   
@@ -108,18 +108,18 @@ package com.pblabs.tweaker
          ur.data["_url"] = SpreadsheetUrl;
 
          var loader:URLLoader = new URLLoader();
-         loader.addEventListener(Event.COMPLETE, _OnLoadComplete);
-         loader.addEventListener(IOErrorEvent.IO_ERROR, _OnLoadFail);
-         loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, _OnLoadFail);
+         loader.addEventListener(Event.COMPLETE, onLoadComplete);
+         loader.addEventListener(IOErrorEvent.IO_ERROR, onLoadFail);
+         loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onLoadFail);
          loader.addEventListener(HTTPStatusEvent.HTTP_STATUS, 
-               function(e:HTTPStatusEvent):void { Logger.Print(this, "Got status back: " + e.toString()); }
+               function(e:HTTPStatusEvent):void { Logger.print(this, "Got status back: " + e.toString()); }
                );
          loader.load(ur);
          
-         Logger.Print(this, "Requesting spreadsheet " + SpreadsheetUrl);
+         Logger.print(this, "Requesting spreadsheet " + SpreadsheetUrl);
       }
 
-      private function _OnLoadComplete(e:Event):void
+      private function onLoadComplete(e:Event):void
       {
          // Convert bytes to string to XML.
          var tweakXML:XML = new XML((e.target as URLLoader).data);
@@ -133,7 +133,7 @@ package com.pblabs.tweaker
         var res:XMLList = tweakXML.xmlns::entry;
         for each(var entryXML:XML in res)
         {
-           //Logger.Print(this, "Cell " + entryXML.xmlns::title.toString() + " = " + entryXML.xmlns::content.toString());
+           //Logger.print(this, "Cell " + entryXML.xmlns::title.toString() + " = " + entryXML.xmlns::content.toString());
            cellDictionary[entryXML.xmlns::title.toString()] = entryXML.xmlns::content.toString();
         }
 
@@ -144,22 +144,22 @@ package com.pblabs.tweaker
            if(newValue == "NA" || newValue == "")
               continue;
 
-           //Logger.Print(this, "Setting property " + configItem.Property + " to " + newValue +  " based on " + configItem.Cell);
-           Owner.SetProperty(configItem.Property, newValue);
-           if(!Owner.DoesPropertyExist(configItem.Property))
+           //Logger.print(this, "Setting property " + configItem.Property + " to " + newValue +  " based on " + configItem.Cell);
+           owner.setProperty(configItem.property, newValue);
+           if(!owner.doesPropertyExist(configItem.property))
            {
-              Logger.Print(this, "   - failed to set " + configItem.Property.Property);
-              Owner.SetProperty(configItem.Property, newValue);
+              Logger.print(this, "   - failed to set " + configItem.property.property);
+              owner.setProperty(configItem.property, newValue);
            }
         }
 
         // Give some status.
-        Logger.Print(this, "Updated " + Config.length + " properties from " + SpreadsheetUrl);
+        Logger.print(this, "Updated " + Config.length + " properties from " + SpreadsheetUrl);
       }
 
-      private function _OnLoadFail(e:Event):void
+      private function onLoadFail(e:Event):void
       {
-         Logger.Print(this, "Failed to load google spreadsheet tweak url: " + e.toString());
+         Logger.print(this, "Failed to load google spreadsheet tweak url: " + e.toString());
       }
    }
 }

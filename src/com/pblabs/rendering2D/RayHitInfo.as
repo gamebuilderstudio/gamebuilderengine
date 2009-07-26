@@ -41,7 +41,7 @@ package com.pblabs.rendering2D
        * Copy state from another RayHitInfo, overwriting the information in this
        * RayHitInfo.
        */
-      public function CopyFrom(other:RayHitInfo):void
+      public function copyFrom(other:RayHitInfo):void
       {
          Time = other.Time;
          

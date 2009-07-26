@@ -27,8 +27,8 @@ package com.pblabs.box2D
          if (!shape1Dictionary[spatial2])
             shape1Dictionary[spatial2] = 0;
          
-         spatial1.Owner.EventDispatcher.dispatchEvent(new CollisionEvent(CollisionEvent.COLLISION_EVENT, point));
-         spatial2.Owner.EventDispatcher.dispatchEvent(new CollisionEvent(CollisionEvent.COLLISION_EVENT, point));
+         spatial1.owner.eventDispatcher.dispatchEvent(new CollisionEvent(CollisionEvent.COLLISION_EVENT, point));
+         spatial2.owner.eventDispatcher.dispatchEvent(new CollisionEvent(CollisionEvent.COLLISION_EVENT, point));
          
          shape1Dictionary[spatial1]++;
          shape1Dictionary[spatial2]++;
@@ -46,8 +46,8 @@ package com.pblabs.box2D
          shape1Dictionary[spatial1]--;
          shape1Dictionary[spatial2]--;
          
-         spatial1.Owner.EventDispatcher.dispatchEvent(new CollisionEvent(CollisionEvent.COLLISION_STOPPED_EVENT, point));
-         spatial2.Owner.EventDispatcher.dispatchEvent(new CollisionEvent(CollisionEvent.COLLISION_STOPPED_EVENT, point));
+         spatial1.owner.eventDispatcher.dispatchEvent(new CollisionEvent(CollisionEvent.COLLISION_STOPPED_EVENT, point));
+         spatial2.owner.eventDispatcher.dispatchEvent(new CollisionEvent(CollisionEvent.COLLISION_STOPPED_EVENT, point));
       }
       
       public override function Result(point:b2ContactResult):void

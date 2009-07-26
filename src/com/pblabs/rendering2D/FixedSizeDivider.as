@@ -32,10 +32,10 @@ package com.pblabs.rendering2D
        * @inheritDoc
        */
       [EditorData(ignore="true")]
-      public function set OwningSheet(value:SpriteSheetComponent):void
+      public function set owningSheet(value:SpriteSheetComponent):void
       {
          if(_owningSheet)
-            Logger.PrintWarning(this, "set OwningSheet", "Already assigned to a sheet, reassigning may result in unexpected behavior.");
+            Logger.printWarning(this, "set OwningSheet", "Already assigned to a sheet, reassigning may result in unexpected behavior.");
          _owningSheet = value;
       }
       
@@ -44,24 +44,24 @@ package com.pblabs.rendering2D
       /**
        * @inheritDoc
        */
-      public function get FrameCount():int
+      public function get frameCount():int
       {
          if (!_owningSheet)
             throw new Error("OwningSheet must be set before calling this!");
          
-         return Math.floor(_owningSheet.ImageData.width / Width) * Math.floor(_owningSheet.ImageData.height / Height);
+         return Math.floor(_owningSheet.imageData.width / Width) * Math.floor(_owningSheet.imageData.height / Height);
       }
       
       /**
        * @inheritDoc
        */
-      public function GetFrameArea(index:int):Rectangle
+      public function getFrameArea(index:int):Rectangle
       {
          if (!_owningSheet)
             throw new Error("OwningSheet must be set before calling this!");
 
-         var x:int = index % Math.floor(_owningSheet.ImageData.width / Width);
-         var y:int = Math.floor(index / Math.floor(_owningSheet.ImageData.width / Width));
+         var x:int = index % Math.floor(_owningSheet.imageData.width / Width);
+         var y:int = Math.floor(index / Math.floor(_owningSheet.imageData.width / Width));
          
          return new Rectangle(x * Width, y * Height, Width, Height);
       }
@@ -69,7 +69,7 @@ package com.pblabs.rendering2D
       /**
        * @inheritDoc
        */
-      public function Clone():ISpriteSheetDivider
+      public function clone():ISpriteSheetDivider
       {
          var c:FixedSizeDivider = new FixedSizeDivider();
          c.Width = Width;

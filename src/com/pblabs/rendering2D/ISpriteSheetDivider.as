@@ -18,7 +18,7 @@ package com.pblabs.rendering2D
       /**
        * How many frames are in this sprite sheet?
        */ 
-      function get FrameCount():int;
+      function get frameCount():int;
       
       /**
        * Many times you want to infer information about frames based on data
@@ -26,18 +26,18 @@ package com.pblabs.rendering2D
        * the sprite sheet passes itself to OwningSheet so you can store it and
        * get information from it.
        */
-      function set OwningSheet(value:SpriteSheetComponent):void;
+      function set owningSheet(value:SpriteSheetComponent):void;
       
       /**
        * Return the size of a frame, given the desired index and the source
        * image's dimensions.
        */
-      function GetFrameArea(index:int):Rectangle;
+      function getFrameArea(index:int):Rectangle;
       
       /**
        * The MultiSpriteSheetHelper has to be able to clone dividers. So we
        * have a Clone method.
        */
-      function Clone():ISpriteSheetDivider;
+      function clone():ISpriteSheetDivider;
    }
 }

@@ -45,7 +45,7 @@ package com.pblabs.animation
       /**
        * @inheritDoc
        */
-      public override function get TypeMap():Dictionary
+      public override function get typeMap():Dictionary
       {
          if (!_typeMap)
          {
@@ -62,7 +62,7 @@ package com.pblabs.animation
       /**
        * @inheritDoc
        */
-      public override function get DefaultType():Enumerable
+      public override function get defaultType():Enumerable
       {
          return NoAnimation;
       }

@@ -25,94 +25,94 @@ package com.pblabs.components.stateMachine
        */
       public var DefaultState:String = null;
       
-      private var _CurrentState:IState = null;
+      private var _currentState:IState = null;
       private var _PreviousState:IState = null;
       private var _SetNewState:Boolean = false;
       private var _EnteredStateTime:Number = 0;
 
-      private var _PropertyBag:IPropertyBag = null;
+      private var _propertyBag:IPropertyBag = null;
 
       /**
        * Virtual time at which we entered the state.
        */
-      public function get EnteredStateTime():Number
+      public function get enteredStateTime():Number
       {
          return _EnteredStateTime;
       }
       
-      public function get PropertyBag():IPropertyBag
+      public function get propertyBag():IPropertyBag
       {
-         return _PropertyBag;
+         return _propertyBag;
       }
       
-      public function set PropertyBag(value:IPropertyBag):void
+      public function set propertyBag(value:IPropertyBag):void
       {
-         _PropertyBag = value;
+         _propertyBag = value;
       }
       
-      public function Tick():void
+      public function tick():void
       {
          _SetNewState = false;
          
          // DefaultState - we get it if no state is set.
-         if(!_CurrentState)
-            SetCurrentState(DefaultState);
+         if(!_currentState)
+            setCurrentState(DefaultState);
          
-         if(_CurrentState)
-            _CurrentState.Tick(this);
+         if(_currentState)
+            _currentState.tick(this);
          
          // If didn't set a new state, it counts as transitioning to the
          // current state. This updates prev/current state so we can tell
          // if we just transitioned into our current state.
-         if(_SetNewState && _CurrentState)
+         if(_SetNewState && _currentState)
          {
-             _PreviousState = _CurrentState;
+             _PreviousState = _currentState;
          }
          
-         //if(_PreviousState != _CurrentState)
-         //   Logger.Print(this, "Transition: " + GetStateName(_PreviousState) + " -> " + GetStateName(_CurrentState));              
+         //if(_PreviousState != _currentState)
+         //   Logger.print(this, "Transition: " + GetStateName(_PreviousState) + " -> " + GetStateName(_currentState));              
       }
       
-      public function GetCurrentState():IState
+      public function getCurrentState():IState
       {
          // DefaultState - we get it if no state is set.
-         if(!_CurrentState)
-            SetCurrentState(DefaultState);
+         if(!_currentState)
+            setCurrentState(DefaultState);
 
-         return _CurrentState;
+         return _currentState;
       }
       
-      public function get CurrentState():IState
+      public function get currentState():IState
       {
-         return GetCurrentState();
+         return getCurrentState();
       }
       
-      public function get CurrentStateName():String
+      public function get currentStateName():String
       {
-          return GetStateName(GetCurrentState());
+          return getStateName(getCurrentState());
       }
       
-      public function set CurrentStateName(value:String):void
+      public function set currentStateName(value:String):void
       {
-         SetCurrentState(value);
+         setCurrentState(value);
       }
       
-      public function GetPreviousState():IState
+      public function getPreviousState():IState
       {
          return _PreviousState;
       }
       
-      public function AddState(name:String, state:IState):void
+      public function addState(name:String, state:IState):void
       {
           States[name] = state;
       }
       
-      public function GetState(name:String):IState
+      public function getState(name:String):IState
       {
          return States[name] as IState;
       }
 
-      public function GetStateName(state:IState):String
+      public function getStateName(state:IState):String
       {
          for(var name:String in States)
             if(States[name] == state)
@@ -121,17 +121,17 @@ package com.pblabs.components.stateMachine
          return null;
       }
 
-      public function SetCurrentState(name:String):Boolean
+      public function setCurrentState(name:String):Boolean
       {
-         var newState:IState = GetState(name);
+         var newState:IState = getState(name);
          if(!newState)
             return false;
                   
-         var oldState:IState = _CurrentState;
+         var oldState:IState = _currentState;
          _SetNewState = true;
          
-         _PreviousState = _CurrentState;
-         _CurrentState = newState;
+         _PreviousState = _currentState;
+         _currentState = newState;
          
          // Do the right callbacks if we are changing state.
          //if(newState != oldState)
@@ -139,24 +139,24 @@ package com.pblabs.components.stateMachine
          {
             // Old state gets notified it is changing out.
             if(oldState)
-              oldState.Exit(this);
+              oldState.exit(this);
              
             // New state finds out it is coming in.    
-            newState.Enter(this);
+            newState.enter(this);
             
             // Note the time at which we entered this state.             
-            _EnteredStateTime = ProcessManager.Instance.VirtualTime;
+            _EnteredStateTime = ProcessManager.instance.virtualTime;
              
             // Fire a transition event, if we have a dispatcher.
-            if(_PropertyBag)
+            if(_propertyBag)
             {
                var te:TransitionEvent = new TransitionEvent(TransitionEvent.TRANSITION);
                te.oldState = oldState;
-               te.oldStateName = GetStateName(oldState);
+               te.oldStateName = getStateName(oldState);
                te.newState = newState;
-               te.newStateName = GetStateName(newState);
+               te.newStateName = getStateName(newState);
                      
-               _PropertyBag.EventDispatcher.dispatchEvent(te);
+               _propertyBag.eventDispatcher.dispatchEvent(te);
             }
          }
                   

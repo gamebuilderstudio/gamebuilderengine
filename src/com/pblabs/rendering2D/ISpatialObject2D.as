@@ -23,17 +23,17 @@ package com.pblabs.rendering2D
       /**
        * Axis aligned object bounds in world space.
        */ 
-      function get WorldExtents():Rectangle;
+      function get worldExtents():Rectangle;
       
       /**
        * This object's collision flags.
        */ 
-      function get ObjectMask():ObjectType;
+      function get objectMask():ObjectType;
       
       /**
        * Perform a ray cast against this object.
        */ 
-      function CastRay(start:Point, end:Point, flags:ObjectType, result:RayHitInfo):Boolean;
+      function castRay(start:Point, end:Point, flags:ObjectType, result:RayHitInfo):Boolean;
       
       /**
        * Return true if the specified point is occupied by this object, used for
@@ -43,7 +43,7 @@ package com.pblabs.rendering2D
        * @param scene If we want to have the results line up with the view, we
        *              need access to the scene we're doing the check from.
        */
-      function PointOccupied(pos:Point, scene:IDrawManager2D):Boolean;
+      function pointOccupied(pos:Point, scene:IDrawManager2D):Boolean;
    }
    
 }

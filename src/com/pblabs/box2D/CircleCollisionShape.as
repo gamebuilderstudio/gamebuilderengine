@@ -17,36 +17,36 @@ package com.pblabs.box2D
    public class CircleCollisionShape extends CollisionShape
    {
       [EditorData(defaultValue="1")]
-      public function get Radius():Number
+      public function get radius():Number
       {
          return _radius;
       }
       
-      public function set Radius(value:Number):void
+      public function set radius(value:Number):void
       {
          _radius = value;
          
          if (_parent)
-            _parent.BuildCollisionShapes();
+            _parent.buildCollisionShapes();
       }
       
-      public function get Offset():Point
+      public function get offset():Point
       {
          return _offset;
       }
       
-      public function set Offset(value:Point):void
+      public function set offset(value:Point):void
       {
          _offset = value;
          
          if (_parent)
-            _parent.BuildCollisionShapes();
+            _parent.buildCollisionShapes();
       }
       
       protected override function _CreateShape():b2ShapeDef
       {
-         var halfSize:Point = new Point(_parent.Size.x * 0.5, _parent.Size.y * 0.5);
-         var scale:Number = _parent.Manager.InverseScale;
+         var halfSize:Point = new Point(_parent.size.x * 0.5, _parent.size.y * 0.5);
+         var scale:Number = _parent.manager.inverseScale;
          
          var shape:b2CircleDef = new b2CircleDef();
          

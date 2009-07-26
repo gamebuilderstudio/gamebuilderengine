@@ -23,7 +23,7 @@ package com.pblabs.rendering2D
        * Once the resource has succesfully loaded, this contains a bitmap representing
        * the loaded image.
        */
-      public function get Image():Bitmap
+      public function get image():Bitmap
       {
          return _image;
       }
@@ -31,7 +31,7 @@ package com.pblabs.rendering2D
       /**
        * @inheritDoc
        */
-      override protected function _OnContentReady(content:*):Boolean 
+      override protected function onContentReady(content:*):Boolean 
       {
          _image = content as Bitmap;
          return _image != null;

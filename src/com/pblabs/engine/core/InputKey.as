@@ -129,7 +129,7 @@ package com.pblabs.engine.core
       /**
        * A dictionary mapping the string names of all the keys to the InputKey they represent.
        */
-      public static function get StaticTypeMap():Dictionary
+      public static function get staticTypeMap():Dictionary
       {
          if (!_typeMap)
          {
@@ -303,12 +303,12 @@ package com.pblabs.engine.core
       /**
        * Converts a key code to the string that represents it.
        */
-      public static function CodeToString(value:int):String
+      public static function codeToString(value:int):String
       {
-      	 var tm:Dictionary = StaticTypeMap;
+      	 var tm:Dictionary = staticTypeMap;
          for (var name:String in tm)
          {
-            if (StaticTypeMap[name.toUpperCase()].KeyCode == value)
+            if (staticTypeMap[name.toUpperCase()].keyCode == value)
                return name.toUpperCase();
          }
          
@@ -318,20 +318,20 @@ package com.pblabs.engine.core
       /**
        * Converts the name of a key to the keycode it represents.
        */
-      public static function StringToCode(value:String):int
+      public static function stringToCode(value:String):int
       {
-         if (!StaticTypeMap[value.toUpperCase()])
+         if (!staticTypeMap[value.toUpperCase()])
             return 0;
          
-         return StaticTypeMap[value.toUpperCase()].KeyCode;
+         return staticTypeMap[value.toUpperCase()].keyCode;
       }
       
       /**
        * Converts the name of a key to the InputKey it represents.
        */
-      public static function StringToKey(value:String):InputKey
+      public static function stringToKey(value:String):InputKey
       {
-         return StaticTypeMap[value.toUpperCase()];
+         return staticTypeMap[value.toUpperCase()];
       }
       
       private static var _typeMap:Dictionary = null;
@@ -339,7 +339,7 @@ package com.pblabs.engine.core
       /**
        * The key code that this wraps.
        */
-      public function get KeyCode():int
+      public function get keyCode():int
       {
          return _keyCode;
       }
@@ -349,12 +349,12 @@ package com.pblabs.engine.core
          _keyCode = keyCode;
       }
       
-      public override function get TypeMap():Dictionary
+      public override function get typeMap():Dictionary
       {
-         return StaticTypeMap;
+         return staticTypeMap;
       }
       
-      public override function get DefaultType():Enumerable
+      public override function get defaultType():Enumerable
       {
          return INVALID;
       }

@@ -28,10 +28,10 @@ package com.pblabs.engine.serialization
        * @param typeName The name of the type the specified function should handle.
        * @param instantiator The function that instantiates the specified type.
        */
-      public static function RegisterInstantiator(typeName:String, instantiator:Function):void
+      public static function registerInstantiator(typeName:String, instantiator:Function):void
       {
          if (_instantiators[typeName])
-            Logger.PrintWarning("TypeUtility", "RegisterInstantiator", "An instantiator for " + typeName + " has already been registered. It will be replaced.");
+            Logger.printWarning("TypeUtility", "RegisterInstantiator", "An instantiator for " + typeName + " has already been registered. It will be replaced.");
          
          _instantiators[typeName] = instantiator;
       }
@@ -44,7 +44,7 @@ package com.pblabs.engine.serialization
        * 
        * @return The name of the specified object's type.
        */
-      public static function GetObjectClassName(object:*):String
+      public static function getObjectClassName(object:*):String
       {
          return flash.utils.getQualifiedClassName(object);
       }
@@ -56,7 +56,7 @@ package com.pblabs.engine.serialization
        * 
        * @return The Class object of the specified class, or null if wasn't found.
        */
-      public static function GetClassFromName(className:String):Class
+      public static function getClassFromName(className:String):Class
       {
          return getDefinitionByName(className) as Class;
       }
@@ -68,7 +68,7 @@ package com.pblabs.engine.serialization
        * 
        * @return An instance of the class, or null if instantiation failed.
        */
-      public static function Instantiate(className:String):*
+      public static function instantiate(className:String):*
       {
          // Deal with strings explicitly as they are a primitive.
          if (className == "String")
@@ -85,7 +85,7 @@ package com.pblabs.engine.serialization
          }
          catch (e:Error)
          {
-            Logger.PrintWarning(null, "Instantiate", "Failed to instantiate " + className + " due to " + e.toString());
+            Logger.printWarning(null, "instantiate", "Failed to instantiate " + className + " due to " + e.toString());
          }
          
          // If we get here, couldn't new it.
@@ -101,9 +101,9 @@ package com.pblabs.engine.serialization
        * @return The fully qualified name of the type of the specified field, or
        * null if the field wasn't found.
        */
-      public static function GetFieldType(object:*, field:String):String
+      public static function getFieldType(object:*, field:String):String
       {
-         var typeXML:XML = GetTypeDescription(object);
+         var typeXML:XML = getTypeDescription(object);
          
          // Look for a matching accessor.
          for each(var property:XML in typeXML.child("accessor"))
@@ -129,24 +129,24 @@ package com.pblabs.engine.serialization
        * 
        * @return True if the object is dynamic, false otherwise.
        */
-      public static function IsDynamic(object:*):Boolean
+      public static function isDynamic(object:*):Boolean
       {
            if (object is Class)
            {
-              Logger.PrintError(object, "IsDynamic", "The object is a Class type, which is always dynamic");
+              Logger.printError(object, "isDynamic", "The object is a Class type, which is always dynamic");
               return true;
            }
    
-           var typeXml:XML = GetTypeDescription(object);
+           var typeXml:XML = getTypeDescription(object);
            return typeXml.@isDynamic == "true";
       }
       
       /**
        * Determine the type, specified by metadata, for a container class like an Array.
        */
-      public static function GetTypeHint(object:*, field:String):String
+      public static function getTypeHint(object:*, field:String):String
       {
-         var description:XML = GetTypeDescription(object);
+         var description:XML = getTypeDescription(object);
          if (!description)
             return null;
          
@@ -180,9 +180,9 @@ package com.pblabs.engine.serialization
        * 
        * @return The xml description of the object.
        */
-      public static function GetTypeDescription(object:*):XML
+      public static function getTypeDescription(object:*):XML
       {
-         var className:String = GetObjectClassName(object);
+         var className:String = getObjectClassName(object);
          if (!_typeDescriptions[className])
             _typeDescriptions[className] = describeType(object);
             
@@ -198,7 +198,7 @@ package com.pblabs.engine.serialization
        * 
        * @return The xml description of the class.
        */
-      public static function GetClassDescription(className:String):XML
+      public static function getClassDescription(className:String):XML
       {
          if (!_typeDescriptions[className])
          {

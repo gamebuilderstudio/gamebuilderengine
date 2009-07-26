@@ -24,7 +24,7 @@ package com.pblabs.engine.entity
       /**
        * @inheritDoc
        */
-      public function get Owner():IEntity
+      public function get owner():IEntity
       {
          return _owner;
       }
@@ -32,7 +32,7 @@ package com.pblabs.engine.entity
       /**
        * @inheritDoc
        */
-      public function get Name():String
+      public function get name():String
       {
          return _name;
       }
@@ -40,7 +40,7 @@ package com.pblabs.engine.entity
       /**
        * @inheritDoc
        */
-      public function get IsRegistered():Boolean
+      public function get isRegistered():Boolean
       {
          return _owner != null;
       }
@@ -48,25 +48,25 @@ package com.pblabs.engine.entity
       /**
        * @inheritDoc
        */
-      public function Register(owner:IEntity, name:String):void
+      public function register(owner:IEntity, name:String):void
       {
-         if(IsRegistered)
+         if(isRegistered)
             throw new Error("Trying to register an already-registered component!");
             
          _name = name;
          _owner = owner;
-         _OnAdd();
+         onAdd();
       }
       
       /**
        * @inheritDoc
        */
-      public function Unregister():void
+      public function unregister():void
       {
-         if(!IsRegistered)
+         if(!isRegistered)
             throw new Error("Trying to unregister an unregistered component!");
 
-         _OnRemove();
+         onRemove();
          _owner = null;
          _name = null;
       }
@@ -74,28 +74,28 @@ package com.pblabs.engine.entity
       /**
        * @inheritDoc
        */
-      public function Reset():void
+      public function reset():void
       {
-         _OnReset();
+         onReset();
       }
       
       /**
        * This is called when the component is added to an entity. Any initialization,
        * event registration, or object lookups should happen here. Component lookups
-       * on the owner entity should NOT happen here. Use _OnReset instead.
+       * on the owner entity should NOT happen here. Use onReset instead.
        * 
-       * @see #_OnReset()
+       * @see #onReset()
        */
-      protected function _OnAdd():void
+      protected function onAdd():void
       {
       }
       
       /**
        * This is called when the component is removed from an entity. It should reverse
-       * anything that happened in _OnAdd or _OnReset (like removing event listeners or
+       * anything that happened in onAdd or onReset (like removing event listeners or
        * nulling object references).
        */
-      protected function _OnRemove():void
+      protected function onRemove():void
       {
       }
       
@@ -106,7 +106,7 @@ package com.pblabs.engine.entity
        * <p>This can potentially be called multiple times, so make sure previous lookups
        * are properly cleaned up each time.</p>
        */
-      protected function _OnReset():void
+      protected function onReset():void
       {
       }
       

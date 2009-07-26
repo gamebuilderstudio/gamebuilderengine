@@ -17,51 +17,51 @@ package com.pblabs.box2D
    {
       public var Manager:Box2DManagerComponent;
     
-      public override function get LayerIndex():int
+      public override function get layerIndex():int
       {
          // Always draw last.
          return BaseSceneComponent.LAYER_COUNT - 1;
       }
       
       [EditorData(referenceType="componentReference")]
-      public function get Scene():IDrawManager2D
+      public function get scene():IDrawManager2D
       {
          return _scene;
       }
       
-      public function set Scene(value:IDrawManager2D):void
+      public function set scene(value:IDrawManager2D):void
       {
          _scene = value;
       }
       
-      protected override function _OnAdd():void
+      protected override function onAdd():void
       {
          _drawer.m_sprite = _sprite;
          _drawer.m_fillAlpha = 0.3;
          _drawer.m_lineThickness = 1.0;
          _drawer.m_drawFlags = b2DebugDraw.e_shapeBit;
          
-         _scene.AddAlwaysDrawnItem(this);
+         _scene.addAlwaysDrawnItem(this);
       }
       
-      protected override function _OnRemove():void
+      protected override function onRemove():void
       {
-         _scene.RemoveAlwaysDrawnItem(this);
+         _scene.removeAlwaysDrawnItem(this);
          _scene = null;
       }
       
-      protected override function _OnReset():void 
+      protected override function onReset():void 
       {
          if (Manager)
-            Manager.SetDebugDrawer(_drawer);
+            Manager.setDebugDrawer(_drawer);
       }
 
-      public override function OnDraw(manager:IDrawManager2D):void
+      public override function onDraw(manager:IDrawManager2D):void
       {
-         var offset:Point = manager.TransformWorldToScreen(new Point());
+         var offset:Point = manager.transformWorldToScreen(new Point());
          _sprite.x = offset.x;
          _sprite.y = offset.y;
-         manager.DrawDisplayObject(_sprite);
+         manager.drawDisplayObject(_sprite);
       }
       
       private var _scene:IDrawManager2D = null;

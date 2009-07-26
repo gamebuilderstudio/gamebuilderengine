@@ -27,28 +27,28 @@ package com.pblabs.engine.core
        * @see com.pblabs.engine.core.ObjectTypeManager.DoesTypeMatch()
        * @see com.pblabs.engine.core.ObjectTypeManager.DoesTypeOverlap()
        * @see com.pblabs.engine.core.ObjectTypeManager.DoTypesMatch()
-       * @see com.pblabs.engine.core.ObjectTypeManager.DoTypesOverlap()
+       * @see com.pblabs.engine.core.ObjectTypeManager.doTypesOverlap()
        */
-      public function get Bits():int
+      public function get bits():int
       {
          return _bits;
       }
       
       public function ObjectType(type:String = null)
       {
-         TypeName = type;
+         typeName = type;
       }
       
       /**
        * The name of the type associated with this object type. If multiple names have
        * been assigned, a random one is returned.
        */
-      public function get TypeName():String
+      public function get typeName():String
       {
-         for (var i:int = 0; i < ObjectTypeManager.Instance.TypeCount; i++)
+         for (var i:int = 0; i < ObjectTypeManager.instance.typeCount; i++)
          {
             if (_bits & (1 << i))
-               return ObjectTypeManager.Instance.GetTypeName(1 << i);
+               return ObjectTypeManager.instance.getTypeName(1 << i);
          }
          
          return "";
@@ -57,21 +57,21 @@ package com.pblabs.engine.core
       /**
        * @private
        */
-      public function set TypeName(value:String):void
+      public function set typeName(value:String):void
       {
-         _bits = ObjectTypeManager.Instance.GetType(value);
+         _bits = ObjectTypeManager.instance.getType(value);
       }
       
       /**
        * A list of all the type names associated with this object type.
        */
-      public function get TypeNames():Array
+      public function get typeNames():Array
       {
          var array:Array = new Array();
-         for (var i:int = 0; i < ObjectTypeManager.Instance.TypeCount; i++)
+         for (var i:int = 0; i < ObjectTypeManager.instance.typeCount; i++)
          {
             if (_bits & (1 << i))
-               array.push(ObjectTypeManager.Instance.GetTypeName(1 << i));
+               array.push(ObjectTypeManager.instance.getTypeName(1 << i));
          }
          
          return array;
@@ -80,19 +80,19 @@ package com.pblabs.engine.core
       /**
        * @private
        */
-      public function set TypeNames(value:Array):void
+      public function set typeNames(value:Array):void
       {
          _bits = 0;
          for each (var typeName:String in value)
-            _bits |= ObjectTypeManager.Instance.GetType(typeName);
+            _bits |= ObjectTypeManager.instance.getType(typeName);
       }
       
       /**
        * @inheritDoc
        */
-      public function Serialize(xml:XML):void
+      public function serialize(xml:XML):void
       {
-         var typeNames:Array = TypeNames;
+         var typeNames:Array = typeNames;
          if (typeNames.length == 1)
          {
             xml.appendChild(typeNames[0]);
@@ -110,17 +110,17 @@ package com.pblabs.engine.core
        * 
        * @inheritDoc
        */
-      public function Deserialize(xml:XML):*
+      public function deserialize(xml:XML):*
       {
          if (xml.hasSimpleContent())
          {
-            TypeName = xml.toString();
+            typeName = xml.toString();
             return this;
          }
          
          _bits = 0;
          for each (var childXML:XML in xml.*)
-            _bits |= ObjectTypeManager.Instance.GetType(childXML.toString());
+            _bits |= ObjectTypeManager.instance.getType(childXML.toString());
          
          return this;
       }
@@ -129,7 +129,7 @@ package com.pblabs.engine.core
       
       
       static private var _Wildcard:ObjectType;
-      static public function get Wildcard():ObjectType
+      static public function get wildcard():ObjectType
       {
          if(!_Wildcard)
             _Wildcard = new ObjectType();

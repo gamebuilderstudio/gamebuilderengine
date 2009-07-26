@@ -11,7 +11,7 @@ package com.pblabs.components.stateMachine
       /**
        * Called when the machine enters this state.
        */
-      function Enter(fsm:IMachine):void;
+      function enter(fsm:IMachine):void;
       
       /**
        * Called every time the machine ticks and this is the current state.
@@ -19,12 +19,12 @@ package com.pblabs.components.stateMachine
        * Typically this function will call SetCurrentState on the FSM to update
        * its state.
        */
-      function Tick(fsm:IMachine):void;
+      function tick(fsm:IMachine):void;
       
       /**
        * Called when we transition out of this state.
        */
-      function Exit(fsm:IMachine):void;
+      function exit(fsm:IMachine):void;
       
    }
 }

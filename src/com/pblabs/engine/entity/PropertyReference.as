@@ -22,8 +22,8 @@ package com.pblabs.engine.entity
     * be initialized to the path of the desired property on the spatial component.</p>
     * 
     * @see IEntity#DoesPropertyExist()
-    * @see IEntity#GetProperty()
-    * @see IEntity#SetProperty()
+    * @see IEntity#getProperty()
+    * @see IEntity#setProperty()
     * @see ../../../../../Reference/PropertySystem.html Property System Overview
     */
    public class PropertyReference implements ISerializable
@@ -31,7 +31,7 @@ package com.pblabs.engine.entity
       /**
        * The path to the property that this references.
        */
-      public function get Property():String
+      public function get property():String
       {
          return _property;
       }
@@ -39,7 +39,7 @@ package com.pblabs.engine.entity
       /**
        * @private
        */
-      public function set Property(value:String):void
+      public function set property(value:String):void
       {
          _property = value;
       }
@@ -52,7 +52,7 @@ package com.pblabs.engine.entity
       /**
        * @inheritDoc
        */
-      public function Serialize(xml:XML):void
+      public function serialize(xml:XML):void
       {
          xml.appendChild(new XML(_property));
       }
@@ -60,7 +60,7 @@ package com.pblabs.engine.entity
       /**
        * @inheritDoc
        */
-      public function Deserialize(xml:XML):*
+      public function deserialize(xml:XML):*
       {
          _property = xml.toString();
          return this;

@@ -7,13 +7,13 @@ package com.pblabs.components.stateMachine
    */
    public class DeathState extends BasicState
    {
-      override public function Enter(fsm:IMachine):void
+      override public function enter(fsm:IMachine):void
       {
          // Kill ourselves!
-         var entity:IEntity = fsm.PropertyBag as IEntity;
+         var entity:IEntity = fsm.propertyBag as IEntity;
          if(!entity)
             throw new Error("Cannot call Destroy on a non-entity!");
-         entity.Destroy();
+         entity.destroy();
       }
       
    }

@@ -23,7 +23,7 @@ package com.pblabs.rendering2D
       /**
        * @inheritDoc
        */
-      public function AddSpatialObject(object:ISpatialObject2D):void
+      public function addSpatialObject(object:ISpatialObject2D):void
       {
          _objectList.push(object);
       }
@@ -31,12 +31,12 @@ package com.pblabs.rendering2D
       /**
        * @inheritDoc
        */
-      public function RemoveSpatialObject(object:ISpatialObject2D):void
+      public function removeSpatialObject(object:ISpatialObject2D):void
       {
          var index:int = _objectList.indexOf(object);
          if (index == -1)
          {
-            Logger.PrintWarning(this, "RemoveSpatialObject", "The object was not found in this spatial manager.");
+            Logger.printWarning(this, "removeSpatialObject", "The object was not found in this spatial manager.");
             return;
          }
          
@@ -61,33 +61,33 @@ package com.pblabs.rendering2D
       /**
        * @inheritDoc
        */
-      public function QueryRectangle(box:Rectangle, mask:ObjectType, results:Array):Boolean
+      public function queryRectangle(box:Rectangle, mask:ObjectType, results:Array):Boolean
       {
-         Profiler.Enter("QueryRectangle");
+         Profiler.enter("QueryRectangle");
 
          var foundAny:Boolean = false;
          for each (var object:ISpatialObject2D in _objectList)
          {
-            if (!ObjectTypeManager.Instance.DoTypesOverlap(object.ObjectMask, mask))
+            if (!ObjectTypeManager.instance.doTypesOverlap(object.objectMask, mask))
                continue;
             
-            if(boxVsBox(object.WorldExtents, box))
+            if(boxVsBox(object.worldExtents, box))
                continue;
             
             results.push(object);
             foundAny = true;
          }
          
-         Profiler.Exit("QueryRectangle");
+         Profiler.exit("QueryRectangle");
          return foundAny;
       }
       
       /**
        * @inheritDoc
        */
-      public function QueryCircle(center:Point, radius:Number, mask:ObjectType, results:Array):Boolean
+      public function queryCircle(center:Point, radius:Number, mask:ObjectType, results:Array):Boolean
       {
-         Profiler.Enter("QueryCircle");
+         Profiler.enter("QueryCircle");
 
          var foundAny:Boolean = false;
          
@@ -96,11 +96,11 @@ package com.pblabs.rendering2D
          
          for each (var object:ISpatialObject2D in _objectList)
          {
-            if (!ObjectTypeManager.Instance.DoTypesOverlap(object.ObjectMask, mask))
+            if (!ObjectTypeManager.instance.doTypesOverlap(object.objectMask, mask))
                continue;
             
             // Avoid allocations - so manually copy.
-            tmpRect = object.WorldExtents;
+            tmpRect = object.worldExtents;
             scratchRect.x = tmpRect.x;
             scratchRect.y = tmpRect.y;
             scratchRect.width = tmpRect.width;
@@ -115,7 +115,7 @@ package com.pblabs.rendering2D
             foundAny = true;
          }
 
-         Profiler.Exit("QueryCircle");
+         Profiler.exit("QueryCircle");
 
          return foundAny;
       }
@@ -123,19 +123,19 @@ package com.pblabs.rendering2D
       /**
        * @inheritDoc
        */
-      public function ObjectsUnderPoint(point:Point, mask:ObjectType, results:Array, scene:IDrawManager2D):Boolean
+      public function objectsUnderPoint(point:Point, mask:ObjectType, results:Array, scene:IDrawManager2D):Boolean
       {
          var tmpResults:Array = new Array();
          
          // First use the normal spatial query...
-         if(!QueryCircle(point, 64, mask, tmpResults))
+         if(!queryCircle(point, 64, mask, tmpResults))
             return false;
          
          // Ok, now pass control to the objects and see what they think.
          var hitAny:Boolean = false;
          for each(var tmp:ISpatialObject2D in tmpResults)
          {
-            if(!tmp.PointOccupied(point, scene))
+            if(!tmp.pointOccupied(point, scene))
                continue;
             
             results.push(tmp);
@@ -144,7 +144,7 @@ package com.pblabs.rendering2D
          
          // Sort the results.
          if(scene)
-            scene.SortSpatials(results);
+            scene.sortSpatials(results);
          
          return hitAny;
       }
@@ -152,14 +152,14 @@ package com.pblabs.rendering2D
       /**
        * @inheritDoc
        */
-      public function CastRay(start:Point, end:Point, mask:ObjectType, result:RayHitInfo):Boolean
+      public function castRay(start:Point, end:Point, mask:ObjectType, result:RayHitInfo):Boolean
       {
          // We want to return the first hit among all our items. We'll be very lazy,
          // and simply check against every potential match, taking the closest hit.
          // This will suck for long raycasts, but most of them are quite short.
          var results:Array = new Array();
          var boundingRect:Rectangle = new Rectangle(start.x, start.y, end.x - start.x, end.y - start.y);
-         if (!QueryRectangle(boundingRect, mask, results))
+         if (!queryRectangle(boundingRect, mask, results))
             return false;
          
          var bestInfo:RayHitInfo = null;
@@ -168,16 +168,16 @@ package com.pblabs.rendering2D
          for each (var object:ISpatialObject2D in results)
          {
             
-            if (object.CastRay(start, end, mask, tempInfo))
+            if (object.castRay(start, end, mask, tempInfo))
             {
                if (!bestInfo)
                {
                   bestInfo = new RayHitInfo();
-                  bestInfo.CopyFrom(tempInfo);
+                  bestInfo.copyFrom(tempInfo);
                }
                else if (tempInfo.Time < bestInfo.Time)
                {
-                  bestInfo.CopyFrom(tempInfo);
+                  bestInfo.copyFrom(tempInfo);
                }
             }
          }
@@ -185,7 +185,7 @@ package com.pblabs.rendering2D
          if (bestInfo)
          {
             if (result)
-               result.CopyFrom(bestInfo);
+               result.copyFrom(bestInfo);
             
             return true;
          }

@@ -61,7 +61,7 @@ package com.pblabs.engine.core
       /**
        * The singleton ProcessManager instance.
        */
-      public static function get Instance():ProcessManager
+      public static function get instance():ProcessManager
       {
          if (!_instance)
             _instance = new ProcessManager();
@@ -76,7 +76,7 @@ package com.pblabs.engine.core
        * will essentially play twice as fast. A value of 0.5 will run the
        * game at half speed. A value of 1 is normal.
        */
-      public function get TimeScale():Number
+      public function get timeScale():Number
       {
          return _timeScale;
       }
@@ -84,7 +84,7 @@ package com.pblabs.engine.core
       /**
        * @private
        */
-      public function set TimeScale(value:Number):void
+      public function set timeScale(value:Number):void
       {
          _timeScale = value;
       }
@@ -93,7 +93,7 @@ package com.pblabs.engine.core
        * Used to determine how far we are between ticks. 0.0 at the start of a tick, and
        * 1.0 at the end. Useful for smoothly interpolating visual elements.
        */
-      public function get InterpolationFactor():Number
+      public function get interpolationFactor():Number
       {
          return _interpolationFactor;
       }
@@ -102,7 +102,7 @@ package com.pblabs.engine.core
        * The amount of time that has been processed by the process manager. This does
        * take the time scale into account. Time is in milliseconds.
        */
-      public function get VirtualTime():Number
+      public function get virtualTime():Number
       {
          return _virtualTime;
       }
@@ -112,17 +112,17 @@ package com.pblabs.engine.core
        * is added to the process manager. If the manager is stopped manually, then this
        * will have to be called to restart it.
        */
-      public function Start():void
+      public function start():void
       {
          if (_started)
          {
-            Logger.PrintWarning(this, "Start", "The ProcessManager is already started.");
+            Logger.printWarning(this, "Start", "The ProcessManager is already started.");
             return;
          }
          
          _lastTime = -1.0;
          _elapsed = 0.0;
-         Global.MainStage.addEventListener(Event.ENTER_FRAME, _OnFrame);
+         Global.mainStage.addEventListener(Event.ENTER_FRAME, onFrame);
          _started = true;
       }
       
@@ -131,22 +131,22 @@ package com.pblabs.engine.core
        * is removed from the process manager, but can also be called manually to, for
        * example, pause the game.
        */
-      public function Stop():void
+      public function stop():void
       {
          if (!_started)
          {
-            Logger.PrintWarning(this, "Stop", "The ProcessManager isn't started.");
+            Logger.printWarning(this, "Stop", "The ProcessManager isn't started.");
             return;
          }
          
          _started = false;
-         Global.MainStage.removeEventListener(Event.ENTER_FRAME, _OnFrame);
+         Global.mainStage.removeEventListener(Event.ENTER_FRAME, onFrame);
       }
       
       /**
        * Returns true if the process manager is advancing.
        */ 
-      public function get IsTicking():Boolean
+      public function get isTicking():Boolean
       {
          return _started;
       }
@@ -160,10 +160,10 @@ package com.pblabs.engine.core
        * @param callback The function to call.
        * @param arguments The arguments to pass to the function when it is called.
        */
-      public function Schedule(delay:Number, thisObject:Object, callback:Function, ...arguments):void
+      public function schedule(delay:Number, thisObject:Object, callback:Function, ...arguments):void
       {
          if (!_started)
-            Start();
+            start();
          
          var schedule:ScheduleObject = new ScheduleObject();
          schedule.TimeRemaining = delay;
@@ -180,7 +180,7 @@ package com.pblabs.engine.core
        * @param priority The priority of the object. Objects added with higher priorities
        * will receive their callback before objects with lower priorities.
        */
-      public function AddAnimatedObject(object:IAnimatedObject, priority:Number = 0.0):void
+      public function addAnimatedObject(object:IAnimatedObject, priority:Number = 0.0):void
       {
          _AddObject(object, priority, _animatedObjects);
       }
@@ -192,7 +192,7 @@ package com.pblabs.engine.core
        * @param priority The priority of the object. Objects added with higher priorities
        * will receive their callback before objects with lower priorities.
        */
-      public function AddTickedObject(object:ITickedObject, priority:Number = 0.0):void
+      public function addTickedObject(object:ITickedObject, priority:Number = 0.0):void
       {
          _AddObject(object, priority, _tickedObjects);
       }
@@ -202,7 +202,7 @@ package com.pblabs.engine.core
        * 
        * @param object The object to remove.
        */
-      public function RemoveAnimatedObject(object:IAnimatedObject):void
+      public function removeAnimatedObject(object:IAnimatedObject):void
       {
          _RemoveObject(object, _animatedObjects);
       }
@@ -212,7 +212,7 @@ package com.pblabs.engine.core
        * 
        * @param object The object to remove.
        */
-      public function RemoveTickedObject(object:ITickedObject):void
+      public function removeTickedObject(object:ITickedObject):void
       {
          _RemoveObject(object, _tickedObjects);
       }
@@ -223,7 +223,7 @@ package com.pblabs.engine.core
        * 
        * @param amount The amount of time to simulate.
        */
-      public function TestAdvance(amount:Number):void
+      public function testAdvance(amount:Number):void
       {
          _Advance(amount * _timeScale);
       }
@@ -236,14 +236,14 @@ package com.pblabs.engine.core
       private function _AddObject(object:*, priority:Number, list:Array):void
       {
          if (!_started)
-            Start();
+            start();
          
          var position:int = -1;
          for (var i:int = 0; i < list.length; i++)
          {
             if (list[i].Listener == object)
             {
-               Logger.PrintWarning(object, "AddProcessObject", "This object has already been added to the process manager.");
+               Logger.printWarning(object, "AddProcessObject", "This object has already been added to the process manager.");
                return;
             }
             
@@ -257,7 +257,7 @@ package com.pblabs.engine.core
          var processObject:ProcessObject = new ProcessObject();
          processObject.Listener = object;
          processObject.Priority = priority;
-         processObject.ProfilerKey = TypeUtility.GetObjectClassName(object);
+         processObject.ProfilerKey = TypeUtility.getObjectClassName(object);
          
          if (position < 0 || position >= list.length)
             list.push(processObject);
@@ -268,7 +268,7 @@ package com.pblabs.engine.core
       private function _RemoveObject(object:*, list:Array):void
       {
          if (_ListenerCount == 1 && _scheduleEvents.length == 0)
-            Stop();
+            stop();
          
          for (var i:int = 0; i < list.length; i++)
          {
@@ -279,10 +279,10 @@ package com.pblabs.engine.core
             }
          }
          
-         Logger.PrintWarning(object, "RemoveProcessObject", "This object has not been added to the process manager.");
+         Logger.printWarning(object, "RemoveProcessObject", "This object has not been added to the process manager.");
       }
       
-      private function _OnFrame(event:Event):void
+      private function onFrame(event:Event):void
       {
          var currentTime:Number = getTimer();
          if (_lastTime < 0)
@@ -303,10 +303,10 @@ package com.pblabs.engine.core
          
          var startTime:Number = _virtualTime;
          
-         Profiler.EnsureAtRoot();
+         Profiler.ensureAtRoot();
 
          // Process pending events.
-         Profiler.Enter("PendingEvents");
+         Profiler.enter("PendingEvents");
          for (var i:int = 0; i < _scheduleEvents.length; i++)
          {
             var schedule:ScheduleObject = _scheduleEvents[i];
@@ -318,7 +318,7 @@ package com.pblabs.engine.core
                i--;
             }
          }
-         Profiler.Exit("PendingEvents");
+         Profiler.exit("PendingEvents");
          
          // Perform ticks.
          var tickCount:int = 0;
@@ -326,16 +326,16 @@ package com.pblabs.engine.core
          {
             _interpolationFactor = 0.0;
 
-            Profiler.Enter("Tick");
+            Profiler.enter("Tick");
             
             for each (var object:ProcessObject in _tickedObjects)
             {
-               Profiler.Enter(object.ProfilerKey);
+               Profiler.enter(object.ProfilerKey);
                object.Listener.OnTick(TICK_RATE);
-               Profiler.Exit(object.ProfilerKey);
+               Profiler.exit(object.ProfilerKey);
             }
             
-            Profiler.Exit("Tick");
+            Profiler.exit("Tick");
 
             _virtualTime += TICK_RATE_MS;
             _elapsed -= TICK_RATE_MS;
@@ -346,33 +346,33 @@ package com.pblabs.engine.core
          if (tickCount >= MAX_TICKS_PER_FRAME)
          {
             _elapsed = 0;
-            Logger.PrintWarning(this, "Advance", "Exceeded maximum number of ticks for this frame.");
+            Logger.printWarning(this, "Advance", "Exceeded maximum number of ticks for this frame.");
          }
          
          _virtualTime = startTime + elapsed;
          
          // Update objects expecting interpolation between ticks.
-         Profiler.Enter("InterpolateTick");
+         Profiler.enter("InterpolateTick");
          _interpolationFactor = _elapsed / TICK_RATE_MS;
          for each (var tickedObject:ProcessObject in _tickedObjects)
          {
-            Profiler.Enter(tickedObject.ProfilerKey);
+            Profiler.enter(tickedObject.ProfilerKey);
             tickedObject.Listener.OnInterpolateTick(_interpolationFactor);
-            Profiler.Exit(tickedObject.ProfilerKey);
+            Profiler.exit(tickedObject.ProfilerKey);
          }
-         Profiler.Exit("InterpolateTick");
+         Profiler.exit("InterpolateTick");
          
          // Update objects wanting OnFrame callbacks.
-         Profiler.Enter("Frame");
+         Profiler.enter("Frame");
          for each (var animatedObject:ProcessObject in _animatedObjects)
          {
-            Profiler.Enter(animatedObject.ProfilerKey);
+            Profiler.enter(animatedObject.ProfilerKey);
             animatedObject.Listener.OnFrame(elapsed / 1000);
-            Profiler.Exit(animatedObject.ProfilerKey);
+            Profiler.exit(animatedObject.ProfilerKey);
          }
-         Profiler.Exit("Frame");
+         Profiler.exit("Frame");
          
-         Profiler.EnsureAtRoot();
+         Profiler.ensureAtRoot();
       }
       
       private var _started:Boolean = false;

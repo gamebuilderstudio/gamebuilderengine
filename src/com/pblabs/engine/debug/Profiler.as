@@ -11,10 +11,10 @@ package com.pblabs.engine.debug
     * results to the log when you let go of P. Eventually something more
     * intelligent will be appropriate.
     *
-    * Use it by calling Profiler.Enter("CodeSectionName"); before the code you
-    * wish to measure, and Profiler.Exit("CodeSectionName"); afterwards. Note
+    * Use it by calling Profiler.enter("CodeSectionName"); before the code you
+    * wish to measure, and Profiler.exit("CodeSectionName"); afterwards. Note
     * that Enter/Exit calls must be matched - and if there are any branches, like
-    * an early return; statement, you will need to add a call to Profiler.Exit()
+    * an early return; statement, you will need to add a call to Profiler.exit()
     * before the return.
     *
     * Min/Max/Average times are reported in milliseconds, while total and non-sub
@@ -29,7 +29,7 @@ package com.pblabs.engine.debug
       /**
        * Indicate we are entering a named execution block.
        */
-      static public function Enter(blockName:String):void
+      static public function enter(blockName:String):void
       {
          if(!_CurrentNode)
          {
@@ -42,7 +42,7 @@ package com.pblabs.engine.debug
          {
             // Hack - if they press, then release insert, start/stop and dump
             // the profiler.
-            if(InputManager.Instance.IsKeyDown(InputKey.P.KeyCode))
+            if(InputManager.instance.isKeyDown(InputKey.P.keyCode))
             {
                if(Enabled)
                {
@@ -62,10 +62,10 @@ package com.pblabs.engine.debug
             _ReallyEnabled = Enabled;
             
             if(_WantWipe)
-               DoWipe();
+               doWipe();
             
             if(_WantReport)
-               DoReport();
+               doReport();
          }
          
          // Update stack depth and early out.
@@ -91,7 +91,7 @@ package com.pblabs.engine.debug
       /**
        * Indicate we are exiting a named exection block.
        */
-      static public function Exit(blockName:String):void
+      static public function exit(blockName:String):void
       {
          // Update stack depth and early out.
          _StackDepth--;
@@ -99,7 +99,7 @@ package com.pblabs.engine.debug
             return;
          
          if(blockName != _CurrentNode.name)
-            throw new Error("Mismatched Profiler.Enter/Profiler.Exit calls, was expecting '" + _CurrentNode.name + "' but got '" + blockName + "'");
+            throw new Error("Mismatched Profiler.enter/Profiler.exit calls, was expecting '" + _CurrentNode.name + "' but got '" + blockName + "'");
          
          // Update stats for this node.
          var elapsedTime:int = flash.utils.getTimer() - _CurrentNode.startTime;
@@ -115,7 +115,7 @@ package com.pblabs.engine.debug
       /**
        * Dumps statistics to the log next time we reach bottom of stack.
        */
-      static public function Report():void
+      static public function report():void
       {
          if(_StackDepth)
          {
@@ -123,13 +123,13 @@ package com.pblabs.engine.debug
             return;
          }
          
-         DoReport();
+         doReport();
       }
       
       /**
        * Reset all statistics to zero.
        */
-      static public function Wipe():void
+      static public function wipe():void
       {
          if(_StackDepth)
          {
@@ -137,7 +137,7 @@ package com.pblabs.engine.debug
             return;
          }
          
-         DoWipe();
+         doWipe();
       }
       
       /**
@@ -147,18 +147,18 @@ package com.pblabs.engine.debug
        *
        * Useful for ensuring that profiler statements aren't mismatched.
        */
-      static public function EnsureAtRoot():void
+      static public function ensureAtRoot():void
       {
          if(_StackDepth)
             throw new Error("Not at root!");
       }
       
-      static private function DoReport():void
+      static private function doReport():void
       {
          _WantReport = false;
          
          var header:String = sprintf( "%-" + NameFieldWidth + "s%-8s%-8s%-8s%-8s%-8s%-8s", "Name", "Calls", "Total%", "NonSub%", "AvgMs", "MinMs", "MaxMs" );
-         Logger.Print(Profiler, header);
+         Logger.print(Profiler, header);
          _Report_R(_RootNode, 0);
       }
       
@@ -191,7 +191,7 @@ package com.pblabs.engine.debug
          // Print us.
          var entry:String = sprintf( "%-" + (indent * 3) + "s%-" + (NameFieldWidth - indent * 3) + "s%-8s%-8s%-8s%-8s%-8s%-8s", "",
             (hasKids ? "+" : "-") + pi.name, pi.activations, displayTime.toFixed(2), displayNonSubTime.toFixed(2), (Number(pi.totalTime) / Number(pi.activations)).toFixed(1), pi.minTime, pi.maxTime);
-         Logger.Print(Profiler, entry);
+         Logger.print(Profiler, entry);
          
          // Sort and draw our kids.
          var tmpArray:Array = new Array();
@@ -202,19 +202,19 @@ package com.pblabs.engine.debug
             _Report_R(childPi, indent + 1);
       }
 
-      static private function DoWipe(pi:ProfileInfo = null):void
+      static private function doWipe(pi:ProfileInfo = null):void
       {
          _WantWipe = false;
          
          if(!pi)
          {
-            DoWipe(_RootNode);
+            doWipe(_RootNode);
             return;
          }
          
-         pi.Wipe();
+         pi.wipe();
          for each(var childPi:ProfileInfo in pi.children)
-            DoWipe(childPi);
+            doWipe(childPi);
       }
       
       /**
@@ -246,7 +246,7 @@ class ProfileInfo
       parent = p;
    }
    
-   public function Wipe():void
+   public function wipe():void
    {
       startTime = totalTime = activations = 0;
       maxTime = int.MIN_VALUE;

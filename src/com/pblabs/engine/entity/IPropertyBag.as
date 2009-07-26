@@ -19,7 +19,7 @@ package com.pblabs.engine.entity
        * The event dispatcher that controls events for this entity. Components should
        * use this to dispatch and listen for events.
        */
-      function get EventDispatcher():IEventDispatcher;
+      function get eventDispatcher():IEventDispatcher;
 
       /**
        * Checks whether a property exists on this entity.
@@ -31,7 +31,7 @@ package com.pblabs.engine.entity
        * 
        * @see ../../../../../Reference/PropertySystem.html Property System Overview
        */
-      function DoesPropertyExist(property:PropertyReference):Boolean;
+      function doesPropertyExist(property:PropertyReference):Boolean;
       
       /**
        * Gets the value of a property on this entity.
@@ -43,7 +43,7 @@ package com.pblabs.engine.entity
        * 
        * @see ../../../../../Reference/PropertySystem.html Property System Overview
        */
-      function GetProperty(property:PropertyReference):*;
+      function getProperty(property:PropertyReference):*;
       
       /**
        * Sets the value of a property on this entity.
@@ -55,6 +55,6 @@ package com.pblabs.engine.entity
        * 
        * @see ../../../../../Reference/PropertySystem.html Property System Overview
        */
-      function SetProperty(property:PropertyReference, value:*):void;      
+      function setProperty(property:PropertyReference, value:*):void;      
    }
 }

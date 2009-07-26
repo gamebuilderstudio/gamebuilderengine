@@ -29,32 +29,32 @@ package com.pblabs.rendering2D
       
       public var MovementHeadingThreshold:Number = 100;
       
-      public function set InitialPosition(value:Point):void
+      public function set initialPosition(value:Point):void
       {
          GoalPosition = value.clone();
          Position = value.clone();
       }
       
-      public function set InitialRotation(value:Number):void
+      public function set initialRotation(value:Number):void
       {
          GoalRotation = value;
          Rotation = value;
       }
       
-      public function get MoveDelta():Point
+      public function get moveDelta():Point
       {
          return GoalPosition.subtract(Position).clone();
       }
       
-      private function get CheckMovementAllowed():Boolean
+      private function get checkMovementAllowed():Boolean
       {
          if(!AllowMovementProperty)
             return true;
          
-         return Owner.GetProperty(AllowMovementProperty) == AllowMovementValue;
+         return owner.getProperty(AllowMovementProperty) == AllowMovementValue;
       }
       
-      public override function OnTick(tickRate:Number):void
+      public override function onTick(tickRate:Number):void
       {
          // Move towards our position goal.
          var moveDelta:Point = GoalPosition.subtract(Position);
@@ -66,10 +66,10 @@ package com.pblabs.rendering2D
          var didMove:Boolean = false;
          var movementHeading:Number = Math.atan2(moveDelta.y, moveDelta.x);
 
-         if(moveDelta.length > 0.001 && CheckMovementAllowed)
+         if(moveDelta.length > 0.001 && checkMovementAllowed)
          {
             // Check our heading
-            if(Math.abs(Utility.GetRadianShortDelta(movementHeading, Rotation)) <= MovementHeadingThreshold)
+            if(Math.abs(Utility.getRadianShortDelta(movementHeading, Rotation)) <= MovementHeadingThreshold)
                Position = Position.add(moveDelta);
             
             // Only update position if we really need to move.
@@ -81,7 +81,7 @@ package com.pblabs.rendering2D
             GoalRotation = movementHeading
 
          // Interpolate heading.
-         var headingDelta:Number = Utility.GetRadianShortDelta(Rotation, GoalRotation);
+         var headingDelta:Number = Utility.getRadianShortDelta(Rotation, GoalRotation);
          
          if(headingDelta < -RotationSpeed)
             headingDelta = -RotationSpeed;

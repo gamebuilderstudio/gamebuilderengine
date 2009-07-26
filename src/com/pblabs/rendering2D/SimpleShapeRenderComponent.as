@@ -26,14 +26,14 @@ package com.pblabs.rendering2D
      [EditorData(defaultValue="255")]
 	  public var FillColor:uint = 0x0000FF;
 	
-     public override function OnDraw(manager:IDrawManager2D):void
+     public override function onDraw(manager:IDrawManager2D):void
      {
         // Draw to the dummy sprite.
         _DummySprite.graphics.clear();
         _DummySprite.graphics.lineStyle(BorderThickness, BorderColor);
         _DummySprite.graphics.beginFill(FillColor);
         
-        var rp:Point = manager.TransformWorldToScreen(RenderPosition);
+        var rp:Point = manager.transformWorldToScreen(renderPosition);
         
         if(ShowSquare)
            _DummySprite.graphics.drawRect(rp.x - Radius, rp.y - Radius, Radius * 2, Radius * 2); 
@@ -44,7 +44,7 @@ package com.pblabs.rendering2D
         _DummySprite.graphics.endFill();
 
         // Submit to the draw manager.        
-        manager.DrawDisplayObject(_DummySprite);
+        manager.drawDisplayObject(_DummySprite);
      }
 	   
 	  protected var _DummySprite:Sprite = new Sprite();

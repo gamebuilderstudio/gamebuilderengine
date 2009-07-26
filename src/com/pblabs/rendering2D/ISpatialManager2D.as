@@ -27,14 +27,14 @@ package com.pblabs.rendering2D
        * functionality will support both general ISpatialObject2D implementations
        * as well as enabling special functionality for its peered classes.
        */ 
-      function AddSpatialObject(object:ISpatialObject2D):void;
+      function addSpatialObject(object:ISpatialObject2D):void;
 
       /**
        * Remove a previously registered object from this manager.
        * 
        * @see AddSpatialObject
        */ 
-      function RemoveSpatialObject(object:ISpatialObject2D):void;
+      function removeSpatialObject(object:ISpatialObject2D):void;
       
       /**
        * Return all the spatial objects that overlap with the specified box and match
@@ -42,19 +42,19 @@ package com.pblabs.rendering2D
        * 
        * @return True if one or more objects were found and push()'ed to results.
        */ 
-      function QueryRectangle(box:Rectangle, mask:ObjectType, results:Array):Boolean;
+      function queryRectangle(box:Rectangle, mask:ObjectType, results:Array):Boolean;
       
       /**
        * Return all the spatial objects that overlap the specified circle.
        * 
        * @see QueryRectangle
        */ 
-      function QueryCircle(center:Point, radius:Number, mask:ObjectType, results:Array):Boolean;
+      function queryCircle(center:Point, radius:Number, mask:ObjectType, results:Array):Boolean;
       
       /**
        * Cast a ray and (optionally) return information about what it hits in result.
        */
-      function CastRay(start:Point, end:Point, flags:ObjectType, result:RayHitInfo):Boolean;
+      function castRay(start:Point, end:Point, flags:ObjectType, result:RayHitInfo):Boolean;
 
       /**
        * Return all the objects under a given point. Objects can optionally implement
@@ -64,6 +64,6 @@ package com.pblabs.rendering2D
        * @param mask Only consider objects that match this ObjectType.
        * @param results An array into which ISpatialObject2Ds are added based on what is under point.
        */
-      function ObjectsUnderPoint(point:Point, mask:ObjectType, results:Array, scene:IDrawManager2D):Boolean;
+      function objectsUnderPoint(point:Point, mask:ObjectType, results:Array, scene:IDrawManager2D):Boolean;
    }
 }

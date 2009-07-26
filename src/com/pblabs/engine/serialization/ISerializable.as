@@ -13,7 +13,7 @@ package com.pblabs.engine.serialization
     * behavior.
     * 
     * <p>Any class implementing this interface will automatically have its
-    * Serialize and Deserialize methods called in place of the default serialization
+    * serialize and deserialize methods called in place of the default serialization
     * methods on the Serializer class.</p>
     * 
     * @see Serializer
@@ -22,7 +22,7 @@ package com.pblabs.engine.serialization
    public interface ISerializable
    {
       /**
-       * Serializes the object to XML. This should not include the main tag
+       * serializes the object to XML. This should not include the main tag
        * defining the class itself.
        * 
        * @param xml The xml object to which the serialization of this class should
@@ -31,11 +31,11 @@ package com.pblabs.engine.serialization
        * 
        * @see ../../../../../Examples/SerializingObjects.html Serializing Objects
        */
-      function Serialize(xml:XML):void;
+      function serialize(xml:XML):void;
       
       /**
-       * Deserializes the object from xml. The format of the xml passed is custom,
-       * depending on the way the object was serialized with the Serialize method.
+       * deserializes the object from xml. The format of the xml passed is custom,
+       * depending on the way the object was serialized with the serialize method.
        * 
        * @param xml The xml containing the serialized definition of the class.
        * 
@@ -45,6 +45,6 @@ package com.pblabs.engine.serialization
        * 
        * @see ../../../../../Examples/DeserializingObjects.html Deserializing Objects
        */
-      function Deserialize(xml:XML):*;
+      function deserialize(xml:XML):*;
    }
 }

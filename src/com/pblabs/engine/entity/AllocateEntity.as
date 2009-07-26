@@ -40,17 +40,17 @@ import flash.utils.Dictionary;
 
 class Entity extends EventDispatcher implements IEntity
 {
-   public function get Name():String
+   public function get name():String
    {
       return _name;
    }
    
-   public function get EventDispatcher():IEventDispatcher
+   public function get eventDispatcher():IEventDispatcher
    {
       return this as IEventDispatcher;
    }
    
-   public function Initialize(name:String, alias:String = null):void
+   public function initialize(name:String, alias:String = null):void
    {
       _name = name;
       if (_name == null || _name == "")
@@ -58,50 +58,50 @@ class Entity extends EventDispatcher implements IEntity
       
       _alias = alias;
          
-      NameManager.Instance.AddEntity(this, _name);
+      NameManager.instance.addEntity(this, _name);
       if(_alias)
-         NameManager.Instance.AddEntity(this, _alias);
+         NameManager.instance.addEntity(this, _alias);
    }
    
-   public function Destroy():void
+   public function destroy():void
    {
       // Give listeners a chance to act before we start destroying stuff.
       dispatchEvent(new Event("EntityDestroyed"));
       
       // Get out of the NameManager.
-      NameManager.Instance.RemoveEntity(this);
+      NameManager.instance.removeEntity(this);
       _name = null;
       
       // Unregister our components.
       for each(var component:IEntityComponent in _components)
-         component.Unregister();
+         component.unregister();
       
       // And remove their references from the dictionary.
       for (var name:String in _components)
          delete _components[name];
    }
    
-   public function Serialize(xml:XML):void
+   public function serialize(xml:XML):void
    {
       for each (var component:IEntityComponent in _components)
       {
          var componentXML:XML = new XML(<Component/>);
-         Serializer.Instance.Serialize(component, componentXML);
+         Serializer.instance.serialize(component, componentXML);
          xml.appendChild(componentXML);
       }
    }
    
-   public function Deserialize(xml:XML, registerComponents:Boolean = true):void
+   public function deserialize(xml:XML, registerComponents:Boolean = true):void
    {
-      // Note what entity we're deserializing to the serializer.
-      Serializer.Instance.SetCurrentEntity(this);
+      // Note what entity we're deserializing to the Serializer.
+      Serializer.instance.setCurrentEntity(this);
       
       for each (var componentXML:XML in xml.*)
       {
          // Error if it's an unexpected tag.
          if(componentXML.name().toString().toLowerCase() != "component")
          {
-            Logger.PrintError(this, "Deserialize", "Found unexpected tag '" + componentXML.name().toString() + "', only <component/> is valid, ignoring tag. Error in entity '" + Name + "'.");
+            Logger.printError(this, "deserialize", "Found unexpected tag '" + componentXML.name().toString() + "', only <component/> is valid, ignoring tag. Error in entity '" + name + "'.");
             continue;
          }
          
@@ -111,10 +111,10 @@ class Entity extends EventDispatcher implements IEntity
          
          if (componentClassName.length > 0)
          {
-            component = TypeUtility.Instantiate(componentClassName) as IEntityComponent;
+            component = TypeUtility.instantiate(componentClassName) as IEntityComponent;
             if (!component)
             {
-               Logger.PrintError(this, "Deserialize", "Unable to instantiate component " + componentName + " of type " + componentClassName + " on entity '" + Name + "'.");
+               Logger.printError(this, "deserialize", "Unable to instantiate component " + componentName + " of type " + componentClassName + " on entity '" + name + "'.");
                continue;
             }
             
@@ -123,15 +123,15 @@ class Entity extends EventDispatcher implements IEntity
          }
          else
          {
-            component = LookupComponentByName(componentName);
+            component = lookupComponentByName(componentName);
             if (!component)
             {
-               Logger.PrintError(this, "Deserialize", "No type specified for the component " + componentName + " and the component doesn't exist on a parent template for entity '" + Name + "'.");
+               Logger.printError(this, "deserialize", "No type specified for the component " + componentName + " and the component doesn't exist on a parent template for entity '" + name + "'.");
                continue;
             }
          }
          
-         Serializer.Instance.Deserialize(component, componentXML);
+         Serializer.instance.deserialize(component, componentXML);
       }
       
       if (registerComponents)
@@ -141,25 +141,25 @@ class Entity extends EventDispatcher implements IEntity
       }
    }
    
-   public function AddComponent(component:IEntityComponent, componentName:String):void
+   public function addComponent(component:IEntityComponent, componentName:String):void
    {
       if (!_AddComponent(component, componentName))
          return;
       
-      component.Register(this, componentName);
+      component.register(this, componentName);
       _ResetComponents();
    }
    
-   public function RemoveComponent(component:IEntityComponent):void
+   public function removeComponent(component:IEntityComponent):void
    {
       if (!_RemoveComponent(component))
          return;
       
-      component.Unregister();
+      component.unregister();
       _ResetComponents();
    }
    
-   public function LookupComponentByType(componentType:Class):IEntityComponent
+   public function lookupComponentByType(componentType:Class):IEntityComponent
    {
       for each(var component:IEntityComponent in _components)
       {
@@ -170,7 +170,7 @@ class Entity extends EventDispatcher implements IEntity
       return null;
    }
    
-   public function LookupComponentsByType(componentType:Class):Array
+   public function lookupComponentsByType(componentType:Class):Array
    {
       var list:Array = new Array();
       
@@ -183,17 +183,17 @@ class Entity extends EventDispatcher implements IEntity
       return list;
    }
    
-   public function LookupComponentByName(componentName:String):IEntityComponent
+   public function lookupComponentByName(componentName:String):IEntityComponent
    {
       return _components[componentName];
    }
    
-   public function DoesPropertyExist(property:PropertyReference):Boolean
+   public function doesPropertyExist(property:PropertyReference):Boolean
    {
       return _FindProperty(property, false, _tempPropertyInfo, true) != null;
    }
    
-   public function GetProperty(property:PropertyReference):*
+   public function getProperty(property:PropertyReference):*
    {
       // Look up the property.
       var info:PropertyInfo = _FindProperty(property, false, _tempPropertyInfo);
@@ -201,36 +201,36 @@ class Entity extends EventDispatcher implements IEntity
       
       // Get value if any.
       if (info)
-         result = info.GetValue();
+         result = info.getValue();
 
       // Clean up to avoid dangling references.
-      _tempPropertyInfo.Clear();
+      _tempPropertyInfo.clear();
       
       return result;
    }
    
-   public function SetProperty(property:PropertyReference, value:*):void
+   public function setProperty(property:PropertyReference, value:*):void
    {
       // Look up and set.
       var info:PropertyInfo = _FindProperty(property, true, _tempPropertyInfo);
       if (info)
-         info.SetValue(value);
+         info.setValue(value);
 
       // Clean up to avoid dangling references.
-      _tempPropertyInfo.Clear();
+      _tempPropertyInfo.clear();
    }
    
    private function _AddComponent(component:IEntityComponent, componentName:String):Boolean
    {
-      if (component.Owner)
+      if (component.owner)
       {
-         Logger.PrintError(this, "AddComponent", "The component " + componentName + " already has an owner. (" + Name + ")");
+         Logger.printError(this, "AddComponent", "The component " + componentName + " already has an owner. (" + name + ")");
          return false;
       }
       
       if (_components[componentName])
       {
-         Logger.PrintError(this, "AddComponent", "A component with name " + componentName + " already exists on this entity (" + Name + ").");
+         Logger.printError(this, "AddComponent", "A component with name " + componentName + " already exists on this entity (" + name + ").");
          return false;
       }
       
@@ -240,19 +240,19 @@ class Entity extends EventDispatcher implements IEntity
    
    private function _RemoveComponent(component:IEntityComponent):Boolean
    {
-      if (component.Owner != this)
+      if (component.owner != this)
       {
-         Logger.PrintError(this, "AddComponent", "The component " + component.Name + " is not owned by this entity. (" + Name + ")");
+         Logger.printError(this, "AddComponent", "The component " + component.name + " is not owned by this entity. (" + name + ")");
          return false;
       }
       
-      if (!_components[component.Name])
+      if (!_components[component.name])
       {
-         Logger.PrintError(this, "AddComponent", "The component " + component.Name + " was not found on this entity. (" + Name + ")");
+         Logger.printError(this, "AddComponent", "The component " + component.name + " was not found on this entity. (" + name + ")");
          return false;
       }
       
-      delete _components[component.Name];
+      delete _components[component.name];
       return true;
    }
    
@@ -265,7 +265,7 @@ class Entity extends EventDispatcher implements IEntity
       for (var name:String in _components)
       {
          // Skip ones we have already registered.
-         if(_components[name].IsRegistered)
+         if(_components[name].isRegistered)
             continue;
          
          _components[name].Register(this, name);
@@ -275,7 +275,7 @@ class Entity extends EventDispatcher implements IEntity
    private function _ResetComponents():void
    {
       for each(var component:IEntityComponent in _components)
-         component.Reset();
+         component.reset();
    }
 
    private function _FindProperty(reference:PropertyReference, willSet:Boolean = false, providedPi:PropertyInfo = null, suppressErrors:Boolean = false):PropertyInfo
@@ -283,10 +283,10 @@ class Entity extends EventDispatcher implements IEntity
       // TODO: we use appendChild but relookup the results, can we just use return value?
       
       // Early out if we got a null property reference.
-      if (!reference || reference.Property == null || reference.Property == "")
+      if (!reference || reference.property == null || reference.property == "")
          return null;
 
-      Profiler.Enter("Entity._FindProperty");
+      Profiler.enter("Entity._FindProperty");
       
       // Must have a propertyInfo to operate with.
       if(!providedPi)
@@ -296,12 +296,12 @@ class Entity extends EventDispatcher implements IEntity
       if(reference.CachedLookup && reference.CachedLookup.length > 0)
       {
          var cl:Array = reference.CachedLookup;
-         var cachedWalk:* = LookupComponentByName(cl[0]);
+         var cachedWalk:* = lookupComponentByName(cl[0]);
          if(!cachedWalk)
          {
             if(!suppressErrors)
-               Logger.PrintWarning(this, "_FindProperty", "Could not resolve component named '" + cl[0] + "' for property '" + reference.Property + "' with cached reference. " + Logger.GetCallStack());
-            Profiler.Exit("Entity._FindProperty");
+               Logger.printWarning(this, "_FindProperty", "Could not resolve component named '" + cl[0] + "' for property '" + reference.property + "' with cached reference. " + Logger.getCallStack());
+            Profiler.exit("Entity._FindProperty");
             return null;
          }
          
@@ -311,8 +311,8 @@ class Entity extends EventDispatcher implements IEntity
             if(!cachedWalk)
             {
                if(!suppressErrors)
-                  Logger.PrintWarning(this, "_FindProperty", "Could not resolve property '" + cl[i] + "' for property reference '" + reference.Property + "' with cached reference"  + Logger.GetCallStack());
-               Profiler.Exit("Entity._FindProperty");
+                  Logger.printWarning(this, "_FindProperty", "Could not resolve property '" + cl[i] + "' for property reference '" + reference.property + "' with cached reference"  + Logger.getCallStack());
+               Profiler.exit("Entity._FindProperty");
                return null;
             }
          }
@@ -320,12 +320,12 @@ class Entity extends EventDispatcher implements IEntity
          var cachedPi:PropertyInfo = providedPi;
          cachedPi.PropertyParent = cachedWalk;
          cachedPi.PropertyName = cl[cl.length-1];
-         Profiler.Exit("Entity._FindProperty");
+         Profiler.exit("Entity._FindProperty");
          return cachedPi;
       }
       
       // Split up the property reference.      
-      var propertyName:String = reference.Property;
+      var propertyName:String = reference.property;
       var path:Array = propertyName.split(".");
       
       // Distinguish if it is a component reference (@), named object ref (#), or
@@ -339,11 +339,11 @@ class Entity extends EventDispatcher implements IEntity
       if(startChar == "@")
       {
          // Component reference, look up the component by name.
-         parentElem = LookupComponentByName(curLookup);
+         parentElem = lookupComponentByName(curLookup);
          if(!parentElem)
          {
-            Logger.PrintWarning(this, "_FindProperty", "Could not resolve component named '" + curLookup + "' for property '" + reference.Property + "'");
-            Profiler.Exit("Entity._FindProperty");
+            Logger.printWarning(this, "_FindProperty", "Could not resolve component named '" + curLookup + "' for property '" + reference.property + "'");
+            Profiler.exit("Entity._FindProperty");
             return null;
          }
          
@@ -354,22 +354,22 @@ class Entity extends EventDispatcher implements IEntity
       else if(startChar == "#")
       {
          // Named object reference. Look up the entity in the NameManager.
-         parentElem = NameManager.Instance.Lookup(curLookup);
+         parentElem = NameManager.instance.lookup(curLookup);
          if(!parentElem)
          {
-            Logger.PrintWarning(this, "_FindProperty", "Could not resolve named object named '" + curLookup + "' for property '" + reference.Property + "'");
-            Profiler.Exit("Entity._FindProperty");
+            Logger.printWarning(this, "_FindProperty", "Could not resolve named object named '" + curLookup + "' for property '" + reference.property + "'");
+            Profiler.exit("Entity._FindProperty");
             return null;
          }
          
          // Get the component on it.
          curIdx++;
          curLookup = path[1];
-         var comLookup:IEntityComponent = (parentElem as IEntity).LookupComponentByName(curLookup);
+         var comLookup:IEntityComponent = (parentElem as IEntity).lookupComponentByName(curLookup);
          if(!comLookup)
          {
-            Logger.PrintWarning(this, "_FindProperty", "Could not find component '" + curLookup + "' on named entity '" + (parentElem as IEntity).Name + "' for property '" + reference.Property + "'");
-            Profiler.Exit("Entity._FindProperty");
+            Logger.printWarning(this, "_FindProperty", "Could not find component '" + curLookup + "' on named entity '" + (parentElem as IEntity).name + "' for property '" + reference.property + "'");
+            Profiler.exit("Entity._FindProperty");
             return null;
          }
          parentElem = comLookup;
@@ -378,11 +378,11 @@ class Entity extends EventDispatcher implements IEntity
       {
          // XML reference. Look it up inside the TemplateManager. We only support
          // templates and entities - no groups.
-         parentElem = TemplateManager.Instance.GetXML(curLookup, "template", "entity");
+         parentElem = TemplateManager.instance.getXML(curLookup, "template", "entity");
          if(!parentElem)
          {
-            Logger.PrintWarning(this, "_FindProperty", "Could not find XML named '" + curLookup + "' for property '" + reference.Property + "'");
-            Profiler.Exit("Entity._FindProperty");
+            Logger.printWarning(this, "_FindProperty", "Could not find XML named '" + curLookup + "' for property '" + reference.property + "'");
+            Profiler.exit("Entity._FindProperty");
             return null;
          }
          
@@ -418,8 +418,8 @@ class Entity extends EventDispatcher implements IEntity
          // Error if we don't have it!
          if(!nextElem)
          {
-            Logger.PrintWarning(this, "_FindProperty", "Could not find component '" + path[1] + "' in XML template '" + path[0].slice(1) + "' for property '" + reference.Property + "'");
-            Profiler.Exit("Entity._FindProperty");
+            Logger.printWarning(this, "_FindProperty", "Could not find component '" + path[1] + "' in XML template '" + path[0].slice(1) + "' for property '" + reference.property + "'");
+            Profiler.exit("Entity._FindProperty");
             return null;
          }
          
@@ -431,8 +431,8 @@ class Entity extends EventDispatcher implements IEntity
       }
       else
       {
-         Logger.PrintWarning(this, "_FindProperty", "Got a property path that doesn't start with !, #, or @. Started with '" + startChar + "' for property '" + reference.Property + "'");
-         Profiler.Exit("Entity._FindProperty");
+         Logger.printWarning(this, "_FindProperty", "Got a property path that doesn't start with !, #, or @. Started with '" + startChar + "' for property '" + reference.property + "'");
+         Profiler.exit("Entity._FindProperty");
          return null;
       }
 
@@ -475,8 +475,8 @@ class Entity extends EventDispatcher implements IEntity
          
          if(gotEmpty)
          {
-            Logger.PrintWarning(this, "_FindProperty", "Could not resolve property '" + curLookup + "' for property reference '" + reference.Property + "'");
-            Profiler.Exit("Entity._FindProperty");
+            Logger.printWarning(this, "_FindProperty", "Could not resolve property '" + curLookup + "' for property reference '" + reference.property + "'");
+            Profiler.exit("Entity._FindProperty");
             return null;
          }
          
@@ -490,11 +490,11 @@ class Entity extends EventDispatcher implements IEntity
          var pi:PropertyInfo = providedPi;
          pi.PropertyParent = parentElem;
          pi.PropertyName = curLookup;
-         Profiler.Exit("Entity._FindProperty");
+         Profiler.exit("Entity._FindProperty");
          return pi;
       }
       
-      Profiler.Exit("Entity._FindProperty");
+      Profiler.exit("Entity._FindProperty");
       return null;
    }
    
@@ -509,7 +509,7 @@ class PropertyInfo
    public var PropertyParent:Object = null;
    public var PropertyName:String = null;
    
-   public function GetValue():*
+   public function getValue():*
    {
       try
       {
@@ -521,12 +521,12 @@ class PropertyInfo
       }
    }
    
-   public function SetValue(value:*):void
+   public function setValue(value:*):void
    {
       PropertyParent[PropertyName] = value;
    }
    
-   public function Clear():void
+   public function clear():void
    {
       PropertyParent = null;
       PropertyName = null;

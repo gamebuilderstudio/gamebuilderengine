@@ -35,7 +35,7 @@ package com.pblabs.engine.debug
       /**
        * The singleton Logger instance.
        */
-      public static function get Instance():Logger
+      public static function get instance():Logger
       {
          if (_instance == null)
             _instance = new Logger();
@@ -50,13 +50,13 @@ package com.pblabs.engine.debug
        * @param reporter The object that reported the message. This can be null.
        * @param message The message to print to the log.
        */
-      public static function Print(reporter:*, message:String):void
+      public static function print(reporter:*, message:String):void
       {
          var entry:LogEntry = new LogEntry();
          entry.Reporter = reporter;
          entry.Message = message;
          entry.Type = LogEntry.MESSAGE;
-         Instance._AddEntry(entry);
+         instance._AddEntry(entry);
       }
       
       /**
@@ -70,10 +70,10 @@ package com.pblabs.engine.debug
        * 
        * @see #Push()
        */
-      public static function PrintHeader(reporter:*, message:String):void
+      public static function printHeader(reporter:*, message:String):void
       {
-         Print(reporter, message);
-         Push();
+         print(reporter, message);
+         push();
       }
       
       /**
@@ -87,10 +87,10 @@ package com.pblabs.engine.debug
        * 
        * @see #Pop()
        */
-      public static function PrintFooter(reporter:*, message:String):void
+      public static function printFooter(reporter:*, message:String):void
       {
-         Print(reporter, message);
-         Pop();
+         print(reporter, message);
+         pop();
       }
       
       /**
@@ -101,14 +101,14 @@ package com.pblabs.engine.debug
        * @param method The name of the method that the warning was reported from.
        * @param message The warning to print to the log.
        */
-      public static function PrintWarning(reporter:*, method:String, message:String):void
+      public static function printWarning(reporter:*, method:String, message:String):void
       {
          var entry:LogEntry = new LogEntry();
          entry.Reporter = reporter;
          entry.Method = method;
          entry.Message = method + " - " + message;
          entry.Type = LogEntry.WARNING;
-         Instance._AddEntry(entry);
+         instance._AddEntry(entry);
       }
       
       /**
@@ -119,14 +119,14 @@ package com.pblabs.engine.debug
        * @param method The name of the method that the error was reported from.
        * @param message The error to print to the log.
        */
-      public static function PrintError(reporter:*, method:String, message:String):void
+      public static function printError(reporter:*, method:String, message:String):void
       {
          var entry:LogEntry = new LogEntry();
          entry.Reporter = reporter;
          entry.Method = method;
          entry.Message = method + " - " + message;
          entry.Type = LogEntry.ERROR;
-         Instance._AddEntry(entry);
+         instance._AddEntry(entry);
       }
       
       /**
@@ -138,21 +138,21 @@ package com.pblabs.engine.debug
        * @param message The message to print to the log.
        * @param type The custom type to give the message.
        */
-      public static function PrintCustom(reporter:*, method:String, message:String, type:String):void
+      public static function printCustom(reporter:*, method:String, message:String, type:String):void
       {
          var entry:LogEntry = new LogEntry();
          entry.Reporter = reporter;
          entry.Method = method;
          entry.Message = method + " - " + message;
          entry.Type = type;
-         Instance._AddEntry(entry);
+         instance._AddEntry(entry);
       }
       
       /**
        * Utility function to get the current callstack. Only works in debug build.
        * Useful for noting who called what. Empty when in release build.
        */
-      public static function GetCallStack():String
+      public static function getCallStack():String
       {
          try
          {
@@ -176,7 +176,7 @@ package com.pblabs.engine.debug
        * @see #Pop()
        * @see #PrintHeader()
        */
-      public static function Push():void
+      public static function push():void
       {
       }
       
@@ -187,7 +187,7 @@ package com.pblabs.engine.debug
        * @see #Push()
        * @see #PrintFooter()
        */
-      public static function Pop():void
+      public static function pop():void
       {
       }
       
@@ -196,7 +196,7 @@ package com.pblabs.engine.debug
       private function _AddEntry(entry:LogEntry):void
       {
          var reporter:* = entry.Reporter ? entry.Reporter : this;
-         var logger:com.pblabs.engine.debug.log4PBE.Logger = com.pblabs.engine.debug.log4PBE.Logger.GetLogger(reporter);
+         var logger:com.pblabs.engine.debug.log4PBE.Logger = com.pblabs.engine.debug.log4PBE.Logger.getLogger(reporter);
          
          var level:String = "Info";
          if (entry.Type == LogEntry.ERROR)
@@ -204,7 +204,7 @@ package com.pblabs.engine.debug
          else if (entry.Type == LogEntry.WARNING)
             level = "Warn";
          
-         logger.Log(level, entry.Message);
+         logger.log(level, entry.Message);
       }
    }
 }

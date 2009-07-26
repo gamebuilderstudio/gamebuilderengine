@@ -23,32 +23,32 @@ package com.pblabs.box2D
    public class Box2DManagerComponent extends EntityComponent implements ITickedObject, ISpatialManager2D
    {
       [EditorData(defaultValue="30")]
-      public function get Scale():Number
+      public function get scale():Number
       {
          return _scale;
       }
       
-      public function set Scale(value:Number):void
+      public function set scale(value:Number):void
       {
          _scale = value;
       }
       
-      public function get InverseScale():Number
+      public function get inverseScale():Number
       {
          return 1 / _scale;
       }
       
       [EditorData(defaultValue="true")]
-      public function get AllowSleep():Boolean
+      public function get allowSleep():Boolean
       {
          return _allowSleep;
       }
       
-      public function set AllowSleep(value:Boolean):void
+      public function set allowSleep(value:Boolean):void
       {
          if (_world)
          {
-            Logger.PrintWarning(this, "AllowSleep", "This property cannot be changed once the world has been created!");
+            Logger.printWarning(this, "AllowSleep", "This property cannot be changed once the world has been created!");
             return;
          }
          
@@ -56,12 +56,12 @@ package com.pblabs.box2D
       }
       
       [EditorData(defaultValue="9.81")]
-      public function get Gravity():Point
+      public function get gravity():Point
       {
          return _gravity;
       }
       
-      public function set Gravity(value:Point):void
+      public function set gravity(value:Point):void
       {
          _gravity = value;
          
@@ -70,29 +70,29 @@ package com.pblabs.box2D
       }
       
       [EditorData(defaultValue="-10000|-10000|20000|20000")]
-      public function get WorldBounds():Rectangle
+      public function get worldBounds():Rectangle
       {
          return _worldBounds;
       }
       
-      public function set WorldBounds(value:Rectangle):void
+      public function set worldBounds(value:Rectangle):void
       {
          if (_world)
          {
-            Logger.PrintWarning(this, "WorldBounds", "This property cannot be changed once the world has been created!");
+            Logger.printWarning(this, "WorldBounds", "This property cannot be changed once the world has been created!");
             return;
          }
          
          _worldBounds = value;
       }
       
-      protected override function _OnAdd():void
+      protected override function onAdd():void
       {
-         ProcessManager.Instance.AddTickedObject(this);
+         ProcessManager.instance.addTickedObject(this);
          _CreateWorld();
       }
       
-      protected override function _OnRemove():void 
+      protected override function onRemove():void 
       {
          var body:b2Body = _world.GetBodyList();
          while (body)
@@ -103,52 +103,52 @@ package com.pblabs.box2D
          }
          
          _world = null;
-         ProcessManager.Instance.RemoveTickedObject(this);
+         ProcessManager.instance.removeTickedObject(this);
       }
       
-      public function Add(bodyDef:b2BodyDef):b2Body
+      public function add(bodyDef:b2BodyDef):b2Body
       {
          var body:b2Body = _world.CreateBody(bodyDef);
          return body;
       }
       
-      public function Remove(body:b2Body):void
+      public function remove(body:b2Body):void
       {
          if (_world)
             _world.DestroyBody(body);
       }
       
-      public function SetDebugDrawer(drawer:b2DebugDraw):void
+      public function setDebugDrawer(drawer:b2DebugDraw):void
       {
          drawer.m_drawScale = _scale;
          _world.SetDebugDraw(drawer);
       }
       
-      public function OnTick(tickRate:Number):void
+      public function onTick(tickRate:Number):void
       {
          _world.Step(tickRate, 10);
       }
       
-      public function OnInterpolateTick(factor:Number):void
+      public function onInterpolateTick(factor:Number):void
       {
       }
       
-      public function AddSpatialObject(object:ISpatialObject2D):void
+      public function addSpatialObject(object:ISpatialObject2D):void
       {
-         _otherItems.AddSpatialObject(object);
+         _otherItems.addSpatialObject(object);
       }
       
-      public function RemoveSpatialObject(object:ISpatialObject2D):void
+      public function removeSpatialObject(object:ISpatialObject2D):void
       {
-         _otherItems.RemoveSpatialObject(object);
+         _otherItems.removeSpatialObject(object);
       }
 
-      public function QueryRectangle(box:Rectangle, mask:ObjectType, results:Array):Boolean
+      public function queryRectangle(box:Rectangle, mask:ObjectType, results:Array):Boolean
       {
          // Query Box2D.
          var aabb:b2AABB = new b2AABB();
-         aabb.lowerBound = b2Vec2.Make(box.topLeft.x / Scale, box.topLeft.y / Scale);
-         aabb.upperBound = b2Vec2.Make(box.bottomRight.x / Scale, box.bottomRight.y / Scale);
+         aabb.lowerBound = b2Vec2.Make(box.topLeft.x / scale, box.topLeft.y / scale);
+         aabb.upperBound = b2Vec2.Make(box.bottomRight.x / scale, box.bottomRight.y / scale);
          
          var resultShapes:Array = new Array(1024);
          if(_world.Query(aabb, resultShapes, 1024)==0)
@@ -162,43 +162,43 @@ package com.pblabs.box2D
             
             var curShape:b2Shape = resultShapes[i] as b2Shape;
             var curComponent:Box2DSpatialComponent = curShape.GetBody().GetUserData() as Box2DSpatialComponent;
-            if(ObjectTypeManager.Instance.DoTypesOverlap(curComponent.CollisionType, mask))
+            if(ObjectTypeManager.instance.doTypesOverlap(curComponent.collisionType, mask))
                results.push(curComponent);
          }
          
          // Let the other items have a turn.
-         i += _otherItems.QueryRectangle(box, mask, results) ? 1 : 0;
+         i += _otherItems.queryRectangle(box, mask, results) ? 1 : 0;
          
          // If we made it anywhere with i, then we got a result.
          return (i != 0);
       }
       
-      public function QueryCircle(center:Point, radius:Number, mask:ObjectType, results:Array):Boolean
+      public function queryCircle(center:Point, radius:Number, mask:ObjectType, results:Array):Boolean
       {
-         return _otherItems.QueryCircle(center, radius, mask, results);
+         return _otherItems.queryCircle(center, radius, mask, results);
       }
       
-      public function CastRay(start:Point, end:Point, mask:ObjectType, result:RayHitInfo):Boolean
+      public function castRay(start:Point, end:Point, mask:ObjectType, result:RayHitInfo):Boolean
       {
-         return _otherItems.CastRay(start, end, mask, result);
+         return _otherItems.castRay(start, end, mask, result);
       }
       
       /**
        * @inheritDoc
        */
-      public function ObjectsUnderPoint(point:Point, mask:ObjectType, results:Array, scene:IDrawManager2D):Boolean
+      public function objectsUnderPoint(point:Point, mask:ObjectType, results:Array, scene:IDrawManager2D):Boolean
       {
          var tmpResults:Array = new Array();
          
          // First use the normal spatial query...
-         if(!QueryCircle(point, 0.01, mask, tmpResults))
+         if(!queryCircle(point, 0.01, mask, tmpResults))
             return false;
          
          // Ok, now pass control to the objects and see what they think.
          var hitAny:Boolean = false;
          for each(var tmp:ISpatialObject2D in tmpResults)
          {
-            if(!tmp.PointOccupied(point, scene))
+            if(!tmp.pointOccupied(point, scene))
                continue;
             
             results.push(tmp);

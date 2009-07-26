@@ -9,20 +9,20 @@ package com.pblabs.components.stateMachine
       
       public function Transition(targetState:String = null)
       {
-         TargetState = targetState;
+         targetState = targetState;
       }
       
-      public function Evaluate(fsm:IMachine):Boolean
+      public function evaluate(fsm:IMachine):Boolean
       {
          return true;
       }
       
-      public function GetTargetState():String
+      public function getTargetState():String
       {
          return _TargetState;
       }
       
-      public function set TargetState(value:String):void
+      public function set targetState(value:String):void
       {
          _TargetState = value;
       }

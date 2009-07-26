@@ -61,13 +61,13 @@ package com.pblabs.rendering2D
        */
       public var CurrentAnimationStartTimeReference:PropertyReference;
       
-      public override function OnFrame(elapsed:Number) : void
+      public override function onFrame(elapsed:Number) : void
       {
          // Check for a new animation.
          var nextAnim:AnimationControllerInfo = null;
          if(CurrentAnimationReference)
          {
-            var nextAnimName:String = Owner.GetProperty(CurrentAnimationReference);
+            var nextAnimName:String = owner.getProperty(CurrentAnimationReference);
             nextAnim = Animations[nextAnimName];
          }
          else
@@ -78,7 +78,7 @@ package com.pblabs.rendering2D
          // Go to default animation if we've nothing better to do.
          if(!nextAnim)
          {
-           Logger.PrintWarning(this, "OnFrame", "Animation '" + nextAnimName + "' not found, going with default animation '" + DefaultAnimation + "'.");
+           Logger.printWarning(this, "OnFrame", "Animation '" + nextAnimName + "' not found, going with default animation '" + DefaultAnimation + "'.");
            nextAnim = Animations[DefaultAnimation];
          }
          
@@ -87,17 +87,17 @@ package com.pblabs.rendering2D
            
          // Expire current animation if it has finished playing and it's what we
          // want to keep playing.
-         if(ProcessManager.Instance.VirtualTime > (_CurrentAnimationStartTime + _CurrentAnimationDuration))
+         if(ProcessManager.instance.virtualTime > (_CurrentAnimationStartTime + _CurrentAnimationDuration))
             _CurrentAnimation = null;
          
          // If we do not have a current animation, start playing the next.
          if(!_CurrentAnimation || nextAnim.Priority > _CurrentAnimation.Priority)
-            SetAnimation(nextAnim);
+            setAnimation(nextAnim);
            
          // If no current animation, then abort!
          if(!_CurrentAnimation)
          {
-            Logger.PrintWarning(this, "OnFrame", "No current animation. Aborting!");
+            Logger.printWarning(this, "OnFrame", "No current animation. Aborting!");
             return;
          }
          
@@ -105,63 +105,63 @@ package com.pblabs.rendering2D
          // the sprite sheet and frame properties.
          
          // Figure out what frame we are on.
-         var frameTime:Number = _CurrentAnimationDuration / _CurrentAnimation.SpriteSheet.FrameCount;
+         var frameTime:Number = _CurrentAnimationDuration / _CurrentAnimation.SpriteSheet.frameCount;
          if(frameTime > _CurrentAnimation.MaxFrameDelay)
             frameTime = _CurrentAnimation.MaxFrameDelay;
 
-         var animationAge:Number = ProcessManager.Instance.VirtualTime - _CurrentAnimationStartTime;
+         var animationAge:Number = ProcessManager.instance.virtualTime - _CurrentAnimationStartTime;
          var curFrame:int = Math.floor(animationAge/frameTime);
          
          // Deal with clamping/looping.
          if(!_CurrentAnimation.Loop)
          {
-           if(curFrame >= _CurrentAnimation.SpriteSheet.FrameCount)
-              curFrame = _CurrentAnimation.SpriteSheet.FrameCount - 1;
+           if(curFrame >= _CurrentAnimation.SpriteSheet.frameCount)
+              curFrame = _CurrentAnimation.SpriteSheet.frameCount - 1;
          }
          else
          {
             var wasFrame:int = curFrame;
-            curFrame = curFrame % _CurrentAnimation.SpriteSheet.FrameCount;
+            curFrame = curFrame % _CurrentAnimation.SpriteSheet.frameCount;
          }
          
          // Assign properties.
-         Owner.SetProperty(SpriteSheetReference, _CurrentAnimation.SpriteSheet);
-         Owner.SetProperty(CurrentFrameReference, curFrame);
+         owner.setProperty(SpriteSheetReference, _CurrentAnimation.SpriteSheet);
+         owner.setProperty(CurrentFrameReference, curFrame);
       }
       
       /**
        * Set the current animation to specified info.
        */ 
-      public function SetAnimation(ai:AnimationControllerInfo):void
+      public function setAnimation(ai:AnimationControllerInfo):void
       {
-         Profiler.Enter("AnimationController.SetAnimation");
+         Profiler.enter("AnimationController.SetAnimation");
          
          // Fire stop event.
          if(_CurrentAnimation && _CurrentAnimation.CompleteEvent)
-            Owner.EventDispatcher.dispatchEvent(new Event(_CurrentAnimation.CompleteEvent));
+            owner.eventDispatcher.dispatchEvent(new Event(_CurrentAnimation.CompleteEvent));
 
          _CurrentAnimation = ai;
          
          // Fire start event.
          if(_CurrentAnimation.StartEvent)
-            Owner.EventDispatcher.dispatchEvent(new Event(_CurrentAnimation.StartEvent));
+            owner.eventDispatcher.dispatchEvent(new Event(_CurrentAnimation.StartEvent));
          
          if(!ai.SpriteSheet)
             throw new Error("Animation had no sprite sheet!");
          
          // Note when we started.
          if(CurrentAnimationStartTimeReference)
-            _CurrentAnimationStartTime = Owner.GetProperty(CurrentAnimationStartTimeReference);
+            _CurrentAnimationStartTime = owner.getProperty(CurrentAnimationStartTimeReference);
          else
-            _CurrentAnimationStartTime = ProcessManager.Instance.VirtualTime;
+            _CurrentAnimationStartTime = ProcessManager.instance.virtualTime;
          
          // Update our duration information.
          if(CurrentAnimationDurationReference)
-            _CurrentAnimationDuration = Owner.GetProperty(CurrentAnimationDurationReference) * ProcessManager.TICK_RATE_MS;
+            _CurrentAnimationDuration = owner.getProperty(CurrentAnimationDurationReference) * ProcessManager.TICK_RATE_MS;
          else
-            _CurrentAnimationDuration = ai.SpriteSheet.FrameCount * ProcessManager.TICK_RATE_MS;
+            _CurrentAnimationDuration = ai.SpriteSheet.frameCount * ProcessManager.TICK_RATE_MS;
          
-         Profiler.Exit("AnimationController.SetAnimation");
+         Profiler.exit("AnimationController.SetAnimation");
       }
       
       /**

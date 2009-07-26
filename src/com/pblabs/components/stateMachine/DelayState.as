@@ -23,7 +23,7 @@ package com.pblabs.components.stateMachine
        */
       public var DelayRemaining:int = 0;
             
-      public override function Enter(fsm:IMachine):void
+      public override function enter(fsm:IMachine):void
       {
          // Set the delay.
          DelayRemaining = Delay;
@@ -32,10 +32,10 @@ package com.pblabs.components.stateMachine
             DelayRemaining += Math.round(2.0 * (Math.random() - 0.5) * Variance);
          
          // Pass control up.
-         super.Enter(fsm);
+         super.enter(fsm);
       }
       
-      public override function Tick(fsm:IMachine):void
+      public override function tick(fsm:IMachine):void
       {
          // Tick the delay.
          //trace("Ticking delay state!");
@@ -44,7 +44,7 @@ package com.pblabs.components.stateMachine
             return;
             
          // Pass control upwards.
-         super.Tick(fsm);   
+         super.tick(fsm);   
       }
    }
 }

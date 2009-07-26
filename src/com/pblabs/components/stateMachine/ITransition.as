@@ -10,12 +10,12 @@ package com.pblabs.components.stateMachine
       /**
        * What state will we be transitioning to?
        */
-      function GetTargetState():String;
+      function getTargetState():String;
       
       /**
-       * Evaluate the conditions for this state; if true then we go to
+       * evaluate the conditions for this state; if true then we go to
        * this transition's target.
        */
-      function Evaluate(fsm:IMachine):Boolean;
+      function evaluate(fsm:IMachine):Boolean;
    }
 }

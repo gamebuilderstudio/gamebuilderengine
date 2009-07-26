@@ -24,9 +24,9 @@ package com.pblabs.engine.serialization
    public class Serializer
    {
       /**
-       * Gets the singleton instance of the serializer class.
+       * Gets the singleton instance of the Serializer class.
        */
-      public static function get Instance():Serializer
+      public static function get instance():Serializer
       {
          if (!_instance)
             _instance = new Serializer();
@@ -38,60 +38,60 @@ package com.pblabs.engine.serialization
       
       public function Serializer()
       {
-         // Initialize our default serializers. Note "special" cases get a double
+         // initialize our default Serializers. Note "special" cases get a double
          // colon so there can be no overlap w/ any real type.
-         _deserializers["::DefaultSimple"] = _DeserializeSimple;
-         _deserializers["::DefaultComplex"] = _DeserializeComplex;
-         _deserializers["Boolean"] = _DeserializeBoolean;
-         _deserializers["Array"] = _DeserializeDictionary;
-         _deserializers["flash.utils::Dictionary"] = _DeserializeDictionary;
+         _deSerializers["::DefaultSimple"] = _deserializeSimple;
+         _deSerializers["::DefaultComplex"] = _deserializeComplex;
+         _deSerializers["Boolean"] = _deserializeBoolean;
+         _deSerializers["Array"] = _deserializeDictionary;
+         _deSerializers["flash.utils::Dictionary"] = _deserializeDictionary;
          
-         _serializers["::DefaultSimple"] = _SerializeSimple;
-         _serializers["::DefaultComplex"] = _SerializeComplex;
-         _serializers["Boolean"] = _SerializeBoolean;
+         _Serializers["::DefaultSimple"] = _serializeSimple;
+         _Serializers["::DefaultComplex"] = _serializeComplex;
+         _Serializers["Boolean"] = _serializeBoolean;
          
          // Do a quick sanity check to make sure we are getting metadata.
          var tmd:TestForMetadata = new TestForMetadata();
-         if(TypeUtility.GetTypeHint(tmd, "SomeArray") != "Number")
+         if(TypeUtility.getTypeHint(tmd, "SomeArray") != "Number")
             throw new Error("Metadata is not included in this build of the engine, so serialization will not work!\n" + 
             "Add --keep-as3-metadata+=TypeHint,EditorData,Embed to your compiler arguments to get around this.");
       }
       
       /**
-       * Serializes an object to XML. This is currently not implemented.
+       * serializes an object to XML. This is currently not implemented.
        * 
        * @param object The object to serialize. If this object implements ISerializable,
-       * its Serialize method will be called to do the serialization, otherwise the default
+       * its serialize method will be called to do the serialization, otherwise the default
        * behavior will be used.
        * 
        * @return The xml describing the specified object.
        * 
        * @see ISerializable
        */
-      public function Serialize(object:*, xml:XML):void
+      public function serialize(object:*, xml:XML):void
       {
          if (object is ISerializable)
          {
-            (object as ISerializable).Serialize(xml);
+            (object as ISerializable).serialize(xml);
          }
          else if (object is IEntity)
          {
             _currentEntity = object as IEntity;
-            _currentEntity.Serialize(xml);
+            _currentEntity.serialize(xml);
          }
          else
          {
-            // Normal case - determine type and call the right serializer.
-            var typeName:String = TypeUtility.GetObjectClassName(object);
-            if (!_serializers[typeName])
+            // Normal case - determine type and call the right Serializer.
+            var typeName:String = TypeUtility.getObjectClassName(object);
+            if (!_Serializers[typeName])
                typeName = _IsSimpleType(object) ? "::DefaultSimple" : "::DefaultComplex";
             
-            _serializers[typeName](object, xml);
+            _Serializers[typeName](object, xml);
          }
       }
       
       /**
-       * Deserializes an object from an xml description.
+       * deserializes an object from an xml description.
        * 
        * @param object The object on which the xml description will be applied.
        * @param xml The xml to deserialize from.
@@ -103,33 +103,33 @@ package com.pblabs.engine.serialization
        * Code that calls this method should always use the return value rather than
        * the passed in value for this reason.
        */
-      public function Deserialize(object:*, xml:XML, typeHint:String=null):*
+      public function deserialize(object:*, xml:XML, typeHint:String=null):*
       {
          // Dispatch our special cases - entities and ISerializables.
          if (object is ISerializable)
          {
-            return ISerializable(object).Deserialize(xml);
+            return ISerializable(object).deserialize(xml);
          }
          else if (object is IEntity)
          {
             _currentEntity = object as IEntity;
-            _currentEntity.Deserialize(xml, true);
-            ResolveReferences();
+            _currentEntity.deserialize(xml, true);
+            resolveReferences();
             return object as IEntity;
          }
          
-         // Normal case - determine type and call the right serializer.
-         var typeName:String = TypeUtility.GetObjectClassName(object);
-         if (!_deserializers[typeName])
+         // Normal case - determine type and call the right Serializer.
+         var typeName:String = TypeUtility.getObjectClassName(object);
+         if (!_deSerializers[typeName])
             typeName = xml.hasSimpleContent() ? "::DefaultSimple" : "::DefaultComplex";
          
-         return _deserializers[typeName](object, xml, typeHint);
+         return _deSerializers[typeName](object, xml, typeHint);
       }
       
       /**
        * Set the entity relative to which current serialization work is happening. Mostly for internal use.
        */
-      public function SetCurrentEntity(e:IEntity):void
+      public function setCurrentEntity(e:IEntity):void
       {
          _currentEntity = e;
       }
@@ -137,7 +137,7 @@ package com.pblabs.engine.serialization
       /**
        * Clear the entity relative to which current serialization work is happening. Mostly for internal use.
        */
-      public function ClearCurrentEntity():void
+      public function clearCurrentEntity():void
       {
          _currentEntity = null;
       }
@@ -147,12 +147,12 @@ package com.pblabs.engine.serialization
        * we only report "dangling references" at certain times. This method 
        * triggers such a report.
        */
-      public function ReportMissingReferences():void
+      public function reportMissingReferences():void
       {
          for (var i:int = 0; i < _deferredReferences.length; i++)
          {
             var reference:ReferenceNote = _deferredReferences[i];
-            reference.ReportMissing();
+            reference.reportMissing();
          }
       }
       
@@ -176,14 +176,14 @@ package com.pblabs.engine.serialization
       
       private function _IsSimpleType(object:*):Boolean
       {
-         var typeName:String = TypeUtility.GetObjectClassName(object);
+         var typeName:String = TypeUtility.getObjectClassName(object);
          if (typeName == "String" || typeName == "int" || typeName == "Number" || typeName == "uint" || typeName == "Boolean")
             return true;
          
          return false;
       }
       
-      private function _DeserializeSimple(object:*, xml:XML, typeHint:String):*
+      private function _deserializeSimple(object:*, xml:XML, typeHint:String):*
       {
          // If the tag is empty and we're not a string where """ is a valid value,
          // just return that value.
@@ -193,14 +193,14 @@ package com.pblabs.engine.serialization
          return xml.toString();
       }
       
-      private function _SerializeSimple(object:*, xml:XML):void
+      private function _serializeSimple(object:*, xml:XML):void
       {
          xml.appendChild(object.toString());
       }
       
-      private function _DeserializeComplex(object:*, xml:XML, typeHint:String):*
+      private function _deserializeComplex(object:*, xml:XML, typeHint:String):*
       {
-         var isDynamic:Boolean = (object is Array) || (object is Dictionary) || (TypeUtility.IsDynamic(object));
+         var isDynamic:Boolean = (object is Array) || (object is Dictionary) || (TypeUtility.isDynamic(object));
          
          for each (var fieldXML:XML in xml.*)
          {
@@ -208,26 +208,26 @@ package com.pblabs.engine.serialization
             var fieldName:String = fieldXML.name().toString();
             if (!object.hasOwnProperty(fieldName) && !isDynamic)
             {
-               Logger.PrintWarning(object, "Deserialize", "The field '" + fieldName + "' does not exist on the class " + TypeUtility.GetObjectClassName(object) + ".");
+               Logger.printWarning(object, "deserialize", "The field '" + fieldName + "' does not exist on the class " + TypeUtility.getObjectClassName(object) + ".");
                continue;
             }
             
             // Determine the type.
             var typeName:String = fieldXML.attribute("type");
             if (typeName.length < 1)
-               typeName = TypeUtility.GetFieldType(object, fieldName);
+               typeName = TypeUtility.getFieldType(object, fieldName);
             if (isDynamic && typeName == null)
                typeName = "String";
             
-            // Deserialize into the child.
-            if (!_GetChildReference(object, fieldName, fieldXML) && !_GetResourceObject(object, fieldName, fieldXML))
+            // deserialize into the child.
+            if (!_GetChildReference(object, fieldName, fieldXML) && !getResourceObject(object, fieldName, fieldXML))
             {
                var child:* = _GetChildObject(object, fieldName, typeName);
                if (child)
                {
                   // Deal with typehints.
-                  var childTypeHint:String = TypeUtility.GetTypeHint(object, fieldName);
-                  child = Deserialize(child, fieldXML, childTypeHint);
+                  var childTypeHint:String = TypeUtility.getTypeHint(object, fieldName);
+                  child = deserialize(child, fieldXML, childTypeHint);
                }
                
                // Assign the new value.
@@ -237,7 +237,7 @@ package com.pblabs.engine.serialization
                }
                catch(e:Error)
                {
-                  Logger.PrintError(object, "Deserialize", "The field " + fieldName + " could not be set to '" + child + "' due to:" + e.toString());
+                  Logger.printError(object, "deserialize", "The field " + fieldName + " could not be set to '" + child + "' due to:" + e.toString());
                }
             }
          }
@@ -245,16 +245,16 @@ package com.pblabs.engine.serialization
          return object;
       }
       
-      private function _SerializeComplex(object:*, xml:XML):void
+      private function _serializeComplex(object:*, xml:XML):void
       {
-         var classDescription:XML = TypeUtility.GetTypeDescription(object);
+         var classDescription:XML = TypeUtility.getTypeDescription(object);
          for each (var property:XML in classDescription.child("accessor"))
          {
             if (property.@access == "readwrite")
             {
                var propertyName:String = property.@name;
                var propertyXML:XML = <{propertyName}/>
-               Serialize(object[propertyName], propertyXML);
+               serialize(object[propertyName], propertyXML);
                xml.appendChild(propertyXML);
             }
          }
@@ -263,17 +263,17 @@ package com.pblabs.engine.serialization
          {
             var fieldName:String = field.@name;
             var fieldXML:XML = <{fieldName}/>
-            Serialize(object[fieldName], fieldXML);
+            serialize(object[fieldName], fieldXML);
             xml.appendChild(fieldXML);
          }
       }
       
-      private function _DeserializeBoolean(object:*, xml:XML, typeHint:String):*
+      private function _deserializeBoolean(object:*, xml:XML, typeHint:String):*
       {
          return (xml.toString() == "true")
       }
       
-      private function _SerializeBoolean(object:*, xml:XML):void
+      private function _serializeBoolean(object:*, xml:XML):void
       {
          if (object)
             xml.appendChild("true");
@@ -281,7 +281,7 @@ package com.pblabs.engine.serialization
             xml.appendChild("false");
       }
       
-      private function _DeserializeDictionary(object:*, xml:XML, typeHint:String):*
+      private function _deserializeDictionary(object:*, xml:XML, typeHint:String):*
       {
          for each (var childXML:XML in xml.*)
          {
@@ -295,7 +295,7 @@ package com.pblabs.engine.serialization
             // Might be invalid...
             if ((key.length < 1) && !(object is Array))
             {
-               Logger.PrintError(object, "Deserialize", "Cannot add a value to a dictionary without a key.");
+               Logger.printError(object, "deserialize", "Cannot add a value to a dictionary without a key.");
                continue;
             }
             
@@ -307,12 +307,12 @@ package com.pblabs.engine.serialization
             if (typeName == null || typeName == "")
                typeName = typeHint ? typeHint : "String";
             
-            // Deserialize the value.
-            if (!_GetChildReference(object, key, childXML) && !_GetResourceObject(object, key, childXML, typeHint))
+            // deserialize the value.
+            if (!_GetChildReference(object, key, childXML) && !getResourceObject(object, key, childXML, typeHint))
             {
                var value:* = _GetChildObject(object, key, typeName);
                if (value != null)
-                  value = Deserialize(value, childXML);
+                  value = deserialize(value, childXML);
                
                // Assign, either to key or to end of array.
                if (key.length > 0)
@@ -335,7 +335,7 @@ package com.pblabs.engine.serialization
          if (nameReference != "" || componentReference != "" || componentName != "" || objectReference != "")
          {
             var reference:ReferenceNote = new ReferenceNote();
-            reference.Owner = object;
+            reference.owner = object;
             reference.FieldName = fieldName;
             reference.NameReference = nameReference;
             reference.ComponentReference = componentReference;
@@ -343,7 +343,7 @@ package com.pblabs.engine.serialization
             reference.ObjectReference = objectReference;
             reference.CurrentEntity = _currentEntity;
             
-            if (!reference.Resolve())
+            if (!reference.resolve())
                _deferredReferences.push(reference);
             
             return true;
@@ -368,18 +368,18 @@ package com.pblabs.engine.serialization
          }
          
          if (!childObject)
-            childObject = TypeUtility.Instantiate(typeName);
+            childObject = TypeUtility.instantiate(typeName);
          
          if (!childObject)
          {
-            Logger.PrintError(object, "Deserialize", "Unable to create type " + typeName + " for the field " + fieldName + ".");
+            Logger.printError(object, "deserialize", "Unable to create type " + typeName + " for the field " + fieldName + ".");
             return null;
          }
          
          return childObject;
       }
       
-      private function _GetResourceObject(object:*, fieldName:String, xml:XML, typeHint:String = null):Boolean
+      private function getResourceObject(object:*, fieldName:String, xml:XML, typeHint:String = null):Boolean
       {
          var filename:String = xml.attribute("filename");
          if (filename == "")
@@ -387,14 +387,14 @@ package com.pblabs.engine.serialization
             
          var type:Class = null;
          if(typeHint)
-            type = TypeUtility.GetClassFromName(typeHint);
+            type = TypeUtility.getClassFromName(typeHint);
          else
-            type = TypeUtility.GetClassFromName(TypeUtility.GetFieldType(object, fieldName));
+            type = TypeUtility.getClassFromName(TypeUtility.getFieldType(object, fieldName));
          
          var resource:ResourceNote = new ResourceNote();
-         resource.Owner = object;
-         resource.FieldName = fieldName;
-         resource.Load(filename, type);
+         resource.owner = object;
+         resource.fieldName = fieldName;
+         resource.load(filename, type);
          
          // we have to hang on to these so they don't get garbage collected
          _resources[filename] = resource;
@@ -408,12 +408,12 @@ package com.pblabs.engine.serialization
          delete _resources[filename];
       }
       
-      public function ResolveReferences():void
+      public function resolveReferences():void
       {
          for (var i:int = 0; i < _deferredReferences.length; i++)
          {
             var reference:ReferenceNote = _deferredReferences[i];
-            if (reference.Resolve())
+            if (reference.resolve())
             {
                _deferredReferences.splice(i, 1);
                i--;
@@ -422,8 +422,8 @@ package com.pblabs.engine.serialization
       }
       
       private var _currentEntity:IEntity = null;
-      private var _serializers:Dictionary = new Dictionary();
-      private var _deserializers:Dictionary = new Dictionary();
+      private var _Serializers:Dictionary = new Dictionary();
+      private var _deSerializers:Dictionary = new Dictionary();
       private var _deferredReferences:Array = new Array();
       private var _resources:Dictionary = new Dictionary();
    }
@@ -441,30 +441,30 @@ import com.pblabs.engine.serialization.Serializer;
 
 internal class ResourceNote
 {
-   public var Owner:* = null;
-   public var FieldName:String = null;
+   public var owner:* = null;
+   public var fieldName:String = null;
    
-   public function Load(filename:String, type:Class):void
+   public function load(filename:String, type:Class):void
    {
-      ResourceManager.Instance.Load(filename, type, _OnLoaded, _OnFailed);
+      ResourceManager.instance.load(filename, type, onLoaded, onFailed);
    }
    
-   public function _OnLoaded(resource:Resource):void
+   public function onLoaded(resource:Resource):void
    {
-      Owner[FieldName] = resource;
-      Serializer.Instance._RemoveResource(resource.Filename);
+      owner[fieldName] = resource;
+      Serializer.instance._RemoveResource(resource.filename);
    }
    
-   public function _OnFailed(resource:Resource):void
+   public function onFailed(resource:Resource):void
    {
-      Logger.PrintError(Owner, "set " + FieldName, "No resource was found with filename " + resource.Filename + ".");
-      Serializer.Instance._RemoveResource(resource.Filename);
+      Logger.printError(owner, "set " + fieldName, "No resource was found with filename " + resource.filename + ".");
+      Serializer.instance._RemoveResource(resource.filename);
    }
 }
 
 internal class ReferenceNote
 {
-   public var Owner:* = null;
+   public var owner:* = null;
    public var FieldName:String = null;
    public var NameReference:String = null;
    public var ComponentReference:String = null;
@@ -473,16 +473,16 @@ internal class ReferenceNote
    public var CurrentEntity:IEntity = null;
    public var ReportedMissing:Boolean = false;
    
-   public function Resolve():Boolean
+   public function resolve():Boolean
    {
       // Look up by name.
       if (NameReference != "")
       {
-         var namedObject:IEntity = NameManager.Instance.Lookup(NameReference);
+         var namedObject:IEntity = NameManager.instance.lookup(NameReference);
          if (!namedObject)
             return false;
          
-         Owner[FieldName] = namedObject;
+         owner[FieldName] = namedObject;
          _ReportSuccess();
          return true;
       }
@@ -490,26 +490,26 @@ internal class ReferenceNote
       // Look up a component on a named object by name (first) or type (second).
       if (ComponentReference != "")
       {
-         var componentObject:IEntity = NameManager.Instance.Lookup(ComponentReference);
+         var componentObject:IEntity = NameManager.instance.lookup(ComponentReference);
          if (!componentObject)
             return false;
          
          var component:IEntityComponent = null;
          if (ComponentName != "")
          {
-            component = componentObject.LookupComponentByName(ComponentName);
+            component = componentObject.lookupComponentByName(ComponentName);
             if (!component)
                return false;
          }
          else
          {
-            var componentType:String = TypeUtility.GetFieldType(Owner, FieldName);
-            component = componentObject.LookupComponentByType(TypeUtility.GetClassFromName(componentType));
+            var componentType:String = TypeUtility.getFieldType(owner, FieldName);
+            component = componentObject.lookupComponentByType(TypeUtility.getClassFromName(componentType));
             if (!component)
                return false;
          }
          
-         Owner[FieldName] = component;
+         owner[FieldName] = component;
          _ReportSuccess();
          return true;
       }
@@ -517,11 +517,11 @@ internal class ReferenceNote
       // Component reference on the entity being deserialized when the reference was created.
       if (ComponentName != "")
       {
-         var localComponent:IEntityComponent = CurrentEntity.LookupComponentByName(ComponentName);
+         var localComponent:IEntityComponent = CurrentEntity.lookupComponentByName(ComponentName);
          if (!localComponent)
             return false;
          
-         Owner[FieldName] = localComponent;
+         owner[FieldName] = localComponent;
          _ReportSuccess();
          return true;
       }
@@ -529,7 +529,7 @@ internal class ReferenceNote
       // Or instantiate a new entity.
       if (ObjectReference != "")
       {
-         Owner[FieldName] = TemplateManager.Instance.InstantiateEntity(ObjectReference);
+         owner[FieldName] = TemplateManager.instance.instantiateEntity(ObjectReference);
          _ReportSuccess();
          return true;
       }
@@ -541,33 +541,33 @@ internal class ReferenceNote
    /**
     * Trigger a console report about any references that haven't been resolved.
     */
-   public function ReportMissing():void
+   public function reportMissing():void
    {
       // Don't spam.
       if(ReportedMissing)
          return;
       ReportedMissing = true;
       
-      var firstPart:String = Owner.toString() + "[" + FieldName + "] on entity '" + CurrentEntity.Name + "' - ";
+      var firstPart:String = owner.toString() + "[" + FieldName + "] on entity '" + CurrentEntity.name + "' - ";
       
       // Name reference.
       if(NameReference)
       {
-         Logger.PrintWarning(this, "ReportMissing", firstPart + "Couldn't resolve reference to named entity '" + NameReference + "'");
+         Logger.printWarning(this, "reportMissing", firstPart + "Couldn't resolve reference to named entity '" + NameReference + "'");
          return; 
       }
 
       // Look up a component on a named object by name (first) or type (second).
       if (ComponentReference != "")
       {
-         Logger.PrintWarning(this, "ReportMissing", firstPart + " Couldn't find named entity '" + ComponentReference + "'");
+         Logger.printWarning(this, "reportMissing", firstPart + " Couldn't find named entity '" + ComponentReference + "'");
          return;
       }
       
       // Component reference on the entity being deserialized when the reference was created.
       if (ComponentName != "")
       {
-         Logger.PrintWarning(this, "ReportMissing", firstPart + " Couldn't find component on same entity named '" + ComponentName + "'");
+         Logger.printWarning(this, "reportMissing", firstPart + " Couldn't find component on same entity named '" + ComponentName + "'");
          return;
       }
    }
@@ -578,26 +578,26 @@ internal class ReferenceNote
       if(!ReportedMissing)
          return;
 
-      var firstPart:String = Owner.toString() + "[" + FieldName + "] on entity '" + CurrentEntity.Name + "' - ";
+      var firstPart:String = owner.toString() + "[" + FieldName + "] on entity '" + CurrentEntity.name + "' - ";
       
       // Name reference.
       if(NameReference)
       {
-         Logger.PrintWarning(this, "_ReportSuccess", firstPart + " After failure, was able to resolve reference to named entity '" + NameReference + "'");
+         Logger.printWarning(this, "_ReportSuccess", firstPart + " After failure, was able to resolve reference to named entity '" + NameReference + "'");
          return; 
       }
 
       // Look up a component on a named object by name (first) or type (second).
       if (ComponentReference != "")
       {
-         Logger.PrintWarning(this, "_ReportSuccess", firstPart + " After failure, was able to find named entity '" + ComponentReference + "'");
+         Logger.printWarning(this, "_ReportSuccess", firstPart + " After failure, was able to find named entity '" + ComponentReference + "'");
          return;
       }
       
       // Component reference on the entity being deserialized when the reference was created.
       if (ComponentName != "")
       {
-         Logger.PrintWarning(this, "_ReportSuccess", firstPart + " After failure, was able to find component on same entity named '" + ComponentName + "'");
+         Logger.printWarning(this, "_ReportSuccess", firstPart + " After failure, was able to find component on same entity named '" + ComponentName + "'");
          return;
       }
    }
