@@ -86,6 +86,7 @@ package PBLabs.Engine.Serialization
          catch (e:Error)
          {
             Logger.PrintWarning(null, "Instantiate", "Failed to instantiate " + className + " due to " + e.toString());
+			Logger.PrintWarning(null, "Instantiate", "Is " + className + " included in your SWF? You may have to add a reference so the class is linked. (see References.as/References.mxml).");
          }
          
          // If we get here, couldn't new it.
