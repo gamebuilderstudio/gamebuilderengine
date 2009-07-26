@@ -14,6 +14,8 @@ package PBLabs.Rendering2D
          _Matrix = new Matrix();
          _Matrix.scale(value, value);
       }
+	  
+	  public var ScreenOffset:Point = new Point();
 
       /**
        * Subclasses must implement this method; it needs to return the embedded
@@ -26,15 +28,21 @@ package PBLabs.Rendering2D
       
       public override function OnDraw(manager:IDrawManager2D):void
       {
+		 if(!Owner)
+	     	return;
+		 
          if(_Clip == null)
             _Clip = _GetClipInstance();
          
          // Position and draw.
          var screenPos:Point = manager.TransformWorldToScreen(RenderPosition);
-         _Matrix.tx = screenPos.x;
-         _Matrix.ty = screenPos.y;
+		 _Matrix.identity();
+         _Matrix.tx = screenPos.x + ScreenOffset.x;
+         _Matrix.ty = screenPos.y + ScreenOffset.y;
          _Clip.transform.matrix = _Matrix;
 
+		 //trace("Drawing at " + screenPos.toString() + " with width=" + _Clip.width + ", height=" + _Clip.height);
+		 
          manager.DrawDisplayObject(_Clip);
          
          // If we're on the last frame, self-destruct.
@@ -46,7 +54,7 @@ package PBLabs.Rendering2D
          }
 
          // Update to next frame when appropriate.
-         if(ProcessManager.Instance.VirtualTime - _ClipLastUpdate > 1000/FrameRate)
+         if(ProcessManager.Instance.VirtualTime - _ClipLastUpdate > 1000.0/FrameRate)
          {
             _ClipFrame++;
             _Clip.gotoAndStop(_ClipFrame);

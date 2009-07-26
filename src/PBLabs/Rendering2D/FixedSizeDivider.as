@@ -39,8 +39,6 @@ package PBLabs.Rendering2D
          _owningSheet = value;
       }
       
-      public var _Garbage:Number;
-      
       /**
        * @inheritDoc
        */
