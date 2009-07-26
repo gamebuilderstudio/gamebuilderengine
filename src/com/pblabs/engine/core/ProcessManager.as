@@ -166,10 +166,10 @@ package com.pblabs.engine.core
             start();
          
          var schedule:ScheduleObject = new ScheduleObject();
-         schedule.TimeRemaining = delay;
-         schedule.ThisObject = thisObject;
-         schedule.Callback = callback;
-         schedule.Arguments = arguments;
+         schedule.timeRemaining = delay;
+         schedule.thisObject = thisObject;
+         schedule.callback = callback;
+         schedule.arguments = arguments;
          _scheduleEvents.push(schedule);
       }
       
@@ -255,9 +255,9 @@ package com.pblabs.engine.core
          }
          
          var processObject:ProcessObject = new ProcessObject();
-         processObject.Listener = object;
-         processObject.Priority = priority;
-         processObject.ProfilerKey = TypeUtility.getObjectClassName(object);
+         processObject.listener = object;
+         processObject.priority = priority;
+         processObject.profilerKey = TypeUtility.getObjectClassName(object);
          
          if (position < 0 || position >= list.length)
             list.push(processObject);
@@ -310,10 +310,10 @@ package com.pblabs.engine.core
          for (var i:int = 0; i < _scheduleEvents.length; i++)
          {
             var schedule:ScheduleObject = _scheduleEvents[i];
-            schedule.TimeRemaining -= elapsed;
-            if (schedule.TimeRemaining <= 0)
+            schedule.timeRemaining -= elapsed;
+            if (schedule.timeRemaining <= 0)
             {
-               schedule.Callback.apply(schedule.ThisObject, schedule.Arguments);
+               schedule.callback.apply(schedule.thisObject, schedule.arguments);
                _scheduleEvents.splice(i, 1);
                i--;
             }
@@ -330,9 +330,9 @@ package com.pblabs.engine.core
             
             for each (var object:ProcessObject in _tickedObjects)
             {
-               Profiler.enter(object.ProfilerKey);
-               object.Listener.OnTick(TICK_RATE);
-               Profiler.exit(object.ProfilerKey);
+               Profiler.enter(object.profilerKey);
+               object.listener.OnTick(TICK_RATE);
+               Profiler.exit(object.profilerKey);
             }
             
             Profiler.exit("Tick");
@@ -356,21 +356,21 @@ package com.pblabs.engine.core
          _interpolationFactor = _elapsed / TICK_RATE_MS;
          for each (var tickedObject:ProcessObject in _tickedObjects)
          {
-            Profiler.enter(tickedObject.ProfilerKey);
-            tickedObject.Listener.OnInterpolateTick(_interpolationFactor);
-            Profiler.exit(tickedObject.ProfilerKey);
+            Profiler.enter(tickedObject.profilerKey);
+            tickedObject.listener.OnInterpolateTick(_interpolationFactor);
+            Profiler.exit(tickedObject.profilerKey);
          }
          Profiler.exit("InterpolateTick");
          
          // Update objects wanting OnFrame callbacks.
-         Profiler.enter("Frame");
+         Profiler.enter("frame");
          for each (var animatedObject:ProcessObject in _animatedObjects)
          {
-            Profiler.enter(animatedObject.ProfilerKey);
-            animatedObject.Listener.OnFrame(elapsed / 1000);
-            Profiler.exit(animatedObject.ProfilerKey);
+            Profiler.enter(animatedObject.profilerKey);
+            animatedObject.listener.OnFrame(elapsed / 1000);
+            Profiler.exit(animatedObject.profilerKey);
          }
-         Profiler.exit("Frame");
+         Profiler.exit("frame");
          
          Profiler.ensureAtRoot();
       }
@@ -389,15 +389,15 @@ package com.pblabs.engine.core
 
 class ScheduleObject
 {
-   public var TimeRemaining:Number = 0.0;
-   public var ThisObject:Object = null;
-   public var Callback:Function = null;
-   public var Arguments:Array = null;
+   public var timeRemaining:Number = 0.0;
+   public var thisObject:Object = null;
+   public var callback:Function = null;
+   public var arguments:Array = null;
 }
 
 class ProcessObject
 {
-   public var ProfilerKey:String = null;
-   public var Listener:* = null;
-   public var Priority:Number = 0.0;
+   public var profilerKey:String = null;
+   public var listener:* = null;
+   public var priority:Number = 0.0;
 }

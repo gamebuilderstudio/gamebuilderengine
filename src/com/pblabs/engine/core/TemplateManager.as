@@ -246,9 +246,9 @@ package com.pblabs.engine.core
          }
          
          var thing:ThingReference = new ThingReference();
-         thing.XMLData = xml;
-         thing.Identifier = identifier;
-         thing.Version = version;
+         thing.xmlData = xml;
+         thing.identifier = identifier;
+         thing.version = version;
          
          _things[name] = thing;
       }
@@ -264,7 +264,7 @@ package com.pblabs.engine.core
          for (var name:String in _things)
          {
             var thing:ThingReference = _things[name];
-            if (thing.Identifier == identifier)
+            if (thing.identifier == identifier)
             {
                _things[name] = null;
                delete _things[name];
@@ -287,7 +287,7 @@ package com.pblabs.engine.core
       public function getXML(name:String, xmlType1:String = null, xmlType2:String = null):XML
       {
          var thing:ThingReference = doGetXML(name, xmlType1, xmlType2);
-         return thing ? thing.XMLData : null;
+         return thing ? thing.xmlData : null;
       }
       
       /**
@@ -313,7 +313,7 @@ package com.pblabs.engine.core
             throw new Error("Already have a thing registered under '" + name + "'!");
          
          var newThing:ThingReference = new ThingReference();
-         newThing.EntityCallback = callback;
+         newThing.entityCallback = callback;
          _things[name] = newThing;
       }
       
@@ -350,7 +350,7 @@ package com.pblabs.engine.core
             throw new Error("Already have a thing registered under '" + name + "'!");
          
          var newThing:ThingReference = new ThingReference();
-         newThing.GroupCallback = callback;
+         newThing.groupCallback = callback;
          _things[name] = newThing;
       }
       
@@ -378,12 +378,12 @@ package com.pblabs.engine.core
             return null;
          
          // No XML on callbacks.
-         if (thing.EntityCallback != null || thing.GroupCallback != null)
+         if (thing.entityCallback != null || thing.groupCallback != null)
             return null;
             
          if (xmlType1)
          {
-            var type:String = thing.XMLData.name();
+            var type:String = thing.xmlData.name();
             if (type != xmlType1 && type != xmlType2)
                return null;
          }
@@ -495,9 +495,9 @@ package com.pblabs.engine.core
  */
 class ThingReference
 {
-   public var Version:int = 0;
-   public var XMLData:XML = null;
-   public var EntityCallback:Function = null;
-   public var GroupCallback:Function = null;
-   public var Identifier:String = "";
+   public var version:int = 0;
+   public var xmlData:XML = null;
+   public var entityCallback:Function = null;
+   public var groupCallback:Function = null;
+   public var identifier:String = "";
 }

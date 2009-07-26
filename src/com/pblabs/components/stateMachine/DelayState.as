@@ -11,25 +11,25 @@ package com.pblabs.components.stateMachine
        * 
        * If this is 2, then on the second Tick() we will change state.
        */
-      public var Delay:Number = 0;
+      public var delay:Number = 0;
       
       /**
        * Variance in duration of delay. Plus or minus.
        */
-      public var Variance:Number = 0;
+      public var variance:Number = 0;
       
       /**
        * Number of ticks remaining.
        */
-      public var DelayRemaining:int = 0;
+      public var delayRemaining:int = 0;
             
       public override function enter(fsm:IMachine):void
       {
          // Set the delay.
-         DelayRemaining = Delay;
+         delayRemaining = delay;
          
-         if(Variance > 0)
-            DelayRemaining += Math.round(2.0 * (Math.random() - 0.5) * Variance);
+         if(variance > 0)
+            delayRemaining += Math.round(2.0 * (Math.random() - 0.5) * variance);
          
          // Pass control up.
          super.enter(fsm);
@@ -39,8 +39,8 @@ package com.pblabs.components.stateMachine
       {
          // Tick the delay.
          //trace("Ticking delay state!");
-         DelayRemaining--;
-         if(DelayRemaining > 0)
+         delayRemaining--;
+         if(delayRemaining > 0)
             return;
             
          // Pass control upwards.

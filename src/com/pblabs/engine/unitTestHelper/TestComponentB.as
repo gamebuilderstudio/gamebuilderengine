@@ -18,13 +18,13 @@ package com.pblabs.engine.unitTestHelper
     */
    public class TestComponentB extends EntityComponent
    {
-      public var TestComplex:Point = null;
+      public var testComplex:Point = null;
       
-      public var ATestValueReference:PropertyReference = new PropertyReference();
+      public var aTestValueReference:PropertyReference = new PropertyReference();
       
       public function getTestValueFromA():int
       {
-         return owner.getProperty(ATestValueReference);
+         return owner.getProperty(aTestValueReference);
       }
    }
 }

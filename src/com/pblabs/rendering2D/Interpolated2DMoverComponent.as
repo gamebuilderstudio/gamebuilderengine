@@ -8,57 +8,57 @@ package com.pblabs.rendering2D
    public class Interpolated2DMoverComponent extends SimpleSpatialComponent
    {
       [EditorData(ignore="true")]
-      public var GoalPosition:Point = new Point();
+      public var goalPosition:Point = new Point();
       
       [EditorData(ignore="true")]
-      public var GoalRotation:Number = 0;
+      public var goalRotation:Number = 0;
       
       [EditorData(defaultValue="5")]
-      public var TranslationSpeed:Number = 5.0;
+      public var translationSpeed:Number = 5.0;
       
       [EditorData(defaultValue="1")]
-      public var RotationSpeed:Number = 0.2;
+      public var rotationSpeed:Number = 0.2;
       
-      public var FaceInMovementDirection:Boolean = false;
+      public var faceInMovementDirection:Boolean = false;
       
       [EditorData(defaultValue="1")]
-      public var Nudge:Number = 1.0;
+      public var nudge:Number = 1.0;
       
-      public var AllowMovementProperty:PropertyReference = null;
-      public var AllowMovementValue:String = null;
+      public var allowMovementProperty:PropertyReference = null;
+      public var allowMovementValue:String = null;
       
-      public var MovementHeadingThreshold:Number = 100;
+      public var movementHeadingThreshold:Number = 100;
       
       public function set initialPosition(value:Point):void
       {
-         GoalPosition = value.clone();
-         Position = value.clone();
+         goalPosition = value.clone();
+         position = value.clone();
       }
       
       public function set initialRotation(value:Number):void
       {
-         GoalRotation = value;
-         Rotation = value;
+         goalRotation = value;
+         rotation = value;
       }
       
       public function get moveDelta():Point
       {
-         return GoalPosition.subtract(Position).clone();
+         return goalPosition.subtract(position).clone();
       }
       
       private function get checkMovementAllowed():Boolean
       {
-         if(!AllowMovementProperty)
+         if(!allowMovementProperty)
             return true;
          
-         return owner.getProperty(AllowMovementProperty) == AllowMovementValue;
+         return owner.getProperty(allowMovementProperty) == allowMovementValue;
       }
       
       public override function onTick(tickRate:Number):void
       {
          // Move towards our position goal.
-         var moveDelta:Point = GoalPosition.subtract(Position);
-         var moveAmount:Number = tickRate * TranslationSpeed * Nudge;
+         var moveDelta:Point = goalPosition.subtract(position);
+         var moveAmount:Number = tickRate * translationSpeed * nudge;
          
          if(moveDelta.length > moveAmount)
             moveDelta.normalize(moveAmount);
@@ -69,27 +69,27 @@ package com.pblabs.rendering2D
          if(moveDelta.length > 0.001 && checkMovementAllowed)
          {
             // Check our heading
-            if(Math.abs(Utility.getRadianShortDelta(movementHeading, Rotation)) <= MovementHeadingThreshold)
-               Position = Position.add(moveDelta);
+            if(Math.abs(Utility.getRadianShortDelta(movementHeading, rotation)) <= movementHeadingThreshold)
+               position = position.add(moveDelta);
             
             // Only update position if we really need to move.
             didMove = true;
          }
          
          // Deal with facing-heading.
-         if(didMove && FaceInMovementDirection)
-            GoalRotation = movementHeading
+         if(didMove && faceInMovementDirection)
+            goalRotation = movementHeading
 
          // Interpolate heading.
-         var headingDelta:Number = Utility.getRadianShortDelta(Rotation, GoalRotation);
+         var headingDelta:Number = Utility.getRadianShortDelta(rotation, goalRotation);
          
-         if(headingDelta < -RotationSpeed)
-            headingDelta = -RotationSpeed;
-         else if(headingDelta > RotationSpeed)
-            headingDelta = RotationSpeed;
+         if(headingDelta < -rotationSpeed)
+            headingDelta = -rotationSpeed;
+         else if(headingDelta > rotationSpeed)
+            headingDelta = rotationSpeed;
 
          if(Math.abs(headingDelta) > 0.01)
-            Rotation += headingDelta;
+            rotation += headingDelta;
       }
    }
 }

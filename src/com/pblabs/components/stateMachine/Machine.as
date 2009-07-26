@@ -18,17 +18,17 @@ package com.pblabs.components.stateMachine
        * Set of states, indexed by name.
        */
       [TypeHint(type="com.pblabs.components.stateMachine.BasicState")]
-      public var States:Dictionary = new Dictionary();
+      public var states:Dictionary = new Dictionary();
       
       /**
        * What state will we start out in?
        */
-      public var DefaultState:String = null;
+      public var defaultState:String = null;
       
       private var _currentState:IState = null;
-      private var _PreviousState:IState = null;
-      private var _SetNewState:Boolean = false;
-      private var _EnteredStateTime:Number = 0;
+      private var _previousState:IState = null;
+      private var _setNewState:Boolean = false;
+      private var _enteredStateTime:Number = 0;
 
       private var _propertyBag:IPropertyBag = null;
 
@@ -37,7 +37,7 @@ package com.pblabs.components.stateMachine
        */
       public function get enteredStateTime():Number
       {
-         return _EnteredStateTime;
+         return _enteredStateTime;
       }
       
       public function get propertyBag():IPropertyBag
@@ -52,11 +52,11 @@ package com.pblabs.components.stateMachine
       
       public function tick():void
       {
-         _SetNewState = false;
+         _setNewState = false;
          
          // DefaultState - we get it if no state is set.
          if(!_currentState)
-            setCurrentState(DefaultState);
+            setCurrentState(defaultState);
          
          if(_currentState)
             _currentState.tick(this);
@@ -64,9 +64,9 @@ package com.pblabs.components.stateMachine
          // If didn't set a new state, it counts as transitioning to the
          // current state. This updates prev/current state so we can tell
          // if we just transitioned into our current state.
-         if(_SetNewState && _currentState)
+         if(_setNewState && _currentState)
          {
-             _PreviousState = _currentState;
+             _previousState = _currentState;
          }
          
          //if(_PreviousState != _currentState)
@@ -77,7 +77,7 @@ package com.pblabs.components.stateMachine
       {
          // DefaultState - we get it if no state is set.
          if(!_currentState)
-            setCurrentState(DefaultState);
+            setCurrentState(defaultState);
 
          return _currentState;
       }
@@ -99,23 +99,23 @@ package com.pblabs.components.stateMachine
       
       public function getPreviousState():IState
       {
-         return _PreviousState;
+         return _previousState;
       }
       
       public function addState(name:String, state:IState):void
       {
-          States[name] = state;
+          states[name] = state;
       }
       
       public function getState(name:String):IState
       {
-         return States[name] as IState;
+         return states[name] as IState;
       }
 
       public function getStateName(state:IState):String
       {
-         for(var name:String in States)
-            if(States[name] == state)
+         for(var name:String in states)
+            if(states[name] == state)
                 return name;
          
          return null;
@@ -128,9 +128,9 @@ package com.pblabs.components.stateMachine
             return false;
                   
          var oldState:IState = _currentState;
-         _SetNewState = true;
+         _setNewState = true;
          
-         _PreviousState = _currentState;
+         _previousState = _currentState;
          _currentState = newState;
          
          // Do the right callbacks if we are changing state.
@@ -145,7 +145,7 @@ package com.pblabs.components.stateMachine
             newState.enter(this);
             
             // Note the time at which we entered this state.             
-            _EnteredStateTime = ProcessManager.instance.virtualTime;
+            _enteredStateTime = ProcessManager.instance.virtualTime;
              
             // Fire a transition event, if we have a dispatcher.
             if(_propertyBag)

@@ -6,6 +6,6 @@ package com.pblabs.engine.serialization
    public class TestForMetadata
    {
       [TypeHint(type="Number")]
-      public var SomeArray:Array;
+      public var someArray:Array;
    }
 }

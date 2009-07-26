@@ -9,28 +9,28 @@ package com.pblabs.components.stateMachine
     */
    public class FSMComponent extends TickedComponent
    {
-      public var StateMachine:Machine;
+      public var stateMachine:Machine;
       
       protected override function onAdd():void
       {
          super.onAdd();
          
-         if(StateMachine)
-            StateMachine.propertyBag = owner;
+         if(stateMachine)
+            stateMachine.propertyBag = owner;
       }
       
       protected override function onRemove():void
       {
          super.onRemove();
          
-         if(StateMachine)
-            StateMachine.propertyBag = null;
+         if(stateMachine)
+            stateMachine.propertyBag = null;
       }
       
       public override function onTick(tickRate:Number) : void
       {
-         if(StateMachine)
-            StateMachine.tick();
+         if(stateMachine)
+            stateMachine.tick();
       }
    }
 }

@@ -20,13 +20,13 @@ package com.pblabs.rendering2D
        * The width of each frame.
        */
       [EditorData(defaultValue="32")]
-      public var Width:int = 32;
+      public var width:int = 32;
       
       /**
        * The height of each frame.
        */
       [EditorData(defaultValue="32")]
-      public var Height:int = 32;
+      public var height:int = 32;
       
       /**
        * @inheritDoc
@@ -49,7 +49,7 @@ package com.pblabs.rendering2D
          if (!_owningSheet)
             throw new Error("OwningSheet must be set before calling this!");
          
-         return Math.floor(_owningSheet.imageData.width / Width) * Math.floor(_owningSheet.imageData.height / Height);
+         return Math.floor(_owningSheet.imageData.width / width) * Math.floor(_owningSheet.imageData.height / height);
       }
       
       /**
@@ -60,10 +60,10 @@ package com.pblabs.rendering2D
          if (!_owningSheet)
             throw new Error("OwningSheet must be set before calling this!");
 
-         var x:int = index % Math.floor(_owningSheet.imageData.width / Width);
-         var y:int = Math.floor(index / Math.floor(_owningSheet.imageData.width / Width));
+         var x:int = index % Math.floor(_owningSheet.imageData.width / width);
+         var y:int = Math.floor(index / Math.floor(_owningSheet.imageData.width / width));
          
-         return new Rectangle(x * Width, y * Height, Width, Height);
+         return new Rectangle(x * width, y * height, width, height);
       }
       
       /**
@@ -72,8 +72,8 @@ package com.pblabs.rendering2D
       public function clone():ISpriteSheetDivider
       {
          var c:FixedSizeDivider = new FixedSizeDivider();
-         c.Width = Width;
-         c.Height = Height;
+         c.width = width;
+         c.height = height;
          return c;
       }
 

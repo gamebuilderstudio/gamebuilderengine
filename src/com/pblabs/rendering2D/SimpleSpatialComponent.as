@@ -51,36 +51,36 @@ package com.pblabs.rendering2D
        * If set, a SpriteRenderComponent we can use to fulfill point occupied
        * tests.
        */
-      public var SpriteForPointChecks:SpriteRenderComponent;
+      public var spriteForPointChecks:SpriteRenderComponent;
       
       /**
        * The position of the object.
        */
-      public var Position:Point = new Point(0, 0);
+      public var position:Point = new Point(0, 0);
       
       /**
        * The rotation of the object.
        */
-      public var Rotation:Number = 0;
+      public var rotation:Number = 0;
       
       /**
        * The size of the object.
        */
       [EditorData(defaultValue="100|100")]
-      public var Size:Point = new Point(100, 100);
+      public var size:Point = new Point(100, 100);
       
       /**
        * The linear velocity of the object in world units per second.
        */
-      public var Velocity:Point = new Point(0, 0);
+      public var velocity:Point = new Point(0, 0);
       
       /**
        * @inheritDoc
        */
       public override function onTick(tickRate:Number):void
       {
-         Position.x += Velocity.x * tickRate;
-         Position.y += Velocity.y * tickRate;
+         position.x += velocity.x * tickRate;
+         position.y += velocity.y * tickRate;
       }
       
       /**
@@ -126,7 +126,7 @@ package com.pblabs.rendering2D
        */
       public function get worldExtents():Rectangle
       {
-         return new Rectangle(Position.x - (Size.x * 0.5), Position.y - (Size.y * 0.5), Size.x, Size.y);         
+         return new Rectangle(position.x - (size.x * 0.5), position.y - (size.y * 0.5), size.x, size.y);         
       }
       
       /**
@@ -145,11 +145,11 @@ package com.pblabs.rendering2D
       public function pointOccupied(pos:Point, scene:IDrawManager2D):Boolean
       {
          // If no sprite then we just test our bounds.
-         if(!SpriteForPointChecks || !scene)
+         if(!spriteForPointChecks || !scene)
             return worldExtents.containsPoint(pos);
          
          // OK, so pass it over to the sprite.
-         return SpriteForPointChecks.pointOccupied(pos, scene);
+         return spriteForPointChecks.pointOccupied(pos, scene);
       }
       
       private var _objectMask:ObjectType;

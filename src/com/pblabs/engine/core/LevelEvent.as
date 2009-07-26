@@ -42,11 +42,11 @@ package com.pblabs.engine.core
       /**
        * The level associated with this event.
        */
-      public var Level:int = -1;
+      public var level:int = -1;
       
       public function LevelEvent(type:String, level:int, bubbles:Boolean=false, cancelable:Boolean=false)
       {
-         Level = level;
+         level = level;
          super(type, bubbles, cancelable);
       }
    }

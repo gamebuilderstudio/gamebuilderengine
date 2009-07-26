@@ -18,23 +18,23 @@ package com.pblabs.components.stateMachine
        * new states.
        */ 
       [TypeHint(type="com.pblabs.components.stateMachine.IState")]
-      public var Transitions:OrderedArray = new OrderedArray();
+      public var transitions:OrderedArray = new OrderedArray();
       
       /**
        * If we want an event to be fired on the container when this state is
        * entered, it is specified here.
        */ 
-      public var EnterEvent:String = null;
+      public var enterEvent:String = null;
       
       public function addTransition(t:ITransition):void
       {
-         Transitions.push(t);
+         transitions.push(t);
       }
       
       public function tick(fsm:IMachine):void
       {
          // evaluate transitions in order until one goes.
-         for each(var t:ITransition in Transitions)
+         for each(var t:ITransition in transitions)
          {
             //Logger.print(this, "Evaluating transition '" + t); 
             if(t.evaluate(fsm) && fsm.setCurrentState(t.getTargetState()))
@@ -45,11 +45,11 @@ package com.pblabs.components.stateMachine
       public function enter(fsm:IMachine):void
       {
          // Dispatch the enter event if we've got one.
-         if(!EnterEvent)
+         if(!enterEvent)
             return;
          
          // And fire the event.
-         var e:Event = new Event(EnterEvent);
+         var e:Event = new Event(enterEvent);
          fsm.propertyBag.eventDispatcher.dispatchEvent(e);
       }
       

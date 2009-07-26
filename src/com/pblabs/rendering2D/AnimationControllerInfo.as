@@ -18,33 +18,33 @@ package com.pblabs.rendering2D
       /**
        * Sprite sheet containing this animation.
        */ 
-      public var SpriteSheet:SpriteSheetComponent;
+      public var spriteSheet:SpriteSheetComponent;
       
       /**
        * Used when setting animation states; a higher priority
        * animation will override a lower priority animation.
        */
-      public var Priority:Number = 0.0;
+      public var priority:Number = 0.0;
       
       /**
        * If true, then the animation loops.
        */
-      public var Loop:Boolean = true; 
+      public var loop:Boolean = true; 
       
       /**
        * Name of event to fire on the entity when this animation starts.
        */
-      public var StartEvent:String;
+      public var startEvent:String;
       
       /**
        * Name of event to fire on the entity when this animation starts.
        */ 
-      public var CompleteEvent:String;
+      public var completeEvent:String;
       
       /**
        * The animation playback speed may be affected by many factors; this
        * set a maximum time period in ms for a frame to be displayed.
        */
-      public var MaxFrameDelay:Number = 50;
+      public var maxFrameDelay:Number = 50;
    }
 }

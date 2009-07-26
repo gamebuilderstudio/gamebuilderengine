@@ -18,15 +18,15 @@ package com.pblabs.box2D
       public static const COLLISION_EVENT:String = "COLLISION_EVENT";
       public static const COLLISION_STOPPED_EVENT:String = "COLLISION_STOPPED_EVENT";
       
-      public var Collider:Box2DSpatialComponent = null;
-      public var Collidee:Box2DSpatialComponent = null;
-      public var Normal:Point = null;
+      public var collider:Box2DSpatialComponent = null;
+      public var collidee:Box2DSpatialComponent = null;
+      public var normal:Point = null;
       
       public function CollisionEvent(type:String, point:b2ContactPoint, bubbles:Boolean=false, cancelable:Boolean=false)
       {
-         Collider = point.shape1.m_userData as Box2DSpatialComponent;
-         Collidee = point.shape2.m_userData as Box2DSpatialComponent;
-         Normal = new Point(point.normal.x, point.normal.y);
+         collider = point.shape1.m_userData as Box2DSpatialComponent;
+         collidee = point.shape2.m_userData as Box2DSpatialComponent;
+         normal = new Point(point.normal.x, point.normal.y);
          
          super(type, bubbles, cancelable);
       }

@@ -67,6 +67,6 @@ package com.pblabs.engine.entity
       }
       
       private var _property:String = null;
-      public var CachedLookup:Array;
+      public var cachedLookup:Array;
    }
 }

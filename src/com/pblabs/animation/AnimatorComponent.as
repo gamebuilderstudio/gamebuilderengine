@@ -20,25 +20,25 @@ package com.pblabs.animation
       /**
        * A reference to the property that will be animated.
        */
-      public var Reference:PropertyReference = null;
+      public var reference:PropertyReference = null;
       
       /**
        * A list of all the animation that can be played by this component.
        */
       [TypeHint(type="com.pblabs.animation.Animator")]
-      public var Animations:Dictionary = null;
+      public var animations:Dictionary = null;
       
       /**
        * The name of the animation to automatically start playing when the component
        * is registered.
        */
-      public var DefaultAnimation:String = "Idle";
+      public var defaultAnimation:String = "Idle";
       
       /**
        * Whether or not to start the animation when the component is registered.
        */
       [EditorData(defaultValue="true")]
-      public var AutoPlay:Boolean = true;
+      public var autoPlay:Boolean = true;
       
       /**
        * @inheritDoc
@@ -48,7 +48,7 @@ package com.pblabs.animation
          if (_currentAnimation)
          {
             _currentAnimation.animate(elapsed);
-            owner.setProperty(Reference, _currentAnimation.currentValue);            
+            owner.setProperty(reference, _currentAnimation.currentValue);            
          }
       }
       
@@ -62,7 +62,7 @@ package com.pblabs.animation
        */
       public function play(animation:String, startValue:*=null):void
       {
-         _currentAnimation = Animations[animation];
+         _currentAnimation = animations[animation];
          if (!_currentAnimation)
             return;
          
@@ -78,10 +78,10 @@ package com.pblabs.animation
        */
       protected override function onReset():void
       {
-         if (!AutoPlay || _currentAnimation)
+         if (!autoPlay || _currentAnimation)
             return;
          
-         play(DefaultAnimation);
+         play(defaultAnimation);
       }
       
       private var _currentAnimation:Animator = null;

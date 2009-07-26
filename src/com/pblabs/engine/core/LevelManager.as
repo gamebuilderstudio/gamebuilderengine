@@ -191,13 +191,13 @@ package com.pblabs.engine.core
          for each (var levelDescription:LevelDescription in _levelDescriptions)
          {
             var levelXML:XML = <level/>;
-            levelXML.@index = levelDescription.Index;
-            levelXML.@name = levelDescription.Name;
+            levelXML.@index = levelDescription.index;
+            levelXML.@name = levelDescription.name;
             
-            for each (var filename:String in levelDescription.Files)
+            for each (var filename:String in levelDescription.files)
                levelXML.appendChild(<file name={filename}/>);
             
-            for each (var groupName:String in levelDescription.Groups)
+            for each (var groupName:String in levelDescription.groups)
                levelXML.appendChild(<group name={groupName}/>);
          }
       }
@@ -212,8 +212,8 @@ package com.pblabs.engine.core
             var index:int = levelDescriptionXML.@index;
             
             var levelDescription:LevelDescription = new LevelDescription();
-            levelDescription.Index = index;
-            levelDescription.Name = levelDescriptionXML.@name;
+            levelDescription.index = index;
+            levelDescription.name = levelDescriptionXML.@name;
             _levelDescriptions[index] = levelDescription;
             
             for each (var itemXML:XML in levelDescriptionXML.*)
@@ -510,7 +510,7 @@ package com.pblabs.engine.core
          }
          
          var levelDescription:LevelDescription = getLevelDescription(index);
-         levelDescription.Files.push(filename);
+         levelDescription.files.push(filename);
       }
       
       /**
@@ -527,7 +527,7 @@ package com.pblabs.engine.core
             return;
          }
          
-         var levelIndex:int = levelDescription.Files.indexOf(filename);
+         var levelIndex:int = levelDescription.files.indexOf(filename);
          if (levelIndex == -1)
          {
             Logger.printError(this, "RemoveFileReference", "The file " + filename + " was not found in the level " + index + ".");
@@ -535,7 +535,7 @@ package com.pblabs.engine.core
          }
          
          var levelDescription:LevelDescription = getLevelDescription(index);
-         levelDescription.Files.splice(levelIndex, 1);
+         levelDescription.files.splice(levelIndex, 1);
       }
       
       /**
@@ -553,7 +553,7 @@ package com.pblabs.engine.core
          }
          
          var levelDescription:LevelDescription = getLevelDescription(index);
-         levelDescription.Groups.push(name);
+         levelDescription.groups.push(name);
       }
       
       /**
@@ -570,7 +570,7 @@ package com.pblabs.engine.core
             return;
          }
          
-         var groupIndex:int = levelDescription.Groups.indexOf(name);
+         var groupIndex:int = levelDescription.groups.indexOf(name);
          if (groupIndex == -1)
          {
             Logger.printError(this, "RemoveFileReference", "The group " + name + " was not found in the level " + index + ".");
@@ -578,7 +578,7 @@ package com.pblabs.engine.core
          }
          
          var levelDescription:LevelDescription = getLevelDescription(index);
-         levelDescription.Groups.splice(groupIndex, 1);
+         levelDescription.groups.splice(groupIndex, 1);
       }
       
       /**
@@ -604,7 +604,7 @@ package com.pblabs.engine.core
          if (!levelDescription)
          {
             levelDescription = new LevelDescription();
-            levelDescription.Index = index;
+            levelDescription.index = index;
             _levelDescriptions[index] = levelDescription;
          }
          
@@ -643,9 +643,9 @@ package com.pblabs.engine.core
 
 class LevelDescription
 {
-   public var Name:String = "";
-   public var Index:int = 0;
+   public var name:String = "";
+   public var index:int = 0;
    
-   public var Files:Array = new Array();
-   public var Groups:Array = new Array();
+   public var files:Array = new Array();
+   public var groups:Array = new Array();
 }

@@ -293,9 +293,9 @@ class Entity extends EventDispatcher implements IEntity
          providedPi = new PropertyInfo();
       
       // Cached lookups apply only to components.
-      if(reference.CachedLookup && reference.CachedLookup.length > 0)
+      if(reference.cachedLookup && reference.cachedLookup.length > 0)
       {
-         var cl:Array = reference.CachedLookup;
+         var cl:Array = reference.cachedLookup;
          var cachedWalk:* = lookupComponentByName(cl[0]);
          if(!cachedWalk)
          {
@@ -318,8 +318,8 @@ class Entity extends EventDispatcher implements IEntity
          }
          
          var cachedPi:PropertyInfo = providedPi;
-         cachedPi.PropertyParent = cachedWalk;
-         cachedPi.PropertyName = cl[cl.length-1];
+         cachedPi.propertyParent = cachedWalk;
+         cachedPi.propertyName = cl[cl.length-1];
          Profiler.exit("Entity.findProperty");
          return cachedPi;
       }
@@ -349,7 +349,7 @@ class Entity extends EventDispatcher implements IEntity
          
          // Cache the split out string.
          path[0] = curLookup;
-         reference.CachedLookup = path;
+         reference.cachedLookup = path;
       }
       else if(startChar == "#")
       {
@@ -488,8 +488,8 @@ class Entity extends EventDispatcher implements IEntity
       if(parentElem)
       {
          var pi:PropertyInfo = providedPi;
-         pi.PropertyParent = parentElem;
-         pi.PropertyName = curLookup;
+         pi.propertyParent = parentElem;
+         pi.propertyName = curLookup;
          Profiler.exit("Entity.findProperty");
          return pi;
       }
@@ -506,14 +506,14 @@ class Entity extends EventDispatcher implements IEntity
 
 class PropertyInfo
 {
-   public var PropertyParent:Object = null;
-   public var PropertyName:String = null;
+   public var propertyParent:Object = null;
+   public var propertyName:String = null;
    
    public function getValue():*
    {
       try
       {
-         return PropertyParent[PropertyName];
+         return propertyParent[propertyName];
       }
       catch(e:Error)
       {
@@ -523,12 +523,12 @@ class PropertyInfo
    
    public function setValue(value:*):void
    {
-      PropertyParent[PropertyName] = value;
+      propertyParent[propertyName] = value;
    }
    
    public function clear():void
    {
-      PropertyParent = null;
-      PropertyName = null;
+      propertyParent = null;
+      propertyName = null;
    }
 }

@@ -7,26 +7,26 @@ package com.pblabs.engine.components
     */
    public class GroupManagerComponent extends EntityComponent
    {
-      private var _Members:Array = new Array();
+      private var _members:Array = new Array();
       
       public function addMember(member:GroupMemberComponent):void
       {
-         _Members.push(member);
+         _members.push(member);
       }   
       
       public function removeMember(member:GroupMemberComponent):void
       {
-         var idx:int = _Members.indexOf(member);
+         var idx:int = _members.indexOf(member);
          if(idx == -1)
             throw new Error("Removing a member which does not exist in this group.");
-         _Members.splice(idx, 1);
+         _members.splice(idx, 1);
       }
       
       public function get entityList():Array
       {
          var a:Array = new Array();
          
-         for each(var m:GroupMemberComponent in _Members)
+         for each(var m:GroupMemberComponent in _members)
             a.push(m.owner);
             
          return a;

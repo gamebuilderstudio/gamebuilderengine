@@ -8,11 +8,11 @@ package com.pblabs.rendering2D
    
    public class SWFRenderComponent extends BaseRenderComponent
    {
-      public var FrameRate:Number = 25;
+      public var frameRate:Number = 25;
       public function set scaleFactor(value:Number):void
       {
-         _Matrix = new Matrix();
-         _Matrix.scale(value, value);
+         _matrix = new Matrix();
+         _matrix.scale(value, value);
       }
 
       /**
@@ -26,19 +26,19 @@ package com.pblabs.rendering2D
       
       public override function onDraw(manager:IDrawManager2D):void
       {
-         if(!_Clip)
-            _Clip = getClipInstance();
+         if(!_clip)
+            _clip = getClipInstance();
          
          // Position and draw.
          var screenPos:Point = manager.transformWorldToScreen(renderPosition);
-         _Matrix.tx = screenPos.x;
-         _Matrix.ty = screenPos.y;
-         _Clip.transform.matrix = _Matrix;
+         _matrix.tx = screenPos.x;
+         _matrix.ty = screenPos.y;
+         _clip.transform.matrix = _matrix;
 
-         manager.drawDisplayObject(_Clip);
+         manager.drawDisplayObject(_clip);
          
          // If we're on the last frame, self-destruct.
-         if(_ClipFrame > _Clip.totalFrames)
+         if(_clipFrame > _clip.totalFrames)
          {
             //Logger.print(this, "Finished playback, destroying self.");
             owner.destroy();
@@ -46,15 +46,15 @@ package com.pblabs.rendering2D
          }
 
          // Update to next frame when appropriate.
-         if(ProcessManager.instance.virtualTime - _ClipLastUpdate > 1000/FrameRate)
+         if(ProcessManager.instance.virtualTime - _clipLastUpdate > 1000/frameRate)
          {
-            _ClipFrame++;
-            _Clip.gotoAndStop(_ClipFrame);
+            _clipFrame++;
+            _clip.gotoAndStop(_clipFrame);
             
             // Update child clips as well.
-            updateChildClips(_Clip);
+            updateChildClips(_clip);
             
-            _ClipLastUpdate = ProcessManager.instance.virtualTime;
+            _clipLastUpdate = ProcessManager.instance.virtualTime;
          }
       }
       
@@ -74,9 +74,9 @@ package com.pblabs.rendering2D
          }
       }
       
-      private var _Matrix:Matrix = new Matrix();
-      private var _Clip:MovieClip;
-      private var _ClipFrame:int;
-      private var _ClipLastUpdate:int;
+      private var _matrix:Matrix = new Matrix();
+      private var _clip:MovieClip;
+      private var _clipFrame:int;
+      private var _clipLastUpdate:int;
    }
 }

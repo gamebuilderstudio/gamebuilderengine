@@ -126,7 +126,7 @@ package com.pblabs.rendering2D
        * Modulate alpha. Zero is fully translucent, one is fully opaque.
        */
       [EditorData(defaultValue="1.0")]
-      public var Fade:Number = 1.0;
+      public var fade:Number = 1.0;
       
       /**
        * @inheritDoc
@@ -141,16 +141,16 @@ package com.pblabs.rendering2D
             return;
             
          // Skip drawing if it's so invisible as to be unnoticeable.
-         if(Fade < 1.0/256.0)
+         if(fade < 1.0/256.0)
            return;
               
          var position:Point = renderPosition;
          position = manager.transformWorldToScreen(position);
          
-         var rotation:Number = owner.getProperty(RotationReference);
+         var rotation:Number = owner.getProperty(rotationReference);
          
          var scale:Point = new Point(1,1);
-         var size:Point = owner.getProperty(SizeReference);
+         var size:Point = owner.getProperty(sizeReference);
          if (size)
          {
             scale.x = size.x / _baseSize.x;
@@ -158,7 +158,7 @@ package com.pblabs.rendering2D
          }
          else if(rotation == 0 
                && !_flipX && !_flipY 
-               && Fade == 1 && rawSprite.filters.length == 0
+               && fade == 1 && rawSprite.filters.length == 0
                && _spriteSheet && manager.getBackBuffer())
          {
             // Eligible for fast path using copy pixels.
@@ -178,7 +178,7 @@ package com.pblabs.rendering2D
          if (_flipY)
             scale.y = -scale.y;
          
-         _sprite.alpha = Fade;         
+         _sprite.alpha = fade;         
           
          _matrix.identity();
          _matrix.scale(scale.x,scale.y);

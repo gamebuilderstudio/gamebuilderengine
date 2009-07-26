@@ -5,7 +5,7 @@ package com.pblabs.components.stateMachine
     */
    public class Transition implements ITransition
    {
-      private var _TargetState:String;
+      private var _targetState:String;
       
       public function Transition(targetState:String = null)
       {
@@ -19,12 +19,12 @@ package com.pblabs.components.stateMachine
       
       public function getTargetState():String
       {
-         return _TargetState;
+         return _targetState;
       }
       
       public function set targetState(value:String):void
       {
-         _TargetState = value;
+         _targetState = value;
       }
    }
 }

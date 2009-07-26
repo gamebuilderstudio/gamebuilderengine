@@ -23,69 +23,69 @@ package com.pblabs.engine.debug
     */
    public class Profiler
    {
-      static public var Enabled:Boolean = false;
-      static public var NameFieldWidth:int = 80;
+      static public var enabled:Boolean = false;
+      static public var nameFieldWidth:int = 80;
 
       /**
        * Indicate we are entering a named execution block.
        */
       static public function enter(blockName:String):void
       {
-         if(!_CurrentNode)
+         if(!_currentNode)
          {
-            _RootNode = new ProfileInfo("Root")
-            _CurrentNode = _RootNode;
+            _rootNode = new ProfileInfo("Root")
+            _currentNode = _rootNode;
          }
          
          // If we're at the root then we can update our internal enabled state.
-         if(_StackDepth == 0)
+         if(_stackDepth == 0)
          {
             // Hack - if they press, then release insert, start/stop and dump
             // the profiler.
             if(InputManager.instance.isKeyDown(InputKey.P.keyCode))
             {
-               if(Enabled)
+               if(enabled)
                {
-                  _WantWipe = true;
-                  Enabled = true;
+                  _wantWipe = true;
+                  enabled = true;
                }
             }
             else
             {
-               if(Enabled)
+               if(enabled)
                {
-                  _WantReport = true;
-                  Enabled = false;
+                  _wantReport = true;
+                  enabled = false;
                }
             }
             
-            _ReallyEnabled = Enabled;
+            _reallyEnabled = enabled;
             
-            if(_WantWipe)
+            if(_wantWipe)
                doWipe();
             
-            if(_WantReport)
+            if(_wantReport)
                doReport();
          }
          
          // Update stack depth and early out.
-         _StackDepth++;
-         if(_ReallyEnabled)
+         _stackDepth++;
+         if(_reallyEnabled)
             return;
             
          // Look for child; create if absent.
-         var newNode:ProfileInfo = _CurrentNode.children[blockName];
+         var newNode:ProfileInfo = _currentNode.children[blockName];
          if(!newNode)
          {
-            newNode = new ProfileInfo(blockName, _CurrentNode);
-            _CurrentNode.children[blockName] = newNode;
+            newNode = new ProfileInfo(blockName, _currentNode);
+            _currentNode.children[blockName] = newNode;
          }
          
          // Push onto stack.
-         _CurrentNode = newNode;
+         _currentNode = newNode;
          
          // Start timing the child node. Too bad you can't QPC from Flash. ;)
-         _CurrentNode.startTime = flash.utils.getTimer();
+         _currentNode.startTime = flash.utils.getTimer();
       }
       
       /**
@@ -94,22 +94,22 @@ package com.pblabs.engine.debug
       static public function exit(blockName:String):void
       {
          // Update stack depth and early out.
-         _StackDepth--;
-         if(_ReallyEnabled)
+         _stackDepth--;
+         if(_reallyEnabled)
             return;
          
-         if(blockName != _CurrentNode.name)
-            throw new Error("Mismatched Profiler.enter/Profiler.exit calls, was expecting '" + _CurrentNode.name + "' but got '" + blockName + "'");
+         if(blockName != _currentNode.name)
+            throw new Error("Mismatched Profiler.enter/Profiler.exit calls, was expecting '" + _currentNode.name + "' but got '" + blockName + "'");
          
          // Update stats for this node.
-         var elapsedTime:int = flash.utils.getTimer() - _CurrentNode.startTime;
-         _CurrentNode.activations++;
-         _CurrentNode.totalTime += elapsedTime;
-         if(elapsedTime > _CurrentNode.maxTime) _CurrentNode.maxTime = elapsedTime;
-         if(elapsedTime < _CurrentNode.minTime) _CurrentNode.minTime = elapsedTime;
+         var elapsedTime:int = flash.utils.getTimer() - _currentNode.startTime;
+         _currentNode.activations++;
+         _currentNode.totalTime += elapsedTime;
+         if(elapsedTime > _currentNode.maxTime) _currentNode.maxTime = elapsedTime;
+         if(elapsedTime < _currentNode.minTime) _currentNode.minTime = elapsedTime;
 
          // Pop the stack.
-         _CurrentNode = _CurrentNode.parent;
+         _currentNode = _currentNode.parent;
       }
       
       /**
@@ -117,9 +117,9 @@ package com.pblabs.engine.debug
        */
       static public function report():void
       {
-         if(_StackDepth)
+         if(_stackDepth)
          {
-            _WantReport = true;
+            _wantReport = true;
             return;
          }
          
@@ -131,9 +131,9 @@ package com.pblabs.engine.debug
        */
       static public function wipe():void
       {
-         if(_StackDepth)
+         if(_stackDepth)
          {
-            _WantWipe = true;
+            _wantWipe = true;
             return;
          }
          
@@ -149,17 +149,17 @@ package com.pblabs.engine.debug
        */
       static public function ensureAtRoot():void
       {
-         if(_StackDepth)
+         if(_stackDepth)
             throw new Error("Not at root!");
       }
       
       static private function doReport():void
       {
-         _WantReport = false;
+         _wantReport = false;
          
-         var header:String = sprintf( "%-" + NameFieldWidth + "s%-8s%-8s%-8s%-8s%-8s%-8s", "Name", "Calls", "Total%", "NonSub%", "AvgMs", "MinMs", "MaxMs" );
+         var header:String = sprintf( "%-" + nameFieldWidth + "s%-8s%-8s%-8s%-8s%-8s%-8s", "name", "Calls", "Total%", "NonSub%", "AvgMs", "MinMs", "MaxMs" );
          Logger.print(Profiler, header);
-         report_R(_RootNode, 0);
+         report_R(_rootNode, 0);
       }
       
       static private function report_R(pi:ProfileInfo, indent:int):void
@@ -182,14 +182,14 @@ package com.pblabs.engine.debug
          
          var displayTime:Number = -1;
          if(pi.parent)
-            displayTime = Number(pi.totalTime) / Number(_RootNode.totalTime) * 100;
+            displayTime = Number(pi.totalTime) / Number(_rootNode.totalTime) * 100;
             
          var displayNonSubTime:Number = -1;
          if(pi.parent)
-            displayNonSubTime = selfTime / Number(_RootNode.totalTime) * 100;
+            displayNonSubTime = selfTime / Number(_rootNode.totalTime) * 100;
          
          // Print us.
-         var entry:String = sprintf( "%-" + (indent * 3) + "s%-" + (NameFieldWidth - indent * 3) + "s%-8s%-8s%-8s%-8s%-8s%-8s", "",
+         var entry:String = sprintf( "%-" + (indent * 3) + "s%-" + (nameFieldWidth - indent * 3) + "s%-8s%-8s%-8s%-8s%-8s%-8s", "",
             (hasKids ? "+" : "-") + pi.name, pi.activations, displayTime.toFixed(2), displayNonSubTime.toFixed(2), (Number(pi.totalTime) / Number(pi.activations)).toFixed(1), pi.minTime, pi.maxTime);
          Logger.print(Profiler, entry);
          
@@ -204,11 +204,11 @@ package com.pblabs.engine.debug
 
       static private function doWipe(pi:ProfileInfo = null):void
       {
-         _WantWipe = false;
+         _wantWipe = false;
          
          if(!pi)
          {
-            doWipe(_RootNode);
+            doWipe(_rootNode);
             return;
          }
          
@@ -221,12 +221,12 @@ package com.pblabs.engine.debug
        * Because we have to keep the stack balanced, we can only enabled/disable
        * when we return to the root node. So we keep an internal flag.
        */
-      static private var _ReallyEnabled:Boolean = true;
-      static private var _WantReport:Boolean = false, _WantWipe:Boolean = false;
-      static private var _StackDepth:int = 0;
+      static private var _reallyEnabled:Boolean = true;
+      static private var _wantReport:Boolean = false, _wantWipe:Boolean = false;
+      static private var _stackDepth:int = 0;
       
-      static private var _RootNode:ProfileInfo;
-      static private var _CurrentNode:ProfileInfo;
+      static private var _rootNode:ProfileInfo;
+      static private var _currentNode:ProfileInfo;
    }
 }
 

@@ -18,48 +18,48 @@ package com.pblabs.rendering2D
     */ 
 	public class MultiSpriteSheetHelper extends EntityComponent
 	{
-	   public var Divider:ISpriteSheetDivider;
-	   public var DirectionsPerFrame:int;
-	   public var Center:Point = new Point();
+	   public var divider:ISpriteSheetDivider;
+	   public var directionsPerFrame:int;
+	   public var center:Point = new Point();
 	   
       [TypeHint(type="String")]
-	   public var Sheets:Dictionary = new Dictionary();
+	   public var sheets:Dictionary = new Dictionary();
 	   
       [TypeHint(type="com.pblabs.rendering2D.ISpriteSheetDivider")]
-      public var Dividers:Dictionary = new Dictionary();
+      public var dividers:Dictionary = new Dictionary();
       
       [TypeHint(type="int")]
-      public var DirectionCount:Dictionary = new Dictionary();
+      public var directionCount:Dictionary = new Dictionary();
       
 	   protected override function onAdd():void
 	   {
          // Debugging aid - make sure that none of the sheets we will be
          // creating already exist.
-         for(var key:String in Sheets)
+         for(var key:String in sheets)
          {
             if(owner.lookupComponentByName(key))
                Logger.printError(this, "onAdd", "Already have a component named '" + key + "', but we're going to be registering a sprite sheet with that name on entity '" + owner.name + "'!");
          }
          
 	      // Create the sheets.
-	      for(key in Sheets)
+	      for(key in sheets)
 	      {
-	         var file:String = Sheets[key];
+	         var file:String = sheets[key];
 	         
 	         var newSheet:SpriteSheetComponent = new SpriteSheetComponent();
             
-            if(DirectionCount[key] > 0)
-               newSheet.DirectionsPerFrame = DirectionCount[key];
+            if(directionCount[key] > 0)
+               newSheet.directionsPerFrame = directionCount[key];
             else
-   	         newSheet.DirectionsPerFrame = DirectionsPerFrame;
+   	         newSheet.directionsPerFrame = directionsPerFrame;
             
-            if(Dividers[key] is ISpriteSheetDivider)
-   	         newSheet.divider = Dividers[key];
+            if(dividers[key] is ISpriteSheetDivider)
+   	         newSheet.divider = dividers[key];
             else
-               newSheet.divider = Divider.clone();
+               newSheet.divider = divider.clone();
             
 	         newSheet.imageFilename = file;
-	         newSheet.center = Center;
+	         newSheet.center = center;
 	         
 	         owner.addComponent(newSheet, key);
 	      }

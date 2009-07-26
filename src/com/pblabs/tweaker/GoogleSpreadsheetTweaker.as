@@ -47,65 +47,65 @@ package com.pblabs.tweaker
        * http://spreadsheets.google.com/feeds/cells/pZ6iqteeevF7uf4J123yqSw/od6/public/basic
        * This gets the first sheet of the specified document.</p>
        */
-      public var SpreadsheetUrl:String = "";
+      public var spreadsheetUrl:String = "";
       
       /**
        * The URL for the proxy script, described in the web subfolder of this
        * project.
        */
-      public var ProxyUrl:String = "http://yoururl.com/yourproxyscript.php";
+      public var proxyUrl:String = "http://yoururl.com/yourproxyscript.php";
       
       /**
        * List of TweakerMapEntry instances mapping cells to properties.
        */
       [TypeHint(type="com.pblabs.tweaker.TweakerMapEntry")]
-      public var Config:Array = new Array();
+      public var config:Array = new Array();
 
       /**
        * Groups let you assign patterns of cells and properties to multiple items.
        */
       [TypeHint(type="com.pblabs.tweaker.TweakerMapGroup")]
-      public var Groups:Array = new Array();
+      public var groups:Array = new Array();
       
       protected override function onAdd():void
       {
          // Process the groups.
-         for each(var tmg:TweakerMapGroup in Groups)
+         for each(var tmg:TweakerMapGroup in groups)
          {
-            for each(var tmgoffset:TweakerMapEntry in tmg.Offsets)
+            for each(var tmgoffset:TweakerMapEntry in tmg.offsets)
             {
                // Figure base cell position.
-               var baseX:int = tmgoffset.Cell.charCodeAt(0) - "A".charCodeAt(0);
-               var baseY:int = parseInt(tmgoffset.Cell.substr(1));
+               var baseX:int = tmgoffset.cell.charCodeAt(0) - "A".charCodeAt(0);
+               var baseY:int = parseInt(tmgoffset.cell.substr(1));
                
                // Generate the entries for this offset.
-               for each(var tmgp:TweakerMapEntry in tmg.Entries)
+               for each(var tmgp:TweakerMapEntry in tmg.entries)
                {
                   // Concatenate the property reference.
                   var groupProp:String = tmgoffset.property.property + tmgp.property.property;
                   
                   // Add the cell references.
-                  var cellX:String = String.fromCharCode(baseX + (tmgp.Cell.charCodeAt(0) - "A".charCodeAt(0)) + "A".charCodeAt(0));
-                  var cellY:int = parseInt(tmgp.Cell.substr(1)) + baseY;
+                  var cellX:String = String.fromCharCode(baseX + (tmgp.cell.charCodeAt(0) - "A".charCodeAt(0)) + "A".charCodeAt(0));
+                  var cellY:int = parseInt(tmgp.cell.substr(1)) + baseY;
                   var cell:String = cellX + cellY.toString();
                   
                   // Note the new entry.
                   var newEntry:TweakerMapEntry = new TweakerMapEntry();
-                  newEntry.Cell = cell;
+                  newEntry.cell = cell;
                   newEntry.property = new PropertyReference(groupProp);
                   
                   //trace(" made property " + newEntry);
                   
-                  Config.push(newEntry);
+                  config.push(newEntry);
                }               
             }
          }
          
          // Request the URL via our proxy.
-         var ur:URLRequest = new URLRequest(ProxyUrl);
+         var ur:URLRequest = new URLRequest(proxyUrl);
          ur.method = URLRequestMethod.POST;
          ur.data = new URLVariables();
-         ur.data["_url"] = SpreadsheetUrl;
+         ur.data["_url"] = spreadsheetUrl;
 
          var loader:URLLoader = new URLLoader();
          loader.addEventListener(Event.COMPLETE, onLoadComplete);
@@ -116,7 +116,7 @@ package com.pblabs.tweaker
                );
          loader.load(ur);
          
-         Logger.print(this, "Requesting spreadsheet " + SpreadsheetUrl);
+         Logger.print(this, "Requesting spreadsheet " + spreadsheetUrl);
       }
 
       private function onLoadComplete(e:Event):void
@@ -138,9 +138,9 @@ package com.pblabs.tweaker
         }
 
         // Now we can map based on config data.
-        for each(var configItem:TweakerMapEntry in Config)
+        for each(var configItem:TweakerMapEntry in config)
         { 
-           var newValue:* = cellDictionary[configItem.Cell];
+           var newValue:* = cellDictionary[configItem.cell];
            if(newValue == "NA" || newValue == "")
               continue;
 
@@ -154,7 +154,7 @@ package com.pblabs.tweaker
         }
 
         // Give some status.
-        Logger.print(this, "Updated " + Config.length + " properties from " + SpreadsheetUrl);
+        Logger.print(this, "Updated " + config.length + " properties from " + spreadsheetUrl);
       }
 
       private function onLoadFail(e:Event):void

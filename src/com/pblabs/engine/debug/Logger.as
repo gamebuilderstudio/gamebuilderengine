@@ -53,9 +53,9 @@ package com.pblabs.engine.debug
       public static function print(reporter:*, message:String):void
       {
          var entry:LogEntry = new LogEntry();
-         entry.Reporter = reporter;
-         entry.Message = message;
-         entry.Type = LogEntry.MESSAGE;
+         entry.reporter = reporter;
+         entry.message = message;
+         entry.type = LogEntry.MESSAGE;
          instance.addEntry(entry);
       }
       
@@ -104,10 +104,10 @@ package com.pblabs.engine.debug
       public static function printWarning(reporter:*, method:String, message:String):void
       {
          var entry:LogEntry = new LogEntry();
-         entry.Reporter = reporter;
-         entry.Method = method;
-         entry.Message = method + " - " + message;
-         entry.Type = LogEntry.WARNING;
+         entry.reporter = reporter;
+         entry.method = method;
+         entry.message = method + " - " + message;
+         entry.type = LogEntry.WARNING;
          instance.addEntry(entry);
       }
       
@@ -122,10 +122,10 @@ package com.pblabs.engine.debug
       public static function printError(reporter:*, method:String, message:String):void
       {
          var entry:LogEntry = new LogEntry();
-         entry.Reporter = reporter;
-         entry.Method = method;
-         entry.Message = method + " - " + message;
-         entry.Type = LogEntry.ERROR;
+         entry.reporter = reporter;
+         entry.method = method;
+         entry.message = method + " - " + message;
+         entry.type = LogEntry.ERROR;
          instance.addEntry(entry);
       }
       
@@ -141,10 +141,10 @@ package com.pblabs.engine.debug
       public static function printCustom(reporter:*, method:String, message:String, type:String):void
       {
          var entry:LogEntry = new LogEntry();
-         entry.Reporter = reporter;
-         entry.Method = method;
-         entry.Message = method + " - " + message;
-         entry.Type = type;
+         entry.reporter = reporter;
+         entry.method = method;
+         entry.message = method + " - " + message;
+         entry.type = type;
          instance.addEntry(entry);
       }
       
@@ -195,16 +195,16 @@ package com.pblabs.engine.debug
       
       private function addEntry(entry:LogEntry):void
       {
-         var reporter:* = entry.Reporter ? entry.Reporter : this;
+         var reporter:* = entry.reporter ? entry.reporter : this;
          var logger:com.pblabs.engine.debug.log4PBE.Logger = com.pblabs.engine.debug.log4PBE.Logger.getLogger(reporter);
          
          var level:String = "Info";
-         if (entry.Type == LogEntry.ERROR)
+         if (entry.type == LogEntry.ERROR)
             level = "Error";
-         else if (entry.Type == LogEntry.WARNING)
+         else if (entry.type == LogEntry.WARNING)
             level = "Warn";
          
-         logger.log(level, entry.Message);
+         logger.log(level, entry.message);
       }
    }
 }

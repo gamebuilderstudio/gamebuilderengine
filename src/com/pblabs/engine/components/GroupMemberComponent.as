@@ -8,8 +8,8 @@ package com.pblabs.engine.components
     */
    public class GroupMemberComponent extends EntityComponent
    {
-      private var _GroupName:String = null;
-      private var _CurrentManager:GroupManagerComponent = null;
+      private var _groupName:String = null;
+      private var _currentManager:GroupManagerComponent = null;
       
       public function get groupManager():GroupManagerComponent
       {
@@ -20,23 +20,23 @@ package com.pblabs.engine.components
       {
          onRemove();
 
-         _GroupName = value;
+         _groupName = value;
 
          onAdd();
       }
       
       public function get groupName():String
       {
-         return _GroupName;
+         return _groupName;
       }
       
       protected override function onAdd():void
       {
          var curM:GroupManagerComponent = groupManager;
-         if(!_CurrentManager && curM)
+         if(!_currentManager && curM)
          {
-            _CurrentManager = curM;
-            _CurrentManager.addMember(this);
+            _currentManager = curM;
+            _currentManager.addMember(this);
          }
       }
       
@@ -48,10 +48,10 @@ package com.pblabs.engine.components
       
       protected override function onRemove():void
       {
-         if(_CurrentManager)
+         if(_currentManager)
          {
-            _CurrentManager.removeMember(this);
-            _CurrentManager = null;            
+            _currentManager.removeMember(this);
+            _currentManager = null;            
          }
       }
    }

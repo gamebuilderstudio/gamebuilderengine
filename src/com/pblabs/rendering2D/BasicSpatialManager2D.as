@@ -175,7 +175,7 @@ package com.pblabs.rendering2D
                   bestInfo = new RayHitInfo();
                   bestInfo.copyFrom(tempInfo);
                }
-               else if (tempInfo.Time < bestInfo.Time)
+               else if (tempInfo.time < bestInfo.time)
                {
                   bestInfo.copyFrom(tempInfo);
                }

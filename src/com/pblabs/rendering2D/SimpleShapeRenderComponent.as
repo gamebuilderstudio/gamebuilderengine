@@ -10,43 +10,43 @@ package com.pblabs.rendering2D
 	 */
 	public class SimpleShapeRenderComponent extends BaseRenderComponent
 	{
-	  public var ShowCircle:Boolean;
+	  public var showCircle:Boolean;
 	  
      [EditorData(defaultValue="true")]
-	  public var ShowSquare:Boolean;
+	  public var showSquare:Boolean;
 	  
      [EditorData(defaultValue="100")]
-	  public var Radius:Number;
+	  public var radius:Number;
 	  
      [EditorData(defaultValue="2")]
-	  public var BorderThickness:Number = 2.0;
+	  public var borderThickness:Number = 2.0;
 	  
-	  public var BorderColor:uint = 0x000000;
+	  public var borderColor:uint = 0x000000;
 	  
      [EditorData(defaultValue="255")]
-	  public var FillColor:uint = 0x0000FF;
+	  public var fillColor:uint = 0x0000FF;
 	
      public override function onDraw(manager:IDrawManager2D):void
      {
         // Draw to the dummy sprite.
-        _DummySprite.graphics.clear();
-        _DummySprite.graphics.lineStyle(BorderThickness, BorderColor);
-        _DummySprite.graphics.beginFill(FillColor);
+        _dummySprite.graphics.clear();
+        _dummySprite.graphics.lineStyle(borderThickness, borderColor);
+        _dummySprite.graphics.beginFill(fillColor);
         
         var rp:Point = manager.transformWorldToScreen(renderPosition);
         
-        if(ShowSquare)
-           _DummySprite.graphics.drawRect(rp.x - Radius, rp.y - Radius, Radius * 2, Radius * 2); 
+        if(showSquare)
+           _dummySprite.graphics.drawRect(rp.x - radius, rp.y - radius, radius * 2, radius * 2); 
 
-        if(ShowCircle)
-           _DummySprite.graphics.drawCircle(rp.x, rp.y, Radius);
+        if(showCircle)
+           _dummySprite.graphics.drawCircle(rp.x, rp.y, radius);
            
-        _DummySprite.graphics.endFill();
+        _dummySprite.graphics.endFill();
 
         // Submit to the draw manager.        
-        manager.drawDisplayObject(_DummySprite);
+        manager.drawDisplayObject(_dummySprite);
      }
 	   
-	  protected var _DummySprite:Sprite = new Sprite();
+	  protected var _dummySprite:Sprite = new Sprite();
 	}
 }

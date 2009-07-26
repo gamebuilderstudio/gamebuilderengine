@@ -11,10 +11,10 @@ package com.pblabs.components.basic
 	 */
 	public class HealthComponent extends EntityComponent
 	{
-		public var LastDamageTimeFade:Number = 200;
-		public var MaxHealth:Number = 100;
-		public var DestroyOnDeath:Boolean = true;
-		public var DamageModifier:Array = new Array();
+		public var lastDamageTimeFade:Number = 200;
+		public var maxHealth:Number = 100;
+		public var destroyOnDeath:Boolean = true;
+		public var damageModifier:Array = new Array();
       public var damageMagnitude:Number = 1.0;
 
 		public static var DIED:String = "HealthDead";
@@ -24,8 +24,8 @@ package com.pblabs.components.basic
 		
 		protected override function onAdd():void
 		{
-			_Health = MaxHealth;
-         _TimeOfLastDamage = -1000;
+			_health = maxHealth;
+         _timeOfLastDamage = -1000;
 		}
 		
       /**
@@ -33,7 +33,7 @@ package com.pblabs.components.basic
        */
 		public function get timeSinceLastDamage():Number
 		{
-			return ProcessManager.instance.virtualTime - _TimeOfLastDamage;
+			return ProcessManager.instance.virtualTime - _timeOfLastDamage;
 		}
 		
       /**
@@ -41,7 +41,7 @@ package com.pblabs.components.basic
        */
 		public function get lastDamageFade():Number
 		{
-			var f:Number = 1.0 - (timeSinceLastDamage / LastDamageTimeFade);
+			var f:Number = 1.0 - (timeSinceLastDamage / lastDamageTimeFade);
 			f *= damageMagnitude;
 			
 			return Utility.clamp(f);
@@ -52,12 +52,12 @@ package com.pblabs.components.basic
        */
 		public function get amountOfDamage():Number
 		{
-		   return MaxHealth - _Health;
+		   return maxHealth - _health;
 		}
 
 		public function get health():Number
 		{
-			return _Health;
+			return _health;
 		}
 		
 		public function set health(value:Number):void
@@ -65,43 +65,43 @@ package com.pblabs.components.basic
 			// Clamp the amount of damage.
 			if(value < 0)
 				value = 0;
-			if(value > MaxHealth)
-				value = MaxHealth;
+			if(value > maxHealth)
+				value = maxHealth;
 			
 			// Notify via a HealthEvent.
 			var he:HealthEvent;
 			
-			if(value < _Health)
+			if(value < _health)
 			{
-				he = new HealthEvent(DAMAGED, value - _Health, value, _LastDamageOriginator);
+				he = new HealthEvent(DAMAGED, value - _health, value, _lastDamageOriginator);
 				owner.eventDispatcher.dispatchEvent(he);
 			}
 
-			if(_Health > 0 && value == 0)
+			if(_health > 0 && value == 0)
 			{
-				he = new HealthEvent(DIED, value - _Health, value, _LastDamageOriginator);
+				he = new HealthEvent(DIED, value - _health, value, _lastDamageOriginator);
 				owner.eventDispatcher.dispatchEvent(he);
 			}
 			
-			if(_Health == 0 && value > 0)
+			if(_health == 0 && value > 0)
 			{
-				he = new HealthEvent(RESURRECTED, value - _Health, value, _LastDamageOriginator);
+				he = new HealthEvent(RESURRECTED, value - _health, value, _lastDamageOriginator);
 				owner.eventDispatcher.dispatchEvent(he);
 			}
 			
-			if(_Health > 0 && value > _Health)
+			if(_health > 0 && value > _health)
 			{
-				he = new HealthEvent(HEALED, value - _Health, value, _LastDamageOriginator);
+				he = new HealthEvent(HEALED, value - _health, value, _lastDamageOriginator);
 				if(owner && owner.eventDispatcher)
 					owner.eventDispatcher.dispatchEvent(he);
 			}
 
 			// Set new health value.
          //Logger.print(this, "Health becomes " + _Health);
-			_Health = value;
+			_health = value;
 
 			// Handle destruction...
-			if(DestroyOnDeath && _Health <= 0)
+			if(destroyOnDeath && _health <= 0)
 			{
 				// Kill the owning container if requested.
 				owner.destroy();
@@ -118,18 +118,18 @@ package com.pblabs.components.basic
        */
 		public function damage(amount:Number, damageType:String = null, originator:IEntity = null):void
 		{
-         _LastDamageOriginator = originator;
+         _lastDamageOriginator = originator;
          
 		   // Allow modification of damage based on type.
-		   if(damageType && DamageModifier.hasOwnProperty(damageType))
+		   if(damageType && damageModifier.hasOwnProperty(damageType))
 		   {
 		      //Logger.print(this, "Damage modified by entry for type '" + damageType + "' factor of " + DamageModifier[damageType]);
-		      amount *= DamageModifier[damageType];
+		      amount *= damageModifier[damageType];
 		   }
 			
          // For the flash magnitude, average in preceding fade. 
-         damageMagnitude = Math.min(1.0 , (amount / _Health) * 4);
-			_TimeOfLastDamage = ProcessManager.instance.virtualTime;
+         damageMagnitude = Math.min(1.0 , (amount / _health) * 4);
+			_timeOfLastDamage = ProcessManager.instance.virtualTime;
 
 			// Apply the damage.
          health -= amount;
@@ -137,17 +137,17 @@ package com.pblabs.components.basic
          // If you wanted to do clever things with the last guy to hurt you,
          // you might want to keep this value set. But since it can have GC
          // implications and also lead to stale data we clear it.
-         _LastDamageOriginator = null;
+         _lastDamageOriginator = null;
 		}
 		
 		public function get isDead():Boolean
 		{
-			return _Health <= 0;
+			return _health <= 0;
 		}
 
-      private var _Health:Number = 100;
-      private var _TimeOfLastDamage:Number = 0;
-      private var _LastDamageOriginator:IEntity = null;
+      private var _health:Number = 100;
+      private var _timeOfLastDamage:Number = 0;
+      private var _lastDamageOriginator:IEntity = null;
 
 	}
 }

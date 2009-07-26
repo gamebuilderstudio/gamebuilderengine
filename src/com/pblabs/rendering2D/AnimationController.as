@@ -25,77 +25,77 @@ package com.pblabs.rendering2D
        * @see AnimationControllerInfo
        */
       [TypeHint(type="com.pblabs.rendering2D.AnimationControllerInfo")]
-      public var Animations:Array = new Array();
+      public var animations:Array = new Array();
       
       /**
        * Name of animation to play when we have nothing better to do.
        */
-      public var DefaultAnimation:String = "Idle"; 
+      public var defaultAnimation:String = "Idle"; 
       
       /**
        * Property to set with name of sprite sheet.
        */
-      public var SpriteSheetReference:PropertyReference;
+      public var spriteSheetReference:PropertyReference;
       
       /**
        * Property to set with current frame of animation.
        */
-      public var CurrentFrameReference:PropertyReference;
+      public var currentFrameReference:PropertyReference;
 
       /**
        * Property that indicates the name of the current animation.
        * 
        * We read this each frame to determine what we should be playing.
        */
-      public var CurrentAnimationReference:PropertyReference;
+      public var currentAnimationReference:PropertyReference;
       
       /**
        * Property indicating the duration of the current animation in ticks.
        */
-      public var CurrentAnimationDurationReference:PropertyReference;
+      public var currentAnimationDurationReference:PropertyReference;
       
       /**
        * Property indicating the time at which the current animation started
        * (in virtual time ms). This can be used to make sure that animations
        * don't "lag" behind their actions if framerate is low.
        */
-      public var CurrentAnimationStartTimeReference:PropertyReference;
+      public var currentAnimationStartTimeReference:PropertyReference;
       
       public override function onFrame(elapsed:Number) : void
       {
          // Check for a new animation.
          var nextAnim:AnimationControllerInfo = null;
-         if(CurrentAnimationReference)
+         if(currentAnimationReference)
          {
-            var nextAnimName:String = owner.getProperty(CurrentAnimationReference);
-            nextAnim = Animations[nextAnimName];
+            var nextAnimName:String = owner.getProperty(currentAnimationReference);
+            nextAnim = animations[nextAnimName];
          }
          else
          {
-            nextAnim = Animations[DefaultAnimation];
+            nextAnim = animations[defaultAnimation];
          }
          
          // Go to default animation if we've nothing better to do.
          if(!nextAnim)
          {
-           Logger.printWarning(this, "OnFrame", "Animation '" + nextAnimName + "' not found, going with default animation '" + DefaultAnimation + "'.");
-           nextAnim = Animations[DefaultAnimation];
+           Logger.printWarning(this, "OnFrame", "Animation '" + nextAnimName + "' not found, going with default animation '" + defaultAnimation + "'.");
+           nextAnim = animations[defaultAnimation];
          }
          
          if(!nextAnim)
-            throw new Error("Unable to find default animation '" + DefaultAnimation + "'!");
+            throw new Error("Unable to find default animation '" + defaultAnimation + "'!");
            
          // Expire current animation if it has finished playing and it's what we
          // want to keep playing.
-         if(ProcessManager.instance.virtualTime > (_CurrentAnimationStartTime + _CurrentAnimationDuration))
-            _CurrentAnimation = null;
+         if(ProcessManager.instance.virtualTime > (_currentAnimationStartTime + _currentAnimationDuration))
+            _currentAnimation = null;
          
          // If we do not have a current animation, start playing the next.
-         if(!_CurrentAnimation || nextAnim.Priority > _CurrentAnimation.Priority)
+         if(!_currentAnimation || nextAnim.priority > _currentAnimation.priority)
             setAnimation(nextAnim);
            
          // If no current animation, then abort!
-         if(!_CurrentAnimation)
+         if(!_currentAnimation)
          {
             Logger.printWarning(this, "OnFrame", "No current animation. Aborting!");
             return;
@@ -105,28 +105,28 @@ package com.pblabs.rendering2D
          // the sprite sheet and frame properties.
          
          // Figure out what frame we are on.
-         var frameTime:Number = _CurrentAnimationDuration / _CurrentAnimation.SpriteSheet.frameCount;
-         if(frameTime > _CurrentAnimation.MaxFrameDelay)
-            frameTime = _CurrentAnimation.MaxFrameDelay;
+         var frameTime:Number = _currentAnimationDuration / _currentAnimation.spriteSheet.frameCount;
+         if(frameTime > _currentAnimation.maxFrameDelay)
+            frameTime = _currentAnimation.maxFrameDelay;
 
-         var animationAge:Number = ProcessManager.instance.virtualTime - _CurrentAnimationStartTime;
+         var animationAge:Number = ProcessManager.instance.virtualTime - _currentAnimationStartTime;
          var curFrame:int = Math.floor(animationAge/frameTime);
          
          // Deal with clamping/looping.
-         if(!_CurrentAnimation.Loop)
+         if(!_currentAnimation.loop)
          {
-           if(curFrame >= _CurrentAnimation.SpriteSheet.frameCount)
-              curFrame = _CurrentAnimation.SpriteSheet.frameCount - 1;
+           if(curFrame >= _currentAnimation.spriteSheet.frameCount)
+              curFrame = _currentAnimation.spriteSheet.frameCount - 1;
          }
          else
          {
             var wasFrame:int = curFrame;
-            curFrame = curFrame % _CurrentAnimation.SpriteSheet.frameCount;
+            curFrame = curFrame % _currentAnimation.spriteSheet.frameCount;
          }
          
          // Assign properties.
-         owner.setProperty(SpriteSheetReference, _CurrentAnimation.SpriteSheet);
-         owner.setProperty(CurrentFrameReference, curFrame);
+         owner.setProperty(spriteSheetReference, _currentAnimation.spriteSheet);
+         owner.setProperty(currentFrameReference, curFrame);
       }
       
       /**
@@ -137,29 +137,29 @@ package com.pblabs.rendering2D
          Profiler.enter("AnimationController.SetAnimation");
          
          // Fire stop event.
-         if(_CurrentAnimation && _CurrentAnimation.CompleteEvent)
-            owner.eventDispatcher.dispatchEvent(new Event(_CurrentAnimation.CompleteEvent));
+         if(_currentAnimation && _currentAnimation.completeEvent)
+            owner.eventDispatcher.dispatchEvent(new Event(_currentAnimation.completeEvent));
 
-         _CurrentAnimation = ai;
+         _currentAnimation = ai;
          
          // Fire start event.
-         if(_CurrentAnimation.StartEvent)
-            owner.eventDispatcher.dispatchEvent(new Event(_CurrentAnimation.StartEvent));
+         if(_currentAnimation.startEvent)
+            owner.eventDispatcher.dispatchEvent(new Event(_currentAnimation.startEvent));
          
-         if(!ai.SpriteSheet)
+         if(!ai.spriteSheet)
             throw new Error("Animation had no sprite sheet!");
          
          // Note when we started.
-         if(CurrentAnimationStartTimeReference)
-            _CurrentAnimationStartTime = owner.getProperty(CurrentAnimationStartTimeReference);
+         if(currentAnimationStartTimeReference)
+            _currentAnimationStartTime = owner.getProperty(currentAnimationStartTimeReference);
          else
-            _CurrentAnimationStartTime = ProcessManager.instance.virtualTime;
+            _currentAnimationStartTime = ProcessManager.instance.virtualTime;
          
          // Update our duration information.
-         if(CurrentAnimationDurationReference)
-            _CurrentAnimationDuration = owner.getProperty(CurrentAnimationDurationReference) * ProcessManager.TICK_RATE_MS;
+         if(currentAnimationDurationReference)
+            _currentAnimationDuration = owner.getProperty(currentAnimationDurationReference) * ProcessManager.TICK_RATE_MS;
          else
-            _CurrentAnimationDuration = ai.SpriteSheet.frameCount * ProcessManager.TICK_RATE_MS;
+            _currentAnimationDuration = ai.spriteSheet.frameCount * ProcessManager.TICK_RATE_MS;
          
          Profiler.exit("AnimationController.SetAnimation");
       }
@@ -167,9 +167,9 @@ package com.pblabs.rendering2D
       /**
        * Contains the currently playing animation if any.
        */ 
-      private var _CurrentAnimation:AnimationControllerInfo;
+      private var _currentAnimation:AnimationControllerInfo;
 
-      private var _CurrentAnimationStartTime:Number = 0;
-      private var _CurrentAnimationDuration:Number = 0;
+      private var _currentAnimationStartTime:Number = 0;
+      private var _currentAnimationDuration:Number = 0;
    }
 }

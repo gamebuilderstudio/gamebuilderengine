@@ -24,7 +24,7 @@ package com.pblabs.engine.resource
       /**
        * The loaded sound.
        */
-      public var SoundObject:Sound = null;
+      public var soundObject:Sound = null;
       
       public override function load(filename:String):void
       {
@@ -39,7 +39,7 @@ package com.pblabs.engine.resource
       
       private function onSoundLoadComplete(event:Event):void
       {
-         SoundObject = _loadingSound;
+         soundObject = _loadingSound;
          onLoadComplete();
       }
       
@@ -50,7 +50,7 @@ package com.pblabs.engine.resource
       
       public override function initialize(d:*):void
       {
-         SoundObject = d;
+         soundObject = d;
          onLoadComplete();
       }
       
@@ -59,7 +59,7 @@ package com.pblabs.engine.resource
        */
       protected override function onContentReady(content:*):Boolean 
       {
-         return SoundObject != null;
+         return soundObject != null;
       }
       
       // store the sound here until it's loaded

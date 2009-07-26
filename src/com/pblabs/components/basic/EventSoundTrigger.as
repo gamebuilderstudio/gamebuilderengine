@@ -14,12 +14,12 @@ package com.pblabs.components.basic
        * Sounds indexed by event type to trigger them.
        */
       [TypeHint(type="com.pblabs.engine.resource.MP3Resource")]
-		public var Events:Array = new Array();
+		public var events:Array = new Array();
 		
       /**
        * Play a sound when we are created?
        */
-      public var StartSound:MP3Resource = null;
+      public var startSound:MP3Resource = null;
       
       private var DidSchedule:Boolean = false, FiredStartSound:Boolean = false
       
@@ -27,12 +27,12 @@ package com.pblabs.components.basic
 		{
 			// Register events.
 			var ed:IEventDispatcher = owner.eventDispatcher;
-			for(var key:String in Events)
+			for(var key:String in events)
 				ed.addEventListener(key, soundEventHandler);
          
-         if(!FiredStartSound && StartSound)
+         if(!FiredStartSound && startSound)
          {
-            StartSound.SoundObject.play();
+            startSound.soundObject.play();
             FiredStartSound = true;
          }
          
@@ -47,7 +47,7 @@ package com.pblabs.components.basic
 		{
 			// Unregister events.
 			var ed:IEventDispatcher = owner.eventDispatcher;
-			for(var key:String in Events)
+			for(var key:String in events)
 				ed.removeEventListener(key, soundEventHandler);
 		}
       
@@ -63,8 +63,8 @@ package com.pblabs.components.basic
 
 		private function soundEventHandler(e:Event):void
 		{
-         var sound:MP3Resource = Events[e.type];
-         sound.SoundObject.play();
+         var sound:MP3Resource = events[e.type];
+         sound.soundObject.play();
 		}
 
 	}

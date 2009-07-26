@@ -8,15 +8,15 @@ package com.pblabs.components.stateMachine
     */
    public class PropertyTransition extends Transition
    {
-      public var Property:PropertyReference;
-      public var Value:String;
+      public var property:PropertyReference;
+      public var value:String;
       
       public override function evaluate(fsm:IMachine):Boolean
       {
          if(!fsm.propertyBag)
             return false;
          
-         return fsm.propertyBag.getProperty(Property).toString() == Value;
+         return fsm.propertyBag.getProperty(property).toString() == value;
       }
    }
 }

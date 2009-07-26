@@ -40,19 +40,19 @@ package com.pblabs.engine.serialization
       {
          // initialize our default Serializers. Note "special" cases get a double
          // colon so there can be no overlap w/ any real type.
-         _deSerializers["::DefaultSimple"] = deserializeSimple;
-         _deSerializers["::DefaultComplex"] = dserializeComplex;
-         _deSerializers["Boolean"] = deserializeBoolean;
-         _deSerializers["Array"] = deserializeDictionary;
-         _deSerializers["flash.utils::Dictionary"] = deserializeDictionary;
+         _deserializers["::DefaultSimple"] = deserializeSimple;
+         _deserializers["::DefaultComplex"] = dserializeComplex;
+         _deserializers["Boolean"] = deserializeBoolean;
+         _deserializers["Array"] = deserializeDictionary;
+         _deserializers["flash.utils::Dictionary"] = deserializeDictionary;
          
-         _Serializers["::DefaultSimple"] = serializeSimple;
-         _Serializers["::DefaultComplex"] = serializeComplex;
-         _Serializers["Boolean"] = serializeBoolean;
+         _serializers["::DefaultSimple"] = serializeSimple;
+         _serializers["::DefaultComplex"] = serializeComplex;
+         _serializers["Boolean"] = serializeBoolean;
          
          // Do a quick sanity check to make sure we are getting metadata.
          var tmd:TestForMetadata = new TestForMetadata();
-         if(TypeUtility.getTypeHint(tmd, "SomeArray") != "Number")
+         if(TypeUtility.getTypeHint(tmd, "someArray") != "Number")
             throw new Error("Metadata is not included in this build of the engine, so serialization will not work!\n" + 
             "Add --keep-as3-metadata+=TypeHint,EditorData,Embed to your compiler arguments to get around this.");
       }
@@ -83,10 +83,10 @@ package com.pblabs.engine.serialization
          {
             // Normal case - determine type and call the right Serializer.
             var typeName:String = TypeUtility.getObjectClassName(object);
-            if (!_Serializers[typeName])
+            if (!_serializers[typeName])
                typeName = isSimpleType(object) ? "::DefaultSimple" : "::DefaultComplex";
             
-            _Serializers[typeName](object, xml);
+            _serializers[typeName](object, xml);
          }
       }
       
@@ -120,10 +120,10 @@ package com.pblabs.engine.serialization
          
          // Normal case - determine type and call the right Serializer.
          var typeName:String = TypeUtility.getObjectClassName(object);
-         if (!_deSerializers[typeName])
+         if (!_deserializers[typeName])
             typeName = xml.hasSimpleContent() ? "::DefaultSimple" : "::DefaultComplex";
          
-         return _deSerializers[typeName](object, xml, typeHint);
+         return _deserializers[typeName](object, xml, typeHint);
       }
       
       /**
@@ -336,12 +336,12 @@ package com.pblabs.engine.serialization
          {
             var reference:ReferenceNote = new ReferenceNote();
             reference.owner = object;
-            reference.FieldName = fieldName;
-            reference.NameReference = nameReference;
-            reference.ComponentReference = componentReference;
-            reference.ComponentName = componentName
-            reference.ObjectReference = objectReference;
-            reference.CurrentEntity = _currentEntity;
+            reference.fieldName = fieldName;
+            reference.nameReference = nameReference;
+            reference.componentReference = componentReference;
+            reference.componentName = componentName
+            reference.objectReference = objectReference;
+            reference.currentEntity = _currentEntity;
             
             if (!reference.resolve())
                _deferredReferences.push(reference);
@@ -422,8 +422,8 @@ package com.pblabs.engine.serialization
       }
       
       private var _currentEntity:IEntity = null;
-      private var _Serializers:Dictionary = new Dictionary();
-      private var _deSerializers:Dictionary = new Dictionary();
+      private var _serializers:Dictionary = new Dictionary();
+      private var _deserializers:Dictionary = new Dictionary();
       private var _deferredReferences:Array = new Array();
       private var _resources:Dictionary = new Dictionary();
    }
@@ -465,71 +465,71 @@ internal class ResourceNote
 internal class ReferenceNote
 {
    public var owner:* = null;
-   public var FieldName:String = null;
-   public var NameReference:String = null;
-   public var ComponentReference:String = null;
-   public var ComponentName:String = null;
-   public var ObjectReference:String = null;
-   public var CurrentEntity:IEntity = null;
-   public var ReportedMissing:Boolean = false;
+   public var fieldName:String = null;
+   public var nameReference:String = null;
+   public var componentReference:String = null;
+   public var componentName:String = null;
+   public var objectReference:String = null;
+   public var currentEntity:IEntity = null;
+   public var reportedMissing:Boolean = false;
    
    public function resolve():Boolean
    {
       // Look up by name.
-      if (NameReference != "")
+      if (nameReference != "")
       {
-         var namedObject:IEntity = NameManager.instance.lookup(NameReference);
+         var namedObject:IEntity = NameManager.instance.lookup(nameReference);
          if (!namedObject)
             return false;
          
-         owner[FieldName] = namedObject;
+         owner[fieldName] = namedObject;
          reportSuccess();
          return true;
       }
       
       // Look up a component on a named object by name (first) or type (second).
-      if (ComponentReference != "")
+      if (componentReference != "")
       {
-         var componentObject:IEntity = NameManager.instance.lookup(ComponentReference);
+         var componentObject:IEntity = NameManager.instance.lookup(componentReference);
          if (!componentObject)
             return false;
          
          var component:IEntityComponent = null;
-         if (ComponentName != "")
+         if (componentName != "")
          {
-            component = componentObject.lookupComponentByName(ComponentName);
+            component = componentObject.lookupComponentByName(componentName);
             if (!component)
                return false;
          }
          else
          {
-            var componentType:String = TypeUtility.getFieldType(owner, FieldName);
+            var componentType:String = TypeUtility.getFieldType(owner, fieldName);
             component = componentObject.lookupComponentByType(TypeUtility.getClassFromName(componentType));
             if (!component)
                return false;
          }
          
-         owner[FieldName] = component;
+         owner[fieldName] = component;
          reportSuccess();
          return true;
       }
       
       // Component reference on the entity being deserialized when the reference was created.
-      if (ComponentName != "")
+      if (componentName != "")
       {
-         var localComponent:IEntityComponent = CurrentEntity.lookupComponentByName(ComponentName);
+         var localComponent:IEntityComponent = currentEntity.lookupComponentByName(componentName);
          if (!localComponent)
             return false;
          
-         owner[FieldName] = localComponent;
+         owner[fieldName] = localComponent;
          reportSuccess();
          return true;
       }
       
       // Or instantiate a new entity.
-      if (ObjectReference != "")
+      if (objectReference != "")
       {
-         owner[FieldName] = TemplateManager.instance.instantiateEntity(ObjectReference);
+         owner[fieldName] = TemplateManager.instance.instantiateEntity(objectReference);
          reportSuccess();
          return true;
       }
@@ -544,30 +544,30 @@ internal class ReferenceNote
    public function reportMissing():void
    {
       // Don't spam.
-      if(ReportedMissing)
+      if(reportedMissing)
          return;
-      ReportedMissing = true;
+      reportedMissing = true;
       
-      var firstPart:String = owner.toString() + "[" + FieldName + "] on entity '" + CurrentEntity.name + "' - ";
+      var firstPart:String = owner.toString() + "[" + fieldName + "] on entity '" + currentEntity.name + "' - ";
       
       // Name reference.
-      if(NameReference)
+      if(nameReference)
       {
-         Logger.printWarning(this, "reportMissing", firstPart + "Couldn't resolve reference to named entity '" + NameReference + "'");
+         Logger.printWarning(this, "reportMissing", firstPart + "Couldn't resolve reference to named entity '" + nameReference + "'");
          return; 
       }
 
       // Look up a component on a named object by name (first) or type (second).
-      if (ComponentReference != "")
+      if (componentReference != "")
       {
-         Logger.printWarning(this, "reportMissing", firstPart + " Couldn't find named entity '" + ComponentReference + "'");
+         Logger.printWarning(this, "reportMissing", firstPart + " Couldn't find named entity '" + componentReference + "'");
          return;
       }
       
       // Component reference on the entity being deserialized when the reference was created.
-      if (ComponentName != "")
+      if (componentName != "")
       {
-         Logger.printWarning(this, "reportMissing", firstPart + " Couldn't find component on same entity named '" + ComponentName + "'");
+         Logger.printWarning(this, "reportMissing", firstPart + " Couldn't find component on same entity named '" + componentName + "'");
          return;
       }
    }
@@ -575,29 +575,29 @@ internal class ReferenceNote
    private function reportSuccess():void
    {
       // If we succeeded with no spam then be quiet on success too.
-      if(!ReportedMissing)
+      if(!reportedMissing)
          return;
 
-      var firstPart:String = owner.toString() + "[" + FieldName + "] on entity '" + CurrentEntity.name + "' - ";
+      var firstPart:String = owner.toString() + "[" + fieldName + "] on entity '" + currentEntity.name + "' - ";
       
       // Name reference.
-      if(NameReference)
+      if(nameReference)
       {
-         Logger.printWarning(this, "reportSuccess", firstPart + " After failure, was able to resolve reference to named entity '" + NameReference + "'");
+         Logger.printWarning(this, "reportSuccess", firstPart + " After failure, was able to resolve reference to named entity '" + nameReference + "'");
          return; 
       }
 
       // Look up a component on a named object by name (first) or type (second).
-      if (ComponentReference != "")
+      if (componentReference != "")
       {
-         Logger.printWarning(this, "reportSuccess", firstPart + " After failure, was able to find named entity '" + ComponentReference + "'");
+         Logger.printWarning(this, "reportSuccess", firstPart + " After failure, was able to find named entity '" + componentReference + "'");
          return;
       }
       
       // Component reference on the entity being deserialized when the reference was created.
-      if (ComponentName != "")
+      if (componentName != "")
       {
-         Logger.printWarning(this, "reportSuccess", firstPart + " After failure, was able to find component on same entity named '" + ComponentName + "'");
+         Logger.printWarning(this, "reportSuccess", firstPart + " After failure, was able to find component on same entity named '" + componentName + "'");
          return;
       }
    }

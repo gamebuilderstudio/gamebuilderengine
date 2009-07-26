@@ -42,36 +42,36 @@ package com.pblabs.engine.debug
       /**
        * The object that printed the message to the log.
        */
-      public var Reporter:* = null;
+      public var reporter:* = null;
       
       /**
        * The method the entry was printed from.
        */
-      public var Method:String = "";
+      public var method:String = "";
       
       /**
        * The message that was printed.
        */
-      public var Message:String = "";
+      public var message:String = "";
       
       /**
        * The full message, formatted to include the reporter and method if they exist.
        */
       public function get formattedMessage():String
       {
-         var depth:String = "";
-         for (var i:int = 0; i < Depth; i++)
-            depth += "   ";
+         var deep:String = "";
+         for (var i:int = 0; i < depth; i++)
+            deep += "   ";
          
          var reporter:String = "";
-         if (Reporter)
-            reporter = Reporter + ": ";
+         if (reporter)
+            reporter = reporter + ": ";
          
          var method:String = "";
-         if (Method != null && Method != "")
-            method = Method + " - ";
+         if (method != null && method != "")
+            method = method + " - ";
          
-         return depth + reporter + method + Message;
+         return deep + reporter + method + message;
       }
       
       /**
@@ -81,13 +81,13 @@ package com.pblabs.engine.debug
        * @see #WARNING
        * @see #MESSAGE
        */
-      public var Type:String = null;
+      public var type:String = null;
       
       /**
        * The depth of the message.
        * 
        * @see Logger#Push()
        */
-      public var Depth:int = 0;
+      public var depth:int = 0;
    }
 }

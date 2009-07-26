@@ -39,11 +39,11 @@ package com.pblabs.engine.resource
       /**
        * The Resource associated with the event.
        */
-      public var ResourceObject:Resource = null;
+      public var resourceObject:Resource = null;
       
       public function ResourceEvent(type:String, resource:Resource, bubbles:Boolean=false, cancelable:Boolean=false)
       {
-         ResourceObject = resource;
+         resourceObject = resource;
          
          super(type, bubbles, cancelable);
       }

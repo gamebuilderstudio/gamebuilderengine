@@ -127,7 +127,7 @@ package com.pblabs.engine.resource
          loader.load(request);
          
          // Keep reference so the URLLoader isn't GC'ed.
-         _UrlLoader = loader;
+         _urlLoader = loader;
       }
       
       /**
@@ -151,7 +151,7 @@ package com.pblabs.engine.resource
          loader.loadBytes(data);
 
          // Keep reference so the Loader isn't GC'ed.
-         _Loader = loader;
+         _loader = loader;
       }
       
       /**
@@ -200,8 +200,8 @@ package com.pblabs.engine.resource
             if (onContentReady(event ? event.target.content : null))
             {
                _isLoaded = true;
-               _UrlLoader = null;
-               _Loader = null;
+               _urlLoader = null;
+               _loader = null;
                dispatchEvent(new ResourceEvent(ResourceEvent.LOADED_EVENT, this));
                return;
             }
@@ -238,15 +238,15 @@ package com.pblabs.engine.resource
          Logger.printError(this, "Load", "Resource " + _filename + " failed to load with error: " + message);
          dispatchEvent(new ResourceEvent(ResourceEvent.FAILED_EVENT, this));
          
-         _UrlLoader = null;
-         _Loader = null;
+         _urlLoader = null;
+         _loader = null;
       }
       
       protected var _filename:String = null;
       private var _isLoaded:Boolean = false;
       private var _didFail:Boolean = false;
-      private var _UrlLoader:URLLoader;
-      private var _Loader:Loader;
+      private var _urlLoader:URLLoader;
+      private var _loader:Loader;
       private var _referenceCount:int = 0;
    }
 }

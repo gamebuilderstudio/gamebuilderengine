@@ -25,26 +25,26 @@ package com.pblabs.rendering2D
        * point.
        */
       [TypeHint(type="flash.geom.Point")]
-      public var PositionReference:PropertyReference;
+      public var positionReference:PropertyReference;
       
       /**
        * A reference for the rotation property on the owner entity. This should be a
        * Number.
        */
       [TypeHint(type="Number")]
-      public var RotationReference:PropertyReference;
+      public var rotationReference:PropertyReference;
       
       /**
        * A reference for the size property on the owner entity. This should be a
        * point.
        */
       [TypeHint(type="flash.geom.Point")]
-      public var SizeReference:PropertyReference;
+      public var sizeReference:PropertyReference;
       
       /**
        * An offset to apply to the position retrieved from the PositionReference.
        */
-      public var PositionOffset:Point = new Point(0, 0);
+      public var positionOffset:Point = new Point(0, 0);
       
       /**
        * @inheritDoc
@@ -52,7 +52,7 @@ package com.pblabs.rendering2D
       [EditorData(ignore="true")]
       public function get renderSortKey():int
       {
-         return _RenderSortKey;
+         return _renderSortKey;
       }
       
       /**
@@ -60,23 +60,23 @@ package com.pblabs.rendering2D
        */
       public function set renderSortKey(value:int):void
       {
-         _RenderSortKey = value;
+         _renderSortKey = value;
       }
       
       [EditorData(ignore="true")]
       public function get renderCacheKey():int
       {
-         return _RenderCacheKey;
+         return _renderCacheKey;
       }
       
       public function set renderCacheKey(value:int):void
       {
-         _RenderCacheKey = value;
+         _renderCacheKey = value;
       }
 
       public function invalidateRenderCache():void
       {
-         _RenderCacheKey = RenderCacheKeyManager.Token++;
+         _renderCacheKey = RenderCacheKeyManager.Token++;
       }
 
       /**
@@ -84,7 +84,7 @@ package com.pblabs.rendering2D
        */
       public function get layerIndex():int
       {
-         return _LayerIndex;
+         return _layerIndex;
       }
       
       /**
@@ -92,7 +92,7 @@ package com.pblabs.rendering2D
        */
       public function set layerIndex(value:int):void
       {
-         _LayerIndex = value;
+         _layerIndex = value;
       }
       
       /**
@@ -100,17 +100,17 @@ package com.pblabs.rendering2D
        */
       public function get renderPosition():Point
       {
-         var position:Point = owner.getProperty(PositionReference);
+         var position:Point = owner.getProperty(positionReference);
          
          if (!position)
             return new Point(0, 0);
          
-         return position.add(PositionOffset);
+         return position.add(positionOffset);
       }
       
       public function get renderScale():Point
       {
-         var scale:Point = owner.getProperty(SizeReference);
+         var scale:Point = owner.getProperty(sizeReference);
          
          if(!scale)
             return new Point(1,1);
@@ -126,6 +126,6 @@ package com.pblabs.rendering2D
          throw new Error("Derived classes must implement this method!");
       }
       
-      private var _LayerIndex:int, _RenderSortKey:int, _RenderCacheKey:int;
+      private var _layerIndex:int, _renderSortKey:int, _renderCacheKey:int;
    }
 }

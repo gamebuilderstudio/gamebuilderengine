@@ -78,13 +78,13 @@ package com.pblabs.engine.unitTests
          entity.setProperty(_testValueReference, 834);
          assertEquals(834, a.testValue);
          
-         b.TestComplex = new Point(4.593, 81.287);
+         b.testComplex = new Point(4.593, 81.287);
          assertEquals(4.593, entity.getProperty(_testComplexXReference));
          assertEquals(81.287, entity.getProperty(_testComplexYReference));
          entity.setProperty(_testComplexXReference, 7.239);
          entity.setProperty(_testComplexYReference, 212.923);
-         assertEquals(7.239, b.TestComplex.x);
-         assertEquals(212.923, b.TestComplex.y);
+         assertEquals(7.239, b.testComplex.x);
+         assertEquals(212.923, b.testComplex.y);
          
          assertEquals(null, entity.getProperty(_nonexistentReference));
          assertEquals(null, entity.getProperty(_malformedReference));
@@ -106,8 +106,8 @@ package com.pblabs.engine.unitTests
          assertTrue(b);
          
          assertEquals(7, a.testValue);
-         assertEquals(4, b.TestComplex.x);
-         assertEquals(9.3, b.TestComplex.y);
+         assertEquals(4, b.testComplex.x);
+         assertEquals(9.3, b.testComplex.y);
          
          entity.destroy();
          
@@ -162,8 +162,8 @@ package com.pblabs.engine.unitTests
     
       
       private var _testValueReference:PropertyReference = new PropertyReference("@A.TestValue");
-      private var _testComplexXReference:PropertyReference = new PropertyReference("@B.TestComplex.x");
-      private var _testComplexYReference:PropertyReference = new PropertyReference("@B.TestComplex.y");
+      private var _testComplexXReference:PropertyReference = new PropertyReference("@B.testComplex.x");
+      private var _testComplexYReference:PropertyReference = new PropertyReference("@B.testComplex.y");
       private var _nonexistentReference:PropertyReference = new PropertyReference("@A.Nonexistent");
       private var _malformedReference:PropertyReference = new PropertyReference("Malformed");
       

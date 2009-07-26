@@ -22,7 +22,7 @@ package com.pblabs.engine.components
        * The update priority for this component. Higher numbered priorities have
        * OnFrame called before lower priorities.
        */
-      public var UpdatePriority:Number = 0.0;
+      public var updatePriority:Number = 0.0;
       
       /**
        * @inheritDoc
@@ -33,7 +33,7 @@ package com.pblabs.engine.components
       
       protected override function onAdd():void
       {
-         ProcessManager.instance.addAnimatedObject(this, UpdatePriority);
+         ProcessManager.instance.addAnimatedObject(this, updatePriority);
       }
       
       protected override function onRemove():void

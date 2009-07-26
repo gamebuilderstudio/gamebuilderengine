@@ -11,30 +11,30 @@ package com.pblabs.components.basic
       /**
        * Change in health.
        */
-		public var Delta:Number;
+		public var delta:Number;
       
       /**
        * Current health amount, after the delta. The health property on the 
        * component is not updated until after the event is processed.
        */
-		public var Amount:Number;
+		public var amount:Number;
       
       /**
        * Entity which caused this damage (or healing), if any.
        */
-      public var OriginatingEntity:IEntity;
+      public var originatingEntity:IEntity;
 		
 		public function HealthEvent(type:String, delta:Number, amount:Number, originator:IEntity, bubbles:Boolean=false, cancelable:Boolean=false)
 		{
-			Delta = delta;
-			Amount = amount;
-         OriginatingEntity = originator;
+			delta = delta;
+			amount = amount;
+         originatingEntity = originator;
 			super(type, bubbles, cancelable);
 		}
 		
 		public function isDead():Boolean
 		{
-			return Amount == 0;
+			return amount == 0;
 		}
 	}
 }

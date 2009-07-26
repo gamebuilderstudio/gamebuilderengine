@@ -68,8 +68,8 @@ package com.pblabs.engine.unitTests
          Logger.printHeader(null, "Running Process Tick Rate Test");
          
          var tickObject:TickTest = new TickTest(0);
-         tickObject.TestPriority = false;
-         tickObject.TestCount = true;
+         tickObject.testPriority = false;
+         tickObject.testCount = true;
          ProcessManager.instance.addTickedObject(tickObject);
          
          ProcessManager.instance.testAdvance((ProcessManager.TICK_RATE_MS * 4) + 8);
@@ -144,8 +144,8 @@ class TickTest implements ITickedObject
 {
    public static var Counter:int = 5;
    
-   public var TestPriority:Boolean = true;
-   public var TestCount:Boolean = false;
+   public var testPriority:Boolean = true;
+   public var testCount:Boolean = false;
    
    public function get tickCount():int
    {
@@ -164,7 +164,7 @@ class TickTest implements ITickedObject
    
    public function onTick(tickRate:Number):void
    {
-      if (TestPriority)
+      if (testPriority)
       {
          if (Counter == -1)
             throw new Error("Objects not removed from process list!");
@@ -174,7 +174,7 @@ class TickTest implements ITickedObject
       
          Counter--;
       }
-      else if (TestCount)
+      else if (testCount)
       {
          _tickCount++;
       }

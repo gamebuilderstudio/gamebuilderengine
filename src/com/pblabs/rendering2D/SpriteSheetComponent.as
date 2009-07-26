@@ -50,12 +50,12 @@ package com.pblabs.rendering2D
       */
       public function get center():Point
       {
-         return _Center;
+         return _center;
       }
       
       public function set center(value:Point):void
       {
-         _Center = value;
+         _center = value;
          _defaultCenter = false;
       }
       
@@ -133,14 +133,14 @@ package com.pblabs.rendering2D
        * The number of directions per frame.
        */
       [EditorData(defaultValue="1")]
-      public var DirectionsPerFrame:Number = 1;
+      public var directionsPerFrame:Number = 1;
       
       /**
        * The number of degrees separating each direction.
        */
       public function get degreesPerDirection():Number
       {
-         return 360 / DirectionsPerFrame;
+         return 360 / directionsPerFrame;
       }
       
       /**
@@ -164,7 +164,7 @@ package com.pblabs.rendering2D
        */
       public function get frameCount():int
       {
-         return rawFrameCount / DirectionsPerFrame;
+         return rawFrameCount / directionsPerFrame;
       }
       
       /**
@@ -189,7 +189,7 @@ package com.pblabs.rendering2D
             direction -= 360;
          
          // Easy case if we only have one direction per frame.
-         if (DirectionsPerFrame == 1)
+         if (directionsPerFrame == 1)
             return getRawFrame(index);
          
          // Otherwise we have to do a search.
@@ -205,14 +205,14 @@ package com.pblabs.rendering2D
          for (var i:int = 0; i < _frameNotes.length; i++)
          {
             var note:FrameNote = _frameNotes[i];
-            if (note.Frame != index)
+            if (note.frame != index)
                continue;
             
-            if (Math.abs(note.Direction - direction) < bestMatchDirectionDistance)
+            if (Math.abs(note.direction - direction) < bestMatchDirectionDistance)
             {
                // This one is better on both frame and heading.
-               bestMatchDirectionDistance = Math.abs(note.Direction - direction);
-               bestMatchIndex = note.RawFrame;
+               bestMatchDirectionDistance = Math.abs(note.direction - direction);
+               bestMatchIndex = note.rawFrame;
             }
          }
          
@@ -247,7 +247,7 @@ package com.pblabs.rendering2D
          }
          
          if (_defaultCenter)
-            _Center = new Point(_frames[0].width * 0.5, _frames[0].height * 0.5);
+            _center = new Point(_frames[0].width * 0.5, _frames[0].height * 0.5);
       }
       
       protected function onImageLoaded(resource:ImageResource):void
@@ -284,14 +284,14 @@ package com.pblabs.rendering2D
          
          var totalStates:int = frameCount / degreesPerDirection;
          
-         for (var direction:int = 0; direction < DirectionsPerFrame; direction++)
+         for (var direction:int = 0; direction < directionsPerFrame; direction++)
          {
             for (var frame:int = 0; frame < frameCount; frame++)
             {
                var note:FrameNote = new FrameNote();
-               note.Frame = frame;
-               note.Direction = direction * degreesPerDirection;
-               note.RawFrame = (direction * frameCount) + frame;
+               note.frame = frame;
+               note.direction = direction * degreesPerDirection;
+               note.rawFrame = (direction * frameCount) + frame;
                
                _frameNotes.push(note);
             }
@@ -303,14 +303,14 @@ package com.pblabs.rendering2D
       private var _image:ImageResource = null;
       private var _divider:ISpriteSheetDivider = null;
       private var _frames:Array = null;
-      private var _Center:Point = new Point(0, 0);
+      private var _center:Point = new Point(0, 0);
       private var _defaultCenter:Boolean = true;
    }
 }
 
 final class FrameNote
 {
-   public var Frame:int;
-   public var Direction:Number;
-   public var RawFrame:int;
+   public var frame:int;
+   public var direction:Number;
+   public var rawFrame:int;
 }

@@ -15,7 +15,7 @@ package com.pblabs.box2D
 
    public class Box2DDebugComponent extends BaseRenderComponent
    {
-      public var Manager:Box2DManagerComponent;
+      public var manager:Box2DManagerComponent;
     
       public override function get layerIndex():int
       {
@@ -52,8 +52,8 @@ package com.pblabs.box2D
       
       protected override function onReset():void 
       {
-         if (Manager)
-            Manager.setDebugDrawer(_drawer);
+         if (manager)
+            manager.setDebugDrawer(_drawer);
       }
 
       public override function onDraw(manager:IDrawManager2D):void

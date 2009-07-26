@@ -44,14 +44,14 @@ package com.pblabs.engine.resource
        * that have been properly embedded and registered with the ResourceManager
        * will be used.
        */
-      public var OnlyLoadEmbeddedResources:Boolean = false;
+      public var onlyLoadEmbeddedResources:Boolean = false;
       
       /**
        * Function that will be called if OnlyLoadEmbeddedResources is set and we
        * fail to find something. Useful for displaying feedback for artists (such
        * as via a dialog box ;). Passed the filename of the requested resource.
        */
-      public var OnEmbeddedFail:Function;
+      public var onEmbeddedFail:Function;
       
       /**
        * Loads a resource from a file. If the resource has already been loaded or is embedded, a
@@ -90,11 +90,11 @@ package com.pblabs.engine.resource
          
          if (!resource)
          {
-            if(OnlyLoadEmbeddedResources)
+            if(onlyLoadEmbeddedResources)
             {
                fail(null, onFailed, "'" + filename + "' was not loaded because it was not embedded in the SWF.");
-               if(OnEmbeddedFail != null)
-                  OnEmbeddedFail(filename);
+               if(onEmbeddedFail != null)
+                  onEmbeddedFail(filename);
                return;
             }
             

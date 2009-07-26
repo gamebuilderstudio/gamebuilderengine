@@ -20,22 +20,22 @@ package com.pblabs.rendering2D
        * Ranges from 0..1, 0 being at the start of the ray and 1 at the end.
        * Indicates location of contact along the ray.
        */ 
-      public var Time:Number;
+      public var time:Number;
       
       /**
        * Position of the contact.
        */ 
-      public var Position:Point;
+      public var position:Point;
       
       /**
        * Normal of the contact.
        */ 
-      public var Normal:Point;
+      public var normal:Point;
       
       /**
        * The specific object the ray struck.
        */ 
-      public var HitObject:ISpatialObject2D;
+      public var hitObject:ISpatialObject2D;
       
       /**
        * Copy state from another RayHitInfo, overwriting the information in this
@@ -43,18 +43,18 @@ package com.pblabs.rendering2D
        */
       public function copyFrom(other:RayHitInfo):void
       {
-         Time = other.Time;
+         time = other.time;
          
-         if(other.Position)
-            Position = other.Position.clone();
+         if(other.position)
+            position = other.position.clone();
          else
-            Position = null;
+            position = null;
          
-         if(other.Normal)
-            Normal = other.Normal.clone();
+         if(other.normal)
+            normal = other.normal.clone();
          else
-            Normal = null;
-         HitObject = other.HitObject;
+            normal = null;
+         hitObject = other.hitObject;
       }
    }
 }

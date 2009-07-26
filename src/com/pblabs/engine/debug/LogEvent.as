@@ -26,11 +26,11 @@ package com.pblabs.engine.debug
       /**
        * The LogEntry associated with this event.
        */
-      public var Entry:LogEntry = null;
+      public var entry:LogEntry = null;
       
       public function LogEvent(type:String, entry:LogEntry, bubbles:Boolean=false, cancelable:Boolean=false) 
       {
-         Entry = entry;
+         entry = entry;
          super(type, bubbles, cancelable);
       }
    }

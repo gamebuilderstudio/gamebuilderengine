@@ -23,13 +23,13 @@ package com.pblabs.engine.components
        * to disable the functionality. Only checked at onAdd/onRemove time.
        */
       [EditorData(DefaultValue="true")]
-      public var RegisterForTicks:Boolean = true;
+      public var registerForTicks:Boolean = true;
       
       /**
        * The update priority for this component. Higher numbered priorities have
-       * OnInterpolateTick and OnTick called before lower priorities.
+       * onInterpolateTick and onTick called before lower priorities.
        */
-      public var UpdatePriority:Number = 0.0;
+      public var updatePriority:Number = 0.0;
       
       /**
        * @inheritDoc
@@ -47,13 +47,13 @@ package com.pblabs.engine.components
       
       protected override function onAdd():void
       {
-         if(RegisterForTicks)
-            ProcessManager.instance.addTickedObject(this, UpdatePriority);
+         if(registerForTicks)
+            ProcessManager.instance.addTickedObject(this, updatePriority);
       }
       
       protected override function onRemove():void
       {
-         if(RegisterForTicks)
+         if(registerForTicks)
             ProcessManager.instance.removeTickedObject(this);
       }
    }

@@ -20,13 +20,13 @@ package com.pblabs.rendering2D
        * The number of cells in the x direction.
        */
       [EditorData(defaultValue="1")]
-      public var XCount:int = 1;
+      public var xCount:int = 1;
       
       /**
        * The number of cells in the y direction.
        */
       [EditorData(defaultValue="1")]
-      public var YCount:int = 1;
+      public var yCount:int = 1;
       
       /**
        * @inheritDoc
@@ -44,7 +44,7 @@ package com.pblabs.rendering2D
        */
       public function get frameCount():int
       {
-         return XCount * YCount;
+         return xCount * yCount;
       }
       
       /**
@@ -58,11 +58,11 @@ package com.pblabs.rendering2D
          var imageWidth:int = _owningSheet.imageData.width;
          var imageHeight:int = _owningSheet.imageData.height;
          
-         var width:int = imageWidth / XCount;
-         var height:int = imageHeight / YCount;
+         var width:int = imageWidth / xCount;
+         var height:int = imageHeight / yCount;
          
-         var x:int = index % XCount;
-         var y:int = Math.floor(index / XCount);
+         var x:int = index % xCount;
+         var y:int = Math.floor(index / xCount);
          
          var startX:int = x * width;
          var startY:int = y * height;
@@ -76,8 +76,8 @@ package com.pblabs.rendering2D
       public function clone():ISpriteSheetDivider
       {
          var c:CellCountDivider = new CellCountDivider();
-         c.XCount = XCount;
-         c.YCount = YCount;
+         c.xCount = xCount;
+         c.yCount = yCount;
          return c;
       }
 

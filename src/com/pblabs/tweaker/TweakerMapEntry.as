@@ -12,12 +12,12 @@ package com.pblabs.tweaker
     */
    public class TweakerMapEntry
    {
-      public var Cell:String;
+      public var cell:String;
       public var property:PropertyReference;
       
       public function toString():String
       {
-         return "[TweakerMapEntry " + Cell + " = " + property.property + "]";
+         return "[TweakerMapEntry " + cell + " = " + property.property + "]";
       }
    }
 }
