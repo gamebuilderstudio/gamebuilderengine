@@ -43,7 +43,7 @@ package com.pblabs.engine.MXML
        */
       public function initialized(document:Object, id:String):void
       {
-         if ((levels == null) || (levels.length == 0))
+         if (!levels || levels.length == 0)
          {
             LevelManager.Instance.AddGroupReference(level, name);
          }

@@ -64,7 +64,7 @@ package com.pblabs.engine.serialization
       public function Deserialize(xml:XML):*
       {
          var stringValue:String = xml.toString();
-         if (TypeMap[stringValue] == null)
+         if (!TypeMap[stringValue])
          {
             Logger.PrintError(this, "Deserialize", stringValue + " is not a valid value for this enumeration.");
             return DefaultType;

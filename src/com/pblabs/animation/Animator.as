@@ -227,7 +227,7 @@ package com.pblabs.animation
          if (!IsAnimating)
             return;
          
-         if ((_type == AnimatorType.PingPongAnimation) && (_repeatCount & 1))
+         if (_type == AnimatorType.PingPongAnimation && _repeatCount & 1)
             _current = _start;
          else
             _current = _target;
@@ -275,7 +275,7 @@ package com.pblabs.animation
          _elapsedTime += elapsed;
          if (_elapsedTime > _duration)
          {
-            if ((_type == AnimatorType.PlayAnimationOnce) || (_repeatCount == 0))
+            if (_type == AnimatorType.PlayAnimationOnce || _repeatCount == 0)
             {
                Finish();
                return;

@@ -102,7 +102,7 @@ package com.pblabs.rendering2D
       {
          var position:Point = Owner.GetProperty(PositionReference);
          
-         if (position == null)
+         if (!position)
             return new Point(0, 0);
          
          return position.add(PositionOffset);
@@ -112,7 +112,7 @@ package com.pblabs.rendering2D
       {
          var scale:Point = Owner.GetProperty(SizeReference);
          
-         if(scale == null)
+         if(!scale)
             return new Point(1,1);
          
          return scale;

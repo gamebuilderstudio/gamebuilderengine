@@ -25,7 +25,7 @@ package com.pblabs.engine.core
        */
       static public function get Instance():NameManager
       {
-         if (_instance == null)
+         if (!_instance)
             _instance = new NameManager();
          
          return _instance;
@@ -50,7 +50,7 @@ package com.pblabs.engine.core
        */
       public function AddEntity(entity:IEntity, name:String):void
       {
-         if (_entities[name] != null)
+         if (_entities[name])
             Logger.PrintWarning(this, "AddEntity", "An entity with the name " + name + " already exists. Future lookups by this name will return this new entity. Did you mean to make this entity a template?");
          
          if(TemplateManager.VERBOSE_LOGGING)
@@ -93,12 +93,12 @@ package com.pblabs.engine.core
        */
       public function ValidateName(name:String):String
       {
-         if (_entities[name] == null)
+         if (!_entities[name])
             return name;
          
          var index:int = 1;
          var testName:String = name + index;
-         while (_entities[testName] != null)
+         while (_entities[testName])
             testName = name + index++;
          
          return testName;
@@ -116,7 +116,7 @@ package com.pblabs.engine.core
       public function LookupComponentByType(name:String, componentType:Class):IEntityComponent
       {
          var entity:IEntity = Lookup(name);
-         if (entity == null)
+         if (!entity)
             return null;
          
          return entity.LookupComponentByType(componentType);
@@ -134,7 +134,7 @@ package com.pblabs.engine.core
       public function LookupComponentsByType(name:String, componentType:Class):Array
       {
          var entity:IEntity = Lookup(name);
-         if (entity == null)
+         if (!entity)
             return null;
          
          return entity.LookupComponentsByType(componentType);
@@ -152,7 +152,7 @@ package com.pblabs.engine.core
       public function LookupComponentByName(name:String, componentName:String):IEntityComponent
       {
          var entity:IEntity = Lookup(name);
-         if (entity == null)
+         if (!entity)
             return null;
          
          return entity.LookupComponentByName(componentName);

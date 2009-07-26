@@ -48,7 +48,7 @@
          
          private function _IsDisplayed(item:Object):Boolean
          {
-            return (LogFilter.selectedItem == "*") || (item.logger.indexOf(LogFilter.selectedItem) != -1);
+            return LogFilter.selectedItem == "*" || item.logger.indexOf(LogFilter.selectedItem) != -1;
          }
          
          private function _Close():void

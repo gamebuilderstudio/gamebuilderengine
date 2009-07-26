@@ -26,7 +26,7 @@ package com.pblabs.rendering2D
       
       public override function OnDraw(manager:IDrawManager2D):void
       {
-         if(_Clip == null)
+         if(!_Clip)
             _Clip = _GetClipInstance();
          
          // Position and draw.

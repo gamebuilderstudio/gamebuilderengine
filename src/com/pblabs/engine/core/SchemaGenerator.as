@@ -27,7 +27,7 @@ package com.pblabs.engine.core
        */
       public static function get Instance():SchemaGenerator
       {
-         if (_instance == null)
+         if (!_instance)
             _instance = new SchemaGenerator();
          
          return _instance;

@@ -21,10 +21,10 @@ package com.pblabs.box2D
          var spatial1:Box2DSpatialComponent = point.shape1.m_userData as Box2DSpatialComponent;
          var spatial2:Box2DSpatialComponent = point.shape2.m_userData as Box2DSpatialComponent;
          
-         if (shape1Dictionary[spatial1] == null)
+         if (!shape1Dictionary[spatial1])
             shape1Dictionary[spatial1] = 0;
          
-         if (shape1Dictionary[spatial2] == null)
+         if (!shape1Dictionary[spatial2])
             shape1Dictionary[spatial2] = 0;
          
          spatial1.Owner.EventDispatcher.dispatchEvent(new CollisionEvent(CollisionEvent.COLLISION_EVENT, point));

@@ -30,7 +30,7 @@ package com.pblabs.engine.serialization
        */
       public static function RegisterInstantiator(typeName:String, instantiator:Function):void
       {
-         if (_instantiators[typeName] != null)
+         if (_instantiators[typeName])
             Logger.PrintWarning("TypeUtility", "RegisterInstantiator", "An instantiator for " + typeName + " has already been registered. It will be replaced.");
          
          _instantiators[typeName] = instantiator;
@@ -75,13 +75,13 @@ package com.pblabs.engine.serialization
             return "";
          
          // Check for overrides.
-         if (_instantiators[className] != null)
+         if (_instantiators[className])
             return _instantiators[className]();
          
          // Give it a shot!
          try
          {
-            return new (getDefinitionByName(className));
+            return new getDefinitionByName(className);
          }
          catch (e:Error)
          {
@@ -147,7 +147,7 @@ package com.pblabs.engine.serialization
       public static function GetTypeHint(object:*, field:String):String
       {
          var description:XML = GetTypeDescription(object);
-         if (description == null)
+         if (!description)
             return null;
          
          for each (var variable:XML in description.*)
@@ -157,7 +157,7 @@ package com.pblabs.engine.serialization
                continue;
 
             // Only check variables/accessors.
-            if ((variable.name() != "variable") && (variable.name() != "accessor"))
+            if (variable.name() != "variable" && variable.name() != "accessor")
                continue;
             
             // Scan for TypeHint metadata.
@@ -183,7 +183,7 @@ package com.pblabs.engine.serialization
       public static function GetTypeDescription(object:*):XML
       {
          var className:String = GetObjectClassName(object);
-         if (_typeDescriptions[className] == null)
+         if (!_typeDescriptions[className])
             _typeDescriptions[className] = describeType(object);
             
          return _typeDescriptions[className];
@@ -200,7 +200,7 @@ package com.pblabs.engine.serialization
        */
       public static function GetClassDescription(className:String):XML
       {
-         if (_typeDescriptions[className] == null)
+         if (!_typeDescriptions[className])
          {
             try
             {

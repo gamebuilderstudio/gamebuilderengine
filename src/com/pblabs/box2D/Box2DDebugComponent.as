@@ -52,7 +52,7 @@ package com.pblabs.box2D
       
       protected override function _OnReset():void 
       {
-         if (Manager!= null)
+         if (Manager)
             Manager.SetDebugDrawer(_drawer);
       }
 

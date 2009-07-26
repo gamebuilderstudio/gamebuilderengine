@@ -28,7 +28,7 @@ package com.pblabs.engine.serialization
        */
       public static function get Instance():Serializer
       {
-         if (_instance == null)
+         if (!_instance)
             _instance = new Serializer();
          
          return _instance;
@@ -83,7 +83,7 @@ package com.pblabs.engine.serialization
          {
             // Normal case - determine type and call the right serializer.
             var typeName:String = TypeUtility.GetObjectClassName(object);
-            if (_serializers[typeName] == null)
+            if (!_serializers[typeName])
                typeName = _IsSimpleType(object) ? "::DefaultSimple" : "::DefaultComplex";
             
             _serializers[typeName](object, xml);
@@ -108,7 +108,7 @@ package com.pblabs.engine.serialization
          // Dispatch our special cases - entities and ISerializables.
          if (object is ISerializable)
          {
-            return (object as ISerializable).Deserialize(xml);
+            return ISerializable(object).Deserialize(xml);
          }
          else if (object is IEntity)
          {
@@ -120,7 +120,7 @@ package com.pblabs.engine.serialization
          
          // Normal case - determine type and call the right serializer.
          var typeName:String = TypeUtility.GetObjectClassName(object);
-         if (_deserializers[typeName] == null)
+         if (!_deserializers[typeName])
             typeName = xml.hasSimpleContent() ? "::DefaultSimple" : "::DefaultComplex";
          
          return _deserializers[typeName](object, xml, typeHint);
@@ -177,7 +177,7 @@ package com.pblabs.engine.serialization
       private function _IsSimpleType(object:*):Boolean
       {
          var typeName:String = TypeUtility.GetObjectClassName(object);
-         if ((typeName == "String") || (typeName == "int") || (typeName == "Number") || (typeName == "uint") || (typeName == "Boolean"))
+         if (typeName == "String" || typeName == "int" || typeName == "Number" || typeName == "uint" || typeName == "Boolean")
             return true;
          
          return false;
@@ -223,7 +223,7 @@ package com.pblabs.engine.serialization
             if (!_GetChildReference(object, fieldName, fieldXML) && !_GetResourceObject(object, fieldName, fieldXML))
             {
                var child:* = _GetChildObject(object, fieldName, typeName);
-               if (child != null)
+               if (child)
                {
                   // Deal with typehints.
                   var childTypeHint:String = TypeUtility.GetTypeHint(object, fieldName);
@@ -275,7 +275,7 @@ package com.pblabs.engine.serialization
       
       private function _SerializeBoolean(object:*, xml:XML):void
       {
-         if (object == true)
+         if (object)
             xml.appendChild("true");
          else
             xml.appendChild("false");
@@ -332,7 +332,7 @@ package com.pblabs.engine.serialization
          var componentName:String = xml.attribute("componentName");
          var objectReference:String = xml.attribute("objectReference");
          
-         if ((nameReference != "") || (componentReference != "") || (componentName != "") || (objectReference != ""))
+         if (nameReference != "" || componentReference != "" || componentName != "" || objectReference != "")
          {
             var reference:ReferenceNote = new ReferenceNote();
             reference.Owner = object;
@@ -367,10 +367,10 @@ package com.pblabs.engine.serialization
          {
          }
          
-         if (childObject == null)
+         if (!childObject)
             childObject = TypeUtility.Instantiate(typeName);
          
-         if (childObject == null)
+         if (!childObject)
          {
             Logger.PrintError(object, "Deserialize", "Unable to create type " + typeName + " for the field " + fieldName + ".");
             return null;
@@ -479,7 +479,7 @@ internal class ReferenceNote
       if (NameReference != "")
       {
          var namedObject:IEntity = NameManager.Instance.Lookup(NameReference);
-         if (namedObject == null)
+         if (!namedObject)
             return false;
          
          Owner[FieldName] = namedObject;
@@ -491,21 +491,21 @@ internal class ReferenceNote
       if (ComponentReference != "")
       {
          var componentObject:IEntity = NameManager.Instance.Lookup(ComponentReference);
-         if (componentObject == null)
+         if (!componentObject)
             return false;
          
          var component:IEntityComponent = null;
          if (ComponentName != "")
          {
             component = componentObject.LookupComponentByName(ComponentName);
-            if (component == null)
+            if (!component)
                return false;
          }
          else
          {
             var componentType:String = TypeUtility.GetFieldType(Owner, FieldName);
             component = componentObject.LookupComponentByType(TypeUtility.GetClassFromName(componentType));
-            if (component == null)
+            if (!component)
                return false;
          }
          
@@ -518,7 +518,7 @@ internal class ReferenceNote
       if (ComponentName != "")
       {
          var localComponent:IEntityComponent = CurrentEntity.LookupComponentByName(ComponentName);
-         if (localComponent == null)
+         if (!localComponent)
             return false;
          
          Owner[FieldName] = localComponent;

@@ -102,8 +102,8 @@ package com.pblabs.engine.unitTests
          
          var a:TestComponentA = entity.LookupComponentByName("A") as TestComponentA;
          var b:TestComponentB = entity.LookupComponentByType(TestComponentB) as TestComponentB;
-         assertTrue(a != null);
-         assertTrue(b != null);
+         assertTrue(a);
+         assertTrue(b);
          
          assertEquals(7, a.TestValue);
          assertEquals(4, b.TestComplex.x);
@@ -125,9 +125,9 @@ package com.pblabs.engine.unitTests
          TemplateManager.Instance.RegisterGroupCallback("TestGroupCallback", _groupCallback);
          
          var e:IEntity = TemplateManager.Instance.InstantiateEntity("TestEntityCallback");
-         assertTrue(e != null);
-         assertTrue(e.LookupComponentByType(TestComponentA) != null);
-         assertTrue(e.LookupComponentByType(TestComponentB) != null);
+         assertTrue(e);
+         assertTrue(e.LookupComponentByType(TestComponentA));
+         assertTrue(e.LookupComponentByType(TestComponentB));
          
          var g:Array = TemplateManager.Instance.InstantiateGroup("TestGroupCallback");
          assertTrue(g.length == 3);
@@ -135,8 +135,8 @@ package com.pblabs.engine.unitTests
          TemplateManager.Instance.UnregisterEntityCallback("TestEntityCallback");
          TemplateManager.Instance.UnregisterGroupCallback("TestGroupCallback");
          
-         assertTrue(TemplateManager.Instance.InstantiateEntity("TestEntityCallback") == null);
-         assertTrue(TemplateManager.Instance.InstantiateGroup("TestGroupCallback") == null);
+         assertTrue(!TemplateManager.Instance.InstantiateEntity("TestEntityCallback"));
+         assertTrue(!TemplateManager.Instance.InstantiateGroup("TestGroupCallback"));
          
          Logger.PrintFooter(null, "");
       }

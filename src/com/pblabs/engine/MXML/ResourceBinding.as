@@ -58,7 +58,7 @@ package com.pblabs.engine.MXML
        */
       public function initialized(document:Object, id:String):void
       {
-         if (resourceClass == null)
+         if (!resourceClass)
          {
             Logger.PrintError("ResourceBinding", "", "Invalid resourceClass specified for binding of " + filename + ".");
             return;

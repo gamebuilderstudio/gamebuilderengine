@@ -34,7 +34,7 @@ package com.pblabs.engine.core
        */
       public static function get Instance():InputManager
       {
-         if (_instance == null)
+         if (!_instance)
             _instance = new InputManager();
          
          return _instance;

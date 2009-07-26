@@ -25,7 +25,7 @@ package com.pblabs.box2D
       {
          _vertices = value;
          
-         if (_parent != null)
+         if (_parent)
             _parent.BuildCollisionShapes();
       }
       

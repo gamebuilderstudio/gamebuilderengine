@@ -26,7 +26,7 @@ package com.pblabs.box2D
       {
          _radius = value;
          
-         if (_parent != null)
+         if (_parent)
             _parent.BuildCollisionShapes();
       }
       
@@ -39,7 +39,7 @@ package com.pblabs.box2D
       {
          _offset = value;
          
-         if (_parent != null)
+         if (_parent)
             _parent.BuildCollisionShapes();
       }
       

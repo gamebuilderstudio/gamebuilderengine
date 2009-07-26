@@ -64,11 +64,11 @@ package com.pblabs.engine.debug
             depth += "   ";
          
          var reporter:String = "";
-         if (Reporter != null)
+         if (Reporter)
             reporter = Reporter + ": ";
          
          var method:String = "";
-         if ((Method != null) && (Method != ""))
+         if (Method != null && Method != "")
             method = Method + " - ";
          
          return depth + reporter + method + Message;

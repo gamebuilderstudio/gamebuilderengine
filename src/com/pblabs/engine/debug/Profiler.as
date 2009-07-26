@@ -31,7 +31,7 @@ package com.pblabs.engine.debug
        */
       static public function Enter(blockName:String):void
       {
-         if(_CurrentNode == null)
+         if(!_CurrentNode)
          {
             _RootNode = new ProfileInfo("Root")
             _CurrentNode = _RootNode;
@@ -44,7 +44,7 @@ package com.pblabs.engine.debug
             // the profiler.
             if(InputManager.Instance.IsKeyDown(InputKey.P.KeyCode))
             {
-               if(Enabled == false)
+               if(Enabled)
                {
                   _WantWipe = true;
                   Enabled = true;
@@ -52,7 +52,7 @@ package com.pblabs.engine.debug
             }
             else
             {
-               if(Enabled == true)
+               if(Enabled)
                {
                   _WantReport = true;
                   Enabled = false;
@@ -70,7 +70,7 @@ package com.pblabs.engine.debug
          
          // Update stack depth and early out.
          _StackDepth++;
-         if(_ReallyEnabled == false)
+         if(_ReallyEnabled)
             return;
             
          // Look for child; create if absent.
@@ -95,7 +95,7 @@ package com.pblabs.engine.debug
       {
          // Update stack depth and early out.
          _StackDepth--;
-         if(_ReallyEnabled == false)
+         if(_ReallyEnabled)
             return;
          
          if(blockName != _CurrentNode.name)
@@ -206,7 +206,7 @@ package com.pblabs.engine.debug
       {
          _WantWipe = false;
          
-         if(pi == null)
+         if(!pi)
          {
             DoWipe(_RootNode);
             return;

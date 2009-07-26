@@ -39,8 +39,8 @@ package com.pblabs.engine.debug.log4PBE
       public function Logger(name:String, key:LoggerKey)
       {
          // uncomment this when we move to flex style - right now there's a conflict with the error method
-         //if (key == null)
-            //throw new Error("Loggers cannot be created manually! Use the static GetLogger method instead.");
+         //if (!key)
+         //   throw new Error("Loggers cannot be created manually! Use the static GetLogger method instead.");
          
          _name = name;
       }

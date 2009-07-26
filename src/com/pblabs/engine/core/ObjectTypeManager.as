@@ -26,7 +26,7 @@ package com.pblabs.engine.core
        */
       public static function get Instance():ObjectTypeManager
       {
-         if (_instance == null)
+         if (!_instance)
             _instance = new ObjectTypeManager();
          
          return _instance;
@@ -52,7 +52,7 @@ package com.pblabs.engine.core
        */
       public function GetType(typeName:String):uint
       {
-         if (_typeList[typeName] == null)
+         if (!_typeList[typeName])
          {
             if (_typeCount == 64)
             {
@@ -95,7 +95,7 @@ package com.pblabs.engine.core
        */
       public function DoesTypeMatch(type:ObjectType, typeName:String):Boolean
       {
-         return type.Bits == (1 << _typeList[typeName]);
+         return type.Bits == 1 << _typeList[typeName];
       }
       
       /**

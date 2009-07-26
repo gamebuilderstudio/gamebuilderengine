@@ -45,10 +45,10 @@ package com.pblabs.rendering2D
       [EditorData(ignore="true")]
       public function get SceneView():IUITarget
       {
-         if (_SceneView != null)
+         if (_SceneView)
             return _SceneView;
          
-         if (_SceneViewName != null)
+         if (_SceneViewName)
             _SceneView = Global.FindChild(_SceneViewName) as IUITarget;
          
          return _SceneView;
@@ -152,7 +152,7 @@ package com.pblabs.rendering2D
        */
       public function DrawDisplayObject(object:DisplayObject):void
       {
-         if (_CurrentRenderTarget == null)
+         if (!_CurrentRenderTarget)
             SceneView.AddDisplayObject(object);
          else
             _CurrentRenderTarget.draw(object, object.transform.matrix, object.transform.colorTransform);
@@ -181,7 +181,7 @@ package com.pblabs.rendering2D
          if(!matrix)
             matrix = new Matrix();
             
-         if (_CurrentRenderTarget == null)
+         if (!_CurrentRenderTarget)
          {
             // Make a dummy sprite and draw into it.
             var bitmap:Bitmap = new Bitmap(bitmapData, "auto", Smoothing);
@@ -276,7 +276,7 @@ package com.pblabs.rendering2D
        */ 
       public function IsLayerCached(layerIndex:int):Boolean
       {
-         if (CacheLayers[layerIndex] == null)
+         if (!CacheLayers[layerIndex])
             return false
          
          return CacheLayers[layerIndex];
@@ -293,7 +293,7 @@ package com.pblabs.rendering2D
             return;
          
          var bitmap:BitmapData = _LayerCache[layerIndex] as BitmapData;
-         if (bitmap == null)
+         if (!bitmap)
             return;
          
          bitmap.dispose();
@@ -543,7 +543,7 @@ package com.pblabs.rendering2D
             var renderableList:Array = object.Owner.LookupComponentsByType(IDrawable2D);
             for each (var renderable:IDrawable2D in renderableList)
             {
-               if (layerList[renderable.LayerIndex] == null)
+               if (!layerList[renderable.LayerIndex])
                   layerList[renderable.LayerIndex] = new Array();
                
                layerList[renderable.LayerIndex].push(renderable);
@@ -553,7 +553,7 @@ package com.pblabs.rendering2D
          // Deal with always-drawn stuff.
          for each (var alwaysRenderable:IDrawable2D in _AlwaysDrawnList)
          {
-            if (layerList[alwaysRenderable.LayerIndex] == null)
+            if (!layerList[alwaysRenderable.LayerIndex])
                layerList[alwaysRenderable.LayerIndex] = new Array();
             
             layerList[alwaysRenderable.LayerIndex].push(alwaysRenderable);

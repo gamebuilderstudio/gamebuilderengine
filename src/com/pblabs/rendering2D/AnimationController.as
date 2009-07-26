@@ -76,7 +76,7 @@ package com.pblabs.rendering2D
          }
          
          // Go to default animation if we've nothing better to do.
-         if(nextAnim == null)
+         if(!nextAnim)
          {
            Logger.PrintWarning(this, "OnFrame", "Animation '" + nextAnimName + "' not found, going with default animation '" + DefaultAnimation + "'.");
            nextAnim = Animations[DefaultAnimation];

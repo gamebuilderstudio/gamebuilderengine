@@ -29,7 +29,7 @@ package com.pblabs.engine.debug.log4PBE
       {
          // append the parent appenders to this list of appenders
          var parent:LogFilter = Parent;
-         if (parent == null)
+         if (!parent)
             return _appenders.concat();
          
          return _appenders.concat(parent.Appenders);
@@ -38,7 +38,7 @@ package com.pblabs.engine.debug.log4PBE
       public function AddAppender(name:String):void
       {
          // validate
-         if ((name == null) || (name == ""))
+         if (name == null || name == "")
          {
             _logger.Warn("Cannot add an empty appender to the filter %1.", _name);
             return;
@@ -58,7 +58,7 @@ package com.pblabs.engine.debug.log4PBE
          var myLevel:LogLevel = LogManager.Instance.GetLogLevel(_level);
          
          // validate
-         if (myLevel == null)
+         if (!myLevel)
          {
             _logger.Error("Unable to find the level %1 for the filter %2.", _level, _name);
             return false;

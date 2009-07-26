@@ -46,7 +46,7 @@ package com.pblabs.box2D
       
       public function set AllowSleep(value:Boolean):void
       {
-         if (_world != null)
+         if (_world)
          {
             Logger.PrintWarning(this, "AllowSleep", "This property cannot be changed once the world has been created!");
             return;
@@ -65,7 +65,7 @@ package com.pblabs.box2D
       {
          _gravity = value;
          
-         if (_world != null)
+         if (_world)
             _world.SetGravity(new b2Vec2(value.x, value.y));
       }
       
@@ -77,7 +77,7 @@ package com.pblabs.box2D
       
       public function set WorldBounds(value:Rectangle):void
       {
-         if (_world != null)
+         if (_world)
          {
             Logger.PrintWarning(this, "WorldBounds", "This property cannot be changed once the world has been created!");
             return;
@@ -95,7 +95,7 @@ package com.pblabs.box2D
       protected override function _OnRemove():void 
       {
          var body:b2Body = _world.GetBodyList();
-         while (body != null)
+         while (body)
          {
             var next:b2Body = body.GetNext();
             _world.DestroyBody(body);
@@ -114,7 +114,7 @@ package com.pblabs.box2D
       
       public function Remove(body:b2Body):void
       {
-         if (_world != null)
+         if (_world)
             _world.DestroyBody(body);
       }
       

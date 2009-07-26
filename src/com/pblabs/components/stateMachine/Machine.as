@@ -64,7 +64,7 @@ package com.pblabs.components.stateMachine
          // If didn't set a new state, it counts as transitioning to the
          // current state. This updates prev/current state so we can tell
          // if we just transitioned into our current state.
-         if(_SetNewState == false && _CurrentState)
+         if(_SetNewState && _CurrentState)
          {
              _PreviousState = _CurrentState;
          }

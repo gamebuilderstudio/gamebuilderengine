@@ -73,7 +73,7 @@ package com.pblabs.rendering2D
        */
       public function set ImageFilename(value:String):void
       {
-         if (_image != null)
+         if (_image)
          {
             ResourceManager.Instance.Unload(_image.Filename, ImageResource);
             Image = null;
@@ -104,7 +104,7 @@ package com.pblabs.rendering2D
        */
       public function get ImageData():BitmapData
       {
-         if (_image == null)
+         if (!_image)
             return null;
          
          return _image.Image.bitmapData;
@@ -149,10 +149,10 @@ package com.pblabs.rendering2D
        */
       public function get RawFrameCount():int
       {
-         if (ImageData == null)
+         if (!ImageData)
             return 0;
          
-         if (_divider == null)
+         if (!_divider)
             return 1;
          
          return _divider.FrameCount;
@@ -195,7 +195,7 @@ package com.pblabs.rendering2D
          // Otherwise we have to do a search.
          
          // Make sure we have data to fulfill our requests from.
-         if (_frameNotes == null)
+         if (!_frameNotes)
             _GenerateFrameNotes();
          
          // Look for best match.
@@ -226,11 +226,11 @@ package com.pblabs.rendering2D
       protected function _BuildFrames():void
       {
          // image isn't loaded, can't do anything yet
-         if (ImageData == null)
+         if (!ImageData)
             return;
          
          // no divider means treat the image as a single frame
-         if (_divider == null)
+         if (!_divider)
          {
             _frames = new Array(1);
             _frames[0] = ImageData;
@@ -266,13 +266,13 @@ package com.pblabs.rendering2D
        */
       protected function _GetRawFrame(index:int):BitmapData
       {
-         if (_frames == null)
+         if (!_frames)
+		 {
             _BuildFrames();
+			return null;
+		 }
          
-         if (_frames == null)
-            return null;
-         
-         if ((index < 0) || (index >= RawFrameCount))
+         if (index < 0 || index >= RawFrameCount)
             return null;
        
          return _frames[index];  

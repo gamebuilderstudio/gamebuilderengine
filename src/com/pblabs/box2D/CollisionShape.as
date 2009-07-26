@@ -23,7 +23,7 @@ package com.pblabs.box2D
       {
          _density = value;
          
-         if (_parent != null)
+         if (_parent)
             _parent.BuildCollisionShapes();
       }
       
@@ -36,7 +36,7 @@ package com.pblabs.box2D
       {
          _friction = value;
          
-         if (_parent != null)
+         if (_parent)
             _parent.BuildCollisionShapes();
       }
       
@@ -49,7 +49,7 @@ package com.pblabs.box2D
       {
          _restitution = value;
          
-         if (_parent != null)
+         if (_parent)
             _parent.BuildCollisionShapes();
       }
       
@@ -62,7 +62,7 @@ package com.pblabs.box2D
       {
          _isTrigger = value;
          
-         if (_parent != null)
+         if (_parent)
             _parent.BuildCollisionShapes();
       }
       
@@ -77,10 +77,10 @@ package com.pblabs.box2D
          shape.isSensor = _isTrigger;
          shape.userData = parent;
          
-         if (parent.CollisionType != null)
+         if (parent.CollisionType)
             shape.filter.categoryBits = parent.CollisionType.Bits;
          
-         if (parent.CollidesWithTypes != null)
+         if (parent.CollidesWithTypes)
             shape.filter.maskBits = parent.CollidesWithTypes.Bits;
          
          return shape;

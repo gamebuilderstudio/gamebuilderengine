@@ -71,7 +71,7 @@ package com.pblabs.rendering2D
             if (!ObjectTypeManager.Instance.DoTypesOverlap(object.ObjectMask, mask))
                continue;
             
-            if(boxVsBox(object.WorldExtents, box) == false)
+            if(boxVsBox(object.WorldExtents, box))
                continue;
             
             results.push(object);
@@ -170,7 +170,7 @@ package com.pblabs.rendering2D
             
             if (object.CastRay(start, end, mask, tempInfo))
             {
-               if (bestInfo == null)
+               if (!bestInfo)
                {
                   bestInfo = new RayHitInfo();
                   bestInfo.CopyFrom(tempInfo);

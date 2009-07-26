@@ -47,7 +47,7 @@ package com.pblabs.animation
        */
       public override function get TypeMap():Dictionary
       {
-         if (_typeMap == null)
+         if (!_typeMap)
          {
             _typeMap = new Dictionary();
             _typeMap["NoAnimation"] = NoAnimation;

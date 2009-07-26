@@ -78,18 +78,18 @@ package com.pblabs.engine.core
        */
       public function MapKeyToAction(key:InputKey, actionName:String):void
       {
-         if (_keymap[key.KeyCode] == null)
+         if (!_keymap[key.KeyCode])
          {
             if (key == InputKey.MOUSE_BUTTON)
             {
                InputManager.Instance.addEventListener(MouseEvent.MOUSE_DOWN, _OnMouseDown);
                InputManager.Instance.addEventListener(MouseEvent.MOUSE_UP, _OnMouseUp);
             }
-            else if ((key == InputKey.MOUSE_X) && (_keymap[InputKey.MOUSE_Y] == null))
+            else if ((key == InputKey.MOUSE_X) && !(_keymap[InputKey.MOUSE_Y]))
             {
                InputManager.Instance.addEventListener(MouseEvent.MOUSE_MOVE, _OnMouseMove);
             }
-            else if ((key == InputKey.MOUSE_Y) && (_keymap[InputKey.MOUSE_X] == null))
+            else if ((key == InputKey.MOUSE_Y) && !(_keymap[InputKey.MOUSE_X]))
             {
                InputManager.Instance.addEventListener(MouseEvent.MOUSE_MOVE, _OnMouseMove);
             }

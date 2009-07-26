@@ -61,7 +61,7 @@ package com.pblabs.engine.core
        */
       public static function get Instance():TemplateManager
       {
-         if (_instance == null)
+         if (!_instance)
             _instance = new TemplateManager();
          
          return _instance;
@@ -131,7 +131,7 @@ package com.pblabs.engine.core
             }
             
             var xml:XML = GetXML(name, "template", "entity");
-            if (xml == null)
+            if (!xml)
             {
                Logger.PrintError(this, "InstantiateEntity", "Unable to find a template or entity with the name " + name + ".");
                Profiler.Exit("InstantiateEntity");
@@ -146,7 +146,7 @@ package com.pblabs.engine.core
             if(alias == "") alias = null;
    
             var entity:IEntity;
-            if (_entityType == null)
+            if (!_entityType)
                entity = AllocateEntity();
             else
                entity = new _entityType();
@@ -239,7 +239,7 @@ package com.pblabs.engine.core
             return;
          }
          
-         if (_things[name] != null)
+         if (_things[name])
          {
             Logger.PrintWarning(this, "AddXML", "An XML object description with name " + name + " has already been added.");
             return;
@@ -287,7 +287,7 @@ package com.pblabs.engine.core
       public function GetXML(name:String, xmlType1:String = null, xmlType2:String = null):XML
       {
          var thing:ThingReference = _GetXML(name, xmlType1, xmlType2);
-         return thing != null ? thing.XMLData : null;
+         return thing ? thing.XMLData : null;
       }
       
       /**
@@ -374,17 +374,17 @@ package com.pblabs.engine.core
       private function _GetXML(name:String, xmlType1:String, xmlType2:String):ThingReference
       {
          var thing:ThingReference = _things[name];
-         if (thing == null)
+         if (!thing)
             return null;
          
          // No XML on callbacks.
-         if ((thing.EntityCallback != null) || (thing.GroupCallback != null))
+         if (thing.EntityCallback != null || thing.GroupCallback != null)
             return null;
             
-         if (xmlType1 != null)
+         if (xmlType1)
          {
             var type:String = thing.XMLData.name();
-            if ((type != xmlType1) && (type != xmlType2))
+            if (type != xmlType1 && type != xmlType2)
                return null;
          }
          
@@ -393,17 +393,17 @@ package com.pblabs.engine.core
       
       private function _InstantiateTemplate(object:IEntity, templateName:String, tree:Dictionary):Boolean
       {
-         if ((templateName == null) || (templateName.length == 0))
+         if (templateName == null || templateName.length == 0)
             return true;
          
-         if (tree[templateName] != null)
+         if (tree[templateName])
          {
             Logger.PrintWarning(this, "InstantiateTemplate", "Cyclical template detected. " + templateName + " has already been instantiated.");
             return false;
          }
          
          var templateXML:XML = GetXML(templateName, "template");
-         if (templateXML == null)
+         if (!templateXML)
          {
             Logger.PrintWarning(this, "Instantiate", "Unable to find the template " + templateName + ".");
             return false;
@@ -421,7 +421,7 @@ package com.pblabs.engine.core
       private function _InstantiateGroup(name:String, group:Array, tree:Dictionary):Boolean
       {
          var xml:XML = GetXML(name, "group");
-         if (xml == null)
+         if (!xml)
             throw new Error("Could not find group '" + name + "'");
          
          for each(var objectXML:XML in xml.*)
@@ -429,7 +429,7 @@ package com.pblabs.engine.core
             var childName:String = objectXML.attribute("name");
             if (objectXML.name() == "groupReference")
             {
-               if (tree[childName] != null)
+               if (tree[childName])
                   throw new Error("Cyclical group detected. " + childName + " has already been instantiated.");
                
                tree[childName] = true;

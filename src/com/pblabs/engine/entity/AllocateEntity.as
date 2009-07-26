@@ -53,7 +53,7 @@ class Entity extends EventDispatcher implements IEntity
    public function Initialize(name:String, alias:String = null):void
    {
       _name = name;
-      if ((_name == null) || (_name == ""))
+      if (_name == null || _name == "")
          return;
       
       _alias = alias;
@@ -112,7 +112,7 @@ class Entity extends EventDispatcher implements IEntity
          if (componentClassName.length > 0)
          {
             component = TypeUtility.Instantiate(componentClassName) as IEntityComponent;
-            if (component == null)
+            if (!component)
             {
                Logger.PrintError(this, "Deserialize", "Unable to instantiate component " + componentName + " of type " + componentClassName + " on entity '" + Name + "'.");
                continue;
@@ -124,7 +124,7 @@ class Entity extends EventDispatcher implements IEntity
          else
          {
             component = LookupComponentByName(componentName);
-            if (component == null)
+            if (!component)
             {
                Logger.PrintError(this, "Deserialize", "No type specified for the component " + componentName + " and the component doesn't exist on a parent template for entity '" + Name + "'.");
                continue;
@@ -200,7 +200,7 @@ class Entity extends EventDispatcher implements IEntity
       var result:* = null;
       
       // Get value if any.
-      if (info != null)
+      if (info)
          result = info.GetValue();
 
       // Clean up to avoid dangling references.
@@ -213,7 +213,7 @@ class Entity extends EventDispatcher implements IEntity
    {
       // Look up and set.
       var info:PropertyInfo = _FindProperty(property, true, _tempPropertyInfo);
-      if (info != null)
+      if (info)
          info.SetValue(value);
 
       // Clean up to avoid dangling references.
@@ -222,13 +222,13 @@ class Entity extends EventDispatcher implements IEntity
    
    private function _AddComponent(component:IEntityComponent, componentName:String):Boolean
    {
-      if (component.Owner != null)
+      if (component.Owner)
       {
          Logger.PrintError(this, "AddComponent", "The component " + componentName + " already has an owner. (" + Name + ")");
          return false;
       }
       
-      if (_components[componentName] != null)
+      if (_components[componentName])
       {
          Logger.PrintError(this, "AddComponent", "A component with name " + componentName + " already exists on this entity (" + Name + ").");
          return false;
@@ -246,7 +246,7 @@ class Entity extends EventDispatcher implements IEntity
          return false;
       }
       
-      if (_components[component.Name] == null)
+      if (!_components[component.Name])
       {
          Logger.PrintError(this, "AddComponent", "The component " + component.Name + " was not found on this entity. (" + Name + ")");
          return false;
@@ -283,7 +283,7 @@ class Entity extends EventDispatcher implements IEntity
       // TODO: we use appendChild but relookup the results, can we just use return value?
       
       // Early out if we got a null property reference.
-      if ((reference == null) || (reference.Property == null) || (reference.Property == ""))
+      if (!reference || reference.Property == null || reference.Property == "")
          return null;
 
       Profiler.Enter("Entity._FindProperty");

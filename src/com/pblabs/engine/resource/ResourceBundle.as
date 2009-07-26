@@ -152,7 +152,7 @@ package com.pblabs.engine.resource
                resType = null;
             }
 
-            if ( resType == null )
+            if (!resType)
             {
                Logger.PrintError(this, "ResourceBundle", "The resource type '" + resTypeName + "' specified for the embedded asset '" + resSource + "' could not be found.  Please ensure that the path name is correct, and that the class is explicity referenced somewhere in the project, so that it is available at runtime.");
                continue;

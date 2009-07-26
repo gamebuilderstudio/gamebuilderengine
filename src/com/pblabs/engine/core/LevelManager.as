@@ -45,7 +45,7 @@ package com.pblabs.engine.core
        */
       public static function get Instance():LevelManager
       {
-         if (_instance == null)
+         if (!_instance)
             _instance = new LevelManager();
          
          return _instance;
@@ -283,7 +283,7 @@ package com.pblabs.engine.core
          }
          
          var entity:IEntity = TemplateManager.Instance.InstantiateEntity(name);
-         if (entity == null)
+         if (!entity)
          {
             Logger.PrintError(this, "LoadEntity", "Failed to instantiate an entity with name " + name + ".");
             return null;
@@ -369,7 +369,7 @@ package com.pblabs.engine.core
             }
             
             var groupEntities:Array = TemplateManager.Instance.InstantiateGroup(groupName);
-            if (groupEntities == null)
+            if (!groupEntities)
             {
                Logger.PrintError(this, "LoadLevel", "Failed to instantiate the group " + groupName + ".");
                continue;
@@ -439,7 +439,7 @@ package com.pblabs.engine.core
             
             for each (var groupEntity:IEntity in _loadedGroups[groupName])
             {
-               if (groupEntity != null) 
+               if (groupEntity) 
                {
                    groupEntity.Destroy();
                }
@@ -466,24 +466,24 @@ package com.pblabs.engine.core
       
       private function _GetLoadLists(previousList:Array, nextList:Array, loadList:Array, unloadList:Array):void
       {
-         if (nextList != null)
+         if (nextList)
          {
             for each (var loadName:String in nextList)
             {
                // if it's in the previous list, don't need to load it
-               if ((previousList != null) && (previousList.indexOf(loadName) != -1))
+               if (previousList && previousList.indexOf(loadName) != -1)
                   continue;
             
                loadList.push(loadName);
             }
          }
          
-         if (previousList != null)
+         if (previousList)
          {
             for each (var unloadName:String in previousList)
             {
                // if it's in the next list, don't need to unload it
-               if ((nextList != null) && (nextList.indexOf(unloadName) != -1))
+               if (nextList && nextList.indexOf(unloadName) != -1)
                   continue;
             
                unloadList.push(unloadName);
@@ -601,7 +601,7 @@ package com.pblabs.engine.core
       private function _GetLevelDescription(index:int):LevelDescription
       {
          var levelDescription:LevelDescription = _levelDescriptions[index];
-         if (levelDescription == null)
+         if (!levelDescription)
          {
             levelDescription = new LevelDescription();
             levelDescription.Index = index;
@@ -613,7 +613,7 @@ package com.pblabs.engine.core
       
       private function _HasLevelData(index:int):Boolean
       {
-         return _levelDescriptions[index] != null;
+         return _levelDescriptions[index];
       }
       
       private var _initialLevel:int = -1;

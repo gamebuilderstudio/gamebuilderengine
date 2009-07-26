@@ -31,7 +31,7 @@ package com.pblabs.engine.resource
        */
       public static function get Instance():ResourceManager
       {
-         if (_instance == null)
+         if (!_instance)
             _instance = new ResourceManager();
          
          return _instance;
@@ -81,14 +81,14 @@ package com.pblabs.engine.resource
       {
          var resource:Resource = _resources[filename + resourceType];
 
-         if ((resource != null) && forceReload)
+         if (resource && forceReload)
          {
             _resources[filename + resourceType] = null;
             delete _resources[filename + resourceType];
             resource = null;
          }
          
-         if (resource == null)
+         if (!resource)
          {
             if(OnlyLoadEmbeddedResources)
             {
@@ -152,7 +152,7 @@ package com.pblabs.engine.resource
          // Unload for now.
          return;
          
-         if (_resources[filename + resourceType] == null)
+         if (!_resources[filename + resourceType])
          {
             Logger.PrintWarning(this, "Unload", "The resource from file " + filename + " of type " + resourceType + " is not loaded.");
             return;
@@ -180,7 +180,7 @@ package com.pblabs.engine.resource
        */
       public function RegisterEmbeddedResource(filename:String, resourceType:Class, data:*):void
       {
-         if (_resources[filename + resourceType] != null)
+         if (_resources[filename + resourceType])
          {
             Logger.PrintWarning(this, "RegisterEmbeddedResource", "A resource from file " + filename + " has already been embedded.");
             return;

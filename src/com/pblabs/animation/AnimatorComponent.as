@@ -78,7 +78,7 @@ package com.pblabs.animation
        */
       protected override function _OnReset():void
       {
-         if (!AutoPlay || (_currentAnimation != null))
+         if (!AutoPlay || _currentAnimation)
             return;
          
          Play(DefaultAnimation);

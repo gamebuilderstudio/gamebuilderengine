@@ -60,7 +60,7 @@ package com.pblabs.engine.debug.log4PBE
        */
       public static function get Instance():LogManager
       {
-         if (_instance == null)
+         if (!_instance)
          {
             _instance = new LogManager(new LogManagerKey());
             _logger = _instance.GetLogger(LogManager);
@@ -78,7 +78,7 @@ package com.pblabs.engine.debug.log4PBE
        */
       public function LogManager(key:LogManagerKey)
       {
-         if (key == null)
+         if (!key)
             throw new Error("LogManagers cannot be created manually! Use the static Instance property.");
          
          ExceptionAppender;
@@ -108,7 +108,7 @@ package com.pblabs.engine.debug.log4PBE
       public function RegisterMessageTable(packageName:String, table:Array):void
       {
          // validate
-         if (_logTables[packageName] != null)
+         if (_logTables[packageName])
          {
             _logger.Warn("A log table has already been registered for the package %1.", packageName);
             return;
@@ -331,19 +331,19 @@ package com.pblabs.engine.debug.log4PBE
       public function AddLogAppender(name:String, appender:LogAppender):void
       {
          // validate
-         if (appender == null)
+         if (!appender)
          {
             _logger.Error("Cannot register a null appender with name %1.", name);
             return;
          }
          
-         if ((name == null) || (name == ""))
+         if (name == null || name == "")
          {
             _logger.Error("An empty name cannot be used for appenders.");
             return;
          }
          
-         if (_appenders[name] != null)
+         if (_appenders[name])
          {
             _logger.Warn("An appender with name %1 already exists.", name);
             return;
@@ -369,13 +369,13 @@ package com.pblabs.engine.debug.log4PBE
          var cappedName:String = name.toUpperCase();
          
          // validate
-         if ((name == null) || (name == ""))
+         if (name == null || name == "")
          {
             _logger.Error("An empty name cannot be used for levels.");
             return;
          }
          
-         if (_levels[cappedName] != null)
+         if (_levels[cappedName])
          {
             _logger.Warn("A level with name %1 already exists.", name);
             return;
@@ -400,7 +400,7 @@ package com.pblabs.engine.debug.log4PBE
       public function SetRootFilter(filter:LogFilter):void
       {
          // validate
-         if (filter == null)
+         if (!filter)
          {
             _logger.Error("Cannot register a null filter as the root filter.");
             return;
@@ -420,19 +420,19 @@ package com.pblabs.engine.debug.log4PBE
       public function AddLogFilter(name:String, filter:LogFilter):void
       {
          // validate
-         if (filter == null)
+         if (!filter)
          {
             _logger.Error("Cannot register a null filter with name %1.", name);
             return;
          }
          
-         if ((name == null) || (name == ""))
+         if (name == null || name == "")
          {
             _logger.Error("An empty name cannot be used for filters.");
             return;
          }
          
-         if (_filters[name] != null)
+         if (_filters[name])
          {
             _logger.Warn("A filter with name %1 already exists.", name);
             return;
@@ -448,7 +448,7 @@ package com.pblabs.engine.debug.log4PBE
       
       internal function GetLogFilterFor(name:String):LogFilter
       {
-         while (_filters[name] == null)
+         while (!_filters[name])
          {
             // if there's no dot, this was a top level package, so the only thing
             // left is the root
@@ -494,7 +494,7 @@ package com.pblabs.engine.debug.log4PBE
          }
          
          // don't recreate if it already exists
-         if (_loggers[className] == null)
+         if (!_loggers[className])
             _loggers[className] = Logger.Create(className);
          
          return _loggers[className];
@@ -512,7 +512,7 @@ package com.pblabs.engine.debug.log4PBE
          var filter:LogFilter = GetLogFilterFor(logger.Name);
          
          var level:LogLevel = GetLogLevel(levelName);
-         if (level == null)
+         if (!level)
          {
             _logger.Error("Unable to find the level with name %1 for the logger %2.", levelName, logger.Name);
             return;
@@ -539,7 +539,7 @@ package com.pblabs.engine.debug.log4PBE
          for each (var appenderName:String in filter.Appenders)
          {
             var appender:LogAppender = GetLogAppender(appenderName);
-            if (appender == null)
+            if (!appender)
             {
                _logger.Error("The appender %1 was not found for the filter %2.", appenderName, filter.Name);
                continue;
@@ -558,7 +558,7 @@ package com.pblabs.engine.debug.log4PBE
          var trackLevel:LogLevel = GetLogLevel(_trackLevel);
          
          // check if tracking is turned off
-         if ((trackLevel == null) || (_trackNumber < 1))
+         if (!trackLevel || _trackNumber < 1)
             return true;
          
          // only watch things with levels higher than the track level
@@ -587,7 +587,7 @@ package com.pblabs.engine.debug.log4PBE
       internal function IsLoggerEnabledFor(logger:Logger, levelName:String):Boolean
       {
          var level:LogLevel = GetLogLevel(levelName);
-         if (level == null)
+         if (!level)
          {
             _logger.Error("Unable to find the level with name %1 for the class %2.", levelName, logger.Name);
             return false;
@@ -600,7 +600,7 @@ package com.pblabs.engine.debug.log4PBE
       private function _GetLogTable(logger:Logger):LogTable
       {
          var name:String = logger.Name;
-         while (_logTables[name] == null)
+         while (!_logTables[name])
          {
             var dotIndex:int = name.lastIndexOf(".");
             if (dotIndex == -1)
@@ -617,7 +617,7 @@ package com.pblabs.engine.debug.log4PBE
       // also, it forces a root filter to always exist, which is nice
       private function get _RootFilter():LogFilter
       {
-         if (_rootFilter == null)
+         if (!_rootFilter)
          {
             _rootFilter = new LogFilter("root", "info")
             _rootFilter._isRoot = true;
@@ -655,7 +655,7 @@ class LogTable
    
    public function get IsValid():Boolean
    {
-      return (_offset >= 0) && (_table != null);
+      return _offset >= 0 && _table;
    }
    
    private function _ParseIndex(message:String):int
@@ -670,12 +670,12 @@ class LogTable
          return -1;
       
       // for parsing the offset
-      if (_table == null)
+      if (!_table)
          return index;
       
       // validate it's in the table
       index -= _offset
-      if ((index < 0) || (index >= _table.length))
+      if (index < 0 || index >= _table.length)
          return -1;
       
       return index;
@@ -690,7 +690,7 @@ class LogTable
    public function TranslateMessage(message:String, errorNumber:int):String
    {
       var index:int = errorNumber - _offset;
-      if ((index < 0) || (index >= _table.length))
+      if (index < 0 || index >= _table.length)
          return message;
       
       return _table[index];

@@ -36,25 +36,25 @@ package com.pblabs.engine.unitTests
       
       private function _OnLevelLoaded(event:Event):void
       {
-         assertTrue(TemplateManager.Instance.GetXML("TestTemplate1") != null);
-         assertTrue(TemplateManager.Instance.GetXML("TestTemplate2") != null);
-         assertTrue(TemplateManager.Instance.GetXML("CyclicalTestTemplate1") != null);
-         assertTrue(TemplateManager.Instance.GetXML("CyclicalTestTemplate2") != null);
-         assertTrue(TemplateManager.Instance.GetXML("TestEntity1") != null);
-         assertTrue(TemplateManager.Instance.GetXML("TestEntity2") != null);
-         assertTrue(TemplateManager.Instance.GetXML("SimpleGroup") != null);
-         assertTrue(TemplateManager.Instance.GetXML("ComplexGroup") != null);
-         assertTrue(TemplateManager.Instance.GetXML("CyclicalGroup1") != null);
-         assertTrue(TemplateManager.Instance.GetXML("CyclicalGroup2") != null);
+         assertTrue(TemplateManager.Instance.GetXML("TestTemplate1"));
+         assertTrue(TemplateManager.Instance.GetXML("TestTemplate2"));
+         assertTrue(TemplateManager.Instance.GetXML("CyclicalTestTemplate1"));
+         assertTrue(TemplateManager.Instance.GetXML("CyclicalTestTemplate2"));
+         assertTrue(TemplateManager.Instance.GetXML("TestEntity1"));
+         assertTrue(TemplateManager.Instance.GetXML("TestEntity2"));
+         assertTrue(TemplateManager.Instance.GetXML("SimpleGroup"));
+         assertTrue(TemplateManager.Instance.GetXML("ComplexGroup"));
+         assertTrue(TemplateManager.Instance.GetXML("CyclicalGroup1"));
+         assertTrue(TemplateManager.Instance.GetXML("CyclicalGroup2"));
          
          var testTemplate1:IEntity = TemplateManager.Instance.InstantiateEntity("TestTemplate1");
-         assertTrue(testTemplate1 != null);
+         assertTrue(testTemplate1);
          assertEquals(19, testTemplate1.GetProperty(_testValueAReference));
          assertEquals(null, NameManager.Instance.Lookup("TestTemplate1"));
          testTemplate1.Destroy();
          
          var testTemplate2:IEntity = TemplateManager.Instance.InstantiateEntity("TestTemplate2");
-         assertTrue(testTemplate2 != null);
+         assertTrue(testTemplate2);
          assertEquals(43, testTemplate2.GetProperty(_testValueAReference));
          testTemplate2.Destroy();
          
@@ -62,7 +62,7 @@ package com.pblabs.engine.unitTests
          assertEquals(null, cyclicalTemplate);
          
          var testEntity1:IEntity = TemplateManager.Instance.InstantiateEntity("TestEntity1");
-         assertTrue(testEntity1 != null);
+         assertTrue(testEntity1);
          assertEquals(testEntity1, NameManager.Instance.Lookup("TestEntity1"));
          assertEquals(14, testEntity1.GetProperty(_testValueAReference));
          assertEquals(81.347, testEntity1.GetProperty(_testComplexXReference));
@@ -72,7 +72,7 @@ package com.pblabs.engine.unitTests
          assertEquals(bComponent.GetTestValueFromA(), 14);
          
          var testEntity2:IEntity = TemplateManager.Instance.InstantiateEntity("TestEntity2");
-         assertTrue(testEntity2 != null);
+         assertTrue(testEntity2);
          assertEquals(testEntity2, NameManager.Instance.Lookup("TestEntity2"));
          assertEquals(638, testEntity2.GetProperty(_testValueAReference));
          assertEquals(1036, testEntity2.GetProperty(_testValueA2Reference));
@@ -81,7 +81,7 @@ package com.pblabs.engine.unitTests
          
          var aComponent:TestComponentA = testEntity2.LookupComponentByName("A") as TestComponentA;
          assertEquals(testEntity1, aComponent.NamedReference);
-         assertTrue(aComponent.InstantiatedReference != null);
+         assertTrue(aComponent.InstantiatedReference);
          assertEquals(bComponent, aComponent.ComponentReference);
          assertEquals(bComponent, aComponent.NamedComponentReference);
          
@@ -103,16 +103,16 @@ package com.pblabs.engine.unitTests
          assertEquals(null, cyclicalGroup);
          
          TemplateManager.Instance.UnloadFile(PBEngineTestSuite.TestLevel);
-         assertTrue(TemplateManager.Instance.GetXML("TestTemplate1") == null);
-         assertTrue(TemplateManager.Instance.GetXML("TestTemplate2") == null);
-         assertTrue(TemplateManager.Instance.GetXML("CyclicalTestTemplate1") == null);
-         assertTrue(TemplateManager.Instance.GetXML("CyclicalTestTemplate2") == null);
-         assertTrue(TemplateManager.Instance.GetXML("TestEntity1") == null);
-         assertTrue(TemplateManager.Instance.GetXML("TestEntity2") == null);
-         assertTrue(TemplateManager.Instance.GetXML("SimpleGroup") == null);
-         assertTrue(TemplateManager.Instance.GetXML("ComplexGroup") == null);
-         assertTrue(TemplateManager.Instance.GetXML("CyclicalGroup1") == null);
-         assertTrue(TemplateManager.Instance.GetXML("CyclicalGroup2") == null);
+         assertTrue(!TemplateManager.Instance.GetXML("TestTemplate1"));
+         assertTrue(!TemplateManager.Instance.GetXML("TestTemplate2"));
+         assertTrue(!TemplateManager.Instance.GetXML("CyclicalTestTemplate1"));
+         assertTrue(!TemplateManager.Instance.GetXML("CyclicalTestTemplate2"));
+         assertTrue(!TemplateManager.Instance.GetXML("TestEntity1"));
+         assertTrue(!TemplateManager.Instance.GetXML("TestEntity2"));
+         assertTrue(!TemplateManager.Instance.GetXML("SimpleGroup"));
+         assertTrue(!TemplateManager.Instance.GetXML("ComplexGroup"));
+         assertTrue(!TemplateManager.Instance.GetXML("CyclicalGroup1"));
+         assertTrue(!TemplateManager.Instance.GetXML("CyclicalGroup2"));
          
          Logger.PrintFooter(null, "");
       }

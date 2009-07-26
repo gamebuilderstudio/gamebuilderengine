@@ -63,7 +63,7 @@ package com.pblabs.engine.core
        */
       public static function get Instance():ProcessManager
       {
-         if (_instance == null)
+         if (!_instance)
             _instance = new ProcessManager();
          
          return _instance;
@@ -259,7 +259,7 @@ package com.pblabs.engine.core
          processObject.Priority = priority;
          processObject.ProfilerKey = TypeUtility.GetObjectClassName(object);
          
-         if ((position < 0) || (position >= list.length))
+         if (position < 0 || position >= list.length)
             list.push(processObject);
          else
             list.splice(position, 0, processObject);
@@ -267,7 +267,7 @@ package com.pblabs.engine.core
       
       private function _RemoveObject(object:*, list:Array):void
       {
-         if ((_ListenerCount == 1) && (_scheduleEvents.length == 0))
+         if (_ListenerCount == 1 && _scheduleEvents.length == 0)
             Stop();
          
          for (var i:int = 0; i < list.length; i++)
@@ -322,7 +322,7 @@ package com.pblabs.engine.core
          
          // Perform ticks.
          var tickCount:int = 0;
-         while ((_elapsed >= TICK_RATE_MS) && (tickCount < MAX_TICKS_PER_FRAME))
+         while (_elapsed >= TICK_RATE_MS && tickCount < MAX_TICKS_PER_FRAME)
          {
             _interpolationFactor = 0.0;
 

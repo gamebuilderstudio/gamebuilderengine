@@ -60,45 +60,45 @@ package com.pblabs.components.basic
 			return _Health;
 		}
 		
-		public function set Health(v:Number):void
+		public function set Health(value:Number):void
 		{
 			// Clamp the amount of damage.
-			if(v < 0)
-				v = 0;
-			if(v > MaxHealth)
-				v = MaxHealth;
+			if(value < 0)
+				value = 0;
+			if(value > MaxHealth)
+				value = MaxHealth;
 			
 			// Notify via a HealthEvent.
 			var he:HealthEvent;
 			
-			if(v < _Health)
+			if(value < _Health)
 			{
-				he = new HealthEvent(DAMAGED, v - _Health, v, _LastDamageOriginator);
+				he = new HealthEvent(DAMAGED, value - _Health, value, _LastDamageOriginator);
 				Owner.EventDispatcher.dispatchEvent(he);
 			}
 
-			if(_Health > 0 && v == 0)
+			if(_Health > 0 && value == 0)
 			{
-				he = new HealthEvent(DIED, v - _Health, v, _LastDamageOriginator);
+				he = new HealthEvent(DIED, value - _Health, value, _LastDamageOriginator);
 				Owner.EventDispatcher.dispatchEvent(he);
 			}
 			
-			if(_Health == 0 && v > 0)
+			if(_Health == 0 && value > 0)
 			{
-				he = new HealthEvent(RESURRECTED, v - _Health, v, _LastDamageOriginator);
+				he = new HealthEvent(RESURRECTED, value - _Health, value, _LastDamageOriginator);
 				Owner.EventDispatcher.dispatchEvent(he);
 			}
 			
-			if(_Health > 0 && v > _Health)
+			if(_Health > 0 && value > _Health)
 			{
-				he = new HealthEvent(HEALED, v - _Health, v, _LastDamageOriginator);
+				he = new HealthEvent(HEALED, value - _Health, value, _LastDamageOriginator);
 				if(Owner && Owner.EventDispatcher)
 					Owner.EventDispatcher.dispatchEvent(he);
 			}
 
 			// Set new health value.
          //Logger.Print(this, "Health becomes " + _Health);
-			_Health = v;
+			_Health = value;
 
 			// Handle destruction...
 			if(DestroyOnDeath && _Health <= 0)

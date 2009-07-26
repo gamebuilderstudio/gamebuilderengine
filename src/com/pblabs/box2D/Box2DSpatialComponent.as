@@ -31,7 +31,7 @@ package com.pblabs.box2D
       
       public function set Manager(value:Box2DManagerComponent):void
       {
-         if (_body != null)
+         if (_body)
          {
             Logger.PrintWarning(this, "set Manager", "The manager can only be set before the component is registered.");
             return; 
@@ -54,7 +54,7 @@ package com.pblabs.box2D
       {
          _collisionType = value;
          
-         if (_body != null)
+         if (_body)
             BuildCollisionShapes();
       }
       
@@ -67,13 +67,13 @@ package com.pblabs.box2D
       {
          _collidesWithTypes = value;
          
-         if (_body != null)
+         if (_body)
             BuildCollisionShapes();
       }
       
       public function get Position():Point
       {
-         if (_body != null)
+         if (_body)
          {
             var position:b2Vec2 = _body.GetPosition();
             return new Point(position.x * _manager.Scale, position.y * _manager.Scale);
@@ -87,7 +87,7 @@ package com.pblabs.box2D
          var position:b2Vec2 = new b2Vec2(value.x, value.y);
          _bodyDef.position = position;
          
-         if (_body != null)
+         if (_body)
          {
             position.Multiply(_manager.InverseScale);
             _body.SetXForm(position, _body.GetAngle());
@@ -98,7 +98,7 @@ package com.pblabs.box2D
       {
          var rotation:Number = _bodyDef.angle;
          
-         if (_body != null)
+         if (_body)
             rotation = _body.GetAngle();
          
          return Utility.GetDegreesFromRadians(rotation);
@@ -109,7 +109,7 @@ package com.pblabs.box2D
          var rotation:Number = Utility.GetRadiansFromDegrees(value);
          _bodyDef.angle = rotation;
          
-         if (_body != null)
+         if (_body)
             _body.SetXForm(_body.GetPosition(), rotation);
       }
       
@@ -123,13 +123,13 @@ package com.pblabs.box2D
       {
          _size = value;
          
-         if (_body != null)
+         if (_body)
             BuildCollisionShapes();
       }
       
       public function get LinearVelocity():Point
       {
-         if (_body != null)
+         if (_body)
          {
             var velocity:b2Vec2 = _body.GetLinearVelocity();
             _linearVelocity.x = velocity.x * _manager.Scale;
@@ -143,7 +143,7 @@ package com.pblabs.box2D
       {
          _linearVelocity = value;
          
-         if (_body != null)
+         if (_body)
          {
             var velocity:b2Vec2 = new b2Vec2(value.x * _manager.InverseScale, value.y * _manager.InverseScale);
             _body.SetLinearVelocity(velocity);
@@ -152,7 +152,7 @@ package com.pblabs.box2D
       
       public function get AngularVelocity():Number
       {
-         if (_body != null)
+         if (_body)
          {
             var velocity:Number = _body.GetAngularVelocity();
             _angularVelocity = Utility.GetDegreesFromRadians(velocity);
@@ -165,7 +165,7 @@ package com.pblabs.box2D
       {
          _angularVelocity = value;
          
-         if (_body != null)
+         if (_body)
          {
             var velocity:Number = Utility.GetRadiansFromDegrees(value);
             _body.SetAngularVelocity(velocity);
@@ -182,7 +182,7 @@ package com.pblabs.box2D
       {
          _canMove = value;
          
-         if (_body != null)
+         if (_body)
             UpdateMass();
       }
       
@@ -196,7 +196,7 @@ package com.pblabs.box2D
       {
          _canRotate = value;
          
-         if (_body != null)
+         if (_body)
             UpdateMass();
       }
       
@@ -210,13 +210,13 @@ package com.pblabs.box2D
       {
          _canSleep = value;
          _bodyDef.allowSleep = value;
-         if (_body != null)
+         if (_body)
             _body.AllowSleeping(value);
       }
       
       public function get CollidesContinuously():Boolean
       {
-         if (_body != null)
+         if (_body)
             return _body.IsBullet();
          
          return _bodyDef.isBullet
@@ -225,7 +225,7 @@ package com.pblabs.box2D
       public function set CollidesContinuously(value:Boolean):void
       {
          _bodyDef.isBullet = value;
-         if (_body != null)
+         if (_body)
             _body.SetBullet(value);
       }
       
@@ -238,27 +238,27 @@ package com.pblabs.box2D
       public function set CollisionShapes(value:Array):void
       {
          _collisionShapes = value;
-         if (_body != null)
+         if (_body)
             BuildCollisionShapes();
       }
       
       public function BuildCollisionShapes():void
       {
-         if (_body == null)
+         if (!_body)
          {
             Logger.PrintWarning(this, "BuildCollisionShapes", "Cannot build collision shapes prior to registration.");
             return;
          }
          
          var shape:b2Shape = _body.GetShapeList();
-         while (shape != null)
+         while (shape)
          {
             var nextShape:b2Shape = shape.m_next;
             _body.DestroyShape(shape);
             shape = nextShape;
          }
          
-         if (_collisionShapes != null)
+         if (_collisionShapes)
          {
             for each (var newShape:CollisionShape in _collisionShapes)
                _body.CreateShape(newShape.CreateShape(this));
@@ -290,7 +290,7 @@ package com.pblabs.box2D
       
       protected override function _OnAdd():void
       {
-         if (_manager == null)
+         if (!_manager)
          {
             Logger.PrintWarning(this, "_OnAdd", "A Box2DSpatialComponent cannot be registered without a manager.");
             return;

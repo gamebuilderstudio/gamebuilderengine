@@ -32,7 +32,7 @@ package com.pblabs.engine.core
        */
       public static function get MainStage():Stage
       {
-         if (_main == null)
+         if (!_main)
             throw new Error("Cannot retrieve the global stage instance until MainClass has been set to the startup class!");
          
          return _main.stage;
@@ -83,7 +83,7 @@ package com.pblabs.engine.core
       
       private static function _FindChild(name:String, parent:DisplayObjectContainer):DisplayObject
       {
-         if (parent == null)
+         if (!parent)
             return null;
          
          if (parent.name == name)
@@ -92,7 +92,7 @@ package com.pblabs.engine.core
          for (var i:int = 0; i < parent.numChildren; i++)
          {
             var child:DisplayObject = _FindChild(name, parent.getChildAt(i) as DisplayObjectContainer);
-            if (child != null)
+            if (child)
                return child;
          }
          

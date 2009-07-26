@@ -131,7 +131,7 @@ package com.pblabs.engine.core
        */
       public static function get StaticTypeMap():Dictionary
       {
-         if (_typeMap == null)
+         if (!_typeMap)
          {
             _typeMap = new Dictionary();
             _typeMap["BACKSPACE"] = BACKSPACE;
@@ -320,7 +320,7 @@ package com.pblabs.engine.core
        */
       public static function StringToCode(value:String):int
       {
-         if (StaticTypeMap[value.toUpperCase()] == null)
+         if (!StaticTypeMap[value.toUpperCase()])
             return 0;
          
          return StaticTypeMap[value.toUpperCase()].KeyCode;

@@ -23,15 +23,15 @@ package com.pblabs.engine.core
     */
    dynamic public class OrderedArray extends Proxy {
       
-      private var memberValueHash:Object = new Object();
-      private var memberIndexHash:Object = new Object();
-      private var memberNameArray:Array = new Array();
+      private var memberValueHash:Object = {};
+      private var memberIndexHash:Object = {};
+      private var memberNameArray:Array = [];
          
       public function get length():uint {
          return memberNameArray.length;
       }
       override flash_proxy function setProperty(name:*, value:*):void {
-         if (name in memberValueHash == false) {
+         if (name in memberValueHash) {
             var last:uint = memberNameArray.length;
             memberIndexHash[name] = last;
             memberNameArray[last] = name;

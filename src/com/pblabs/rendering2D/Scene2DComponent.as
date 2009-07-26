@@ -92,13 +92,13 @@ package com.pblabs.rendering2D
        */
       protected override function _Render():void
       {
-         if (_trackObject != null)
+         if (_trackObject)
          {
             _position.x = _trackObject.RenderPosition.x;
             _position.y = _trackObject.RenderPosition.y;
          }
          
-         if (SceneView == null)
+         if (!SceneView)
             return;
          
          // Wipe all our existing renderables.

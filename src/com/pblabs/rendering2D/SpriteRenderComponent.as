@@ -247,12 +247,12 @@ package com.pblabs.rendering2D
          if (!_spriteDirty)
             return;
          
-         if (_spriteSheet == null || !_spriteSheet.IsLoaded)
+         if (!_spriteSheet || !_spriteSheet.IsLoaded)
          {
             // Draw a simple circle.
             _baseSize = new Point(25,25);
             
-            if(_sprite == null || !(_sprite is Sprite))
+            if(!_sprite || !(_sprite is Sprite))
                _sprite = new Sprite();
 
             (_sprite as Sprite).graphics.clear();
@@ -260,7 +260,7 @@ package com.pblabs.rendering2D
             (_sprite as Sprite).graphics.drawCircle(12.5, 12.5, 25);
             (_sprite as Sprite).graphics.endFill();
             
-            if (_spriteSheet == null)
+            if (!_spriteSheet)
                _spriteDirty = false;
          }
          else
@@ -275,7 +275,7 @@ package com.pblabs.rendering2D
             
             _baseSize = new Point(bmpData.width, bmpData.height);
             
-            if ((_sprite == null) || !(_sprite is Bitmap))
+            if (!_sprite || !(_sprite is Bitmap))
             {
                _sprite = new Bitmap(bmpData, "auto", _smoothing);
             }

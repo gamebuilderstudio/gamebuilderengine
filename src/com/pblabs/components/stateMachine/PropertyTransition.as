@@ -13,7 +13,7 @@ package com.pblabs.components.stateMachine
       
       public override function Evaluate(fsm:IMachine):Boolean
       {
-         if(fsm.PropertyBag == null)
+         if(!fsm.PropertyBag)
             return false;
          
          return fsm.PropertyBag.GetProperty(Property).toString() == Value;
