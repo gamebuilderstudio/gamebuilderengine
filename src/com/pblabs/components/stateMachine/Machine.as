@@ -45,9 +45,9 @@ package com.pblabs.components.stateMachine
          return _PropertyBag;
       }
       
-      public function set PropertyBag(v:IPropertyBag):void
+      public function set PropertyBag(value:IPropertyBag):void
       {
-         _PropertyBag = v;
+         _PropertyBag = value;
       }
       
       public function Tick():void
@@ -92,9 +92,9 @@ package com.pblabs.components.stateMachine
           return GetStateName(GetCurrentState());
       }
       
-      public function set CurrentStateName(v:String):void
+      public function set CurrentStateName(value:String):void
       {
-         SetCurrentState(v);
+         SetCurrentState(value);
       }
       
       public function GetPreviousState():IState

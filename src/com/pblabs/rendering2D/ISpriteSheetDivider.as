@@ -26,7 +26,7 @@ package com.pblabs.rendering2D
        * the sprite sheet passes itself to OwningSheet so you can store it and
        * get information from it.
        */
-      function set OwningSheet(v:SpriteSheetComponent):void;
+      function set OwningSheet(value:SpriteSheetComponent):void;
       
       /**
        * Return the size of a frame, given the desired index and the source

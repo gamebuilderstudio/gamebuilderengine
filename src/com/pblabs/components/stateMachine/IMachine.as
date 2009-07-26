@@ -48,6 +48,6 @@ package com.pblabs.components.stateMachine
        * Property bag, if any, related to this state machine.
        */
       function get PropertyBag():IPropertyBag;
-      function set PropertyBag(v:IPropertyBag):void;
+      function set PropertyBag(value:IPropertyBag):void;
    }
 }

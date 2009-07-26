@@ -69,9 +69,9 @@ package com.pblabs.engine.core
       
       private static var _instance:TemplateManager = null;
       
-      public function set EntityType(type:Class):void
+      public function set EntityType(value:Class):void
       {
-         _entityType = type;
+         _entityType = value;
       }
       
       /**

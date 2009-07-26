@@ -53,9 +53,9 @@ package com.pblabs.rendering2D
          return _Center;
       }
       
-      public function set Center(v:Point):void
+      public function set Center(value:Point):void
       {
-         _Center = v;
+         _Center = value;
          _defaultCenter = false;
       }
       

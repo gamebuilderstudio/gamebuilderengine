@@ -69,9 +69,9 @@ package com.pblabs.rendering2D
          return _RenderCacheKey;
       }
       
-      public function set RenderCacheKey(v:int):void
+      public function set RenderCacheKey(value:int):void
       {
-         _RenderCacheKey = v;
+         _RenderCacheKey = value;
       }
 
       public function InvalidateRenderCache():void

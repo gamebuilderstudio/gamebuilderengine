@@ -38,13 +38,13 @@ package com.pblabs.rendering2D
       /**
        * @private
        */ 
-      function set RenderSortKey(v:int):void;
+      function set RenderSortKey(value:int):void;
       
       /**
        * Expose a cache key. This integer is used to detect when a display layer
        * cache has been invalidated.
        */
-      function set RenderCacheKey(v:int):void;
+      function set RenderCacheKey(value:int):void;
       function get RenderCacheKey():int;
       
       /**

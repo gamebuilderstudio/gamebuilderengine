@@ -29,16 +29,16 @@ package com.pblabs.rendering2D
       
       public var MovementHeadingThreshold:Number = 100;
       
-      public function set InitialPosition(v:Point):void
+      public function set InitialPosition(value:Point):void
       {
-         GoalPosition = v.clone();
-         Position = v.clone();
+         GoalPosition = value.clone();
+         Position = value.clone();
       }
       
-      public function set InitialRotation(v:Number):void
+      public function set InitialRotation(value:Number):void
       {
-         GoalRotation = v;
-         Rotation = v;
+         GoalRotation = value;
+         Rotation = value;
       }
       
       public function get MoveDelta():Point

@@ -16,11 +16,11 @@ package com.pblabs.engine.components
          return NameManager.Instance.LookupComponentByType(GroupName, GroupManagerComponent) as GroupManagerComponent;
       }
 
-      public function set GroupName(v:String):void
+      public function set GroupName(value:String):void
       {
          _OnRemove();
 
-         _GroupName = v;
+         _GroupName = value;
 
          _OnAdd();
       }

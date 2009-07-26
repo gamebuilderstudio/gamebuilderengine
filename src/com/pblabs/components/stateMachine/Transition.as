@@ -22,9 +22,9 @@ package com.pblabs.components.stateMachine
          return _TargetState;
       }
       
-      public function set TargetState(v:String):void
+      public function set TargetState(value:String):void
       {
-         _TargetState = v;
+         _TargetState = value;
       }
    }
 }

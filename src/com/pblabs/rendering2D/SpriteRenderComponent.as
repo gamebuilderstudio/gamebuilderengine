@@ -81,10 +81,10 @@ package com.pblabs.rendering2D
        * <p>You probably won't want to use this in production code, but it greatly
        * simplifies getting started.</p>
        */
-      public function set LoadFromImage(path:String):void
+      public function set LoadFromImage(value:String):void
       {
          var imageAsSpriteSheet:SpriteSheetComponent = new SpriteSheetComponent();
-         imageAsSpriteSheet.ImageFilename = path;
+         imageAsSpriteSheet.ImageFilename = value;
          SpriteSheet = imageAsSpriteSheet;
       }      
       
