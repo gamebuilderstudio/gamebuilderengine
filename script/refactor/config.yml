@@ -1,0 +1,12 @@
+---
+srcPath: "/pbe/branches/CodeStyleCleanup/src/PBLabs"
+outPath: "/pbe/branches/CodeStyleCleanup/src"
+newPackage: "com.pblabs"
+moveCommand: "svn move $source $dest"
+
+exceptions:
+    - source:   MXML
+      dest:     MXML
+      
+    - source:   UI
+      dest:     UI

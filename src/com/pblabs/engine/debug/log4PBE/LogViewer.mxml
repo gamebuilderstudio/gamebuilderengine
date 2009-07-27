@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" backgroundAlpha="0.6" backgroundColor="#000000">
+	<mx:TextArea backgroundAlpha="0.0" color="#FFFFFF" top="38" bottom="0" left="0" right="0" id="LogText" editable="false" creationComplete="onTextCreated()" valueCommit="LogText.verticalScrollPosition=LogText.maxVerticalScrollPosition"/>
+	<mx:Button right="10" y="8" label="X" click="close()"/>
+	<mx:Label x="10" y="8" text="Log - Show" color="#FFFFFF" fontSize="14"/>
+	<mx:ComboBox id="LogFilter" x="105" y="8" dataProvider="{_loggerCollection}" change="refresh()"/>
+   <mx:Script>
+      <![CDATA[
+         import mx.collections.ArrayCollection;
+         
+         public function addLogMessage(level:String, loggerName:String, errorNumber:int, message:String):void
+         {
+            var loggerPath:String = loggerName;
+            while (loggerPath != null)
+            {
+               if (_loggerCollection.getItemIndex(loggerPath) == -1)
+                  _loggerCollection.addItem(loggerPath);
+               
+               var dotIndex:int = loggerPath.lastIndexOf(".")
+               loggerPath = dotIndex >= 0 ? loggerPath.substring(0, dotIndex) : null;
+            }
+            
+            var numberString:String = "";
+            if (errorNumber >= 0)
+               numberString = " - " + errorNumber;
+            
+            var text:String = level + ": " + loggerName + numberString + " - " + message;
+            _messageQueue.push({logger:loggerName, message:text});
+            
+            if (LogText)
+               LogText.text += text + "\n";
+         }
+         
+         private function onTextCreated():void
+         {
+            refresh();
+         }
+         
+         private function refresh():void
+         {
+            LogText.text = "";
+            for each (var item:Object in _messageQueue)
+            {
+               if (isDisplayed(item))
+                  LogText.text += item.message + "\n";
+            }
+         }
+         
+         private function isDisplayed(item:Object):Boolean
+         {
+            return LogFilter.selectedItem == "*" || item.logger.indexOf(LogFilter.selectedItem) != -1;
+         }
+         
+         private function close():void
+         {
+            parent.removeChild(this);
+         }
+         
+         private var _messageQueue:Array = [];
+         
+         [Bindable]
+         private var _loggerCollection:ArrayCollection = new ArrayCollection([ "*" ]);
+      ]]>
+   </mx:Script>
+</mx:Canvas>
