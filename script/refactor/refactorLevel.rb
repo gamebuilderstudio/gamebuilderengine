@@ -57,7 +57,7 @@ def fixPackages(line)
   
   rx = /PBLabs\.[^"]+/
   
-  if((line =~ rx) != nil)
+  while((line =~ rx) != nil)
     line = $` + convertPackage($&).to_s + $'
   end
   
