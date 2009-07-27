@@ -68,7 +68,7 @@ package com.pblabs.engine.serialization
        * 
        * @return An instance of the class, or null if instantiation failed.
        */
-      public static function instantiate(className:String):*
+      public static function instantiate(className:String, suppressError:Boolean = false):*
       {
          // Deal with strings explicitly as they are a primitive.
          if (className == "String")
@@ -81,12 +81,15 @@ package com.pblabs.engine.serialization
          // Give it a shot!
          try
          {
-            return new getDefinitionByName(className);
+            return new (getDefinitionByName(className));
          }
          catch (e:Error)
          {
-            Logger.printWarning(null, "Instantiate", "Failed to instantiate " + className + " due to " + e.toString());
-			Logger.printWarning(null, "Instantiate", "Is " + className + " included in your SWF? You may have to add a reference so the class is linked. (see References.as/References.mxml).");
+			 if(!suppressError)
+			 {
+				 Logger.printWarning(null, "Instantiate", "Failed to instantiate " + className + " due to " + e.toString());
+				 Logger.printWarning(null, "Instantiate", "Is " + className + " included in your SWF? You may have to add a reference so the class is linked. (see References.as/References.mxml).");				 
+			 }
          }
          
          // If we get here, couldn't new it.

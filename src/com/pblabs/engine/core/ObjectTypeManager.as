@@ -52,7 +52,7 @@ package com.pblabs.engine.core
        */
       public function getType(typeName:String):uint
       {
-         if (!_typeList[typeName])
+         if (!_typeList.hasOwnProperty(typeName))
          {
             if (_typeCount == 64)
             {

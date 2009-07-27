@@ -41,7 +41,7 @@ package com.pblabs.engine.core
       
       /**
        * The name of the type associated with this object type. If multiple names have
-       * been assigned, a random one is returned.
+       * been assigned, the one with the least significant bit is returned.
        */
       public function get typeName():String
       {

@@ -71,7 +71,7 @@ package com.pblabs.rendering2D
             if (!ObjectTypeManager.instance.doTypesOverlap(object.objectMask, mask))
                continue;
             
-            if(boxVsBox(object.worldExtents, box))
+            if(!boxVsBox(object.worldExtents, box))
                continue;
             
             results.push(object);
