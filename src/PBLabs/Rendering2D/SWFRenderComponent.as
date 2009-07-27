@@ -36,7 +36,6 @@ package PBLabs.Rendering2D
          
          // Position and draw.
          var screenPos:Point = manager.TransformWorldToScreen(RenderPosition);
-		 _Matrix.identity();
          _Matrix.tx = screenPos.x + ScreenOffset.x;
          _Matrix.ty = screenPos.y + ScreenOffset.y;
          _Clip.transform.matrix = _Matrix;
