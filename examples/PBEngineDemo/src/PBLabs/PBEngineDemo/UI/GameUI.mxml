@@ -4,7 +4,7 @@
 	<mx:Button label="Next Level" click="_Next()" fontSize="22" right="10" bottom="10"/>
    <mx:Script>
       <![CDATA[
-         import PBLabs.Engine.Core.*;
+         import com.pblabs.engine.core.*;
          
          private function _Next():void
          {

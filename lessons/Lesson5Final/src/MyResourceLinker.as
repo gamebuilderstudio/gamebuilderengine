@@ -9,8 +9,8 @@
 
 package
 {
-   import PBLabs.Engine.Resource.*;
-   import PBLabs.Rendering2D.*;
+   import com.pblabs.engine.resource.*;
+   import com.pblabs.rendering2D.*;
    
    public class MyResources extends ResourceLinker
    {

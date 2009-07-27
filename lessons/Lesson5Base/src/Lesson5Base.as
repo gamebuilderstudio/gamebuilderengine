@@ -9,10 +9,10 @@
 
 package
 {
-   import PBLabs.Engine.Core.*;
-   import PBLabs.Engine.Entity.*;
-   import PBLabs.Rendering2D.*;
-   import PBLabs.Rendering2D.UI.*;
+   import com.pblabs.engine.core.*;
+   import com.pblabs.engine.entity.*;
+   import com.pblabs.rendering2D.*;
+   import com.pblabs.rendering2D.UI.*;
    
    import flash.display.Sprite;
    import flash.geom.Point;
@@ -35,7 +35,7 @@ package
       private function CreateScene():void 
       {
          // Allocate our Scene entity
-         var Scene:IEntity = AllocateEntity();
+         var Scene:IEntity = allocateEntity();
          
          // Register with the name "Scene"
          Scene.Initialize("Scene");
@@ -76,7 +76,7 @@ package
       private function CreateHero():void
       {
          // Allocate an entity for our hero avatar
-         var Hero:IEntity = AllocateEntity();
+         var Hero:IEntity = allocateEntity();
          // Register the entity with PBE under the name "Hero"
          Hero.Initialize("Hero");
          

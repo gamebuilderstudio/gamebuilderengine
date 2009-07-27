@@ -9,11 +9,11 @@
 
 package
 {
-   import PBLabs.Engine.Core.*;
-   import PBLabs.Engine.Entity.*;
-   import PBLabs.Engine.Resource.*;
-   import PBLabs.Rendering2D.*;
-   import PBLabs.Rendering2D.UI.*;
+   import com.pblabs.engine.core.*;
+   import com.pblabs.engine.entity.*;
+   import com.pblabs.engine.resource.*;
+   import com.pblabs.rendering2D.*;
+   import com.pblabs.rendering2D.UI.*;
    
    import flash.display.Sprite;
    import flash.geom.Point;
@@ -42,7 +42,7 @@ package
       private function CreateScene():void 
       {
          // Allocate our Scene entity
-         var Scene:IEntity = AllocateEntity();
+         var Scene:IEntity = allocateEntity();
          
          // Register with the name "Scene"
          Scene.Initialize("Scene");
@@ -82,7 +82,7 @@ package
       private function CreateHero():void
       {
          // Allocate an entity for our hero avatar
-         var Hero:IEntity = AllocateEntity();
+         var Hero:IEntity = allocateEntity();
          // Register the entity with PBE under the name "Hero"
          Hero.Initialize("Hero");
          
@@ -134,7 +134,7 @@ package
       private function CreateBackground():void
       {
          // Allocate an entity for our background sprite
-         var BG:IEntity = AllocateEntity();
+         var BG:IEntity = allocateEntity();
          // Register the entity with PBE under the name "BG"
          BG.Initialize("BG");
          

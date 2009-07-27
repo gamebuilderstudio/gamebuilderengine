@@ -7,8 +7,8 @@
  ******************************************************************************/
 package PBLabs.RollyGame
 {
-	import PBLabs.Engine.Entity.*;
-	import PBLabs.Rendering2D.*;
+	import com.pblabs.engine.entity.*;
+	import com.pblabs.rendering2D.*;
 	import flash.display.*;
 	import flash.geom.*;
 	

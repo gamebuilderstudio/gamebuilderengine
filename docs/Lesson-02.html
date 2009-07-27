@@ -93,7 +93,7 @@
    <pre class="brush: js">
       private function CreateScene():void 
       {
-         var Scene:IEntity = AllocateEntity();                                // Allocate our Scene entity
+         var Scene:IEntity = allocateEntity();                                // Allocate our Scene entity
          Scene.Initialize("Scene");                                           // Register with the name "Scene"
          var Spatial:BasicSpatialManager2D = new BasicSpatialManager2D();     // Allocate our Spatial DB component
          Scene.AddComponent( Spatial, "Spatial" );                            // Add to Scene with name "Spatial"
@@ -121,7 +121,7 @@
    <pre class="brush: js">
       private function CreateHero():void
       {
-         var Hero:IEntity = AllocateEntity();                                 // Allocate an entity for our hero avatar
+         var Hero:IEntity = allocateEntity();                                 // Allocate an entity for our hero avatar
          Hero.Initialize("Hero");                                             // Register the entity with PBE under the name "Hero"
          
          var Spatial:SimpleSpatialComponent = new SimpleSpatialComponent();   // Create our spatial component
@@ -160,7 +160,7 @@
    <h2>In Review</h2>
    <p>To summarize, to create an entity in Actionscript, one uses the following pattern:</p>
    <pre class="brush: js">
-   var newEntity:IEntity = AllocateEntity();                                  // Allocate an entity
+   var newEntity:IEntity = allocateEntity();                                  // Allocate an entity
    newEntity.Intialize("EntityName");                                         // Register the entity with PBE under the name "EntityName"
    </pre>   
    

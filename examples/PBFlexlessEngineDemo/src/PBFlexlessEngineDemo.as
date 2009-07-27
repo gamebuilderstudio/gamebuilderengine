@@ -9,8 +9,8 @@
 
 package
 {
-   import PBLabs.Engine.Core.Global;
-   import PBLabs.Engine.Core.LevelManager;
+   import com.pblabs.engine.core.Global;
+   import com.pblabs.engine.core.LevelManager;
    
    import flash.display.Sprite;
    

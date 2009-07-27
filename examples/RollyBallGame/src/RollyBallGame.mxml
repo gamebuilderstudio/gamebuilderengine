@@ -24,8 +24,8 @@
    <local:Resources/>
    <mx:Script>
       <![CDATA[
-         import PBLabs.Engine.Core.*;
-         import PBLabs.RollyGame.*;
+         import com.pblabs.engine.core.*;
+         import com.pblabs.RollyGame.*;
          import mx.controls.Alert;
          
          public var CurrentScore:Number = 0;

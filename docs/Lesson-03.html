@@ -51,8 +51,8 @@
    <h2>Building a Component</h2>
    <p>As in the previous example, we will set up a basic scene.  Our Hero component will have three components: a render component, a spatial component, and a controller component (the new DemoControllerComponent).</p>
    <p>This new controller component will make our entity move in a zig-zag fashion down the screen, similar to an Invaders enemy.</p>
-   <p>To build our new component, we must create a class for it.  To get basic component features, you must inherit from one of the base component classes.  For the type of component that we want in this example, we will inherit from TickedComponent.  Components that descend from TickedComponent get their OnTick() method called 30 times per second.  This makes it a logical place to put movement logic.</p>
-   <p>So every 33 milliseconds, the OnTick() method of the controller component is called.  This method handles the housekeeping for checking boundaries, and moving the parent entity.  It looks at the position of the parent entity (gotten from the spatial component), and then applies some rules to create some simple movement behavior:</p>
+   <p>To build our new component, we must create a class for it.  To get basic component features, you must inherit from one of the base component classes.  For the type of component that we want in this example, we will inherit from TickedComponent.  Components that descend from TickedComponent get their onTick() method called 30 times per second.  This makes it a logical place to put movement logic.</p>
+   <p>So every 33 milliseconds, the onTick() method of the controller component is called.  This method handles the housekeeping for checking boundaries, and moving the parent entity.  It looks at the position of the parent entity (gotten from the spatial component), and then applies some rules to create some simple movement behavior:</p>
    <p>
    <ul>
       <li>If we are on the left edge:
@@ -75,12 +75,12 @@
    <pre class="brush: js">
 package 
 {
-   import PBLabs.Engine.Components.TickedComponent;
-   import PBLabs.Engine.Entity.PropertyReference;
+   import com.pblabs.engine.components.TickedComponent;
+   import com.pblabs.engine.entity.PropertyReference;
 
    import flash.geom.Point;
 
-   // Make a ticked component so that it can update itself every frame with OnTick() 
+   // Make a ticked component so that it can update itself every frame with onTick() 
    public class DemoControllerComponent extends TickedComponent
    {
       // Keep a property reference to our entity's position.
@@ -89,8 +89,8 @@ package
       // Store the direction that our entity is traveling: 1 is to the right, -1 is to the left.
       private var direction:int = 1;   
       
-      // OnTick() is called every frame
-      public override function OnTick(tickRate:Number):void
+      // onTick() is called every frame
+      public override function onTick(tickRate:Number):void
       {
          // Copy the owner entity's position into a local Point structure
          var position:Point = Owner.GetProperty(PositionReference);

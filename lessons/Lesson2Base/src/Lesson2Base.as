@@ -9,10 +9,10 @@
 
 package
 {
-   import PBLabs.Engine.Core.*;
-   import PBLabs.Engine.Entity.*;
-   import PBLabs.Rendering2D.*;
-   import PBLabs.Rendering2D.UI.*;
+   import com.pblabs.engine.core.*;
+   import com.pblabs.engine.entity.*;
+   import com.pblabs.rendering2D.*;
+   import com.pblabs.rendering2D.UI.*;
    
    import flash.display.Sprite;
    import flash.geom.Point;
@@ -22,7 +22,7 @@ package
    {
       public function Lesson2Base()
       {
-         Global.Startup(this);
+         Global.startup(this);
       }
    }
 }

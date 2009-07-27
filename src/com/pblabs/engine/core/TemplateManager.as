@@ -8,7 +8,7 @@
  ******************************************************************************/
 package com.pblabs.engine.core
 {
-   import com.pblabs.engine.entity.AllocateEntity;
+   import com.pblabs.engine.entity.allocateEntity;
    import com.pblabs.engine.entity.IEntity;
    import com.pblabs.engine.debug.Logger;
    import com.pblabs.engine.debug.Profiler;
@@ -147,7 +147,7 @@ package com.pblabs.engine.core
    
             var entity:IEntity;
             if (!_entityType)
-               entity = AllocateEntity();
+               entity = allocateEntity();
             else
                entity = new _entityType();
             

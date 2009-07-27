@@ -7,11 +7,11 @@
  ******************************************************************************/
 package PBLabs.RollyGame
 {
-   import PBLabs.Rendering2D.*;
-   import PBLabs.Animation.*;
-   import PBLabs.Engine.Core.*;
-   import PBLabs.Engine.Entity.*;
-   import PBLabs.Engine.Resource.*;
+   import com.pblabs.rendering2D.*;
+   import com.pblabs.Animation.*;
+   import com.pblabs.engine.core.*;
+   import com.pblabs.engine.entity.*;
+   import com.pblabs.engine.resource.*;
    import flash.geom.*;
    import mx.controls.*;
 
@@ -50,7 +50,7 @@ package PBLabs.RollyGame
          }
       }
             
-      public override function OnTick(tickRate:Number):void
+      public override function onTick(tickRate:Number):void
       {
          // Sample the map for our current position.
          var n:Point = new Point();

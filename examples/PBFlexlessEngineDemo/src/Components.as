@@ -9,20 +9,20 @@
  
 package
 {
-   import PBLabs.Rendering2D.Scene2DComponent;
-   import PBLabs.Rendering2D.SpriteRenderComponent;
-   import PBLabs.Rendering2D.SpriteSheetComponent;
-   import PBLabs.Rendering2D.SimpleSpatialComponent;
-   import PBLabs.Rendering2D.BasicSpatialManager2D;
-   import PBLabs.Rendering2D.CellCountDivider;
-   import PBLabs.Box2D.Box2DDebugComponent;
-   import PBLabs.Box2D.Box2DManagerComponent;
-   import PBLabs.Box2D.Box2DSpatialComponent;
-   import PBLabs.Box2D.PolygonCollisionShape;
-   import PBLabs.Box2D.CircleCollisionShape;
-   import PBLabs.StupidSampleGame.DudeController;
-   import PBLabs.Animation.AnimatorComponent;
-   import PBLabs.Rendering2D.UI.SceneView;
+   import com.pblabs.rendering2D.Scene2DComponent;
+   import com.pblabs.rendering2D.SpriteRenderComponent;
+   import com.pblabs.rendering2D.SpriteSheetComponent;
+   import com.pblabs.rendering2D.SimpleSpatialComponent;
+   import com.pblabs.rendering2D.BasicSpatialManager2D;
+   import com.pblabs.rendering2D.CellCountDivider;
+   import com.pblabs.Box2D.Box2DDebugComponent;
+   import com.pblabs.Box2D.Box2DManagerComponent;
+   import com.pblabs.Box2D.Box2DSpatialComponent;
+   import com.pblabs.Box2D.PolygonCollisionShape;
+   import com.pblabs.Box2D.CircleCollisionShape;
+   import com.pblabs.StupidSampleGame.DudeController;
+   import com.pblabs.Animation.AnimatorComponent;
+   import com.pblabs.rendering2D.UI.SceneView;
    
    public class Components
    {

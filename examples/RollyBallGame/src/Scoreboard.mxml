@@ -17,8 +17,8 @@
 	   <![CDATA[
 	     import flash.utils.*;
 	     import flash.media.*;
-	     import PBLabs.Engine.Core.*;
-	     import PBLabs.Engine.Resource.*;
+	     import com.pblabs.engine.core.*;
+	     import com.pblabs.engine.resource.*;
 	     import mx.core.*;
 	     
 	     public var CoinsLeft:int, TotalScore:int;

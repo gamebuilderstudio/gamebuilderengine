@@ -42,7 +42,7 @@
       public var Score:Number = 0;
       public var PointsPerSecond:Number = 1;
       
-      public function OnTick(dt:Number):void
+      public function onTick(dt:Number):void
       {
          Score += PointsPerSecond * dt;
          Logger.Log(this, "Updating score, score is now " + Score);

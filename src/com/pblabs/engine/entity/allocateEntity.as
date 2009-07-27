@@ -17,7 +17,7 @@ package com.pblabs.engine.entity
     * 
     * @return A new IEntity.
     */
-   public function AllocateEntity():IEntity
+   public function allocateEntity():IEntity
    {
       return new Entity();
    }

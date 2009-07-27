@@ -9,19 +9,19 @@
 
 package 
 {
-   import PBLabs.Engine.Components.TickedComponent;
-   import PBLabs.Engine.Entity.PropertyReference;
+   import com.pblabs.engine.components.TickedComponent;
+   import com.pblabs.engine.entity.PropertyReference;
 
    import flash.geom.Point;
 
-   // Make a ticked component so that it can update itself every frame with OnTick() 
+   // Make a ticked component so that it can update itself every frame with onTick() 
    public class HeroControllerComponent extends TickedComponent
    {
       // Keep a property reference to our entity's position.
-      public var PositionReference:PropertyReference;
+      public var positionReference:PropertyReference;
       
-      // OnTick() is called every frame
-      public override function OnTick(tickRate:Number):void
+      // onTick() is called every frame
+      public override function onTick(tickRate:Number):void
       {
       }
    }

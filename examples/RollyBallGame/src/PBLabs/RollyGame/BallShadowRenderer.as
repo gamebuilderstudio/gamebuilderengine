@@ -7,7 +7,7 @@
  ******************************************************************************/
 package PBLabs.RollyGame
 {
-	import PBLabs.Rendering2D.*;
+	import com.pblabs.rendering2D.*;
 	import flash.display.*;
 	import flash.utils.*;
 	

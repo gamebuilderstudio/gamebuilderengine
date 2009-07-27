@@ -8,7 +8,7 @@
  ******************************************************************************/
 package com.pblabs.engine.unitTests
 {
-   import com.pblabs.engine.entity.AllocateEntity;
+   import com.pblabs.engine.entity.allocateEntity;
    import com.pblabs.engine.entity.IEntity;
    import com.pblabs.engine.entity.PropertyReference;
    import com.pblabs.engine.core.TemplateManager;
@@ -30,7 +30,7 @@ package com.pblabs.engine.unitTests
       {
          Logger.printHeader(null, "Running Component Test");
          
-         var entity:IEntity = AllocateEntity();
+         var entity:IEntity = allocateEntity();
          entity.initialize("TestEntity");
          
          assertEquals(entity, NameManager.instance.lookup("TestEntity"));
@@ -65,7 +65,7 @@ package com.pblabs.engine.unitTests
       {
          Logger.printHeader(null, "Running Component Property Test");
          
-         var entity:IEntity = AllocateEntity();
+         var entity:IEntity = allocateEntity();
          entity.initialize("TestEntity");
          
          var a:TestComponentA = new TestComponentA();
@@ -143,7 +143,7 @@ package com.pblabs.engine.unitTests
       
       private function entityCallback():IEntity
       {
-         var entity:IEntity = AllocateEntity();
+         var entity:IEntity = allocateEntity();
          entity.initialize("CallbackCreatedEntity");
          entity.addComponent(new TestComponentA(), "A");
          entity.addComponent(new TestComponentB(), "B");

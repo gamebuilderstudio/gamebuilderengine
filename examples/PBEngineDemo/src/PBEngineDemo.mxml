@@ -12,9 +12,9 @@
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" frameRate="60" width="800" height="600" applicationComplete="_OnLoaded()">
    <mx:Script>
       <![CDATA[
-         import PBLabs.Engine.Core.*;
-         import PBLabs.PBEngineDemo.UI.*;
-         import PBLabs.Engine.Debug.Log4PBE.*;
+         import com.pblabs.engine.core.*;
+         import com.pblabs.PBEngineDemo.UI.*;
+         import com.pblabs.Engine.Debug.Log4PBE.*;
           
          private function _OnLoaded():void
          {

@@ -8,15 +8,15 @@
  ******************************************************************************/
 package PBLabs.StupidSampleGame
 {
-   import PBLabs.Box2D.CollisionEvent;
-   import PBLabs.Engine.Core.ITickedObject;
-   import PBLabs.Engine.Core.InputMap;
-   import PBLabs.Engine.Core.ObjectTypeManager;
-   import PBLabs.Engine.Core.ProcessManager;
-   import PBLabs.Engine.Entity.EntityComponent;
-   import PBLabs.Engine.Entity.PropertyReference;
-   import PBLabs.Engine.Resource.ResourceManager;
-   import PBLabs.Engine.Resource.MP3Resource;
+   import com.pblabs.Box2D.CollisionEvent;
+   import com.pblabs.engine.core.ITickedObject;
+   import com.pblabs.engine.core.InputMap;
+   import com.pblabs.engine.core.ObjectTypeManager;
+   import com.pblabs.engine.core.ProcessManager;
+   import com.pblabs.engine.entity.EntityComponent;
+   import com.pblabs.engine.entity.PropertyReference;
+   import com.pblabs.engine.resource.ResourceManager;
+   import com.pblabs.engine.resource.MP3Resource;
    
    import flash.geom.Point;
    import flash.media.Sound;
@@ -44,7 +44,7 @@ package PBLabs.StupidSampleGame
          }
       }
       
-      public function OnTick(tickRate:Number):void
+      public function onTick(tickRate:Number):void
       {
          var move:Number = _right - _left;
          var velocity:Point = Owner.GetProperty(VelocityReference);

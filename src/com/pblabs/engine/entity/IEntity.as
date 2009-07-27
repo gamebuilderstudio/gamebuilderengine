@@ -12,7 +12,7 @@ package com.pblabs.engine.entity
     * Game objects in PBE are referred to as entities. This interface defines the
     * behavior for an entity. A full featured implementation of this interface is
     * included, but is hidden so as to force using IEntity when storing references
-    * to entities. To create a new entity, use AllocateEntity.
+    * to entities. To create a new entity, use allocateEntity.
     * 
     * <p>An entity by itself is a very light weight object. All it needs to store is
     * its name and a list of components. Custom functionality is added by creating
@@ -23,7 +23,7 @@ package com.pblabs.engine.entity
     * is done.</p>
     *  
     * @see IEntityComponent
-    * @see com.pblabs.engine.entity.AllocateEntity()
+    * @see com.pblabs.engine.entity.allocateEntity()
     */
    public interface IEntity extends IPropertyBag
    {

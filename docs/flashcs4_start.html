@@ -52,8 +52,8 @@
    
    <pre class="brush: js">
    // Import some PushButton Engine classes.
-   import PBLabs.Engine.Core.*;
-   import PBLabs.Engine.Debug.*;
+   import com.pblabs.engine.core.*;
+   import com.pblabs.Engine.Debug.*;
    
    // Tell PBE where the root of our app is.
    Global.Startup(this);
@@ -79,7 +79,7 @@
    <p>Right click on the first frame in the timeline, then choose <i>Actions</i> to bring up the <i>Actions - Frame</i> window. Paste or type the following code into the window:</p>
    
    <pre class="brush: js">
-import PBLabs.Engine.Core.*;
+import com.pblabs.engine.core.*;
 
 // Tell PBE where the root of our app is.
 Global.Startup(this);
@@ -92,20 +92,20 @@ LevelManager.Instance.Start();
 // References to components. We have to reference them, otherwise the compiler
 // will remove them from the SWF and the level won't load correctly. Every
 // class the level file references needs to be mentioned here.
-import PBLabs.Rendering2D.Scene2DComponent;PBLabs.Rendering2D.Scene2DComponent;
-import PBLabs.Rendering2D.SpriteRenderComponent;PBLabs.Rendering2D.SpriteRenderComponent;
-import PBLabs.Rendering2D.SpriteSheetComponent;PBLabs.Rendering2D.SpriteSheetComponent;
-import PBLabs.Rendering2D.SimpleSpatialComponent;PBLabs.Rendering2D.SimpleSpatialComponent;
-import PBLabs.Rendering2D.BasicSpatialManager2D;PBLabs.Rendering2D.BasicSpatialManager2D;
-import PBLabs.Rendering2D.CellCountDivider;PBLabs.Rendering2D.CellCountDivider;
-import PBLabs.Box2D.Box2DDebugComponent;PBLabs.Box2D.Box2DDebugComponent;
-import PBLabs.Box2D.Box2DManagerComponent;PBLabs.Box2D.Box2DManagerComponent;
-import PBLabs.Box2D.Box2DSpatialComponent;PBLabs.Box2D.Box2DSpatialComponent;
-import PBLabs.Box2D.PolygonCollisionShape;PBLabs.Box2D.PolygonCollisionShape;
-import PBLabs.Box2D.CircleCollisionShape;PBLabs.Box2D.CircleCollisionShape;
-import PBLabs.StupidSampleGame.DudeController;PBLabs.StupidSampleGame.DudeController;
-import PBLabs.Animation.AnimatorComponent;PBLabs.Animation.AnimatorComponent;
-import PBLabs.Rendering2D.UI.SceneView;PBLabs.Rendering2D.UI.SceneView;
+import com.pblabs.rendering2D.Scene2DComponent;PBLabs.Rendering2D.Scene2DComponent;
+import com.pblabs.rendering2D.SpriteRenderComponent;PBLabs.Rendering2D.SpriteRenderComponent;
+import com.pblabs.rendering2D.SpriteSheetComponent;PBLabs.Rendering2D.SpriteSheetComponent;
+import com.pblabs.rendering2D.SimpleSpatialComponent;PBLabs.Rendering2D.SimpleSpatialComponent;
+import com.pblabs.rendering2D.BasicSpatialManager2D;PBLabs.Rendering2D.BasicSpatialManager2D;
+import com.pblabs.rendering2D.CellCountDivider;PBLabs.Rendering2D.CellCountDivider;
+import com.pblabs.Box2D.Box2DDebugComponent;PBLabs.Box2D.Box2DDebugComponent;
+import com.pblabs.Box2D.Box2DManagerComponent;PBLabs.Box2D.Box2DManagerComponent;
+import com.pblabs.Box2D.Box2DSpatialComponent;PBLabs.Box2D.Box2DSpatialComponent;
+import com.pblabs.Box2D.PolygonCollisionShape;PBLabs.Box2D.PolygonCollisionShape;
+import com.pblabs.Box2D.CircleCollisionShape;PBLabs.Box2D.CircleCollisionShape;
+import com.pblabs.StupidSampleGame.DudeController;PBLabs.StupidSampleGame.DudeController;
+import com.pblabs.Animation.AnimatorComponent;PBLabs.Animation.AnimatorComponent;
+import com.pblabs.rendering2D.UI.SceneView;PBLabs.Rendering2D.UI.SceneView;
    </pre>
    
    <p>Save your work by choosing <i>File -&gt; Save...</i> from the menu. Name the file <i>Platformer.fla</i>. Then, go to the folder where you saved <i>Platformer.fla</i>, and create a new file called <i>level.pbelevel</i>. This file will contain XML description of all the objects in the game. Open it in Notepad (on Windows) or TextEdit (on OS X), and paste the following into the file:</p>
@@ -311,14 +311,14 @@ import PBLabs.Rendering2D.UI.SceneView;PBLabs.Rendering2D.UI.SceneView;
  ******************************************************************************/
 package PBLabs.StupidSampleGame
 {
-   import PBLabs.Box2D.CollisionEvent;
-   import PBLabs.Engine.Core.ITickedObject;
-   import PBLabs.Engine.Core.InputMap;
-   import PBLabs.Engine.Core.ObjectTypeManager;
-   import PBLabs.Engine.Core.ProcessManager;
-   import PBLabs.Engine.Entity.EntityComponent;
-   import PBLabs.Engine.Entity.PropertyReference;
-   import PBLabs.Engine.Resource.*;
+   import com.pblabs.Box2D.CollisionEvent;
+   import com.pblabs.engine.core.ITickedObject;
+   import com.pblabs.engine.core.InputMap;
+   import com.pblabs.engine.core.ObjectTypeManager;
+   import com.pblabs.engine.core.ProcessManager;
+   import com.pblabs.engine.entity.EntityComponent;
+   import com.pblabs.engine.entity.PropertyReference;
+   import com.pblabs.engine.resource.*;
    
    import flash.geom.Point;
    import flash.media.Sound;
@@ -344,7 +344,7 @@ package PBLabs.StupidSampleGame
          }
       }
       
-      public function OnTick(tickRate:Number):void
+      public function onTick(tickRate:Number):void
       {
          var move:Number = _right - _left;
          var velocity:Point = Owner.GetProperty(VelocityReference);

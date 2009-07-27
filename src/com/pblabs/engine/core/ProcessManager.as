@@ -331,7 +331,7 @@ package com.pblabs.engine.core
             for each (var object:ProcessObject in _tickedObjects)
             {
                Profiler.enter(object.profilerKey);
-               object.listener.OnTick(TICK_RATE);
+               object.listener.onTick(TICK_RATE);
                Profiler.exit(object.profilerKey);
             }
             

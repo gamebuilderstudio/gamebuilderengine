@@ -9,26 +9,25 @@
 
 package 
 {
-   import PBLabs.Engine.Components.TickedComponent;
-   import PBLabs.Engine.Entity.PropertyReference;
+   import com.pblabs.engine.components.TickedComponent;
+   import com.pblabs.engine.entity.PropertyReference;
 
    import flash.geom.Point;
 
-   // Make a ticked component so that it can update itself every frame with OnTick() 
+   // Make a ticked component so that it can update itself every frame with onTick() 
    public class DemoControllerComponent extends TickedComponent
    {
       // Keep a property reference to our entity's position.
-      public var PositionReference:PropertyReference;
+      public var positionReference:PropertyReference;
       
       // Store the direction that our entity is traveling: 1 is to the right, -1 is to the left.
       private var direction:int = 1;   
       
-      // OnTick() is called every frame
-      public override function OnTick(tickRate:Number):void
+      // onTick() is called every frame
+      public override function onTick(tickRate:Number):void
       {
          // Copy the owner entity's position into a local Point structure
-         var position:Point = Owner.GetProperty(PositionReference);
-         
+         var position:Point = owner.getProperty(positionReference);
          
          // If we are over the left edge...
          if (position.x < -375) {
@@ -51,7 +50,7 @@ package
          position.x += direction * 5;
          
          // Set the spatial component's position based on our new value
-         Owner.SetProperty(PositionReference, position);
+         owner.setProperty(positionReference, position);
       }
 
    }

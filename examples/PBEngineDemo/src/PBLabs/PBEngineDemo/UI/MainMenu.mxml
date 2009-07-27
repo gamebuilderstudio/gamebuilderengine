@@ -4,7 +4,7 @@
 	<mx:Button label="Start!" click="_Start()" fontSize="22" horizontalCenter="0" verticalCenter="0"/>
    <mx:Script>
       <![CDATA[
-         import PBLabs.Engine.Core.*;
+         import com.pblabs.engine.core.*;
          
          private function _Start():void
          {
