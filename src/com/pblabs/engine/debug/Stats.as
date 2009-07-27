@@ -111,18 +111,18 @@ package com.pblabs.engine.debug
             addEventListener(Event.ENTER_FRAME, update);
         }
 
-        private function onClick(e:MouseEvent):void
+        private function onClick(event:MouseEvent):void
         {
             (this.mouseY > this.height * .35) ? stage.frameRate-- : stage.frameRate++;
             fpsText.text = "FPS: " + fps + " / " + stage.frameRate;
         }
 
-        private function onMouseOut(e:MouseEvent):void
+        private function onMouseOut(event:MouseEvent):void
         {
             ver.visible = false;
         }
 
-        private function onMouseOver(e:MouseEvent):void
+        private function onMouseOver(event:MouseEvent):void
         {
             ver.visible = true;
         }

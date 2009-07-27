@@ -61,9 +61,9 @@ package com.pblabs.components.basic
          onAdd();
       }
 
-		private function soundEventHandler(e:Event):void
+		private function soundEventHandler(event:Event):void
 		{
-         var sound:MP3Resource = events[e.type];
+         var sound:MP3Resource = events[event.type];
          sound.soundObject.play();
 		}
 

@@ -112,7 +112,7 @@ package com.pblabs.tweaker
          loader.addEventListener(IOErrorEvent.IO_ERROR, onLoadFail);
          loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onLoadFail);
          loader.addEventListener(HTTPStatusEvent.HTTP_STATUS, 
-               function(e:HTTPStatusEvent):void { Logger.print(this, "Got status back: " + e.toString()); }
+               function(event:HTTPStatusEvent):void { Logger.print(this, "Got status back: " + event.toString()); }
                );
          loader.load(ur);
          
