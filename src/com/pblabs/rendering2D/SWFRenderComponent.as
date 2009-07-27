@@ -15,6 +15,8 @@ package com.pblabs.rendering2D
          _matrix.scale(value, value);
       }
 
+	  public var screenOffset:Point = new Point();
+
       /**
        * Subclasses must implement this method; it needs to return the embedded
        * SWF's class.
@@ -26,15 +28,21 @@ package com.pblabs.rendering2D
       
       override public function onDraw(manager:IDrawManager2D):void
       {
-         if(!_clip)
+	 if(!owner)
+	   return;
+		 
+         if(_clip == null)
             _clip = getClipInstance();
          
          // Position and draw.
          var screenPos:Point = manager.transformWorldToScreen(renderPosition);
-         _matrix.tx = screenPos.x;
-         _matrix.ty = screenPos.y;
+	 _matrix.identity();
+         _matrix.tx = screenPos.x + screenOffset.x;
+         _matrix.ty = screenPos.y + screenOffset.y;
          _clip.transform.matrix = _matrix;
 
+		 //trace("Drawing at " + screenPos.toString() + " with width=" + _Clip.width + ", height=" + _Clip.height);
+		 
          manager.drawDisplayObject(_clip);
          
          // If we're on the last frame, self-destruct.

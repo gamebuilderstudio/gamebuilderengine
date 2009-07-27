@@ -85,7 +85,8 @@ package com.pblabs.engine.serialization
          }
          catch (e:Error)
          {
-            Logger.printWarning(null, "instantiate", "Failed to instantiate " + className + " due to " + e.toString());
+            Logger.printWarning(null, "Instantiate", "Failed to instantiate " + className + " due to " + e.toString());
+			Logger.printWarning(null, "Instantiate", "Is " + className + " included in your SWF? You may have to add a reference so the class is linked. (see References.as/References.mxml).");
          }
          
          // If we get here, couldn't new it.
