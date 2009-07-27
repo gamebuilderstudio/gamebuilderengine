@@ -6,7 +6,7 @@ moveCommand: "svn move $source $dest"
 
 exceptions:
     - source:   MXML
-      dest:     MXML
+      dest:     mxml
       
     - source:   UI
-      dest:     UI
+      dest:     ui

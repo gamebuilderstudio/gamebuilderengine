@@ -1,10 +1,13 @@
+require 'ftools'
+
 def checkArgs()
-  if(ARGV[0] && ARGV[1])
+  if(ARGV[0])
     validatePath(ARGV[0], true)
-    @input = ARGV[0]
-    @output = ARGV[1]
+    File.copy(ARGV[0], "#{ARGV[0]}.old")
+    @input = "#{ARGV[0]}.old"
+    @output = ARGV[0]
   else
-    puts "Usage: ruby refactorLevel.rb input.pbelevel output.pbelevel"
+    puts "Usage: ruby refactorLevel.rb input.pbelevel"
     exit
   end
 end
