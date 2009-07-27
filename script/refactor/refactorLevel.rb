@@ -31,7 +31,7 @@ def writeLine(line)
   line = fixPackages(line)
   line = fixTags(line)
   writeFile(line, 'a')
-  puts "#{line}"
+  #puts "#{line}"
 end
 
 def writeFile(line, writeMode)
@@ -68,8 +68,10 @@ def convertPackage(oldPackage)
   print oldPackage, " -> "
   oldPackage.slice!("PBLabs.")
   arr = oldPackage.split(".")
-  arr[-2..0].each {|p| downcaseLetter(p,0)}
-  return @newPackage + "." + arr.join(".")
+  arr[0..arr.length-2].each {|p| downcaseLetter(p,0)}
+  newPackage = @newPackage + "." + arr.join(".")
+  puts newPackage
+  return newPackage
 end
 
 def downcaseLetter(str, index)
