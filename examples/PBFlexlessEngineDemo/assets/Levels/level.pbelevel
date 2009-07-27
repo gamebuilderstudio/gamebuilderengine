@@ -16,9 +16,9 @@
   <template name="Platform">
     <component type="PBLabs.Rendering2D.SpriteRenderComponent" name="Render">
       <SpriteSheet componentReference="PlatformSpriteSheet"/>
-      <PositionReference>@Spatial.Position</PositionReference>
-      <RotationReference>@Spatial.Rotation</RotationReference>
-      <SizeReference>@Spatial.Size</SizeReference>
+      <PositionReference>@Spatial.position</PositionReference>
+      <RotationReference>@Spatial.rotation</RotationReference>
+      <SizeReference>@Spatial.size</SizeReference>
     </component>
     <component type="PBLabs.Box2D.Box2DSpatialComponent" name="Spatial">
       <Manager componentReference="SpatialDB"/>
@@ -101,9 +101,9 @@
     </component>
     <component type="PBLabs.Rendering2D.SpriteRenderComponent" name="Render">
       <SpriteSheet componentReference="DudeSpriteSheet"/>
-      <PositionReference>@Spatial.Position</PositionReference>
-      <RotationReference>@Spatial.Rotation</RotationReference>
-      <SizeReference>@Spatial.Size</SizeReference>
+      <PositionReference>@Spatial.position</PositionReference>
+      <RotationReference>@Spatial.rotation</RotationReference>
+      <SizeReference>@Spatial.position</SizeReference>
     </component>
     <component type="PBLabs.Box2D.Box2DSpatialComponent" name="Spatial">
       <Manager componentReference="SpatialDB"/>

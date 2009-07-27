@@ -75,9 +75,9 @@ package
          Render.radius = 25;                                                  // Mark the radius of the circle as 25
          
          // Point the render component to this entity's Spatial component for position information
-         Render.positionReference = new PropertyReference("@Spatial.Position");
+         Render.positionReference = new PropertyReference("@Spatial.position");
          // Point the render component to this entity's Spatial component for rotation information
-         Render.rotationReference = new PropertyReference("@Spatial.Rotation");
+         Render.rotationReference = new PropertyReference("@Spatial.rotation");
         
          Hero.addComponent( Render, "Render" );                               // Add our render component to the Hero entity with the name "Render"
       }

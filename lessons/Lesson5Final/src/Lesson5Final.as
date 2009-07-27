@@ -24,40 +24,40 @@ package
       public function Lesson5Final()
       {
          // Start up PBE
-         Global.Startup(this);
+         Global.startup(this);
          
          // Load up our embedded resources
          new MyResources( );
 
          // Set up a simple scene entity
-         CreateScene();
+         createScene();
                   
          // Create an avatar entity
-         CreateHero();
+         createHero();
          
          // Create a simple background entity
-         CreateBackground();
+         createBackground();
       }
       
-      private function CreateScene():void 
+      private function createScene():void 
       {
          // Allocate our Scene entity
          var Scene:IEntity = allocateEntity();
          
          // Register with the name "Scene"
-         Scene.Initialize("Scene");
+         Scene.initialize("Scene");
          
          // Allocate our Spatial DB component
          var Spatial:BasicSpatialManager2D = new BasicSpatialManager2D();
          
          // Add to Scene with name "Spatial"
-         Scene.AddComponent( Spatial, "Spatial" );
+         Scene.addComponent( Spatial, "Spatial" );
 
          // Allocate our renderering component 
          var Renderer:Scene2DComponent = new Scene2DComponent();
         
          // Point renderer at Spatial (for object location information)
-         Renderer.SpatialDatabase = Spatial;
+         Renderer.spatialDatabase = Spatial;
         
          // Create a view for our Renderer
          var View:SceneView = new SceneView();
@@ -67,40 +67,40 @@ package
          // Set the height of our Scene View
          View.height = 600;
          // Point the Renderer's SceneView at the view we just created.
-         Renderer.SceneView = View;
+         Renderer.sceneView = View;
         
          // Point the camera (center of render view) at 0,0
-         Renderer.Position = new Point(0,0);
+         Renderer.position = new Point(0,0);
         
          // Set the render mask to only draw objects explicitly marked as "Renderable"
-         Renderer.RenderMask = new ObjectType("Renderable");
+         Renderer.renderMask = new ObjectType("Renderable");
         
          // Add our Renderer component to the scene entity with the name "Renderer"
-         Scene.AddComponent( Renderer, "Renderer" );
+         Scene.addComponent( Renderer, "Renderer" );
       }
 
-      private function CreateHero():void
+      private function createHero():void
       {
          // Allocate an entity for our hero avatar
          var Hero:IEntity = allocateEntity();
          // Register the entity with PBE under the name "Hero"
-         Hero.Initialize("Hero");
+         Hero.initialize("Hero");
          
          // Create our spatial component
          var Spatial:SimpleSpatialComponent = new SimpleSpatialComponent();
          
          // Do a named lookup to register our hero with the scene spatial database
-         Spatial.SpatialManager = NameManager.Instance.LookupComponentByName("Scene", "Spatial") as ISpatialManager2D;                            
+         Spatial.spatialManager = NameManager.instance.lookupComponentByName("Scene", "Spatial") as ISpatialManager2D;                            
          
          // Set a mask flag for this object as "Renderable" to be seen by the scene Renderer
-         Spatial.ObjectMask = new ObjectType("Renderable");
+         Spatial.objectMask = new ObjectType("Renderable");
          // Set our hero's position in space
-         Spatial.Position = new Point(0,150);
+         Spatial.position = new Point(0,150);
          // Set our hero's size as 60,53 (half the size of our sprite)
-         Spatial.Size = new Point(60,53);
+         Spatial.size = new Point(60,53);
         
          // Add our spatial component to the Hero entity with the name "Spatial"
-         Hero.AddComponent( Spatial, "Spatial" );
+         Hero.addComponent( Spatial, "Spatial" );
         
          // Create a simple render component to display our object
 
@@ -108,49 +108,49 @@ package
          var Render:SpriteRenderComponent = new SpriteRenderComponent();
 
          // Tell the Render component to use one of the images embedded by our ResourceLinker
-         Render.LoadFromImage = "fanship.png";
+         Render.loadFromImage = "fanship.png";
          
          // Set our hero to render above the background.
-         Render.LayerIndex = 10;
+         Render.layerIndex = 10;
          
          // Point the render component to this entity's Spatial component for position information
-         Render.PositionReference = new PropertyReference("@Spatial.Position");
+         Render.positionReference = new PropertyReference("@Spatial.position");
          // Point the render component to this entity's Spatial component for size information
-         Render.SizeReference = new PropertyReference("@Spatial.Size");
+         Render.sizeReference = new PropertyReference("@Spatial.size");
         
          // Add our render component to the Hero entity with the name "Render"
-         Hero.AddComponent( Render, "Render" );
+         Hero.addComponent( Render, "Render" );
          
          // Create an instance of our hero controller component
          var Controller:HeroControllerComponent = new HeroControllerComponent();
          // Point the controller component to this entity's Spatial component for position information
-         Controller.PositionReference = new PropertyReference("@Spatial.Position");
+         Controller.positionReference = new PropertyReference("@Spatial.position");
 
          // Add the demo controller component to the Hero entity with the name "Controller"
-         Hero.AddComponent( Controller, "Controller" );
+         Hero.addComponent( Controller, "Controller" );
       }
       
 
-      private function CreateBackground():void
+      private function createBackground():void
       {
          // Allocate an entity for our background sprite
          var BG:IEntity = allocateEntity();
          // Register the entity with PBE under the name "BG"
-         BG.Initialize("BG");
+         BG.initialize("BG");
          
          // Create our spatial component
          var Spatial:SimpleSpatialComponent = new SimpleSpatialComponent();
          
          // Do a named lookup to register our background with the scene spatial database
-         Spatial.SpatialManager = NameManager.Instance.LookupComponentByName("Scene", "Spatial") as ISpatialManager2D;
+         Spatial.spatialManager = NameManager.instance.lookupComponentByName("Scene", "Spatial") as ISpatialManager2D;
          
          // Set a mask flag for this object as "Renderable" to be seen by the scene Renderer
-         Spatial.ObjectMask = new ObjectType("Renderable");
+         Spatial.objectMask = new ObjectType("Renderable");
          // Set our background position in space
-         Spatial.Position = new Point(0,0);
+         Spatial.position = new Point(0,0);
          
          // Add our spatial component to the background entity with the name "Spatial"
-         BG.AddComponent( Spatial, "Spatial" );
+         BG.addComponent( Spatial, "Spatial" );
         
          // Create a simple render component to display our object
 
@@ -158,16 +158,16 @@ package
          var Render:SpriteRenderComponent = new SpriteRenderComponent();
          
          // Tell the Render component to use one of the images embedded by our ResourceLinker
-         Render.LoadFromImage = "bg.jpg";
+         Render.loadFromImage = "bg.jpg";
          
          // Set our background to render below the hero.
-         Render.LayerIndex = 1;
+         Render.layerIndex = 1;
          
          // Point the render component to this entity's Spatial component for position information
-         Render.PositionReference = new PropertyReference("@Spatial.Position");
+         Render.positionReference = new PropertyReference("@Spatial.position");
         
          // Add our render component to the BG entity with the name "Render"
-         BG.AddComponent( Render, "Render" );
+         BG.addComponent( Render, "Render" );
       }
    }
 }

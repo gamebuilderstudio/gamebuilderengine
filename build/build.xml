@@ -154,6 +154,8 @@
       <ant dir="${rootDir}/lessons/Lesson3Final"/>
       <ant dir="${rootDir}/lessons/Lesson4Base"/>
       <ant dir="${rootDir}/lessons/Lesson4Final"/>
+      <ant dir="${rootDir}/lessons/Lesson5Base"/>
+      <ant dir="${rootDir}/lessons/Lesson5Final"/>
    </target>
    
    <target name="examples" depends="compile" description="Compile all the examples.">

@@ -142,9 +142,9 @@
          Render.ShowCircle = true;                                            // Specify to draw the entity as a circle
          Render.Radius = 25;                                                  // Mark the radius of the circle as 25
          // Point the render component to this entity's Spatial component for position information
-         Render.PositionReference = new PropertyReference("@Spatial.Position");
+         Render.PositionReference = new PropertyReference("@Spatial.position");
          // Point the render component to this entity's Spatial component for rotation information          
-         Render.RotationReference = new PropertyReference("@Spatial.Rotation");
+         Render.RotationReference = new PropertyReference("@Spatial.rotation");
         
          Hero.AddComponent( Render, "Render" );                               // Add our render component to the Hero entity with the name "Render"
       }

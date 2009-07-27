@@ -76,13 +76,13 @@
   <template name="BasePlayer">
   	<component type="PBLabs.RollyGame.BallSpriteRenderer" name="Sprite">
       <LayerIndex>2</LayerIndex>
-      <PositionReference>@Spatial.Position</PositionReference>
+      <PositionReference>@Spatial.position</PositionReference>
       <SizeReference>@Spatial.BallScale</SizeReference>
   	</component>
    <component type="PBLabs.RollyGame.BallShadowRenderer" name="Shadow">
       <Map componentReference="Level1Map"/>
       <LayerIndex>1</LayerIndex>
-      <PositionReference>@Spatial.Position</PositionReference>
+      <PositionReference>@Spatial.position</PositionReference>
    </component>
   	<component type="PBLabs.RollyGame.BallMover" name="Spatial">
       <Map componentReference="Level1Map"/>
@@ -120,7 +120,7 @@
   	</component>
   	<component type="PBLabs.Rendering2D.SpriteRenderComponent" name="Sprite">
   		<SpriteSheet componentReference="CoinSheet"/>
-      <PositionReference>@Spatial.Position</PositionReference>
+      <PositionReference>@Spatial.position</PositionReference>
       <LayerIndex>1</LayerIndex>
   	</component>    
   </template>

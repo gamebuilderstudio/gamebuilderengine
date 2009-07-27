@@ -39,9 +39,9 @@
       </Size>
     </component>
     <component type="PBLabs.Rendering2D.SpriteRenderComponent" name="Render">
-      <PositionReference>@Spatial.Position</PositionReference>
-      <RotationReference>@Spatial.Rotation</RotationReference>
-      <SizeReference>@Spatial.Size</SizeReference>
+      <PositionReference>@Spatial.position</PositionReference>
+      <RotationReference>@Spatial.rotation</RotationReference>
+      <SizeReference>@Spatial.size</SizeReference>
       <SpriteSheet componentReference="PlatformSpriteSheet"/>
     </component>
   </template>

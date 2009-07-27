@@ -114,16 +114,16 @@ package com.pblabs.engine.core
        */
       public function start():void
       {
-         if (_started)
+         if (started)
          {
             Logger.printWarning(this, "Start", "The ProcessManager is already started.");
             return;
          }
          
-         _lastTime = -1.0;
-         _elapsed = 0.0;
+         lastTime = -1.0;
+         elapsed = 0.0;
          Global.mainStage.addEventListener(Event.ENTER_FRAME, onFrame);
-         _started = true;
+         started = true;
       }
       
       /**
@@ -133,13 +133,13 @@ package com.pblabs.engine.core
        */
       public function stop():void
       {
-         if (!_started)
+         if (!started)
          {
             Logger.printWarning(this, "Stop", "The ProcessManager isn't started.");
             return;
          }
          
-         _started = false;
+         started = false;
          Global.mainStage.removeEventListener(Event.ENTER_FRAME, onFrame);
       }
       
@@ -148,7 +148,7 @@ package com.pblabs.engine.core
        */ 
       public function get isTicking():Boolean
       {
-         return _started;
+         return started;
       }
       
       /**
@@ -162,7 +162,7 @@ package com.pblabs.engine.core
        */
       public function schedule(delay:Number, thisObject:Object, callback:Function, ...arguments):void
       {
-         if (!_started)
+         if (!started)
             start();
          
          var schedule:ScheduleObject = new ScheduleObject();
@@ -170,7 +170,7 @@ package com.pblabs.engine.core
          schedule.thisObject = thisObject;
          schedule.callback = callback;
          schedule.arguments = arguments;
-         _scheduleEvents.push(schedule);
+         scheduleEvents.push(schedule);
       }
       
       /**
@@ -182,7 +182,7 @@ package com.pblabs.engine.core
        */
       public function addAnimatedObject(object:IAnimatedObject, priority:Number = 0.0):void
       {
-         addObject(object, priority, _animatedObjects);
+         addObject(object, priority, animatedObjects);
       }
       
       /**
@@ -194,7 +194,7 @@ package com.pblabs.engine.core
        */
       public function addTickedObject(object:ITickedObject, priority:Number = 0.0):void
       {
-         addObject(object, priority, _tickedObjects);
+         addObject(object, priority, tickedObjects);
       }
       
       /**
@@ -204,7 +204,7 @@ package com.pblabs.engine.core
        */
       public function removeAnimatedObject(object:IAnimatedObject):void
       {
-         removeObject(object, _animatedObjects);
+         removeObject(object, animatedObjects);
       }
       
       /**
@@ -214,7 +214,7 @@ package com.pblabs.engine.core
        */
       public function removeTickedObject(object:ITickedObject):void
       {
-         removeObject(object, _tickedObjects);
+         removeObject(object, tickedObjects);
       }
       
       /**
@@ -228,26 +228,26 @@ package com.pblabs.engine.core
          advance(amount * _timeScale);
       }
       
-      private function get _ListenerCount():int
+      private function get listenerCount():int
       {
-         return _tickedObjects.length + _animatedObjects.length;
+         return tickedObjects.length + animatedObjects.length;
       }
       
       private function addObject(object:*, priority:Number, list:Array):void
       {
-         if (!_started)
+         if (!started)
             start();
          
          var position:int = -1;
          for (var i:int = 0; i < list.length; i++)
          {
-            if (list[i].Listener == object)
+            if (list[i].listener == object)
             {
                Logger.printWarning(object, "AddProcessObject", "This object has already been added to the process manager.");
                return;
             }
             
-            if (list[i].Priority < priority)
+            if (list[i].priority < priority)
             {
                position = i;
                break;
@@ -267,12 +267,12 @@ package com.pblabs.engine.core
       
       private function removeObject(object:*, list:Array):void
       {
-         if (_ListenerCount == 1 && _scheduleEvents.length == 0)
+         if (listenerCount == 1 && scheduleEvents.length == 0)
             stop();
          
          for (var i:int = 0; i < list.length; i++)
          {
-            if (list[i].Listener == object)
+            if (list[i].listener == object)
             {
                list.splice(i, 1);
                return;
@@ -285,36 +285,36 @@ package com.pblabs.engine.core
       private function onFrame(event:Event):void
       {
          var currentTime:Number = getTimer();
-         if (_lastTime < 0)
+         if (lastTime < 0)
          {
-            _lastTime = currentTime;
+            lastTime = currentTime;
             return;
          }
          
-         var elapsed:Number = (currentTime - _lastTime) * _timeScale;
+         var elapsed:Number = (currentTime - lastTime) * _timeScale;
          advance(elapsed);
          
-         _lastTime = currentTime;
+         lastTime = currentTime;
       }
       
       private function advance(elapsed:Number):void
       {
-         _elapsed += elapsed;
+         elapsed += elapsed;
          
-         var startTime:Number = _virtualTime;
+         var startTime:Number = virtualTime;
          
          Profiler.ensureAtRoot();
 
          // Process pending events.
          Profiler.enter("PendingEvents");
-         for (var i:int = 0; i < _scheduleEvents.length; i++)
+         for (var i:int = 0; i < scheduleEvents.length; i++)
          {
-            var schedule:ScheduleObject = _scheduleEvents[i];
+            var schedule:ScheduleObject = scheduleEvents[i];
             schedule.timeRemaining -= elapsed;
             if (schedule.timeRemaining <= 0)
             {
                schedule.callback.apply(schedule.thisObject, schedule.arguments);
-               _scheduleEvents.splice(i, 1);
+               scheduleEvents.splice(i, 1);
                i--;
             }
          }
@@ -322,13 +322,13 @@ package com.pblabs.engine.core
          
          // Perform ticks.
          var tickCount:int = 0;
-         while (_elapsed >= TICK_RATE_MS && tickCount < MAX_TICKS_PER_FRAME)
+         while (elapsed >= TICK_RATE_MS && tickCount < MAX_TICKS_PER_FRAME)
          {
             _interpolationFactor = 0.0;
 
             Profiler.enter("Tick");
             
-            for each (var object:ProcessObject in _tickedObjects)
+            for each (var object:ProcessObject in tickedObjects)
             {
                Profiler.enter(object.profilerKey);
                object.listener.onTick(TICK_RATE);
@@ -338,14 +338,14 @@ package com.pblabs.engine.core
             Profiler.exit("Tick");
 
             _virtualTime += TICK_RATE_MS;
-            _elapsed -= TICK_RATE_MS;
+            elapsed -= TICK_RATE_MS;
             tickCount++;
          }
          
          // Safety net - don't do more than a few ticks per frame to avoid death spirals.
          if (tickCount >= MAX_TICKS_PER_FRAME)
          {
-            _elapsed = 0;
+            elapsed = 0;
             Logger.printWarning(this, "Advance", "Exceeded maximum number of ticks for this frame.");
          }
          
@@ -353,21 +353,21 @@ package com.pblabs.engine.core
          
          // Update objects expecting interpolation between ticks.
          Profiler.enter("InterpolateTick");
-         _interpolationFactor = _elapsed / TICK_RATE_MS;
-         for each (var tickedObject:ProcessObject in _tickedObjects)
+         _interpolationFactor = elapsed / TICK_RATE_MS;
+         for each (var tickedObject:ProcessObject in tickedObjects)
          {
             Profiler.enter(tickedObject.profilerKey);
-            tickedObject.listener.OnInterpolateTick(_interpolationFactor);
+            tickedObject.listener.onInterpolateTick(_interpolationFactor);
             Profiler.exit(tickedObject.profilerKey);
          }
          Profiler.exit("InterpolateTick");
          
          // Update objects wanting OnFrame callbacks.
          Profiler.enter("frame");
-         for each (var animatedObject:ProcessObject in _animatedObjects)
+         for each (var animatedObject:ProcessObject in animatedObjects)
          {
             Profiler.enter(animatedObject.profilerKey);
-            animatedObject.listener.OnFrame(elapsed / 1000);
+            animatedObject.listener.onFrame(elapsed / 1000);
             Profiler.exit(animatedObject.profilerKey);
          }
          Profiler.exit("frame");
@@ -375,15 +375,15 @@ package com.pblabs.engine.core
          Profiler.ensureAtRoot();
       }
       
-      private var _started:Boolean = false;
+      private var started:Boolean = false;
       private var _virtualTime:Number = 0.0;
       private var _interpolationFactor:Number = 0.0;
       private var _timeScale:Number = 1.0;
-      private var _lastTime:Number = -1.0;
-      private var _elapsed:Number = 0.0;
-      private var _animatedObjects:Array = new Array();
-      private var _tickedObjects:Array = new Array();
-      private var _scheduleEvents:Array = new Array();
+      private var lastTime:Number = -1.0;
+      private var elapsed:Number = 0.0;
+      private var animatedObjects:Array = new Array();
+      private var tickedObjects:Array = new Array();
+      private var scheduleEvents:Array = new Array();
    }
 }
 

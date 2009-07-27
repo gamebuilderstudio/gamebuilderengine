@@ -50,9 +50,9 @@
                  are all of type PropertyReference, PropertyReference implements
                  ISerializable and does its own custom serialization - in this
                  case so that you can specify a string property reference. -->
-            <PositionReference>@Spatial.Position</PositionReference>
-            <RotationReference>@Spatial.Rotation</RotationReference>
-            <SizeReference>@Spatial.Size</SizeReference>
+            <PositionReference>@Spatial.position</PositionReference>
+            <RotationReference>@Spatial.rotation</RotationReference>
+            <SizeReference>@Spatial.position</SizeReference>
          </component>
          <component type="PBLabs.Box2D.Box2DSpatialComponent" name="Spatial">
             <Manager componentReference="Box2D"/>
@@ -132,9 +132,9 @@
                  on the owning entity. -->
             <Parent componentReference="Scene" componentName="Scene"/>
             <SpriteSheet componentReference="DudeSpriteSheet"/>
-            <PositionReference>@Spatial.Position</PositionReference>
-            <RotationReference>@Spatial.Rotation</RotationReference>
-            <SizeReference>@Spatial.Size</SizeReference>
+            <PositionReference>@Spatial.position</PositionReference>
+            <RotationReference>@Spatial.rotation</RotationReference>
+            <SizeReference>@Spatial.position</SizeReference>
             <TrackWithCamera>true</TrackWithCamera>
          </component>
          <component type="PBLabs.Box2D.Box2DSpatialComponent" name="Spatial">

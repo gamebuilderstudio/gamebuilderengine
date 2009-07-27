@@ -12,7 +12,7 @@ package
    import com.pblabs.engine.resource.*;
    import com.pblabs.rendering2D.*;
    
-   public class MyResources extends ResourceLinker
+   public class MyResources extends ResourceBundle
    {
       [Embed(source="bg.jpg", mimeType='application/octet-stream')]
       public var resBg:Class;

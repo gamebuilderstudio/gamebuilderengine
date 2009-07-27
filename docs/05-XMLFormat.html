@@ -65,9 +65,9 @@
             &lt;SpriteSheet componentReference="PlatformSpriteSheet"/&gt;
 
             &lt;!-- Although PositionReference, RotationReference, and SizeReference are all of type PropertyReference, PropertyReference implements ISerializable and does its own custom serialization - in this case so that you can specify a string property reference. --&gt;
-            &lt;PositionReference&gt;@Spatial.Position&lt;/PositionReference&gt;
-            &lt;RotationReference&gt;@Spatial.Rotation&lt;/RotationReference&gt;
-            &lt;SizeReference&gt;@Spatial.Size&lt;/SizeReference&gt;
+            &lt;PositionReference&gt;@Spatial.position&lt;/PositionReference&gt;
+            &lt;RotationReference&gt;@Spatial.rotation&lt;/RotationReference&gt;
+            &lt;SizeReference&gt;@Spatial.size&lt;/SizeReference&gt;
          &lt;/component&gt;
          &lt;component type="PBLabs.Box2D.Box2DSpatialComponent" name="Spatial"&gt;
             &lt;Manager componentReference="Box2D"/&gt;
@@ -134,9 +134,9 @@
             &lt;!-- If you use componentName alone, it will reference that component on the owning entity. --&gt;
             &lt;Parent componentReference="Scene" componentName="Scene"/&gt;
             &lt;SpriteSheet componentReference="DudeSpriteSheet"/&gt;
-            &lt;PositionReference&gt;@Spatial.Position&lt;/PositionReference&gt;
-            &lt;RotationReference&gt;@Spatial.Rotation&lt;/RotationReference&gt;
-            &lt;SizeReference&gt;@Spatial.Size&lt;/SizeReference&gt;
+            &lt;PositionReference&gt;@Spatial.position&lt;/PositionReference&gt;
+            &lt;RotationReference&gt;@Spatial.rotation&lt;/RotationReference&gt;
+            &lt;SizeReference&gt;@Spatial.size&lt;/SizeReference&gt;
             &lt;TrackWithCamera&gt;true&lt;/TrackWithCamera&gt;
          &lt;/component&gt;
          &lt;component type="PBLabs.Box2D.Box2DSpatialComponent" name="Spatial"&gt;

@@ -20,21 +20,21 @@ package
    public class HeroControllerComponent extends TickedComponent
    {
       // Keep a property reference to our entity's position.
-      public var PositionReference:PropertyReference;
+      public var positionReference:PropertyReference;
 
       // onTick() is called every frame
       public override function onTick(tickRate:Number):void
       {
          // Get references for our spatial position.
-         var position:Point = Owner.GetProperty(PositionReference);
+         var position:Point = owner.getProperty(positionReference);
 
          // Look at our input keys to see which direction we should move. Left is -x, right is +x.
-         if (InputManager.IsKeyDown(InputKey.RIGHT))
+         if (InputManager.isKeyDown(InputKey.RIGHT))
          {
             // Move our hero to the right
             position.x += 15;
          }
-         if (InputManager.IsKeyDown(InputKey.LEFT))
+         if (InputManager.isKeyDown(InputKey.LEFT))
          {
             // Move our hero to the left
             position.x -= 15;
@@ -53,7 +53,7 @@ package
          }
 
          // Send our manipulated spatial variables back to the spatial manager
-         Owner.SetProperty(PositionReference, position);
+         owner.setProperty(positionReference, position);
       }    
    }
 }

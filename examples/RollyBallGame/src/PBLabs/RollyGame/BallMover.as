@@ -102,7 +102,7 @@ package PBLabs.RollyGame
             
             // Spawn a new coin somewhere.
             var coinEntity:IEntity = TemplateManager.Instance.InstantiateEntity("Coin");
-            coinEntity.SetProperty(new PropertyReference("@Spatial.Position"), new Point(20 + Math.random() * 600, 20 + Math.random() * 400)); 
+            coinEntity.SetProperty(new PropertyReference("@Spatial.position"), new Point(20 + Math.random() * 600, 20 + Math.random() * 400)); 
          }
       }
 

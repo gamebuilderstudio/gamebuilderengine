@@ -133,7 +133,7 @@ package
    <pre class="brush: js">
          var Controller:DemoControllerComponent = new DemoControllerComponent();
          // Point the controller component to this entity's Spatial component for position information
-         Controller.PositionReference = new PropertyReference("@Spatial.Position");
+         Controller.PositionReference = new PropertyReference("@Spatial.position");
          // Add the demo controller component to the Hero entity with the name "Controller"
          Hero.AddComponent( Controller, "Controller" );
    </pre>      
