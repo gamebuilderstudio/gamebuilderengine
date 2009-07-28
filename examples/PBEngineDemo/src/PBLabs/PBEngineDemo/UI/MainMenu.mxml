@@ -8,7 +8,7 @@
          
          private function _Start():void
          {
-            LevelManager.Instance.LoadLevel(1);
+            LevelManager.instance.loadLevel(1);
          }
       ]]>
    </mx:Script>

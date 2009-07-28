@@ -8,7 +8,7 @@
  ******************************************************************************/
 package PBLabs.StupidSampleGame
 {
-   import com.pblabs.Box2D.CollisionEvent;
+   import com.pblabs.box2D.CollisionEvent;
    import com.pblabs.engine.core.ITickedObject;
    import com.pblabs.engine.core.InputMap;
    import com.pblabs.engine.core.ObjectTypeManager;
@@ -23,29 +23,29 @@ package PBLabs.StupidSampleGame
    public class DudeController extends EntityComponent implements ITickedObject
    {
       [TypeHint(type="flash.geom.Point")]
-      public var VelocityReference:PropertyReference;
+      public var velocityReference:PropertyReference;
       
-      public function get Input():InputMap
+      public function get input():InputMap
       {
          return _inputMap;
       }
       
-      public function set Input(value:InputMap):void
+      public function set input(value:InputMap):void
       {
          _inputMap = value;
          
          if (_inputMap != null)
          {
-            _inputMap.MapActionToHandler("GoLeft", _OnLeft);
-            _inputMap.MapActionToHandler("GoRight", _OnRight);
-            _inputMap.MapActionToHandler("Jump", _OnJump);
+            _inputMap.mapActionToHandler("GoLeft", _OnLeft);
+            _inputMap.mapActionToHandler("GoRight", _OnRight);
+            _inputMap.mapActionToHandler("Jump", _OnJump);
          }
       }
       
       public function onTick(tickRate:Number):void
       {
          var move:Number = _right - _left;
-         var velocity:Point = Owner.GetProperty(VelocityReference);
+         var velocity:Point = owner.getProperty(velocityReference);
          velocity.x = move * 100;
          
          if (_jump > 0)
@@ -57,64 +57,64 @@ package PBLabs.StupidSampleGame
             _jump = 0;
          }
          
-         Owner.SetProperty(VelocityReference, velocity);
+         owner.setProperty(velocityReference, velocity);
       }
       
-      public function OnInterpolateTick(factor:Number):void
+      public function onInterpolateTick(factor:Number):void
       {
       }
       
-      protected override function _OnAdd():void
+      protected override function onAdd():void
       {
-         ProcessManager.Instance.AddTickedObject(this);
-         ResourceManager.Instance.Load("../Assets/Sounds/testSound.mp3", MP3Resource, _OnSoundLoaded);
+         ProcessManager.instance.addTickedObject(this);
+         ResourceManager.instance.load("../Assets/Sounds/testSound.mp3", MP3Resource, _OnSoundLoaded);
          
-         Owner.EventDispatcher.addEventListener(CollisionEvent.COLLISION_EVENT, _OnCollision);
-         Owner.EventDispatcher.addEventListener(CollisionEvent.COLLISION_STOPPED_EVENT, _OnCollisionEnd);
+         owner.eventDispatcher.addEventListener(CollisionEvent.COLLISION_EVENT, _OnCollision);
+         owner.eventDispatcher.addEventListener(CollisionEvent.COLLISION_STOPPED_EVENT, _OnCollisionEnd);
       }
       
-      protected override function _OnRemove():void
+      protected override function onRemove():void
       {
-         Owner.EventDispatcher.removeEventListener(CollisionEvent.COLLISION_EVENT, _OnCollision);
-         Owner.EventDispatcher.removeEventListener(CollisionEvent.COLLISION_STOPPED_EVENT, _OnCollisionEnd);
+         owner.eventDispatcher.removeEventListener(CollisionEvent.COLLISION_EVENT, _OnCollision);
+         owner.eventDispatcher.removeEventListener(CollisionEvent.COLLISION_STOPPED_EVENT, _OnCollisionEnd);
          
-         ResourceManager.Instance.Unload("../Assets/Sounds/testSound.mp3", MP3Resource);
-         ProcessManager.Instance.RemoveTickedObject(this);
+         ResourceManager.instance.unload("../Assets/Sounds/testSound.mp3", MP3Resource);
+         ProcessManager.instance.removeTickedObject(this);
       }
       
       private function _OnCollision(event:CollisionEvent):void
       {
-         if (ObjectTypeManager.Instance.DoesTypeOverlap(event.Collidee.CollisionType, "Platform"))
+         if (ObjectTypeManager.instance.doesTypeOverlap(event.collidee.collisionType, "Platform"))
          {
-            if (event.Normal.y > 0.7)
+            if (event.normal.y > 0.7)
                _onGround++;
          }
          
-         if (ObjectTypeManager.Instance.DoesTypeOverlap(event.Collider.CollisionType, "Platform"))
+         if (ObjectTypeManager.instance.doesTypeOverlap(event.collider.collisionType, "Platform"))
          {
-            if (event.Normal.y < -0.7)
+            if (event.normal.y < -0.7)
                _onGround++;
          }
       }
       
       private function _OnCollisionEnd(event:CollisionEvent):void
       {
-         if (ObjectTypeManager.Instance.DoesTypeOverlap(event.Collidee.CollisionType, "Platform"))
+         if (ObjectTypeManager.instance.doesTypeOverlap(event.collidee.collisionType, "Platform"))
          {
-            if (event.Normal.y > 0.7)
+            if (event.normal.y > 0.7)
                _onGround--;
          }
          
-         if (ObjectTypeManager.Instance.DoesTypeOverlap(event.Collider.CollisionType, "Platform"))
+         if (ObjectTypeManager.instance.doesTypeOverlap(event.collider.collisionType, "Platform"))
          {
-            if (event.Normal.y < -0.7)
+            if (event.normal.y < -0.7)
                _onGround--;
          }
       }
       
       private function _OnSoundLoaded(resource:MP3Resource):void
       {
-         _sound = resource.SoundObject;
+         _sound = resource.soundObject;
       }
       
       private function _OnLeft(value:Number):void

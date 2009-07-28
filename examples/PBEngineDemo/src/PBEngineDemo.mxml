@@ -13,20 +13,20 @@
    <mx:Script>
       <![CDATA[
          import com.pblabs.engine.core.*;
-         import com.pblabs.PBEngineDemo.UI.*;
-         import com.pblabs.Engine.Debug.Log4PBE.*;
+         import PBLabs.PBEngineDemo.UI.*;
+         import com.pblabs.engine.debug.log4PBE.*;
           
          private function _OnLoaded():void
          {
-            LogManager.Instance.LoadConfiguration("logConfiguration.xml");
+            //LogManager.instance.loadConfiguration("logConfiguration.xml");
             
-            Global.Startup(this);
+            Global.startup(this);
             
-            LevelManager.Instance.addEventListener(LevelEvent.LEVEL_LOADED_EVENT, _OnLevelLoaded);
-            LevelManager.Instance.Load("../Assets/levelDescriptions.xml");
+            LevelManager.instance.addEventListener(LevelEvent.LEVEL_LOADED_EVENT, _OnLevelLoaded);
+            LevelManager.instance.load("../Assets/levelDescriptions.xml");
             
             // Load level zero.
-            LevelManager.Instance.Start(1);
+            LevelManager.instance.start(1);
 
             addChild(_mainMenu);
          }
