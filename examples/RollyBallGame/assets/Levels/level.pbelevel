@@ -77,15 +77,15 @@
 		</component>
 		<component type="com.pblabs.animation.AnimatorComponent"
 			name="FadeAnimator">
-			<reference>@Sprite.Fade</reference>
+			<reference>@Sprite.fade</reference>
 			<defaultAnimation></defaultAnimation>
 			<animations>
-				<fadeOut type="com.pblabs.animation.Animator">
+				<FadeOut type="com.pblabs.animation.Animator">
 					<animationType>PLAY_ANIMATION_ONCE</animationType>
 					<startValue type="Number">1</startValue>
 					<targetValue type="Number">0</targetValue>
 					<duration>1</duration>
-				</fadeOut>
+				</FadeOut>
 			</animations>
 		</component>
 	</entity>
