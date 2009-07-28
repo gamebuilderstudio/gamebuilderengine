@@ -18,12 +18,12 @@
           
          private function _OnLoaded():void
          {
-            //LogManager.instance.loadConfiguration("logConfiguration.xml");
-            
+             new Resources();
+             
             Global.startup(this);
             
             LevelManager.instance.addEventListener(LevelEvent.LEVEL_LOADED_EVENT, _OnLevelLoaded);
-            LevelManager.instance.load("../Assets/levelDescriptions.xml");
+            LevelManager.instance.load("../assets/levelDescriptions.xml");
             
             // Load level zero.
             LevelManager.instance.start(1);
