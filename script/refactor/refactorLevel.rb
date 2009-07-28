@@ -1,4 +1,5 @@
 require 'ftools'
+require 'yaml'
 
 def checkArgs()
   if(ARGV[0])
@@ -78,6 +79,12 @@ def convertPackage(oldPackage)
 end
 
 def downcaseLetter(str, index)
+  @exceptions.each do |e| 
+    if(str == e['source'])
+      return e['dest']
+    end
+  end
+  
   if(str.length > 0)
     str[index]=str[index..index].downcase
   end
@@ -86,6 +93,11 @@ def downcaseLetter(str, index)
 end
 
 begin
+  # Load Configuration
+  @conf = open("./config.yml") {|f| YAML.load(f) }
+  
+  @exceptions = @conf['exceptions']
+  
   @input = ''
   @output = ''
   @newPackage = 'com.pblabs'
