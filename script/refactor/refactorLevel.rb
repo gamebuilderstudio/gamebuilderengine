@@ -111,7 +111,9 @@ begin
   checkArgs()
   writeFile('','w') # Clear Output file
   readFile()
+  
+  puts "Converted \"#{File.basename(@output)}\" successfully!"
 
-#rescue
-  #print "Something blew up: ",$!, "\n"
+rescue
+  print "Something blew up: ",$!, "\n"
 end
