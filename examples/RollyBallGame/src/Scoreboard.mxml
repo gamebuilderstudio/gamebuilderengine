@@ -26,7 +26,7 @@
 	     
 	     public function StartReport(numCoins:int):void
 	     {
-           ResourceManager.Instance.Load("../Assets/Sounds/scorechunk.mp3", MP3Resource, _OnSound);
+           ResourceManager.instance.load("../Assets/Sounds/scorechunk.mp3", MP3Resource, _OnSound);
 
 	        CoinsLeft = numCoins;
 	        TotalScore = 0;
@@ -61,7 +61,7 @@
 	     private function _OnRetryClick(e:Event):void
 	     {
 	        parent.removeChild(this);
-	        ProcessManager.Instance.Start();
+	        ProcessManager.instance.start();
 	        Application.application.ResetLevel();
 	     }
 	     
@@ -73,7 +73,7 @@
 	     
 	     private function _OnSound(mp3:MP3Resource):void
 	     {
-	        ScoreIncrementSound = mp3.SoundObject;
+	        ScoreIncrementSound = mp3.soundObject;
 	     }
 	   ]]>
 	</mx:Script>

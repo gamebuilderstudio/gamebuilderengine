@@ -1,219 +1,273 @@
-<!--
-/*******************************************************************************
- * PushButton Engine
- * Copyright (C) 2009 PushButton Labs, LLC
- * For more information see http://www.pushbuttonengine.com
- * 
- * This file is property of PushButton Labs, LLC and NOT under the MIT license.
- ******************************************************************************/ 
- -->
+
+	<!--
+		/*******************************************************************************
+		* PushButton Engine * Copyright (C) 2009 PushButton Labs, LLC * For
+		more information see http://www.pushbuttonengine.com * * This file is
+		property of PushButton Labs, LLC and NOT under the MIT license.
+		******************************************************************************/
+	-->
 <things version="1">
 
-  <entity name="BallSheet">
-    <component type="PBLabs.Rendering2D.SpriteSheetComponent" name="SpriteSheet">
-      <Image filename="../Assets/Images/ball.png"/>
-    </component>
-  </entity>
+	<entity name="BallSheet">
+		<component type="com.pblabs.rendering2D.SpriteSheetComponent"
+			name="SpriteSheet">
+			<image filename="../Assets/Images/ball.png" />
+		</component>
+	</entity>
 
-  <entity name="CoinSheet">
-    <component type="PBLabs.Rendering2D.SpriteSheetComponent" name="SpriteSheet">
-      <Image filename="../Assets/Images/coin.png"/>
-    </component>
-  </entity>
+	<entity name="CoinSheet">
+		<component type="com.pblabs.rendering2D.SpriteSheetComponent"
+			name="SpriteSheet">
+			<image filename="../Assets/Images/coin.png" />
+		</component>
+	</entity>
 
-  <entity name="WelcomeSheet">
-    <component type="PBLabs.Rendering2D.SpriteSheetComponent" name="SpriteSheet">
-      <Image filename="../Assets/Images/welcome.png"/>
-      <Center><x>0</x><y>0</y></Center>
-    </component>
-  </entity>
+	<entity name="WelcomeSheet">
+		<component type="com.pblabs.rendering2D.SpriteSheetComponent"
+			name="SpriteSheet">
+			<image filename="../Assets/Images/welcome.png" />
+			<center>
+				<x>0</x>
+				<y>0</y>
+			</center>
+		</component>
+	</entity>
 
-  <entity name="SpatialDB">
-    <component type="PBLabs.Rendering2D.BasicSpatialManager2D" name="Manager"/>
-  </entity>
-  
-  <entity name="Scene">
-    <component type="PBLabs.Rendering2D.Scene2DComponent" name="Scene">
-      <SpatialDatabase componentReference="SpatialDB" componentName="Manager"/>
-      <SceneViewName>MainView</SceneViewName>
-      <Position>
-        <x>320</x>
-        <y>240</y>
-      </Position>
-      <RenderMask childType="String">
-        <_0>Renderable</_0>
-      </RenderMask>
-    </component>
-  </entity>
-  
-  <entity name="WelcomeScreen">
-  	<component type="PBLabs.Rendering2D.SimpleSpatialComponent" name="Spatial">
-  		<SpatialManager componentReference="SpatialDB"/>
-  		<ObjectMask>
-  			<_>Renderable</_>
-  		</ObjectMask>
-      <Position><x>320</x><y>240</y></Position>
-      <Size><x>640</x><y>480</y></Size>
-  	</component>
-  	<component type="PBLabs.Rendering2D.SpriteRenderComponent" name="Sprite">
-  		<SpriteSheet componentReference="WelcomeSheet"/>
-      <LayerIndex>4</LayerIndex>
-  	</component>
-   <component type="PBLabs.Animation.AnimatorComponent" name="FadeAnimator">
-      <Reference>@Sprite.Fade</Reference>
-      <DefaultAnimation></DefaultAnimation>
-      <Animations>
-         <FadeOut type="PBLabs.Animation.Animator">
-            <AnimationType>PlayAnimationOnce</AnimationType>
-            <StartValue type="Number">1</StartValue>
-            <TargetValue type="Number">0</TargetValue>
-            <Duration>1</Duration>
-         </FadeOut>
-      </Animations>
-   </component>
-  </entity>
-  
-  <template name="BasePlayer">
-  	<component type="PBLabs.RollyGame.BallSpriteRenderer" name="Sprite">
-      <LayerIndex>2</LayerIndex>
-      <PositionReference>@Spatial.position</PositionReference>
-      <SizeReference>@Spatial.BallScale</SizeReference>
-  	</component>
-   <component type="PBLabs.RollyGame.BallShadowRenderer" name="Shadow">
-      <Map componentReference="Level1Map"/>
-      <LayerIndex>1</LayerIndex>
-      <PositionReference>@Spatial.position</PositionReference>
-   </component>
-  	<component type="PBLabs.RollyGame.BallMover" name="Spatial">
-      <Map componentReference="Level1Map"/>
-      <Position><x>320</x><y>240</y></Position>
-      <PickupSound filename="../Assets/Sounds/pickup.mp3"/>
-      <PickupType>
-        <_>Coin</_>
-      </PickupType>
-  		<SpatialManager componentReference="SpatialDB"/>
-      <Size>
-        <x>32</x>
-        <y>32</y>
-      </Size>
-  		<ObjectMask>
-  			<_>Renderable</_>
-  		</ObjectMask>
-      <Input childType="PBLabs.Engine.Core.InputKey">
-        <GoLeft>LEFT</GoLeft>
-        <GoRight>RIGHT</GoRight>
-        <GoUp>UP</GoUp>
-        <GoDown>DOWN</GoDown>
-      </Input>
-  	</component>
-  </template>
-  
-  <template name="Coin">
-  	<component type="PBLabs.Rendering2D.SimpleSpatialComponent" name="Spatial">
-  		<SpatialManager componentReference="SpatialDB"/>
-  		<ObjectMask>
-  			<_>Renderable</_>
-        <_>Coin</_>
-  		</ObjectMask>
-      <Position><x>320</x><y>240</y></Position>
-      <Size><x>24</x><y>24</y></Size>
-  	</component>
-  	<component type="PBLabs.Rendering2D.SpriteRenderComponent" name="Sprite">
-  		<SpriteSheet componentReference="CoinSheet"/>
-      <PositionReference>@Spatial.position</PositionReference>
-      <LayerIndex>1</LayerIndex>
-  	</component>    
-  </template>
-  
-  <group name="Everything">
-    <objectReference name="CoinSheet"/>
-    <objectReference name="BallSheet"/>
-    <objectReference name="WelcomeSheet"/>
-    <objectReference name="SpatialDB"/>
-    <objectReference name="Scene"/>
-    <objectReference name="WelcomeScreen"/>
-  </group>
-  
-  <template name="BaseLevel">
-    <component type="PBLabs.Rendering2D.SpriteSheetComponent" name="Normal">
-      <Center><x>0</x><y>0</y></Center>
-    </component>
-    <component type="PBLabs.Rendering2D.SpriteSheetComponent" name="Diffuse">
-      <Center><x>0</x><y>0</y></Center>
-    </component>
-    <component type="PBLabs.Rendering2D.SpriteSheetComponent" name="Height">
-      <Center><x>0</x><y>0</y></Center>
-    </component>
-  	<component type="PBLabs.Rendering2D.SimpleSpatialComponent" name="Spatial">
-  		<SpatialManager componentReference="SpatialDB"/>
-  		<ObjectMask>
-  			<_>Renderable</_>
-  		</ObjectMask>
-      <Position><x>320</x><y>240</y></Position>
-      <Size><x>640</x><y>480</y></Size>
-  	</component>
-  	<component type="PBLabs.Rendering2D.SpriteRenderComponent" name="Sprite">
-  		<SpriteSheet componentName="Diffuse"/>
-  	</component>
-  	<component type="PBLabs.RollyGame.NormalMap" name="Normals">
-      <NormalSheet componentName="Normal"/>
-      <HeightSheet componentName="Height"/>
-  	</component>
-  </template>
-  
-  <entity name="Level1Map" template="BaseLevel">
-    <component name="Normal">
-      <Image filename="../Assets/Images/level1_normal.png"/>
-    </component>
-    <component name="Diffuse">
-      <Image filename="../Assets/Images/level1_diffuse.png"/>
-    </component>
-    <component name="Height">
-      <Image filename="../Assets/Images/level1_height.png"/>
-    </component>  
-  </entity>
-  
-  <entity name="Player1" template="BasePlayer">
-    <component name="Shadow">
-      <Map componentReference="Level1Map"/>
-    </component>
-    <component name="Spatial">
-      <OnFirstMoveAnimation componentReference="WelcomeScreen" componentName="FadeAnimator"/>
-      <Map componentReference="Level1Map"/>
-    </component>
-  </entity>
+	<entity name="SpatialDB">
+		<component type="com.pblabs.rendering2D.BasicSpatialManager2D"
+			name="Manager" />
+	</entity>
 
-  <group name="Level1">
-    <objectReference name="Level1Map"/>
-    <objectReference name="Player1"/>
-    <objectReference name="Coin"/>
-  </group>
-  
-  <entity name="Level2Map" template="BaseLevel">
-    <component name="Normal">
-      <Image filename="../Assets/Images/level2_normal.png"/>
-    </component>
-    <component name="Diffuse">
-      <Image filename="../Assets/Images/level2_diffuse.png"/>
-    </component>
-    <component name="Height">
-      <Image filename="../Assets/Images/level2_height.png"/>
-    </component>  
-  </entity>
-  
-  <entity name="Player2" template="BasePlayer">
-    <component name="Shadow">
-      <Map componentReference="Level2Map"/>
-    </component>
-    <component name="Spatial">
-      <Map componentReference="Level2Map"/>
-    </component>
-  </entity>
+	<entity name="Scene">
+		<component type="com.pblabs.rendering2D.Scene2DComponent"
+			name="Scene">
+			<spatialDatabase componentReference="SpatialDB"
+				componentName="Manager" />
+			<sceneViewName>MainView</sceneViewName>
+			<position>
+				<x>320</x>
+				<y>240</y>
+			</position>
+			<renderMask childType="String">
+				<_0>Renderable</_0>
+			</renderMask>
+		</component>
+	</entity>
 
-  <group name="Level2">
-    <objectReference name="Level2Map"/>
-    <objectReference name="Player2"/>
-    <objectReference name="Coin"/>
-  </group>
+	<entity name="WelcomeScreen">
+		<component type="com.pblabs.rendering2D.SimpleSpatialComponent"
+			name="Spatial">
+			<spatialManager componentReference="SpatialDB" />
+			<objectMask>
+				<_>Renderable</_>
+			</objectMask>
+			<position>
+				<x>320</x>
+				<y>240</y>
+			</position>
+			<size>
+				<x>640</x>
+				<y>480</y>
+			</size>
+		</component>
+		<component type="com.pblabs.rendering2D.SpriteRenderComponent"
+			name="Sprite">
+			<spriteSheet componentReference="WelcomeSheet" />
+			<layerIndex>4</layerIndex>
+		</component>
+		<component type="com.pblabs.animation.AnimatorComponent"
+			name="FadeAnimator">
+			<reference>@Sprite.Fade</reference>
+			<defaultAnimation></defaultAnimation>
+			<animations>
+				<fadeOut type="com.pblabs.animation.Animator">
+					<animationType>PLAY_ANIMATION_ONCE</animationType>
+					<startValue type="Number">1</startValue>
+					<targetValue type="Number">0</targetValue>
+					<duration>1</duration>
+				</fadeOut>
+			</animations>
+		</component>
+	</entity>
+
+	<template name="BasePlayer">
+		<component type="com.pblabs.rollyGame.BallSpriteRenderer"
+			name="Sprite">
+			<layerIndex>2</layerIndex>
+			<positionReference>@Spatial.position
+			</positionReference>
+			<sizeReference>@Spatial.BallScale</sizeReference>
+		</component>
+		<component type="com.pblabs.rollyGame.BallShadowRenderer"
+			name="Shadow">
+			<Map componentReference="Level1Map" />
+			<layerIndex>1</layerIndex>
+			<positionReference>@Spatial.position
+			</positionReference>
+		</component>
+		<component type="com.pblabs.rollyGame.BallMover" name="Spatial">
+			<Map componentReference="Level1Map" />
+			<position>
+				<x>320</x>
+				<y>240</y>
+			</position>
+			<PickupSound filename="../Assets/Sounds/pickup.mp3" />
+			<PickupType>
+				<_>Coin</_>
+			</PickupType>
+			<spatialManager componentReference="SpatialDB" />
+			<size>
+				<x>32</x>
+				<y>32</y>
+			</size>
+			<objectMask>
+				<_>Renderable</_>
+			</objectMask>
+			<Input childType="com.pblabs.engine.core.InputKey">
+				<GoLeft>LEFT</GoLeft>
+				<GoRight>RIGHT</GoRight>
+				<GoUp>UP</GoUp>
+				<GoDown>DOWN</GoDown>
+			</Input>
+		</component>
+	</template>
+
+	<template name="Coin">
+		<component type="com.pblabs.rendering2D.SimpleSpatialComponent"
+			name="Spatial">
+			<spatialManager componentReference="SpatialDB" />
+			<objectMask>
+				<_>Renderable</_>
+				<_>Coin</_>
+			</objectMask>
+			<position>
+				<x>320</x>
+				<y>240</y>
+			</position>
+			<size>
+				<x>24</x>
+				<y>24</y>
+			</size>
+		</component>
+		<component type="com.pblabs.rendering2D.SpriteRenderComponent"
+			name="Sprite">
+			<spriteSheet componentReference="CoinSheet" />
+			<positionReference>@Spatial.position
+			</positionReference>
+			<layerIndex>1</layerIndex>
+		</component>
+	</template>
+
+	<group name="Everything">
+		<objectReference name="CoinSheet" />
+		<objectReference name="BallSheet" />
+		<objectReference name="WelcomeSheet" />
+		<objectReference name="SpatialDB" />
+		<objectReference name="Scene" />
+		<objectReference name="WelcomeScreen" />
+	</group>
+
+	<template name="BaseLevel">
+		<component type="com.pblabs.rendering2D.SpriteSheetComponent"
+			name="Normal">
+			<center>
+				<x>0</x>
+				<y>0</y>
+			</center>
+		</component>
+		<component type="com.pblabs.rendering2D.SpriteSheetComponent"
+			name="Diffuse">
+			<center>
+				<x>0</x>
+				<y>0</y>
+			</center>
+		</component>
+		<component type="com.pblabs.rendering2D.SpriteSheetComponent"
+			name="Height">
+			<center>
+				<x>0</x>
+				<y>0</y>
+			</center>
+		</component>
+		<component type="com.pblabs.rendering2D.SimpleSpatialComponent"
+			name="Spatial">
+			<spatialManager componentReference="SpatialDB" />
+			<objectMask>
+				<_>Renderable</_>
+			</objectMask>
+			<position>
+				<x>320</x>
+				<y>240</y>
+			</position>
+			<size>
+				<x>640</x>
+				<y>480</y>
+			</size>
+		</component>
+		<component type="com.pblabs.rendering2D.SpriteRenderComponent"
+			name="Sprite">
+			<spriteSheet componentName="Diffuse" />
+		</component>
+		<component type="com.pblabs.rollyGame.NormalMap" name="Normals">
+			<NormalSheet componentName="Normal" />
+			<HeightSheet componentName="Height" />
+		</component>
+	</template>
+
+	<entity name="Level1Map" template="BaseLevel">
+		<component name="Normal">
+			<image filename="../Assets/Images/level1_normal.png" />
+		</component>
+		<component name="Diffuse">
+			<image filename="../Assets/Images/level1_diffuse.png" />
+		</component>
+		<component name="Height">
+			<image filename="../Assets/Images/level1_height.png" />
+		</component>
+	</entity>
+
+	<entity name="Player1" template="BasePlayer">
+		<component name="Shadow">
+			<Map componentReference="Level1Map" />
+		</component>
+		<component name="Spatial">
+			<OnFirstMoveAnimation componentReference="WelcomeScreen"
+				componentName="FadeAnimator" />
+			<Map componentReference="Level1Map" />
+		</component>
+	</entity>
+
+	<group name="Level1">
+		<objectReference name="Level1Map" />
+		<objectReference name="Player1" />
+		<objectReference name="Coin" />
+	</group>
+
+	<entity name="Level2Map" template="BaseLevel">
+		<component name="Normal">
+			<image filename="../Assets/Images/level2_normal.png" />
+		</component>
+		<component name="Diffuse">
+			<image filename="../Assets/Images/level2_diffuse.png" />
+		</component>
+		<component name="Height">
+			<image filename="../Assets/Images/level2_height.png" />
+		</component>
+	</entity>
+
+	<entity name="Player2" template="BasePlayer">
+		<component name="Shadow">
+			<map componentReference="Level2Map" />
+		</component>
+		<component name="Spatial">
+			<map componentReference="Level2Map" />
+		</component>
+	</entity>
+
+	<group name="Level2">
+		<objectReference name="Level2Map" />
+		<objectReference name="Player2" />
+		<objectReference name="Coin" />
+	</group>
 
 </things>

@@ -8,7 +8,7 @@
  * This file is property of PushButton Labs, LLC and NOT under the MIT license.
  ******************************************************************************/
 -->
-<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:local="*" xmlns:ui="PBLabs.Rendering2D.UI.*" 
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:local="*" xmlns:ui="com.pblabs.rendering2D.ui.*" 
    layout="absolute" frameRate="60" width="640" height="480" applicationComplete="_OnLoaded()"
    activate="application1_activateHandler(event)" deactivate="application1_deactivateHandler(event)"
    preloader="CustomPreloader"
@@ -21,7 +21,6 @@
    
    <local:Levels/>
    <local:Components/>
-   <local:Resources/>
    <mx:Script>
       <![CDATA[
          import com.pblabs.engine.core.*;
@@ -33,6 +32,8 @@
          public var CurrentTime:Number = 60.0;
          public var LevelDuration:Number = 45000;
          
+         public var Resources:GameResources = new GameResources();
+          
          public function AddPoints(amount:Number):void
          {
             CurrentScore += amount;
@@ -42,35 +43,35 @@
          private function _OnLoaded():void
          {
             // Initialize level and score.
-            Global.Startup(this);
+            Global.startup(this);
             AddPoints(0);
             
             // Set up the game timer.
-            StartTimer = ProcessManager.Instance.VirtualTime;
+            StartTimer = ProcessManager.instance.virtualTime;
             setInterval(_UpdateTimer, 10);
             
             // Make the game scale properly.
             Application.application.stage.scaleMode = StageScaleMode.SHOW_ALL; 
             
             // Load level zero.
-            LevelManager.Instance.Start(0);
+            LevelManager.instance.start(0);
          }
          
          private function _UpdateTimer():void
          {   
             stage.focus = stage;
 
-            CurrentTime = LevelDuration - (ProcessManager.Instance.VirtualTime - StartTimer);
+            CurrentTime = LevelDuration - (ProcessManager.instance.virtualTime - StartTimer);
             
             if(CurrentTime >= 0)
                lblTime.text = "Time: " + (CurrentTime/1000).toFixed(2);
             else
                lblTime.text = "Time: 0.00";
             
-            if(CurrentTime <= 0 && ProcessManager.Instance.IsTicking)
+            if(CurrentTime <= 0 && ProcessManager.instance.isTicking)
             {
                // Stop playing!
-               ProcessManager.Instance.Stop();
+               ProcessManager.instance.stop();
                
                // Kick off the scoreboard.
                var sb:Scoreboard = new Scoreboard();
@@ -82,35 +83,35 @@
          public function ResetLevel():void
          {
             // Reset the level.
-            LevelManager.Instance.UnloadCurrentLevel();
-            LevelManager.Instance.LoadLevel(LevelManager.Instance.CurrentLevel);
+            LevelManager.instance.unloadCurrentLevel();
+            LevelManager.instance.loadLevel(LevelManager.instance.currentLevel);
             
             // Reset the timer and score.
-            StartTimer = ProcessManager.Instance.VirtualTime;
+            StartTimer = ProcessManager.instance.virtualTime;
             AddPoints(-CurrentScore);
          }
          
          public function RestartGame():void
          {
             // Reset the level.
-            LevelManager.Instance.UnloadCurrentLevel();
-            LevelManager.Instance.LoadLevel(0);
+            LevelManager.instance.unloadCurrentLevel();
+            LevelManager.instance.loadLevel(0);
             
             // Reset the timer and score.
-            StartTimer = ProcessManager.Instance.VirtualTime;
+            StartTimer = ProcessManager.instance.virtualTime;
             AddPoints(-CurrentScore);
          }
          
          public function NextLevel():void
          {
-            if(LevelManager.Instance.CurrentLevel < 1)
+            if(LevelManager.instance.currentLevel < 1)
             {
-               LevelManager.Instance.UnloadCurrentLevel();
-               LevelManager.Instance.LoadNextLevel();               
+               LevelManager.instance.unloadCurrentLevel();
+               LevelManager.instance.loadNextLevel();               
 
                // Reset the timer.
-               StartTimer = ProcessManager.Instance.VirtualTime;
-	           ProcessManager.Instance.Start();
+               StartTimer = ProcessManager.instance.virtualTime;
+	           ProcessManager.instance.start();
                AddPoints(-CurrentScore);
             }
             else
@@ -121,12 +122,12 @@
 
          protected function application1_activateHandler(event:Event):void
          {
-            ProcessManager.Instance.Start();
+            ProcessManager.instance.start();
          }
 
          protected function application1_deactivateHandler(event:Event):void
          {
-            ProcessManager.Instance.Stop();
+            ProcessManager.instance.stop();
          }
 
       ]]>

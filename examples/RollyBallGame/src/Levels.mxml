@@ -8,7 +8,7 @@
  * This file is property of PushButton Labs, LLC and NOT under the MIT license.
  ******************************************************************************/
 -->
-<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:pb="PBLabs.Engine.MXML.*">
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:pb="com.pblabs.engine.mxml.*">
    <pb:LevelFileReference filename="../Assets/Levels/level.pbelevel" levels="[0,1]" id="D"/>
    <pb:GroupReference name="Everything" levels="[0,1]" id="A"/>
    <pb:GroupReference name="Level1" level="0" id="Level1" />

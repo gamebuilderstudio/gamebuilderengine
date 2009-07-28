@@ -5,10 +5,10 @@
  * 
  * This file is property of PushButton Labs, LLC and NOT under the MIT license.
  ******************************************************************************/
-package PBLabs.RollyGame
+package com.pblabs.rollyGame
 {
    import com.pblabs.rendering2D.*;
-   import com.pblabs.Animation.*;
+   import com.pblabs.animation.*;
    import com.pblabs.engine.core.*;
    import com.pblabs.engine.entity.*;
    import com.pblabs.engine.resource.*;
@@ -42,11 +42,11 @@ package PBLabs.RollyGame
          
          if (_InputMap != null)
          {
-            _InputMap.MapActionToHandler("GoLeft", _OnLeft);
-            _InputMap.MapActionToHandler("GoRight", _OnRight);
-            _InputMap.MapActionToHandler("GoUp", _OnUp);
-            _InputMap.MapActionToHandler("GoDown", _OnDown);
-            _InputMap.MapActionToHandler("Jump", _OnJump);
+            _InputMap.mapActionToHandler("GoLeft", _OnLeft);
+            _InputMap.mapActionToHandler("GoRight", _OnRight);
+            _InputMap.mapActionToHandler("GoUp", _OnUp);
+            _InputMap.mapActionToHandler("GoDown", _OnDown);
+            _InputMap.mapActionToHandler("Jump", _OnJump);
          }
       }
             
@@ -55,7 +55,7 @@ package PBLabs.RollyGame
          // Sample the map for our current position.
          var n:Point = new Point();
          if(Map)
-            Height = Map.GetNormalAndHeight(Position.x, Position.y, n);
+            Height = Map.GetNormalAndHeight(position.x, position.y, n);
          
          // Scale the renderer.
          BallScale.x = (0.5 + Height) * 32;
@@ -63,46 +63,46 @@ package PBLabs.RollyGame
          Radius = (0.5 + Height) * 16;
          
          // Apply velocity from slope.
-         Velocity.x += n.x * NormalForce;
-         Velocity.y += n.y * NormalForce;
+         velocity.x += n.x * NormalForce;
+         velocity.y += n.y * NormalForce;
          
          //trace(n.toString());
          
          // Apply drag.
-         Velocity.x *= DragCoefficient;
-         Velocity.y *= DragCoefficient;
+         velocity.x *= DragCoefficient;
+         velocity.y *= DragCoefficient;
          
          // Apply movement forces.
-         Velocity.x += (_Right - _Left) * MoveForce;
-         Velocity.y += (_Down - _Up) * MoveForce;
+         velocity.x += (_Right - _Left) * MoveForce;
+         velocity.y += (_Down - _Up) * MoveForce;
          
          // Figure out if we need to bounce off the walls.
-         if(Position.x <= TrueRadius && Velocity.x < 0 || Position.x >= 640 - TrueRadius && Velocity.x > 0)
-            Velocity.x = -Velocity.x * 0.9;
-         if(Position.y <= TrueRadius && Velocity.y < 0 || Position.y >= 480 - TrueRadius && Velocity.y > 0)
-            Velocity.y = -Velocity.y * 0.9;
+         if(position.x <= TrueRadius && velocity.x < 0 || position.x >= 640 - TrueRadius && velocity.x > 0)
+            velocity.x = -velocity.x * 0.9;
+         if(position.y <= TrueRadius && velocity.y < 0 || position.y >= 480 - TrueRadius && velocity.y > 0)
+            velocity.y = -velocity.y * 0.9;
          
          // Update position.
-         Position.x += Velocity.x * tickRate;
-         Position.y += Velocity.y * tickRate;
+         position.x += velocity.x * tickRate;
+         position.y += velocity.y * tickRate;
          
          // Look for stuff to pick up.
          var results:Array = new Array();
-         SpatialManager.QueryCircle(Position, PickupRadius, PickupType, results);
+         spatialManager.queryCircle(position, PickupRadius, PickupType, results);
          
          for(var i:int=0; i<results.length; i++)
          {
             var so:IEntityComponent = results[i] as IEntityComponent;
-            so.Owner.Destroy();
+            so.owner.destroy();
             
-            (Global.MainClass as Object).AddPoints(1);
+            (Global.mainClass as Object).AddPoints(1);
             
             if(PickupSound)
-               PickupSound.SoundObject.play();
+               PickupSound.soundObject.play();
             
             // Spawn a new coin somewhere.
-            var coinEntity:IEntity = TemplateManager.instance.InstantiateEntity("Coin");
-            coinEntity.SetProperty(new PropertyReference("@Spatial.position"), new Point(20 + Math.random() * 600, 20 + Math.random() * 400)); 
+            var coinEntity:IEntity = TemplateManager.instance.instantiateEntity("Coin");
+            coinEntity.setProperty(new PropertyReference("@Spatial.position"), new Point(20 + Math.random() * 600, 20 + Math.random() * 400)); 
          }
       }
 
@@ -110,7 +110,7 @@ package PBLabs.RollyGame
       {
          if(OnFirstMoveAnimation)
          {
-            OnFirstMoveAnimation.Play("FadeOut", 1);
+            OnFirstMoveAnimation.play("FadeOut", 1);
             OnFirstMoveAnimation = null;
          }
       }
