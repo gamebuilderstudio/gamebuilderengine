@@ -9,6 +9,7 @@
 package com.pblabs.engine.core
 {
    import com.pblabs.engine.serialization.ISerializable;
+   import com.pblabs.engine.debug.Logger;
    
    import flash.events.KeyboardEvent;
    import flash.events.MouseEvent;
@@ -78,7 +79,10 @@ package com.pblabs.engine.core
        */
       public function mapKeyToAction(key:InputKey, actionName:String):void
       {
-         if (!_keymap[key.keyCode])
+         if(!key)
+            throw new Error("Got a null key in mapKeyToAction; you probably have a typo in a key name.");
+          
+         if (_keymap[key.keyCode] == null)
          {
             if (key == InputKey.MOUSE_BUTTON)
             {
@@ -222,7 +226,10 @@ package com.pblabs.engine.core
          
          var callback:Function = _bindings[action];
          if (callback == null)
+         {
+            Logger.print(this, "Got an action for '" + action + "' but no registered callback; ignoring."); 
             return;
+         }
          
          callback(value);
       }

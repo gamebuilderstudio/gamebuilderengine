@@ -71,9 +71,12 @@
     </component>
     <component type="com.pblabs.stupidSampleGame.DudeController" name="Controller">
       <input childType="com.pblabs.engine.core.InputKey">
-        <goLeft>LEFT</goLeft>
-        <goRight>RIGHT</goRight>
-        <jump>UP</jump>
+        <GoLeft>LEFT</GoLeft>
+        <GoRight>RIGHT</GoRight>
+        <Jump>UP</Jump>
+        <GoLeft>A</GoLeft>
+        <GoRight>D</GoRight>
+        <Jump>SPACE</Jump>
       </input>
       <velocityReference>@Spatial.linearVelocity</velocityReference>
     </component>
