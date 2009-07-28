@@ -1,14 +1,14 @@
 <things version="1">
   <template name="Platform">
-    <component type="PBLabs.Box2D.Box2DSpatialComponent" name="Spatial">
-      <CanMove>false</CanMove>
-      <CanRotate>false</CanRotate>
-      <CollidesWithTypes childType="String">
+    <component type="com.pblabs.box2D.Box2DSpatialComponent" name="Spatial">
+      <canMove>false</canMove>
+      <canRotate>false</canRotate>
+      <collidesWithTypes childType="String">
         <_0>Dude</_0>
-      </CollidesWithTypes>
-      <CollisionShapes childType="PBLabs.Box2D.CollisionShape">
-        <_0 type="PBLabs.Box2D.PolygonCollisionShape">
-          <Vertices childType="flash.geom.Point">
+      </collidesWithTypes>
+      <collisionShapes childType="com.pblabs.box2D.CollisionShape">
+        <_0 type="com.pblabs.box2D.PolygonCollisionShape">
+          <vertices childType="flash.geom.Point">
             <_0 type="">
               <x>-1</x>
               <y>-1</y>
@@ -25,24 +25,24 @@
               <x>-1</x>
               <y>1</y>
             </_3>
-          </Vertices>
+          </vertices>
         </_0>
-      </CollisionShapes>
-      <CollisionType childType="String">
+      </collisionShapes>
+      <collisionType childType="String">
         <_0>Platform</_0>
         <_1>Renderable</_1>
-      </CollisionType>
-      <Manager componentReference="SpatialDB"/>
-      <Size type="">
+      </collisionType>
+      <manager componentReference="SpatialDB"/>
+      <size type="">
         <x>256</x>
         <y>64</y>
-      </Size>
+      </size>
     </component>
-    <component type="PBLabs.Rendering2D.SpriteRenderComponent" name="Render">
-      <PositionReference>@Spatial.position</PositionReference>
-      <RotationReference>@Spatial.rotation</RotationReference>
-      <SizeReference>@Spatial.size</SizeReference>
-      <SpriteSheet componentReference="PlatformSpriteSheet"/>
+    <component type="com.pblabs.rendering2D.SpriteRenderComponent" name="Render">
+      <positionReference>@Spatial.position</positionReference>
+      <rotationReference>@Spatial.rotation</rotationReference>
+      <sizeReference>@Spatial.size</sizeReference>
+      <spriteSheet componentReference="PlatformSpriteSheet"/>
     </component>
   </template>
 </things>

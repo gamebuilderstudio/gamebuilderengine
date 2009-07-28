@@ -13,7 +13,7 @@
    <mx:Script>
       <![CDATA[
          import com.pblabs.engine.core.*;
-         import PBLabs.PBEngineDemo.UI.*;
+         import com.pblabs.pbEngineDemo.UI.*;
          import com.pblabs.engine.debug.log4PBE.*;
           
          private function _OnLoaded():void

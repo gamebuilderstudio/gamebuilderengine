@@ -268,7 +268,7 @@ class Entity extends EventDispatcher implements IEntity
          if(_components[name].isRegistered)
             continue;
          
-         _components[name].Register(this, name);
+         _components[name].register(this, name);
       }
    }
    
@@ -308,7 +308,7 @@ class Entity extends EventDispatcher implements IEntity
          for(var i:int = 1; i<cl.length - 1; i++)
          {
             cachedWalk = cachedWalk[cl[i]];
-            if(!cachedWalk)
+            if(cachedWalk == null)
             {
                if(!suppressErrors)
                   Logger.printWarning(this, "findProperty", "Could not resolve property '" + cl[i] + "' for property reference '" + reference.property + "' with cached reference"  + Logger.getCallStack());

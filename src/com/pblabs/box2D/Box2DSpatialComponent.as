@@ -75,8 +75,8 @@ package com.pblabs.box2D
       {
          if (_body)
          {
-            var position:b2Vec2 = _body.GetPosition();
-            return new Point(position.x * _manager.scale, position.y * _manager.scale);
+            var pos:b2Vec2 = _body.GetPosition();
+            return new Point(pos.x * _manager.scale, pos.y * _manager.scale);
          }
          
          return new Point(_bodyDef.position.x, _bodyDef.position.y);

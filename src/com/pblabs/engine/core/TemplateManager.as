@@ -120,13 +120,13 @@ package com.pblabs.engine.core
             // Check for a callback.
             if(_things[name])
             {
-               if(_things[name].GroupCallback)
+               if(_things[name].groupCallback)
                   throw new Error("Thing '" + name + "' is a group callback!");
                   
-               if(_things[name].EntityCallback)
+               if(_things[name].entityCallback)
                {
                   Profiler.exit("instantiateEntity");
-                  return _things[name].EntityCallback();
+                  return _things[name].entityCallback();
                }
             }
             
@@ -191,10 +191,10 @@ package com.pblabs.engine.core
          // Check for a callback.
          if(_things[name])
          {
-            if(_things[name].EntityCallback)
+            if(_things[name].entityCallback)
                throw new Error("Thing '" + name + "' is an entity callback!");
-            if(_things[name].GroupCallback)
-               return _things[name].GroupCallback();
+            if(_things[name].groupCallback)
+               return _things[name].groupCallback();
          }
 
          try
@@ -364,7 +364,7 @@ package com.pblabs.engine.core
          if (!_things[name])
             throw new Error("No such thing '" + name + "'!");
          
-         if (!_things[name].GroupCallback)
+         if (!_things[name].groupCallback)
             throw new Error("Thing '" + name + "' is not a group callback!");
          
          _things[name] = null;

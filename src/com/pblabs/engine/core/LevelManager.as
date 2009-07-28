@@ -314,12 +314,12 @@ package com.pblabs.engine.core
          var filesToUnload:Array = new Array();
          
          var doUnload:Boolean = _isLevelLoaded && (_currentLevel != 0);
-         getLoadLists(doUnload ? _levelDescriptions[_currentLevel].Files : null, _levelDescriptions[index].Files, filesToLoad, filesToUnload);
+         getLoadLists(doUnload ? _levelDescriptions[_currentLevel].files : null, _levelDescriptions[index].files, filesToLoad, filesToUnload);
          
          // find group differences between the levels
          _groupsToLoad = new Array();
          var groupsToUnload:Array = new Array();
-         getLoadLists(doUnload ? _levelDescriptions[_currentLevel].Groups : null, _levelDescriptions[index].Groups, _groupsToLoad, groupsToUnload);
+         getLoadLists(doUnload ? _levelDescriptions[_currentLevel].groups : null, _levelDescriptions[index].groups, _groupsToLoad, groupsToUnload);
          
          // unload previous data
          unload(filesToUnload, groupsToUnload);

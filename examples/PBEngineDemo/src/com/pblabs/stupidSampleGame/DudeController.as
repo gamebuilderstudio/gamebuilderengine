@@ -6,7 +6,7 @@
  * This file is licensed under the terms of the MIT license, which is included
  * in the License.html file at the root directory of this SDK.
  ******************************************************************************/
-package PBLabs.StupidSampleGame
+package com.pblabs.stupidSampleGame
 {
    import com.pblabs.box2D.CollisionEvent;
    import com.pblabs.engine.core.ITickedObject;

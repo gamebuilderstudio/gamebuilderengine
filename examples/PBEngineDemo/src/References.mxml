@@ -156,5 +156,5 @@
    <pb:TypeReference type="com.pblabs.rendering2D.UI.FlexSceneView"/>
    <pb:TypeReference type="com.pblabs.rendering2D.UI.IUITarget"/>
    <pb:TypeReference type="com.pblabs.rendering2D.UI.SceneView"/>
-   <pb:TypeReference type="PBLabs.StupidSampleGame.DudeController"/>
+   <pb:TypeReference type="com.pblabs.stupidSampleGame.DudeController"/>
 </mx:Canvas>

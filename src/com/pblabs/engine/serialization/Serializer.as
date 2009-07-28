@@ -370,7 +370,8 @@ package com.pblabs.engine.serialization
          if (!childObject)
             childObject = TypeUtility.instantiate(typeName);
          
-         if (!childObject)
+         // Note we want to check for null here; null is distinct from coerce-to-false.
+         if (childObject == null)
          {
             Logger.printError(object, "deserialize", "Unable to create type " + typeName + " for the field " + fieldName + ".");
             return null;
