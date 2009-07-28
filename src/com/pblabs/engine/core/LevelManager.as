@@ -405,10 +405,10 @@ package com.pblabs.engine.core
          }
          
          var filesToUnload:Array = new Array();
-         getLoadLists(_levelDescriptions[_currentLevel].Files, null, null, filesToUnload);
+         getLoadLists(_levelDescriptions[_currentLevel].files, null, null, filesToUnload);
          
          var groupsToUnload:Array = new Array();
-         getLoadLists(_levelDescriptions[_currentLevel].Groups, null, null, groupsToUnload);
+         getLoadLists(_levelDescriptions[_currentLevel].groups, null, null, groupsToUnload);
          
          unload(filesToUnload, groupsToUnload);
          dispatchEvent(new LevelEvent(LevelEvent.LEVEL_UNLOADED_EVENT, _currentLevel));

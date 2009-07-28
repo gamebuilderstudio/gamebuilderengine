@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%">
+	<mx:Label text="PushButton Engine Demo Platformer" textAlign="center" fontSize="36" horizontalCenter="0" top="10"/>
+	<mx:Button label="Start!" click="_Start()" fontSize="22" horizontalCenter="0" verticalCenter="0"/>
+   <mx:Script>
+      <![CDATA[
+         import com.pblabs.engine.core.*;
+         
+         private function _Start():void
+         {
+            LevelManager.instance.loadLevel(1);
+         }
+      ]]>
+   </mx:Script>
+</mx:Canvas>

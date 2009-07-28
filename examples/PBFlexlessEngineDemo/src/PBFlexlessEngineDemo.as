@@ -13,6 +13,7 @@ package
    import com.pblabs.engine.core.LevelManager;
    
    import flash.display.Sprite;
+   import flash.utils.*;
    
    [SWF(width="800", height="600", frameRate="60")]
    public class PBFlexlessEngineDemo extends Sprite
@@ -21,13 +22,21 @@ package
       {
          _resources = new Resources();
          _components = new Components();
-         _levels = new Levels();
          
-         Global.Startup(this);
+         Global.startup(this);
+         
+         //LevelManager.instance.addEventListener(LevelEvent.LEVEL_LOADED_EVENT, _OnLevelLoaded);
+         LevelManager.instance.load("../assets/levelDescriptions.xml");
+         
+         // Load first level momentarily.
+         setTimeout( function():void 
+         {
+            trace("Loading level 1."); 
+            LevelManager.instance.loadLevel(1); 
+         }, 100);
       }
       
       private var _resources:Resources;
       private var _components:Components;
-      private var _levels:Levels;
    }
 }

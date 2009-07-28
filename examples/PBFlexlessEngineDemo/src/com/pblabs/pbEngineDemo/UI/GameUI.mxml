@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:ui="com.pblabs.rendering2D.ui.*" xmlns:pbd="com.pblabs.engine.debug.*" width="100%" height="100%">
+   <ui:FlexSceneView name="MainView" bottom="0" top="0" left="0" right="0"/>
+	<mx:Button label="Next Level" click="_Next()" fontSize="22" right="10" bottom="10"/>
+   <mx:Script>
+      <![CDATA[
+         import com.pblabs.engine.core.*;
+         
+         private function _Next():void
+         {
+            LevelManager.instance.loadNextLevel();
+         }
+      ]]>
+   </mx:Script>
+</mx:Canvas>
