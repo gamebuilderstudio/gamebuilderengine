@@ -9,7 +9,7 @@ package com.pblabs.components.stateMachine
     */
    public class FSMComponent extends TickedComponent
    {
-      public var stateMachine:Machine;
+      public var stateMachine:IMachine;
       
       override protected function onAdd():void
       {
