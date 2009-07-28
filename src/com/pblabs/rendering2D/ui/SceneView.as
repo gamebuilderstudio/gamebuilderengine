@@ -6,7 +6,7 @@
  * This file is licensed under the terms of the MIT license, which is included
  * in the License.html file at the root directory of this SDK.
  ******************************************************************************/
-package com.pblabs.rendering2D.UI
+package com.pblabs.rendering2D.ui
 {
    import com.pblabs.engine.core.Global;
    import flash.display.*;

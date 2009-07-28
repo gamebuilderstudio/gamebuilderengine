@@ -35,8 +35,8 @@ package com.pblabs.engine.core
     * The LevelManager allows level files and groups to be added to a specific level so they
     * can be automatically managed when that level is loaded or unloaded.
     * 
-    * @see com.pblabs.engine.MXML.LevelFileReference
-    * @see com.pblabs.engine.MXML.GroupReference
+    * @see com.pblabs.engine.mxml.LevelFileReference
+    * @see com.pblabs.engine.mxml.GroupReference
     */
    public class LevelManager extends EventDispatcher implements ISerializable
    {

@@ -176,7 +176,7 @@ package com.pblabs.engine.resource
        * @param data A byte array containing the data for the resource. This should match
        * up with the data expected by the specific Resource subclass.
        * 
-       * @see com.pblabs.engine.MXML.ResourceBinding
+       * @see com.pblabs.engine.mxml.ResourceBinding
        */
       public function registerEmbeddedResource(filename:String, resourceType:Class, data:*):void
       {

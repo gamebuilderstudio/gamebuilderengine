@@ -13,7 +13,7 @@ package com.pblabs.rendering2D
    import com.pblabs.engine.serialization.TypeUtility;
    import com.pblabs.engine.entity.EntityComponent;
    import com.pblabs.engine.entity.IEntityComponent;
-   import com.pblabs.rendering2D.UI.IUITarget;
+   import com.pblabs.rendering2D.ui.IUITarget;
    
    import flash.display.*;
    import flash.geom.*;
@@ -39,8 +39,8 @@ package com.pblabs.rendering2D
        * The display object to render scene content in to. In most cases this will be
        * set to an instance of either FlexSceneView or SceneView
        * 
-       * @see com.pblabs.rendering2D.UI.FlexSceneView
-       * @see com.pblabs.rendering2D.UI.SceneView
+       * @see com.pblabs.rendering2D.ui.FlexSceneView
+       * @see com.pblabs.rendering2D.ui.SceneView
        */
       [EditorData(ignore="true")]
       public function get sceneView():IUITarget

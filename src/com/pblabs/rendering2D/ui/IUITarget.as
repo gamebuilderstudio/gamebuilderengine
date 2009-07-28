@@ -1,4 +1,4 @@
-package com.pblabs.rendering2D.UI
+package com.pblabs.rendering2D.ui
 {
 	import flash.display.*;
 	

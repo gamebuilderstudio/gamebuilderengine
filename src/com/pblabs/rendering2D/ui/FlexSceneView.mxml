@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mx:Container xmlns:mx="http://www.adobe.com/2006/mxml" horizontalScrollPolicy="off" verticalScrollPolicy="off" implements="com.pblabs.rendering2D.UI.IUITarget" resize="onResize()">
+<mx:Container xmlns:mx="http://www.adobe.com/2006/mxml" horizontalScrollPolicy="off" verticalScrollPolicy="off" implements="com.pblabs.rendering2D.ui.IUITarget" resize="onResize()">
    <mx:Script>
       <![CDATA[
         private var _displayList:Array = new Array();
