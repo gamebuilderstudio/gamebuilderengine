@@ -223,7 +223,7 @@ package com.pblabs.engine.serialization
             if (!getChildReference(object, fieldName, fieldXML) && !getResourceObject(object, fieldName, fieldXML))
             {
                var child:* = getChildObject(object, fieldName, typeName);
-               if (child)
+               if (child != null)
                {
                   // Deal with typehints.
                   var childTypeHint:String = TypeUtility.getTypeHint(object, fieldName);

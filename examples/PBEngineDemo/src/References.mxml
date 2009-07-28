@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:pb="com.pblabs.engine.MXML.*">
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:pb="com.pblabs.engine.mxml.*">
    <pb:TypeReference type="Box2D.Collision.ClipVertex"/>
    <pb:TypeReference type="Box2D.Collision.Features"/>
    <pb:TypeReference type="Box2D.Collision.Shapes.b2CircleDef"/>
@@ -118,10 +118,10 @@
    <pb:TypeReference type="com.pblabs.engine.entity.IEntityComponent"/>
    <pb:TypeReference type="com.pblabs.engine.entity.IPropertyBag"/>
    <pb:TypeReference type="com.pblabs.engine.entity.PropertyReference"/>
-   <pb:TypeReference type="com.pblabs.engine.MXML.GroupReference"/>
-   <pb:TypeReference type="com.pblabs.engine.MXML.LevelFileReference"/>
-   <pb:TypeReference type="com.pblabs.engine.MXML.ResourceBinding"/>
-   <pb:TypeReference type="com.pblabs.engine.MXML.TypeReference"/>
+   <pb:TypeReference type="com.pblabs.engine.mxml.GroupReference"/>
+   <pb:TypeReference type="com.pblabs.engine.mxml.LevelFileReference"/>
+   <pb:TypeReference type="com.pblabs.engine.mxml.ResourceBinding"/>
+   <pb:TypeReference type="com.pblabs.engine.mxml.TypeReference"/>
    <pb:TypeReference type="com.pblabs.engine.math.Utility"/>
    <pb:TypeReference type="com.pblabs.engine.resource.DataResource"/>
    <pb:TypeReference type="com.pblabs.engine.resource.MP3Resource"/>
@@ -153,8 +153,8 @@
    <pb:TypeReference type="com.pblabs.rendering2D.SimpleSpatialComponent"/>
    <pb:TypeReference type="com.pblabs.rendering2D.SpriteRenderComponent"/>
    <pb:TypeReference type="com.pblabs.rendering2D.SpriteSheetComponent"/>
-   <pb:TypeReference type="com.pblabs.rendering2D.UI.FlexSceneView"/>
-   <pb:TypeReference type="com.pblabs.rendering2D.UI.IUITarget"/>
-   <pb:TypeReference type="com.pblabs.rendering2D.UI.SceneView"/>
+   <pb:TypeReference type="com.pblabs.rendering2D.ui.FlexSceneView"/>
+   <pb:TypeReference type="com.pblabs.rendering2D.ui.IUITarget"/>
+   <pb:TypeReference type="com.pblabs.rendering2D.ui.SceneView"/>
    <pb:TypeReference type="com.pblabs.stupidSampleGame.DudeController"/>
 </mx:Canvas>
