@@ -93,8 +93,14 @@ def downcaseLetter(str, index)
 end
 
 begin
+  scriptDir = File.expand_path(File.dirname(__FILE__))
   # Load Configuration
-  @conf = open("./config.yml") {|f| YAML.load(f) }
+  if(File.exists?("#{scriptDir}/config.yml"))
+    @conf = open("#{scriptDir}/config.yml") {|f| YAML.load(f) }
+  else
+    puts "[ERROR] \"#{scriptDir}/config.yml\" could not be loaded."
+    exit
+  end
   
   @exceptions = @conf['exceptions']
   
