@@ -9,7 +9,6 @@
 package com.pblabs.engine.core
 {
    import com.pblabs.engine.debug.*;
-   import com.pblabs.engine.core.Global;
    import com.pblabs.engine.serialization.TypeUtility;
    
    import flash.events.Event;
@@ -79,6 +78,22 @@ package com.pblabs.engine.core
       public function get timeScale():Number
       {
          return _timeScale;
+      }
+      
+      /**
+       * TweenMax uses timeScale as a config property, so now we haev a workaround.
+       */
+      public function set TimeScale(value:Number):void
+      {
+          _timeScale = value;
+      }
+
+      /**
+       * @private
+       */ 
+      public function get TimeScale():Number
+      {
+          return _timeScale;
       }
       
       /**

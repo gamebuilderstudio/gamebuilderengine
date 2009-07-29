@@ -267,10 +267,10 @@ package com.pblabs.rendering2D
       protected function getRawFrame(index:int):BitmapData
       {
          if (!_frames)
-		 {
             buildFrames();
-			return null;
-		 }
+         
+         if(!_frames)
+             return null;
          
          if (index < 0 || index >= rawFrameCount)
             return null;

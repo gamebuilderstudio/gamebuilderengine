@@ -206,10 +206,38 @@ package com.pblabs.engine.serialization
          {
             // Figure out the field we're setting, and make sure it is present.
             var fieldName:String = fieldXML.name().toString();
+            
             if (!object.hasOwnProperty(fieldName) && !isDynamic)
             {
-               Logger.printWarning(object, "deserialize", "The field '" + fieldName + "' does not exist on the class " + TypeUtility.getObjectClassName(object) + ".");
-               continue;
+                // Try decapitalizing first letter.
+                var decappedFieldName:String = fieldName.charAt(0).toLowerCase() + fieldName.substr(1);
+                
+                if(object.hasOwnProperty(decappedFieldName))
+                {
+                    fieldName = decappedFieldName;
+                }
+                else
+                {
+                    // Last chance - try to find a match with differing case!
+                    var foundOffcaseMatch:Boolean = false;
+                    
+                    for(var potentialField:String in (object as Object))
+                    {
+                        if(potentialField.toLowerCase() != fieldName.toLowerCase())
+                            continue;
+                        
+                        fieldName = potentialField;
+                        foundOffcaseMatch = true;
+                        break;
+                    }
+                    
+                    if(foundOffcaseMatch == false)
+                    {
+                        Logger.printWarning(object, "deserialize", "The field '" + fieldName + "' does not exist on the class " + TypeUtility.getObjectClassName(object) + ".");
+                        continue;
+                    }                    
+                    
+                }
             }
             
             // Determine the type.

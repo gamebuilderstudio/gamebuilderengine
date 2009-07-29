@@ -94,7 +94,7 @@ package com.pblabs.rendering2D
             }
 
             // Go to default animation if we've nothing better to do.
-            if (!nextAnim)
+            if (nextAnim == null)
             {
                 Logger.printWarning(this, "OnFrame", "Animation '" + nextAnimName + "' not found, going with default animation '" + defaultAnimation + "'.");
                 nextAnim = animations[defaultAnimation];
@@ -131,15 +131,15 @@ package com.pblabs.rendering2D
             var curFrame:int = Math.floor(animationAge / frameTime);
 
             // Deal with clamping/looping.
-            if (!_currentAnimation.loop)
-            {
-                if (curFrame >= _currentAnimation.spriteSheet.frameCount)
-                    curFrame = _currentAnimation.spriteSheet.frameCount - 1;
-            }
-            else
+            if (_currentAnimation.loop)
             {
                 var wasFrame:int = curFrame;
                 curFrame = curFrame % _currentAnimation.spriteSheet.frameCount;
+            }
+            else
+            {
+                if (curFrame >= _currentAnimation.spriteSheet.frameCount)
+                    curFrame = _currentAnimation.spriteSheet.frameCount - 1;
             }
 
             // Assign properties.
@@ -168,9 +168,9 @@ package com.pblabs.rendering2D
                 throw new Error("Animation had no sprite sheet!");
 
             // Note when we started.
-            if (currentAnimationStartTimeReference)
-                _currentAnimationStartTime = owner.getProperty(currentAnimationStartTimeReference);
-            else
+            //if (currentAnimationStartTimeReference)
+            //    _currentAnimationStartTime = owner.getProperty(currentAnimationStartTimeReference);
+            //else
                 _currentAnimationStartTime = ProcessManager.instance.virtualTime;
 
             // Update our duration information.
@@ -178,7 +178,9 @@ package com.pblabs.rendering2D
                 _currentAnimationDuration = owner.getProperty(currentAnimationDurationReference) * ProcessManager.TICK_RATE_MS;
             else
                 _currentAnimationDuration = ai.spriteSheet.frameCount * ProcessManager.TICK_RATE_MS;
-
+            
+            //trace("Age at start was " + (ProcessManager.instance.virtualTime - _currentAnimationStartTime));
+            
             Profiler.exit("AnimationController.SetAnimation");
         }
     }

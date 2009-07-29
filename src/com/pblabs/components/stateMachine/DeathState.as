@@ -15,6 +15,5 @@ package com.pblabs.components.stateMachine
             throw new Error("Cannot call Destroy on a non-entity!");
          entity.destroy();
       }
-      
    }
 }

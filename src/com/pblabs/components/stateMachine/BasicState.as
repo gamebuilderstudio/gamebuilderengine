@@ -17,7 +17,7 @@ package com.pblabs.components.stateMachine
        * List of subclasses of ITransition that are evaluated to transition to
        * new states.
        */ 
-      [TypeHint(type="com.pblabs.components.stateMachine.IState")]
+      [TypeHint(type="com.pblabs.components.stateMachine.ITransition")]
       public var transitions:OrderedArray = new OrderedArray();
       
       /**
