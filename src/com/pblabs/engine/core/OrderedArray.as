@@ -23,9 +23,9 @@ package com.pblabs.engine.core
      */
     dynamic public class OrderedArray extends Proxy {
         
-        private var memberValueHash:Object = new Object();
-        private var memberIndexHash:Object = new Object();
-        private var memberNameArray:Array = new Array();
+        private var memberValueHash:Object = {};
+        private var memberIndexHash:Object = {};
+        private var memberNameArray:Array = [];
         
         public function get length():uint {
             return memberNameArray.length;
