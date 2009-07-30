@@ -81,11 +81,19 @@ package com.pblabs.engine.core
       }
       
       /**
+       * @private
+       */
+      public function set timeScale(value:Number):void
+      {
+          _timeScale = value;
+      }
+
+      /**
        * TweenMax uses timeScale as a config property, so now we haev a workaround.
        */
       public function set TimeScale(value:Number):void
       {
-          _timeScale = value;
+          timeScale = value;
       }
 
       /**
@@ -93,15 +101,7 @@ package com.pblabs.engine.core
        */ 
       public function get TimeScale():Number
       {
-          return _timeScale;
-      }
-      
-      /**
-       * @private
-       */
-      public function set timeScale(value:Number):void
-      {
-         _timeScale = value;
+          return timeScale;
       }
       
       /**
@@ -299,95 +299,95 @@ package com.pblabs.engine.core
       
       private function onFrame(event:Event):void
       {
-         var currentTime:Number = getTimer();
-         if (lastTime < 0)
-         {
-            lastTime = currentTime;
-            return;
-         }
-         
-         var elapsed:Number = (currentTime - lastTime) * _timeScale;
-         advance(elapsed);
-         
-         lastTime = currentTime;
+          var currentTime:Number = getTimer();
+          if (lastTime < 0)
+          {
+              lastTime = currentTime;
+              return;
+          }
+          
+          var deltaTime:Number = (currentTime - lastTime) * _timeScale;
+          advance(deltaTime);
+          
+          lastTime = currentTime;
       }
       
-      private function advance(elapsed:Number):void
+      private function advance(deltaTime:Number):void
       {
-         elapsed += elapsed;
-         
-         var startTime:Number = virtualTime;
-         
-         Profiler.ensureAtRoot();
-
-         // Process pending events.
-         Profiler.enter("PendingEvents");
-         for (var i:int = 0; i < scheduleEvents.length; i++)
-         {
-            var schedule:ScheduleObject = scheduleEvents[i];
-            schedule.timeRemaining -= elapsed;
-            if (schedule.timeRemaining <= 0)
-            {
-               schedule.callback.apply(schedule.thisObject, schedule.arguments);
-               scheduleEvents.splice(i, 1);
-               i--;
-            }
-         }
-         Profiler.exit("PendingEvents");
-         
-         // Perform ticks.
-         var tickCount:int = 0;
-         while (elapsed >= TICK_RATE_MS && tickCount < MAX_TICKS_PER_FRAME)
-         {
-            _interpolationFactor = 0.0;
-
-            Profiler.enter("Tick");
-            
-            for each (var object:ProcessObject in tickedObjects)
-            {
-               Profiler.enter(object.profilerKey);
-               object.listener.onTick(TICK_RATE);
-               Profiler.exit(object.profilerKey);
-            }
-            
-            Profiler.exit("Tick");
-
-            _virtualTime += TICK_RATE_MS;
-            elapsed -= TICK_RATE_MS;
-            tickCount++;
-         }
-         
-         // Safety net - don't do more than a few ticks per frame to avoid death spirals.
-         if (tickCount >= MAX_TICKS_PER_FRAME)
-         {
-            elapsed = 0;
-            Logger.printWarning(this, "Advance", "Exceeded maximum number of ticks for this frame.");
-         }
-         
-         _virtualTime = startTime + elapsed;
-         
-         // Update objects expecting interpolation between ticks.
-         Profiler.enter("InterpolateTick");
-         _interpolationFactor = elapsed / TICK_RATE_MS;
-         for each (var tickedObject:ProcessObject in tickedObjects)
-         {
-            Profiler.enter(tickedObject.profilerKey);
-            tickedObject.listener.onInterpolateTick(_interpolationFactor);
-            Profiler.exit(tickedObject.profilerKey);
-         }
-         Profiler.exit("InterpolateTick");
-         
-         // Update objects wanting OnFrame callbacks.
-         Profiler.enter("frame");
-         for each (var animatedObject:ProcessObject in animatedObjects)
-         {
-            Profiler.enter(animatedObject.profilerKey);
-            animatedObject.listener.onFrame(elapsed / 1000);
-            Profiler.exit(animatedObject.profilerKey);
-         }
-         Profiler.exit("frame");
-         
-         Profiler.ensureAtRoot();
+          elapsed += deltaTime;
+          
+          var startTime:Number = virtualTime;
+          
+          Profiler.ensureAtRoot();
+          
+          // Process pending events.
+          Profiler.enter("PendingEvents");
+          for (var i:int = 0; i < scheduleEvents.length; i++)
+          {
+              var schedule:ScheduleObject = scheduleEvents[i];
+              schedule.timeRemaining -= deltaTime;
+              if (schedule.timeRemaining <= 0)
+              {
+                  schedule.callback.apply(schedule.thisObject, schedule.arguments);
+                  scheduleEvents.splice(i, 1);
+                  i--;
+              }
+          }
+          Profiler.exit("PendingEvents");
+          
+          // Perform ticks.
+          var tickCount:int = 0;
+          while (elapsed >= TICK_RATE_MS && tickCount < MAX_TICKS_PER_FRAME)
+          {
+              _interpolationFactor = 0.0;
+              
+              Profiler.enter("Tick");
+              
+              for each (var object:ProcessObject in tickedObjects)
+              {
+                  Profiler.enter(object.profilerKey);
+                  object.listener.onTick(TICK_RATE);
+                  Profiler.exit(object.profilerKey);
+              }
+              
+              Profiler.exit("Tick");
+              
+              _virtualTime += TICK_RATE_MS;
+              elapsed -= TICK_RATE_MS;
+              tickCount++;
+          }
+          
+          // Safety net - don't do more than a few ticks per frame to avoid death spirals.
+          if (tickCount >= MAX_TICKS_PER_FRAME)
+          {
+              elapsed = 0;
+              Logger.printWarning(this, "Advance", "Exceeded maximum number of ticks for this frame.");
+          }
+          
+          _virtualTime = startTime + deltaTime;
+          
+          // Update objects expecting interpolation between ticks.
+          Profiler.enter("InterpolateTick");
+          _interpolationFactor = elapsed / TICK_RATE_MS;
+          for each (var tickedObject:ProcessObject in tickedObjects)
+          {
+              Profiler.enter(tickedObject.profilerKey);
+              tickedObject.listener.onInterpolateTick(_interpolationFactor);
+              Profiler.exit(tickedObject.profilerKey);
+          }
+          Profiler.exit("InterpolateTick");
+          
+          // Update objects wanting OnFrame callbacks.
+          Profiler.enter("frame");
+          for each (var animatedObject:ProcessObject in animatedObjects)
+          {
+              Profiler.enter(animatedObject.profilerKey);
+              animatedObject.listener.onFrame(elapsed / 1000);
+              Profiler.exit(animatedObject.profilerKey);
+          }
+          Profiler.exit("frame");
+          
+          Profiler.ensureAtRoot();
       }
       
       private var started:Boolean = false;
