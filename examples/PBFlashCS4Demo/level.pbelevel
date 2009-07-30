@@ -87,7 +87,7 @@
   </entity>
   <entity name="Dude">
     <component type="PBLabs.Animation.AnimatorComponent" name="FrameAnimation">
-      <Reference>@Render.SpriteIndex</Reference>
+      <Reference>@Render.spriteIndex</Reference>
       <DefaultAnimation>Idle</DefaultAnimation>
       <Animations childType="PBLabs.Animation.Animator">
          <Idle type="PBLabs.Animation.Animator">

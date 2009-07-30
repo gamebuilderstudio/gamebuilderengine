@@ -32,8 +32,8 @@
           <targetValue type="int">3</targetValue>
         </idle>
       </animations>
-      <defaultAnimation>Idle</defaultAnimation>
-      <reference>@Render.SpriteIndex</reference>
+      <defaultAnimation>idle</defaultAnimation>
+      <reference>@Render.spriteIndex</reference>
     </component>
     <component type="com.pblabs.box2D.Box2DSpatialComponent" name="Spatial">
       <canRotate>false</canRotate>
