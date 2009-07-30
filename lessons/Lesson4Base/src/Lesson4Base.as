@@ -12,7 +12,7 @@ package
    import com.pblabs.engine.core.*;
    import com.pblabs.engine.entity.*;
    import com.pblabs.rendering2D.*;
-   import com.pblabs.rendering2D.UI.*;
+   import com.pblabs.rendering2D.ui.*;
    
    import flash.display.Sprite;
    import flash.geom.Point;

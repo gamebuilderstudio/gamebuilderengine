@@ -13,7 +13,7 @@ package
    import com.pblabs.engine.entity.*;
    import com.pblabs.engine.resource.*;
    import com.pblabs.rendering2D.*;
-   import com.pblabs.rendering2D.UI.*;
+   import com.pblabs.rendering2D.ui.*;
    
    import flash.display.Sprite;
    import flash.geom.Point;
@@ -86,21 +86,16 @@ package
          // Register the entity with PBE under the name "Hero"
          Hero.initialize("Hero");
          
-         // Create our spatial component
-         var Spatial:SimpleSpatialComponent = new SimpleSpatialComponent();
-         
-         // Do a named lookup to register our hero with the scene spatial database
-         Spatial.spatialManager = NameManager.instance.lookupComponentByName("Scene", "Spatial") as ISpatialManager2D;                            
-         
-         // Set a mask flag for this object as "Renderable" to be seen by the scene Renderer
-         Spatial.objectMask = new ObjectType("Renderable");
-         // Set our hero's position in space
-         Spatial.position = new Point(0,150);
-         // Set our hero's size as 60,53 (half the size of our sprite)
-         Spatial.size = new Point(60,53);
-        
-         // Add our spatial component to the Hero entity with the name "Spatial"
-         Hero.addComponent( Spatial, "Spatial" );
+         // Add our spatial component to the Hero entity ...
+         Hero.addComponent( 
+            createSpatial( 
+               // with location of 0,150...
+               new Point(0, 150),
+               // and with size of 60,53...
+               new Point(60, 53)
+            ),
+            // under the name "Spatial"
+            "Spatial" );           
         
          // Create a simple render component to display our object
 
@@ -138,20 +133,15 @@ package
          // Register the entity with PBE under the name "BG"
          BG.initialize("BG");
          
-         // Create our spatial component
-         var Spatial:SimpleSpatialComponent = new SimpleSpatialComponent();
-         
-         // Do a named lookup to register our background with the scene spatial database
-         Spatial.spatialManager = NameManager.instance.lookupComponentByName("Scene", "Spatial") as ISpatialManager2D;
-         
-         // Set a mask flag for this object as "Renderable" to be seen by the scene Renderer
-         Spatial.objectMask = new ObjectType("Renderable");
-         // Set our background position in space
-         Spatial.position = new Point(0,0);
-         
-         // Add our spatial component to the background entity with the name "Spatial"
-         BG.addComponent( Spatial, "Spatial" );
-        
+         // Add our spatial component to the background entity ...
+         BG.addComponent( 
+            createSpatial( 
+               // with location of 0,0...
+               new Point(0, 0)
+            ),
+            // under the name "Spatial"
+            "Spatial" );
+            
          // Create a simple render component to display our object
 
          // Just like the hero, this also uses a SpriteRenderComponent
@@ -168,6 +158,29 @@ package
         
          // Add our render component to the BG entity with the name "Render"
          BG.addComponent( Render, "Render" );
+      }
+      
+      // This is a shortcut function to help simplify the creation of spatial components to add to sprites.
+      private function createSpatial( pos:Point, size:Point = null ):SimpleSpatialComponent
+      {
+         // Create our spatial component
+         var Spatial:SimpleSpatialComponent = new SimpleSpatialComponent();
+         
+         // Do a named lookup to register our background with the scene spatial database
+         Spatial.spatialManager = NameManager.instance.lookupComponentByName("Scene", "Spatial") as ISpatialManager2D;
+         
+         // Set a mask flag for this object as "Renderable" to be seen by the scene Renderer
+         Spatial.objectMask = new ObjectType("Renderable");
+         
+         // Set our background position in space
+         Spatial.position = pos;
+
+         if (size != null) 
+         {
+            Spatial.size = size;
+         }
+         
+         return Spatial;
       }
    }
 }
