@@ -45,6 +45,11 @@ package com.pblabs.components.stateMachine
       function setCurrentState(name:String):Boolean;
 
       /**
+       * Get the name of the current state.
+       */
+      function get currentStateName():String;
+      
+      /**
        * Property bag, if any, related to this state machine.
        */
       function get propertyBag():IPropertyBag;
