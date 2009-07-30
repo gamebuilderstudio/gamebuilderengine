@@ -168,9 +168,9 @@ package com.pblabs.rendering2D
                 throw new Error("Animation had no sprite sheet!");
 
             // Note when we started.
-            //if (currentAnimationStartTimeReference)
-            //    _currentAnimationStartTime = owner.getProperty(currentAnimationStartTimeReference);
-            //else
+            if (currentAnimationStartTimeReference)
+                _currentAnimationStartTime = owner.getProperty(currentAnimationStartTimeReference);
+            else
                 _currentAnimationStartTime = ProcessManager.instance.virtualTime;
 
             // Update our duration information.
