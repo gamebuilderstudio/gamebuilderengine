@@ -382,7 +382,7 @@ package com.pblabs.engine.core
           for each (var animatedObject:ProcessObject in animatedObjects)
           {
               Profiler.enter(animatedObject.profilerKey);
-              animatedObject.listener.onFrame(elapsed / 1000);
+              animatedObject.listener.onFrame(deltaTime / 1000);
               Profiler.exit(animatedObject.profilerKey);
           }
           Profiler.exit("frame");
