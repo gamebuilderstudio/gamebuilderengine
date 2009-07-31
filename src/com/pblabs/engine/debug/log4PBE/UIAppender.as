@@ -18,7 +18,7 @@ package com.pblabs.engine.debug.log4PBE
 		 // Try to create the LogViewer.
 		 _logViewer = TypeUtility.instantiate("com.pblabs.engine.debug.log4PBE.LogViewer", true);
          if(!_logViewer)
-             Logger.getLogger(UIAppender).error("Could not create com.pblabs.engine.debug.log4PBE.LogViewer; if you are in an ActionScript project this is normal. No fancy UI for viewing the log output will be present.");             
+             Logger.getLogger(UIAppender).warn("Could not create com.pblabs.engine.debug.log4PBE.LogViewer; if you are in an ActionScript project this is normal. No fancy UI for viewing the log output will be present.");             
       }
       
       private function onKeyDown(event:KeyboardEvent):void
