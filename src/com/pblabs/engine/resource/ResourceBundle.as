@@ -168,7 +168,7 @@ package com.pblabs.engine.resource
             }
 
             // Everything so far is hunky-dory -- go ahead and register the embedded resource!
-            ResourceManager.instance.registerEmbeddedResource( resSource, resType, new res() as ByteArray );
+            ResourceManager.instance.registerEmbeddedResource( resSource, resType, new res() );
          }
       }
    }
