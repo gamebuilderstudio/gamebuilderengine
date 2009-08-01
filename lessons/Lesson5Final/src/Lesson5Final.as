@@ -87,15 +87,12 @@ package
          Hero.initialize("Hero");
          
          // Add our spatial component to the Hero entity ...
-         Hero.addComponent( 
-            createSpatial( 
-               // with location of 0,150...
-               new Point(0, 150),
-               // and with size of 60,53...
-               new Point(60, 53)
-            ),
-            // under the name "Spatial"
-            "Spatial" );           
+         createSpatial( Hero,
+            // with location of 0,150...
+            new Point(0, 150),
+            // and with size of 60,53...
+            new Point(60, 53)
+         );
         
          // Create a simple render component to display our object
 
@@ -134,13 +131,10 @@ package
          BG.initialize("BG");
          
          // Add our spatial component to the background entity ...
-         BG.addComponent( 
-            createSpatial( 
-               // with location of 0,0...
-               new Point(0, 0)
-            ),
-            // under the name "Spatial"
-            "Spatial" );
+         createSpatial( BG, 
+            // with location of 0,0...
+            new Point(0, 0)
+         );
             
          // Create a simple render component to display our object
 
@@ -161,7 +155,7 @@ package
       }
       
       // This is a shortcut function to help simplify the creation of spatial components to add to sprites.
-      private function createSpatial( pos:Point, size:Point = null ):SimpleSpatialComponent
+      private function createSpatial( ent:IEntity, pos:Point, size:Point = null ):void
       {
          // Create our spatial component
          var Spatial:SimpleSpatialComponent = new SimpleSpatialComponent();
@@ -180,7 +174,7 @@ package
             Spatial.size = size;
          }
          
-         return Spatial;
+         ent.addComponent(Spatial, "Spatial");
       }
    }
 }
