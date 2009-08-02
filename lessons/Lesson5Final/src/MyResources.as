@@ -10,7 +10,6 @@
 package
 {
    import com.pblabs.engine.resource.*;
-   import com.pblabs.rendering2D.*;
    
    public class MyResources extends ResourceBundle
    {
