@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+   <link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+   <script type="text/javascript" src="js/pageToc.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shCore.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushJScript.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushPhp.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushPlain.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushXml.js"></script>
+   <link type="text/css" rel="stylesheet" href="js/sh/styles/shCore.css"/>
+   <link type="text/css" rel="stylesheet" href="js/sh/styles/shThemeDefault.css"/>
+   <script type="text/javascript">
+   		SyntaxHighlighter.config.clipboardSwf = 'js/sh/scripts/clipboard.swf';
+   		SyntaxHighlighter.all();
+   </script>
+   <title>PushButton Engine Lesson #1 - Setup using Adobe Flash CS4</title>
+</head>
+<body>
+
+   <h1>PushButton Engine Lesson #1 - Setup using Adobe Flash CS4</h1>
+   
+   <p>Welcome, in this tutorial you will learn how to use the PushButton Engine with Adobe Flash CS4.</p>
+   
+   <div id="pageToc"></div>
+
+   <div id="contentArea">
+
+   <h2>Tutorial Requirements</h2>
+   <p>
+    <ul>
+        <li>Adobe Flash CS4 - <a href="http://www.adobe.com/products/flash/">Download</a>
+        <li>PushButton Engine - <a href="http://www.pushbuttonengine.com/download/">Download</a> - To install just extract to your development folder.</li>
+    </ul>
+   </p>
+   
+   <h2>Setting up Adobe Flash CS4</h2>
+   <p>After installing Adobe Flash CS4 you will need to point it to either the PushButton Engine Source Code or the pre-built PushButton Engine Library.
+      To accomplish this click Edit->Preferences. In the Preferences dialog click ActionScript in the left list box.
+   </p>
+   
+   <img src="images/Lesson1FlashCS4_2.png" width="700px" />
+   
+   <p>In the ActionScript Preferences you should see a Language: section at the bottom. Click the ActionScript 3.0 Settings button.
+   </p>
+   
+   <img src="images/Lesson1FlashCS4_3.png" width="700px" />
+   
+   <p>Now it's time to ask yourself a question. "Will I be modifying the PushButton Engine Source Code?"
+      If you want to edit the source code along with your project then you will need to add the PushButton Engine /src folder
+      to the Source Path:.
+   </p>
+   
+   <img src="images/Lesson1FlashCS4_3A.png" width="700px" />
+   
+   <p>If you do not care about editing the PushButton Engine source code and just want use the engine as is.
+      You will need to add the PushButton Engine /bin folder to the Library Path:.
+   </p>
+   
+   <img src="images/Lesson1FlashCS4_3B.png" width="700px" />
+   
+   <h2>Creating a new Project</h2>
+   <p>Everything in the PushButton Engine is based on ActionScript 3.0 so your project will need to be ActionScript 3.0.
+      Click File->New and Flash File (ActionScript 3.0).
+   </p>
+  
+   <img src="images/Lesson1FlashCS4_1.png" width="700px" />
+   
+   <h2>Hello, World!</h2>
+   <p>That's right, it's time for some code!
+      Right Click the first frame on the timeline and select Actions.
+      Copy and paste the code below into the actions window.
+   </p>
+   
+   <img src="images/Lesson1FlashCS4_4.png" width="700px" />
+   
+   <pre class="brush: js">
+    // Flash Imports
+	
+	// PushButton Engine Imports
+	import com.pblabs.engine.core.*;
+	import com.pblabs.Engine.Debug.*;
+	
+    Global.startup(this);
+	Logger.print(this, "Hello, World!");
+   </pre>
+   
+   <p>The above code is basically the minimal application for the PushButton Engine. When executed it prints the below message in the Adobe Flash CS4 Output Window.
+   </p>
+   <pre class="brush: plain">
+	   INFO: Lesson1FlashCS4_fla.MainTimeline - Hello, World!
+   </pre>
+   
+   <p>Let's Build the project and test it now. Click Control->Test Movie. This will build our application
+      and if we didn't make any mistakes a window should pop up and you should be greeted with a message in the Adobe Flash CS4 Output Window.
+   </p>
+   
+   <img src="images/Lesson1FlashCS4_5.png" width="700px" />
+   
+   <h2>In Review</h2>
+   <p>To summarize the steps of using the PushButton Engine with Adobe Flash CS4.
+    <ul>
+        <li>Setup your Source Path or Library Path.</li>
+        <li>Create a new Flash File(ActionScript 3.0)</li>
+    </ul>
+      And that's all there is to it!
+   </p>
+   
+   <h2>Conclusion</h2>
+   <p>Congratulations! You just completed lesson #1, creating a Flash File using the PushButton Engine.
+   </p>
+   <p>This can be used as a base for lesson #2 or any future projects of your own.
+   </p>
+   <p>You can download the completed project source files for this project below.
+   </p>
+   
+   <a href="downloads/Lesson1FlashCS4Final.zip">Lesson1FlashCS4Final.zip</a>
+   
+   </div>
+</body>
+</html>
