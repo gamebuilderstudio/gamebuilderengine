@@ -1,7 +1,5 @@
 package com.pblabs.tweaker
 {
-   
-   
    /**
     */
    public class TweakerMapGroup
