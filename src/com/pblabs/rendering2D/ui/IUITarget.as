@@ -1,6 +1,6 @@
 package com.pblabs.rendering2D.ui
 {
-	import flash.display.*;
+	import flash.display.DisplayObject;
 	
 	/**
 	 * Interface a UI element must implement to work with the BaseSceneComponent 

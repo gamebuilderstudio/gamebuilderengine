@@ -8,16 +8,25 @@
  ******************************************************************************/
 package com.pblabs.rendering2D
 {
-   import com.pblabs.engine.core.*;
-   import com.pblabs.engine.debug.*;
-   import com.pblabs.engine.serialization.TypeUtility;
+   import com.pblabs.engine.core.Global;
+   import com.pblabs.engine.core.IAnimatedObject;
+   import com.pblabs.engine.core.ObjectType;
+   import com.pblabs.engine.core.ProcessManager;
+   import com.pblabs.engine.debug.Logger;
+   import com.pblabs.engine.debug.Profiler;
    import com.pblabs.engine.entity.EntityComponent;
    import com.pblabs.engine.entity.IEntityComponent;
+   import com.pblabs.engine.serialization.TypeUtility;
    import com.pblabs.rendering2D.ui.IUITarget;
    
-   import flash.display.*;
-   import flash.geom.*;
-   
+   import flash.display.Bitmap;
+   import flash.display.BitmapData;
+   import flash.display.DisplayObject;
+   import flash.display.StageQuality;
+   import flash.geom.Matrix;
+   import flash.geom.Point;
+   import flash.geom.Rectangle;
+
   /**
    * Base class that implements useful functionality for draw managers.
    */

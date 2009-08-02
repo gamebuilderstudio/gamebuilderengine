@@ -8,9 +8,11 @@
  ******************************************************************************/
 package com.pblabs.rendering2D
 {
-   import flash.display.*;
-   import flash.geom.*;
-   
+	import flash.display.BitmapData;
+	import flash.display.DisplayObject;
+	import flash.geom.Matrix;
+	import flash.geom.Point;
+
    /**
     * Interface for rendering 2D scenes.
     * 

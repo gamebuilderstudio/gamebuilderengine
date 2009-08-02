@@ -9,9 +9,13 @@
 package com.pblabs.box2D
 {
    import Box2D.Dynamics.b2DebugDraw;
-   import com.pblabs.rendering2D.*;
-   import flash.geom.Point;
+   
+   import com.pblabs.rendering2D.BaseRenderComponent;
+   import com.pblabs.rendering2D.BaseSceneComponent;
+   import com.pblabs.rendering2D.IDrawManager2D;
+   
    import flash.display.Sprite;
+   import flash.geom.Point;
 
    public class Box2DDebugComponent extends BaseRenderComponent
    {

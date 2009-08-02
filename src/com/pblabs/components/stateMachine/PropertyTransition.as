@@ -1,6 +1,6 @@
 package com.pblabs.components.stateMachine
 {
-   import com.pblabs.engine.entity.*;
+	import com.pblabs.engine.entity.PropertyReference;
    
    /**
     * Check that a component container property evaluates to some value before 

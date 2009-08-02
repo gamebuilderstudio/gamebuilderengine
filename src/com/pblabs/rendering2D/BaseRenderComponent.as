@@ -8,7 +8,8 @@
  ******************************************************************************/
 package com.pblabs.rendering2D
 {
-   import com.pblabs.engine.entity.*;
+   import com.pblabs.engine.entity.EntityComponent;
+   import com.pblabs.engine.entity.PropertyReference;
    
    import flash.geom.Point;
 

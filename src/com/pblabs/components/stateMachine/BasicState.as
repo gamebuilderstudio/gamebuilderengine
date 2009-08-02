@@ -1,7 +1,9 @@
 package com.pblabs.components.stateMachine
 {
-   import com.pblabs.engine.core.*;
-   import flash.events.*;
+	import com.pblabs.engine.core.OrderedArray;
+	
+	import flash.events.Event;
+   
    
    /**
     * Simple state that allows for generic transition rules.

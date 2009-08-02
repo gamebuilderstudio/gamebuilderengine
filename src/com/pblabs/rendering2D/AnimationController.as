@@ -8,11 +8,14 @@
  ******************************************************************************/
 package com.pblabs.rendering2D
 {
-    import com.pblabs.engine.components.*;
-    import com.pblabs.engine.core.*;
-    import com.pblabs.engine.debug.*;
-    import com.pblabs.engine.entity.*;
-    import flash.events.*;
+	import com.pblabs.engine.components.AnimatedComponent;
+	import com.pblabs.engine.core.ProcessManager;
+	import com.pblabs.engine.debug.Logger;
+	import com.pblabs.engine.debug.Profiler;
+	import com.pblabs.engine.entity.PropertyReference;
+	
+	import flash.events.Event;
+
     /**
      * Manage sprite sheet and frame selection based on named animation definitions.
      */

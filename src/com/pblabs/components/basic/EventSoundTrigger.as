@@ -1,9 +1,11 @@
 package com.pblabs.components.basic
 {
-   import com.pblabs.engine.resource.*;
-	import com.pblabs.engine.entity.*;
-	import flash.events.*;
-   import flash.utils.*;
+	import com.pblabs.engine.entity.EntityComponent;
+	import com.pblabs.engine.resource.MP3Resource;
+	
+	import flash.events.Event;
+	import flash.events.IEventDispatcher;
+	import flash.utils.setTimeout;
 
    /**
     * Play sounds when events are triggered on an entity.
@@ -21,7 +23,8 @@ package com.pblabs.components.basic
        */
       public var startSound:MP3Resource = null;
       
-      private var DidSchedule:Boolean = false, FiredStartSound:Boolean = false
+      private var _didSchedule:Boolean = false 
+	  private var _firedStartSound:Boolean = false
       
 		override protected function onAdd():void
 		{
@@ -30,16 +33,16 @@ package com.pblabs.components.basic
 			for(var key:String in events)
 				ed.addEventListener(key, soundEventHandler);
          
-         if(!FiredStartSound && startSound)
+         if(!_firedStartSound && startSound)
          {
             startSound.soundObject.play();
-            FiredStartSound = true;
+            _firedStartSound = true;
          }
          
-         if(!DidSchedule)
+         if(!_didSchedule)
          {
             setTimeout(onReset, 100);
-            DidSchedule = true;
+            _didSchedule = true;
          }
 		}
 		

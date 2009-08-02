@@ -1,7 +1,9 @@
 package com.pblabs.components.basic
 {
+    import com.pblabs.engine.entity.IEntity;
+    
     import flash.events.Event;
-    import com.pblabs.engine.entity.*;
+    
     
     /**
      * Event fired by the HealthComponent on the entity when health changes.

@@ -8,14 +8,17 @@
  ******************************************************************************/
 package com.pblabs.engine.core
 {
-   import com.pblabs.engine.entity.IEntity;
    import com.pblabs.engine.debug.Logger;
-   import com.pblabs.engine.serialization.*;
-   import com.pblabs.engine.resource.*;
+   import com.pblabs.engine.entity.IEntity;
+   import com.pblabs.engine.resource.ResourceManager;
+   import com.pblabs.engine.resource.XMLResource;
+   import com.pblabs.engine.serialization.ISerializable;
+   import com.pblabs.engine.serialization.Serializer;
    
-   import flash.events.*
+   import flash.events.Event;
+   import flash.events.EventDispatcher;
    import flash.utils.Dictionary;
-   
+
    /**
     * @eventType com.pblabs.engine.core.LevelEvent.READY_EVENT
     */

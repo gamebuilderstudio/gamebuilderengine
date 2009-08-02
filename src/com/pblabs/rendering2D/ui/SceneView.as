@@ -9,8 +9,10 @@
 package com.pblabs.rendering2D.ui
 {
    import com.pblabs.engine.core.Global;
-   import flash.display.*;
    
+   import flash.display.DisplayObject;
+   import flash.display.Sprite;
+
    /**
     * This class can be set as the SceneView on the BaseSceneComponent class and is used
     * as the canvas to draw the objects that make up the scene.

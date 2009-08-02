@@ -8,12 +8,13 @@
  ******************************************************************************/
 package com.pblabs.engine.mxml
 {
-   import com.pblabs.engine.core.*;
+   import com.pblabs.engine.core.Global;
+   import com.pblabs.engine.core.SchemaGenerator;
    
    import flash.utils.getQualifiedClassName;
    
    import mx.core.IMXMLObject;
-   
+
    /**
     * The TypeReference class is meant to be used as an MXML tag to force
     * inclusion of specific types in a project.

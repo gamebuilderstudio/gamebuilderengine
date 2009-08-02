@@ -8,10 +8,12 @@
  ******************************************************************************/
 package com.pblabs.engine.unitTests
 {
-   import com.pblabs.engine.core.*;
+   import com.pblabs.engine.core.InputKey;
+   import com.pblabs.engine.core.InputManager;
+   import com.pblabs.engine.core.InputMap;
    
    import net.digitalprimates.fluint.tests.TestCase;
-   
+
    /**
     * @private
     */

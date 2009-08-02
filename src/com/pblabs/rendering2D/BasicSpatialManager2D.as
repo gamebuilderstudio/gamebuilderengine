@@ -8,12 +8,15 @@
  ******************************************************************************/
 package com.pblabs.rendering2D
 {
-   import flash.geom.*;
-   
-   import com.pblabs.engine.debug.*;
-   import com.pblabs.engine.entity.*;
-   import com.pblabs.engine.core.*;
- 
+	import com.pblabs.engine.core.ObjectType;
+	import com.pblabs.engine.core.ObjectTypeManager;
+	import com.pblabs.engine.debug.Logger;
+	import com.pblabs.engine.debug.Profiler;
+	import com.pblabs.engine.entity.EntityComponent;
+	
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
+
    /**
     * Basic 2d spatial manager that stores everything in a list. There are many
     * smarter implementations, but this one is simple and reliable.

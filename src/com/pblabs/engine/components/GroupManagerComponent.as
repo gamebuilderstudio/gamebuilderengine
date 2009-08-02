@@ -1,6 +1,6 @@
 package com.pblabs.engine.components
 {
-   import com.pblabs.engine.entity.*;
+	import com.pblabs.engine.entity.EntityComponent;
    
    /**
     * Utility class to manage a group of entities marked with GroupManagerComponent.

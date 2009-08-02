@@ -1,8 +1,8 @@
 package com.pblabs.rendering2D
 {
-   import com.pblabs.engine.core.*;
-   import com.pblabs.engine.math.*;
    import com.pblabs.engine.entity.PropertyReference;
+   import com.pblabs.engine.math.Utility;
+   
    import flash.geom.Point;
 
    public class Interpolated2DMoverComponent extends SimpleSpatialComponent

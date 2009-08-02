@@ -8,12 +8,13 @@
  ******************************************************************************/
 package com.pblabs.engine.core
 {
-   import com.pblabs.engine.debug.*;
+   import com.pblabs.engine.debug.Logger;
+   import com.pblabs.engine.debug.Profiler;
    import com.pblabs.engine.serialization.TypeUtility;
    
    import flash.events.Event;
    import flash.utils.getTimer;
-   
+
    /**
     * The process manager manages all time related functionality in the engine.
     * It provides mechanisms for performing actions every frame, every tick, or

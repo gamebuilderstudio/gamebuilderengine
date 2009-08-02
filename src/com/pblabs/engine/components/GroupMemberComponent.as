@@ -1,8 +1,8 @@
 package com.pblabs.engine.components
 {
-   import com.pblabs.engine.entity.*;
-   import com.pblabs.engine.core.*;
-   
+	import com.pblabs.engine.core.NameManager;
+	import com.pblabs.engine.entity.EntityComponent;
+
    /**
     * Helper component to group entities.
     */

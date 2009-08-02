@@ -8,9 +8,8 @@
  ******************************************************************************/
 package com.pblabs.rendering2D
 {
-   import com.pblabs.engine.entity.EntityComponent;
-   import com.pblabs.engine.core.*;
-   import com.pblabs.engine.components.*;
+   import com.pblabs.engine.components.TickedComponent;
+   import com.pblabs.engine.core.ObjectType;
    
    import flash.geom.Point;
    import flash.geom.Rectangle;

@@ -9,10 +9,10 @@
 package com.pblabs.engine.serialization
 {
    import com.pblabs.engine.debug.Logger;
-   import com.pblabs.engine.entity.*;
+   import com.pblabs.engine.entity.IEntity;
    
    import flash.utils.Dictionary;
-   
+
    /**
     * Singleton class for serializing and deserializing objects. This class 
     * implements a default serialization behavior based on the format described

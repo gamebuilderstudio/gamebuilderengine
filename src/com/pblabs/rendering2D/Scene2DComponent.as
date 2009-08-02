@@ -8,12 +8,8 @@
  ******************************************************************************/
 package com.pblabs.rendering2D
 {
-   import com.pblabs.engine.entity.*;
-   import com.pblabs.engine.core.*;
-   import com.pblabs.engine.debug.*;
-   
-   import flash.display.*;
-   import flash.geom.*;
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
    
    /**
     * Component to manage rendering a 2d scene. It queries a ISpatialManager2D

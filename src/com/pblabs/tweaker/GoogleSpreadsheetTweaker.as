@@ -1,11 +1,17 @@
 package com.pblabs.tweaker
 {
-   import com.pblabs.engine.entity.*;
-   import com.pblabs.engine.debug.*;
-   import com.pblabs.engine.core.*;
-
-   import flash.events.*;
-   import flash.net.*;
+   import com.pblabs.engine.debug.Logger;
+   import com.pblabs.engine.entity.EntityComponent;
+   import com.pblabs.engine.entity.PropertyReference;
+   
+   import flash.events.Event;
+   import flash.events.HTTPStatusEvent;
+   import flash.events.IOErrorEvent;
+   import flash.events.SecurityErrorEvent;
+   import flash.net.URLLoader;
+   import flash.net.URLRequest;
+   import flash.net.URLRequestMethod;
+   import flash.net.URLVariables;
    import flash.utils.Dictionary;
 
    /**

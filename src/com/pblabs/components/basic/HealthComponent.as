@@ -1,11 +1,10 @@
 package com.pblabs.components.basic
 {
-    import com.pblabs.engine.entity.*;
-    import com.pblabs.engine.core.*;
-    import com.pblabs.engine.debug.*;
-    import com.pblabs.engine.math.*;
-    import mx.controls.*;
-    
+	import com.pblabs.engine.core.ProcessManager;
+	import com.pblabs.engine.entity.EntityComponent;
+	import com.pblabs.engine.entity.IEntity;
+	import com.pblabs.engine.math.Utility;
+
     /**
      * General purpose component for tracking health.
      */

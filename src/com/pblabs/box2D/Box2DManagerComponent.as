@@ -11,15 +11,26 @@ package com.pblabs.box2D
    import Box2D.Collision.Shapes.b2Shape;
    import Box2D.Collision.b2AABB;
    import Box2D.Common.Math.b2Vec2;
-   import Box2D.Dynamics.*;
+   import Box2D.Dynamics.b2Body;
+   import Box2D.Dynamics.b2BodyDef;
+   import Box2D.Dynamics.b2DebugDraw;
+   import Box2D.Dynamics.b2World;
    
-   import com.pblabs.engine.entity.EntityComponent;
-   import com.pblabs.engine.core.*;
+   import com.pblabs.engine.core.ITickedObject;
+   import com.pblabs.engine.core.ObjectType;
+   import com.pblabs.engine.core.ObjectTypeManager;
+   import com.pblabs.engine.core.ProcessManager;
    import com.pblabs.engine.debug.Logger;
-   import com.pblabs.rendering2D.*;
+   import com.pblabs.engine.entity.EntityComponent;
+   import com.pblabs.rendering2D.BasicSpatialManager2D;
+   import com.pblabs.rendering2D.IDrawManager2D;
+   import com.pblabs.rendering2D.ISpatialManager2D;
+   import com.pblabs.rendering2D.ISpatialObject2D;
+   import com.pblabs.rendering2D.RayHitInfo;
    
-   import flash.geom.*;
-   
+   import flash.geom.Point;
+   import flash.geom.Rectangle;
+
    public class Box2DManagerComponent extends EntityComponent implements ITickedObject, ISpatialManager2D
    {
       [EditorData(defaultValue="30")]

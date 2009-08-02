@@ -1,6 +1,6 @@
 package com.pblabs.tweaker
 {
-   import com.pblabs.engine.entity.*;
+	import com.pblabs.engine.entity.PropertyReference;
    
    /** 
     * Map a cell (specified in standard spreadsheet notation, ie E4) to

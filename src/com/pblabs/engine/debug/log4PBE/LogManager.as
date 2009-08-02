@@ -1,10 +1,11 @@
 package com.pblabs.engine.debug.log4PBE
 {
-   import flash.utils.Dictionary;
-   
-   import com.pblabs.engine.resource.*;
+   import com.pblabs.engine.resource.ResourceManager;
+   import com.pblabs.engine.resource.XMLResource;
    import com.pblabs.engine.serialization.TypeUtility;
    
+   import flash.utils.Dictionary;
+
    /**
     * Singleton class for configuring the logging system. The simplest way to configure the system
     * is by creating an xml file and loading it with the LoadConfiguration method. It can also be

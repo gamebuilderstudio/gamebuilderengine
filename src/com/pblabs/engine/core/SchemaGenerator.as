@@ -10,10 +10,12 @@ package com.pblabs.engine.core
 {
    import com.pblabs.engine.debug.Logger;
    
-   import flash.utils.*;
-   import flash.net.LocalConnection;
    import flash.events.StatusEvent;
-   
+   import flash.net.LocalConnection;
+   import flash.utils.Dictionary;
+   import flash.utils.describeType;
+   import flash.utils.getDefinitionByName;
+
    /**
     * This class generates a schema file for the application so it can be edited by
     * the PBEditor. Classes to generate schema data for are enumerated from the

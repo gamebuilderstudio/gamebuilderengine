@@ -8,8 +8,9 @@
  ******************************************************************************/
 package com.pblabs.engine.resource
 {
+   import com.pblabs.engine.debug.Logger;
+   
    import flash.utils.ByteArray;
-   import com.pblabs.engine.debug.*;
    
    [EditorData(extensions="xml")]
    

@@ -1,12 +1,14 @@
 package com.pblabs.components.stateMachine
 {
-    import com.pblabs.engine.entity.*;
-    import com.pblabs.engine.core.*;
-    import com.pblabs.engine.debug.*;
     
-    import flash.events.IEventDispatcher;
+    
+    
+    
+    import com.pblabs.engine.core.ProcessManager;
+    import com.pblabs.engine.entity.IPropertyBag;
+    
     import flash.utils.Dictionary;
-    
+
     /**
      * Implementation of IMachine; probably any custom FSM would be based on this.
      *

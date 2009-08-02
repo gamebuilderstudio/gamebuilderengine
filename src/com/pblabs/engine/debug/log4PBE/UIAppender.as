@@ -1,10 +1,12 @@
 package com.pblabs.engine.debug.log4PBE
 {
-   import com.pblabs.engine.core.*;
+   import com.pblabs.engine.core.Global;
+   import com.pblabs.engine.core.InputKey;
+   import com.pblabs.engine.core.InputManager;
    import com.pblabs.engine.serialization.TypeUtility;
    
    import flash.events.KeyboardEvent;
-   
+
    /**
     * LogAppender for displaying log messages in a LogViewer flex ui component. The LogViewer will be
     * attached and detached from the main view when the tilde (~) key is pressed.

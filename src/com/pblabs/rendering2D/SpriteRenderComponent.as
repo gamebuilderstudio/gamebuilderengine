@@ -8,13 +8,13 @@
  ******************************************************************************/
 package com.pblabs.rendering2D
 {
-   import com.pblabs.engine.entity.EntityComponent;
-   import com.pblabs.engine.entity.PropertyReference;
-   import com.pblabs.engine.core.ProcessManager;
    import com.pblabs.engine.debug.Logger;
    import com.pblabs.engine.math.Utility;
    
-   import flash.display.*;
+   import flash.display.Bitmap;
+   import flash.display.BitmapData;
+   import flash.display.DisplayObject;
+   import flash.display.Sprite;
    import flash.geom.Matrix;
    import flash.geom.Point;
 

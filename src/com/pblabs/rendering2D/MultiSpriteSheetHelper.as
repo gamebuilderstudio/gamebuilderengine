@@ -1,7 +1,7 @@
 package com.pblabs.rendering2D
 {
-   import com.pblabs.engine.entity.*;
-   import com.pblabs.engine.debug.*;
+   import com.pblabs.engine.debug.Logger;
+   import com.pblabs.engine.entity.EntityComponent;
    
    import flash.geom.Point;
    import flash.utils.Dictionary;

@@ -8,12 +8,11 @@
  ******************************************************************************/
 package com.pblabs.engine.resource
 {
+   import flash.events.Event;
+   import flash.events.IOErrorEvent;
    import flash.media.Sound;
-   import flash.events.*;
    import flash.net.URLRequest;
-   
-   import com.pblabs.engine.resource.Resource;
-   
+
    [EditorData(extensions="mp3")]
    
    /**

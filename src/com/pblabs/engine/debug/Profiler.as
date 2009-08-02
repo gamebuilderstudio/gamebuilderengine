@@ -1,9 +1,12 @@
 package com.pblabs.engine.debug
 {
-   import com.pblabs.engine.core.*;
-   import flash.utils.getTimer;
-   import flash.utils.Dictionary;
    
+   import com.pblabs.engine.core.InputKey;
+   import com.pblabs.engine.core.InputManager;
+   import com.pblabs.engine.core.sprintf;
+   
+   import flash.utils.getTimer;
+
    /**
     * Simple, static hierarchical block profiler.
     *

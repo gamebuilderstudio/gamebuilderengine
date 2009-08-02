@@ -9,7 +9,9 @@
 package com.pblabs.rendering2D
 {
    import com.pblabs.engine.core.ObjectType;
-   import flash.geom.*;
+   
+   import flash.geom.Point;
+   import flash.geom.Rectangle;
    
    /**
     * Basic interface for 2D spatial database.

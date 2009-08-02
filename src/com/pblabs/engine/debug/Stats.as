@@ -23,14 +23,18 @@
 
 package com.pblabs.engine.debug
 {
-    import flash.display.*;
-    import flash.events.*;
+    import flash.display.Bitmap;
+    import flash.display.BitmapData;
+    import flash.display.Sprite;
+    import flash.events.Event;
+    import flash.events.MouseEvent;
     import flash.geom.Rectangle;
     import flash.system.Capabilities;
     import flash.system.System;
     import flash.text.TextField;
     import flash.text.TextFormat;
     import flash.utils.getTimer;
+    
     import mx.core.UIComponent;
 
     public class Stats extends UIComponent

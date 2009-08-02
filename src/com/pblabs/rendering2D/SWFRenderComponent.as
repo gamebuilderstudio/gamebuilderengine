@@ -1,13 +1,18 @@
 package com.pblabs.rendering2D
 {
-    import flash.display.*;
-    import flash.geom.*;
-    import com.pblabs.engine.entity.*;
-    import com.pblabs.engine.core.*;
-    import com.pblabs.engine.debug.*;
-    
+	import com.pblabs.engine.core.ProcessManager;
+	
+	import flash.display.MovieClip;
+	import flash.geom.Matrix;
+	import flash.geom.Point;
+
     public class SWFRenderComponent extends BaseRenderComponent
     {
+		private var _matrix:Matrix = new Matrix();
+		private var _clip:MovieClip;
+		private var _clipFrame:int;
+		private var _clipLastUpdate:int;
+		
         public var frameRate:Number = 25;
         public function set scaleFactor(value:Number):void
         {
@@ -80,10 +85,5 @@ package com.pblabs.rendering2D
                 updateChildClips(mc);
             }
         }
-        
-        private var _matrix:Matrix = new Matrix();
-        private var _clip:MovieClip;
-        private var _clipFrame:int;
-        private var _clipLastUpdate:int;
     }
 }

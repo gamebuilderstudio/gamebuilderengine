@@ -1,8 +1,6 @@
 package com.pblabs.components.stateMachine
 {
-    import flash.events.EventDispatcher;
-    import com.pblabs.engine.entity.*;
-    import com.pblabs.engine.components.*;
+    import com.pblabs.engine.components.TickedComponent;
     
     /**
      * Component that wraps a state machine and updates it based on game ticks.
