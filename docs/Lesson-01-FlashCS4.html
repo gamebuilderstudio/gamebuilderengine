@@ -66,23 +66,42 @@
   
    <img src="images/Lesson1FlashCS4_1.png" width="700px" />
    
-   <h2>Hello, World!</h2>
-   <p>That's right, it's time for some code!
-      Right Click the first frame on the timeline and select Actions.
-      Copy and paste the code below into the actions window.
+   <h2>Document Class</h2>
+   <p>We now need to setup a Document Class for our movie. To do this click File->Publish Settings and select the Flash Tab.
    </p>
    
    <img src="images/Lesson1FlashCS4_4.png" width="700px" />
    
+   <p>In the Script: Section Click Settings Button and type Lesson1FlashCS4 in the Document Class: textbox.
+   </p>
+   
+   <img src="images/Lesson1FlashCS4_4A.png" width="700px" />
+   
+   <p>Now when we run our Flash CS4 movie it will look for a Class called Lesson1FlashCS4 in Lesson1FlashCS4.as.
+      Let's create that file now by clicking File->New, Select ActionScript File and click Ok. Go ahead and save the file as Lesson1FlashCS4.as.
+   </p>
+   
+   <h2>Hello, World!</h2>
+   <p>That's right, it's time for some code!
+      Copy and paste the below code into your Lesson1FlashCS4.as file and save it.
+   </p>
+   
    <pre class="brush: js">
-    // Flash Imports
+    package
+    {
+	    import flash.display.Sprite;
+	    import com.pblabs.engine.core.Global;
+	    import com.pblabs.engine.debug.Logger;
 	
-	// PushButton Engine Imports
-	import com.pblabs.engine.core.*;
-	import com.pblabs.Engine.Debug.*;
-	
-    Global.startup(this);
-	Logger.print(this, "Hello, World!");
+	    public class Lesson1FlashCS4 extends Sprite
+	    {
+		    public function Lesson1FlashCS4():void
+		    {
+			    Global.startup(this);
+			    Logger.print(this, "Hello, World!");
+		    }
+	    }
+    }
    </pre>
    
    <p>The above code is basically the minimal application for the PushButton Engine. When executed it prints the below message in the Adobe Flash CS4 Output Window.
@@ -95,13 +114,15 @@
       and if we didn't make any mistakes a window should pop up and you should be greeted with a message in the Adobe Flash CS4 Output Window.
    </p>
    
-   <img src="images/Lesson1FlashCS4_5.png" width="700px" />
+   <img src="images/Lesson1FlashCS4_6.png" width="700px" />
    
    <h2>In Review</h2>
    <p>To summarize the steps of using the PushButton Engine with Adobe Flash CS4.
     <ul>
         <li>Setup your Source Path or Library Path.</li>
         <li>Create a new Flash File(ActionScript 3.0)</li>
+        <li>Setup the Document Class</li>
+        <li>Create an ActionScript file for the Document Class</li>
     </ul>
       And that's all there is to it!
    </p>
