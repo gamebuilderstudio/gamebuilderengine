@@ -6,10 +6,11 @@
  * This file is licensed under the terms of the MIT license, which is included
  * in the License.html file at the root directory of this SDK.
  ******************************************************************************/
-package PBLabs.Rendering2D
+package com.pblabs.rendering2D
 {
-   import flash.display.*;
-   import flash.geom.*;
+    import com.pblabs.engine.resource.SWFResource;
+    import flash.display.*;
+    import flash.geom.*;
 
    /**
    * A class that is similar to the SpriteSheetComponent
@@ -62,7 +63,7 @@ package PBLabs.Rendering2D
          _smoothing = value;
       }
       
-      override public function get IsLoaded() : Boolean
+      override public function get isLoaded() : Boolean
       {
          if (!_resource) 
              return false;
@@ -76,7 +77,7 @@ package PBLabs.Rendering2D
       /**
       * Rasterizes the associated Clip and returns a list of frames.
       */
-      override protected function _getSourceFrames() : Array
+      override protected function getSourceFrames() : Array
       {
          if (!_frames)
             rasterize();
@@ -92,13 +93,13 @@ package PBLabs.Rendering2D
       {
          if (_clipName)
          {
-            _clip = _resource.GetExportedAsset(_clipName) as MovieClip;
+            _clip = _resource.getExportedAsset(_clipName) as MovieClip;
             if (!_clip)
-               _clip = _resource.Clip;
+               _clip = _resource.clip;
          }
          else
          {
-            _clip = _resource.Clip;
+            _clip = _resource.clip;
          }
             
          _frames = onRasterize(_clip);
