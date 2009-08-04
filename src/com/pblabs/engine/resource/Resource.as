@@ -101,8 +101,13 @@ package com.pblabs.engine.resource
          return _referenceCount;
       }
       
-      public function Resource()
+      /**
+       * The Loader object that was used to load this resource.
+       * This is set to null after onContentReady returns true.
+       */
+      protected function get resourceLoader():Loader
       {
+          return _loader;
       }
       
       /**
@@ -185,7 +190,7 @@ package com.pblabs.engine.resource
       {
          return false;
       }
-      
+
       /**
        * Called when loading and conditioning of the resource data is complete. This
        * must be called by, and only by, subclasses that override the initialize

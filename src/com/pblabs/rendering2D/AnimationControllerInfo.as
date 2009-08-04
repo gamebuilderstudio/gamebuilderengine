@@ -48,10 +48,11 @@ package com.pblabs.rendering2D
          * animation will override a lower priority animation.
          */
         public var priority:Number = 0.0;
+        
         /**
          * Sprite sheet containing this animation.
          */
-        public var spriteSheet:SpriteSheetComponent;
+        public var spriteSheet:SpriteContainerComponent;
 
         /**
          * Name of event to fire on the entity when this animation starts.

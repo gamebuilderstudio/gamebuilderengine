@@ -34,35 +34,20 @@ package com.pblabs.rendering2D
     * <p>Be aware that Flash implements an upper limit on image size - going over
     * 2048 pixels in any dimension will lead to problems.</p>
     */ 
-   public class SpriteSheetComponent extends EntityComponent
+   public class SpriteSheetComponent extends SpriteContainerComponent
    {
       /**
        * True if the image data associated with this sprite sheet has been loaded.
        */
-      public function get isLoaded():Boolean
+      public override function get isLoaded():Boolean
       {
          return imageData != null;
       }
 
-      /**
-      * Specifies an offset so the sprite is centered correctly. If it is not
-      * set, the sprite is centered.
-      */
-      public function get center():Point
-      {
-         return _center;
-      }
-      
-      public function set center(value:Point):void
-      {
-         _center = value;
-         _defaultCenter = false;
-      }
-      
+      [EditorData(ignore="true")]
       /**
        * The filename of the image to use for this sprite sheet.
        */
-      [EditorData(ignore="true")]
       public function get imageFilename():String
       {
          return _image == null ? null : _image.filename;
@@ -95,8 +80,8 @@ package com.pblabs.rendering2D
        */
       public function set image(value:ImageResource):void
       {
-         _frames = null;
          _image = value;
+         deleteFrames();
       }
       
       /**
@@ -126,128 +111,35 @@ package com.pblabs.rendering2D
       {
          _divider = value;
          _divider.owningSheet = this;
-         _frames = null;
+         deleteFrames();
       }
       
-      /**
-       * The number of directions per frame.
-       */
-      [EditorData(defaultValue="1")]
-      public var directionsPerFrame:Number = 1;
-      
-      /**
-       * The number of degrees separating each direction.
-       */
-      public function get degreesPerDirection():Number
+      override protected function getSourceFrames() : Array
       {
-         return 360 / directionsPerFrame;
-      }
-      
-      /**
-       * The total number of frames the sprite sheet has. This counts each
-       * direction separately.
-       */
-      public function get rawFrameCount():int
-      {
-         if (!imageData)
-            return 0;
-         
-         if (!_divider)
-            return 1;
-         
-         return _divider.frameCount;
-      }
-      
-      /**
-       * The number of frames the sprite sheet has. This counts each set of
-       * directions as one frame.
-       */
-      public function get frameCount():int
-      {
-         return rawFrameCount / directionsPerFrame;
-      }
-      
-      /**
-       * Gets the bitmap data for a frame at the specified index.
-       * 
-       * @param index The index of the frame to retrieve.
-       * @param direction The direction of the frame to retrieve in degrees. This
-       *                  can be ignored if there is only 1 direction per frame.
-       * 
-       * @return The bitmap data for the specified frame, or null if it doesn't exist.
-       */
-      public function getFrame(index:int, direction:Number=0.0):BitmapData
-      {
-         if(!imageData)
-            return null;
-         
-         // Make sure direction is in 0..360.
-         while (direction < 0)
-            direction += 360;
-         
-         while (direction > 360)
-            direction -= 360;
-         
-         // Easy case if we only have one direction per frame.
-         if (directionsPerFrame == 1)
-            return getRawFrame(index);
-         
-         // Otherwise we have to do a search.
-         
-         // Make sure we have data to fulfill our requests from.
-         if (!_frameNotes)
-            generateFrameNotes();
-         
-         // Look for best match.
-         var bestMatchIndex:int = -1;
-         var bestMatchDirectionDistance:Number = Number.POSITIVE_INFINITY;
-         
-         for (var i:int = 0; i < _frameNotes.length; i++)
-         {
-            var note:FrameNote = _frameNotes[i];
-            if (note.frame != index)
-               continue;
-            
-            if (Math.abs(note.direction - direction) < bestMatchDirectionDistance)
-            {
-               // This one is better on both frame and heading.
-               bestMatchDirectionDistance = Math.abs(note.direction - direction);
-               bestMatchIndex = note.rawFrame;
-            }
-         }
-         
-         // Return the bitmap.
-         if (bestMatchIndex >= 0)
-            return getRawFrame(bestMatchIndex);
-         
-         return null;
-      }
-      
-      protected function buildFrames():void
-      {
+         var frames:Array;
+          
          // image isn't loaded, can't do anything yet
          if (!imageData)
-            return;
+            return null;
          
          // no divider means treat the image as a single frame
          if (!_divider)
          {
-            _frames = new Array(1);
-            _frames[0] = imageData;
+             frames = new Array(1);
+             frames[0] = imageData;
          }
          else
          {
-            _frames = new Array(_divider.frameCount);
+             frames = new Array(_divider.frameCount);
             for (var i:int = 0; i < _divider.frameCount; i++)
             {
                var area:Rectangle = _divider.getFrameArea(i);
-               _frames[i] = new BitmapData(area.width, area.height, true);
-               _frames[i].copyPixels(imageData, area, new Point(0, 0));
+               frames[i] = new BitmapData(area.width, area.height, true);
+               frames[i].copyPixels(imageData, area, new Point(0, 0));
             }
          }
          
-         if (_defaultCenter)
-            _center = new Point(_frames[0].width * 0.5, _frames[0].height * 0.5);
+         return frames;
       }
       
       protected function onImageLoaded(resource:ImageResource):void
@@ -260,57 +152,7 @@ package com.pblabs.rendering2D
          Logger.printError(this, "onImageFailed", "Failed to load '" + resource.filename + "'");
       }
       
-      /**
-       * Gets the frame at the specified index. This does not take direction into
-       * account.
-       */
-      protected function getRawFrame(index:int):BitmapData
-      {
-         if (!_frames)
-            buildFrames();
-         
-         if(!_frames)
-             return null;
-         
-         if (index < 0 || index >= rawFrameCount)
-            return null;
-       
-         return _frames[index];  
-      }
-      
-      private function generateFrameNotes():void
-      {
-         _frameNotes = new Array();
-         
-         var totalStates:int = frameCount / degreesPerDirection;
-         
-         for (var direction:int = 0; direction < directionsPerFrame; direction++)
-         {
-            for (var frame:int = 0; frame < frameCount; frame++)
-            {
-               var note:FrameNote = new FrameNote();
-               note.frame = frame;
-               note.direction = direction * degreesPerDirection;
-               note.rawFrame = (direction * frameCount) + frame;
-               
-               _frameNotes.push(note);
-            }
-         }
-      }
-      
-      private var _frameNotes:Array;
-         
       private var _image:ImageResource = null;
       private var _divider:ISpriteSheetDivider = null;
-      private var _frames:Array = null;
-      private var _center:Point = new Point(0, 0);
-      private var _defaultCenter:Boolean = true;
    }
-}
-
-final class FrameNote
-{
-   public var frame:int;
-   public var direction:Number;
-   public var rawFrame:int;
 }

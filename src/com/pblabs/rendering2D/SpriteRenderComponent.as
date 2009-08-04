@@ -26,7 +26,7 @@ package com.pblabs.rendering2D
       /**
        * The sprite sheet to use to draw this sprite.
        */
-      public function get spriteSheet():SpriteSheetComponent
+      public function get spriteSheet():SpriteContainerComponent
       {
          return _spriteSheet;
       }
@@ -34,7 +34,7 @@ package com.pblabs.rendering2D
       /**
        * @private
        */
-      public function set spriteSheet(value:SpriteSheetComponent):void
+      public function set spriteSheet(value:SpriteContainerComponent):void
       {
          _spriteSheet = value;
          _spriteDirty = true;
@@ -122,10 +122,10 @@ package com.pblabs.rendering2D
          _spriteDirty = true;
       }
       
+      [EditorData(defaultValue="1.0")]
       /**
        * Modulate alpha. Zero is fully translucent, one is fully opaque.
        */
-      [EditorData(defaultValue="1.0")]
       public var fade:Number = 1.0;
       
       /**
@@ -289,7 +289,7 @@ package com.pblabs.rendering2D
          }
       }
       
-      protected var _spriteSheet:SpriteSheetComponent = null;
+      protected var _spriteSheet:SpriteContainerComponent = null;
       protected var _spriteIndex:int = 0;
       protected var _sprite:DisplayObject = null;
       protected var _spriteDirty:Boolean = false;
