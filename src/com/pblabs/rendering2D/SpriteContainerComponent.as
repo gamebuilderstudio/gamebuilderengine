@@ -34,7 +34,6 @@ package com.pblabs.rendering2D
       protected function deleteFrames():void
       {
          frames = null;
-         _center = null;   
       }
 
       /**
@@ -51,6 +50,9 @@ package com.pblabs.rendering2D
       */
       public function get center():Point
       {
+         if(!_center)
+            return new Point();
+         
          return _center;
       }
       
