@@ -193,7 +193,7 @@ class Entity extends EventDispatcher implements IEntity
       return findProperty(property, false, _tempPropertyInfo, true) != null;
    }
    
-   public function getProperty(property:PropertyReference):*
+   public function getProperty(property:PropertyReference, defaultVal:* = null):*
    {
       // Look up the property.
       var info:PropertyInfo = findProperty(property, false, _tempPropertyInfo);
@@ -202,6 +202,8 @@ class Entity extends EventDispatcher implements IEntity
       // Get value if any.
       if (info)
          result = info.getValue();
+      else
+         result = defaultVal; 
 
       // Clean up to avoid dangling references.
       _tempPropertyInfo.clear();

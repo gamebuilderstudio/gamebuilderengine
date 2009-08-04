@@ -38,12 +38,13 @@ package com.pblabs.engine.entity
        * 
        * @param property The property reference describing the property to look for on
        * this entity.
+       * @param defaultValue If the property is not found, return this value.
        * 
        * @return The current value of the property, or null if it doesn't exist.
        * 
        * @see ../../../../../Reference/PropertySystem.html Property System Overview
        */
-      function getProperty(property:PropertyReference):*;
+      function getProperty(property:PropertyReference, defaultValue:* = null):*;
       
       /**
        * Sets the value of a property on this entity.
