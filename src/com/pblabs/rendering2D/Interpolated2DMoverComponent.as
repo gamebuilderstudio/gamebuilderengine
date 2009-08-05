@@ -7,9 +7,22 @@ package com.pblabs.rendering2D
 
    public class Interpolated2DMoverComponent extends SimpleSpatialComponent
    {
-      [EditorData(ignore="true")]
-      public var goalPosition:Point = new Point();
+      private var _goalPosition:Point = new Point();
 
+      [EditorData(ignore="true")]
+      public function set goalPosition(value:Point):void
+      {
+          if(lockGoal)
+              return;
+          
+          _goalPosition = value;
+      }
+      
+      public function get goalPosition():Point
+      {
+          return _goalPosition;
+      }
+      
       [EditorData(ignore="true")]
       public var goalRotation:Number = 0;
 
@@ -28,6 +41,7 @@ package com.pblabs.rendering2D
       public var allowMovementValue:String = null;
 
       public var movementHeadingThreshold:Number = 100;
+      public var lockGoal:Boolean = false;
 
       public function set initialPosition(value:Point):void
       {
