@@ -34,7 +34,7 @@ package
          Global.startup(this);
          
          // Load up our embedded resources
-//         new MyResources( );
+         new MyResources( );
 
          // Set up a simple scene entity
          createScene();
