@@ -34,7 +34,7 @@ package
          Global.startup(this);
          
          // Load up our embedded resources
-         new MyResources( );
+//         new MyResources( );
 
          // Set up a simple scene entity
          createScene();
@@ -107,7 +107,7 @@ package
          var render:SpriteRenderComponent = new SpriteRenderComponent();
 
          // Tell the Render component to use one of the images embedded by our ResourceLinker
-         render.loadFromImage = "fanship.png";
+         render.loadFromImage = "../assets/fanship.png";
          
          // Set our hero to render above the background.
          render.layerIndex = 10;
@@ -149,7 +149,7 @@ package
          var render:SpriteRenderComponent = new SpriteRenderComponent();
          
          // Tell the Render component to use one of the images embedded by our ResourceLinker
-         render.loadFromImage = "bg.jpg";
+         render.loadFromImage = "../assets/bg.jpg";
          
          // Set our background to render below the hero.
          render.layerIndex = 1;

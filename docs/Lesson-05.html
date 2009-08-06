@@ -14,14 +14,14 @@
    		SyntaxHighlighter.config.clipboardSwf = 'js/sh/scripts/clipboard.swf';
    		SyntaxHighlighter.all();
    </script>
-   <title>PushButton Engine Lesson #5: Using Embedded Images</title>
+   <title>PushButton Engine Lesson #5: Using and Embedding Images</title>
 </head>
 <body>
 
-   <h1>PushButton Engine Lesson #5: Using Embedded Images</h1>
+   <h1>PushButton Engine Lesson #5: Using and Embedding Images</h1>
    <p><center><em>"A novel is never anything but a philosophy put into images"</em> - Albert Camus</center></p>
    
-   <p>The goal of this lesson is to guide the user in adding image assets to a game, and displaying them graphically on the screen.</p>
+   <p>The goal of this lesson is to guide the user in displaying images on the screen, and including them as embedded assets for distribution.</p>
    
    <p>These lessons are structured in a series of steps -- small milestones that will provide focused short-term goals for incrementally understanding PushButton Engine.</p>
    
@@ -43,62 +43,15 @@
    
    <h2>Introduction to the Tutorial</h2>
    
-   <p>Up until this point, all of the lessons have limited themselves to only display simple colors and shapes.  In this lesson, we will begin learning how to embed and display images.</p>
+   <p>Up until this point, all of the lessons have limited themselves to only display simple colors and shapes.  In this lesson, we will begin learning how to display and embed images.</p>
    
    <p><em>Technical Note:</em> There are a few different ways that one can embed assets into a compiled Flash file.  Because it is the most universal (accessible from Flash CS4 or Actionscript / Flex based tools), this tutorial will focus on embedding assets using Actionscript and the [Embed] metadata tag.</p>
    
-   <p><h2>Embedding the Assets</h2></p>
-   <p>To help make embedding resources easier, PBE includes a ResourceBundle class.  This class interfaces with the ResourceManager to simplify the embedding process.</p>
-   
-   <p>The way to use the ResourceBundle is by creating and instantiating a class that inherits from it.</p>
-
-   <p>To do this, create a new file in Lesson5Base/src/ called <em>MyResources.as</em> -- this will be our project's ResourceBundle.  Inside of the file, place the following code:</p>
-   
-   <p><strong>File: /Lesson5Base/src/MyResources.as</strong></p>
-   <pre class="brush: js">
-package
-{
-   import com.pblabs.engine.resource.*;
-   
-   public class MyResources extends ResourceBundle
-   {
-   }
-}
-   </pre>
-   
-   <p>Inside of the src/ directory there are two image files -- <em>bg.jpg</em> and <em>fanship.png</em>.  To make the ResourceBundle aware of these files, you define a property of your descendant class that references the file with an [Embed] tag, like so:</p>
-   
-   <p><strong>File: /Lesson5Base/src/MyResources.as</strong></p>
-   <pre class="brush: js">
-   public class MyResources extends ResourceBundle
-   {
-      [Embed(source="bg.jpg", mimeType='application/octet-stream')]
-      public var resBg:Class;
-      
-      [Embed(source="fanship.png", mimeType='application/octet-stream')]
-      public var resShip:Class;
-   }
-   </pre>
-   
-   <p>In order for our custom ResourceBundle to be used, we need to instantiate it from our main class.  Inside of the Lesson5Base constructor, just after we make our call to Global.startup(), create a new instance of MyResources.</p>
-   
-   <p><strong>File: /Lesson5Base/src/Lesson5Base.as</strong></p>
-   <pre class="brush: js">
-      public function Lesson5Final()
-      {
-         // Start up PBE
-         Global.startup(this);
-         
-         // Load up our embedded resources
-         new MyResources( );
-   </pre>
-   
-   <p>And that should do it!  That will embed those graphics and make them accessible to PBE.  Once a ResourceBundle is instantiated, it automatically looks at the resources that you embedded inside of it, and properly registers them with the PBE ResourceManager.</p>
-   
    <p><h2>Showing Off</h2></p>
-   <p>Now that the images are loaded into PBE, we can render them.</p>
    
-   <p>Nearly all functionality in PBE is given through components, and rendering sprites is no exception.  To make our Hero display as the hovercraft, we will replace the SimpleShapeRenderComponent with a SpriteRenderComponent.</p>
+   <p>Nearly all functionality in PBE is given through components, and rendering sprites is no exception.  Remember that in previous lessons, we used SimpleShapeRenderComponent to display our hero as a blue circle.  To make our hero as the hovercraft, we will replace that one render component with one we haven't looked at before -- a SpriteRenderComponent.</p>
+   
+   <p>The SpriteRenderComponent has very similar parameters to the shape renderer -- the primary difference is that it now needs a filename (this must match the filename in one of the [Embed] tags of our ResourceBundle).  Because we also plan to add a background entity to the game next, we set the layerIndex property of the render component, to ensure that the hero is drawn on top of the background.</p>
    
    <p>In the method createHero(), update the code that sets up the render component to be like the following:</p>
    
@@ -109,8 +62,8 @@ package
          // Here we've removed the reference to our simple shape renderer, and added a sprite render component.
          var render:SpriteRenderComponent = new SpriteRenderComponent();
 
-         // Tell the Render component to use one of the images embedded by our ResourceLinker
-         render.loadFromImage = "fanship.png";
+         // Tell the Render component to use one of the images in our assets directory
+         render.loadFromImage = "../assets/fanship.png";
          
          // Set our hero to render above the background.
          render.layerIndex = 10;
@@ -124,11 +77,11 @@ package
          hero.addComponent( render, "Render" );
    </pre>
 
-   <p>The SpriteRenderComponent has very similar parameters to the shape renderer -- the primary difference is that it now needs a filename (this must match the filename in one of the [Embed] tags of our ResourceBundle).  Because we also plan to add a background entity to the game next, we set the layerIndex property of the render component, to ensure that the hero is drawn on top of the background.</p>
-   
    <p>At this point, you should be able to compile and run the game.  If everything was done correctly, then you should now see a small hovercraft in place of your old blue circle.</p>
    
    <p><a href="images/Lesson5_2.png"><img src="images/Lesson5_2.png" width="204" height="159" alt="Goodbye cruel circle"></a></p>
+
+   <p><em>Please note:</em> At this point, the hovercraft image is not embedded.  If you move or upload the SWF right now, it will not display any images.  This is fine for rapid development purposes, but to make the images work even after uploading or e-mailing, you will need the final step in this lesson -- embedding the images into the compiled SWF.</p>
    
    <p><h2>Adding the Background</h2></p>  
 
@@ -156,8 +109,8 @@ package
          // Just like the hero, this also uses a SpriteRenderComponent
          var render:SpriteRenderComponent = new SpriteRenderComponent();
          
-         // Tell the Render component to use one of the images embedded by our ResourceLinker
-         render.loadFromImage = "bg.jpg";
+         // Tell the Render component to use one of the images in our assets directory
+         render.loadFromImage = "../assets/bg.jpg";
          
          // Set our background to render below the hero.
          render.layerIndex = 1;
@@ -168,7 +121,6 @@ package
          // Add our render component to the BG entity with the name "Render"
          bg.addComponent( render, "Render" );
       }
-      
    </pre>
    
    <p>And then at the top of the file, don't forget to add a call to createBackground().</p>
@@ -181,6 +133,59 @@ package
          // Create a simple background entity
          createBackground();
    </pre>
+   
+   <p>Now you can compile and run your game!  Enjoy zooming your hovercraft over the rocky landscape.</p>
+
+
+   <p><h2>Embedding the Assets</h2></p>
+   <p>Previous to this step, the finished SWFs that you compiled need to have access to assets directory if they want to display images.  However, if you would like to distrubute your game (or just move it to a new section of your hard drive, away from the source), you will first need to embed the image resource into your SWF.</p> 
+
+   <p>To help make embedding resources easier, PBE includes a ResourceBundle class.  This class interfaces with the ResourceManager to simplify the embedding process.</p>
+   
+   <p>The way to use the ResourceBundle is by creating and instantiating a class that inherits from it.</p>
+
+   <p>To do this, create a new file in Lesson5Base/src/ called <em>MyResources.as</em> -- this will be our project's ResourceBundle.  Inside of the file, place the following code:</p>
+   
+   <p><strong>File: /Lesson5Base/src/MyResources.as</strong></p>
+   <pre class="brush: js">
+package
+{
+   import com.pblabs.engine.resource.*;
+   
+   public class MyResources extends ResourceBundle
+   {
+   }
+}
+   </pre>
+   
+   <p>Inside of the assets/ directory there are two image files -- <em>bg.jpg</em> and <em>fanship.png</em>.  To make the ResourceBundle aware of these files, you define a property of your descendant class that references the file with an [Embed] tag, like so:</p>
+   
+   <p><strong>File: /Lesson5Base/src/MyResources.as</strong></p>
+   <pre class="brush: js">
+   public class MyResources extends ResourceBundle
+   {
+      [Embed(source="../assets/bg.jpg", mimeType='application/octet-stream')]
+      public var resBg:Class;
+      
+      [Embed(source="../assets/fanship.png", mimeType='application/octet-stream')]
+      public var resShip:Class;
+   }
+   </pre>
+   
+   <p>In order for our custom ResourceBundle to be used, we need to instantiate it from our main class.  Inside of the Lesson5Base constructor, just after we make our call to Global.startup(), create a new instance of MyResources.</p>
+   
+   <p><strong>File: /Lesson5Base/src/Lesson5Base.as</strong></p>
+   <pre class="brush: js">
+      public function Lesson5Final()
+      {
+         // Start up PBE
+         Global.startup(this);
+         
+         // Load up our embedded resources
+         new MyResources( );
+   </pre>
+   
+   <p>And that should do it!  That will embed those graphics and make them accessible to PBE.  Once a ResourceBundle is instantiated, it automatically looks at the resources that you embedded inside of it, and properly registers them with the PBE ResourceManager.</p>
 
 
    <p>That should be the end of it!</p>
