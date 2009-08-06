@@ -101,6 +101,8 @@ package com.pblabs.rendering2D
             // Go to default animation if we've nothing better to do.
             if (nextAnim == null)
             {
+                // Supressing duplicate log messages for animations that we know are already missing.
+                // A log message per frame is pretty expensive.
                 if (!_badAnimations)
                     _badAnimations = new Dictionary();
 
