@@ -8,32 +8,33 @@
  ******************************************************************************/
 package com.pblabs.rendering2D
 {
-	import com.pblabs.engine.components.AnimatedComponent;
-	import com.pblabs.engine.core.ProcessManager;
-	import com.pblabs.engine.debug.Logger;
-	import com.pblabs.engine.debug.Profiler;
-	import com.pblabs.engine.entity.PropertyReference;
-	
-	import flash.events.Event;
+    import com.pblabs.engine.components.AnimatedComponent;
+    import com.pblabs.engine.core.ProcessManager;
+    import com.pblabs.engine.debug.Logger;
+    import com.pblabs.engine.debug.Profiler;
+    import com.pblabs.engine.entity.PropertyReference;
+
+    import flash.events.Event;
+    import flash.utils.Dictionary;
 
     /**
      * Manage sprite sheet and frame selection based on named animation definitions.
      */
     public class AnimationController extends AnimatedComponent
     {
-		//--------------------------------------------------------------------------
-		//
-		//  Constructor
-		//
-		//--------------------------------------------------------------------------
-		
-		//--------------------------------------------------------------------------
-		//
-		//  Variables
-		//
-		//--------------------------------------------------------------------------
+        //--------------------------------------------------------------------------
+        //
+        //  Constructor
+        //
+        //--------------------------------------------------------------------------
 
-		/**
+        //--------------------------------------------------------------------------
+        //
+        //  Variables
+        //
+        //--------------------------------------------------------------------------
+
+        /**
          * Animations, indexed by name.
          *
          * @see AnimationControllerInfo
@@ -81,6 +82,7 @@ package com.pblabs.rendering2D
         private var _currentAnimation:AnimationControllerInfo;
         private var _currentAnimationDuration:Number = 0;
         private var _currentAnimationStartTime:Number = 0;
+        private var _badAnimations:Dictionary;
 
         override public function onFrame(elapsed:Number):void
         {
@@ -99,7 +101,15 @@ package com.pblabs.rendering2D
             // Go to default animation if we've nothing better to do.
             if (nextAnim == null)
             {
-                Logger.printWarning(this, "OnFrame", "Animation '" + nextAnimName + "' not found, going with default animation '" + defaultAnimation + "'.");
+                if (!_badAnimations)
+                    _badAnimations = new Dictionary();
+
+                if (!_badAnimations[nextAnimName])
+                {
+                    Logger.printWarning(this, "OnFrame", "Animation '" + nextAnimName + "' not found, going with default animation '" + defaultAnimation + "'.");
+                    _badAnimations[nextAnimName] = true;
+                }
+
                 nextAnim = animations[defaultAnimation];
             }
 
@@ -181,10 +191,11 @@ package com.pblabs.rendering2D
                 _currentAnimationDuration = owner.getProperty(currentAnimationDurationReference) * ProcessManager.TICK_RATE_MS;
             else
                 _currentAnimationDuration = ai.spriteSheet.frameCount * ProcessManager.TICK_RATE_MS;
-            
+
             //trace("Age at start was " + (ProcessManager.instance.virtualTime - _currentAnimationStartTime));
-            
+
             Profiler.exit("AnimationController.SetAnimation");
         }
     }
 }
+
