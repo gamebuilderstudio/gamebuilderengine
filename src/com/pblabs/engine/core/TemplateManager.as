@@ -125,8 +125,9 @@ package com.pblabs.engine.core
                   
                if(_things[name].entityCallback)
                {
+                  var instantiated:IEntity = _things[name].entityCallback();
                   Profiler.exit("instantiateEntity");
-                  return _things[name].entityCallback();
+                  return instantiated;
                }
             }
             
