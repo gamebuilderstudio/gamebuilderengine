@@ -33,7 +33,7 @@
    <h2>Tutorial Resources:</h2>
    <p>To follow along with the tutorial, you can download the starter project and use it as your base to implement the tutorial:
       <ul>
-         <li><a href="downloads/Lesson5Base.zip">Lesson5Base.zip</a> (8KB)</li>
+         <li><a href="downloads/Lesson5Base.zip">Lesson5Base.zip</a> (287KB)</li>
       </ul>
    The completed lesson files are available at the end of the tutorial.
    </p>
@@ -49,9 +49,9 @@
    
    <p><h2>Showing Off</h2></p>
    
-   <p>Nearly all functionality in PBE is given through components, and rendering sprites is no exception.  Remember that in previous lessons, we used SimpleShapeRenderComponent to display our hero as a blue circle.  To make our hero as the hovercraft, we will replace that one render component with one we haven't looked at before -- a SpriteRenderComponent.</p>
+   <p>Nearly all functionality in PBE is given through components, and rendering sprites is no exception.  Remember that in previous lessons, we used SimpleShapeRenderComponent to display our hero as a blue circle.  To display our hero as a hovercraft sprite instead, we will replace that one render component with one we haven't looked at before -- a SpriteRenderComponent.</p>
    
-   <p>The SpriteRenderComponent has very similar parameters to the shape renderer -- the primary difference is that it now needs a filename (this must match the filename in one of the [Embed] tags of our ResourceBundle).  Because we also plan to add a background entity to the game next, we set the layerIndex property of the render component, to ensure that the hero is drawn on top of the background.</p>
+   <p>The SpriteRenderComponent has very similar parameters to the shape renderer -- the primary difference is that it now needs a filename.  Because we also plan to add a background entity to the game in the next step, we will specify the layerIndex property of the render component, to ensure that the hero is drawn on top of the background.</p>
    
    <p>In the method createHero(), update the code that sets up the render component to be like the following:</p>
    
@@ -77,9 +77,10 @@
          hero.addComponent( render, "Render" );
    </pre>
 
+   <p><a href="images/Lesson5_2.png"><img src="images/Lesson5_2.png" align="right" width="204" height="159" alt="Goodbye cruel circle"></a></p>
+
    <p>At this point, you should be able to compile and run the game.  If everything was done correctly, then you should now see a small hovercraft in place of your old blue circle.</p>
    
-   <p><a href="images/Lesson5_2.png"><img src="images/Lesson5_2.png" width="204" height="159" alt="Goodbye cruel circle"></a></p>
 
    <p><em>Please note:</em> At this point, the hovercraft image is not embedded.  If you move or upload the SWF right now, it will not display any images.  This is fine for rapid development purposes, but to make the images work even after uploading or e-mailing, you will need the final step in this lesson -- embedding the images into the compiled SWF.</p>
    
@@ -124,7 +125,7 @@
    </pre>
    
    <p>And then at the top of the file, don't forget to add a call to createBackground().</p>
-      
+
    <p><strong>File: /Lesson5Base/src/Lesson5Base.as</strong></p>
    <pre class="brush: js">
          // Create an avatar entity
@@ -133,9 +134,10 @@
          // Create a simple background entity
          createBackground();
    </pre>
-   
+
    <p>Now you can compile and run your game!  Enjoy zooming your hovercraft over the rocky landscape.</p>
 
+   <p><a href="images/Lesson5_1.png"><img src="images/Lesson5_1.png" width="204" height="159" alt="I can see clearly now"></a></p>
 
    <p><h2>Embedding the Assets</h2></p>
    <p>Previous to this step, the finished SWFs that you compiled need to have access to assets directory if they want to display images.  However, if you would like to distrubute your game (or just move it to a new section of your hard drive, away from the source), you will first need to embed the image resource into your SWF.</p> 
@@ -192,15 +194,40 @@ package
    
    <p><h2>Seeing Visions</h2></p>
    <p>After it's all compiled, you should have an .swf like the following (click to load):</p>
-   <p><a href="downloads/Lesson5Final.swf"><img src="images/Lesson5_1.png" width="204" height="159" alt="I can see clearly now"></a></p>
+   <p><a href="downloads/Lesson5Final.swf"><img src="images/Lesson5_1.png" width="204" height="159" alt="Here or there, we can fly (and copy) our hovercraft anywhere!"></a></p>
+      
+   <p><h2>In Review</h2></p>
+   <p>Here are some highlights of things that we learned in this lesson:
+   <ul>
+      <li>SpriteRenderComponent can be used to render a sprite for an entity.</li>
+      <li>Set the image of a SpriteRenderComponent through the loadFromImage property.</li>
+      <li>If you do not embed the assets into your compiled SWF, you will not be able to distribute your file to another location.</li>
+      <li>The easiest (and most universal) way to embed resources in PBE is by using the ResourceBundle.</li>
+      <li>To use ResourceBundle, use the following syntax:
+
+         <pre class="brush: js">
+         public class MyResources extends ResourceBundle
+         {
+            [Embed(source="../assets/imageFilename.png", mimeType='application/octet-stream')]
+            public var someName:Class;
+         }
+         </pre>
+         
+         Where <em>"../assets/imageFilename.png"</em> is the path to your resource, and <em>someName</em> is a unique property name inside of ResourceBundle.  This name is not as important as the filename, because all resources in PBE are referenced through the filename.
+      </li>
+      <li>It's not enough to just define your ResourceBundle class -- to actually make the assets accessible to PBE, the final step in making the assets embed is to instantiate your custom ResourceBundle class.</li>
+   </ul>
+   </p>
       
    <p><h2>Conclusion</h2></p>
    
    <p>Congratulations!  You have finished lesson #5, and loaded your first external assets into the game.</p>
+   
+   <p>This introduced more concepts than the previous lessons, but if you can master this, you will be much further along on your way to making games in PBE.</p>
     
    <p>You can download the completed project source files for this project.
       <ul>
-         <li><a href="downloads/Lesson5Final.zip">Lesson5Final.zip</a> (8KB)</li>
+         <li><a href="downloads/Lesson5Final.zip">Lesson5Final.zip</a> (288KB)</li>
       </ul>
    </p>
    </div>
