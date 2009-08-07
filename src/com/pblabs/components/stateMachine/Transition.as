@@ -9,7 +9,7 @@ package com.pblabs.components.stateMachine
       
       public function Transition(targetState:String = null)
       {
-         targetState = targetState;
+         this.targetState = targetState;
       }
       
       public function evaluate(fsm:IMachine):Boolean
