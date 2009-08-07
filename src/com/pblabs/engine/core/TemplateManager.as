@@ -262,15 +262,23 @@ package com.pblabs.engine.core
        */
       public function removeXML(identifier:String):void
       {
+      	
+      	 var thingsToDelete: Array = new Array();
+      	       	
          for (var name:String in _things)
          {
             var thing:ThingReference = _things[name];
             if (thing.identifier == identifier)
-            {
-               _things[name] = null;
-               delete _things[name];
-            }
+               thingsToDelete[thingsToDelete.length] = name;
          }
+
+		 // delete elements marked for deletion
+		 for (var i:int=0; i<thingsToDelete.length; i++) 
+		 {
+            _things[name] = null;
+		    delete _things[thingsToDelete[i]];
+		 }
+                  
       }
       
       /**
