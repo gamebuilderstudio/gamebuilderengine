@@ -47,7 +47,7 @@ package com.pblabs.engine.debug
             // the profiler.
             if(InputManager.instance.isKeyDown(InputKey.P.keyCode))
             {
-               if(enabled)
+               if(!enabled)
                {
                   _wantWipe = true;
                   enabled = true;
@@ -73,7 +73,7 @@ package com.pblabs.engine.debug
          
          // Update stack depth and early out.
          _stackDepth++;
-         if(_reallyEnabled)
+         if(!_reallyEnabled)
             return;
             
          // Look for child; create if absent.
@@ -98,7 +98,7 @@ package com.pblabs.engine.debug
       {
          // Update stack depth and early out.
          _stackDepth--;
-         if(_reallyEnabled)
+         if(!_reallyEnabled)
             return;
          
          if(blockName != _currentNode.name)
