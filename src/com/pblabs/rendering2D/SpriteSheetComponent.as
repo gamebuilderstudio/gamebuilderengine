@@ -149,7 +149,7 @@ package com.pblabs.rendering2D
       
       protected function onImageFailed(resource:ImageResource):void
       {
-         Logger.printError(this, "onImageFailed", "Failed to load '" + resource.filename + "'");
+         Logger.printError(this, "onImageFailed", "Failed to load '" + (resource ? resource.filename : "(unknown)") + "'");
       }
       
       private var _image:ImageResource = null;
