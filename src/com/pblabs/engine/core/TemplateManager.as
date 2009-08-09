@@ -275,7 +275,7 @@ package com.pblabs.engine.core
 		 // delete elements marked for deletion
 		 for (var i:int=0; i<thingsToDelete.length; i++) 
 		 {
-            _things[name] = null;
+            _things[thingsToDelete[i]] = null;
 		    delete _things[thingsToDelete[i]];
 		 }
                   
