@@ -182,11 +182,28 @@ package com.pblabs.engine.core
             start();
          
          var schedule:ScheduleObject = new ScheduleObject();
-         schedule.timeRemaining = delay;
+         schedule.dueTime = _virtualTime + delay;
          schedule.thisObject = thisObject;
          schedule.callback = callback;
          schedule.arguments = arguments;
-         scheduleEvents.push(schedule);
+
+         // Find where to insert this item in the array.
+         // We'll place it before the first item that is scheduled further out.
+         // By keeping this array ordered we only have to iterate over schedules that are due at a given tick.
+         for (var i:int = 0; i < scheduleEvents.length; i++)
+         {
+            var s:ScheduleObject = scheduleEvents[i];
+            if (s.dueTime > schedule.dueTime)
+            {
+               scheduleEvents.splice(i, 0, schedule); 
+               break;
+            }
+            else if (i == scheduleEvents.length - 1)
+            {
+               scheduleEvents.push(schedule);
+               break;
+            }
+         }
       }
       
       /**
@@ -326,12 +343,17 @@ package com.pblabs.engine.core
           for (var i:int = 0; i < scheduleEvents.length; i++)
           {
               var schedule:ScheduleObject = scheduleEvents[i];
-              schedule.timeRemaining -= deltaTime;
-              if (schedule.timeRemaining <= 0)
+              if (schedule.dueTime <= _virtualTime)
               {
                   schedule.callback.apply(schedule.thisObject, schedule.arguments);
                   scheduleEvents.splice(i, 1);
                   i--;
+              }
+              else
+              {
+                 //our scheduled event array is sorted by due time, 
+                 //so once we hit one that isn't due we know we're done processing for this time.
+                 break;
               }
           }
           Profiler.exit("PendingEvents");
@@ -405,7 +427,7 @@ package com.pblabs.engine.core
 
 class ScheduleObject
 {
-   public var timeRemaining:Number = 0.0;
+   public var dueTime:Number = 0.0;
    public var thisObject:Object = null;
    public var callback:Function = null;
    public var arguments:Array = null;
