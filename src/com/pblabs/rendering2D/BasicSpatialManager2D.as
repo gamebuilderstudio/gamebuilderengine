@@ -1,4 +1,4 @@
-/*******************************************************************************
+﻿/*******************************************************************************
  * PushButton Engine
  * Copyright (C) 2009 PushButton Labs, LLC
  * For more information see http://www.pushbuttonengine.com
@@ -23,6 +23,12 @@ package com.pblabs.rendering2D
     */ 
    public class BasicSpatialManager2D extends EntityComponent implements ISpatialManager2D
    {
+       public function BasicSpatialManager2D()
+       {
+          //make sure our boxVsBox function works. this should be moved to an external unit test.
+          boxVsBoxTest();
+       }
+       
       /**
        * @inheritDoc
        */
@@ -48,19 +54,76 @@ package com.pblabs.rendering2D
       
       private function boxVsBox(box1:Rectangle, box2:Rectangle):Boolean
       {
-         // box1.intersect(box2) doesn't work for Grunts rayacsts. Theory is that
-         // a box completely contained by another box doesn't return true, but
-         // don't have an exact repro case. -- BJG
-         if(box1.containsPoint(box2.topLeft))
-            return true;
-         if(box1.containsPoint(box2.bottomRight))
-            return true;
-         if(box2.containsPoint(box1.topLeft))
-            return true;
-         if(box2.containsPoint(box1.bottomRight))
-            return true;
-         return false;
+         return box1.intersects(box2);
       }
+      
+      /**
+      * Tests the local boxVsBox function. This called when this class is 
+      * instantiated to verify the function works as expected. It should be
+      * moved to an external unit test.
+      */
+      private function boxVsBoxTest():void
+      {
+          //tall and skinny vs. short and fat. queue comedy.
+          var box1:Rectangle = new Rectangle(0, 45, 100, 10);
+          var box2:Rectangle = new Rectangle(45, 0, 10, 100);
+          
+          if (!boxVsBox(box1, box2) || !boxVsBox(box2, box1))
+            throw Error("tall skinny box 1 vs. short fat box 2 failure");
+
+          //fully overlapping
+          box1 = new Rectangle(0, 0, 100, 100);
+          box2 = new Rectangle(0, 0, 100, 100);
+
+          if (!boxVsBox(box1, box2) || !boxVsBox(box2, box1))
+            throw new Error("box 1 overlaps box 2 failure");
+
+          //containing each other
+          box1 = new Rectangle(0, 0, 100, 100);
+          box2 = new Rectangle(45, 45, 10, 10);
+
+          if (!boxVsBox(box1, box2) || !boxVsBox(box2, box1))
+            throw new Error("box 1 fully contains box 2 failure");
+            
+          //topLeft
+          box2 = new Rectangle(45, 45, 100, 100);
+          
+          if (!boxVsBox(box1, box2) || !boxVsBox(box2, box1))
+            throw new Error("box 1 contains box 2 topLeft failure");
+          
+          //topRight
+          box2 = new Rectangle(-45, 45, 100, 100);
+          
+          if (!boxVsBox(box1, box2) || !boxVsBox(box2, box1))
+            throw new Error("box 1 contains box 2 topRight failure");
+          
+          //bottomLeft
+          box2 = new Rectangle(45, -45, 100, 100);
+          
+          if (!boxVsBox(box1, box2) || !boxVsBox(box2, box1))
+            throw new Error("box 1 contains box 2 bottomLeft failure");
+          
+          //bottomRight
+          box2 = new Rectangle(-45, -45, 100, 100);
+          
+          if (!boxVsBox(box1, box2) || !boxVsBox(box2, box1))
+            throw new Error("box 1 contains box 2 bottomRight failure");
+            
+          //negative test
+          box1 = new Rectangle(0, 0, 100, 100);
+          box2 = new Rectangle(-101, -101, 100, 100);
+
+          if (boxVsBox(box1, box2) || boxVsBox(box2, box1))
+            throw new Error("negative test failure");
+      }
+      
+      private function getScratchPoint(x:Number, y:Number):Point
+      {
+          _scratchPoint.x = x;
+          _scratchPoint.y = y;
+          return _scratchPoint;
+      }
+      
       /**
        * @inheritDoc
        */
