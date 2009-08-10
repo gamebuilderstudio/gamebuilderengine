@@ -252,6 +252,6 @@ package com.pblabs.rendering2D
          return false;
       }
       
-      private var _objectList:Array = new Array();
+      protected var _objectList:Array = new Array();
    }
 }
