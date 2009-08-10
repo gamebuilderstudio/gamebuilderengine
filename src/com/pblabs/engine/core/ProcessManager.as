@@ -187,23 +187,24 @@ package com.pblabs.engine.core
          schedule.callback = callback;
          schedule.arguments = arguments;
 
-         // Find where to insert this item in the array.
-         // We'll place it before the first item that is scheduled further out.
-         // By keeping this array ordered we only have to iterate over schedules that are due at a given tick.
+         //find where to insert this item in the array.
+         //we'll place it before the first item that is scheduled further out.
+         //by keeping this array ordered we only have to iterate over schedules that are due at a given tick.
+         var spliced:Boolean = false;
          for (var i:int = 0; i < scheduleEvents.length; i++)
          {
             var s:ScheduleObject = scheduleEvents[i];
             if (s.dueTime > schedule.dueTime)
             {
-               scheduleEvents.splice(i, 0, schedule); 
-               break;
-            }
-            else if (i == scheduleEvents.length - 1)
-            {
-               scheduleEvents.push(schedule);
+               scheduleEvents.splice(i, 0, schedule);
+               spliced = true;
                break;
             }
          }
+        
+         //no schedules were found further out (or this is the first schedule). append to the end!
+         if (!spliced)
+            scheduleEvents.push(schedule);
       }
       
       /**
