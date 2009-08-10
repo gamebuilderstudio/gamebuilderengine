@@ -117,13 +117,6 @@ package com.pblabs.rendering2D
             throw new Error("negative test failure");
       }
       
-      private function getScratchPoint(x:Number, y:Number):Point
-      {
-          _scratchPoint.x = x;
-          _scratchPoint.y = y;
-          return _scratchPoint;
-      }
-      
       /**
        * @inheritDoc
        */
