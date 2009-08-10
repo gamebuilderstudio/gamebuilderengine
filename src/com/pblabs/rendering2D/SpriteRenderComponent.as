@@ -1,4 +1,4 @@
-/*******************************************************************************
+﻿/*******************************************************************************
  * PushButton Engine
  * Copyright (C) 2009 PushButton Labs, LLC
  * For more information see http://www.pushbuttonengine.com
@@ -235,6 +235,9 @@ package com.pblabs.rendering2D
       
       protected function getCurrentFrame():BitmapData
       {
+         if (!_spriteSheet || !_spriteSheet.isLoaded)
+            return null;
+            
          return _spriteSheet.getFrame(_spriteIndex);
       }
       
