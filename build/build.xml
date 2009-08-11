@@ -20,6 +20,12 @@
 
     Make sure you change the path of the Flex SDK and if you are on a PC you will need
     to add ".exe" to the asdoc.exe and compc.exe properties.
+    
+    NOTE: There is a bug with the 3.4.0 SDK that ships with the Flash Builder 4 Beta.
+    Basically ASDoc doesn't work in our situation. Use the release version of the SDK 
+    or the 4.0 version and the build will work.
+    http://bugs.adobe.com/jira/browse/SDK-20449
+    
 -->
 <project name="PBEngineSDK" default="compile" basedir=".">
    <dirname property="buildFilesDir" file="${ant.file.PBEngineSDK}" />
@@ -112,7 +118,7 @@
 
    <target name="generateDocs" description="Generates docs" depends="cleanDocs,identifyClasses">
       <echo>Generating documentation for '${docsdir}'...</echo>
-      <exec executable="${asdoc}">
+      <exec executable="${asdoc}" failonerror="true">
          <arg line="-source-path &quot;${classesdir}&quot;" />
          <arg line="-doc-classes ${path.classes}" />
          <arg line="-exclude-dependencies=true" />
@@ -138,7 +144,7 @@
 
    <target name="generateSWC" description="Generates PBEngine SWC." unless="isUpToDate" depends="printUpToDate,identifyClasses">
       <echo>Generating PBEngine.SWC using '${classesdir}'</echo>
-      <exec executable="${compc}">
+      <exec executable="${compc}" failonerror="true">
          <arg line="-source-path &quot;${classesdir}&quot;" />
          <arg line="-output &quot;${bindir}/PBEngine.swc&quot;" />
          <arg line="-include-classes ${path.classes}" />
@@ -193,7 +199,7 @@
          currentProject.rootFile - .as or .mxml file that is entry point.
       -->
       <echo>Building ${currentProjectName} in ${currentProjectRootDir} from ${currentProjectRootFile}</echo>
-      <exec executable="${mxmlc}">
+      <exec executable="${mxmlc}" failonerror="true">
          <arg line="-source-path+=&quot;${currentProjectRootDir}/src&quot; " />
          <arg line="-library-path+=&quot;${buildFilesDir}/../bin&quot;" />
          <arg line="--keep-as3-metadata+=TypeHint,EditorData,Embed" />
