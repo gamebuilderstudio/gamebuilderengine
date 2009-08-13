@@ -10,7 +10,6 @@
         <![CDATA[
             import com.pblabs.engine.unitTests.PBEngineTestSuite;
             import com.pblabs.engine.core.Global;
-            import net.digitalprimates.fluint.monitor.TestMonitor;
             
             protected function startTestProcess( event:Event ) : void 
             {
@@ -23,7 +22,7 @@
         ]]>
     </mx:Script>
     
-    <fluint:TestResultDisplay testMonitor="{testRunner.testMonitor}" width="100%" height="100%" />
+    <fluint:PatchedTestResultDisplay testMonitor="{testRunner.testMonitor}" width="100%" height="100%" />
     <fluint:TestEnvironment id="testEnvironment"/>
     <fluint:TestRunner id="testRunner" testEnvironment="{testEnvironment}"/>
 </mx:Application>
