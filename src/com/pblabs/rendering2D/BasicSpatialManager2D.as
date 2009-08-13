@@ -62,7 +62,7 @@ package com.pblabs.rendering2D
       * instantiated to verify the function works as expected. It should be
       * moved to an external unit test.
       */
-      private function boxVsBoxTest():void
+      public function boxVsBoxTest():void
       {
           //tall and skinny vs. short and fat. queue comedy.
           var box1:Rectangle = new Rectangle(0, 45, 100, 10);

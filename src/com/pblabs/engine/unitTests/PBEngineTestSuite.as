@@ -33,6 +33,7 @@ package com.pblabs.engine.unitTests
          addTestCase(new LevelTests());
          addTestCase(new ResourceTests());
          addTestCase(new ProcessTests());
+         addTestCase(new Rendering2DTests());
          addTestCase(new InputTests());
       }
    }
