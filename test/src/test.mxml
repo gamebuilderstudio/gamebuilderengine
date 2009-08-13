@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application 
+    xmlns:mx="http://www.adobe.com/2006/mxml" 
+    xmlns:fluint="net.digitalprimates.fluint.ui.*"
+    layout="absolute"
+    applicationComplete="startTestProcess(event)"
+    width="100%" height="100%">
+    
+    <mx:Script>
+        <![CDATA[
+            import com.pblabs.engine.unitTests.PBEngineTestSuite;
+            import com.pblabs.engine.core.Global;
+            import net.digitalprimates.fluint.monitor.TestMonitor;
+            
+            protected function startTestProcess( event:Event ) : void 
+            {
+                Global.startup(this);
+                
+                var suiteArray:Array = new Array();
+                suiteArray.push( new PBEngineTestSuite("") );
+                testRunner.startTests( suiteArray );
+            }
+        ]]>
+    </mx:Script>
+    
+    <fluint:TestResultDisplay testMonitor="{testRunner.testMonitor}" width="100%" height="100%" />
+    <fluint:TestEnvironment id="testEnvironment"/>
+    <fluint:TestRunner id="testRunner" testEnvironment="{testEnvironment}"/>
+</mx:Application>
