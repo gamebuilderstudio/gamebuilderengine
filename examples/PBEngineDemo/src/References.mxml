@@ -153,6 +153,8 @@
    <pb:TypeReference type="com.pblabs.rendering2D.SimpleSpatialComponent"/>
    <pb:TypeReference type="com.pblabs.rendering2D.SpriteRenderComponent"/>
    <pb:TypeReference type="com.pblabs.rendering2D.SpriteSheetComponent"/>
+   <pb:TypeReference type="com.pblabs.rendering2D.SWFSpriteSheetComponent"/>
+   <pb:TypeReference type="com.pblabs.rendering2D.SWFRenderComponent"/>
    <pb:TypeReference type="com.pblabs.rendering2D.ui.FlexSceneView"/>
    <pb:TypeReference type="com.pblabs.rendering2D.ui.IUITarget"/>
    <pb:TypeReference type="com.pblabs.rendering2D.ui.SceneView"/>

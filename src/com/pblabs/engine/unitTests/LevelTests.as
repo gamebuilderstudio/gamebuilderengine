@@ -29,12 +29,12 @@ package com.pblabs.engine.unitTests
       {
          Logger.printHeader(null, "Running Level Loading and Instantiating Test");
          
-         TemplateManager.instance.addEventListener(TemplateManager.LOADED_EVENT, onLevelLoaded);
-         TemplateManager.instance.addEventListener(TemplateManager.FAILED_EVENT, onLevelLoadFailed);
+         TemplateManager.instance.addEventListener(TemplateManager.LOADED_EVENT, asyncHandler( onLevelLoaded, 2000 ));
+         //TemplateManager.instance.addEventListener(TemplateManager.FAILED_EVENT, asyncHandler( onLevelLoadFailed, 2000 ));
          TemplateManager.instance.loadFile(PBEngineTestSuite.testLevel);
       }
       
-      private function onLevelLoaded(event:Event):void
+      private function onLevelLoaded(event:Event, passthru:Object):void
       {
          assertTrue(TemplateManager.instance.getXML("TestTemplate1"));
          assertTrue(TemplateManager.instance.getXML("TestTemplate2"));
@@ -123,9 +123,9 @@ package com.pblabs.engine.unitTests
          Logger.printFooter(null, "");
       }
       
-      private var _testValueAReference:PropertyReference = new PropertyReference("@A.TestValue");
-      private var _testValueA2Reference:PropertyReference = new PropertyReference("@A2.TestValue");
-      private var _testComplexXReference:PropertyReference = new PropertyReference("@B.TestComplex.x");
-      private var _testComplexYReference:PropertyReference = new PropertyReference("@B.TestComplex.y");
+      private var _testValueAReference:PropertyReference = new PropertyReference("@A.testValue");
+      private var _testValueA2Reference:PropertyReference = new PropertyReference("@A2.testValue");
+      private var _testComplexXReference:PropertyReference = new PropertyReference("@B.testComplex.x");
+      private var _testComplexYReference:PropertyReference = new PropertyReference("@B.testComplex.y");
    }
 }
