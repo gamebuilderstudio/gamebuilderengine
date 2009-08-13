@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" width="800" height="600" implements="net.digitalprimates.fluint.modules.ITestSuiteModule">
+	
+    <mx:Script>
+        <![CDATA[
+            import com.pblabs.engine.unitTests.PBEngineTestSuite;
+            import net.digitalprimates.fluint.modules.ITestSuiteModule;
+            import com.pblabs.engine.core.Global;
+            
+            var testResources:TestResources = new TestResources();
+
+            public function getTestSuites():Array
+            {
+                Global.startup(this);
+
+                var suiteArray:Array = new Array();
+                suiteArray.push( new  PBEngineTestSuite("../assets/testLevel.xml") );
+                
+                return suiteArray;
+            }
+            
+        ]]>
+    </mx:Script>
+</mx:Module>
