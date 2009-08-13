@@ -4,19 +4,21 @@
     xmlns:fluint="net.digitalprimates.fluint.ui.*"
     layout="absolute"
     applicationComplete="startTestProcess(event)"
-    width="100%" height="100%">
+    width="1024" height="768">
     
     <mx:Script>
         <![CDATA[
             import com.pblabs.engine.unitTests.PBEngineTestSuite;
             import com.pblabs.engine.core.Global;
             
+            var testResources:TestResources = new TestResources();
+            
             protected function startTestProcess( event:Event ) : void 
             {
                 Global.startup(this);
                 
                 var suiteArray:Array = new Array();
-                suiteArray.push( new PBEngineTestSuite("") );
+                suiteArray.push( new PBEngineTestSuite("../assets/testLevel.xml") );
                 testRunner.startTests( suiteArray );
             }
         ]]>
