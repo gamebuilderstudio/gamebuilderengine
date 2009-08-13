@@ -34,7 +34,7 @@ package com.pblabs.engine.core
       /**
        * The number of ticks that will happen every second.
        */
-      public static const TICKS_PER_SECOND:int = 30;
+      public static const TICKS_PER_SECOND:int = 32;
       
       /**
        * The rate at which ticks are fired, in seconds.
@@ -259,7 +259,7 @@ package com.pblabs.engine.core
        */
       public function testAdvance(amount:Number):void
       {
-         advance(amount * _timeScale);
+         advance(amount * _timeScale, true);
       }
       
       private function get listenerCount():int
@@ -331,11 +331,11 @@ package com.pblabs.engine.core
           lastTime = currentTime;
       }
       
-      private function advance(deltaTime:Number):void
+      private function advance(deltaTime:Number, suppressSafety:Boolean = false):void
       {
           elapsed += deltaTime;
           
-          var startTime:Number = virtualTime;
+          var startTime:Number = _virtualTime;
           
           Profiler.ensureAtRoot();
           
@@ -344,7 +344,7 @@ package com.pblabs.engine.core
           for (var i:int = 0; i < scheduleEvents.length; i++)
           {
               var schedule:ScheduleObject = scheduleEvents[i];
-              if (schedule.dueTime <= _virtualTime)
+              if (schedule.dueTime <= _virtualTime + deltaTime)
               {
                   schedule.callback.apply(schedule.thisObject, schedule.arguments);
                   scheduleEvents.splice(i, 1);
@@ -361,7 +361,7 @@ package com.pblabs.engine.core
           
           // Perform ticks.
           var tickCount:int = 0;
-          while (elapsed >= TICK_RATE_MS && tickCount < MAX_TICKS_PER_FRAME)
+          while (elapsed >= TICK_RATE_MS && (suppressSafety || tickCount < MAX_TICKS_PER_FRAME))
           {
               _interpolationFactor = 0.0;
               
@@ -382,7 +382,7 @@ package com.pblabs.engine.core
           }
           
           // Safety net - don't do more than a few ticks per frame to avoid death spirals.
-          if (tickCount >= MAX_TICKS_PER_FRAME)
+          if (tickCount >= MAX_TICKS_PER_FRAME && !suppressSafety)
           {
               elapsed = 0;
               Logger.printWarning(this, "Advance", "Exceeded maximum number of ticks for this frame.");

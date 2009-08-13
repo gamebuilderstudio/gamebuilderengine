@@ -335,7 +335,7 @@ package com.pblabs.engine.core
          if (!_things[name])
             throw new Error("No such thing '" + name + "'!");
             
-         if (!_things[name].EntityCallback)
+         if (!_things[name].entityCallback)
             throw new Error("Thing '" + name + "' is not an entity callback!");
          
          _things[name] = null;

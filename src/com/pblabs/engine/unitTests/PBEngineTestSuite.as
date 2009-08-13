@@ -30,7 +30,7 @@ package com.pblabs.engine.unitTests
          
          addTestCase(new SanityTests());
          addTestCase(new ComponentTests());
-         addTestCase(new LevelTests());
+         //addTestCase(new LevelTests());
          addTestCase(new ResourceTests());
          addTestCase(new ProcessTests());
          addTestCase(new InputTests());

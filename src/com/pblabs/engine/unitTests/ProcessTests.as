@@ -142,7 +142,7 @@ class AnimateTest implements IAnimatedObject
 
 class TickTest implements ITickedObject
 {
-   public static var Counter:int = 5;
+   public static var counter:int = 5;
    
    public var testPriority:Boolean = true;
    public var testCount:Boolean = false;
@@ -166,13 +166,13 @@ class TickTest implements ITickedObject
    {
       if (testPriority)
       {
-         if (Counter == -1)
+         if (counter == -1)
             throw new Error("Objects not removed from process list!");
          
-         if (Counter != _priority)
+         if (counter != _priority)
             throw new Error("Incorrect tick order!");
       
-         Counter--;
+         counter--;
       }
       else if (testCount)
       {

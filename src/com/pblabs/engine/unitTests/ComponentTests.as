@@ -98,6 +98,7 @@ package com.pblabs.engine.unitTests
          
          TemplateManager.instance.addXML(_testXML, "UnitTestXML", 1);
          var entity:IEntity = TemplateManager.instance.instantiateEntity("XMLTestEntity");
+         assertNotNull(entity, "Should have gotten something back from TemplateManager!");
          assertEquals(entity, NameManager.instance.lookup("XMLTestEntity"));
          
          var a:TestComponentA = entity.lookupComponentByName("A") as TestComponentA;
@@ -161,22 +162,22 @@ package com.pblabs.engine.unitTests
       }
     
       
-      private var _testValueReference:PropertyReference = new PropertyReference("@A.TestValue");
+      private var _testValueReference:PropertyReference = new PropertyReference("@A.testValue");
       private var _testComplexXReference:PropertyReference = new PropertyReference("@B.testComplex.x");
       private var _testComplexYReference:PropertyReference = new PropertyReference("@B.testComplex.y");
-      private var _nonexistentReference:PropertyReference = new PropertyReference("@A.Nonexistent");
-      private var _malformedReference:PropertyReference = new PropertyReference("Malformed");
+      private var _nonexistentReference:PropertyReference = new PropertyReference("@A.nonexistent");
+      private var _malformedReference:PropertyReference = new PropertyReference("malformed");
       
       private var _testXML:XML = 
          <entity name="XMLTestEntity">
             <component type="com.pblabs.engine.unitTestHelper.TestComponentA" name="A">
-               <TestValue>7</TestValue>
+               <testValue>7</testValue>
             </component>
             <component type="com.pblabs.engine.unitTestHelper.TestComponentB" name="B">
-               <TestComplex>
+               <testComplex>
                   <x>4</x>
                   <y>9.3</y>
-               </TestComplex>
+               </testComplex>
             </component>
          </entity>;
    }
