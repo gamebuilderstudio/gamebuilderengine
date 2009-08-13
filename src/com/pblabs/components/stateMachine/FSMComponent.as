@@ -14,6 +14,11 @@ package com.pblabs.components.stateMachine
          */ 
         public var stateMachine:Machine;
         
+        /**
+         * If true, don't advance state machine logic.
+         */
+        public var paused:Boolean = false;
+        
         override protected function onAdd():void
         {
             super.onAdd();
@@ -32,6 +37,9 @@ package com.pblabs.components.stateMachine
         
         override public function onTick(tickRate:Number) : void
         {
+            if(paused)
+                return;
+            
             if(stateMachine)
                 stateMachine.tick();
         }

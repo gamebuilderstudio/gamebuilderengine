@@ -75,6 +75,11 @@ package com.pblabs.rendering2D
          * Property to set with name of sprite sheet.
          */
         public var spriteSheetReference:PropertyReference;
+        
+        /**
+         * If true, do not advance the animation state.
+         */
+        public var paused:Boolean = false;
 
         /**
          * Contains the currently playing animation if any.
@@ -86,6 +91,9 @@ package com.pblabs.rendering2D
 
         override public function onFrame(elapsed:Number):void
         {
+            if(paused)
+                return;
+            
             // Check for a new animation.
             var nextAnim:AnimationControllerInfo = null;
             if (currentAnimationReference)
