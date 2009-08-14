@@ -6,7 +6,7 @@
  * This file is licensed under the terms of the MIT license, which is included
  * in the License.html file at the root directory of this SDK.
  ******************************************************************************/
-package tests
+package com.pblabs.engine.tests
 {
     import com.pblabs.engine.core.NameManager;
     import com.pblabs.engine.core.TemplateManager;
@@ -18,9 +18,6 @@ package tests
     import flash.geom.Point;
 
     import flexunit.framework.Assert;
-
-    import tests.helpers.TestComponentA;
-    import tests.helpers.TestComponentB;
 
     /**
      * @private
@@ -34,10 +31,10 @@ package tests
         private var _malformedReference:PropertyReference = new PropertyReference("malformed");
 
         private var _testXML:XML = <entity name="XMLTestEntity">
-                <component type="tests.helpers.TestComponentA" name="A">
+                <component type="com.pblabs.engine.tests.TestComponentA" name="A">
                     <testValue>7</testValue>
                 </component>
-                <component type="tests.helpers.TestComponentB" name="B">
+                <component type="com.pblabs.engine.tests.TestComponentB" name="B">
                     <testComplex>
                         <x>4</x>
                         <y>9.3</y>

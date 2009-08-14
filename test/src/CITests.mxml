@@ -3,7 +3,7 @@
 	<mx:Script>
 		<![CDATA[
 	        import net.digitalprimates.fluint.unitTests.frameworkSuite.FrameworkSuite;
-			import tests.PBEngineTestSuite;
+			import com.pblabs.PBEngineTestSuite;
 			import net.digitalprimates.fluint.modules.ITestSuiteModule;
 			import com.pblabs.engine.core.Global;
 

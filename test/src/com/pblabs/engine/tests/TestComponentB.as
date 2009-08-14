@@ -6,21 +6,24 @@
  * This file is licensed under the terms of the MIT license, which is included
  * in the License.html file at the root directory of this SDK.
  ******************************************************************************/
-package tests.helpers
+package com.pblabs.engine.tests
 {
     import com.pblabs.engine.entity.EntityComponent;
-    import com.pblabs.engine.entity.IEntity;
-    import com.pblabs.engine.entity.IEntityComponent;
+    import com.pblabs.engine.entity.PropertyReference;
+
+    import flash.geom.Point;
 
     /**
      * @private
      */
-    public class TestComponentA extends EntityComponent
+    public class TestComponentB extends EntityComponent
     {
-        public var testValue:int = 0;
-        public var namedReference:IEntity = null;
-        public var instantiatedReference:IEntity = null;
-        public var componentReference:TestComponentB = null;
-        public var namedComponentReference:IEntityComponent = null;
+        public var testComplex:Point = null;
+        public var aTestValueReference:PropertyReference = new PropertyReference();
+
+        public function getTestValueFromA():int
+        {
+            return owner.getProperty(aTestValueReference);
+        }
     }
 }

@@ -9,7 +9,7 @@
 
             import org.flexunit.runner.FlexUnitCore;
 
-            import tests.PBEngineTestSuite;
+            import com.pblabs.PBEngineTestSuite;
             import com.pblabs.engine.core.Global;
 
             var testResources:TestResources = new TestResources();

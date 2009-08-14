@@ -1,6 +1,6 @@
 <things version="1">
         <template name="TestTemplate1">
-                <component type="tests.helpers.TestComponentA" name="A">
+                <component type="com.pblabs.engine.tests.TestComponentA" name="A">
                         <TestValue>19</TestValue>
                 </component>
         </template>
@@ -9,7 +9,7 @@
                 <component name="A">
                         <TestValue>43</TestValue>
                 </component>
-                <component type="tests.helpers.TestComponentB" name="B">
+                <component type="com.pblabs.engine.tests.TestComponentB" name="B">
                         <TestComplex>
                                 <x>8.237</x>
                                 <y>12.4</y>
@@ -24,10 +24,10 @@
         </template>
 
         <entity name="TestEntity1">
-                <component type="tests.helpers.TestComponentA" name="A">
+                <component type="com.pblabs.engine.tests.TestComponentA" name="A">
                         <TestValue>14</TestValue>
                 </component>
-                <component type="tests.helpers.TestComponentB" name="B">
+                <component type="com.pblabs.engine.tests.TestComponentB" name="B">
                         <aTestValueReference>@A.testValue</aTestValueReference>
                         <testComplex>
                                 <x>81.347</x>
@@ -44,7 +44,7 @@
                         <ComponentReference componentReference="TestEntity1"/>
                         <NamedComponentReference componentReference="TestEntity1" componentName="B"/>
                 </component>
-                <component type="tests.helpers.TestComponentA" name="A2">
+                <component type="com.pblabs.engine.tests.TestComponentA" name="A2">
                         <TestValue>1036</TestValue>
                 </component>
         </entity>

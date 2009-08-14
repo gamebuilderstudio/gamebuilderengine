@@ -6,7 +6,7 @@
  * This file is licensed under the terms of the MIT license, which is included
  * in the License.html file at the root directory of this SDK.
  ******************************************************************************/
-package tests
+package com.pblabs.engine.tests
 {
    import com.pblabs.engine.core.NameManager;
    import com.pblabs.engine.core.TemplateManager;
@@ -20,8 +20,7 @@ package tests
    
    import org.flexunit.async.Async;
    
-   import tests.helpers.TestComponentA;
-   import tests.helpers.TestComponentB;
+   import com.pblabs.PBEngineTestSuite;
 
    /**
     * @private
