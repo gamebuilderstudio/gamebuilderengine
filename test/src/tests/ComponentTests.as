@@ -8,24 +8,26 @@
  ******************************************************************************/
 package tests
 {
-   import com.pblabs.engine.entity.allocateEntity;
+   import com.pblabs.engine.core.NameManager;
+   import com.pblabs.engine.core.TemplateManager;
+   import com.pblabs.engine.debug.Logger;
    import com.pblabs.engine.entity.IEntity;
    import com.pblabs.engine.entity.PropertyReference;
-   import com.pblabs.engine.core.TemplateManager;
-   import com.pblabs.engine.core.NameManager;
-   import com.pblabs.engine.debug.Logger;
-   import tests.helpers.TestComponentA;
-   import tests.helpers.TestComponentB;
+   import com.pblabs.engine.entity.allocateEntity;
    
    import flash.geom.Point;
    
-   import net.digitalprimates.fluint.tests.TestCase;
+   import flexunit.framework.Assert;
+   
+   import tests.helpers.TestComponentA;
+   import tests.helpers.TestComponentB;
    
    /**
     * @private
     */
-   public class ComponentTests extends TestCase
+   public class ComponentTests
    {
+   [Test]
       public function testComponents():void
       {
          Logger.printHeader(null, "Running Component Test");
@@ -33,34 +35,35 @@ package tests
          var entity:IEntity = allocateEntity();
          entity.initialize("TestEntity");
          
-         assertEquals(entity, NameManager.instance.lookup("TestEntity"));
+         Assert.assertEquals(entity, NameManager.instance.lookup("TestEntity"));
          
          var a:TestComponentA = new TestComponentA();
          var b:TestComponentB = new TestComponentB();
          
          entity.addComponent(a, "A");
-         assertTrue(a.isRegistered);
-         assertFalse(b.isRegistered);
+         Assert.assertTrue(a.isRegistered);
+         Assert.assertFalse(b.isRegistered);
          
          entity.addComponent(b, "B");
          
-         assertEquals(a, entity.lookupComponentByName("A"));
-         assertEquals(a, entity.lookupComponentByType(TestComponentA));
-         assertEquals(null, entity.lookupComponentByName("C"));
+         Assert.assertEquals(a, entity.lookupComponentByName("A"));
+         Assert.assertEquals(a, entity.lookupComponentByType(TestComponentA));
+         Assert.assertEquals(null, entity.lookupComponentByName("C"));
          
          entity.removeComponent(a);
-         assertTrue(b.isRegistered);
-         assertFalse(a.isRegistered);
-         assertEquals(null, entity.lookupComponentByName("A"));
-         assertEquals(null, entity.lookupComponentByType(TestComponentA));
+         Assert.assertTrue(b.isRegistered);
+         Assert.assertFalse(a.isRegistered);
+         Assert.assertEquals(null, entity.lookupComponentByName("A"));
+         Assert.assertEquals(null, entity.lookupComponentByType(TestComponentA));
          
          entity.destroy();
-         assertEquals(null, entity.lookupComponentByName("B"));
-         assertEquals(null, NameManager.instance.lookup("TestEntity"));
+         Assert.assertEquals(null, entity.lookupComponentByName("B"));
+         Assert.assertEquals(null, NameManager.instance.lookup("TestEntity"));
          
          Logger.printFooter(null, "");
       }
       
+   [Test]
       public function testProperties():void
       {
          Logger.printHeader(null, "Running Component Property Test");
@@ -74,50 +77,52 @@ package tests
          entity.addComponent(b, "B");
          
          a.testValue = 126;
-         assertEquals(126, entity.getProperty(_testValueReference));
+         Assert.assertEquals(126, entity.getProperty(_testValueReference));
          entity.setProperty(_testValueReference, 834);
-         assertEquals(834, a.testValue);
+         Assert.assertEquals(834, a.testValue);
          
          b.testComplex = new Point(4.593, 81.287);
-         assertEquals(4.593, entity.getProperty(_testComplexXReference));
-         assertEquals(81.287, entity.getProperty(_testComplexYReference));
+         Assert.assertEquals(4.593, entity.getProperty(_testComplexXReference));
+         Assert.assertEquals(81.287, entity.getProperty(_testComplexYReference));
          entity.setProperty(_testComplexXReference, 7.239);
          entity.setProperty(_testComplexYReference, 212.923);
-         assertEquals(7.239, b.testComplex.x);
-         assertEquals(212.923, b.testComplex.y);
+         Assert.assertEquals(7.239, b.testComplex.x);
+         Assert.assertEquals(212.923, b.testComplex.y);
          
-         assertEquals(null, entity.getProperty(_nonexistentReference));
-         assertEquals(null, entity.getProperty(_malformedReference));
+         Assert.assertEquals(null, entity.getProperty(_nonexistentReference));
+         Assert.assertEquals(null, entity.getProperty(_malformedReference));
          
          Logger.printFooter(null, "");
       }
       
+   [Test]
       public function testSerialization():void
       {
          Logger.printHeader(null, "Running Component Serialization Test");
          
          TemplateManager.instance.addXML(_testXML, "UnitTestXML", 1);
          var entity:IEntity = TemplateManager.instance.instantiateEntity("XMLTestEntity");
-         assertNotNull(entity, "Should have gotten something back from TemplateManager!");
-         assertEquals(entity, NameManager.instance.lookup("XMLTestEntity"));
+         Assert.assertNotNull(entity, "Should have gotten something back from TemplateManager!");
+         Assert.assertEquals(entity, NameManager.instance.lookup("XMLTestEntity"));
          
          var a:TestComponentA = entity.lookupComponentByName("A") as TestComponentA;
          var b:TestComponentB = entity.lookupComponentByType(TestComponentB) as TestComponentB;
-         assertTrue(a);
-         assertTrue(b);
+         Assert.assertTrue(a);
+         Assert.assertTrue(b);
          
-         assertEquals(7, a.testValue);
-         assertEquals(4, b.testComplex.x);
-         assertEquals(9.3, b.testComplex.y);
+         Assert.assertEquals(7, a.testValue);
+         Assert.assertEquals(4, b.testComplex.x);
+         Assert.assertEquals(9.3, b.testComplex.y);
          
          entity.destroy();
          
          TemplateManager.instance.removeXML("UnitTestXML");
-         assertEquals(null, TemplateManager.instance.getXML("XMLTestEntity"));
+         Assert.assertEquals(null, TemplateManager.instance.getXML("XMLTestEntity"));
          
          Logger.printFooter(null, "");
       }
       
+   [Test]
       public function testSerializationCallbacks():void
       {
          Logger.printHeader(null, "Running TemplateManager Entity/Group Callbacks Test");
@@ -126,18 +131,18 @@ package tests
          TemplateManager.instance.registerGroupCallback("TestGroupCallback", groupCallback);
          
          var e:IEntity = TemplateManager.instance.instantiateEntity("TestEntityCallback");
-         assertTrue(e);
-         assertTrue(e.lookupComponentByType(TestComponentA));
-         assertTrue(e.lookupComponentByType(TestComponentB));
+         Assert.assertTrue(e);
+         Assert.assertTrue(e.lookupComponentByType(TestComponentA));
+         Assert.assertTrue(e.lookupComponentByType(TestComponentB));
          
          var g:Array = TemplateManager.instance.instantiateGroup("TestGroupCallback");
-         assertTrue(g.length == 3);
+         Assert.assertTrue(g.length == 3);
          
          TemplateManager.instance.unregisterEntityCallback("TestEntityCallback");
          TemplateManager.instance.unregisterGroupCallback("TestGroupCallback");
          
-         assertTrue(!TemplateManager.instance.instantiateEntity("TestEntityCallback"));
-         assertTrue(!TemplateManager.instance.instantiateGroup("TestGroupCallback"));
+         Assert.assertTrue(!TemplateManager.instance.instantiateEntity("TestEntityCallback"));
+         Assert.assertTrue(!TemplateManager.instance.instantiateGroup("TestGroupCallback"));
          
          Logger.printFooter(null, "");
       }

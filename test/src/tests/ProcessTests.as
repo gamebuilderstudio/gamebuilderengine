@@ -11,29 +11,31 @@ package tests
    import com.pblabs.engine.core.ProcessManager;
    import com.pblabs.engine.debug.Logger;
    
-   import net.digitalprimates.fluint.tests.TestCase;
-   
+   import flexunit.framework.Assert;
+
    /**
     * @private
     */
-   public class ProcessTests extends TestCase
+   public class ProcessTests
    {
+   	  [Test]
       public function testAnimatedProcess():void
       {
          var animatedObject:AnimateTest = new AnimateTest();
          ProcessManager.instance.addAnimatedObject(animatedObject);
-         
+
          ProcessManager.instance.testAdvance(200);
-         assertEquals(animatedObject.elapsed, 200 / 1000);
+         Assert.assertEquals(animatedObject.elapsed, 200 / 1000);
          
          ProcessManager.instance.timeScale = 0.5;
          ProcessManager.instance.testAdvance(200);
-         assertEquals(animatedObject.elapsed, 100 / 1000);
+         Assert.assertEquals(animatedObject.elapsed, 100 / 1000);
          ProcessManager.instance.timeScale = 1.0;
          
          ProcessManager.instance.removeAnimatedObject(animatedObject);
       }
       
+   	  [Test]
       public function testPriority():void
       {
          Logger.printHeader(null, "Running Process Priority Test");
@@ -63,6 +65,7 @@ package tests
          Logger.printFooter(null, "");
       }
       
+   	  [Test]
       public function testTickRate():void
       {
          Logger.printHeader(null, "Running Process Tick Rate Test");
@@ -73,13 +76,13 @@ package tests
          ProcessManager.instance.addTickedObject(tickObject);
          
          ProcessManager.instance.testAdvance((ProcessManager.TICK_RATE_MS * 4) + 8);
-         assertEquals(tickObject.tickCount, 4);
-         assertTrue(Math.abs(tickObject.interpolationFactor - 8.0 / ProcessManager.TICK_RATE_MS) < 0.001);
+         Assert.assertEquals(tickObject.tickCount, 4);
+         Assert.assertTrue(Math.abs(tickObject.interpolationFactor - 8.0 / ProcessManager.TICK_RATE_MS) < 0.001);
          
          ProcessManager.instance.timeScale = 0.5;
          ProcessManager.instance.testAdvance((ProcessManager.TICK_RATE_MS * 4) + 8);
-         assertEquals(tickObject.tickCount, 6);
-         assertTrue(Math.abs(tickObject.interpolationFactor - 12.0 / ProcessManager.TICK_RATE_MS) < 0.001);
+         Assert.assertEquals(tickObject.tickCount, 6);
+         Assert.assertTrue(Math.abs(tickObject.interpolationFactor - 12.0 / ProcessManager.TICK_RATE_MS) < 0.001);
          ProcessManager.instance.timeScale = 1.0;
          
          ProcessManager.instance.removeTickedObject(tickObject);
@@ -87,24 +90,25 @@ package tests
          Logger.printFooter(null, "");
       }
       
+   	  [Test]
       public function testSchedule():void
       {
          ProcessManager.instance.schedule(1000, this, onSchedule, 2, 7, 4, 3);
          ProcessManager.instance.testAdvance(999);
-         assertEquals(_scheduleCount, 0);
+         Assert.assertEquals(_scheduleCount, 0);
          ProcessManager.instance.testAdvance(1);
-         assertEquals(_scheduleCount, 1);
+         Assert.assertEquals(_scheduleCount, 1);
          ProcessManager.instance.testAdvance(1000);
-         assertEquals(_scheduleCount, 1);
+         Assert.assertEquals(_scheduleCount, 1);
          
          ProcessManager.instance.timeScale = 0.5;
          ProcessManager.instance.schedule(500, this, onSchedule, 2, 7, 4, 3);
          ProcessManager.instance.testAdvance(900);
-         assertEquals(_scheduleCount, 1);
+         Assert.assertEquals(_scheduleCount, 1);
          ProcessManager.instance.testAdvance(100);
-         assertEquals(_scheduleCount, 2);
+         Assert.assertEquals(_scheduleCount, 2);
          ProcessManager.instance.testAdvance(1000);
-         assertEquals(_scheduleCount, 2);
+         Assert.assertEquals(_scheduleCount, 2);
          ProcessManager.instance.timeScale = 1.0;
       }
       
@@ -112,10 +116,10 @@ package tests
       {
          _scheduleCount++;
          
-         assertEquals(two, 2);
-         assertEquals(seven, 7);
-         assertEquals(four, 4);
-         assertEquals(three, 3);
+         Assert.assertEquals(two, 2);
+         Assert.assertEquals(seven, 7);
+         Assert.assertEquals(four, 4);
+         Assert.assertEquals(three, 3);
       }
       
       private var _scheduleCount:int = 0;

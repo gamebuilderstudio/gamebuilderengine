@@ -10,13 +10,14 @@ package tests
 {
     import com.pblabs.engine.debug.Logger;
     
-    import net.digitalprimates.fluint.tests.TestCase;
+    import flexunit.framework.Assert;
     
    /**
     * @private
     */
-    public class SanityTests extends TestCase
+    public class SanityTests
     {
+      [Test]
       public function testNumericalStability():void
       {
          Logger.printHeader(null, "Running Numeric Stability Test");
@@ -31,15 +32,16 @@ package tests
          }
          
          for (var k:int = 0; k < 4; k++)
-            assertEquals(2.0, amounts[k]);
+            Assert.assertEquals(2.0, amounts[k]);
             
          Logger.printFooter(null, "");
       }
       
+      [Test]
       public function testMathDiscontinuities():void
       {
          Logger.printHeader(null, "Running Math Continuity Test");
-         assertEquals(1.0 / 0.0, Number.POSITIVE_INFINITY);
+         Assert.assertEquals(1.0 / 0.0, Number.POSITIVE_INFINITY);
          Logger.printFooter(null, "");
       }
     }

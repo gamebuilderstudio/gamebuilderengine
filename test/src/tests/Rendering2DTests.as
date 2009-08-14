@@ -10,16 +10,17 @@ package tests
 {
 	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.rendering2D.BasicSpatialManager2D;
-
+	
 	import flash.geom.Rectangle;
-
-	import net.digitalprimates.fluint.tests.TestCase;
+	
+	import flexunit.framework.Assert;
 
 	/**
 	 * @private
 	 */
-	public class Rendering2DTests extends TestCase
+	public class Rendering2DTests
 	{
+		[Test]
 		public function testBoxVsBox():void
 		{
 			Logger.printHeader(null, "Running BoxVsBox Test");
@@ -31,60 +32,60 @@ package tests
 			var box1:Rectangle=new Rectangle(0, 45, 100, 10);
 			var box2:Rectangle=new Rectangle(45, 0, 10, 100);
 
-			assertTrue(m.boxVsBox(box1, box2));
-			assertTrue(m.boxVsBox(box2, box1));
+			Assert.assertTrue(m.boxVsBox(box1, box2));
+			Assert.assertTrue(m.boxVsBox(box2, box1));
 
 			//fully overlapping
 			Logger.print(null, "Testing fully overlapping");
 			box1=new Rectangle(0, 0, 100, 100);
 			box2=new Rectangle(0, 0, 100, 100);
 
-			assertTrue(m.boxVsBox(box1, box2));
-			assertTrue(m.boxVsBox(box2, box1));
+			Assert.assertTrue(m.boxVsBox(box1, box2));
+			Assert.assertTrue(m.boxVsBox(box2, box1));
 
 			//containing each other
 			Logger.print(null, "Testing containing each other");
 			box1=new Rectangle(0, 0, 100, 100);
 			box2=new Rectangle(45, 45, 10, 10);
 
-			assertTrue(m.boxVsBox(box1, box2));
-			assertTrue(m.boxVsBox(box2, box1));
+			Assert.assertTrue(m.boxVsBox(box1, box2));
+			Assert.assertTrue(m.boxVsBox(box2, box1));
 
 			//topLeft
 			Logger.print(null, "Testing top left corner overlap");
 			box2=new Rectangle(45, 45, 100, 100);
 
-			assertTrue(m.boxVsBox(box1, box2));
-			assertTrue(m.boxVsBox(box2, box1));
+			Assert.assertTrue(m.boxVsBox(box1, box2));
+			Assert.assertTrue(m.boxVsBox(box2, box1));
 
 			//topRight
 			Logger.print(null, "Testing top right corner overlap");
 			box2=new Rectangle(-45, 45, 100, 100);
 
-			assertTrue(m.boxVsBox(box1, box2));
-			assertTrue(m.boxVsBox(box2, box1));
+			Assert.assertTrue(m.boxVsBox(box1, box2));
+			Assert.assertTrue(m.boxVsBox(box2, box1));
 
 			//bottomLeft
 			Logger.print(null, "Testing bottom left corner overlap");
 			box2=new Rectangle(45, -45, 100, 100);
 
-			assertTrue(m.boxVsBox(box1, box2));
-			assertTrue(m.boxVsBox(box2, box1));
+			Assert.assertTrue(m.boxVsBox(box1, box2));
+			Assert.assertTrue(m.boxVsBox(box2, box1));
 
 			//bottomRight
 			Logger.print(null, "Testing bottom right corner overlap");
 			box2=new Rectangle(-45, -45, 100, 100);
 
-			assertTrue(m.boxVsBox(box1, box2));
-			assertTrue(m.boxVsBox(box2, box1));
+			Assert.assertTrue(m.boxVsBox(box1, box2));
+			Assert.assertTrue(m.boxVsBox(box2, box1));
 
 			//negative test
 			Logger.print(null, "Testing negative condition");
 			box1=new Rectangle(0, 0, 100, 100);
 			box2=new Rectangle(-101, -101, 100, 100);
 
-			assertFalse(m.boxVsBox(box1, box2));
-			assertFalse(m.boxVsBox(box2, box1));
+			Assert.assertFalse(m.boxVsBox(box1, box2));
+			Assert.assertFalse(m.boxVsBox(box2, box1));
 
 			Logger.printFooter(null, "");
 		}

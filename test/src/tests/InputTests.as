@@ -12,13 +12,14 @@ package tests
    import com.pblabs.engine.core.InputManager;
    import com.pblabs.engine.core.InputMap;
    
-   import net.digitalprimates.fluint.tests.TestCase;
+   import flexunit.framework.Assert;
 
    /**
     * @private
     */
-   public class InputTests extends TestCase
+   public class InputTests
    {
+   	[Test]
       public function testInputMap():void
       {
          var inputMap:InputMap = new InputMap();
@@ -60,9 +61,9 @@ package tests
       
       private function validateInputs(space:Number, mouseButton:Number, mouseX:Boolean):void
       {
-         assertEquals(_spacePressed, space);
-         assertEquals(_mousePressed, mouseButton);
-         assertEquals(_mouseMoved, mouseX);
+         Assert.assertEquals(_spacePressed, space);
+         Assert.assertEquals(_mousePressed, mouseButton);
+         Assert.assertEquals(_mouseMoved, mouseX);
       }
       
       private var _spacePressed:Number = 0.0;

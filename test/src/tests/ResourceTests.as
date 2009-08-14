@@ -10,13 +10,14 @@ package tests
 {
    import com.pblabs.engine.debug.Logger;
    
-   import net.digitalprimates.fluint.tests.TestCase;
-   
+   import flexunit.framework.Test;
+
    /**
     * @private
     */
-   public class ResourceTests extends TestCase
+   public class ResourceTests
    {
+   	 [Test]
       public function testResourceLoad():void
       {
          Logger.printHeader(null, "Running Resource Load Test");

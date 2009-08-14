@@ -71,11 +71,6 @@
       </fileset>
    </path>
 
-   <!-- Fluint custom task for unit tests -->
-   <taskdef name="fluint"
-    classname="net.digitalprimates.ant.tasks.fluint.Fluint"
-    classpathref="localClasspath" />
-  
    <target name="ensureValidEnvironment">
       <condition property="buildPropertiesIsValid">
          <available file="${buildFilesDir}/build.properties"/>
@@ -230,24 +225,13 @@
          <arg line="--keep-as3-metadata+=TypeHint,EditorData,Embed,ResourceType" />
          <arg line="-compiler.optimize=true -use-network=false" />
          <arg line="-output &quot;${testRunDir}/pbetests.swf&quot;" />
-         <arg line="&quot;${testsdir}/src/CITests.mxml&quot;" />
+         <arg line="&quot;${testsdir}/src/test.mxml&quot;" />
          <arg line="-debug=${DEBUG}"/>
       </exec>
 
-      <fluint
-         debug="true"
-         headless="false"
-         failonerror="true"
-         workingDir="${testRunDir}"
-         testRunner="${fluintexe}"
-         outputDir="${testRunDir}">
-
-         <fileset dir="${testRunDir}">
-            <include name="**\\*.swf"/>
-         </fileset>
-      </fluint>
-      
-      <delete dir="${testRunDir}"></delete>
+   	  <echo>Tests located at "${testRunDir}/pbetests.swf"</echo>
+      <echo />
+   	  <echo>Soon this will run the tests in an AIR application.</echo>
    </target>
 
  </project>
