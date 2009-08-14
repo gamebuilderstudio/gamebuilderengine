@@ -42,13 +42,13 @@
    <property name="maintitle" value="PushButton Engine Documentation" />
    <property name="footer" value="http://pushbuttonengine.com/" />
 
-    <!-- Paths for the PBEngine SDK. -->
+   <!-- Paths for the PBEngine SDK. -->
    <property name="bindir" value="${rootDir}/bin" />
    <property name="classesdir" value="${rootDir}/src" />
    <property name="docsdir" value="${rootDir}/docs/api" />
    <property name="testsdir" value="${rootDir}/test" />
 
-  <!-- Infer the binary extensions. -->
+   <!-- Infer the binary extensions. -->
    <condition property="binaryExtension" value=".exe" else="">
       <or>
          <os family="windows"/>
@@ -57,12 +57,13 @@
       </or>
    </condition>
 
-    <!-- Paths for the Flex SDK. -->
+   <!-- Paths for the Flex SDK. -->
    <property name="flex3bindir" value="${flex3dir}/bin" />
    <property name="flex3libsdir" value="${flex3dir}/frameworks/libs" />
    <property name="asdoc" value="${flex3bindir}/asdoc${binaryExtension}" />
    <property name="compc" value="${flex3bindir}/compc${binaryExtension}" />
    <property name="mxmlc" value="${flex3bindir}/mxmlc${binaryExtension}" />
+   <property name="adl" value="${flex3bindir}/adl${binaryExtension}" />
 
    <!-- Local classpath useed for custom tasks -->
    <path id="localClasspath">
@@ -218,10 +219,12 @@
 
       <mkdir dir="${testRunDir}"></mkdir>
 
+      <!-- Build the tests as an AIR app. -->
       <exec executable="${mxmlc}" failonerror="true">
          <arg line="-source-path+=&quot;${testsdir}/src&quot; " />
          <arg line="-library-path+=&quot;${buildFilesDir}/../bin&quot;" />
          <arg line="-library-path+=&quot;${testsdir}/libs&quot;" />
+         <arg line="+configname=air" />
          <arg line="--keep-as3-metadata+=TypeHint,EditorData,Embed,ResourceType" />
          <arg line="-compiler.optimize=true -use-network=false" />
          <arg line="-output &quot;${testRunDir}/pbetests.swf&quot;" />
@@ -229,9 +232,15 @@
          <arg line="-debug=${DEBUG}"/>
       </exec>
 
+      <echo />
+      <echo />
    	  <echo>Tests located at "${testRunDir}/pbetests.swf"</echo>
       <echo />
-   	  <echo>Soon this will run the tests in an AIR application.</echo>
+
+      <!-- Execute the AIR app. 
+      <exec executable="${adl}">
+         <arg line="${testsdir}/application.xml"/>
+      </exec> -->
    </target>
 
  </project>
