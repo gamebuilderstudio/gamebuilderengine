@@ -28,6 +28,11 @@ package tests
     */
    public class LevelTests
    {
+      private var _testValueAReference:PropertyReference = new PropertyReference("@A.testValue");
+      private var _testValueA2Reference:PropertyReference = new PropertyReference("@A2.testValue");
+      private var _testComplexXReference:PropertyReference = new PropertyReference("@B.testComplex.x");
+      private var _testComplexYReference:PropertyReference = new PropertyReference("@B.testComplex.y");
+
    	  [Test(async)]
       public function testLevelLoading():void
       {
@@ -127,9 +132,5 @@ package tests
          Logger.printFooter(null, "");
       }
       
-      private var _testValueAReference:PropertyReference = new PropertyReference("@A.testValue");
-      private var _testValueA2Reference:PropertyReference = new PropertyReference("@A2.testValue");
-      private var _testComplexXReference:PropertyReference = new PropertyReference("@B.testComplex.x");
-      private var _testComplexYReference:PropertyReference = new PropertyReference("@B.testComplex.y");
    }
 }

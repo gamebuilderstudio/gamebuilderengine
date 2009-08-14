@@ -1,40 +1,38 @@
-<?xml version="1.0" encoding="utf-8"?>
-<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" 
-	applicationComplete="runMe()" xmlns:flexUnitUIRunner="http://www.adobe.com/2009/flexUnitUIRunner" 
-	styleName="flexUnitApplication" >
+<?xml version = "1.0" encoding = "utf-8"?>
+<mx:Application xmlns:mx = "http://www.adobe.com/2006/mxml" applicationComplete="runMe()" xmlns:flexUnitUIRunner="http://www.adobe.com/2009/flexUnitUIRunner" styleName="flexUnitApplication">
 
-	<mx:Script>
-		<![CDATA[
-			import org.flexunit.runner.notification.async.XMLListener;
-			import org.flexunit.listeners.UIListener;
-			import org.flexunit.runner.Request;
+    <mx:Script>
+        <![CDATA[
+            import org.flexunit.runner.notification.async.XMLListener;
+            import org.flexunit.listeners.UIListener;
+            import org.flexunit.runner.Request;
 
-			import org.flexunit.runner.FlexUnitCore;
+            import org.flexunit.runner.FlexUnitCore;
 
             import tests.PBEngineTestSuite;
             import com.pblabs.engine.core.Global;
 
-
-			private var core:FlexUnitCore;
-
             var testResources:TestResources = new TestResources();
 
-			public function runMe():void {
+            private var core:FlexUnitCore;
 
-				Global.startup(this);
+            public function runMe():void
+            {
 
-				core = new FlexUnitCore();
+                Global.startup(this);
 
-				//Listener for the UI, optional
-				core.addListener(new UIListener(uiListener));
-				
-				//FlexUnit wants the class reference, not an instance				
-				PBEngineTestSuite.testLevel = "../assets/testLevel.xml";
-				core.run(PBEngineTestSuite);
-			}
-		]]>
-	</mx:Script>
-	<mx:Style>
+                core = new FlexUnitCore();
+
+                //Listener for the UI, optional
+                core.addListener(new UIListener(uiListener));
+
+                //FlexUnit wants the class reference, not an instance				
+                PBEngineTestSuite.testLevel = "../assets/testLevel.xml";
+                core.run(PBEngineTestSuite);
+            }
+        ]]>
+    </mx:Script>
+    <mx:Style>
 		Application {
 			   backgroundColor: #3872b2;
 			   backgroundGradientColors: #3872b2, #0c1a3d;
@@ -45,7 +43,6 @@
 			   fontSize: 12;
 			}
 	</mx:Style>
-	
-	<flexUnitUIRunner:TestRunnerBase id="uiListener" 
-		width="100%" height="100%" />	
+
+    <flexUnitUIRunner:TestRunnerBase id="uiListener" width="100%" height="100%"/>
 </mx:Application>
