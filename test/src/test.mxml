@@ -4,11 +4,11 @@
     xmlns:fluint="net.digitalprimates.fluint.ui.*"
     layout="absolute"
     applicationComplete="startTestProcess(event)"
-    width="1024" height="768">
+    width="1024" height="768" xmlns:local="*">
     
     <mx:Script>
         <![CDATA[
-            import com.pblabs.engine.unitTests.PBEngineTestSuite;
+            import tests.PBEngineTestSuite;
             import com.pblabs.engine.core.Global;
             
             var testResources:TestResources = new TestResources();
@@ -23,8 +23,8 @@
             }
         ]]>
     </mx:Script>
-    
-    <fluint:PatchedTestResultDisplay testMonitor="{testRunner.testMonitor}" width="100%" height="100%" />
+
+    <local:PatchedTestResultDisplay testMonitor="{testRunner.testMonitor}" width="100%" height="100%" />
     <fluint:TestEnvironment id="testEnvironment"/>
     <fluint:TestRunner id="testRunner" testEnvironment="{testEnvironment}"/>
 </mx:Application>

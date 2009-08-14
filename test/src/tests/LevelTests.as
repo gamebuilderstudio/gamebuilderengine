@@ -6,15 +6,15 @@
  * This file is licensed under the terms of the MIT license, which is included
  * in the License.html file at the root directory of this SDK.
  ******************************************************************************/
-package com.pblabs.engine.unitTests
+package tests
 {
    import com.pblabs.engine.entity.IEntity;
    import com.pblabs.engine.entity.PropertyReference;
    import com.pblabs.engine.core.TemplateManager;
    import com.pblabs.engine.core.NameManager;
    import com.pblabs.engine.debug.Logger;
-   import com.pblabs.engine.unitTestHelper.TestComponentA;
-   import com.pblabs.engine.unitTestHelper.TestComponentB;
+   import tests.helpers.TestComponentA;
+   import tests.helpers.TestComponentB;
    
    import flash.events.Event;
    

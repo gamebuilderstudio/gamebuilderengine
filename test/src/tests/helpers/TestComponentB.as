@@ -6,7 +6,7 @@
  * This file is licensed under the terms of the MIT license, which is included
  * in the License.html file at the root directory of this SDK.
  ******************************************************************************/
-package com.pblabs.engine.unitTestHelper
+package tests.helpers
 {
    import com.pblabs.engine.entity.EntityComponent;
    import com.pblabs.engine.entity.PropertyReference;

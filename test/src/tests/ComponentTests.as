@@ -6,7 +6,7 @@
  * This file is licensed under the terms of the MIT license, which is included
  * in the License.html file at the root directory of this SDK.
  ******************************************************************************/
-package com.pblabs.engine.unitTests
+package tests
 {
    import com.pblabs.engine.entity.allocateEntity;
    import com.pblabs.engine.entity.IEntity;
@@ -14,8 +14,8 @@ package com.pblabs.engine.unitTests
    import com.pblabs.engine.core.TemplateManager;
    import com.pblabs.engine.core.NameManager;
    import com.pblabs.engine.debug.Logger;
-   import com.pblabs.engine.unitTestHelper.TestComponentA;
-   import com.pblabs.engine.unitTestHelper.TestComponentB;
+   import tests.helpers.TestComponentA;
+   import tests.helpers.TestComponentB;
    
    import flash.geom.Point;
    
@@ -170,10 +170,10 @@ package com.pblabs.engine.unitTests
       
       private var _testXML:XML = 
          <entity name="XMLTestEntity">
-            <component type="com.pblabs.engine.unitTestHelper.TestComponentA" name="A">
+            <component type="tests.helpers.TestComponentA" name="A">
                <testValue>7</testValue>
             </component>
-            <component type="com.pblabs.engine.unitTestHelper.TestComponentB" name="B">
+            <component type="tests.helpers.TestComponentB" name="B">
                <testComplex>
                   <x>4</x>
                   <y>9.3</y>
