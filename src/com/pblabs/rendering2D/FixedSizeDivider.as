@@ -8,8 +8,9 @@
  ******************************************************************************/
 package com.pblabs.rendering2D
 {
-   import flash.geom.Rectangle;
    import com.pblabs.engine.debug.Logger;
+   
+   import flash.geom.Rectangle;
    
   /**
    * Divide a sprite sheet into fixed-size cells.
@@ -27,6 +28,18 @@ package com.pblabs.rendering2D
        */
       [EditorData(defaultValue="32")]
       public var height:int = 32;
+	  
+	  /**
+	   * The horizonal spacing between frames
+	   */	  
+	  [EditorData(defaultValue="0")]
+	  public var horizontalSpacing:int = 0;
+	  
+	  /**
+	   * The vertical spacing between frames
+	   */	  
+	  [EditorData(defaultValue="0")]
+	  public var verticalSpacing:int = 0;
       
       /**
        * @inheritDoc
@@ -61,7 +74,7 @@ package com.pblabs.rendering2D
          var x:int = index % Math.floor(_owningSheet.imageData.width / width);
          var y:int = Math.floor(index / Math.floor(_owningSheet.imageData.width / width));
          
-         return new Rectangle(x * width, y * height, width, height);
+         return new Rectangle(x * (width + horizontalSpacing), y * (height + verticalSpacing), width, height);
       }
       
       /**
