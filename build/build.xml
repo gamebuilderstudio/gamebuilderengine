@@ -47,6 +47,7 @@
    <property name="classesdir" value="${rootDir}/src" />
    <property name="docsdir" value="${rootDir}/docs/api" />
    <property name="testsdir" value="${rootDir}/test" />
+   <property name="testRunDir" value="${buildFilesDir}/testrun"></property>
 
    <!-- Infer the binary extensions. -->
    <condition property="binaryExtension" value=".exe" else="">
@@ -215,10 +216,13 @@
    </target>
 
    <target name="test" description="Builds and runs the unit tests defined in the test directory." depends="generateSWC">
-      <property name="testRunDir" value="${buildFilesDir}/testrun"></property>
-
       <mkdir dir="${testRunDir}"></mkdir>
 
+      <!-- 
+           TODO: No need to build this every time if it's up to date, 
+           and we need to do validity checking to make sure the environment is correct 
+       -->
+     
       <!-- Build the tests as an AIR app. -->
       <exec executable="${mxmlc}" failonerror="true">
          <arg line="-source-path+=&quot;${testsdir}/src&quot; " />
@@ -228,7 +232,7 @@
          <arg line="--keep-as3-metadata+=TypeHint,EditorData,Embed,ResourceType" />
          <arg line="-compiler.optimize=true -use-network=false" />
          <arg line="-output &quot;${testRunDir}/pbetests.swf&quot;" />
-         <arg line="&quot;${testsdir}/src/test.mxml&quot;" />
+         <arg line="&quot;${testsdir}/src/TestRunner.mxml&quot;" />
          <arg line="-debug=${DEBUG}"/>
       </exec>
 
@@ -237,10 +241,21 @@
    	  <echo>Tests located at "${testRunDir}/pbetests.swf"</echo>
       <echo />
 
-      <!-- Execute the AIR app. 
-      <exec executable="${adl}">
-         <arg line="${testsdir}/application.xml"/>
-      </exec> -->
+      <!-- Copy our application template and include the path to the swf file and any other settings -->
+      <copy file="${buildFilesDir}/application.template.xml" tofile="${testRunDir}/application.xml" failOnError="true" overwrite="true" verbose="true">
+         <filterset>
+            <filter token="TESTSWF" value="pbetests.swf"/>
+            <filter token="AIRVERSION" value="${airversion}"/>
+         </filterset>
+      </copy>
+
+      <!-- Execute the AIR app. --> 
+      <exec executable="${adl}" failonerror="true">
+         <arg line="-nodebug"/>
+         <arg line="${testRunDir}/application.xml"/>
+      </exec>
+     
+      <!-- TODO: Do something with the output from the AIR test app. -->
    </target>
 
  </project>
