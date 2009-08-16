@@ -252,7 +252,10 @@
       <!-- Execute the AIR app. --> 
       <exec executable="${adl}" failonerror="true">
          <arg line="-nodebug"/>
-         <arg line="${testRunDir}/application.xml"/>
+         <arg line="&quot;${testRunDir}/application.xml&quot;"/>
+         <arg line="--"/>
+         <arg line="&quot;${testRunDir}/testoutput.xml&quot;"/>
+         <arg line="true"/>
       </exec>
      
       <!-- TODO: Do something with the output from the AIR test app. -->
