@@ -200,7 +200,7 @@ package com.pblabs.rendering2D
             if (currentAnimationDurationReference)
                 _currentAnimationDuration = owner.getProperty(currentAnimationDurationReference) * ProcessManager.TICK_RATE_MS;
             else
-                _currentAnimationDuration = ai.spriteSheet.frameCount * ProcessManager.TICK_RATE_MS;
+                _currentAnimationDuration = ai.spriteSheet.frameCount * (1000/ai.frameRate);
 
             //trace("Age at start was " + (ProcessManager.instance.virtualTime - _currentAnimationStartTime));
 

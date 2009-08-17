@@ -39,10 +39,17 @@ package com.pblabs.rendering2D
 
         /**
          * The animation playback speed may be affected by many factors; this
-         * set a maximum time period in ms for a frame to be displayed.
+         * sets a maximum time period in ms for a frame to be displayed.
          */
         public var maxFrameDelay:Number = 50;
 
+        /**
+         * The desired framerate for this animation. It is overidden by the
+         * duration properties on the controller, and maxFrameDelay may 
+         * interfere with it.
+         */
+        public var frameRate:Number = 32;
+        
         /**
          * Used when setting animation states; a higher priority
          * animation will override a lower priority animation.
