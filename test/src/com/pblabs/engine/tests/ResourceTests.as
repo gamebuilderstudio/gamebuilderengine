@@ -19,18 +19,20 @@ package com.pblabs.engine.tests
     {
 
         [Test]
+        [Ignore("Not implemented.")]
         public function testResourceLoad():void
         {
             Logger.printHeader(null, "Running Resource Load Test");
-            //Assert.fail("not implemented");
+            Assert.fail("not implemented");
             Logger.printFooter(null, "");
         }
 
         [Test]
+        [Ignore("Not implemented.")]
         public function testReferenceCounting():void
         {
             Logger.printHeader(null, "Running Resource Reference Count Test");
-            //Assert.fail("not implemented");
+            Assert.fail("not implemented");
             Logger.printFooter(null, "");
         }
     }

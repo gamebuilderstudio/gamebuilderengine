@@ -16,7 +16,7 @@
 
             private var core:FlexUnitCore;
 
-            public function runMe(outputFile:String, exitOnComplete:Boolean):void
+            public function runMe(outputDir:String, exitOnComplete:Boolean):void
             {
 
                 Global.startup(this);
@@ -26,7 +26,7 @@
                 //Listener for the UI, optional
                 core.addListener(new UIListener(uiListener));
                 
-                core.addListener(new JUnitListener(outputFile, exitOnComplete));
+                core.addListener(new JUnitListener(outputDir, exitOnComplete));
 
                 //FlexUnit wants the class reference, not an instance				
                 PBEngineTestSuite.testLevel = "../assets/testLevel.xml";
@@ -35,16 +35,16 @@
 
             protected function windowedapplication1_invokeHandler(event:InvokeEvent):void
             {
-                var file:File = File.applicationStorageDirectory.resolvePath("testoutput.xml");
-                var outputFile:String = file.nativePath;
+                var file:File = File.applicationStorageDirectory.resolvePath("testresults");
+                var outputDir:String = file.nativePath;
                 var exitOnComplete:Boolean = false;
                 if (event.arguments.length > 0)
-                    outputFile = event.arguments[0];
+                    outputDir = event.arguments[0];
 
                 if (event.arguments.length > 1)
                     exitOnComplete = event.arguments[1] == "true";
                         
-                runMe(outputFile, exitOnComplete);
+                runMe(outputDir, exitOnComplete);
             }
 
         ]]>

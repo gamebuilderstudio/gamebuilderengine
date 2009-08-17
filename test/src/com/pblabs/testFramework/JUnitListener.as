@@ -1,3 +1,31 @@
+/**
+ * This is based on code from the FlexUnit library. 
+ * 
+ * Copyright (c) 2003-2008. Adobe Systems Incorporated.
+ * All rights reserved.
+ * Redistribution and use in source and binary forms, with or without 
+ * modification, are permitted provided that the following conditions are met:
+ * - Redistributions of source code must retain the above copyright notice, this 
+ * list of conditions and the following disclaimer.
+ * - Redistributions in binary form must reproduce the above copyright notice, 
+ * this list of conditions and the following disclaimer in the documentation 
+ * and/or other materials provided with the distribution.
+ * - Neither the name of Adobe Systems Incorporated nor the names of its contributors 
+ * may be used to endorse or promote products derived from this software without 
+ * specific prior written permission.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ * OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package com.pblabs.testFramework
 {
 	import flash.desktop.NativeApplication;
@@ -5,7 +33,6 @@ package com.pblabs.testFramework
 	import flash.filesystem.File;
 	import flash.filesystem.FileMode;
 	import flash.filesystem.FileStream;
-	import flash.system.fscommand;
 	
 	import mx.logging.ILogger;
 	import mx.logging.Log;
@@ -25,10 +52,11 @@ package com.pblabs.testFramework
 		private var successes:Array = new Array();
 		private var ignores:Array = new Array();
 		
-		private var file:File;
-        private var outputPath:String;
+		private var outputDir:File;
         
         private var exitOnComplete:Boolean;
+        
+        private var exitCode:int;
 		
 		/**
 		 * <String, TestSuiteReport >
@@ -47,9 +75,9 @@ package com.pblabs.testFramework
 		report.tests++;
 		}*/
 		
-		public function JUnitListener(outputPath:String, exitOnComplete:Boolean)
+		public function JUnitListener(outputDir:String, exitOnComplete:Boolean)
 		{
-		    this.outputPath = outputPath;
+		    this.outputDir = new File(outputDir);
 		    this.exitOnComplete = exitOnComplete;
 		}
 		
@@ -75,7 +103,6 @@ package com.pblabs.testFramework
 			
 			logger.debug("test run finished.");
 			
-			initFile();
 			createXMLReports();
 			exit();
 		}
@@ -88,17 +115,10 @@ package com.pblabs.testFramework
 			var descriptor : Descriptor = getDescriptorFromDescription( failure.description );
 			
 			var report : TestSuiteReport = getReportForTestSuite( descriptor.path + "." + descriptor.suite );
+			exitCode++;
 			report.failures++;
 			report.tests++;
 			report.methods.push( failure );
-		}
-		
-		private function initFile( ) : void
-		{
-		    file = new File(outputPath);
-
-		    if (file.exists)
-		        file.deleteFile();
 		}
 		
 		private function errorHandler(event:Event):void
@@ -153,25 +173,28 @@ package com.pblabs.testFramework
 		*/
 		private function createXMLReports () : void
 		{
-			/**
-			 * JAdkins - 7/27/09 - Removed duplicate console report
-			 */
+		    if (outputDir.exists)
+		        outputDir.deleteDirectory(true);
+		        
+		    outputDir.createDirectory();
 			
-		    var fs:FileStream = new FileStream();
-		    fs.open(file, FileMode.WRITE);
-
-            fs.writeUTFBytes("<testsuites>");
 			for each ( var testSuiteReport : TestSuiteReport in testSuiteReports )
 			{
-				// Create the XML report.
-				var xml : XML = createXMLTestSuite( testSuiteReport );
+				// Create the XML report for this suite.
+				var xml : XML = createXMLTestSuite(testSuiteReport);
 				
-				// Send the XML report.
-                fs.writeUTFBytes(xml.toXMLString());				
+				// Write the XML report.
+    		    var fs:FileStream = new FileStream();
+    		    fs.open(outputDir.resolvePath(testSuiteReport.name + ".xml"), FileMode.WRITE);
+    		    try
+    		    {
+                    fs.writeUTFBytes(xml.toXMLString());
+    		    }
+    		    finally
+    		    {
+        		    fs.close();
+    		    }
 			}
-			
-            fs.writeUTFBytes("</testsuites>");
-			fs.close();
 		}
 		
 		protected function createXMLTestSuite( testSuiteReport:TestSuiteReport ) : XML 
@@ -253,9 +276,8 @@ package com.pblabs.testFramework
 		private function exit() : void
 		{
 		    if (!exitOnComplete) return;
-		    
-		    //do we ewant to exit with an error code if any of the tests fail?
-		    NativeApplication.nativeApplication.exit();
+
+		    NativeApplication.nativeApplication.exit(exitCode);
 		}
 	}
 }

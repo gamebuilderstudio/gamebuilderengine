@@ -88,17 +88,17 @@
            <isset property="flex3dir"/> 
            <available file="${flex3dir}"/> 
          </and> 
-       </condition>
-    <fail unless="flexSdkIsValid">Either flex3dir is not set, or it points to an absent directory.
+      </condition>
+      <fail unless="flexSdkIsValid">Either flex3dir is not set, or it points to an absent directory.
       
-      flex3dir appears to be set to: '${flex3dir}'
+         flex3dir appears to be set to: '${flex3dir}'
     
-      Set the flex3dir parameter by editing the build.properties file.
-    </fail> 
+         Set the flex3dir parameter by editing the build.properties file.
+      </fail>
    </target>
 
    <target name="compile" description="Creates SWC and API docs." unless="isUpToDate" depends="printUpToDate,ensureValidEnvironment">
-       <antcall target="generateSWC" />
+      <antcall target="generateSWC" />
       <antcall target="generateDocs" />
    </target>
    
@@ -180,7 +180,7 @@
       <ant dir="${rootDir}/examples/RollyBallGame"/>
    </target>
    
-   <target name="doFullPackagedBuild" description="Build a packaged ZIP of the whole SDK, ready for distribution." depends="clean,compile,lessons,examples">
+   <target name="doFullPackagedBuild" description="Build a packaged ZIP of the whole SDK, ready for distribution." depends="clean,test,compile,lessons,examples">
       <!-- Build everything from scratch - dependencies do this. -->
       
       <!-- Get the current revision. -->
@@ -216,14 +216,23 @@
    </target>
 
    <target name="test" description="Builds and runs the unit tests defined in the test directory." depends="generateSWC">
-      <mkdir dir="${testRunDir}"></mkdir>
-
+      <condition property="airVersionIsSet">
+         <isset property="airversion"/>
+      </condition>
+      <fail unless="airVersionIsSet">
+         The airversion property is not set in the build.properties file.
+         
+         Set it to the AIR version you'd put in your application descriptor file.
+         
+         See the build.template.properties file for more information.
+      </fail>
       <!-- 
            TODO: No need to build this every time if it's up to date, 
            and we need to do validity checking to make sure the environment is correct 
        -->
      
       <!-- Build the tests as an AIR app. -->
+      <mkdir dir="${testRunDir}"></mkdir>
       <exec executable="${mxmlc}" failonerror="true">
          <arg line="-source-path+=&quot;${testsdir}/src&quot; " />
          <arg line="-library-path+=&quot;${buildFilesDir}/../bin&quot;" />
@@ -249,16 +258,15 @@
          </filterset>
       </copy>
 
-      <!-- Execute the AIR app. --> 
+      <!-- Execute the AIR app which generates junit format xml files for each test suite. --> 
       <exec executable="${adl}" failonerror="true">
          <arg line="-nodebug"/>
          <arg line="&quot;${testRunDir}/application.xml&quot;"/>
          <arg line="--"/>
-         <arg line="&quot;${testRunDir}/testoutput.xml&quot;"/>
+         <arg line="&quot;${testRunDir}/testoutput&quot;"/>
          <arg line="true"/>
       </exec>
-     
-      <!-- TODO: Do something with the output from the AIR test app. -->
+
    </target>
 
  </project>
