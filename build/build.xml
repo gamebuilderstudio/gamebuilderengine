@@ -42,11 +42,13 @@
    <property name="maintitle" value="PushButton Engine Documentation" />
    <property name="footer" value="http://pushbuttonengine.com/" />
 
-    <!-- Paths for the PBEngine SDK. -->
+   <!-- Paths for the PBEngine SDK. -->
    <property name="bindir" value="${rootDir}/bin" />
    <property name="classesdir" value="${rootDir}/src" />
    <property name="docsdir" value="${rootDir}/docs/api" />
-   
+   <property name="testsdir" value="${rootDir}/test" />
+   <property name="testRunDir" value="${buildFilesDir}/testrun"></property>
+
    <!-- Infer the binary extensions. -->
    <condition property="binaryExtension" value=".exe" else="">
       <or>
@@ -56,12 +58,20 @@
       </or>
    </condition>
 
-    <!-- Paths for the Flex SDK. -->
+   <!-- Paths for the Flex SDK. -->
    <property name="flex3bindir" value="${flex3dir}/bin" />
    <property name="flex3libsdir" value="${flex3dir}/frameworks/libs" />
    <property name="asdoc" value="${flex3bindir}/asdoc${binaryExtension}" />
    <property name="compc" value="${flex3bindir}/compc${binaryExtension}" />
    <property name="mxmlc" value="${flex3bindir}/mxmlc${binaryExtension}" />
+   <property name="adl" value="${flex3bindir}/adl${binaryExtension}" />
+
+   <!-- Local classpath useed for custom tasks -->
+   <path id="localClasspath">
+      <fileset dir="${buildFilesDir}">
+         <include name="**/*.jar"/>
+      </fileset>
+   </path>
 
    <target name="ensureValidEnvironment">
       <condition property="buildPropertiesIsValid">
@@ -78,17 +88,17 @@
            <isset property="flex3dir"/> 
            <available file="${flex3dir}"/> 
          </and> 
-       </condition>
-    <fail unless="flexSdkIsValid">Either flex3dir is not set, or it points to an absent directory.
+      </condition>
+      <fail unless="flexSdkIsValid">Either flex3dir is not set, or it points to an absent directory.
       
-      flex3dir appears to be set to: '${flex3dir}'
+         flex3dir appears to be set to: '${flex3dir}'
     
-      Set the flex3dir parameter by editing the build.properties file.
-    </fail> 
+         Set the flex3dir parameter by editing the build.properties file.
+      </fail>
    </target>
 
    <target name="compile" description="Creates SWC and API docs." unless="isUpToDate" depends="printUpToDate,ensureValidEnvironment">
-       <antcall target="generateSWC" />
+      <antcall target="generateSWC" />
       <antcall target="generateDocs" />
    </target>
    
@@ -170,16 +180,11 @@
       <ant dir="${rootDir}/examples/RollyBallGame"/>
    </target>
    
-   <target name="doFullPackagedBuild" description="Build a packaged ZIP of the whole SDK, ready for distribution." depends="clean,compile,lessons,examples">
+   <target name="doFullPackagedBuild" description="Build a packaged ZIP of the whole SDK, ready for distribution." depends="clean,test,compile,lessons,examples">
       <!-- Build everything from scratch - dependencies do this. -->
       
       <!-- Get the current revision. -->
-      <path id="svnant.classpath"  >
-        <fileset dir="${buildFilesDir}" >
-            <include name="*.jar" />
-        </fileset>
-      </path> 
-      <typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="svnant.classpath" />
+      <typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="localClasspath" />
       <svn>
          <status path="." revisionProperty="svn.revision"/>
       </svn>
@@ -210,4 +215,58 @@
       </exec>
    </target>
 
-</project>
+   <target name="test" description="Builds and runs the unit tests defined in the test directory." depends="generateSWC">
+      <condition property="airVersionIsSet">
+         <isset property="airversion"/>
+      </condition>
+      <fail unless="airVersionIsSet">
+         The airversion property is not set in the build.properties file.
+         
+         Set it to the AIR version you'd put in your application descriptor file.
+         
+         See the build.template.properties file for more information.
+      </fail>
+      <!-- 
+           TODO: No need to build this every time if it's up to date, 
+           and we need to do validity checking to make sure the environment is correct 
+       -->
+     
+      <!-- Build the tests as an AIR app. -->
+      <mkdir dir="${testRunDir}"></mkdir>
+      <exec executable="${mxmlc}" failonerror="true">
+         <arg line="-source-path+=&quot;${testsdir}/src&quot; " />
+         <arg line="-library-path+=&quot;${buildFilesDir}/../bin&quot;" />
+         <arg line="-library-path+=&quot;${testsdir}/libs&quot;" />
+         <arg line="+configname=air" />
+         <arg line="--keep-as3-metadata+=TypeHint,EditorData,Embed,ResourceType" />
+         <arg line="-compiler.optimize=true -use-network=false" />
+         <arg line="-output &quot;${testRunDir}/pbetests.swf&quot;" />
+         <arg line="&quot;${testsdir}/src/TestRunner.mxml&quot;" />
+         <arg line="-debug=${DEBUG}"/>
+      </exec>
+
+      <echo />
+      <echo />
+   	  <echo>Tests located at "${testRunDir}/pbetests.swf"</echo>
+      <echo />
+
+      <!-- Copy our application template and include the path to the swf file and any other settings -->
+      <copy file="${buildFilesDir}/application.template.xml" tofile="${testRunDir}/application.xml" failOnError="true" overwrite="true" verbose="true">
+         <filterset>
+            <filter token="TESTSWF" value="pbetests.swf"/>
+            <filter token="AIRVERSION" value="${airversion}"/>
+         </filterset>
+      </copy>
+
+      <!-- Execute the AIR app which generates junit format xml files for each test suite. --> 
+      <exec executable="${adl}" failonerror="true">
+         <arg line="-nodebug"/>
+         <arg line="&quot;${testRunDir}/application.xml&quot;"/>
+         <arg line="--"/>
+         <arg line="&quot;${testRunDir}/testoutput&quot;"/>
+         <arg line="true"/>
+      </exec>
+
+   </target>
+
+ </project>

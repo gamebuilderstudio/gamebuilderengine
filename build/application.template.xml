@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<application xmlns="http://ns.adobe.com/air/application/@AIRVERSION@">
+	<id>com.pblabs.testRunner</id>
+	<version>1.0</version>
+	<filename>PushButtonEngine Tests</filename>
+	<name>PushButtonEngine Tests</name>
+	<description>
+    Test host application for PushButtonEngine
+  </description>
+	<copyright>Copyright (c) 2009 PushButtonLabs, Inc</copyright>
+	<initialWindow>
+		<title>PushButton Engine Tests</title>
+		<content>
+		@TESTSWF@
+	</content>
+		<minimizable>true</minimizable>
+		<maximizable>true</maximizable>
+		<resizable>true</resizable>
+		<width>1024</width>
+		<height>768</height>
+	</initialWindow>
+</application>
