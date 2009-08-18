@@ -10,7 +10,9 @@ package com.pblabs.engine.tests
 {
     import com.pblabs.engine.core.ProcessManager;
     import com.pblabs.engine.debug.Logger;
-
+    
+    import flashx.textLayout.debug.assert;
+    
     import flexunit.framework.Assert;
 
     /**
@@ -28,11 +30,11 @@ package com.pblabs.engine.tests
             ProcessManager.instance.addAnimatedObject(animatedObject);
 
             ProcessManager.instance.testAdvance(200);
-            Assert.assertEquals(animatedObject.elapsed, 200 / 1000);
+            Assert.assertEquals(200 / 1000, animatedObject.elapsed);
 
             ProcessManager.instance.timeScale = 0.5;
             ProcessManager.instance.testAdvance(200);
-            Assert.assertEquals(animatedObject.elapsed, 100 / 1000);
+            Assert.assertEquals(100 / 1000, animatedObject.elapsed);
             ProcessManager.instance.timeScale = 1.0;
 
             ProcessManager.instance.removeAnimatedObject(animatedObject);
@@ -79,12 +81,12 @@ package com.pblabs.engine.tests
             ProcessManager.instance.addTickedObject(tickObject);
 
             ProcessManager.instance.testAdvance((ProcessManager.TICK_RATE_MS * 4) + 8);
-            Assert.assertEquals(tickObject.tickCount, 4);
+            Assert.assertEquals(4, tickObject.tickCount);
             Assert.assertTrue(Math.abs(tickObject.interpolationFactor - 8.0 / ProcessManager.TICK_RATE_MS) < 0.001);
 
             ProcessManager.instance.timeScale = 0.5;
             ProcessManager.instance.testAdvance((ProcessManager.TICK_RATE_MS * 4) + 8);
-            Assert.assertEquals(tickObject.tickCount, 6);
+            Assert.assertEquals(6, tickObject.tickCount);
             Assert.assertTrue(Math.abs(tickObject.interpolationFactor - 12.0 / ProcessManager.TICK_RATE_MS) < 0.001);
             ProcessManager.instance.timeScale = 1.0;
 
@@ -98,21 +100,52 @@ package com.pblabs.engine.tests
         {
             ProcessManager.instance.schedule(1000, this, onSchedule, 2, 7, 4, 3);
             ProcessManager.instance.testAdvance(999);
-            Assert.assertEquals(_scheduleCount, 0);
+            Assert.assertEquals(0, _scheduleCount);
             ProcessManager.instance.testAdvance(1);
-            Assert.assertEquals(_scheduleCount, 1);
+            Assert.assertEquals(1, _scheduleCount);
             ProcessManager.instance.testAdvance(1000);
-            Assert.assertEquals(_scheduleCount, 1);
+            Assert.assertEquals(1, _scheduleCount);
 
             ProcessManager.instance.timeScale = 0.5;
             ProcessManager.instance.schedule(500, this, onSchedule, 2, 7, 4, 3);
             ProcessManager.instance.testAdvance(900);
-            Assert.assertEquals(_scheduleCount, 1);
+            Assert.assertEquals(1, _scheduleCount);
             ProcessManager.instance.testAdvance(100);
-            Assert.assertEquals(_scheduleCount, 2);
+            Assert.assertEquals(2, _scheduleCount);
             ProcessManager.instance.testAdvance(1000);
-            Assert.assertEquals(_scheduleCount, 2);
+            Assert.assertEquals(2, _scheduleCount);
             ProcessManager.instance.timeScale = 1.0;
+        }
+        
+        [Test]
+        public function testScheduleVirtualTimeConsistency():void
+        {
+            var hits:int = 0;
+            var wrongOrder:Boolean = false;
+            var wrongTime:Boolean = false;
+            
+            var dueTime:Number = ProcessManager.instance.virtualTime + 1000;
+            ProcessManager.instance.schedule(1000, this, 
+                    function():void{
+                    	if (hits == 0) wrongOrder = true;
+                    	hits++;
+                    	wrongTime = wrongTime || ProcessManager.instance.virtualTime < dueTime;
+                    });
+
+            ProcessManager.instance.testAdvance(100);
+
+            var dueTime2:Number = ProcessManager.instance.virtualTime + 20;
+            ProcessManager.instance.schedule(20, this, 
+                    function():void{
+                        if (hits > 0) wrongOrder = true;
+                        hits++;
+                        wrongTime = wrongTime || ProcessManager.instance.virtualTime < dueTime2;
+                    });
+                    
+            ProcessManager.instance.testAdvance(2000);
+            Assert.assertEquals(2, hits);
+            Assert.assertFalse(wrongTime);
+            Assert.assertFalse(wrongOrder);
         }
 
         private function onSchedule(two:int, seven:int, four:int, three:int):void

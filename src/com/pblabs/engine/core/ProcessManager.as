@@ -338,27 +338,7 @@ package com.pblabs.engine.core
           var startTime:Number = _virtualTime;
           
           Profiler.ensureAtRoot();
-          
-          // Process pending events.
-          Profiler.enter("PendingEvents");
-          for (var i:int = 0; i < scheduleEvents.length; i++)
-          {
-              var schedule:ScheduleObject = scheduleEvents[i];
-              if (schedule.dueTime <= _virtualTime + deltaTime)
-              {
-                  schedule.callback.apply(schedule.thisObject, schedule.arguments);
-                  scheduleEvents.splice(i, 1);
-                  i--;
-              }
-              else
-              {
-                 //our scheduled event array is sorted by due time, 
-                 //so once we hit one that isn't due we know we're done processing for this time.
-                 break;
-              }
-          }
-          Profiler.exit("PendingEvents");
-          
+
           // Perform ticks.
           var tickCount:int = 0;
           while (elapsed >= TICK_RATE_MS && (suppressSafety || tickCount < MAX_TICKS_PER_FRAME))
@@ -367,6 +347,10 @@ package com.pblabs.engine.core
               
               Profiler.enter("Tick");
               
+              // Process pending events at this tick.
+              // This is done in the loop to ensure the correct order of events.
+              processScheduledObjects();
+
               for each (var object:ProcessObject in tickedObjects)
               {
                   Profiler.enter(object.profilerKey);
@@ -389,7 +373,10 @@ package com.pblabs.engine.core
           }
           
           _virtualTime = startTime + deltaTime;
-          
+
+          // We process scheduled items again after tick processing to ensure between-tick schedules are hit
+          processScheduledObjects();
+
           // Update objects expecting interpolation between ticks.
           Profiler.enter("InterpolateTick");
           _interpolationFactor = elapsed / TICK_RATE_MS;
@@ -412,6 +399,28 @@ package com.pblabs.engine.core
           Profiler.exit("frame");
           
           Profiler.ensureAtRoot();
+      }
+      
+      private function processScheduledObjects():void
+      {
+          Profiler.enter("PendingEvents");
+          for (var i:int = 0; i < scheduleEvents.length; i++)
+          {
+              var schedule:ScheduleObject = scheduleEvents[i];
+              if (schedule.dueTime <= _virtualTime)
+              {
+                  schedule.callback.apply(schedule.thisObject, schedule.arguments);
+                  scheduleEvents.splice(i, 1);
+                  i--;
+              }
+              else
+              {
+                 //our scheduled event array is sorted by due time, 
+                 //so once we hit one that isn't due we know we're done processing for this time.
+                 break;
+              }
+          }
+          Profiler.exit("PendingEvents");      	
       }
       
       private var started:Boolean = false;
