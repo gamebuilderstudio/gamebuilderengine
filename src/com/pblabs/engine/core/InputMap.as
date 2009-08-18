@@ -210,21 +210,23 @@ package com.pblabs.engine.core
 
         private function onMouseMove(event:MouseEvent):void
         {
+            // The mouse position on the mainStage is used instead of the event's stageX/stageY.
+            // stageX/stageY get reset to 0 on the event dispatch from the InputManager.
             if (_lastMouseX == Number.NEGATIVE_INFINITY)
             {
-                _lastMouseX = event.stageX;
-                _lastMouseY = event.stageY;
+                _lastMouseX = Global.mainStage.mouseX;
+                _lastMouseY = Global.mainStage.mouseY;
                 return;
             }
 
-            if (event.stageX != _lastMouseX)
-                onInputEvent(InputKey.MOUSE_X.keyCode, event.stageX - _lastMouseX);
+            if (Global.mainStage.mouseX != _lastMouseX)
+                onInputEvent(InputKey.MOUSE_X.keyCode, Global.mainStage.mouseX - _lastMouseX);
 
-            if (event.stageY != _lastMouseY)
-                onInputEvent(InputKey.MOUSE_Y.keyCode, event.stageY - _lastMouseY);
+            if (Global.mainStage.mouseY != _lastMouseY)
+                onInputEvent(InputKey.MOUSE_Y.keyCode, Global.mainStage.mouseY - _lastMouseY);
 
-            _lastMouseX = event.stageX;
-            _lastMouseY = event.stageY;
+            _lastMouseX = Global.mainStage.mouseX;
+            _lastMouseY = Global.mainStage.mouseY;
         }
 
         private function onMouseOver(event:MouseEvent):void
