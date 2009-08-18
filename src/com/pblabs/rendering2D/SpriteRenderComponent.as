@@ -9,6 +9,7 @@
 package com.pblabs.rendering2D
 {
    import com.pblabs.engine.debug.Logger;
+   import com.pblabs.engine.debug.Profiler;
    import com.pblabs.engine.math.Utility;
    
    import flash.display.Bitmap;
@@ -36,6 +37,11 @@ package com.pblabs.rendering2D
        */
       public function set spriteSheet(value:SpriteContainerComponent):void
       {
+         // Only update the spritesheet if it has changed.
+         // The AnimationController calls this every tick even if the frame is the same.
+         // This saves us a ton of cycles in onDraw because sprites might not need to be regenerated.
+         if (_spriteSheet === value) return;
+         
          _spriteSheet = value;
          _spriteDirty = true;
       }
@@ -58,6 +64,8 @@ package com.pblabs.rendering2D
        */
       public function set spriteIndex(value:int):void
       {
+         if (_spriteIndex === value) return;
+         
          _spriteIndex = value;
          _spriteDirty = true;
       }
@@ -70,6 +78,8 @@ package com.pblabs.rendering2D
       
       public function set smoothing(value:Boolean):void
       {
+         if (_smoothing === value) return;
+         
          _smoothing = value;
          _spriteDirty = true;
       }
@@ -101,6 +111,7 @@ package com.pblabs.rendering2D
        */
       public function set flipX(value:Boolean):void
       {
+         if (_flipX === value) return;
          _flipX = value;
          _spriteDirty = true;
       }
@@ -118,6 +129,7 @@ package com.pblabs.rendering2D
        */
       public function set flipY(value:Boolean):void
       {
+         if (_flipY === value) return;
          _flipY = value;
          _spriteDirty = true;
       }
@@ -168,10 +180,13 @@ package com.pblabs.rendering2D
                position.y += -_spriteSheet.center.y;
             }
 
+            Profiler.enter("copyPixels");
             manager.copyPixels(getCurrentFrame(), position);
+            Profiler.exit("copyPixels");
             return;
          }
          
+         Profiler.enter("drawDisplayObject");
          if (_flipX)
             scale.x = -scale.x;
          
@@ -192,6 +207,7 @@ package com.pblabs.rendering2D
          _sprite.transform.matrix = _matrix;  
          
          manager.drawDisplayObject(_sprite);
+         Profiler.exit("drawDisplayObject");
       }
       
       /**
