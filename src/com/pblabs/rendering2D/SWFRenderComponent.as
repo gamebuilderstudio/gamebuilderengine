@@ -132,7 +132,5 @@ package com.pblabs.rendering2D
                 updateChildClips(mc, currentFrame);
             }
         }
-        
-        
     }
 }

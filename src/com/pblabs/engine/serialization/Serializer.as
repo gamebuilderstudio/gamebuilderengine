@@ -395,7 +395,9 @@ package com.pblabs.engine.serialization
          {
          }
          
-         if (!childObject)
+         // If requested type isn't the same as what we found, reset the object.
+         var desiredType:Class = TypeUtility.getClassFromName(typeName);
+         if (!(childObject is desiredType) || !childObject)
             childObject = TypeUtility.instantiate(typeName);
          
          // Note we want to check for null here; null is distinct from coerce-to-false.
