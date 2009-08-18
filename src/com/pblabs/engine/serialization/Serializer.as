@@ -357,6 +357,9 @@ package com.pblabs.engine.serialization
       {
          var nameReference:String = xml.attribute("nameReference");
          var componentReference:String = xml.attribute("componentReference");
+         if(!componentReference)
+             componentReference = xml.attribute("entityName");
+         
          var componentName:String = xml.attribute("componentName");
          var objectReference:String = xml.attribute("objectReference");
          
@@ -381,12 +384,17 @@ package com.pblabs.engine.serialization
       }
       
       /**
-       * Find or instantiate the value that should go in a field.
+       * Find or instantiate the value that should go in a named field on an object.
+       * 
+       * @param object The object which will have the object assigned.
+       * @param fieldName The field on the object we are working with.
+       * @param typeName The desired type; if different than what is there we replace
+       *                 the existing interface.
        */
       private function getChildObject(object:*, fieldName:String, typeName:String):*
       {
+         // Get the child object, if it is present.
          var childObject:*;
-         
          try
          {
             childObject = object[fieldName]; 
