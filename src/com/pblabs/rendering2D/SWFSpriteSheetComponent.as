@@ -98,6 +98,9 @@ package com.pblabs.rendering2D
          */
         override protected function getSourceFrames() : Array
         {
+            if (!_resource)
+                return null;
+            
             if (!_frames)
                 rasterize();
 
