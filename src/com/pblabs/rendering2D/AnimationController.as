@@ -13,7 +13,7 @@ package com.pblabs.rendering2D
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.debug.Profiler;
     import com.pblabs.engine.entity.PropertyReference;
-
+    
     import flash.events.Event;
     import flash.utils.Dictionary;
 
@@ -82,6 +82,16 @@ package com.pblabs.rendering2D
         public var paused:Boolean = false;
 
         /**
+        * If set, the name of the event to listen to for animation changes on the 
+        * owning entity. This is not required, but offers greater performance than 
+        * checking for the name of the animation on every frame.
+        * 
+        * No data is read from this event, it is simply a signal to check the 
+        * currentAnimationReference.
+        */
+        public var changeAnimationEvent:String;
+
+        /**
          * Contains the currently playing animation if any.
          */
         private var _currentAnimation:AnimationControllerInfo;
@@ -89,46 +99,33 @@ package com.pblabs.rendering2D
         private var _currentAnimationStartTime:Number = 0;
         private var _badAnimations:Dictionary;
 
+        private var _changeAnimationEvent:String;
+        private var _eventBound:Boolean;
+
+        private var _lastSpriteSheet:SpriteContainerComponent;
+        private var _lastFrameIndex:int;
+        
         override public function onFrame(elapsed:Number):void
         {
             if(paused)
                 return;
             
-            // Check for a new animation.
+            // Find an animation onFrame only if we're not bound to an event,
+            // or we don't have an animation set.
+            // The hash lookup and findProperty each frame gets expensive with a lot of 
+            // animation components running.
             var nextAnim:AnimationControllerInfo = null;
-            if (currentAnimationReference)
-            {
-                var nextAnimName:String = owner.getProperty(currentAnimationReference);
-                nextAnim = animations[nextAnimName];
-            }
+            if (!changeAnimationEvent || !_currentAnimation)
+                nextAnim = getNextAnimation();
             else
-            {
-                nextAnim = animations[defaultAnimation];
-            }
-
-            // Go to default animation if we've nothing better to do.
-            if (nextAnim == null)
-            {
-                // Supressing duplicate log messages for animations that we know are already missing.
-                // A log message per frame is pretty expensive.
-                if (!_badAnimations)
-                    _badAnimations = new Dictionary();
-
-                if (!_badAnimations[nextAnimName])
-                {
-                    Logger.printWarning(this, "OnFrame", "Animation '" + nextAnimName + "' not found, going with default animation '" + defaultAnimation + "'.");
-                    _badAnimations[nextAnimName] = true;
-                }
-
-                nextAnim = animations[defaultAnimation];
-            }
+                nextAnim = _currentAnimation;
 
             if (!nextAnim)
                 throw new Error("Unable to find default animation '" + defaultAnimation + "'!");
 
             // Expire current animation if it has finished playing and it's what we
             // want to keep playing.
-            if (ProcessManager.instance.virtualTime > (_currentAnimationStartTime + _currentAnimationDuration))
+            if (_currentAnimation !== nextAnim && ProcessManager.instance.virtualTime > (_currentAnimationStartTime + _currentAnimationDuration))
                 _currentAnimation = null;
 
             // If we do not have a current animation, start playing the next.
@@ -144,32 +141,51 @@ package com.pblabs.rendering2D
 
             // Ok, we have a current, valid animation at this point. So let's set
             // the sprite sheet and frame properties.
-
-            // Figure out what frame we are on.
-            var frameTime:Number = _currentAnimationDuration / _currentAnimation.spriteSheet.frameCount;
-            if (frameTime > _currentAnimation.maxFrameDelay)
-                frameTime = _currentAnimation.maxFrameDelay;
-
-            var animationAge:Number = ProcessManager.instance.virtualTime - _currentAnimationStartTime;
-            var curFrame:int = Math.floor(animationAge / frameTime);
-
-            // Deal with clamping/looping.
-            if (_currentAnimation.loop)
+            
+            // Fast path for single frame "animations".
+            if (_currentAnimation.spriteSheet.frameCount == 1)
             {
-                var wasFrame:int = curFrame;
-                curFrame = curFrame % _currentAnimation.spriteSheet.frameCount;
+                curFrame = 0;
             }
             else
             {
-                if (curFrame >= _currentAnimation.spriteSheet.frameCount)
-                    curFrame = _currentAnimation.spriteSheet.frameCount - 1;
+                // Figure out what frame we are on.
+                var frameTime:Number = _currentAnimationDuration / _currentAnimation.spriteSheet.frameCount;
+                if (frameTime > _currentAnimation.maxFrameDelay)
+                    frameTime = _currentAnimation.maxFrameDelay;
+    
+                var animationAge:Number = ProcessManager.instance.virtualTime - _currentAnimationStartTime;
+                var curFrame:int = Math.floor(animationAge / frameTime);
+    
+                // Deal with clamping/looping.
+                if (_currentAnimation.loop)
+                {
+                    var wasFrame:int = curFrame;
+                    curFrame = curFrame % _currentAnimation.spriteSheet.frameCount;
+                }
+                else
+                {
+                    if (curFrame >= _currentAnimation.spriteSheet.frameCount)
+                        curFrame = _currentAnimation.spriteSheet.frameCount - 1;
+                }
             }
 
-            // Assign properties.
-            owner.setProperty(spriteSheetReference, _currentAnimation.spriteSheet);
-            owner.setProperty(currentFrameReference, curFrame);
-        }
 
+            // Assign properties.
+            // For performance, we only set the properties if they have changed since the last frame.
+            if (curFrame != _lastFrameIndex)
+            {
+                _lastFrameIndex = curFrame;
+                owner.setProperty(currentFrameReference, curFrame);
+            }
+            
+            if (_currentAnimation.spriteSheet !== _lastSpriteSheet)
+            {
+                _lastSpriteSheet = _currentAnimation.spriteSheet;        
+                owner.setProperty(spriteSheetReference, _currentAnimation.spriteSheet);
+            }
+        }
+        
         /**
          * Set the current animation to specified info.
          */
@@ -206,6 +222,63 @@ package com.pblabs.rendering2D
 
             Profiler.exit("AnimationController.SetAnimation");
         }
+
+        protected function getNextAnimation():AnimationControllerInfo
+        {
+            var nextAnim:AnimationControllerInfo = null;
+            if (currentAnimationReference)
+            {
+                var nextAnimName:String = owner.getProperty(currentAnimationReference);
+                nextAnim = animations[nextAnimName];
+            }
+            else
+            {
+                nextAnim = animations[defaultAnimation];
+            }
+
+            // Go to default animation if we've nothing better to do.
+            if (nextAnim == null)
+            {
+                // Supressing duplicate log messages for animations that we know are already missing.
+                // A log message per frame is pretty expensive.
+                if (!_badAnimations)
+                    _badAnimations = new Dictionary();
+
+                if (!_badAnimations[nextAnimName])
+                {
+                    Logger.printWarning(this, "OnFrame", "Animation '" + nextAnimName + "' not found, going with default animation '" + defaultAnimation + "'.");
+                    _badAnimations[nextAnimName] = true;
+                }
+
+                nextAnim = animations[defaultAnimation];
+            }
+            
+            return nextAnim;
+        }
+
+        override protected function onAdd(): void
+        {
+            super.onAdd();
+            
+            if (owner.eventDispatcher && changeAnimationEvent)
+                owner.eventDispatcher.addEventListener(changeAnimationEvent, animationChangedHandler);
+        }
+        
+        override protected function onRemove() : void
+        {
+            super.onRemove();
+            
+            if (owner.eventDispatcher && changeAnimationEvent)
+                owner.eventDispatcher.removeEventListener(changeAnimationEvent, animationChangedHandler);
+        }
+        
+        private function animationChangedHandler(event:Event):void
+        {
+            // This is all we need to do for the onFrame method to pick up that the 
+            // animation is missing and load the current one based on the property references.
+            _currentAnimation = null;
+        }
+       
     }
 }
 
