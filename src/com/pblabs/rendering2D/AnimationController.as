@@ -104,6 +104,18 @@ package com.pblabs.rendering2D
         private var _lastSpriteSheet:SpriteContainerComponent;
         private var _lastFrameIndex:int;
         
+        public function set currentAnimationName(value:String):void
+        {
+            var potentialAnim:AnimationControllerInfo = animations[value];
+            if(!potentialAnim)
+            {
+                Logger.printWarning(this, "set currentAnimationName", "Couldn't find animation '" + value + "' to set.");
+                return;
+            }
+            
+            setAnimation(potentialAnim);
+        }
+        
         override public function onFrame(elapsed:Number):void
         {
             if(paused)
