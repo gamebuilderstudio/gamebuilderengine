@@ -2,6 +2,7 @@ package com.pblabs.components.stateMachine
 {
     import com.pblabs.engine.core.ProcessManager;
     import com.pblabs.engine.entity.IPropertyBag;
+    import com.pblabs.engine.debug.Logger;
     
     import flash.utils.Dictionary;
 
@@ -90,7 +91,8 @@ package com.pblabs.components.stateMachine
         
         public function set currentStateName(value:String):void
         {
-            setCurrentState(value);
+            if(!setCurrentState(value))
+                Logger.printWarning(this, "set currentStateName", "Could not transition to state '" + value + "'");
         }
         
         public function getPreviousState():IState

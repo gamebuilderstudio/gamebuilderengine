@@ -90,7 +90,7 @@ package com.pblabs.engine.core
       }
 
       /**
-       * TweenMax uses timeScale as a config property, so now we haev a workaround.
+       * TweenMax uses timeScale as a config property, so now we have a workaround.
        */
       public function set TimeScale(value:Number):void
       {

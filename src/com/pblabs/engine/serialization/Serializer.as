@@ -353,6 +353,10 @@ package com.pblabs.engine.serialization
          return object;
       }
       
+      /**
+       * A tag can have attributes which encode references of various types. This method
+       * parses them and resolves the references.
+       */ 
       private function getChildReference(object:*, fieldName:String, xml:XML):Boolean
       {
          var nameReference:String = xml.attribute("nameReference");
