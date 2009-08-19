@@ -529,17 +529,28 @@ package com.pblabs.rendering2D
       }
       
       /**
-       * Given a region, query the spatial database and fill the layerList with
-       * arrays containing the items to be drawn in each layer.
+       * Given a region, query the specific spatial database and fill the layerList with
+       * arrays containing the items to be drawn in each layer. Some scenes may contain
+       * layers that need to interact differently in space.
+       * 
+       * @param spatialManager The spatial database that is used to find components that should be rendered. 
+       * @param viewRect The rect that is passed to the spatial database's queryRectangle 
+       *                 function.
+       * @param layerList The jagged array that becomes populated with arrays of IDrawable2D components 
+       *                  contained by the same entity that contains the spatial components found by the spatial 
+       *                  database's queryRectangle. 
+       *                  Each array at an index represents the the IDrawable2D components at the same layerIndex.
+       *                  For example, all IDrawable2D components with a layerIndex of 0 (the default) are put 
+       *                  in the array located at position 0.
        */ 
-      protected function buildRenderList(viewRect:Rectangle, layerList:Array):void
+      protected function buildSpecificRenderList(spatialManager:ISpatialManager2D, viewRect:Rectangle, layerList:Array):void
       {
          Profiler.enter("buildRenderList");
          
          // Get a list of the items that will be rendered.
          var renderList:Array = new Array();
-         if(!spatialDatabase 
-            || !spatialDatabase.queryRectangle(viewRect, renderMask, renderList))
+         if(!spatialManager 
+            || !spatialManager.queryRectangle(viewRect, renderMask, renderList))
          {
             // Nothing to draw.
             Profiler.exit("buildRenderList");
@@ -569,6 +580,24 @@ package com.pblabs.rendering2D
          }
 
          Profiler.exit("buildRenderList");
+      }
+      
+      /**
+       * Given a region, query the spatialDatabase and fill the layerList with
+       * arrays containing the items to be drawn in each layer.
+       * 
+       * @param viewRect The rect that is passed to the spatial database's queryRectangle 
+       *                 function.
+       * @param layerList The jagged array that becomes populated with arrays of IDrawable2D components 
+       *                  contained by the same entity that contains the spatial components found by the spatial 
+       *                  database's queryRectangle. 
+       *                  Each array at an index contains the IDrawable2D components at the same layerIndex.
+       *                  For example, all IDrawable2D components with a layerIndex of 0 (the default) are put 
+       *                  in the array located at position 0.
+       */ 
+      protected function buildRenderList(viewRect:Rectangle, layerList:Array):void
+      {
+          buildSpecificRenderList(spatialDatabase, viewRect, layerList);
       }
       
 

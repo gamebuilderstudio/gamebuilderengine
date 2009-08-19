@@ -14,6 +14,7 @@ package com.pblabs.rendering2D
 	import com.pblabs.engine.debug.Profiler;
 	import com.pblabs.engine.entity.EntityComponent;
 	
+	import flash.events.Event;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 
@@ -24,11 +25,19 @@ package com.pblabs.rendering2D
    public class BasicSpatialManager2D extends EntityComponent implements ISpatialManager2D
    {
       /**
+      * An event with this name is raised on the owner.eventDispatcher when 
+      * the entity list changes via addSpatialObject or removeSpatialObject.
+      */
+      public static const EntitiesDirtyEvent:String = "BasicSpatialManager2D.EntitiesDirty";
+        
+      /**
        * @inheritDoc
        */
       public function addSpatialObject(object:ISpatialObject2D):void
       {
          _objectList.push(object);
+         if (owner && owner.eventDispatcher)
+            owner.eventDispatcher.dispatchEvent(new Event(EntitiesDirtyEvent));
       }
       
       /**
@@ -44,6 +53,8 @@ package com.pblabs.rendering2D
          }
          
          _objectList.splice(index, 1);
+         if (owner && owner.eventDispatcher)
+            owner.eventDispatcher.dispatchEvent(new Event(EntitiesDirtyEvent));
       }
 
       /**
