@@ -100,7 +100,6 @@ package com.pblabs.rendering2D
         private var _badAnimations:Dictionary;
 
         private var _changeAnimationEvent:String;
-        private var _eventBound:Boolean;
 
         private var _lastSpriteSheet:SpriteContainerComponent;
         private var _lastFrameIndex:int;
