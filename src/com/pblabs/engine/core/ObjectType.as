@@ -34,9 +34,19 @@ package com.pblabs.engine.core
          return _bits;
       }
       
-      public function ObjectType(type:String = null)
+      public function ObjectType(...arguments)
       {
-         typeName = type;
+		  if(arguments.length == 1)
+		  {
+			  if(arguments[0] is Array)
+				  typeNames = arguments[0];
+			  else
+		         typeName = arguments[0];
+		  }
+		  else if(arguments.length > 1)
+		  {
+			  typeNames = arguments;
+		  }
       }
       
       /**
