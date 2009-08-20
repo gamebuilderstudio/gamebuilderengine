@@ -150,11 +150,11 @@ package com.pblabs.tweaker
            if(newValue == "NA" || newValue == "")
               continue;
 
-           Logger.print(this, "Setting property " + configItem.Property + " to " + newValue +  " based on " + configItem.Cell);
+           Logger.printWarning(this, "onLoadComplete", "Setting property " + configItem.property + " to " + newValue +  " based on " + configItem.cell);
            owner.setProperty(configItem.property, newValue);
            if(!owner.doesPropertyExist(configItem.property))
            {
-              Logger.print(this, "   - failed to set " + configItem.property.property);
+              Logger.printWarning(this, "onLoadComplete", "   - failed to set " + configItem.property.property);
               owner.setProperty(configItem.property, newValue);
            }
         }
