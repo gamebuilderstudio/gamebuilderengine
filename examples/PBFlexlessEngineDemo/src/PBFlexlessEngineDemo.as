@@ -21,7 +21,7 @@ package
       public function PBFlexlessEngineDemo()
       {
          _resources = new Resources();
-         _components = new Components();
+         _references = new References();
          
          Global.startup(this);
          
@@ -37,6 +37,6 @@ package
       }
       
       private var _resources:Resources;
-      private var _components:Components;
+      private var _references:References;
    }
 }

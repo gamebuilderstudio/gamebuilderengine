@@ -24,7 +24,7 @@ package
    import com.pblabs.animation.AnimatorComponent;
    import com.pblabs.rendering2D.ui.SceneView;
    
-   public class Components
+   public class References
    {
       private var _scene2DComponent:com.pblabs.rendering2D.Scene2DComponent;
       private var _spriteRenderComponent:com.pblabs.rendering2D.SpriteRenderComponent;
