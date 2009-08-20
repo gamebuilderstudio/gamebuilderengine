@@ -1,4 +1,4 @@
-package
+package com.pblabs.engine
 {
 	import com.pblabs.engine.core.*;
 	import com.pblabs.engine.debug.*;
@@ -110,12 +110,28 @@ package
 		/**
 		 * Locate an entity by its name.
 		 */
-		static public function lookup(name:String):IEntity
+		static public function lookup(entityName:String):IEntity
 		{
-			return NameManager.instance.lookup("Player");
+			return NameManager.instance.lookup(entityName);
 		}
-		
-		/**
+        
+        /**
+         * Locate a named component on a named entity.
+         */
+        static public function lookupComponentByName(entityName:String, componentName:String):IEntityComponent
+        {
+            return NameManager.instance.lookupComponentByName(entityName, componentName);
+        }
+
+        /**
+         * Locate the first component of a type on a named entity.
+         */
+        static public function lookupComponentByType(entityName:String, componentType:Class):IEntityComponent
+        {
+            return NameManager.instance.lookupComponentByType(entityName, componentType);
+        }
+
+        /**
 		 * Make a new instance of an entity, setting appropriate fields based
 		 * on the parameters passed.
 		 * 
