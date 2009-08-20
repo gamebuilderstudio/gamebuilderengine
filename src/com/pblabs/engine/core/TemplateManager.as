@@ -139,33 +139,7 @@ package com.pblabs.engine.core
                return null;
             }
             
-            var name:String = xml.attribute("name");
-            if (xml.name() == "template")
-               name = "";
-            
-            var alias:String = xml.attribute("alias");
-            if(alias == "") alias = null;
-   
-            var entity:IEntity;
-            if (!_entityType)
-               entity = allocateEntity();
-            else
-               entity = new _entityType();
-            
-            entity.initialize(name, alias);
-            
-            if (!doInstantiateTemplate(entity, xml.attribute("template"), new Dictionary()))
-            {
-               entity.destroy();
-               Profiler.exit("instantiateEntity");
-               return null;
-            }
-            
-            Serializer.instance.deserialize(entity, xml);
-            Serializer.instance.clearCurrentEntity();
-            
-            if (!_inGroup)
-               Serializer.instance.reportMissingReferences();
+            var entity:IEntity = instantiateEntityFromXML(xml);
             Profiler.exit("instantiateEntity");
          }
          catch(e:Error)
@@ -176,6 +150,55 @@ package com.pblabs.engine.core
          }
          
          return entity;
+      }
+      
+      /**
+       * Given an XML literal, construct a valid entity from it.
+       */  
+      public function instantiateEntityFromXML(xml:XML):IEntity
+      {
+          Profiler.enter("instantiateEntityFromXML");
+          
+          try
+          {
+              var name:String = xml.attribute("name");
+              if (xml.name() == "template")
+                  name = "";
+              
+              var alias:String = xml.attribute("alias");
+              if(alias == "") alias = null;
+              
+              var entity:IEntity;
+              if (!_entityType)
+                  entity = allocateEntity();
+              else
+                  entity = new _entityType();
+              
+              entity.initialize(name, alias);
+              
+              if (!doInstantiateTemplate(entity, xml.attribute("template"), new Dictionary()))
+              {
+                  entity.destroy();
+                  Profiler.exit("instantiateEntityFromXML");
+                  return null;
+              }
+              
+              Serializer.instance.deserialize(entity, xml);
+              Serializer.instance.clearCurrentEntity();
+              
+              if (!_inGroup)
+                  Serializer.instance.reportMissingReferences();
+
+              Profiler.exit("instantiateEntity");
+          }
+          catch(e:Error)
+          {
+              Logger.printError(this, "instantiateEntity", "Failed instantiating '" + name + "' due to: " + e.toString() + "\n" + e.getStackTrace());
+              entity = null;
+              Profiler.exit("instantiateEntity");
+          }
+          
+          return entity;
       }
       
       /**
