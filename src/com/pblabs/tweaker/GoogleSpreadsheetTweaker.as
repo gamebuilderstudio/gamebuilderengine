@@ -150,7 +150,7 @@ package com.pblabs.tweaker
            if(newValue == "NA" || newValue == "")
               continue;
 
-           Logger.printWarning(this, "onLoadComplete", "Setting property " + configItem.property + " to " + newValue +  " based on " + configItem.cell);
+           Logger.printWarning(this, "onLoadComplete", "Setting property " + configItem.property.property + " to " + newValue +  " based on " + configItem.cell);
            owner.setProperty(configItem.property, newValue);
            if(!owner.doesPropertyExist(configItem.property))
            {
