@@ -129,7 +129,7 @@ package com.pblabs.engine.resource
                // If the extension type is recognized or not...
                if ( !ExtensionTypes.hasOwnProperty(ext) )
                {
-                  Logger.printWarning(this, "ResourceBundle", "No resource type specified for extension '." + ext + "'.  In the extTypes parameter, expected to see something in the form of 'png:\"PBLabs.Rendering2D.ImageResource\"' where png is the (lower-case) extension, and \"PBLabs.Rendering2D.ImageResource\" is a string of the fully qualified resource class name.  Defaulting to generic DataResource.");
+                  Logger.printWarning(this, "ResourceBundle", "No resource type specified for extension '." + ext + "'.  In the ExtensionTypes parameter, expected to see something like: ResourceBundle.ExtensionTypes.mycustomext = \"com.mydomain.customresource\" where mycustomext is the (lower-case) extension, and \"com.mydomain.customresource\" is a string of the fully qualified resource class name.  Defaulting to generic DataResource.");
 
                   // Default to a DataResource if no other name is specified.
                   resTypeName = "com.pblabs.engine.resource.DataResource";
@@ -154,7 +154,7 @@ package com.pblabs.engine.resource
 
             if (!resType)
             {
-               Logger.printError(this, "ResourceBundle", "The resource type '" + resTypeName + "' specified for the embedded asset '" + resSource + "' could not be found.  Please ensure that the path name is correct, and that the class is explicity referenced somewhere in the project, so that it is available at runtime.");
+               Logger.printError(this, "ResourceBundle", "The resource type '" + resTypeName + "' specified for the embedded asset '" + resSource + "' could not be found.  Please ensure that the path name is correct, and that the class is explicity referenced somewhere in the project, so that it is available at runtime.  Did you properly reference this class in your References.as / References.mxml?");
                continue;
             }
             
