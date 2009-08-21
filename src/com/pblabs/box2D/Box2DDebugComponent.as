@@ -43,7 +43,7 @@ package com.pblabs.box2D
          _drawer.m_sprite = _sprite;
          _drawer.m_fillAlpha = 0.3;
          _drawer.m_lineThickness = 1.0;
-         _drawer.m_drawFlags = b2DebugDraw.e_shapeBit;
+         _drawer.m_drawFlags = b2DebugDraw.e_shapeBit|b2DebugDraw.e_jointBit;
          
          _scene.addAlwaysDrawnItem(this);
       }
