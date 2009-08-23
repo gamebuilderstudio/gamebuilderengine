@@ -30,7 +30,7 @@ package com.pblabs.animation
       public static const PLAY_ANIMATION_ONCE:AnimatorType = new AnimatorType();
       
       /**
-       * The value to use for animations that should play once, and the start over.
+       * The value to use for animations that should play once, and then start over.
        */
       public static const LOOP_ANIMATION:AnimatorType = new AnimatorType();
       
