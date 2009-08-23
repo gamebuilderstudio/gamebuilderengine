@@ -11,8 +11,6 @@ package com.pblabs.engine.tests
     import com.pblabs.engine.core.ProcessManager;
     import com.pblabs.engine.debug.Logger;
     
-    import flashx.textLayout.debug.assert;
-    
     import flexunit.framework.Assert;
 
     /**
