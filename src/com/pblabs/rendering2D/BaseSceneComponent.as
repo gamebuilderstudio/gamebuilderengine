@@ -549,25 +549,22 @@ package com.pblabs.rendering2D
          
          // Get a list of the items that will be rendered.
          var renderList:Array = new Array();
-         if(!spatialManager 
-            || !spatialManager.queryRectangle(viewRect, renderMask, renderList))
-         {
-            // Nothing to draw.
-            Profiler.exit("buildRenderList");
-            return;
-         }
-         
+
          // Iterate over everything and stuff drawables into the right layers.
-         for each (var object:IEntityComponent in renderList)
+         if (spatialManager 
+            && spatialManager.queryRectangle(viewRect, renderMask, renderList))
          {
-            var renderableList:Array = object.owner.lookupComponentsByType(IDrawable2D);
-            for each (var renderable:IDrawable2D in renderableList)
-            {
-               if (!layerList[renderable.layerIndex])
-                  layerList[renderable.layerIndex] = new Array();
-               
-               layerList[renderable.layerIndex].push(renderable);
-            }
+             for each (var object:IEntityComponent in renderList)
+             {
+                var renderableList:Array = object.owner.lookupComponentsByType(IDrawable2D);
+                for each (var renderable:IDrawable2D in renderableList)
+                {
+                   if (!layerList[renderable.layerIndex])
+                      layerList[renderable.layerIndex] = new Array();
+                   
+                   layerList[renderable.layerIndex].push(renderable);
+                }
+             }
          }
            
          // Deal with always-drawn stuff.

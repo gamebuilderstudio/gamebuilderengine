@@ -14,11 +14,10 @@ package com.pblabs.box2D
    import Box2D.Dynamics.b2Body;
    import Box2D.Dynamics.b2BodyDef;
    
-   import com.pblabs.engine.entity.EntityComponent;
    import com.pblabs.engine.core.ObjectType;
    import com.pblabs.engine.debug.Logger;
+   import com.pblabs.engine.entity.EntityComponent;
    import com.pblabs.engine.math.Utility;
-   import com.pblabs.rendering2D.ISpatialObject2D;
    
    import flash.geom.Point;
 
@@ -297,14 +296,19 @@ package com.pblabs.box2D
          }
          
          _bodyDef.position.Multiply(_manager.inverseScale);
-         _body = _manager.add(_bodyDef);
-         _body.SetUserData(this);
-         _bodyDef.position.Multiply(_manager.scale);
          
-         linearVelocity = _linearVelocity;
-         angularVelocity = _angularVelocity;
-         
-         buildCollisionShapes();
+         _manager.add(_bodyDef, this, 
+             function(body:b2Body):void
+             {
+                 _body = body;
+                 _body.SetUserData(this);
+                 _bodyDef.position.Multiply(_manager.scale);
+                 
+                 linearVelocity = _linearVelocity;
+                 angularVelocity = _angularVelocity;
+                 
+                 buildCollisionShapes();
+             });
       }
       
       override protected function onRemove():void 

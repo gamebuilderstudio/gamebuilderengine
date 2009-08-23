@@ -26,9 +26,13 @@ package com.pblabs.box2D
          
          if (!shape1Dictionary[spatial2])
             shape1Dictionary[spatial2] = 0;
+
+         //check for existence of both owners because one might be destroyed during the event.
+         if (spatial1.owner) 
+            spatial1.owner.eventDispatcher.dispatchEvent(new CollisionEvent(CollisionEvent.COLLISION_EVENT, point));
          
-         spatial1.owner.eventDispatcher.dispatchEvent(new CollisionEvent(CollisionEvent.COLLISION_EVENT, point));
-         spatial2.owner.eventDispatcher.dispatchEvent(new CollisionEvent(CollisionEvent.COLLISION_EVENT, point));
+         if (spatial2.owner)
+            spatial2.owner.eventDispatcher.dispatchEvent(new CollisionEvent(CollisionEvent.COLLISION_EVENT, point));
          
          shape1Dictionary[spatial1]++;
          shape1Dictionary[spatial2]++;
@@ -45,9 +49,13 @@ package com.pblabs.box2D
          
          shape1Dictionary[spatial1]--;
          shape1Dictionary[spatial2]--;
+
+         //check for existence of both owners because one might be destroyed during the event.
+         if (spatial1.owner) 
+            spatial1.owner.eventDispatcher.dispatchEvent(new CollisionEvent(CollisionEvent.COLLISION_STOPPED_EVENT, point));
          
-         spatial1.owner.eventDispatcher.dispatchEvent(new CollisionEvent(CollisionEvent.COLLISION_STOPPED_EVENT, point));
-         spatial2.owner.eventDispatcher.dispatchEvent(new CollisionEvent(CollisionEvent.COLLISION_STOPPED_EVENT, point));
+         if (spatial2.owner)
+            spatial2.owner.eventDispatcher.dispatchEvent(new CollisionEvent(CollisionEvent.COLLISION_STOPPED_EVENT, point));
       }
       
       override public function Result(point:b2ContactResult):void

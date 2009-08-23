@@ -106,27 +106,57 @@ package com.pblabs.box2D
       override protected function onRemove():void 
       {
          var body:b2Body = _world.GetBodyList();
-         while (body)
+         //the world is locked. this was called from a collision or other event.
+         //defer until we know it should not be locked anymore.
+         if (_world.m_lock)
          {
-            var next:b2Body = body.GetNext();
-            _world.DestroyBody(body);
-            body = next;
+             ProcessManager.instance.schedule(0, this, onRemove);
          }
-         
-         _world = null;
-         ProcessManager.instance.removeTickedObject(this);
+         else
+         {
+             while (body)
+             {
+                var next:b2Body = body.GetNext();
+                _world.DestroyBody(body);
+                body = next;
+             }
+             
+             _world = null;
+
+            ProcessManager.instance.removeTickedObject(this);
+         }
       }
       
-      public function add(bodyDef:b2BodyDef):b2Body
+      public function add(bodyDef:b2BodyDef, thisArg:* = null, completedCallback:Function = null):void
       {
-         var body:b2Body = _world.CreateBody(bodyDef);
-         return body;
+          if (!_world)
+              throw new Error("World not initialized.");
+            
+          //the world is locked. this was called from a collision or other event.
+          //defer until we know it should not be locked anymore.
+          if (_world.m_lock)
+          {
+              ProcessManager.instance.schedule(0, thisArg, add, bodyDef, thisArg, completedCallback);
+          }
+          else
+          {
+              var body:b2Body = _world.CreateBody(bodyDef);
+              if (completedCallback != null)
+                  completedCallback.apply(thisArg, [body]);
+          }
       }
       
       public function remove(body:b2Body):void
       {
          if (_world)
-            _world.DestroyBody(body);
+         {
+             //the world is locked. this was called from a collision or other event.
+             //defer until we know it should not be locked anymore.
+             if (_world.m_lock)
+                 ProcessManager.instance.schedule(0, this, remove, body);
+             else
+                _world.DestroyBody(body);
+         }
       }
       
       public function setDebugDrawer(drawer:b2DebugDraw):void
