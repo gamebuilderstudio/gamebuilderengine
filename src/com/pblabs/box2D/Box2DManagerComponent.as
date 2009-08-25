@@ -260,11 +260,11 @@ package com.pblabs.box2D
       }
       
       // Used to store other world objects that aren't implemented by Box2D.
-      private var _otherItems:BasicSpatialManager2D = new BasicSpatialManager2D();      
-      private var _scale:Number = 30;
-      private var _world:b2World = null;
-      private var _allowSleep:Boolean = true;
-      private var _worldBounds:Rectangle = new Rectangle(-5000, -5000, 10000, 10000);
-      private var _gravity:Point = new Point(0, 9.81);
+      protected var _otherItems:BasicSpatialManager2D = new BasicSpatialManager2D();      
+      protected var _scale:Number = 30;
+      protected var _world:b2World = null;
+      protected var _allowSleep:Boolean = true;
+      protected var _worldBounds:Rectangle = new Rectangle(-5000, -5000, 10000, 10000);
+      protected var _gravity:Point = new Point(0, 9.81);
    }
 }
