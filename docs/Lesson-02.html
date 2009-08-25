@@ -57,7 +57,7 @@
    {
       public function Lesson2Base()
       {
-         Global.Startup(this);                                                // Start up PBE
+         Global.startup(this);                                                // Start up PBE
       }
    }
    ... 
@@ -79,7 +79,7 @@
    {
       public function Lesson2Base()
       {
-         Global.Startup(this);                                                // Start up PBE
+         Global.startup(this);                                                // Start up PBE
 
          CreateScene();                                                       // Set up a simple scene entity
          
@@ -94,24 +94,24 @@
       private function CreateScene():void 
       {
          var Scene:IEntity = allocateEntity();                                // Allocate our Scene entity
-         Scene.Initialize("Scene");                                           // Register with the name "Scene"
+         Scene.initialize("Scene");                                           // Register with the name "Scene"
          var Spatial:BasicSpatialManager2D = new BasicSpatialManager2D();     // Allocate our Spatial DB component
-         Scene.AddComponent( Spatial, "Spatial" );                            // Add to Scene with name "Spatial"
+         Scene.addComponent( Spatial, "Spatial" );                            // Add to Scene with name "Spatial"
 
          var Renderer:Scene2DComponent = new Scene2DComponent();              // Allocate our renderering component 
         
-         Renderer.SpatialDatabase = Spatial;                                  // Point renderer at Spatial (for entity location information)
+         Renderer.spatialDatabase = Spatial;                                  // Point renderer at Spatial (for entity location information)
         
          var View:SceneView = new SceneView();                                // Create a view for our Renderer
          View.width = 800;                                                    // Set the width of our Scene View
          View.height = 600;                                                   // Set the height of our Scene View
-         Renderer.SceneView = View;                                           // Point the Renderer's SceneView at the view we just created.
+         Renderer.sceneView = View;                                           // Point the Renderer's SceneView at the view we just created.
         
-         Renderer.Position = new Point(0,0);                                  // Point the camera (center of render view) at 0,0
+         Renderer.position = new Point(0,0);                                  // Point the camera (center of render view) at 0,0
         
-         Renderer.RenderMask = new ObjectType("Renderable");                  // Set the render mask to only draw entities explicitly marked as "Renderable"
+         Renderer.renderMask = new ObjectType("Renderable");                  // Set the render mask to only draw entities explicitly marked as "Renderable"
         
-         Scene.AddComponent( Renderer, "Renderer" );                          // Add our Renderer component to the scene entity with the name "Renderer"
+         Scene.addComponent( Renderer, "Renderer" );                          // Add our Renderer component to the scene entity with the name "Renderer"
       }
    </pre>
    <p>Next, we will create our hero entity.  Just as the Scene entity had two manager components, this entity will have two components -- one to be tracked by each manager component.</p>
@@ -122,31 +122,31 @@
       private function CreateHero():void
       {
          var Hero:IEntity = allocateEntity();                                 // Allocate an entity for our hero avatar
-         Hero.Initialize("Hero");                                             // Register the entity with PBE under the name "Hero"
+         Hero.initialize("Hero");                                             // Register the entity with PBE under the name "Hero"
          
          var Spatial:SimpleSpatialComponent = new SimpleSpatialComponent();   // Create our spatial component
 
          // Do a named lookup to register our hero with the scene spatial database
-         Spatial.SpatialManager = NameManager.Instance.LookupComponentByName("Scene", "Spatial") as ISpatialManager2D;                            
+         Spatial.spatialManager = NameManager.instance.lookupComponentByName("Scene", "Spatial") as ISpatialManager2D;                            
          
-         Spatial.ObjectMask = new ObjectType("Renderable");                   // Set a mask flag for this entity as "Renderable" to be seen by the scene Renderer
-         Spatial.Position = new Point(0,0);                                   // Set our hero's spatial position as 0,0
-         Spatial.Size = new Point(50,50);                                     // Set our hero's size as 50,50
+         Spatial.objectMask = new ObjectType("Renderable");                   // Set a mask flag for this entity as "Renderable" to be seen by the scene Renderer
+         Spatial.position = new Point(0,0);                                   // Set our hero's spatial position as 0,0
+         Spatial.size = new Point(50,50);                                     // Set our hero's size as 50,50
         
-         Hero.AddComponent( Spatial, "Spatial" );                             // Add our spatial component to the Hero entity with the name "Spatial"
+         Hero.addComponent( Spatial, "Spatial" );                             // Add our spatial component to the Hero entity with the name "Spatial"
         
       
          // Create a simple render component to display our entity
          var Render:SimpleShapeRenderComponent = new SimpleShapeRenderComponent(); 
             
-         Render.ShowCircle = true;                                            // Specify to draw the entity as a circle
-         Render.Radius = 25;                                                  // Mark the radius of the circle as 25
+         Render.showCircle = true;                                            // Specify to draw the entity as a circle
+         Render.radius = 25;                                                  // Mark the radius of the circle as 25
          // Point the render component to this entity's Spatial component for position information
-         Render.PositionReference = new PropertyReference("@Spatial.position");
+         Render.positionReference = new PropertyReference("@Spatial.position");
          // Point the render component to this entity's Spatial component for rotation information          
-         Render.RotationReference = new PropertyReference("@Spatial.rotation");
+         Render.rotationReference = new PropertyReference("@Spatial.rotation");
         
-         Hero.AddComponent( Render, "Render" );                               // Add our render component to the Hero entity with the name "Render"
+         Hero.addComponent( Render, "Render" );                               // Add our render component to the Hero entity with the name "Render"
       }
    }
    </pre>   
@@ -161,7 +161,7 @@
    <p>To summarize, to create an entity in Actionscript, one uses the following pattern:</p>
    <pre class="brush: js">
    var newEntity:IEntity = allocateEntity();                                  // Allocate an entity
-   newEntity.Intialize("EntityName");                                         // Register the entity with PBE under the name "EntityName"
+   newEntity.intialize("EntityName");                                         // Register the entity with PBE under the name "EntityName"
    </pre>   
    
    <p>This creates an entity, stored in the variable newEntity.  All entities and components must have string names registered with PushButton Engine, and the call to Initialize() registers that entity with PushButton Engine under the name "EntityName".</p>
@@ -170,7 +170,7 @@
    <pre class="brush: js">
    var newComponent:IEntityComponent = new WhateverComponent();               // Create a new component
    newComponent.field = value;                                                // Set values.
-   newEntity.AddComponent(newComponent, "TheComponentName");                  // Add the component to the entity container
+   newEntity.addComponent(newComponent, "TheComponentName");                  // Add the component to the entity container
 
    // Repeat the component block for each component and its values.
    </pre>   

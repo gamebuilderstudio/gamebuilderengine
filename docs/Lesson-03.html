@@ -93,7 +93,7 @@ package
       public override function onTick(tickRate:Number):void
       {
          // Copy the owner entity's position into a local Point structure
-         var position:Point = Owner.GetProperty(PositionReference);
+         var position:Point = owner.getProperty(PositionReference);
          
          
          // If we are over the left edge...
@@ -117,7 +117,7 @@ package
          position.x += direction * 5;
          
          // Set the spatial component's position based on our new value
-         Owner.SetProperty(PositionReference, position);
+         owner.setProperty(PositionReference, position);
       }
 
    }
@@ -135,7 +135,7 @@ package
          // Point the controller component to this entity's Spatial component for position information
          Controller.PositionReference = new PropertyReference("@Spatial.position");
          // Add the demo controller component to the Hero entity with the name "Controller"
-         Hero.AddComponent( Controller, "Controller" );
+         Hero.addComponent( Controller, "Controller" );
    </pre>      
    
    <p>This creates an instance of the new DemoControllerComponent(), connects the position reference to the entity's spatial component, and adds the component to the entity.</p>

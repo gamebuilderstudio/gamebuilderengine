@@ -59,14 +59,14 @@
    // Input keys can be referenced through static class members:
    InputKey.LEFT
    // Or they can be referenced by a named string lookup:
-   InputKey.StringToKey("LEFT")
+   InputKey.stringToKey("LEFT")
    </pre>   
 
-   <p>In the base lesson directory, you will find the simple stub class HeroControllerComponent.  To make it respond to keyboard events, we will have the onTick() method ask the InputManager if the keys we are interested in are being pressed.  You can do this through the InputManager.IsKeyDown() method, like so:</p>
+   <p>In the base lesson directory, you will find the simple stub class HeroControllerComponent.  To make it respond to keyboard events, we will have the onTick() method ask the InputManager if the keys we are interested in are being pressed.  You can do this through the InputManager.isKeyDown() method, like so:</p>
 
    <pre class="brush: js">
    // IsKeyDown() returns a boolean -- false means the key is up, and true means that the key is down.
-   if (InputManager.IsKeyDown(InputKey.SPACE))
+   if (InputManager.isKeyDown(InputKey.SPACE))
    {
       // React to the key being depressed:
       trace("Hey, cheer up!");
@@ -123,15 +123,15 @@ package
       public override function onTick(tickRate:Number):void
       {
          // Get references for our spatial position.
-         var position:Point = Owner.GetProperty(PositionReference);
+         var position:Point = owner.getProperty(PositionReference);
 
          // Look at our input keys to see which direction we should move. Left is -x, right is +x.
-         if (InputManager.IsKeyDown(InputKey.RIGHT))
+         if (InputManager.isKeyDown(InputKey.RIGHT))
          {
             // Move our hero to the right
             position.x += 15;
          }
-         if (InputManager.IsKeyDown(InputKey.LEFT))
+         if (InputManager.isKeyDown(InputKey.LEFT))
          {
             // Move our hero to the left
             position.x -= 15;
@@ -150,7 +150,7 @@ package
          }
 
          // Send our manipulated spatial variables back to the spatial manager
-         Owner.SetProperty(PositionReference, position);
+         owner.setProperty(PositionReference, position);
       }    
    }
 }
