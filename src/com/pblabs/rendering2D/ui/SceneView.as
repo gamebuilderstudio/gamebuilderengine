@@ -15,7 +15,8 @@ package com.pblabs.rendering2D.ui
 
    /**
     * This class can be set as the SceneView on the BaseSceneComponent class and is used
-    * as the canvas to draw the objects that make up the scene.
+    * as the canvas to draw the objects that make up the scene. It defaults to the size
+    * of the stage.
     * 
     * <p>Currently this is just a stub, and exists for clarity and potential expandability in
     * the future.</p>
@@ -45,6 +46,10 @@ package com.pblabs.rendering2D.ui
       public function SceneView()
       {
          Global.mainStage.addChild(this);
+
+         // Intelligent default size.
+         width = Global.mainStage.stage.stageWidth;
+         height = Global.mainStage.stage.stageHeight;
       }
       
       public function addDisplayObject(dobj:DisplayObject):void
