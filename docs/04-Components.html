@@ -102,26 +102,26 @@
    <pre class="brush: js">
    class TestComponent extends EntityComponent 
    {
-      public var AProperty:String = "Hello!";
+      public var aProperty:String = "Hello!";
    }
    
    // Inside another component on an entity which has a TestComponent named Test:
-   var value:String = Owner.GetProperty(new PropertyReference("@Test.AProperty")) as String;
+   var value:String = owner.getProperty(new PropertyReference("@Test.aProperty")) as String;
    
    trace(value); // Outputs "Hello!"
    </pre>
    
-   <p>You can also access fields inside complex data types. Suppose AProperty were a Point. You could do the following:</p>
+   <p>You can also access fields inside complex data types. Suppose aProperty were a Point. You could do the following:</p>
    
    <pre class="brush: js">
-   var xPosition:Number = Owner.GetProperty(new PropertyReference("@Test.AProperty.x");
+   var xPosition:Number = owner.getProperty(new PropertyReference("@Test.aProperty.x");
    </pre>
    
    <p>In fact, you can access any member contained in another component. The only other thing to know is that to access items in Arrays or Dictionaries, you use the same dot syntax:</p>
    
    <pre class="brush: js">
-   // Equivalent to accessing AnArray[4].x on @Test.
-   var xPosition:Number = Owner.GetProperty(new PropertyReference("@Test.AnArray.4.x"));
+   // Equivalent to accessing anArray[4].x on @Test.
+   var xPosition:Number = owner.getProperty(new PropertyReference("@Test.anArray.4.x"));
    </pre>
    
    <p>The property system respects getters and setters, so if you need side effects when you set or get a field, you can implement this quite naturally.</p>
@@ -135,7 +135,7 @@
       
       public function DoSomeBehavior():void
       {
-         var myPos:Point = Owner.GetProperty(PositionProperty) as Point;
+         var myPos:Point = owner.getProperty(PositionProperty) as Point;
       }
    }
    </pre>
@@ -144,7 +144,7 @@
    
    <h3>Events</h3>
    
-   <p>Every IEntity exposes a standard Flash EventDispatcher, so it's easy to dispatch and listen for events. Events make a lot of sense for one-shot scenarios, like detecting when a player jumps, responding to collision events, detecting damage, state machine transitions, and so forth.</p>
+   <p>Every IEntity exposes a standard Flash eventDispatcher, so it's easy to dispatch and listen for events. Events make a lot of sense for one-shot scenarios, like detecting when a player jumps, responding to collision events, detecting damage, state machine transitions, and so forth.</p>
    
    <pre class="brush: js">
    // Example of dispatching an event from a component.
@@ -155,7 +155,7 @@
    
       public function SomeActionHappens():void
       {
-         Owner.EventDispatcher.dispatchEvent(new Event(SOME_ACTION));
+         owner.eventDispatcher.dispatchEvent(new Event(SOME_ACTION));
       }
    }
    
@@ -164,7 +164,7 @@
    {
       protected function _OnAdd():void
       {
-         Owner.EventDispatcher.addEventListener(TestComponent.SOME_ACTION, _EventHandler);
+         owner.eventDispatcher.addEventListener(TestComponent.SOME_ACTION, _EventHandler);
       }
       
       private function _EventHandler(e:Event):void
@@ -176,7 +176,7 @@
       {
          // Notice that we have to unsubscribe the event when the component
          // is removed.
-         Owner.EventDispatcher.removeEventListener(TestComponent.SOME_ACTION, _EventHandler);
+         owner.eventDispatcher.removeEventListener(TestComponent.SOME_ACTION, _EventHandler);
       }
    }
    </pre>
@@ -201,18 +201,18 @@
    // Interface implemented by another component.
    interface IExampleInterface
    {
-      function GetBigArray():Array;
+      function getBigArray():Array;
    }
    
    class TestComponent extends EntityComponent
    {
-      public OtherComponentName:String = "AnotherComponent";
+      public otherComponentName:String = "anotherComponent";
       
       public function AccessSomeData():void
       {
-         var otherItem:IExampleInterface = Owner.LookupComponentByName(OtherComponentName, IExampleInterface) as IExampleInterface;
+         var otherItem:IExampleInterface = owner.lookupComponentByName(otherComponentName, IExampleInterface) as IExampleInterface;
          
-         for each(var i:* in otherItem.GetBigArray())
+         for each(var i:* in otherItem.getBigArray())
             trace(i);
       }
    }
@@ -224,27 +224,27 @@
    // Just like the previous component, but it keeps the reference around longer.
    class TestComponent extends EntityComponentity
    {
-      public var AnotherComponent:IExampleInterface;
+      public var anotherComponent:IExampleInterface;
    
       protected function _OnAdd():void
       {
-         AnotherComponent = Owner.LookupComponentByType(IExampleInterface) as IExampleInterface;
+         anotherComponent = owner.LookupComponentByType(IExampleInterface) as IExampleInterface;
       }
       
       protected function _OnReset():void
       {
-         AnotherComponent = Owner.LookupComponentByType(IExampleInterface) as IExampleInterface;
+         anotherComponent = owner.LookupComponentByType(IExampleInterface) as IExampleInterface;
       }
       
       protected function _OnRemove():void
       {
          // Don't forget to clear the reference to prevent memory leaks.
-         AnotherComponent = null;
+         anotherComponent = null;
       }
       
       public function DoSomething():void
       {
-         for each(var i:* in AnotherComponent.GetBigArray())
+         for each(var i:* in anotherComponent.getBigArray())
             trace(i);
       }
    }
@@ -261,8 +261,8 @@
    <pre class="brush: xml">
 	// Example Components.mxml
 &lt;?xml version="1.0" encoding="utf-8"?&gt;
-&lt;mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:pb="PBLabs.Engine.MXML.*"&gt;
-   &lt;pb:TypeReference type="PBLabs.Rendering2D.Scene2DComponent"/&gt;
+&lt;mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:pb="com.pblabs.engine.mxml.*"&gt;
+   &lt;pb:TypeReference type="com.pblabs.rendering2D.Scene2DComponent"/&gt;
 &lt;/mx:Canvas&gt;</pre>
    
    <p>Notice that a custom namespace is defined via the xmlns:pb tag in the mx:Canvas tag. This is necessary to use any of the PBEngine MXML tags.</p>
@@ -273,7 +273,7 @@
    
    <p>However, you can force a reference to a class by putting something like the following in your main application class. This is equivalent to the preceding MXML example.</p>
    
-   <pre class="brush: js">private var forceRef:PBLabs.Rendering2D.Scene2DComponent;</pre>
+   <pre class="brush: js">private var forceRef:com.pblabs.rendering2D.Scene2DComponent;</pre>
    
    <h2>Packaging Components</h2>
    

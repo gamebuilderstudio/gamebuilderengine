@@ -22,7 +22,7 @@ package
    {
       public function Lesson2Base()
       {
-         Global.startup(this);
+         Global.startup(this);                                                // Start up PBE
       }
    }
 }

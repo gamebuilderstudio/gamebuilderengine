@@ -180,6 +180,51 @@
       <ant dir="${rootDir}/examples/RollyBallGame"/>
    </target>
    
+   <target name="doLessonsPackagedBuild" description="Build a packaged ZIP of each lesson, ready for distribution." depends="clean,compile,lessons">
+      <!-- Build everything from scratch - dependencies do this. -->
+      
+      <!-- Get the current revision. -->
+      <typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="localClasspath" />
+      <svn>
+         <status path="." revisionProperty="svn.revision"/>
+      </svn>
+      <echo>Packaging version ${svn.revision} of PBEngine SDK from repo</echo>
+      
+      <!-- Package it all into a zip into the docs directory. -->
+      <delete  file="${rootDir}/docs/downloads/Lesson1FlashDevelop.zip" quiet="true"/>
+      <zip destfile="${rootDir}/docs/downloads/Lesson1FlashDevelop.zip" level="9" basedir="${rootDir}/lessons/Lesson1FlashDevelop" excludes="*svn*"/>
+      <delete  file="${rootDir}/docs/downloads/Lesson1FlashCS4.zip"     quiet="true"/>
+      <zip destfile="${rootDir}/docs/downloads/Lesson1FlashCS4.zip"     level="9" basedir="${rootDir}/lessons/Lesson1FlashCS4" excludes="*svn*"/>
+      <delete  file="${rootDir}/docs/downloads/Lesson1FlexBuilder.zip"  quiet="true"/>
+      <zip destfile="${rootDir}/docs/downloads/Lesson1FlexBuilder.zip"  level="9" basedir="${rootDir}/lessons/Lesson1FlexBuilder" excludes="*svn*"/>
+
+      <delete  file="${rootDir}/docs/downloads/Lesson2Base.zip"  quiet="true"/>
+      <zip destfile="${rootDir}/docs/downloads/Lesson2Base.zip"  level="9" basedir="${rootDir}/lessons/Lesson2Base" excludes="*svn*"/>
+      <delete  file="${rootDir}/docs/downloads/Lesson2Final.zip" quiet="true"/>
+      <zip destfile="${rootDir}/docs/downloads/Lesson2Final.zip" level="9" basedir="${rootDir}/lessons/Lesson2Final" excludes="*svn*"/>
+
+      <delete  file="${rootDir}/docs/downloads/Lesson3Base.zip"  quiet="true"/>
+      <zip destfile="${rootDir}/docs/downloads/Lesson3Base.zip"  level="9" basedir="${rootDir}/lessons/Lesson3Base" excludes="*svn*"/>
+      <delete  file="${rootDir}/docs/downloads/Lesson3Final.zip" quiet="true"/>
+      <zip destfile="${rootDir}/docs/downloads/Lesson3Final.zip" level="9" basedir="${rootDir}/lessons/Lesson3Final" excludes="*svn*"/>
+
+      <delete  file="${rootDir}/docs/downloads/Lesson4Base.zip"  quiet="true"/>
+      <zip destfile="${rootDir}/docs/downloads/Lesson4Base.zip"  level="9" basedir="${rootDir}/lessons/Lesson4Base" excludes="*svn*"/>
+      <delete  file="${rootDir}/docs/downloads/Lesson4Final.zip" quiet="true"/>
+      <zip destfile="${rootDir}/docs/downloads/Lesson4Final.zip" level="9" basedir="${rootDir}/lessons/Lesson4Final" excludes="*svn*"/>
+
+      <delete  file="${rootDir}/docs/downloads/Lesson5Base.zip"  quiet="true"/>
+      <zip destfile="${rootDir}/docs/downloads/Lesson5Base.zip"  level="9" basedir="${rootDir}/lessons/Lesson4Base" excludes="*svn*"/>
+      <delete  file="${rootDir}/docs/downloads/Lesson5Final.zip" quiet="true"/>
+      <zip destfile="${rootDir}/docs/downloads/Lesson5Final.zip" level="9" basedir="${rootDir}/lessons/Lesson5Final" excludes="*svn*"/>
+
+      <!-- Copy final versions of the lessons to the docs directory -->
+      <copy file="${rootDir}/lessons/Lesson2Base/bin/Lesson2Final.swf" tofile="${rootDir}/docs/downloads/Lesson2Final.swf" failOnError="true" overwrite="true" />
+      <copy file="${rootDir}/lessons/Lesson2Base/bin/Lesson3Final.swf" tofile="${rootDir}/docs/downloads/Lesson3Final.swf" failOnError="true" overwrite="true" />
+      <copy file="${rootDir}/lessons/Lesson2Base/bin/Lesson4Final.swf" tofile="${rootDir}/docs/downloads/Lesson4Final.swf" failOnError="true" overwrite="true" />
+      <copy file="${rootDir}/lessons/Lesson2Base/bin/Lesson5Final.swf" tofile="${rootDir}/docs/downloads/Lesson5Final.swf" failOnError="true" overwrite="true" />
+   </target>
+   
    <target name="doFullPackagedBuild" description="Build a packaged ZIP of the whole SDK, ready for distribution." depends="clean,test,compile,lessons,examples">
       <!-- Build everything from scratch - dependencies do this. -->
       

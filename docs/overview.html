@@ -39,13 +39,13 @@
    <pre class="brush: js">
    class ScoreCounterComponent extends TickedComponent
    {
-      public var Score:Number = 0;
-      public var PointsPerSecond:Number = 1;
+      public var score:Number = 0;
+      public var pointsPerSecond:Number = 1;
       
       public function onTick(dt:Number):void
       {
-         Score += PointsPerSecond * dt;
-         Logger.Log(this, "Updating score, score is now " + Score);
+         score += pointsPerSecond * dt;
+         Logger.Log(this, "Updating score, score is now " + score);
       }
    }
    </pre>
@@ -62,7 +62,7 @@
       &lt;!-- Here's where we include the scorecounter we defined above. Notice that we give it a name - this is required so we can refer to the component. --&gt;
       &lt;component type="ScoreCounterComponent" name="Score"&gt;
          &lt;!-- This is all it takes to set a field on the component - just the name and a value. In this case we're setting the rate at which players will accrue points. --&gt;
-         &lt;PointsPerSecond&gt;10&lt;/PointsPerSecond&gt;
+         &lt;pointsPerSecond&gt;10&lt;/pointsPerSecond&gt;
       &lt;/component&gt;
       
       &lt;!-- These components would normally have properties set, configuring things like the size, shape, appearance, and movement of the player, but we're skipping that to keep things focused. --&gt;
