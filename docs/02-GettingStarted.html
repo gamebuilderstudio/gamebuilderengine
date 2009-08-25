@@ -63,14 +63,14 @@
 {
 	import flash.display.Sprite;
 	import com.pblabs.engine.core.*;
-	import com.pblabs.Engine.Debug.*;
+	import com.pblabs.engine.debug.*;
 	
 	public class Main extends Sprite 
 	{
 		public function Main():void 
 		{
-			Global.Startup(this);
-			Logger.Print(this, "Hello, world!");
+			Global.startup(this);
+			Logger.print(this, "Hello, world!");
 		}
 	}
 }</pre>
@@ -88,12 +88,12 @@
    &lt;mx:Script&gt;
       &lt;![CDATA[
          import com.pblabs.engine.core.*;
-         import com.pblabs.Engine.Debug.*;
+         import com.pblabs.engine.debug.*;
          
          public function kickoff():void
          {
-            Global.Startup(this);
-            Logger.Print(this, "Hello, world!");
+            Global.startup(this);
+            Logger.print(this, "Hello, world!");
          }
       ]]&gt;
    &lt;/mx:Script&gt;
@@ -108,14 +108,14 @@
 {
 	import flash.display.Sprite;
 	import com.pblabs.engine.core.*;
-	import com.pblabs.Engine.Debug.*;
+	import com.pblabs.engine.debug.*;
 	
 	public class HelloWorld extends Sprite 
 	{
 		public function Main():void 
 		{
-			Global.Startup(this);
-			Logger.Print(this, "Hello, world!");
+			Global.startup(this);
+			Logger.print(this, "Hello, world!");
 		}
 	}
 }</pre>
@@ -135,7 +135,9 @@
    <h3>Using Flex Builder</h3>
    
    <a href="http://www.adobe.com/products/flex/">Adobe Flex Builder</a> is an Eclipse-based IDE for ActionScript development. It's very easy to use with PBEngine.</p>
-   
+
+   <p><b>Note:</b> Flex Builder Plug-in doesn't work with every version of Eclipse. We recommend using the standalone version of Flex Builder for maximum compatibility.</p>
+
    <p>To open a project with Flex Builder, perform the following steps:</p>
    
    <ol>
