@@ -137,11 +137,13 @@ package com.pblabs.rendering2D
         	// if there is a renderTarget invalidate it first
         	if (_currentRenderTarget!=null) invalidateRenderTarget();
         	// create the renderTarget BitmapData
-        	_currentRenderTarget = new BitmapData(sceneView.width,sceneView.height,_transparent);
+        	_currentRenderTarget = new BitmapData(sceneView.width,sceneView.height,_transparent,_fillColor);
         	// create bitmap that will be added to the sceneView
         	_bitmap = new Bitmap(_currentRenderTarget);
         	// create the clearRenderTarget BitmapData and fill it with the _fillColor
-        	_clearRenderTarget = new BitmapData(sceneView.width,sceneView.height,false,_fillColor);        	
+        	_clearRenderTarget = new BitmapData(sceneView.width,sceneView.height,_transparent,_fillColor);        	
+        	if (doClear)
+        		_currentRenderTarget.copyPixels(_clearRenderTarget,_clearRenderTarget.rect,new Point(0,0));
         }
                       
 	    /**
@@ -163,8 +165,8 @@ package com.pblabs.rendering2D
 		// private variable declarations	
 
         private var _clearRenderTarget:BitmapData;
-        private var _transparent:Boolean = false;
-        private var _fillColor:uint = 0x000000;
+        private var _transparent:Boolean = true;
+        private var _fillColor:uint = 0x00000000;
         private var _bitmap:Bitmap = null;
         private var _addToView:Boolean = true;   		
    		   		   		   		
