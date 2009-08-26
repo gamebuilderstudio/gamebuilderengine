@@ -78,13 +78,14 @@ package com.pblabs.engine.resource
        * @see Resource
        */
       public function load(filename:String, resourceType:Class, onLoaded:Function = null, onFailed:Function = null, forceReload:Boolean = false):void
-      {
-         var resource:Resource = _resources[filename + resourceType];
+      {          
+          var resourceIdentifier:String = filename.toLowerCase() + resourceType;
+         var resource:Resource = _resources[resourceIdentifier];
 
          if (resource && forceReload)
          {
-            _resources[filename + resourceType] = null;
-            delete _resources[filename + resourceType];
+            _resources[resourceIdentifier] = null;
+            delete _resources[resourceIdentifier];
             resource = null;
          }
          
@@ -107,7 +108,7 @@ package com.pblabs.engine.resource
             
             resource = testResource;
             resource.load(filename);
-            _resources[filename + resourceType] = resource;
+            _resources[resourceIdentifier] = resource;
          }
          else if (!(resource is resourceType))
          {
@@ -180,7 +181,9 @@ package com.pblabs.engine.resource
        */
       public function registerEmbeddedResource(filename:String, resourceType:Class, data:*):void
       {
-         if (_resources[filename + resourceType])
+          var resourceIdentifier:String = filename.toLowerCase() + resourceType;
+          
+         if (_resources[resourceIdentifier])
          {
             Logger.printWarning(this, "registerEmbeddedResource", "A resource from file " + filename + " has already been embedded.");
             return;
@@ -195,7 +198,7 @@ package com.pblabs.engine.resource
             
             // These can be in the try since the catch will return.
             resource.incrementReferenceCount();
-            _resources[filename + resourceType] = resource;
+            _resources[resourceIdentifier] = resource;
          }
          catch(e:Error)
          {
