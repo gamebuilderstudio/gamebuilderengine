@@ -224,6 +224,12 @@ class Entity extends EventDispatcher implements IEntity
     
     private function doAddComponent(component:IEntityComponent, componentName:String):Boolean
     {
+        if (componentName == "")
+        {
+            Logger.printError(this, "AddComponent", "A component name was not specified");
+            return false;
+        }
+
         if (component.owner)
         {
             Logger.printError(this, "AddComponent", "The component " + componentName + " already has an owner. (" + name + ")");
