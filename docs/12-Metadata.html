@@ -26,6 +26,15 @@
 
    <div id="contentArea">
 <pre>
+TypeHint
+   type="fully.qualified.class"
+      This can be used on Array or Dictionary fields to specify the root type
+      to use for children. By default, the type specified and any child types
+      are used. The EditorData-referenceType metadata can be used in conjunction
+      with this to modify that behavior. This can also be used on
+      PropertyReference fields to specify the type of properties that can be
+      referenced. If it is omitted, all types are considered valid.
+
 EditorData
    defaultValue="{value}"
       Default defaultValues are: Boolean=false, number,int,uint=0, String="".
@@ -71,14 +80,6 @@ EditorData
       difference between the two is nameReference will reference an existing
       entity whereas objectReference will instantiate a new entity.
 
-TypeHint
-   type="fully.qualified.class"
-      This can be used on Array or Dictionary fields to specify the root type
-      to use for children. By default, the type specified and any child types
-      are used. The EditorData-referenceType metadata can be used in conjunction
-      with this to modify that behavior. This can also be used on
-      PropertyReference fields to specify the type of properties that can be
-      referenced. If it is omitted, all types are considered valid.
 </pre>
 </div>
 </body>
