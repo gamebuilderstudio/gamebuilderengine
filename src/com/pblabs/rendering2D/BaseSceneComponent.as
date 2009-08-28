@@ -169,7 +169,7 @@ package com.pblabs.rendering2D
       
       public function copyPixels(bitmapData:BitmapData, offset:Point):void
       {
-         _currentRenderTarget.copyPixels(bitmapData, bitmapData.rect, offset);         
+         _currentRenderTarget.copyPixels(bitmapData, bitmapData.rect, offset, null, null, true);         
       }
       
       /**
