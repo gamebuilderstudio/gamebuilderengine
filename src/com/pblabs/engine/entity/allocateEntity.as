@@ -226,8 +226,7 @@ class Entity extends EventDispatcher implements IEntity
     {
         if (componentName == "")
         {
-            Logger.printError(this, "AddComponent", "A component name was not specified");
-            return false;
+            Logger.printWarning(this, "AddComponent", "A component name was not specified. This might cause problems later.");
         }
 
         if (component.owner)
