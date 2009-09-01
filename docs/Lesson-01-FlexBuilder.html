@@ -1,0 +1,138 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+   <link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+   <script type="text/javascript" src="js/pageToc.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shCore.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushJScript.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushPhp.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushPlain.js"></script>
+   <script type="text/javascript" src="js/sh/scripts/shBrushXml.js"></script>
+   <link type="text/css" rel="stylesheet" href="js/sh/styles/shCore.css"/>
+   <link type="text/css" rel="stylesheet" href="js/sh/styles/shThemeDefault.css"/>
+   <script type="text/javascript">
+   		SyntaxHighlighter.config.clipboardSwf = 'js/sh/scripts/clipboard.swf';
+   		SyntaxHighlighter.all();
+   </script>
+   <title>PushButton Engine Lesson #1 - Setup using Adobe Flex Builder</title>
+</head>
+<body>
+
+   <h1>PushButton Engine Lesson #1 - Setup using Adobe Flex Builder</h1>
+   <p>Welcome, in this lesson you will learn how to use the PushButton Engine with the Adobe Flex Builder IDE.
+   </p>
+   
+   <div id="pageToc"></div>
+   <div id="contentArea">
+
+   <h2>Lesson Requirements</h2>
+   <p>To complete this lesson you will need to download and install a few pieces of software.
+   <ul>
+        <li>Adobe Flex Builder 3 <a href="http://www.adobe.com/flex/">Download</a></li>
+        <li>PushButton Engine <a href="http://www.pushbuttonengine.com/download/">Download</a> - To install just extract to your development folder.</li>
+   </ul>
+   </p>
+   
+   <h2>Setting up Adobe Flex Builder</h2>
+   <p>Everytime you startup Adobe Flex Builder it will ask you where you would like to store your workspace. <br />
+      Select a location that works best for you.
+   </p>
+   
+   <img src="images/Lesson1FlexBuilder_1.png" />
+   
+   <p>Adobe Flex Builder is built on top of the Eclipse platform so it defaults to a Java Perspective. <br />
+      In the menubar click Window->Open Perspective->Other and click Flex Development.
+   </p>
+   
+   <img src="images/Lesson1FlexBuilder_3.png" width="700px"/>
+   
+   <h2>Creating a new project</h2>
+   <p>Now we need to setup a new project for this lesson. Right Click in the Flex Navigator window and click New->ActionScript Project. <br />
+      For this lesson we are using an ActionScript project but a Flex project will work just as well. <br />
+   </p>
+   
+   <img src="images/Lesson1FlexBuilder_4.png" width="700px"/>
+   
+   <p>Let's give the project a name by typing Lesson1FlexBuilder in the Project Name text box and click next.
+   </p>
+   
+   <img src="images/Lesson1FlexBuilder_5.png" width="700px"/>
+   
+   <p>We now have a question to ask ourselves. "Will we be using the PushButton Engine as is or do we plan on making modifications?" <br />
+      If you plan to use the PushButton Engine as is, skip to the Library Section. <br />
+      If you plan on making modifications to the PushButton Engine skip to the Source Section and ignore the Library Section.<br />
+   </p>
+   
+   <p>To setup the Source Path click the Source Path tab and then Add Folder. <br />
+      Navigate to the folder you extracted the PushButton Engine to and add the Src folder. <br />
+   </p>
+   
+   <img src="images/Lesson1FlexBuilder_6A.png" width="700px"/>
+   
+   <p>To setup the Library Path click the Library Path tab and then Add SWC. <br />
+      Navigate to the folder you extracted the PushButton Engine and inside the Bin folder you will have PBEngine.swc. <br />
+   </p>
+   
+   <img src="images/Lesson1FlexBuilder_6B.png" width="700px"/>
+      
+   <h2>Hello, World!</h2>
+   <p>That's right, it's time for some code!<br />
+      In the src folder we should have a file, Lesson1FlexBuilder.as.<br />
+      Open Lesson1FlexBuilder.as.<br />
+   </p>
+   
+   <img src="images/Lesson1FlexBuilder_7.png" width="700px"/>
+   
+   <p>Copy the code below and paste it into Lesson1FlexBuilder.as.<br />
+   </p>
+      
+   <pre class="brush: xml">
+      package
+      {
+            // Flash Imports
+            import flash.display.Sprite;
+            // PushButton Engine Imports
+            import com.pblabs.engine.core.Global;
+            import com.pblabs.Engine.Debug.Logger;
+             
+            public class Lesson1FlexBuilder extends Sprite 
+            {
+                    public function Lesson1FlexBuilder()
+                    {
+                        Global.startup(this);
+                        Logger.print(this, "Hello, World!");
+                    }	
+            }	
+       }
+   </pre>
+   
+   <p>Save the file and click Project->Build Project in the menubar.<br />
+   </p>
+   
+   <img src="images/Lesson1FlexBuilder_8.png" width="700px"/>
+   
+   <p>To view our master piece click Run->Debug in the menubar.<br />
+      You can see in the output window INFO: Lesson1FlexBuilder - Hello, World! being printed by the <br />
+      PushButton Engine Logger. <br />
+   </p>
+   
+   <img src="images/Lesson1FlexBuilder_9.png" width="700px"/>
+   
+   <h2>Review</h2>
+   <p>To summarize the steps of using the PushButton Engine with the Adobe Flex Builder IDE.
+   <ul>
+        <li>Create a new ActionScript project.</li>
+        <li>Name the project and setup the source or library path.</li>
+   </ul>
+      And those are all the steps needed to create a fresh new project using the PushButton Engine.
+   </p>
+   
+   <h2>Conclusion</h2>
+   <p>Congratulations! You just completed lesson #1, creating a project and linking to the PushButton Engine.</p>
+   <p>This can be the base for lesson #2 or any future projects of your own.</p>
+   <p>You can download the completed project source files for this project below.</p>
+   <a href="downloads/Lesson1FlexBuilder.zip">Lesson1FlexBuilder.zip</a>
+
+   </div>
+</body>
+</html>
