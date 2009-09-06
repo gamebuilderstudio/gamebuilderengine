@@ -6,7 +6,7 @@ package com.pblabs.engine.debug.log4PBE
     * from sending it to the console, printing it on the screen, or sending it across a network
     * connection.
     */
-   public class LogAppender
+   public class LogAppender implements ILogAppender
    {
       private static var _logger:Logger = Logger.getLogger(LogAppender);
       
