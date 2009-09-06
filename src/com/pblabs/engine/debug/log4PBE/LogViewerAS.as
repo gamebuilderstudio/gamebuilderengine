@@ -10,11 +10,12 @@ package com.pblabs.engine.debug.log4PBE
 	import flash.text.TextField;
 	import flash.text.TextFieldType;
 	import flash.text.TextFormat;
-	
+
 	public class LogViewerAS extends Sprite implements ILogAppender
 	{
 		protected var _messageQueue:Array = [];
-		protected var _maxLength:uint = 5000;
+		protected var _maxLength:uint = 200000;
+		protected var _truncating:Boolean = false;
 		
 		protected var _output:TextField;
 		
@@ -33,6 +34,7 @@ package com.pblabs.engine.debug.log4PBE
 			_output.backgroundColor = 0xFFFFFF;
 			_output.height = outputHeight;
 			_output.width = outputWidth;
+			_output.wordWrap = true;
 			var format:TextFormat = _output.getTextFormat();
 			format.font = "_typewriter";
 			format.size = 8;
@@ -40,6 +42,19 @@ package com.pblabs.engine.debug.log4PBE
 			_output.defaultTextFormat = format;
 			
 			return _output;
+		}
+		
+		protected function truncateOutput():void
+		{
+			if (_output.text.length > maxLength){
+				_output.text = _output.text.slice(-maxLength);
+				if(!_truncating)
+				{
+					_truncating = true;
+					Logger.getLogger(UIAppender).warn("You have exceeded "+_maxLength+" characters in LogViewerAS. " +
+						"It will now only show the latest "+_maxLength+" characters of the log.");
+				}
+			}
 		}
 
 		public function addLogMessage(level:String, loggerName:String, errorNumber:int, message:String, arguments:Array):void
@@ -52,8 +67,8 @@ package com.pblabs.engine.debug.log4PBE
 			if (_output)
 			{
 				_output.appendText(text + "\n");
-				if (_output.text.length > maxLength) 
-					_output.text = _output.text.slice(-maxLength);
+				truncateOutput();
+				
 				_output.scrollV = _output.maxScrollV;
 			}
 		}
@@ -66,6 +81,7 @@ package com.pblabs.engine.debug.log4PBE
 		public function set maxLength(value:uint):void
 		{
 			_maxLength = value;
+			truncateOutput();
 		}
 
 	}
