@@ -14,6 +14,7 @@ package com.pblabs.engine.debug.log4PBE
 	public class LogViewerAS extends Sprite implements ILogAppender
 	{
 		protected var _messageQueue:Array = [];
+		protected var _maxLength:uint = 5000;
 		
 		protected var _output:TextField;
 		
@@ -49,7 +50,23 @@ package com.pblabs.engine.debug.log4PBE
 			
 			var text:String = level + ": " + loggerName + numberString + " - " + message;
 			if (_output)
+			{
 				_output.appendText(text + "\n");
+				if (_output.text.length > maxLength) 
+					_output.text = _output.text.slice(-maxLength);
+				_output.scrollV = _output.maxScrollV;
+			}
 		}
+
+		public function get maxLength():uint
+		{
+			return _maxLength;
+		}
+
+		public function set maxLength(value:uint):void
+		{
+			_maxLength = value;
+		}
+
 	}
 }
