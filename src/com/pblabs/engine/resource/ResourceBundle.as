@@ -61,6 +61,8 @@ package com.pblabs.engine.resource
 
          var resTypeName:String;
 
+         new DataResource();
+
          
          // Loop through each public variable in this class
          for each (var v:XML in desc.variable){
@@ -113,7 +115,7 @@ package com.pblabs.engine.resource
             // Sanity check:
             if ( !resIsEmbedded || resSource == "" || res == null ) 
             {
-               Logger.printError(this, "ResourceBundle", "A resource in the resource bundle with the name '" + v.@name + "' has failed to embed properly.  Please check the metadata syntax, and ensure that the path is correct."); 
+               Logger.printError(this, "ResourceBundle", "A resource in the resource bundle with the name '" + v.@name + "' has failed to embed properly.  Do you have the --keep-as3-metadata compiler option set to include Embed metadata?  If so, then please check the metadata syntax, and ensure that the path is correct."); 
                continue;
             }
 
