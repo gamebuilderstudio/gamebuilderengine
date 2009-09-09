@@ -115,7 +115,7 @@ package com.pblabs.engine.resource
             // Sanity check:
             if ( !resIsEmbedded || resSource == "" || res == null ) 
             {
-               Logger.printError(this, "ResourceBundle", "A resource in the resource bundle with the name '" + v.@name + "' has failed to embed properly.  Do you have the --keep-as3-metadata compiler option set to include Embed metadata?  If so, then please check the metadata syntax, and ensure that the path is correct."); 
+               Logger.printError(this, "ResourceBundle", "A resource in the resource bundle with the name '" + v.@name + "' has failed to embed properly.  Please ensure that you have the command line option \"--keep-as3-metadata+=TypeHint,EditorData,Embed\" set properly.  Additionally, please check that the [embed] metadata syntax is correct."); 
                continue;
             }
 
