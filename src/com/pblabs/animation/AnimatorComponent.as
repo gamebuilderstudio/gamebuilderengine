@@ -49,7 +49,7 @@ package com.pblabs.animation
         {
             if (_currentAnimation)
             {
-                _currentAnimation.animate(elapsed);
+                _currentAnimation.animate(elapsed);                               
                 owner.setProperty(reference, _currentAnimation.currentValue);
             }
         }
@@ -64,6 +64,9 @@ package com.pblabs.animation
          */
         public function play(animation:String, startValue:* = null):void
         {
+        	if (_currentAnimation && _currentAnimation.isAnimating)
+        		   _currentAnimation.stop();
+        	
             _currentAnimation = animations[animation];
             if (!_currentAnimation)
                 return;

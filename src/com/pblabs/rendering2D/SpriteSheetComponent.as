@@ -40,6 +40,8 @@ package com.pblabs.rendering2D
          */
         public override function get isLoaded():Boolean
         {
+        	if (_forcedBitmaps && _forcedBitmaps.length>0) return true;
+        	
             return imageData != null;
         }
         
