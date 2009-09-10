@@ -38,7 +38,7 @@
       &lt;entity name="PlatformSpriteSheet"&gt;
       
          &lt;!-- Entities and templates contain components, which are named and have a specified type. --&gt;
-         &lt;component type="PBLabs.Rendering2D.SpriteSheetComponent" name="SpriteSheet"&gt;
+         &lt;component type="com.pblabs.rendering2DSpriteSheetComponent" name="SpriteSheet"&gt;
             
             &lt;!-- Fields on the component are dealt with using our normal  serializer. In this case we are assigning a string to  ImageFilename on the SpriteSheetComponent. --&gt;
             &lt;ImageFilename&gt;../Assets/Images/platform.png&lt;/ImageFilename&gt;
@@ -47,7 +47,7 @@
       
       &lt;!-- Another sprite sheet - just the same as the above one, but with a  different entity name and file. --&gt;
       &lt;entity name="DudeSpriteSheet"&gt;
-         &lt;component type="PBLabs.Rendering2D.SpriteSheetComponent" name="SpriteSheet"&gt;
+         &lt;component type="com.pblabs.rendering2DSpriteSheetComponent" name="SpriteSheet"&gt;
             &lt;ImageFilename&gt;../Assets/Images/guy.png&lt;/ImageFilename&gt;
          &lt;/component&gt;
       &lt;/entity&gt;
@@ -55,7 +55,7 @@
       &lt;!-- Templates are like entities in every respect except two. First, they can be instantiated more than once w/o warnings. Second, they can be referenced via the template attribute on an entity, which is explained later. --&gt;
       &lt;template name="Platform"&gt;
       
-         &lt;component type="PBLabs.Rendering2D.SpriteRenderComponent" name="Render"&gt;
+         &lt;component type="com.pblabs.rendering2DSpriteRenderComponent" name="Render"&gt;
             &lt;!-- Parent and SpriteSheet are typed fields. You can assign a direct reference to another component either on this entity or another using the componentReference attribute. --&gt;
             
             &lt;!-- Look up a named entity called Scene, find the first component that matches the type of Parent, and assign it. --&gt;
@@ -69,7 +69,7 @@
             &lt;RotationReference&gt;@Spatial.rotation&lt;/RotationReference&gt;
             &lt;SizeReference&gt;@Spatial.size&lt;/SizeReference&gt;
          &lt;/component&gt;
-         &lt;component type="PBLabs.Box2D.Box2DSpatialComponent" name="Spatial"&gt;
+         &lt;component type="com.pblabs.box2D.Box2DSpatialComponent" name="Spatial"&gt;
             &lt;Manager componentReference="Box2D"/&gt;
             &lt;!-- CollisionType is of type ObjectType, and also implements ISerializable, in this case to allow you to provide a list of object types. --&gt;
             &lt;CollisionType&gt;
@@ -95,7 +95,7 @@
                &lt;!-- But you can specify the type of each item in the array. Here
                     we use the feature in order to distinguish between different
                     collision shapes. --&gt;
-               &lt;_ type="PBLabs.Box2D.PolygonCollisionShape"&gt;
+               &lt;_ type="com.pblabs.box2D.PolygonCollisionShape"&gt;
                   &lt;!-- Vertices is also an array. In this case we can specify  the type of the items to put into it. In addition, we are using &lt;_&gt;. The underscore alone tells the serializer to put the value contained in it at the end of the array. --&gt;
                        
                   &lt;!-- Underscore can also escape numerical values, which are not valid XML tag names. You can'd to &lt;3&gt;, you have to do &lt;_3&gt;. If you want to do an underscore, do &lt;__&gt;. --&gt;
@@ -111,7 +111,7 @@
       &lt;/template&gt;
       
       &lt;entity name="Scene"&gt;
-         &lt;component type="PBLabs.Rendering2D.Scene2DComponent" name="Scene"&gt;
+         &lt;component type="com.pblabs.rendering2DScene2DComponent" name="Scene"&gt;
             &lt;Position&gt;
                &lt;x&gt;400&lt;/x&gt;
                &lt;y&gt;300&lt;/y&gt;
@@ -120,15 +120,15 @@
       &lt;/entity&gt;
       
       &lt;entity name="Box2D"&gt;
-         &lt;component type="PBLabs.Box2D.Box2DManagerComponent" name="Manager"&gt;
+         &lt;component type="com.pblabs.box2D.Box2DManagerComponent" name="Manager"&gt;
          &lt;/component&gt;
-         &lt;component type="PBLabs.Box2D.Box2DDebugComponent" name="Debug"&gt;
+         &lt;component type="com.pblabs.box2D.Box2DDebugComponent" name="Debug"&gt;
             &lt;Scene componentReference="Scene"/&gt;
          &lt;/component&gt;
       &lt;/entity&gt;
       
       &lt;entity name="Dude"&gt;
-         &lt;component type="PBLabs.Rendering2D.SpriteRenderComponent" name="Render"&gt;
+         &lt;component type="com.pblabs.rendering2DSpriteRenderComponent" name="Render"&gt;
             &lt;!-- In addition to componentReference, you can specify componentName, which indicates a specific component to reference. -->
                  
             &lt;!-- If you use componentName alone, it will reference that component on the owning entity. --&gt;
@@ -139,7 +139,7 @@
             &lt;SizeReference&gt;@Spatial.size&lt;/SizeReference&gt;
             &lt;TrackWithCamera&gt;true&lt;/TrackWithCamera&gt;
          &lt;/component&gt;
-         &lt;component type="PBLabs.Box2D.Box2DSpatialComponent" name="Spatial"&gt;
+         &lt;component type="com.pblabs.box2D.Box2DSpatialComponent" name="Spatial"&gt;
             &lt;Manager componentReference="Box2D"/&gt;
             &lt;CollisionType&gt;
                &lt;Type&gt;Dude&lt;/Type&gt;
@@ -158,14 +158,14 @@
             &lt;CanRotate&gt;false&lt;/CanRotate&gt;
             &lt;CanSleep&gt;false&lt;/CanSleep&gt;
             &lt;CollisionShapes&gt;
-               &lt;_ type="PBLabs.Box2D.CircleCollisionShape"&gt;
+               &lt;_ type="com.pblabs.box2D.CircleCollisionShape"&gt;
                   &lt;Friction&gt;0&lt;/Friction&gt;
                   &lt;Radius&gt;0.5&lt;/Radius&gt;
                   &lt;Offset&gt;&lt;x&gt;0&lt;/x&gt;&lt;y&gt;0.5&lt;/y&gt;&lt;/Offset&gt;
                &lt;/_&gt;
             &lt;/CollisionShapes&gt;
          &lt;/component&gt;
-         &lt;component type="PBLabs.StupidSampleGame.DudeController" name="Controller"&gt;
+         &lt;component type="com.com.pblabs.stupidSampleGame.DudeController" name="Controller"&gt;
             &lt;VelocityReference&gt;@Spatial.LinearVelocity&lt;/VelocityReference&gt;
             &lt;!-- Input Map Example --&gt;
             &lt;Input&gt;
@@ -257,7 +257,7 @@
    
    <p>The component tag goes inside of either a template or entity tag and describes a component that should be added to that template or entity when it is instantiated.</p>
    
-   <p>The component tag has two attributes, both of which are required in the normal case (the other case will be described below). The first attribute is <i>type</i>, which specifies the fully qualified class of the component. So, for instance, a component with class DudeController in the namespace PBLabs.StupidSampleGame would have its <i>type</i> attribute set to "PBLabs.StupidSampleGame.DudeController".</p>
+   <p>The component tag has two attributes, both of which are required in the normal case (the other case will be described below). The first attribute is <i>type</i>, which specifies the fully qualified class of the component. So, for instance, a component with class DudeController in the namespace com.pblabs.stupidSampleGame would have its <i>type</i> attribute set to "com.com.pblabs.stupidSampleGame.DudeController".</p>
    
    <p>The second attribute is <i>name</i>. This specifies the name to assign to the component when it is instantiated. A component's name must be unique across all components on the same entity as it is used to lookup the component on an entity.</p>
    
@@ -292,13 +292,13 @@
    
    <h3>Class References</h3>
    
-   <p>Properties that store references to IEntity objects or IEntityComponent objects can also be resolved in the XML. This is done with the nameReference, componentReference, and objectReference attributes.</p>
+   <p>Properties that store references to IEntity objects or IEntityComponent objects can also be resolved in the XML. This is done with the entityReference, entityName, and objectReference attributes.</p>
 
-   <p>The nameReference attribute is used to assign a reference to an existing IEntity to the property. So, it must be the name of an entity that has already been instantiated. The property type should be IEntity and is resolved before _OnAdd is called on any components.</p>
+   <p>The nameReference attribute is used to assign a reference to an existing IEntity to the property. So, it must be the name of an entity that has already been instantiated. The property type should be IEntity and is resolved before onAdd is called on any components.</p>
 
-   <p>objectReference works the same way as nameReference, but instead of looking up an existing object, it will instantiate a new one instead.</p>
+   <p>objectReference works the same way as nameReference, but instead of looking up an existing object, it will instantiate it from a named template instead.</p>
 
-   <p>The componentReference attribute also takes the name of an existing entity, similar to the nameReference. The correct component is retrieved from the entity by inferring the type of component the property expects and looking up a component of that type from the found entity. An additional attribute can be specified to look up a specific component on the entity. This is the componentName attribute and should be set to the name of the component to lookup.</p>
+   <p>The entityName attribute also takes the name of an existing entity, similar to the nameReference. The correct component is retrieved from the entity by inferring the type of component the property expects and looking up a component of that type from the found entity. An additional attribute can be specified to look up a specific component on the entity. This is the componentName attribute and should be set to the name of the component to lookup.</p>
    
    <h3>Arrays and Dictionaries</h3>
 
@@ -413,8 +413,8 @@
 	   <li><b>template:</b> Exists on a template or entity tag and specifies the name of a template to inherit component definitions from.</li>
 	   <li><b>nameReference:</b> Specifies the name of an entity to lookup and set on the tag.</li>
 	   <li><b>objectReference:</b> Specifies the name of a template or entity to instantiate and set on the tag.</li>
-	   <li><b>componentReference:</b> Specifies the name of a template or entity to lookup and search for a compatible component to set on the tag.</li>
-	   <li><b>componentName:</b> Specifies the name of a component to reference. If used without a componentReference attribute, the component is looked up on the same entity that this attribute is a part of.</li>
+	   <li><b>entityName:</b> Specifies the name of a template or entity to lookup and search for a compatible component to set on the tag.</li>
+	   <li><b>w:</b> Specifies the name of a component to reference. If used without a componentReference attribute, the component is looked up on the same entity that this attribute is a part of.</li>
 	   <li><b>type:</b>
 		   <ul>
 		   <li>On a component, specifies the fully qualified type to use to instantiate the component.</li>

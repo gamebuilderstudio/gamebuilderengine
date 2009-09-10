@@ -63,20 +63,20 @@
    class SimplerComponent extends EntityComponent
    {
 
-      public override function _OnAdd():void
+      protected override function onAdd():void
       {
          // Initialize resources.
          // This will be called when the component is added to an entity.
       }
    
-      public override function _OnReset():void
+      protected override function onReset():void
       {
          // (Re)acquire references to components inside the same entity.
-         // This will be called after _OnAdd, whenever another component
+         // This will be called after onAdd, whenever another component
          // is added or removed from the owning entity.
       }
    
-      public override function _OnRemove():void
+      protected override function onRemove():void
       {
          // Release resources and references.
          // Called when the component is removed from its entity, usually
@@ -85,13 +85,13 @@
       
    }</pre>
    
-   <p><b>A note on how components are initialized by the deserializer:</b> First all properties are set, some of them more than once if there are multiple templates (more on that in the XML Format chapter). Then, _OnAdd() is called for all the components in unspecified order. Finally, _OnReset() is called for each component in unspecified order, to give it a chance to gather references to other components.</p>
+   <p><b>A note on how components are initialized by the deserializer:</b> First all properties are set, some of them more than once if there are multiple templates (more on that in the XML Format chapter). Then, onAdd() is called for all the components in unspecified order. Finally, onReset() is called for each component in unspecified order, to give it a chance to gather references to other components.</p>
    
    <h2>Accessing Other Components</h2>
    
-   <p>There are three ways for components to interact: <b>properties</b>, <b>events</b>, or <b>interfaces</b>. All of them are based on query methods on IEntity. If you are writing code in a component, the Owner member will return a reference to the IEntity that contains that component.</p>
+   <p>There are three ways for components to interact: <b>properties</b>, <b>events</b>, or <b>interfaces</b>. All of them are based on query methods on IEntity. If you are writing code in a component, the owner member will return a reference to the IEntity that contains that component.</p>
    
-   <p>These approaches work very similarly whether you are accessing components on another entity or on your owner.  The only difference is that instead of using Owner, you will use the NameManager or another means to look up an IEntity.</p>
+   <p>These approaches work very similarly whether you are accessing components on another entity or on your owner.  The only difference is that instead of using owner, you will use the NameManager or another means to look up an IEntity.</p>
    
    <h3>Properties</h3>
    
@@ -162,7 +162,7 @@
    // Example of listening for an event in a component.
    class TestListenerComponent extends EntityComponent
    {
-      protected function _OnAdd():void
+      protected function onAdd():void
       {
          owner.eventDispatcher.addEventListener(TestComponent.SOME_ACTION, _EventHandler);
       }
@@ -172,7 +172,7 @@
          trace("Got an event!");
       }
       
-      protected function _OnRemove():void
+      protected function onRemove():void
       {
          // Notice that we have to unsubscribe the event when the component
          // is removed.
@@ -187,12 +187,12 @@
    
    <p>However, it can give better performance, and it can make sense in some situations. For instance, in our player example above, using an interface might make sense for the input component to use to apply forces to the mover.</p>
    
-   <p>There are three methods to directly access a component in an entity. Use Owner for your own entity, or lookup and use another entity to get components from somewhere else. The methods:</p>
+   <p>There are three methods to directly access a component in an entity. Use owner for your own entity, or lookup and use another entity to get components from somewhere else. The methods:</p>
    
    <ul>
-   <li><b>LookupComponentByName</b> which looks up a single named component and returns it.</li>
-   <li><b>LookupComponentByType</b> which looks up a single component by type and returns it.</li>
-   <li><b>LookupComponentsByType</b> which finds all components that match the specified type.</li>
+   <li><b>lookupComponentByName</b> which looks up a single named component and returns it.</li>
+   <li><b>lookupComponentByType</b> which looks up a single component by type and returns it.</li>
+   <li><b>lookupComponentsByType</b> which finds all components that match the specified type.</li>
    </ul>
    
    <p>Here's a simple example of directly accessing another component:</p>
@@ -218,7 +218,7 @@
    }
    </pre>
    
-   <p>These functions are cheap, and calling them once a tick won't slow anything down. However, if you do need to store a permanent reference to a component, make sure to clear and re-establish it when _OnReset() is called. Otherwise, you may access stale data or cause a memory leak.</p>
+   <p>These functions are cheap, and calling them once a tick won't slow anything down. However, if you do need to store a permanent reference to a component, make sure to clear and re-establish it when onReset() is called. Otherwise, you may access stale data or cause a memory leak.</p>
    
    <pre class="brush: js">
    // Just like the previous component, but it keeps the reference around longer.
@@ -226,17 +226,17 @@
    {
       public var anotherComponent:IExampleInterface;
    
-      protected function _OnAdd():void
+      protected function onAdd():void
       {
          anotherComponent = owner.LookupComponentByType(IExampleInterface) as IExampleInterface;
       }
       
-      protected function _OnReset():void
+      protected function onReset():void
       {
          anotherComponent = owner.LookupComponentByType(IExampleInterface) as IExampleInterface;
       }
       
-      protected function _OnRemove():void
+      protected function onRemove():void
       {
          // Don't forget to clear the reference to prevent memory leaks.
          anotherComponent = null;
@@ -269,7 +269,7 @@
 
    <h3>Direct Reference</h3>
    
-   <p>We recommend the MXML tag approach.</p>
+   <p>We recommend the MXML tag approach if you are using Flex.</p>
    
    <p>However, you can force a reference to a class by putting something like the following in your main application class. This is equivalent to the preceding MXML example.</p>
    
@@ -279,7 +279,7 @@
    
    <p>Components are simple AS3 classes, so packaging them is easy. We recommend compiling them into a SWC, so that sharing them is as easy as dropping a file into your library path.</p>
    
-   <p>To facilitate this, components should be grouped into libraries and compiled separately from your game. For instance, in Grunts (an isometric tower defense game), the isometric renderer and the pathfinder are in separate libraries from the game. Because of this they are very easy to reuse.</p>
+   <p>To facilitate this, components should be grouped into packages for easy redistribution. For instance, in Grunts (an isometric tower defense game), the isometric renderer and the pathfinder are in separate packages from the game. Because of this they are much easier to copy around and reuse. If desired, we can even compile (for example) just the pathfinder into a SWC and share it.</p>
    
    </div>
       
