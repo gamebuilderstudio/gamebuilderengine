@@ -200,7 +200,7 @@ package com.pblabs.engine.debug.log4PBE
             var appenderName:String = appenderXML.@name;
             var appenderType:String = appenderXML.@type;
 
-            // Note we use trace for the following error cases; otherwise we recurse infinitely.
+            // Note we use trace for the following error cases; otherwise we may recurse infinitely.
 
             var appender:* = TypeUtility.instantiate(appenderType);
             if (appender == null)
@@ -336,19 +336,19 @@ package com.pblabs.engine.debug.log4PBE
          // validate
          if (!appender)
          {
-            _logger.error("Cannot register a null appender with name %1.", name);
+            throw new Error("Cannot register a null appender with name '" + name + "'");
             return;
          }
          
          if (name == null || name == "")
          {
-            _logger.error("An empty name cannot be used for appenders.");
+            throw new Error("An empty name cannot be used for appenders.");
             return;
          }
          
          if (_appenders[name])
          {
-            _logger.warn("An appender with name %1 already exists.", name);
+            throw new Error("An appender with name '" + name "' already exists.");
             return;
          }
          
@@ -425,20 +425,19 @@ package com.pblabs.engine.debug.log4PBE
          // validate
          if (!filter)
          {
-            _logger.error("Cannot register a null filter with name %1.", name);
+            throw new Error("Cannot register a null filter with name '" + name + "'";
             return;
          }
          
          if (name == null || name == "")
          {
-            _logger.error("An empty name cannot be used for filters.");
+            throw new Error("An empty name cannot be used for filters.");
             return;
          }
          
          if (_filters[name])
          {
-            _logger.warn("A filter with name %1 already exists.", name);
-            return;
+            _logger.warn("A filter with name %1 already exists, overwriting.", name);
          }
          
          _filters[name] = filter;
@@ -470,7 +469,7 @@ package com.pblabs.engine.debug.log4PBE
       {
          if (classType == null)
          {
-            _logger.error("Unable to create a logger with a null class type.");
+            throw new Error("Unable to create a logger with a null class type.");
             return null;
          }
          
@@ -481,7 +480,7 @@ package com.pblabs.engine.debug.log4PBE
          {
             if (classType == "")
             {
-               _logger.error("Unable to create a logger with an empty class type.");
+               throw new Error("Unable to create a logger with an empty class type.");
                return null;
             }
             
@@ -517,7 +516,7 @@ package com.pblabs.engine.debug.log4PBE
          var level:LogLevel = getLogLevel(levelName);
          if (!level)
          {
-            _logger.error("Unable to find the level with name %1 for the logger %2.", levelName, logger.name);
+            throw new Error("Unable to find the level with name '" + levelName + "' for the logger '" + logger.name + "'");
             return;
          }
          
@@ -544,7 +543,7 @@ package com.pblabs.engine.debug.log4PBE
             var appender:LogAppender = getLogAppender(appenderName);
             if (!appender)
             {
-               _logger.error("The appender %1 was not found for the filter %2.", appenderName, filter.name);
+               throw new Error("The appender '" + appenderName + "' was not found for the filter '" + filter.name + "'");
                continue;
             }
             
@@ -592,7 +591,7 @@ package com.pblabs.engine.debug.log4PBE
          var level:LogLevel = getLogLevel(levelName);
          if (!level)
          {
-            _logger.error("Unable to find the level with name %1 for the class %2.", levelName, logger.name);
+            throw new Error("Unable to find the level with name '" + levelName + "' for the class '" + levelName +"'", levelName, logger.name);
             return false;
          }
          
