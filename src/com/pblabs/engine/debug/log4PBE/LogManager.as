@@ -591,7 +591,7 @@ package com.pblabs.engine.debug.log4PBE
          var level:LogLevel = getLogLevel(levelName);
          if (!level)
          {
-            throw new Error("Unable to find the level with name '" + levelName + "' for the class '" + levelName +"'", levelName, logger.name);
+            throw new Error("Unable to find the level with name '" + levelName + "' for the class '" + levelName +"'");
             return false;
          }
          
