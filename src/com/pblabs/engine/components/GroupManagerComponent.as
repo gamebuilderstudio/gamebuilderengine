@@ -1,6 +1,10 @@
 package com.pblabs.engine.components
 {
 	import com.pblabs.engine.entity.EntityComponent;
+  import com.pblabs.engine.entity.IEntity;
+  import com.pblabs.engine.core.NameManager;
+  import com.pblabs.engine.debug.Logger;
+  import com.pblabs.engine.entity.allocateEntity;
    
    /**
     * Utility class to manage a group of entities marked with GroupManagerComponent.
@@ -9,6 +13,28 @@ package com.pblabs.engine.components
    {
       private var _members:Array = new Array();
       
+      public static var autoCreateNamedGroups:Boolean = true;
+      
+      public static function getGroupByName(name:String):GroupManagerComponent
+      {
+         var groupName:String = name;
+         
+         var gm:GroupManagerComponent = NameManager.instance.lookupComponentByType(groupName, GroupManagerComponent) as GroupManagerComponent
+         
+         if ((gm == null) && (autoCreateNamedGroups)) {
+         	Logger.printWarning(GroupManagerComponent, "GetGroupByName", "Autocreating non-existent group '" + groupName + "'");
+         	
+         	var ent:IEntity = allocateEntity();
+         	ent.initialize(groupName);
+         	
+         	gm = new GroupManagerComponent();
+         	
+         	ent.addComponent(gm, name);
+         }
+         
+         return gm;
+      }
+
       public function addMember(member:GroupMemberComponent):void
       {
          _members.push(member);

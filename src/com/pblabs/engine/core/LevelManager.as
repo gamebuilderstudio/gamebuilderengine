@@ -174,7 +174,13 @@ package com.pblabs.engine.core
       
       private function onLevelDescriptionsLoadFailed(resource:XMLResource):void
       {
-         Logger.printError(this, "Load", "Failed to load level descriptions file " + resource.filename + "!");
+         if (resource)
+         {
+            Logger.printError(this, "Load", "Failed to load level descriptions file " + resource.filename + "!");    }
+         else
+         {
+            Logger.printError(this, "Load", "Failed to load level descriptions file!");
+         }
       }
       
       public function clear():void

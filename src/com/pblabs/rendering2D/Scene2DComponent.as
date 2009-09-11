@@ -53,22 +53,40 @@ package com.pblabs.rendering2D
       /**
        * @inheritDoc
        */
-      override public function transformWorldToScreen(point:Point, altitude:Number = 0):Point
+      override public function transformWorldToScreen(point:Point, altitude:Number = 0, scrollFactor:Point = null):Point
       {
          var newPoint:Point = new Point();
-         newPoint.x = (point.x - _position.x) + sceneView.width * 0.5;
-         newPoint.y = (point.y - _position.y) + sceneView.height * 0.5;
+         
+         if (scrollFactor == null) 
+         {
+            newPoint.x = (point.x - _position.x) + sceneView.width * 0.5;
+            newPoint.y = (point.y - _position.y) + sceneView.height * 0.5;
+         }
+         else
+         {
+            newPoint.x = (point.x - _position.x * scrollFactor.x) + sceneView.width * 0.5;
+            newPoint.y = (point.y - _position.y * scrollFactor.y) + sceneView.height * 0.5;
+         }
          return newPoint;
       }
       
       /**
        * @inheritDoc
        */
-      override public function transformScreenToWorld(point:Point):Point
+      override public function transformScreenToWorld(point:Point, scrollFactor:Point = null):Point
       {
          var newPoint:Point = new Point();
-         newPoint.x = (point.x + _position.x) - sceneView.width * 0.5;
-         newPoint.y = (point.y + _position.y) - sceneView.height * 0.5;
+         
+         if (scrollFactor != null)
+         {
+            newPoint.x = (point.x + _position.x) - sceneView.width * 0.5;
+            newPoint.y = (point.y + _position.y) - sceneView.height * 0.5;
+         }
+         else
+         {
+            newPoint.x = (point.x + _position.x * scrollFactor.x) - sceneView.width * 0.5;
+            newPoint.y = (point.y + _position.y * scrollFactor.y) - sceneView.height * 0.5;
+         }
          return newPoint;
       }
       

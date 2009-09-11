@@ -48,6 +48,15 @@ package com.pblabs.rendering2D
       public var positionOffset:Point = new Point(0, 0);
       
       /**
+       * A number that defines how much this object moves under the camera.  
+       * 0 means that it is "locked" to the camera, such as a HUD graphic or a 
+       *  background sprite.  1 means that moves normally with the foreground.  
+       * Greater than 1 means that it would travel extra quickly for more 
+       *  near-camera elements.
+       */
+      public var scrollFactor:Point = new Point(1, 1);
+      
+      /**
        * @inheritDoc
        */
       [EditorData(ignore="true")]

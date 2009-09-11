@@ -35,7 +35,7 @@ package com.pblabs.rendering2D
 		    _dummySprite.graphics.lineStyle(borderThickness, borderColor);
 		    _dummySprite.graphics.beginFill(fillColor);
 		    
-		    var rp:Point = manager.transformWorldToScreen(renderPosition);
+		    var rp:Point = manager.transformWorldToScreen(renderPosition, 0, scrollFactor);
 		    
 		    if(showSquare)
 		       _dummySprite.graphics.drawRect(rp.x - radius, rp.y - radius, radius * 2, radius * 2); 

@@ -141,7 +141,7 @@ package com.pblabs.rendering2D
       /**
        * @inheritDoc
        */
-      public function transformWorldToScreen(p:Point, altitude:Number=0):Point
+      public function transformWorldToScreen(p:Point, altitude:Number=0, scrollFactor:Point = null):Point
       {
          throw new Error("Derived classes must implement this method!");
          return null;
@@ -150,7 +150,7 @@ package com.pblabs.rendering2D
       /**
        * @inheritDoc
        */
-      public function transformScreenToWorld(p:Point):Point
+      public function transformScreenToWorld(p:Point, scaleFactor:Point = null):Point
       {
          throw new Error("Derived classes must implement this method!");
          return null;

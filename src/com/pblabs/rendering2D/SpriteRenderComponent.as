@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
  * PushButton Engine
  * Copyright (C) 2009 PushButton Labs, LLC
  * For more information see http://www.pushbuttonengine.com
@@ -157,7 +157,7 @@ package com.pblabs.rendering2D
            return;
               
          var position:Point = renderPosition;
-         position = manager.transformWorldToScreen(position);
+         position = manager.transformWorldToScreen(position, 0, scrollFactor);
          
          var rotation:Number = owner.getProperty(rotationReference);
          
@@ -217,8 +217,8 @@ package com.pblabs.rendering2D
       {
          // First, get the relative positions in screenspace. Don't deal with 
          // rotation yet.
-         var pointInScreenSpace:Point = scene.transformWorldToScreen(point);
-         var spriteUpperLeftInScreenSpace:Point = scene.transformWorldToScreen(renderPosition);
+         var pointInScreenSpace:Point = scene.transformWorldToScreen(point, 0, scrollFactor);
+         var spriteUpperLeftInScreenSpace:Point = scene.transformWorldToScreen(renderPosition, 0, scrollFactor);
          if (_spriteSheet)
          {
             spriteUpperLeftInScreenSpace.x += -_spriteSheet.center.x;

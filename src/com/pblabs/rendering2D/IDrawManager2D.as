@@ -107,7 +107,7 @@ package com.pblabs.rendering2D
        * from this can be passed directly into the x/y properties on a 
        * DisplayObject.
        */ 
-      function transformWorldToScreen(p:Point, altitude:Number = 0):Point;
+      function transformWorldToScreen(p:Point, altitude:Number = 0, scaleFactor:Point = null):Point;
       
       /**
        * Transform a screen position in pixels into a worldspace coordinate. We
@@ -115,7 +115,7 @@ package com.pblabs.rendering2D
        * reconstruct a Z coordinate. Results can be assumed to have an altitude
        * of zero.
        */
-      function transformScreenToWorld(p:Point):Point;
+      function transformScreenToWorld(p:Point, scaleFactor:Point = null):Point;
       
       /**
        * During drawing, set to the last drawn item or null if there is none (if
