@@ -348,7 +348,7 @@ package com.pblabs.engine.debug.log4PBE
          
          if (_appenders[name])
          {
-            throw new Error("An appender with name '" + name "' already exists.");
+            throw new Error("An appender with name '" + name + "' already exists.");
             return;
          }
          
@@ -425,7 +425,7 @@ package com.pblabs.engine.debug.log4PBE
          // validate
          if (!filter)
          {
-            throw new Error("Cannot register a null filter with name '" + name + "'";
+            throw new Error("Cannot register a null filter with name '" + name + "'");
             return;
          }
          
