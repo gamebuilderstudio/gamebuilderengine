@@ -28,7 +28,7 @@
 
    <h2>Loading Resources</h2>
    
-   <p>Loading a resource is simple. You specify the filename, resource type, and callbacks for when the load completes or fails.</p>
+   <p>Loading a resource manually is simple. You specify the filename, resource type, and callbacks for when the load completes or fails.</p>
    
    <pre class="brush: js">
    // Example of loading an image:
@@ -55,20 +55,22 @@
    
    <p>Loading files externally is a bad idea. It makes it harder to distribute your game, and the extra round trips to the server can increase loading time significantly. In addition, resources embedded in the SWF can have additional compression put on them.</p>
    
-   <p>The template application includes a file called Resource.mxml. This is for embedding resources, but you can put the embed tag anywhere.</p>
+   <p>The easiest way to embed a resource in PBE is with the ResourceBundle class.  Create a child of the ResourceBundle class, where each file to be included in the swf is given an [embed] tag.</p>
    
-   <pre class="brush: xml">
-   &lt;pb:ResourceBinding filename="../assets/levels/level.pbelevel" resourceType="com.pblabs.engine.resource.XMLResource" resourceClass="@Embed(source='../assets/levels/level.pbelevel', mimeType='application/octet-stream')"/&gt;
-   &lt;pb:ResourceBinding filename="../assets/images/guy.png" resourceType="PBLabs.Rendering2D.ImageResource" resourceClass="@Embed(source='../assets/images/guy.png', mimeType='application/octet-stream')"/&gt;
-   &lt;pb:ResourceBinding filename="../Assets/Sounds/testSound.mp3" resourceType="com.pblabs.engine.resource.MP3Resource" resourceClass="@Embed(source='../Assets/Sounds/testSound.mp3')"/&gt;</pre>
+   <pre class="brush: js">
+   public class MyResources extends ResourceBundle
+   {
+      [Embed(source="../assets/myimage.png", mimeType='application/octet-stream')]
+      public var resmyimage:Class;
+      
+   }   
+   </pre>
    
-   <p>There are just a few attributes to set on the ResourceBinding tag:</p>
+   <p>Instantiate that class, and PBE will register all of the resources with the ResourceManager according to their proper type.</p>
    
-   <ul>
-      <li><b>filename</b> is the path that the file will be registered at.</li>
-      <li><b>resourceType</b> is the resource type, as described above.</li>
-      <li><b>resourceClass</b> is a normal MXML @Embed tag, indicating the source to embed the file from.</li>
-   </ul>
+   <pre class="brush: js">
+   new MyResources();
+   </pre>
    
    <h2>Adding New Resource Types</h2>
    
