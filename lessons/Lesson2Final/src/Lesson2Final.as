@@ -13,7 +13,7 @@ package
    import com.pblabs.engine.entity.*;
    import com.pblabs.rendering2D.*;
    import com.pblabs.rendering2D.ui.*;
-import com.pblabs.engine.debug.*;   
+
    import flash.display.Sprite;
    import flash.geom.Point;
    
@@ -23,7 +23,7 @@ import com.pblabs.engine.debug.*;
       public function Lesson2Final()
       {
          Global.startup(this);                                                // Start up PBE
-Logger.print(this, "Hey");
+
          CreateScene();                                                       // Set up a simple scene entity
          
          CreateHero();                                                        // Create a simple avatar entity
