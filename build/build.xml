@@ -237,7 +237,7 @@
       
       <!-- Package it all into a zip with appropriate name. -->
       <delete file="${rootDir}/PushButtonEngine-r${svn.revision}.zip" quiet="true"/>
-      <zip destfile="${rootDir}/PushButtonEngine-r${svn.revision}.zip" level="9" basedir="${rootDir}" excludes="*svn*,PushButtonEngine-r*.zip"/>
+      <zip destfile="${rootDir}/PushButtonEngine-r${svn.revision}.zip" level="9" basedir="${rootDir}" excludes="*svn*,PushButtonEngine-r*.zip,build.properties,build/testrun*"/>
    </target>
    
    <target name="buildSWF" description="Build a SWF for a project given a few properties. Used by per-project Ant files." depends="generateSWC">
