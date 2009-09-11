@@ -46,6 +46,8 @@ package com.pblabs.engine.tests
             validateInputs(0, 1, true);
             InputManager.instance.simulateMouseUp();
             validateInputs(0, 0, true);
+            
+            inputMap.destroy();
         }
 
         private function onSpace(value:Number):void
@@ -63,11 +65,11 @@ package com.pblabs.engine.tests
             _mouseMoved = true;
         }
 
-        private function validateInputs(space:Number, mouseButton:Number, mouseX:Boolean):void
+        private function validateInputs(space:Number, mouseButton:Number, didMouseMove:Boolean):void
         {
-            Assert.assertEquals(_spacePressed, space);
-            Assert.assertEquals(_mousePressed, mouseButton);
-            Assert.assertEquals(_mouseMoved, mouseX);
+            Assert.assertEquals("Space wasn't as expected.", _spacePressed, space);
+            Assert.assertEquals("Mouse button wasn't as expected.", _mousePressed, mouseButton);
+            Assert.assertEquals("Mouse wasn't moved as expected.", _mouseMoved, didMouseMove);
         }
     }
 }

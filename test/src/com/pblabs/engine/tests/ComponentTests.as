@@ -30,7 +30,8 @@ package com.pblabs.engine.tests
         private var _nonexistentReference:PropertyReference = new PropertyReference("@A.nonexistent");
         private var _malformedReference:PropertyReference = new PropertyReference("malformed");
 
-        private var _testXML:XML = <entity name="XMLTestEntity">
+        private var _testXML:XML = 
+            <entity name="XMLTestEntity">
                 <component type="com.pblabs.engine.tests.TestComponentA" name="A">
                     <testValue>7</testValue>
                 </component>
@@ -118,7 +119,8 @@ package com.pblabs.engine.tests
             TemplateManager.instance.addXML(_testXML, "UnitTestXML", 1);
             var entity:IEntity = TemplateManager.instance.instantiateEntity("XMLTestEntity");
             Assert.assertNotNull(entity, "Should have gotten something back from TemplateManager!");
-            Assert.assertEquals(entity, NameManager.instance.lookup("XMLTestEntity"));
+            var lookedupEntity:IEntity = NameManager.instance.lookup("XMLTestEntity");
+            Assert.assertEquals(entity, lookedupEntity);
 
             var a:TestComponentA = entity.lookupComponentByName("A") as TestComponentA;
             var b:TestComponentB = entity.lookupComponentByType(TestComponentB) as TestComponentB;

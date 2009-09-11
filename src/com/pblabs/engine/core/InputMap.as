@@ -8,9 +8,9 @@
  ******************************************************************************/
 package com.pblabs.engine.core
 {
-    import com.pblabs.engine.serialization.ISerializable;
     import com.pblabs.engine.debug.Logger;
-
+    import com.pblabs.engine.serialization.ISerializable;
+    
     import flash.events.KeyboardEvent;
     import flash.events.MouseEvent;
     import flash.utils.Dictionary;
@@ -216,17 +216,19 @@ package com.pblabs.engine.core
             {
                 _lastMouseX = Global.mainStage.mouseX;
                 _lastMouseY = Global.mainStage.mouseY;
+                _suppressDeltaNextTime = true;
                 return;
             }
 
-            if (Global.mainStage.mouseX != _lastMouseX)
-                onInputEvent(InputKey.MOUSE_X.keyCode, Global.mainStage.mouseX - _lastMouseX);
+            if (event.stageX != _lastMouseX || _suppressDeltaNextTime)
+                onInputEvent(InputKey.MOUSE_X.keyCode, _suppressDeltaNextTime ? 0 : Global.mainStage.mouseX - _lastMouseX);
 
-            if (Global.mainStage.mouseY != _lastMouseY)
-                onInputEvent(InputKey.MOUSE_Y.keyCode, Global.mainStage.mouseY - _lastMouseY);
+            if (event.stageY != _lastMouseY || _suppressDeltaNextTime)
+                onInputEvent(InputKey.MOUSE_Y.keyCode, _suppressDeltaNextTime ? 0 : Global.mainStage.mouseY - _lastMouseY);
 
-            _lastMouseX = Global.mainStage.mouseX;
-            _lastMouseY = Global.mainStage.mouseY;
+            _lastMouseX = event.stageX;
+            _lastMouseY = event.stageY;
+            _suppressDeltaNextTime = false;
         }
 
         private function onMouseOver(event:MouseEvent):void
@@ -262,6 +264,8 @@ package com.pblabs.engine.core
 
         private var _lastMouseX:Number = Number.NEGATIVE_INFINITY;
         private var _lastMouseY:Number = Number.NEGATIVE_INFINITY;
+        private var _suppressDeltaNextTime:Boolean = false;
+        
         /** _keymap links an key input or mouse input to an action name */
         private var _keymap:Dictionary = new Dictionary();
         /** _bindings links an action name to a function callback */

@@ -117,7 +117,7 @@ package com.pblabs.engine.core
          */
         public function simulateMouseMove():void
         {
-            dispatchEvent(new MouseEvent(MouseEvent.MOUSE_MOVE));
+            dispatchEvent(new MouseEvent(MouseEvent.MOUSE_MOVE, true, false, Math.random() * 100, Math.random () * 100));
         }
 
         public function simulateMouseOver():void

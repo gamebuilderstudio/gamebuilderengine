@@ -38,7 +38,7 @@ package com.pblabs.engine.tests
          Logger.printHeader(null, "Running Level Loading and Instantiating Test");
          
          TemplateManager.instance.addEventListener(TemplateManager.LOADED_EVENT, Async.asyncHandler(this, onLevelLoaded, 2000 ));
-         //TemplateManager.instance.addEventListener(TemplateManager.FAILED_EVENT, asyncHandler( onLevelLoadFailed, 2000 ));
+         //TemplateManager.instance.addEventListener(TemplateManager.FAILED_EVENT, Async.asyncHandler(this, onLevelLoadFailed, 2000 ));
          TemplateManager.instance.loadFile(PBEngineTestSuite.testLevel);
       }
       
