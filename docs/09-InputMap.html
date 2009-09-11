@@ -33,8 +33,8 @@
    <p>The InputManager is a clearing house for input events. Mostly, InputMap instance subscribe to it, although your code can do that as well. It also tracks if keys are down, so you can write code like:</p>
    
    <pre class="brush: js">
-   if(InputManager.IsKeyDown(InputKey.UP))
-      MoveItemUp();
+   if(InputManager.isKeyDown(InputKey.UP))
+      moveItemUp();
    </pre>
    
    <p>However, this idiom generally results in brittle, complicated input handling code. A much better option is to use an InputMap, which lets you expose named input events you want to bind, and configure what keys should trigger them. That way if you want to allow users to reconfigure what keys they use, you can do so without having to modify your code.</p>
@@ -48,19 +48,19 @@
    <pre class="brush: js">
    public class MyInputHandlingComponent extends TickedComponent
    {
-      public function get Input():InputMap
+      public function get input():InputMap
       {
-         return _InputMap;
+         return _inputMap;
       }
       
-      public function set Input(value:InputMap):void
+      public function set input(value:InputMap):void
       {
-         _InputMap = value;
+         _inputMap = value;
          
-         if (_InputMap != null)
+         if (_inputMap != null)
          {
-            _InputMap.AddBinding("GoLeft", _OnLeft);
-            _InputMap.AddBinding("GoRight", _OnRight);
+            _inputMap.addBinding("GoLeft", _onLeft);
+            _inputMap.addBinding("GoRight", onRight);
          }
       }
 
@@ -68,24 +68,24 @@
       {
          // Normally you would update your position based on this; for simplicity
          // we just print the direction we are being indicated to move.
-         var direction:Number = _Right - _Left;
-         Logger.Print(this, "I am moving " + direction);
+         var direction:Number = right - left;
+         Logger.print(this, "I am moving " + direction);
       }
       
-      private function _OnLeft(value:Number):void
+      private function onLeft(value:Number):void
       {
-         _Left = value;
+         left = value;
       }
 
-      private function _OnRight(value:Number):void
+      private function onRight(value:Number):void
       {
-         _Right = value;
+         right = value;
       }
       
       
-      private var _InputMap:InputMap;
-      private var _Left:Number = 0;
-      private var _Right:Number = 0;
+      private var _inputMap:InputMap;
+      private var _left:Number = 0;
+      private var _right:Number = 0;
    }
    </pre>
    

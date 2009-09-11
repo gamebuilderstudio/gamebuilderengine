@@ -26,6 +26,10 @@
 
    <div id="contentArea">
 
+   <h2 class="section">Use The Flex Style Guide</h2>
+
+   <p>In order to be consistent with most exiting ActionScript codebases, we use the <a href="http://opensource.adobe.com/wiki/display/flexsdk/Coding+Conventions">Adobe Flex Coding Conventions.</a> These are the core of our style guide, and the rest of this document merely notes where we differ or expand on their guidelines.</p>
+
    <h2 class="section">Naming</h2>
    
    <p class="summary">This section defines how all elements in your code should be named, as well as some special cases for specific types of classes.</p>
@@ -40,28 +44,12 @@
    <p>Abbreviations should not be used. Extremely common abbreviations, such as min or max, are okay.</p>
    <b>Acronyms</b>
    <p>Acronyms are okay. If the acronym is treated like a word, and the first letter should be capitalized, capitalize every letter in the acronym, otherwise, leave all letters lowercase.</p>
-   <b>Class Names</b>
-   <p>Upper camel case.</p>
-   <b>Interface Names</b>
-   <p>Upper camel case, starting with a capital I</p>
-   <b>Public Functions, Variables, and Properties</b>
-   <p>Upper camel case.</p>
-   <b>Protected and Private Functions and Properties</b>
-   <p>Upper camel case, starting with an underscore.</p>
-   <b>Protected and Private Variables</b>
-   <p>Lower camel case, starting with an underscore.</p>
-   <b>Local Variables and Function Parameters</b>
-   <p>Lower camel case.</p>
-   <b>Constants</b>
-   <p>All caps, with underscores separating each word.</p>
-   <b>Packages and Folders</b>
-   <p>Upper camel case.</p>
    <b>Component Names</b>
    <p>All components should have the word 'Component' appended to their name.</p>
    <b>Event Names</b>
    <p>All events should have the word 'Event' appended to their name.</p>
    <b>Callback Names and Event Handlers</b>
-   <p>The first word should always be 'On'.</p>
+   <p>The first word should always be 'on'.</p>
    
    <h3 class="section">Error Reporting</h3>
    
@@ -79,10 +67,8 @@
    <h3 class="section">Whitespace</h3>
    
    <ul>
-   <li>Use 3 spaces for each level of indentation rather than a tab character.</li>
    <li>All mathematical operators (+, -, =, etc) should be surrounded by spaces.</li>
    <li>Parentheses do not have spaces immediately inside of them (to the right of opening parentheses, to the left of closing parentheses).</li>
-   <li>A space should exist between a keyword (for, if, while, etc) and the opening parentheses.</li>
    <li>A space should not exist between a function name and the opening parentheses.</li>
    <li>A space should always follow a comma or semi-colon except at the end of lines.</li>
    <li>A blank line should always follow a closing brace or single line block.</li>
@@ -105,8 +91,7 @@
    <ul>
    <li>Numbers that can be non integers should always have a decimal, even it if is just '.0'.</li>
    <li>Use parentheses in complex operations even if order of operations doesn't require it.</li>
-   <li>Do not use implicit boolean conversions. For instance, objects should always be compared to null.</li>
-   <li>Prefer early out returns to nested if statements.</li>
+   <li>Prefer early out returns to nested if statements. Try to minimize indentation depth</li>
    <li>One statement per line, in every case.</li>
    </ul>
    
@@ -115,33 +100,6 @@
    <ul>
    <li>Organize imports by library, with a blank line between libraries.</li>
    <li>Explicitly list imported objects, rather than using package.*</li>
-   </ul>
-   
-   <h3 class="section">Class Layout</h3>
-   
-   <p class="summary">Classes should be laid out in the following order. Additionally,
-   get properties should appear directly before the corresponding set property.</p>
-   
-   <ul>
-   <li>Constants</li>
-   <li>Public Static Properties</li>
-   <li>Public Static Methods</li>
-   <li>Public Static Variables</li>
-   <li>Protected Static Properties</li>
-   <li>Protected Static Methods</li>
-   <li>Protected Static Variables</li>
-   <li>Private Static Properties</li>
-   <li>Private Static Methods</li>
-   <li>Private Static Variables</li>
-   <li>Public Properties</li>
-   <li>Public Methods</li>
-   <li>Public Variables</li>
-   <li>Protected Properties</li>
-   <li>Protected Methods</li>
-   <li>Protected Variables</li>
-   <li>Private Properties</li>
-   <li>Private Methods</li>
-   <li>Private Variables</li>
    </ul>
    
    </div>

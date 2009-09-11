@@ -30,13 +30,13 @@
 
    <h2>Main Loop</h2>
    
-   <p>PushButton Engine does not implement its own main loop or take "control" of your game. Everything is instigated by you, the developer, as this chapter outlines. In general, code and managers are created and executed on demand - for instance the first time you use the TemplateManager, it initializes itself. The first time you add the first object to the ProcessManager, it registers for callbacks, and when you unregister the last object it turns itself off.</p>
+   <p>PushButton Engine does not implement its own main loop or take "control" of your game. Everything is instigated by you, the developer, as this chapter outlines. In general, code and managers are created and executed on demand - for instance the first time you use the TemplateManager, it initializes itself. When you add the first object to the ProcessManager, it registers for callbacks, and when you unregister the last object it turns itself off.</p>
    
    <p>As a rule: you pay for what you use.</p>
    
    <h2>Engine Startup</h2>
    
-   <p>If you are using any of the PushButton Engine MXML tags, these are processed as early as possible in application startup. Level-related tags are processed when the applicationComplete event fires. Resource-related tags are processed as soon as they are processed by Flex - usually in the first few frames.</p>
+   <p>If you are using any of the PushButton Engine MXML tags, these are processed as early as possible in application startup. Level-related tags are processed when the applicationComplete event fires. Resource-related tags are processed as soon as they are loaded by Flex - usually in the first few frames.</p>
    
    <p>As a side effect of these tags, the ResourceManager, LevelManager, and other managers may be initialized. They are all created on demand, as mentioned above, when you first access them via their static Instance member.</p>
    
@@ -50,25 +50,25 @@
 
    <h3>Frame Callbacks</h3>
    
-   <p>Per-frame callbacks happen via the IAnimatedObject interface. Simply implement the IAnimatedObject interface, and call <i>ProcessManager.Instance.AddAnimatedObject(this);</i> to get callbacks. For example:</p>
+   <p>Per-frame callbacks happen via the IAnimatedObject interface. Simply implement the IAnimatedObject interface, and call <i>ProcessManager.instance.addAnimatedObject(this);</i> to get callbacks. For example:</p>
    
    <pre class="brush: js">
    // Example of a component that receives per-frame callbacks.
    public class DemoAnimatedComponent extends EntityComponent implements IAnimatedObject
    {
-      public function OnFrame(elapsed:Number):void
+      public function onFrame(elapsed:Number):void
       {
          trace("Frame happened, and " + elapsed + "ms passed since last time.");
       }
       
-      protected override function _OnAdd():void
+      protected override function onAdd():void
       {
-         ProcessManager.Instance.AddAnimatedObject(this);
+         ProcessManager.instance.addAnimatedObject(this);
       }
       
-      protected override function _OnRemove():void
+      protected override function onRemove():void
       {
-         ProcessManager.Instance.RemoveAnimatedObject(this);
+         ProcessManager.instance.removeAnimatedObject(this);
       }
    }</pre>
    
@@ -93,19 +93,19 @@
          trace("A tick happened!");
       }
       
-      public function OnInterpolateTick(factor:Number):void
+      public function onInterpolateTick(factor:Number):void
       {
          trace("Interpolating between ticks - at " + factor);
       }
       
-      protected override function _OnAdd():void
+      protected override function onAdd():void
       {
-         ProcessManager.Instance.AddTickedObject(this);
+         ProcessManager.instance.addTickedObject(this);
       }
       
-      protected override function _OnRemove():void
+      protected override function onRemove():void
       {
-         ProcessManager.Instance.RemoveTickedObject(this);
+         ProcessManager.instance.removeTickedObject(this);
       }
    }</pre>
     
@@ -116,18 +116,23 @@
     <ol>
     <li>Process IAnimatedObject callbacks.</li>
     <li>Process any pending ticks by calling ITickedObject onTick zero or more times.</li>
+    <li>Process any pending events.</li>
     <li>Call OnInterpolateTick on ITickedObject based on where we are "between ticks."</li>
     </ol>
     
     <h3>Managing Time</h3>
     
-    <p>There are several convenient values the ProcessManager calculates for you. These are VirtualTime, which is milliseconds of simulated time since the game started based on elapsed ticks, and InterpolationFactor, which is identical to the parameter passed to OnInterpolateTick. In general, you should use VirtualTime instead of flash.utils.getTimer() and InterpolationFactor when you need to be aware of where you are relative to ticks.</p>
+    <p>There are several convenient values the ProcessManager calculates for you. These are virtualTime, which is milliseconds of simulated time since the game started based on elapsed ticks, and interpolationFactor, which is identical to the parameter passed to onInterpolateTick. In general, you should use virtualTime instead of flash.utils.getTimer() and interpolationFactor when you need to be aware of where you are relative to ticks.</p>
     
-    <p>You may want to experiment with altering time scale on the ProcessManager, as this will allow you to do bullet time type effects.</p>
+    <p>You may want to experiment with altering timeScale on the ProcessManager. This will allow you to do bullet time type effects or speed up the action. Unfortunately, you cannot reverse time.</p>
     
     <h2>Shutdown</h2>
     
     <p>Currently, no code is run at game shutdown time.</p>
+
+    <h2>Low-level Explanations</h2>
+
+    <p>The ProcessManager exists to provide a consistent environment for gameplay code to execute. If you are concerned with how time is processed in Flash, you might benefit from reading Sean Christmann's article on <a href="http://www.craftymind.com/2008/04/18/updated-elastic-racetrack-for-flash-9-and-avm2/">Updated 'Elastic Racetrack' for Flash 9 and AVM2</a>, based on Ted Patrick's original <a href="http://www.onflex.org/ted/2005/07/flash-player-mental-model-elastic.php">Elastic Racetrack</a> article.</p>
     
     <h2>Conclusion</h2>
     

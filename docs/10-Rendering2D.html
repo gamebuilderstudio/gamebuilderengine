@@ -36,7 +36,7 @@
    
    <h3>Draw Layers And Sorting</h3>
    
-   <p>An important part of the Rendering2D architecture is the draw layer system. Each renderable component is required to implement a property called LayerIndex, which controls on which draw layer it is shown. This allows manual control of sorting, by grouping drawable items onto overlapping layers. Layers are drawn in ascending order, starting with layer zero. This means that anything on layer 0 will be on the "bottom", and things in higher layers will be drawn on top of lower layers. The BaseSceneComponent only provides for 64 layers by default (though if needed, this number can be tweaked by altering a const on the class).</p>
+   <p>An important part of the Rendering2D architecture is the draw layer system. Each renderable component is required to implement a property called LayerIndex, which controls on which draw layer it is shown. This allows manual control of sorting, by grouping drawable items onto overlapping layers. Layers are drawn in ascending order, starting with layer zero. This means that anything on layer 0 will be on the "bottom", and things in higher layers will be drawn on top of lower layers. The BaseSceneComponent only provides for 16 layers by default (though if needed, this number can be tweaked by altering a const on the class).</p>
    
    <p>For example, in a platformer, you might assign layer zero to distant background elements, layer one to nearer background elements, layer two to platforms in the world, layer three to powerups, layer four to enemies, layer five to the player, and layer six to feedback elements like scores or damage effects. That's just an example; you can use layers however you like.</p>
    
@@ -73,7 +73,7 @@
    <ul>
    <li>A scene entity that has a spatial manager and a scene component on it. The scene component needs to have a reference to the spatial manager.</li>
    <li>Entities that contain both a spatial component and one or more components implementing IDrawable2D. The spatial component has to be hooked to the same spatial manager as the scene component, and have a ObjectMask that matches what the scene component will be querying for.</li>
-   <li>A class implementing PBLabs.Rendering2D.UI should be somewhere on the stage - FlexSceneView if you're writing a Flex-based application, or SceneView if you're working with Flash directly - and the scene component should have a reference to it.</li>
+   <li>A class implementing com.pblabs.engine.rendering2D.ui.ISceneView should be somewhere on the stage - FlexSceneView if you're writing a Flex-based application, or SceneView if you're working with Flash directly - and the scene component should have a reference to it.</li>
    </ul>
    
    <p>The details may vary slightly depending on the exact set of components you are using, of course.</p>
