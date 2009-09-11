@@ -199,18 +199,20 @@ package com.pblabs.engine.debug.log4PBE
          {
             var appenderName:String = appenderXML.@name;
             var appenderType:String = appenderXML.@type;
-            
+
+            // Note we use trace for the following error cases; otherwise we recurse infinitely.
+
             var appender:* = TypeUtility.instantiate(appenderType);
             if (appender == null)
             {
-               _logger.error("Unable to instantiate the type %1 for the appender %2. The class was not found.", appenderType, appenderName);
+               trace("Unable to instantiate the type %1 for the appender %2. The class was not found.", appenderType, appenderName);
                continue;
             }
             
             // make sure it's an appender
             if (!(appender is LogAppender))
             {
-               _logger.error("The type %1 for the appender %2 is not a LogAppender subclass.", appenderType, appenderName);
+               trace("The type %1 for the appender %2 is not a LogAppender subclass.", appenderType, appenderName);
                continue;
             }
             
