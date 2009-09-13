@@ -78,10 +78,10 @@ package com.pblabs.engine.core
        */
       public static function findChild(name:String):DisplayObject
       {
-         return _FindChild(name, _main);
+         return _findChild(name, mainStage);
       }
       
-      private static function _FindChild(name:String, parent:DisplayObjectContainer):DisplayObject
+      private static function _findChild(name:String, parent:DisplayObjectContainer):DisplayObject
       {
          if (!parent)
             return null;
@@ -91,7 +91,7 @@ package com.pblabs.engine.core
          
          for (var i:int = 0; i < parent.numChildren; i++)
          {
-            var child:DisplayObject = _FindChild(name, parent.getChildAt(i) as DisplayObjectContainer);
+            var child:DisplayObject = _findChild(name, parent.getChildAt(i) as DisplayObjectContainer);
             if (child)
                return child;
          }

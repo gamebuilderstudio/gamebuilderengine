@@ -28,12 +28,27 @@ package com.pblabs.rendering2D
          return _image;
       }
       
+      override public function initialize(data:*):void
+      {
+          // Directly load embedded resources if they gave us a Bitmap.
+          if(data is Bitmap)
+          {
+              onContentReady(data);
+              onLoadComplete();
+              return;
+          }
+          
+          // Otherwise it must be a ByteArray, pass it over to the normal path.
+          super.initialize(data);
+      }
+
       /**
        * @inheritDoc
        */
       override protected function onContentReady(content:*):Boolean 
       {
-         _image = content as Bitmap;
+         if(content)
+            _image = content as Bitmap;
          return _image != null;
       }
       

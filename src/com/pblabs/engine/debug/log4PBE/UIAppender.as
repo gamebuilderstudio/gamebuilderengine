@@ -17,7 +17,7 @@ package com.pblabs.engine.debug.log4PBE
       {
          InputManager.instance.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 		 
-	 	 // Try to create the LogViewer.
+	 	 // Try to create the flex LogViewer.
 		 _logViewer = TypeUtility.instantiate("com.pblabs.engine.debug.log4PBE.LogViewer", true);
          if(!_logViewer)
 		 {
@@ -36,7 +36,7 @@ package com.pblabs.engine.debug.log4PBE
 			 if (_logViewer.parent)
 				 _logViewer.parent.removeChild(_logViewer); 
 			 else
-				 Global.mainClass.addChild(_logViewer);
+				 Global.mainStage.addChild(_logViewer);
 		 }
       }
       

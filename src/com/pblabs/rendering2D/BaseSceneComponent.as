@@ -102,7 +102,7 @@ package com.pblabs.rendering2D
        */
       public function get nextDrawnItem():IDrawable2D
       {
-         return _NextDrawn;
+         return _nextDrawn;
       }
       
       /**
@@ -415,7 +415,7 @@ package com.pblabs.rendering2D
             _currentRenderTarget.lock();
          
          // Clear last/next state.
-         _lastDrawn = _NextDrawn = null;
+         _lastDrawn = _nextDrawn = null;
          
          var rtStack:BitmapData = _currentRenderTarget;
          var layerBitmap:BitmapData;
@@ -460,8 +460,8 @@ package com.pblabs.rendering2D
             for each (var r:IDrawable2D in layerList[i])
             {
                // Do interstitial callbacks.
-               _lastDrawn = _NextDrawn;
-               _NextDrawn = r;
+               _lastDrawn = _nextDrawn;
+               _nextDrawn = r;
                _interstitialDrawnList.every(interstitialEveryCallback);
                
                // Update the cache key.
@@ -495,15 +495,15 @@ package com.pblabs.rendering2D
          }
          
          // Do final interstitial callback.
-         if (_NextDrawn)
+         if (_nextDrawn)
          {
-            _lastDrawn = _NextDrawn;
-            _NextDrawn = null;
+            _lastDrawn = _nextDrawn;
+            _nextDrawn = null;
             _interstitialDrawnList.every(drawItem);
          }
 
          // Clear last/next state.
-         _lastDrawn = _NextDrawn = null;
+         _lastDrawn = _nextDrawn = null;
 
          // Clean up render state.
          if (_currentRenderTarget)
@@ -612,6 +612,6 @@ package com.pblabs.rendering2D
        */ 
       private var _layerCache:Array = new Array(LAYER_COUNT);
       
-      private var _lastDrawn:IDrawable2D, _NextDrawn:IDrawable2D;
+      private var _lastDrawn:IDrawable2D, _nextDrawn:IDrawable2D;
    }
 }

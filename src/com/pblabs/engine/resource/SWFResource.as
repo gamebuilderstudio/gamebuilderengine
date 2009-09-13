@@ -104,12 +104,27 @@ package com.pblabs.engine.resource
             }
         }
 
+        override public function initialize(data:*):void
+        {
+            // Directly load embedded resources if they gave us a MovieClip.
+            if(data is MovieClip)
+            {
+                onContentReady(data);
+                onLoadComplete();
+                return;
+            }
+            
+            // Otherwise it must be a ByteArray, pass it over to the normal path.
+            super.initialize(data);
+        }
+
         /**
          * @inheritDoc
          */
         override protected function onContentReady(content:*):Boolean 
         {
-            _clip = content as MovieClip;
+            if(content)
+                _clip = content as MovieClip;
 
             if (super.resourceLoader.contentLoaderInfo)
                 _appDomain = super.resourceLoader.contentLoaderInfo.applicationDomain;
