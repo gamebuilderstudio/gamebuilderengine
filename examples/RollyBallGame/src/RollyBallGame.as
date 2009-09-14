@@ -83,9 +83,8 @@ package
         
         public static function nextLevel():void
         {
-            if(LevelManager.instance.currentLevel < 1)
+            if(LevelManager.instance.currentLevel < 2)
             {
-                LevelManager.instance.unloadCurrentLevel();
                 LevelManager.instance.loadNextLevel();               
                 
                 // Reset the timer.

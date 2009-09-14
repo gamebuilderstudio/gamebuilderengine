@@ -257,10 +257,10 @@
 
 	<entity name="Player2" template="BasePlayer">
 		<component name="Shadow">
-			<map componentReference="Level2Map" />
+			<Map componentReference="Level2Map" />
 		</component>
 		<component name="Spatial">
-			<map componentReference="Level2Map" />
+			<Map componentReference="Level2Map" />
 		</component>
 	</entity>
 

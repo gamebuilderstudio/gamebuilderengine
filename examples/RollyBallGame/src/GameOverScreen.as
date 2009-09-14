@@ -18,13 +18,13 @@ package
             addChild(statusLabel);
             statusLabel.fontAlign = TextFormatAlign.CENTER;
             statusLabel.caption = "Game Complete!";
-            statusLabel.extents = new Rectangle(226, 169, 300, 100);
+            statusLabel.extents = new Rectangle(320-150, 240-100, 300, 100);
             statusLabel.fontSize = 32;
             statusLabel.refresh();
             
             addChild(restartButton);
             restartButton.caption = "Restart";
-            restartButton.extents = new Rectangle(487, 308, 160, 40);
+            restartButton.extents = new Rectangle(387, 308, 160, 40);
             restartButton.fontSize = 32;
             restartButton.refresh();
             
