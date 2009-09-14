@@ -4,7 +4,7 @@
       <antcall target="buildSWF">
          <param name="currentProjectRootDir" value="${basedir}" />
          <param name="currentProjectName" value="RollyBallGame" />
-         <param name="currentProjectRootFile" value="RollyBallGame.mxml"/>
+         <param name="currentProjectRootFile" value="RollyBallGame.swf"/>
       </antcall>
    </target>
 </project>

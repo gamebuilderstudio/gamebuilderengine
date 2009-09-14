@@ -7,23 +7,23 @@ package
         [Embed(source='../assets/Levels/level.pbelevel', mimeType='application/octet-stream')]
         public var res0:Class;
 
-        [Embed(source='../assets/Images/coin.png', mimeType='application/octet-stream')]
+        [Embed(source='../assets/Images/coin.png')]
         public var res1:Class;
-        [Embed(source='../assets/Images/welcome.png', mimeType='application/octet-stream')]
+        [Embed(source='../assets/Images/welcome.png')]
         public var res2:Class;
         
-        [Embed(source='../assets/Images/level1_height.png', mimeType='application/octet-stream')]
+        [Embed(source='../assets/Images/level1_height.png')]
         public var res3:Class;
-        [Embed(source='../assets/Images/level1_normal.png', mimeType='application/octet-stream')]
+        [Embed(source='../assets/Images/level1_normal.png')]
         public var res4:Class;
-        [Embed(source='../assets/Images/level1_diffuse.png', mimeType='application/octet-stream')]
+        [Embed(source='../assets/Images/level1_diffuse.png')]
         public var res5:Class;
         
-        [Embed(source='../assets/Images/level2_height.png', mimeType='application/octet-stream')]
+        [Embed(source='../assets/Images/level2_height.png')]
         public var res6:Class;
-        [Embed(source='../assets/Images/level2_normal.png', mimeType='application/octet-stream')]
+        [Embed(source='../assets/Images/level2_normal.png')]
         public var res7:Class;
-        [Embed(source='../assets/Images/level2_diffuse.png', mimeType='application/octet-stream')]
+        [Embed(source='../assets/Images/level2_diffuse.png')]
         public var res8:Class;
         
         [Embed(source='../assets/Sounds/pickup.mp3')]

@@ -13,7 +13,6 @@ package com.pblabs.rollyGame
    import com.pblabs.engine.entity.*;
    import com.pblabs.engine.resource.*;
    import flash.geom.*;
-   import mx.controls.*;
 
    public class BallMover extends SimpleSpatialComponent
    {
@@ -95,7 +94,7 @@ package com.pblabs.rollyGame
             var so:IEntityComponent = results[i] as IEntityComponent;
             so.owner.destroy();
             
-            (Global.mainClass as Object).AddPoints(1);
+            RollyBallGame.currentScore++;
             
             if(PickupSound)
                PickupSound.soundObject.play();
