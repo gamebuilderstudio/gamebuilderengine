@@ -312,6 +312,11 @@ package com.pblabs.engine.core
        */
       public function loadLevel(index:int):void
       {
+          if(!_isReady)
+          {
+              Logger.printWarning(this, "loadLevel", "Warning: trying to loadLevel() without having first called start()! This probably won't work." );
+          }
+          
          if (!hasLevelData(index))
          {
             Logger.printError(this, "LoadLevel", "Level data for level " + index + " does not exist.");
