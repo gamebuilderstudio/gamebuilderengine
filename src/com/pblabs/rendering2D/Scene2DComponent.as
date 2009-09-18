@@ -77,7 +77,7 @@ package com.pblabs.rendering2D
       {
          var newPoint:Point = new Point();
          
-         if (scrollFactor != null)
+         if (scrollFactor == null)
          {
             newPoint.x = (point.x + _position.x) - sceneView.width * 0.5;
             newPoint.y = (point.y + _position.y) - sceneView.height * 0.5;
