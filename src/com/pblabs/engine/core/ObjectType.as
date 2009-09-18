@@ -97,6 +97,24 @@ package com.pblabs.engine.core
             _bits |= ObjectTypeManager.instance.getType(typeName);
       }
       
+
+      /**
+       * Add typeName to current ObjectType
+       */
+	  public function add(typeName:String):void
+	  {
+            _bits |= ObjectTypeManager.instance.getType(typeName);	  	
+	  }      
+
+      /**
+       * Remove typeName from current ObjectType
+       */
+	  public function remove(typeName:String):void
+	  { 		
+            _bits &= (wildcard.bits - ObjectTypeManager.instance.getType(typeName));	  		  	
+	  }      
+      
+      
       /**
        * @inheritDoc
        */
