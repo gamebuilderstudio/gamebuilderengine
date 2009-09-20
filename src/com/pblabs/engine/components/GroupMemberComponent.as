@@ -13,7 +13,7 @@ package com.pblabs.engine.components
       
       public function get groupManager():GroupManagerComponent
       {
-         return NameManager.instance.lookupComponentByType(groupName, GroupManagerComponent) as GroupManagerComponent;
+      	 return GroupManagerComponent.getGroupByName(_groupName);
       }
 
       public function set groupName(value:String):void
