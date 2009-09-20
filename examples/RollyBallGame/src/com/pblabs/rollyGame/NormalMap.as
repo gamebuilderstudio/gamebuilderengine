@@ -12,6 +12,9 @@ package com.pblabs.rollyGame
     import flash.display.*;
     import flash.geom.*;
     
+    /**
+     * Store normal and height information for a level.
+     */
     public class NormalMap extends EntityComponent
     {
         /**
@@ -32,7 +35,7 @@ package com.pblabs.rollyGame
          * @param outNormal Point that is set with the normal for this location in -1..1 range.
          * @return Height as 0..1 value.
          */
-        public function GetNormalAndHeight(x:int, y:int, outNormal:Point):Number
+        public function getNormalAndHeight(x:int, y:int, outNormal:Point):Number
         {
             if(!NormalSheet)
                 throw new Error("No NormalSheet!");
@@ -64,10 +67,16 @@ package com.pblabs.rollyGame
                 outNormal.y = (ay - 127) / 128.0;
             }
             
-            return GetHeight(x, y);
+            return getHeight(x, y);
         }
         
-        public function GetHeight(x:int, y:int):Number
+        /**
+         * Return the height at a location. 
+         * @param x X pixel location.
+         * @param y Y pixel location.
+         * @return Height.
+         */
+        public function getHeight(x:int, y:int):Number
         {
             // Get the height bitmapdata.
             var heightBd:BitmapData = HeightSheet.getFrame(0);

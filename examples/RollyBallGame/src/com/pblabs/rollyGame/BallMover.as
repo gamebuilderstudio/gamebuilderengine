@@ -9,6 +9,7 @@ package com.pblabs.rollyGame
 {
    import com.pblabs.rendering2D.*;
    import com.pblabs.animation.*;
+   import com.pblabs.engine.PBE;
    import com.pblabs.engine.core.*;
    import com.pblabs.engine.entity.*;
    import com.pblabs.engine.resource.*;
@@ -54,7 +55,7 @@ package com.pblabs.rollyGame
          // Sample the map for our current position.
          var n:Point = new Point();
          if(Map)
-            Height = Map.GetNormalAndHeight(position.x, position.y, n);
+            Height = Map.getNormalAndHeight(position.x, position.y, n);
          
          // Scale the renderer.
          BallScale.x = (0.5 + Height) * 32;
@@ -100,8 +101,10 @@ package com.pblabs.rollyGame
                PickupSound.soundObject.play();
             
             // Spawn a new coin somewhere.
-            var coinEntity:IEntity = TemplateManager.instance.instantiateEntity("Coin");
-            coinEntity.setProperty(new PropertyReference("@Spatial.position"), new Point(20 + Math.random() * 600, 20 + Math.random() * 400)); 
+            PBE.makeEntity("Coin", 
+                {
+                    "@Spatial.position": new Point(20 + Math.random() * 600, 20 + Math.random() * 400) 
+                });
          }
       }
 

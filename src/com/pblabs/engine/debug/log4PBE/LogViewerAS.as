@@ -37,7 +37,7 @@ package com.pblabs.engine.debug.log4PBE
 			_output.wordWrap = true;
 			var format:TextFormat = _output.getTextFormat();
 			format.font = "_typewriter";
-			format.size = 8;
+			format.size = 10;
 			_output.setTextFormat(format);
 			_output.defaultTextFormat = format;
 			
@@ -46,9 +46,13 @@ package com.pblabs.engine.debug.log4PBE
 		
 		protected function truncateOutput():void
 		{
-			if (_output.text.length > maxLength){
+            // Keep us from exceeding too great a size of displayed text.
+			if (_output.text.length > maxLength)
+            {
 				_output.text = _output.text.slice(-maxLength);
-				if(!_truncating)
+				
+                // Display helpful message that we have capped the log length.
+                if(!_truncating)
 				{
 					_truncating = true;
 					Logger.getLogger(UIAppender).warn("You have exceeded "+_maxLength+" characters in LogViewerAS. " +
@@ -83,6 +87,16 @@ package com.pblabs.engine.debug.log4PBE
 			_maxLength = value;
 			truncateOutput();
 		}
+        
+        public function updateSize():void
+        {
+            // Update size.
+            if(!stage)
+                return;
+
+            _output.width = stage.stageWidth;
+            _output.height = (stage.stageHeight / 3) * 2;
+        }
 
 	}
 }

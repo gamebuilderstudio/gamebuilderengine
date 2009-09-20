@@ -38,13 +38,6 @@ package com.pblabs.engine.components
       {
       }
       
-      /**
-       * @inheritDoc
-       */
-      public function onInterpolateTick(factor:Number):void
-      {
-      }
-      
       override protected function onAdd():void
       {
          if(registerForTicks)

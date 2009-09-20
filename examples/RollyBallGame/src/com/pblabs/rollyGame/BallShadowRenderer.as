@@ -77,7 +77,7 @@ package com.pblabs.rollyGame
                     silhouetteY += deltaY;
                     silhouetteZ += deltaZ;
                     
-                    if(silhouetteZ <= Map.GetHeight(silhouetteX, silhouetteY) * 100)
+                    if(silhouetteZ <= Map.getHeight(silhouetteX, silhouetteY) * 100)
                         break;
                 }
                 

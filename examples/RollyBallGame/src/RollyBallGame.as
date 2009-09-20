@@ -7,7 +7,12 @@
  ******************************************************************************/
 package
 {
+    import com.pblabs.animation.*;
+    import com.pblabs.engine.PBE;
     import com.pblabs.engine.core.*;
+    import com.pblabs.rendering2D.*;
+    import com.pblabs.rendering2D.ui.*;
+    import com.pblabs.rollyGame.*;
     import com.pblabs.screens.*;
     
     import flash.display.*;
@@ -16,15 +21,29 @@ package
     [SWF(width="640", height="480", frameRate="60", backgroundColor="0x000000")]
     public class RollyBallGame extends Sprite
     {
-        public var components:Components = new Components();
+        // Instantiating GameResources loads all our embedded resources.
         public var resources:GameResources = new GameResources();
         
         public function RollyBallGame()
         {
-            // Initialize game
-            Global.startup(this);
+            // Register our types.
+            PBE.registerType(com.pblabs.rendering2D.Scene2DComponent);
+            PBE.registerType(com.pblabs.rendering2D.SpriteRenderComponent);
+            PBE.registerType(com.pblabs.rendering2D.SpriteSheetComponent);
+            PBE.registerType(com.pblabs.rendering2D.SimpleSpatialComponent);
+            PBE.registerType(com.pblabs.rendering2D.BasicSpatialManager2D);
+            PBE.registerType(com.pblabs.rendering2D.CellCountDivider);
+            PBE.registerType(com.pblabs.animation.AnimatorComponent);
+            PBE.registerType(com.pblabs.rendering2D.ui.SceneView);
+            PBE.registerType(com.pblabs.rollyGame.NormalMap);
+            PBE.registerType(com.pblabs.rollyGame.BallMover);
+            PBE.registerType(com.pblabs.rollyGame.BallShadowRenderer);
+            PBE.registerType(com.pblabs.rollyGame.BallSpriteRenderer);            
             
-            // Initialize level and score.
+            // Initialize game.
+            PBE.startup(this);
+            
+            // Initialize level.
             LevelManager.instance.addFileReference(0, "../assets/Levels/level.pbelevel");
             LevelManager.instance.addGroupReference(0, "Everything");
             
@@ -39,6 +58,7 @@ package
             // Make the game scale properly.
             stage.scaleMode = StageScaleMode.SHOW_ALL; 
             
+            // Pause/resume based on focus.
             stage.addEventListener(Event.DEACTIVATE, function():void{ ProcessManager.instance.timeScale = 0; });
             stage.addEventListener(Event.ACTIVATE, function():void{ ProcessManager.instance.timeScale = 1; });
             
@@ -60,8 +80,9 @@ package
         public static function resetLevel():void
         {
             // Reset the level.
+            var curLevel:int = LevelManager.instance.currentLevel;
             LevelManager.instance.unloadCurrentLevel();
-            LevelManager.instance.loadLevel(LevelManager.instance.currentLevel);
+            LevelManager.instance.loadLevel(curLevel);
             
             // Reset the timer and score.
             startTimer = ProcessManager.instance.virtualTime;

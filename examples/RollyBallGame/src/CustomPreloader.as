@@ -8,6 +8,9 @@ package
     import mx.events.FlexEvent;
     import mx.preloaders.DownloadProgressBar;
  
+    /**
+     * Play a SWF as a preloader, with control of when animation is played.
+     */
     public class CustomPreloader extends DownloadProgressBar
     {
         [Embed(source="../assets/Preloader.swf")]

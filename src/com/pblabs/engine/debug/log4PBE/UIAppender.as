@@ -37,11 +37,18 @@ package com.pblabs.engine.debug.log4PBE
 				 _logViewer.parent.removeChild(_logViewer); 
 			 else
 				 Global.mainStage.addChild(_logViewer);
-		 }
+             
+             _logViewer.updateSize();
+         }
       }
       
       override public function addLogMessage(level:String, loggerName:String, errorNumber:int, message:String, arguments:Array):void
       {
+          // Drop all but the class name for the logger name to make it easier to read.
+          var lastIdx:int = loggerName.lastIndexOf(".") + 1;
+          if(lastIdx != 0)
+            loggerName = loggerName.substr(lastIdx);
+          
 		  if(_logViewer)
          	_logViewer.addLogMessage(level, loggerName, errorNumber, replace(message, arguments), []);
       }

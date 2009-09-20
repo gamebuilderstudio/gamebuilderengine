@@ -8,12 +8,11 @@
  ******************************************************************************/
 package com.pblabs.engine.core
 {
-   import com.pblabs.engine.debug.Logger;
-   import com.pblabs.engine.debug.Profiler;
+   import com.pblabs.engine.debug.*;
    import com.pblabs.engine.serialization.TypeUtility;
+   import flash.utils.getTimer;
    
    import flash.events.Event;
-   import flash.utils.getTimer;
 
    /**
     * The process manager manages all time related functionality in the engine.
@@ -34,7 +33,7 @@ package com.pblabs.engine.core
       /**
        * The number of ticks that will happen every second.
        */
-      public static const TICKS_PER_SECOND:int = 32;
+      public static const TICKS_PER_SECOND:int = 30;
       
       /**
        * The rate at which ticks are fired, in seconds.
@@ -47,14 +46,17 @@ package com.pblabs.engine.core
       public static const TICK_RATE_MS:Number = TICK_RATE * 1000;
       
       /**
-       * The maximum number of ticks that are fired every frame. In some cases,
-       * if some process is eating up a whole bunch of time, a single frame
-       * can take an extremely long amount of time. If several ticks then
-       * need to be processed, the engine can quickly get in a state where
-       * it is backlogged and unable to recover in a reasonable amount if
-       * time. Only performing a certain number of ticks per frame will
-       * alleviate that situation, but really, if this limit is ever reached,
-       * there is probably a performance issue somewhere that needs to be resolved.
+       * The maximum number of ticks that can be processed in a frame.
+       * 
+       * <p>In some cases, a single frame can take an extremely long amount of
+       * time. If several ticks then need to be processed, a game can
+       * quickly get in a state where it has so many ticks to process
+       * it can never catch up. This is known as a death spiral.</p>
+       * 
+       * <p>To prevent this we have a safety limit. Time is dropped so the
+       * system can catch up in extraordinary cases. If your game is just
+       * slow, then you will see that the ProcessManager can never catch up
+       * and you will constantly get the "too many ticks per frame" warning.</p>
        */
       public static const MAX_TICKS_PER_FRAME:int = 10;
       
@@ -90,7 +92,8 @@ package com.pblabs.engine.core
       }
 
       /**
-       * TweenMax uses timeScale as a config property, so now we have a workaround.
+       * TweenMax uses timeScale as a config property, so by also having a
+       * capitalized version, we can tween TimeScale and get along just fine.
        */
       public function set TimeScale(value:Number):void
       {
@@ -318,6 +321,11 @@ package com.pblabs.engine.core
       
       private function onFrame(event:Event):void
       {
+          // This is called from a system event, so it had better be at the 
+          // root of the profiler stack!
+          Profiler.ensureAtRoot();
+
+          // Track current time.
           var currentTime:Number = getTimer();
           if (lastTime < 0)
           {
@@ -325,32 +333,35 @@ package com.pblabs.engine.core
               return;
           }
           
-          var deltaTime:Number = (currentTime - lastTime) * _timeScale;
+          // Calculate time since last frame and advance that much.
+          var deltaTime:Number = Number(currentTime - lastTime) * _timeScale;
           advance(deltaTime);
           
+          // Note new last time.
           lastTime = currentTime;
       }
       
       private function advance(deltaTime:Number, suppressSafety:Boolean = false):void
       {
+          var startTime:Number = _virtualTime;
+
+          // Add time to the accumulator.
           elapsed += deltaTime;
           
-          var startTime:Number = _virtualTime;
-          
-          Profiler.ensureAtRoot();
-
-          // Perform ticks.
+          // Perform ticks, respecting tick caps.
           var tickCount:int = 0;
           while (elapsed >= TICK_RATE_MS && (suppressSafety || tickCount < MAX_TICKS_PER_FRAME))
           {
+              // Ticks always happen on interpolation boundary.
               _interpolationFactor = 0.0;
-              
-              Profiler.enter("Tick");
               
               // Process pending events at this tick.
               // This is done in the loop to ensure the correct order of events.
               processScheduledObjects();
 
+              // Do the onTick callbacks, noting time in profiler appropriately.
+              Profiler.enter("Tick");
+              
               for each (var object:ProcessObject in tickedObjects)
               {
                   Profiler.enter(object.profilerKey);
@@ -360,6 +371,7 @@ package com.pblabs.engine.core
               
               Profiler.exit("Tick");
               
+              // Update virtual time by subtracting from accumulator.
               _virtualTime += TICK_RATE_MS;
               elapsed -= TICK_RATE_MS;
               tickCount++;
@@ -368,28 +380,18 @@ package com.pblabs.engine.core
           // Safety net - don't do more than a few ticks per frame to avoid death spirals.
           if (tickCount >= MAX_TICKS_PER_FRAME && !suppressSafety)
           {
+              Logger.printWarning(this, "Advance", "Exceeded maximum number of ticks for frame (" + elapsed + "ms dropped) .");
               elapsed = 0;
-              Logger.printWarning(this, "Advance", "Exceeded maximum number of ticks for this frame.");
           }
           
           _virtualTime = startTime + deltaTime;
 
           // We process scheduled items again after tick processing to ensure between-tick schedules are hit
           processScheduledObjects();
-
-          // Update objects expecting interpolation between ticks.
-          Profiler.enter("InterpolateTick");
-          _interpolationFactor = elapsed / TICK_RATE_MS;
-          for each (var tickedObject:ProcessObject in tickedObjects)
-          {
-              Profiler.enter(tickedObject.profilerKey);
-              tickedObject.listener.onInterpolateTick(_interpolationFactor);
-              Profiler.exit(tickedObject.profilerKey);
-          }
-          Profiler.exit("InterpolateTick");
           
           // Update objects wanting OnFrame callbacks.
           Profiler.enter("frame");
+          _interpolationFactor = elapsed / TICK_RATE_MS;
           for each (var animatedObject:ProcessObject in animatedObjects)
           {
               Profiler.enter(animatedObject.profilerKey);
@@ -404,8 +406,11 @@ package com.pblabs.engine.core
       private function processScheduledObjects():void
       {
           Profiler.enter("PendingEvents");
+          
+          // Walk the list of scheduled events...
           for (var i:int = 0; i < scheduleEvents.length; i++)
           {
+              // Looking for events that are due...
               var schedule:ScheduleObject = scheduleEvents[i];
               if (schedule.dueTime <= _virtualTime)
               {
@@ -415,11 +420,12 @@ package com.pblabs.engine.core
               }
               else
               {
-                 //our scheduled event array is sorted by due time, 
-                 //so once we hit one that isn't due we know we're done processing for this time.
+                 // Our scheduled event array is sorted by due time, so once we
+                 // that isn't due we can stop.
                  break;
               }
           }
+          
           Profiler.exit("PendingEvents");      	
       }
       

@@ -9,6 +9,7 @@
 package com.pblabs.engine.core
 {
    import com.pblabs.engine.debug.log4PBE.LogManager;
+   import com.pblabs.engine.debug.Logger;
    
    import flash.display.DisplayObject;
    import flash.display.DisplayObjectContainer;
@@ -51,6 +52,8 @@ package com.pblabs.engine.core
       {
          _main = mainClass;
          LogManager.instance.loadDefaultConfiguration();
+         
+         Logger.print(Global, "PushButton Engine r470");
          
          if (!IS_SHIPPING_BUILD && (_main.loaderInfo && _main.loaderInfo.parameters && _main.loaderInfo.parameters["generateSchema"] == "1"))
             SchemaGenerator.instance.generateSchema();

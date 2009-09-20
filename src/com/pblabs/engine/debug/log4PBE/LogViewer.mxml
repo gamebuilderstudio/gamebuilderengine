@@ -52,6 +52,16 @@
 				}
 			}
 
+            public function updateSize():void
+            {
+                // Update size.
+                if(!stage)
+                    return;
+                
+                width = stage.stageWidth;
+                height = stage.stageHeight * 0.8;
+            }
+
 			private function isDisplayed(item:Object):Boolean
 			{
 				return LogFilter.selectedItem == "*" || item.logger.indexOf(LogFilter.selectedItem) != -1;
