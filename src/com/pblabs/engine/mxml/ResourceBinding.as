@@ -10,9 +10,7 @@ package com.pblabs.engine.mxml
 {
    import com.pblabs.engine.debug.Logger;
    import com.pblabs.engine.resource.Resource;
-   import com.pblabs.engine.resource.ResourceManager;
-   
-   import flash.utils.ByteArray;
+   import com.pblabs.engine.resource.provider.EmbeddedResourceProvider;
    
    import mx.core.IMXMLObject;
    
@@ -54,10 +52,17 @@ package com.pblabs.engine.mxml
       public var resourceType:Class;
       
       /**
+       * The static array that will hold all bindings so the EmbeddedResourceProvider
+       * can retrive it
+       * 
+       * @see com.pblabs.engine.core.Resource
+       */
+             
+      /**
        * @inheritDoc
        */
       public function initialized(document:Object, id:String):void
-      {
+      {      	
          if (!resourceClass)
          {
             Logger.printError("ResourceBinding", "", "Invalid resourceClass specified for binding of " + filename + ".");
@@ -72,14 +77,14 @@ package com.pblabs.engine.mxml
          }
          
          var item:* = new resourceClass();
-         
+                          
          /*if (!(item is ByteArray))
          {
             //Logger.printError("ResourceBinding", "", "The loaded resourceClass for binding of " + filename + " is not a ByteArray.");
             //return;
          } */
          
-         ResourceManager.instance.registerEmbeddedResource(filename, resourceType, item);
+         EmbeddedResourceProvider.instance.registerResource(filename, resourceType, item);
       }
    }
 }

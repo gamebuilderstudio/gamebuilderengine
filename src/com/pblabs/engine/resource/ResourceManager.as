@@ -9,10 +9,11 @@
 package com.pblabs.engine.resource
 {
     import com.pblabs.engine.debug.Logger;
+    import com.pblabs.engine.resource.provider.IResourceProvider;
+    import com.pblabs.engine.resource.provider.LoadedResourceProvider;
     import com.pblabs.engine.serialization.TypeUtility;
     
     import flash.events.Event;
-    import flash.utils.ByteArray;
     import flash.utils.Dictionary;
     import flash.utils.setTimeout;
     
@@ -102,18 +103,38 @@ package com.pblabs.engine.resource
                         onEmbeddedFail(filename);
                     return;
                 }
-                
-                // Try creating a new instance of the requested type.
-                var testResource:* = new resourceType();
-                if (!(testResource is Resource))
-                {
-                    fail(null, onFailed, "Failed to load resource from file " + filename + ". The specified resource type " + resourceType + " is not a Resource subclass.");
-                    return;
-                }
-                
-                // Fire off a load.
-                resource = testResource;
-                resource.load(filename);
+
+            	// check available resource providers and request the resource if it is known
+            	for (var rp:int = 0; rp < resourceProviders.length; rp++)
+            	{
+            		if ((resourceProviders[rp] as IResourceProvider).isResourceKnown(filename,resourceType))
+            			resource  = (resourceProviders[rp] as IResourceProvider).getResource(filename,resourceType,forceReload);
+            	}
+            	            	            	                
+            	if (!resource)
+            	{
+            		resource = LoadedResourceProvider.instance.getResource(filename,resourceType, forceReload);
+            		/*
+            		
+            		this code has become obsolete because the LoadedResourceProvider will
+            		handle all unknown resources.
+            		
+            		// resource was not found with a provider so try to load it here.
+            		
+	                // Try creating a new instance of the requested type.
+	                var testResource:* = new resourceType();
+	                if (!(testResource is Resource))
+	                {
+	                    fail(null, onFailed, "Failed to load resource from file " + filename + ". The specified resource type " + resourceType + " is not a Resource subclass.");
+	                    return;
+	                }
+	                
+	                // Fire off a load.
+	                resource = testResource;
+	                resource.load(filename);
+	                */
+	            }
+	            
                 _resources[resourceIdentifier] = resource;
             }
             else if (!(resource is resourceType))
@@ -159,6 +180,11 @@ package com.pblabs.engine.resource
             // Right now unload is unloading embedded resources inappropriately. Since
             // they are going to be in memory anyway as part of the SWF, I am disabling
             // Unload for now.
+
+            // mas : we probably have to unload the resource @ the specific resourceProvider
+            // 		 as well! so we have to take this into account when we reactivate the
+            //		 unload.             
+       
             return;
             
             if (!_resources[filename + resourceType])
@@ -215,6 +241,17 @@ package com.pblabs.engine.resource
             }
         }
         
+        public function registerResourceProvider(resourceProvider:IResourceProvider):void
+        {
+        	// check if resourceProvider is already registered
+        	for (var rp:int=0; rp < resourceProviders.length; rp++)
+        	  if (resourceProviders.indexOf(resourceProvider)>=0)
+        	    return;
+        	    
+            // add resourceProvider to list of known resourceProviders
+        	resourceProviders.push(resourceProvider);
+        }
+        
         private function fail(resource:Resource, onFailed:Function, message:String):void
         {
             Logger.printError(this, "Load", message);
@@ -222,6 +259,8 @@ package com.pblabs.engine.resource
                 setTimeout(onFailed, 1, resource);
         }
         
+        
         private var _resources:Dictionary = new Dictionary();
+        private var resourceProviders:Array = new Array();
     }
 }

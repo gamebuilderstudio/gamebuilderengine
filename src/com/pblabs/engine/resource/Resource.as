@@ -178,6 +178,15 @@ package com.pblabs.engine.resource
         }
         
         /**
+         * This method will be used by a Resource Provider to indicate that this
+         * resource has failed loading
+         */
+        public function fail(message:String):void
+        {
+        	onFailed(message);        	
+        }
+        
+        /**
          * This is called when the resource data has been fully loaded and conditioned.
          * Returning true from this method means the load was successful. False indicates
          * failure. Subclasses must implement this method.
@@ -251,6 +260,8 @@ package com.pblabs.engine.resource
             _urlLoader = null;
             _loader = null;
         }
+	
+		                
         
         protected var _filename:String = null;
         private var _isLoaded:Boolean = false;

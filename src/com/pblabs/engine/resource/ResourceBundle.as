@@ -9,10 +9,10 @@
 package com.pblabs.engine.resource
 {
    import com.pblabs.engine.debug.Logger;
-   import com.pblabs.engine.serialization.TypeUtility;
+   import com.pblabs.engine.resource.provider.EmbeddedResourceProvider;
+   
    import flash.utils.describeType;
    import flash.utils.getDefinitionByName;
-   import flash.utils.ByteArray;
    
    /**
     * The resource bundle handles automatic loading and registering of embedded resources.
@@ -36,6 +36,7 @@ package com.pblabs.engine.resource
        * This array can be extended at runtime, such as:
        *  ResourceBundle.ExtensionTypes.mycustomext = "com.mydomain.customresource"
        */
+             
       public static var ExtensionTypes:Object = {
                                                  png:"com.pblabs.rendering2D.ImageResource",
                                                  jpg:"com.pblabs.rendering2D.ImageResource",
@@ -53,6 +54,7 @@ package com.pblabs.engine.resource
        */
       public function ResourceBundle()
       {
+      	      	 
          var desc:XML= describeType(this);
          var res:Class;
          var resIsEmbedded:Boolean;
@@ -168,10 +170,10 @@ package com.pblabs.engine.resource
                Logger.printError(this, "ResourceBundle", "The resource type '" + resTypeName + "' specified for the embedded asset '" + resSource + "' is not a descendant from Resource.  Please ensure that the resource class descends properly from com.pblabs.engine.resource.Resource, and is defined correctly.");
                continue;
             }
-
-            // Everything so far is hunky-dory -- go ahead and register the embedded resource!
-            ResourceManager.instance.registerEmbeddedResource( resSource, resType, new res() );
+						 			
+            // Everything so far is hunky-dory -- go ahead and register the embedded resource with the embedded resource provider!
+            EmbeddedResourceProvider.instance.registerResource( resSource, resType, new res() );
          }
-      }
+      }                  
    }
 }
