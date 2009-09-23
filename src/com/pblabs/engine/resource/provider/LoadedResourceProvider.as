@@ -48,6 +48,7 @@ package com.pblabs.engine.resource.provider
 			// create this provider's bulk loader object
 			loader = new BulkLoader("loadingProvider");
 		}
+        
         /**
         * This method will check if this provider has access to a specific Resource
         */
