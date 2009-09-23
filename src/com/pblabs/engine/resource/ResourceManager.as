@@ -11,7 +11,7 @@ package com.pblabs.engine.resource
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.resource.provider.EmbeddedResourceProvider;
     import com.pblabs.engine.resource.provider.IResourceProvider;
-    import com.pblabs.engine.resource.provider.LoadedResourceProvider;
+    import com.pblabs.engine.resource.provider.FallbackResourceProvider;
     import com.pblabs.engine.serialization.TypeUtility;
     
     import flash.events.Event;
@@ -113,7 +113,7 @@ package com.pblabs.engine.resource
                 }
                 
                 if (!resource)
-                    resource = LoadedResourceProvider.instance.getResource(filename,resourceType, forceReload);
+                    resource = FallbackResourceProvider.instance.getResource(filename,resourceType, forceReload);
                 
                 _resources[resourceIdentifier] = resource;
             }

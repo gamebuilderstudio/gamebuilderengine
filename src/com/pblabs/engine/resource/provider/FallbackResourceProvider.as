@@ -16,7 +16,7 @@ package com.pblabs.engine.resource.provider
      * 
      * This class works using a singleton pattern
      */
-	public class LoadedResourceProvider extends ResourceProviderBase
+	public class FallbackResourceProvider extends ResourceProviderBase
 	{
 		// ------------------------------------------------------------
 		// public getter/setter property functions
@@ -25,10 +25,10 @@ package com.pblabs.engine.resource.provider
         /**
          * The singleton instance of the resource manager.
          */
-        public static function get instance():LoadedResourceProvider
+        public static function get instance():FallbackResourceProvider
         {
             if (!_instance)
-                _instance = new LoadedResourceProvider();
+                _instance = new FallbackResourceProvider();
             
             return _instance;
         }
@@ -40,7 +40,7 @@ package com.pblabs.engine.resource.provider
         /**
         * Contructor
         */ 
-		public function LoadedResourceProvider()
+		public function FallbackResourceProvider()
 		{
 			// we will not call super(); because this provider shall not be registered
 			// as a normal ResourceManager resource provider
@@ -78,7 +78,7 @@ package com.pblabs.engine.resource.provider
 						loader.reload(resourceIdentifier);
 						if (!loader.isRunning) loader.start();					
 					}				            	 					            		
-            	}
+            	}            	
              	return resources[resourceIdentifier];
             } 
 						
@@ -121,7 +121,7 @@ package com.pblabs.engine.resource.provider
 		// ------------------------------------------------------------
 		// private and protected variables
 		// ------------------------------------------------------------		
-        private static var _instance:LoadedResourceProvider = null;
+        private static var _instance:FallbackResourceProvider = null;
 	    private var loader:BulkLoader = null;
         
 	}
