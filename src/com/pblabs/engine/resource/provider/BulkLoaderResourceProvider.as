@@ -5,9 +5,11 @@ package com.pblabs.engine.resource.provider
 	import br.com.stimuli.loading.loadingtypes.LoadingItem;
 	
 	import com.pblabs.engine.resource.Resource;
+	import com.pblabs.engine.resource.XMLResource;
 	
 	import flash.events.ErrorEvent;
 	import flash.events.Event;
+	import flash.utils.ByteArray;
 	
     /**
      * The BulkLoaderResourceProvider  provides the ResourceManager with resources
@@ -26,11 +28,6 @@ package com.pblabs.engine.resource.provider
 		{
 			return _phase;
 		}
-
-		// -------------------------------------------------------------------
-		// static properties
-		// -------------------------------------------------------------------
-		public static var index:int = 1;
 
 		// -------------------------------------------------------------------
 		// public functions
@@ -57,9 +54,9 @@ package com.pblabs.engine.resource.provider
         */
 		public override function getResource(uri:String, type:Class, forceReload:Boolean = false):Resource
 		{
+           	var resourceIdentifier:String = uri.toLowerCase() + type;
 			if (forceReload)
 			{
-            	var resourceIdentifier:String = uri.toLowerCase() + type;
 				if (loader.get( resourceIdentifier )!=null)
 				{
 					// let BulkLoader give a notification when this resource has been
@@ -234,6 +231,7 @@ package com.pblabs.engine.resource.provider
 						// create a new resource of type
 						var resource:Resource = new bulkResources[r].type();
 						resource.filename = bulkResources[r].url;
+												
 						// initalize it with the data
 						resource.initialize(loader.getContent( resourceIdentifier ));
 						// set lookup for later resource retrieval						
@@ -247,7 +245,6 @@ package com.pblabs.engine.resource.provider
 		// -------------------------------------------------------------------
 		// private / protected variables
 		// -------------------------------------------------------------------
-
 	    protected var loader:BulkLoader = null;
 	    
 	    private var _phase:int = 1;

@@ -34,12 +34,15 @@ package com.pblabs.engine.resource
        */
       override public function initialize(data:*):void
       {
-         if(!(data is ByteArray))
-            throw new Error("XMLResource can only initialize from ByteArrays.");
+         if (data is ByteArray)
+         {
+         	// convert ByteArray data to a string
+         	data = data.toString();
+         }
             
          try
          {
-            _xml = new XML(data.toString());
+            _xml = new XML(data);
          }
          catch (e:TypeError)
          {
