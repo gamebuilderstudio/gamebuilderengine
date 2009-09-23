@@ -59,12 +59,12 @@
    </condition>
 
    <!-- Paths for the Flex SDK. -->
-   <property name="flex3bindir" value="${flex3dir}/bin" />
-   <property name="flex3libsdir" value="${flex3dir}/frameworks/libs" />
-   <property name="asdoc" value="${flex3bindir}/asdoc${binaryExtension}" />
-   <property name="compc" value="${flex3bindir}/compc${binaryExtension}" />
-   <property name="mxmlc" value="${flex3bindir}/mxmlc${binaryExtension}" />
-   <property name="adl" value="${flex3bindir}/adl${binaryExtension}" />
+   <property name="flexbindir" value="${flexdir}/bin" />
+   <property name="flexlibsdir" value="${flexdir}/frameworks/libs" />
+   <property name="asdoc" value="${flexbindir}/asdoc${binaryExtension}" />
+   <property name="compc" value="${flexbindir}/compc${binaryExtension}" />
+   <property name="mxmlc" value="${flexbindir}/mxmlc${binaryExtension}" />
+   <property name="adl" value="${flexbindir}/adl${binaryExtension}" />
 
    <!-- Local classpath useed for custom tasks -->
    <path id="localClasspath">
@@ -85,15 +85,15 @@
       </fail>
       <condition property="flexSdkIsValid"> 
          <and> 
-           <isset property="flex3dir"/> 
-           <available file="${flex3dir}"/> 
+           <isset property="flexdir"/> 
+           <available file="${flexdir}"/> 
          </and> 
       </condition>
-      <fail unless="flexSdkIsValid">Either flex3dir is not set, or it points to an absent directory.
+      <fail unless="flexSdkIsValid">Either flexdir is not set, or it points to an absent directory.
       
-         flex3dir appears to be set to: '${flex3dir}'
+         flexdir appears to be set to: '${flexdir}'
     
-         Set the flex3dir parameter by editing the build.properties file.
+         Set the flexdir parameter by editing the build.properties file.
       </fail>
    </target>
 
