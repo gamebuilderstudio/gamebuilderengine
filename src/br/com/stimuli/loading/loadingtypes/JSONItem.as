@@ -8,8 +8,10 @@ package br.com.stimuli.loading.loadingtypes {
     import flash.net.*;
     import flash.events.*;
     import flash.utils.*;
-    import com.adobe.serialization.json.JSON
-    /** @private */
+	
+    import com.adobe.serialization.json.JSON;
+    
+	/** @private */
 	public class JSONItem extends LoadingItem {
         public var loader : URLLoader;
         
