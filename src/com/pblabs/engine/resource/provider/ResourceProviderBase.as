@@ -4,6 +4,7 @@ package com.pblabs.engine.resource.provider
 	import com.pblabs.engine.resource.ResourceManager;
 	
 	import flash.utils.Dictionary;
+	import flash.utils.getQualifiedClassName;
 	
     /**
      * The ResourceProviderBase class can be extended to create a ResourceProvider 
@@ -34,6 +35,16 @@ package com.pblabs.engine.resource.provider
             var resourceIdentifier:String = uri.toLowerCase() + type;
 			return resources[resourceIdentifier];
 		}
+
+        /**
+        * This method will add a resource to the resources Dictionary
+        */
+        protected function addResource(uri:String, type:Class, resource:Resource):void
+        {
+            var resourceIdentifier:String = uri.toLowerCase() + type;
+            resources[resourceIdentifier] = resource;        	
+        }
+
 
 		// ------------------------------------------------------------
 		// private and protected variables
