@@ -34,12 +34,15 @@ package com.pblabs.engine.debug.log4PBE
 			_output.backgroundColor = 0xFFFFFF;
 			_output.height = outputHeight;
 			_output.width = outputWidth;
+			_output.multiline = true;
 			_output.wordWrap = true;
+			_output.condenseWhite = false;
 			var format:TextFormat = _output.getTextFormat();
 			format.font = "_typewriter";
 			format.size = 10;
 			_output.setTextFormat(format);
 			_output.defaultTextFormat = format;
+			_output.htmlText = "";
 			
 			return _output;
 		}
@@ -63,6 +66,8 @@ package com.pblabs.engine.debug.log4PBE
 
 		public function addLogMessage(level:String, loggerName:String, errorNumber:int, message:String, arguments:Array):void
 		{
+			var color:String = LogColor.getColor(level);
+			
 			var numberString:String = "";
 			if (errorNumber >= 0)
 				numberString = " - " + errorNumber;
@@ -70,7 +75,8 @@ package com.pblabs.engine.debug.log4PBE
 			var text:String = level + ": " + loggerName + numberString + " - " + message;
 			if (_output)
 			{
-				_output.appendText(text + "\n");
+				var append:String = "<p><font size=\"13\" color=\""+ color +"\"><b>" + text + "</b></font></p>";
+				_output.htmlText += append;
 				truncateOutput();
 				
 				_output.scrollV = _output.maxScrollV;
