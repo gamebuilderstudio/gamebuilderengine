@@ -50,7 +50,7 @@ class Entity extends EventDispatcher implements IEntity
         return this as IEventDispatcher;
     }
     
-    public function initialize(name:String, alias:String = null):void
+    public function initialize(name:String = null, alias:String = null):void
     {
         _name = name;
         if (_name == null || _name == "")

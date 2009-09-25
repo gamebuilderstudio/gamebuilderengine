@@ -48,7 +48,7 @@ package com.pblabs.engine.entity
        *
        * @see com.pblabs.engine.core.NameManager
        */
-      function initialize(name:String, alias:String = null):void;
+      function initialize(name:String = null, alias:String = null):void;
 
       /**
        * Destroys the entity by removing all components and unregistering it from
