@@ -24,10 +24,24 @@ package com.pblabs.engine
 		 * Register a type with PushButton Engine so that it can be deserialized,
 		 * even if no code directly uses it.
 		 */
-		static public function registerType(type:Class):void
+		public static function registerType(type:Class):void
 		{
 			// Do nothing - the compiler will include the class by virtue of it
 			// having been used.
+		}
+		
+		/**
+		 * Allocates an instance of the hidden Entity class. This should be
+		 * used anytime an IEntity object needs to be created. Encapsulating
+		 * the Entity class forces code to use IEntity rather than Entity when
+		 * dealing with entity references. This will ensure that code is future
+		 * proof as well as allow the Entity class to be pooled in the future.
+		 * 
+		 * @return A new IEntity.
+		 */
+		public static function allocateEntity():IEntity
+		{
+			return com.pblabs.engine.entity.allocateEntity();
 		}
 		
 		/**
@@ -38,7 +52,7 @@ package com.pblabs.engine
 		 * @param definition The function, taking no arguments and returning IEntity,
 		 * 					 which creates an instance of that entity.
 		 */
-		static public function defineEntityByFunction(name:String, definition:Function):void
+		public static function defineEntityByFunction(name:String, definition:Function):void
 		{
 			TemplateManager.instance.registerEntityCallback(name, definition);
 		}
@@ -50,7 +64,7 @@ package com.pblabs.engine
 		 * accept either a things tag containing several entities/templates/groups,
 		 * or a template or entity tag defining a single item.
 		 */
-		static public function defineWithXML(xml:XML):void
+		public static function defineWithXML(xml:XML):void
 		{
 			throw new Error("Not implemented.");
 		}
@@ -58,19 +72,19 @@ package com.pblabs.engine
 		/**
 		 * Start the engine by giving it a reference to the root of the display hierarchy.
 		 */
-		static public function startup(mainClass:Sprite):void
+		public static function startup(mainClass:Sprite):void
 		{
 			Global.startup(mainClass);
 		}
 		
-		static private var spatialManager:ISpatialManager2D;
-		static private var theScene:Scene2DComponent;
+		private static var spatialManager:ISpatialManager2D;
+		private static var theScene:Scene2DComponent;
 
 		/**
 		 * Helper function to set up a basic scene using default Rendering2D
 		 * classes. Very useful for getting started quickly.
 		 */
-		static public function initializeScene(theView:IUITarget, sceneName:String = "SceneDB"):void
+		public static function initializeScene(theView:IUITarget, sceneName:String = "SceneDB"):void
 		{
 			// You will notice this is straight out of lesson #2.
 			var scene:IEntity = allocateEntity();                                // Allocate our Scene entity
@@ -89,12 +103,12 @@ package com.pblabs.engine
 			scene.addComponent( renderer, "Renderer" );                           // Add our Renderer component to the scene entity with the name "Renderer"			
 		}
 		
-		static public function getSpatialManager():ISpatialManager2D
+		public static function getSpatialManager():ISpatialManager2D
 		{
 			return spatialManager;
 		}
 		
-		static public function getScene():Scene2DComponent
+		public static function getScene():Scene2DComponent
 		{
 			return theScene;
 		}
@@ -102,7 +116,7 @@ package com.pblabs.engine
 		/**
 		 * Return true if the specified key is down.
 		 */
-		static public function isKeyDown(key:InputKey):Boolean
+		public static function isKeyDown(key:InputKey):Boolean
 		{
 			return InputManager.instance.isKeyDown(key.keyCode);
 		}
@@ -110,7 +124,7 @@ package com.pblabs.engine
 		/**
 		 * Locate an entity by its name.
 		 */
-		static public function lookup(entityName:String):IEntity
+		public static function lookup(entityName:String):IEntity
 		{
 			return NameManager.instance.lookup(entityName);
 		}
@@ -118,7 +132,7 @@ package com.pblabs.engine
         /**
          * Locate a named component on a named entity.
          */
-        static public function lookupComponentByName(entityName:String, componentName:String):IEntityComponent
+        public static function lookupComponentByName(entityName:String, componentName:String):IEntityComponent
         {
             return NameManager.instance.lookupComponentByName(entityName, componentName);
         }
@@ -126,7 +140,7 @@ package com.pblabs.engine
         /**
          * Locate the first component of a type on a named entity.
          */
-        static public function lookupComponentByType(entityName:String, componentType:Class):IEntityComponent
+        public static function lookupComponentByType(entityName:String, componentType:Class):IEntityComponent
         {
             return NameManager.instance.lookupComponentByType(entityName, componentType);
         }
@@ -141,7 +155,7 @@ package com.pblabs.engine
 		 * 					 strings or PropertyReferences. Values can be any
 		 * 					 type.
 		 */
-		static public function makeEntity(entityName:String, params:Object = null):IEntity
+		public static function makeEntity(entityName:String, params:Object = null):IEntity
 		{
 			// Create the entity.
 			var entity:IEntity = TemplateManager.instance.instantiateEntity(entityName);
