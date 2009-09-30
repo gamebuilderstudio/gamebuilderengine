@@ -11,16 +11,32 @@ package com.pblabs.rendering2D
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
    
-   /**
-    * Component to manage rendering a 2d scene. It queries a ISpatialManager2D
-    * to determine what is visible.
-    */ 
-   public class Scene2DComponent extends BaseSceneComponent
-   {
-      /**
-       * An optional object that the scene should follow around the world.
-       */
-      [EditorData(referenceType="componentReference")]
+	/**
+	* Component to manage rendering a 2d scene. It queries a ISpatialManager2D
+	* to determine what is visible.
+	*/ 
+	public class Scene2DComponent extends BaseSceneComponent
+	{
+		// fixme - HW - fix the tab spacing in this file
+		
+		protected var _position:Point = new Point(0, 0);
+		protected var _trackObject:IDrawable2D = null;
+		protected var _alignment:String = SceneAlignment.DEFAULT_ALIGNMENT;
+
+		public function get alignment():String
+		{
+			return _alignment;
+		}
+
+		public function set alignment(value:String):void
+		{
+			_alignment = value;
+		}
+
+	/**
+	 * An optional object that the scene should follow around the world.
+	 */
+	[EditorData(referenceType="componentReference")]
       public function get trackObject():IDrawable2D
       {
          return _trackObject;
@@ -56,17 +72,20 @@ package com.pblabs.rendering2D
       override public function transformWorldToScreen(point:Point, altitude:Number = 0, scrollFactor:Point = null):Point
       {
          var newPoint:Point = new Point();
+		 
+		 SceneAlignment.calculate(newPoint, _alignment, sceneView.width, sceneView.height);
          
          if (scrollFactor == null) 
          {
-            newPoint.x = (point.x - _position.x) + sceneView.width * 0.5;
-            newPoint.y = (point.y - _position.y) + sceneView.height * 0.5;
+			newPoint.x += (point.x - _position.x);
+            newPoint.y += (point.y - _position.y);
          }
          else
          {
-            newPoint.x = (point.x - _position.x * scrollFactor.x) + sceneView.width * 0.5;
-            newPoint.y = (point.y - _position.y * scrollFactor.y) + sceneView.height * 0.5;
+            newPoint.x += (point.x - _position.x * scrollFactor.x);
+            newPoint.y += (point.y - _position.y * scrollFactor.y);
          }
+		 
          return newPoint;
       }
       
@@ -77,16 +96,19 @@ package com.pblabs.rendering2D
       {
          var newPoint:Point = new Point();
          
+		 SceneAlignment.calculate(newPoint, _alignment, sceneView.width, sceneView.height);
+		 
          if (scrollFactor == null)
          {
-            newPoint.x = (point.x + _position.x) - sceneView.width * 0.5;
-            newPoint.y = (point.y + _position.y) - sceneView.height * 0.5;
+            newPoint.x = (point.x + _position.x) - newPoint.x;
+            newPoint.y = (point.y + _position.y) - newPoint.y;
          }
          else
          {
-            newPoint.x = (point.x + _position.x * scrollFactor.x) - sceneView.width * 0.5;
-            newPoint.y = (point.y + _position.y * scrollFactor.y) - sceneView.height * 0.5;
+            newPoint.x = (point.x + _position.x * scrollFactor.x) - newPoint.x;
+            newPoint.y = (point.y + _position.y * scrollFactor.y) - newPoint.y;
          }
+		 
          return newPoint;
       }
       
@@ -126,8 +148,5 @@ package com.pblabs.rendering2D
          // So draw the layers in order.
          drawSortedLayers(layerList);
       }
-      
-      protected var _position:Point = new Point(0, 0);
-      protected var _trackObject:IDrawable2D = null;
    }
 }
