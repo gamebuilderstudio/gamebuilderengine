@@ -21,12 +21,14 @@ package com.pblabs.box2D
       public var collider:Box2DSpatialComponent = null;
       public var collidee:Box2DSpatialComponent = null;
       public var normal:Point = null;
+      public var contactPoint:b2ContactPoint = null;
       
       public function CollisionEvent(type:String, point:b2ContactPoint, bubbles:Boolean=false, cancelable:Boolean=false)
       {
          collider = point.shape1.m_userData as Box2DSpatialComponent;
          collidee = point.shape2.m_userData as Box2DSpatialComponent;
          normal = new Point(point.normal.x, point.normal.y);
+         contactPoint = point;
          
          super(type, bubbles, cancelable);
       }
