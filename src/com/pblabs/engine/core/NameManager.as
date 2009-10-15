@@ -51,7 +51,7 @@ package com.pblabs.engine.core
       public function addEntity(entity:IEntity, name:String):void
       {
          if (_entities[name])
-            Logger.printWarning(this, "AddEntity", "An entity with the name " + name + " already exists. Future lookups by this name will return this new entity. Did you mean to make this entity a template?");
+            Logger.warn(this, "AddEntity", "An entity with the name " + name + " already exists. Future lookups by this name will return this new entity. Did you mean to make this entity a template?");
          
          if(TemplateManager.VERBOSE_LOGGING)
             Logger.print(this, "Registering entity '" + name + "'");

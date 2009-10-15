@@ -57,7 +57,7 @@ package com.pblabs.engine.resource.provider
 			// check if the resource has already been registered            
             if (resources[resourceIdentifier])
             {
-                Logger.printWarning(this, "registerEmbeddedResource", "A resource from file " + filename + " has already been embedded.");
+                Logger.warn(this, "registerEmbeddedResource", "A resource from file " + filename + " has already been embedded.");
                 return;
             }
             
@@ -73,7 +73,7 @@ package com.pblabs.engine.resource.provider
             }
             catch(e:Error)
             {
-                Logger.printError(this, "registerEmbeddedResources", "Could not instantiate resource " + filename + " due to error:\n" + e.toString());
+                Logger.error(this, "registerEmbeddedResources", "Could not instantiate resource " + filename + " due to error:\n" + e.toString());
                 return;
             }
         }

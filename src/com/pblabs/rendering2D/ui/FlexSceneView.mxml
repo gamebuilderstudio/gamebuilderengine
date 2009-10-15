@@ -25,6 +25,16 @@
    		{
    		   scrollRect = new Rectangle(0, 0, width, height);
    		}
+
+        public function removeDisplayObject(dObj:DisplayObject):void
+        {
+            rawChildren.removeChild(dObj);
+        }
+        
+        public function setDisplayObjectIndex(dObj:DisplayObject, index:int):void
+        {
+            rawChildren.setChildIndex(dObj, index);
+        }
       ]]>
    </mx:Script>
 </mx:Container>

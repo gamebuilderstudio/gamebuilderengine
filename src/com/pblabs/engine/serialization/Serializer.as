@@ -233,7 +233,7 @@ package com.pblabs.engine.serialization
                     
                     if(foundOffcaseMatch == false)
                     {
-                        Logger.printWarning(object, "deserialize", "The field '" + fieldName + "' does not exist on the class " + TypeUtility.getObjectClassName(object) + ".");
+                        Logger.warn(object, "deserialize", "The field '" + fieldName + "' does not exist on the class " + TypeUtility.getObjectClassName(object) + ".");
                         continue;
                     }                    
                     
@@ -265,7 +265,7 @@ package com.pblabs.engine.serialization
                }
                catch(e:Error)
                {
-                  Logger.printError(object, "deserialize", "The field " + fieldName + " could not be set to '" + child + "' due to:" + e.toString());
+                  Logger.error(object, "deserialize", "The field " + fieldName + " could not be set to '" + child + "' due to:" + e.toString());
                }
             }
          }
@@ -323,7 +323,7 @@ package com.pblabs.engine.serialization
             // Might be invalid...
             if ((key.length < 1) && !(object is Array))
             {
-               Logger.printError(object, "deserialize", "Cannot add a value to a dictionary without a key.");
+               Logger.error(object, "deserialize", "Cannot add a value to a dictionary without a key.");
                continue;
             }
             
@@ -415,7 +415,7 @@ package com.pblabs.engine.serialization
          // Note we want to check for null here; null is distinct from coerce-to-false.
          if (childObject == null)
          {
-            Logger.printError(object, "deserialize", "Unable to create type " + typeName + " for the field " + fieldName + ".");
+            Logger.error(object, "deserialize", "Unable to create type " + typeName + " for the field " + fieldName + ".");
             return null;
          }
          
@@ -500,7 +500,7 @@ internal class ResourceNote
    
    public function onFailed(resource:Resource):void
    {
-      Logger.printError(owner, "set " + fieldName, "No resource was found with filename " + resource.filename + ".");
+      Logger.error(owner, "set " + fieldName, "No resource was found with filename " + resource.filename + ".");
       Serializer.instance.removeResource(resource.filename);
    }
 }
@@ -596,21 +596,21 @@ internal class ReferenceNote
       // Name reference.
       if(nameReference)
       {
-         Logger.printWarning(this, "reportMissing", firstPart + "Couldn't resolve reference to named entity '" + nameReference + "'");
+         Logger.warn(this, "reportMissing", firstPart + "Couldn't resolve reference to named entity '" + nameReference + "'");
          return; 
       }
 
       // Look up a component on a named object by name (first) or type (second).
       if (componentReference != "")
       {
-         Logger.printWarning(this, "reportMissing", firstPart + " Couldn't find named entity '" + componentReference + "'");
+         Logger.warn(this, "reportMissing", firstPart + " Couldn't find named entity '" + componentReference + "'");
          return;
       }
       
       // Component reference on the entity being deserialized when the reference was created.
       if (componentName != "")
       {
-         Logger.printWarning(this, "reportMissing", firstPart + " Couldn't find component on same entity named '" + componentName + "'");
+         Logger.warn(this, "reportMissing", firstPart + " Couldn't find component on same entity named '" + componentName + "'");
          return;
       }
    }
@@ -626,21 +626,21 @@ internal class ReferenceNote
       // Name reference.
       if(nameReference)
       {
-         Logger.printWarning(this, "reportSuccess", firstPart + " After failure, was able to resolve reference to named entity '" + nameReference + "'");
+         Logger.warn(this, "reportSuccess", firstPart + " After failure, was able to resolve reference to named entity '" + nameReference + "'");
          return; 
       }
 
       // Look up a component on a named object by name (first) or type (second).
       if (componentReference != "")
       {
-         Logger.printWarning(this, "reportSuccess", firstPart + " After failure, was able to find named entity '" + componentReference + "'");
+         Logger.warn(this, "reportSuccess", firstPart + " After failure, was able to find named entity '" + componentReference + "'");
          return;
       }
       
       // Component reference on the entity being deserialized when the reference was created.
       if (componentName != "")
       {
-         Logger.printWarning(this, "reportSuccess", firstPart + " After failure, was able to find component on same entity named '" + componentName + "'");
+         Logger.warn(this, "reportSuccess", firstPart + " After failure, was able to find component on same entity named '" + componentName + "'");
          return;
       }
    }

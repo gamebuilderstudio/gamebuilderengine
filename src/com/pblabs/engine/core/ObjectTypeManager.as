@@ -56,7 +56,7 @@ package com.pblabs.engine.core
          {
             if (_typeCount == 64)
             {
-               Logger.printWarning(this, "GetObjectType", "Only 64 unique object types can be created.");
+               Logger.warn(this, "GetObjectType", "Only 64 unique object types can be created.");
                return 0;
             }
             

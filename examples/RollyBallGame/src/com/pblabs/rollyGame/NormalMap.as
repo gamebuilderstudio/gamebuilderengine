@@ -9,6 +9,8 @@ package com.pblabs.rollyGame
 {
     import com.pblabs.engine.entity.*;
     import com.pblabs.rendering2D.*;
+    import com.pblabs.rendering2D.spritesheet.SpriteContainerComponent;
+    
     import flash.display.*;
     import flash.geom.*;
     
@@ -20,12 +22,12 @@ package com.pblabs.rollyGame
         /**
          * The image we will be sampling normals from.
          */
-        public var NormalSheet:SpriteSheetComponent;
+        public var NormalSheet:SpriteContainerComponent;
         
         /**
          * The image for heightmap information.
          */
-        public var HeightSheet:SpriteSheetComponent;
+        public var HeightSheet:SpriteContainerComponent;
         
         /**
          * Determine the normal and height for a location on the normal map.

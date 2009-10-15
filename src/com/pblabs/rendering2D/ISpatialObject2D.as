@@ -43,7 +43,7 @@ package com.pblabs.rendering2D
        * @param scene If we want to have the results line up with the view, we
        *              need access to the scene we're doing the check from.
        */
-      function pointOccupied(pos:Point, scene:IDrawManager2D):Boolean;
+      function pointOccupied(pos:Point, scene:DisplayObjectScene):Boolean;
    }
    
 }

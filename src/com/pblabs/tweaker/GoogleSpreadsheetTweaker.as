@@ -118,11 +118,11 @@ package com.pblabs.tweaker
          loader.addEventListener(IOErrorEvent.IO_ERROR, onLoadFail);
          loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onLoadFail);
          loader.addEventListener(HTTPStatusEvent.HTTP_STATUS, 
-               function(event:HTTPStatusEvent):void { Logger.print(this, "Got status back: " + event.toString()); }
+               function(event:HTTPStatusEvent):void { Logger.(this, "Got status back: " + event.toString()); }
                );
          loader.load(ur);
          
-         Logger.print(this, "Requesting spreadsheet " + spreadsheetUrl);
+         Logger.(this, "Requesting spreadsheet " + spreadsheetUrl);
       }
 
       private function onLoadComplete(e:Event):void
@@ -139,7 +139,7 @@ package com.pblabs.tweaker
         var res:XMLList = tweakXML.xmlns::entry;
         for each(var entryXML:XML in res)
         {
-           //Logger.print(this, "Cell " + entryXML.xmlns::title.toString() + " = " + entryXML.xmlns::content.toString());
+           //Logger.(this, "Cell " + entryXML.xmlns::title.toString() + " = " + entryXML.xmlns::content.toString());
            cellDictionary[entryXML.xmlns::title.toString()] = entryXML.xmlns::content.toString();
         }
 
@@ -150,22 +150,22 @@ package com.pblabs.tweaker
            if(newValue == "NA" || newValue == "")
               continue;
 
-           Logger.printWarning(this, "onLoadComplete", "Setting property " + configItem.property.property + " to " + newValue +  " based on " + configItem.cell);
+           Logger.warn(this, "onLoadComplete", "Setting property " + configItem.property.property + " to " + newValue +  " based on " + configItem.cell);
            owner.setProperty(configItem.property, newValue);
            if(!owner.doesPropertyExist(configItem.property))
            {
-              Logger.printWarning(this, "onLoadComplete", "   - failed to set " + configItem.property.property);
+              Logger.warn(this, "onLoadComplete", "   - failed to set " + configItem.property.property);
               owner.setProperty(configItem.property, newValue);
            }
         }
 
         // Give some status.
-        Logger.print(this, "Updated " + config.length + " properties from " + spreadsheetUrl);
+        Logger.(this, "Updated " + config.length + " properties from " + spreadsheetUrl);
       }
 
       private function onLoadFail(e:Event):void
       {
-         Logger.print(this, "Failed to load google spreadsheet tweak url: " + e.toString());
+         Logger.(this, "Failed to load google spreadsheet tweak url: " + e.toString());
       }
    }
 }

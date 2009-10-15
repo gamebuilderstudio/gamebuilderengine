@@ -62,7 +62,7 @@ package com.pblabs.engine.resource
         {
             if (_filename != null)
             {
-                Logger.printWarning(this, "set filename", "Can't change the filename of a resource once it has been set.");
+                Logger.warn(this, "set filename", "Can't change the filename of a resource once it has been set.");
                 return;
             }
             
@@ -227,7 +227,7 @@ package com.pblabs.engine.resource
             }
             catch(e:Error)
             {
-                Logger.printError(this, "Load", "Failed to load! " + e.toString());
+                Logger.error(this, "Load", "Failed to load! " + e.toString());
             }
             
             onFailed("The resource type does not match the loaded content.");
@@ -254,7 +254,7 @@ package com.pblabs.engine.resource
         {
             _isLoaded = true;
             _didFail = true;
-            Logger.printError(this, "Load", "Resource " + _filename + " failed to load with error: " + message);
+            Logger.error(this, "Load", "Resource " + _filename + " failed to load with error: " + message);
             dispatchEvent(new ResourceEvent(ResourceEvent.FAILED_EVENT, this));
             
             _urlLoader = null;

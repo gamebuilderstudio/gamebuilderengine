@@ -11,6 +11,7 @@ package
     import com.pblabs.engine.PBE;
     import com.pblabs.engine.core.*;
     import com.pblabs.rendering2D.*;
+    import com.pblabs.rendering2D.spritesheet.*;
     import com.pblabs.rendering2D.ui.*;
     import com.pblabs.rollyGame.*;
     import com.pblabs.screens.*;
@@ -27,14 +28,14 @@ package
         public function RollyBallGame()
         {
             // Register our types.
-            PBE.registerType(com.pblabs.rendering2D.Scene2DComponent);
-            PBE.registerType(com.pblabs.rendering2D.SpriteRenderComponent);
-            PBE.registerType(com.pblabs.rendering2D.SpriteSheetComponent);
+            PBE.registerType(com.pblabs.rendering2D.DisplayObjectScene);
+            PBE.registerType(com.pblabs.rendering2D.SpriteSheetRenderer);
             PBE.registerType(com.pblabs.rendering2D.SimpleSpatialComponent);
             PBE.registerType(com.pblabs.rendering2D.BasicSpatialManager2D);
-            PBE.registerType(com.pblabs.rendering2D.CellCountDivider);
-            PBE.registerType(com.pblabs.animation.AnimatorComponent);
+            PBE.registerType(com.pblabs.rendering2D.spritesheet.CellCountDivider);
+            PBE.registerType(com.pblabs.rendering2D.spritesheet.SpriteSheetComponent);
             PBE.registerType(com.pblabs.rendering2D.ui.SceneView);
+            PBE.registerType(com.pblabs.animation.AnimatorComponent);
             PBE.registerType(com.pblabs.rollyGame.NormalMap);
             PBE.registerType(com.pblabs.rollyGame.BallMover);
             PBE.registerType(com.pblabs.rollyGame.BallShadowRenderer);

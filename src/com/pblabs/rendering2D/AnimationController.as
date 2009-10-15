@@ -13,6 +13,7 @@ package com.pblabs.rendering2D
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.debug.Profiler;
     import com.pblabs.engine.entity.PropertyReference;
+    import com.pblabs.rendering2D.spritesheet.SpriteContainerComponent;
     
     import flash.events.Event;
     import flash.utils.Dictionary;
@@ -109,7 +110,7 @@ package com.pblabs.rendering2D
             var potentialAnim:AnimationControllerInfo = animations[value];
             if(!potentialAnim)
             {
-                Logger.printWarning(this, "set currentAnimationName", "Couldn't find animation '" + value + "' to set.");
+                Logger.warn(this, "set currentAnimationName", "Couldn't find animation '" + value + "' to set.");
                 return;
             }
             
@@ -146,7 +147,7 @@ package com.pblabs.rendering2D
             // If no current animation, then abort!
             if (!_currentAnimation)
             {
-                Logger.printWarning(this, "OnFrame", "No current animation. Aborting!");
+                Logger.warn(this, "OnFrame", "No current animation. Aborting!");
                 return;
             }
 
@@ -160,6 +161,10 @@ package com.pblabs.rendering2D
             }
             else
             {
+                // If the sprite sheet was not initialized before we tick, the duration can be 0, causing us never to get past frame 0.
+                if (_currentAnimationDuration == 0)
+                    updateAnimationDuration();
+                
                 // Figure out what frame we are on.
                 var frameTime:Number = _currentAnimationDuration / _currentAnimation.spriteSheet.frameCount;
                 if (frameTime > _currentAnimation.maxFrameDelay)
@@ -203,7 +208,7 @@ package com.pblabs.rendering2D
         public function setAnimation(ai:AnimationControllerInfo):void
         {
             Profiler.enter("AnimationController.SetAnimation");
-
+            
             // Fire stop event.
             if (_currentAnimation && _currentAnimation.completeEvent)
                 owner.eventDispatcher.dispatchEvent(new Event(_currentAnimation.completeEvent));
@@ -223,15 +228,21 @@ package com.pblabs.rendering2D
             else
                 _currentAnimationStartTime = ProcessManager.instance.virtualTime;
 
+            updateAnimationDuration();
+            //trace("Age at start was " + (ProcessManager.instance.virtualTime - _currentAnimationStartTime));
+
+            //Logger.(this, "Changed animation to: " + _currentAnimation.spriteSheet.name + ". duration is " + _currentAnimationDuration);
+
+            Profiler.exit("AnimationController.SetAnimation");
+        }
+        
+        protected function updateAnimationDuration():void
+        {
             // Update our duration information.
             if (currentAnimationDurationReference)
                 _currentAnimationDuration = owner.getProperty(currentAnimationDurationReference) * ProcessManager.TICK_RATE_MS;
             else
-                _currentAnimationDuration = ai.spriteSheet.frameCount * (1000/ai.frameRate);
-
-            //trace("Age at start was " + (ProcessManager.instance.virtualTime - _currentAnimationStartTime));
-
-            Profiler.exit("AnimationController.SetAnimation");
+                _currentAnimationDuration = _currentAnimation.spriteSheet.frameCount * (1000/_currentAnimation.frameRate);
         }
 
         protected function getNextAnimation():AnimationControllerInfo
@@ -257,7 +268,7 @@ package com.pblabs.rendering2D
 
                 if (!_badAnimations[nextAnimName])
                 {
-                    Logger.printWarning(this, "OnFrame", "Animation '" + nextAnimName + "' not found, going with default animation '" + defaultAnimation + "'.");
+                    Logger.warn(this, "OnFrame", "Animation '" + nextAnimName + "' not found, going with default animation '" + defaultAnimation + "'.");
                     _badAnimations[nextAnimName] = true;
                 }
 

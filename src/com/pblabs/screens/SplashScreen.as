@@ -2,7 +2,6 @@ package com.pblabs.screens
 {
     import com.pblabs.engine.debug.*;
     import com.pblabs.engine.resource.*;
-    import com.pblabs.rendering2D.ImageResource;
     
     import flash.display.*;
     import flash.events.*;

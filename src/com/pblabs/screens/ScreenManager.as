@@ -1,5 +1,6 @@
 package com.pblabs.screens
 {
+    import com.pblabs.engine.PBE;
     import com.pblabs.engine.core.*;
     
     import flash.display.DisplayObject;
@@ -40,7 +41,7 @@ package com.pblabs.screens
             ProcessManager.instance.addTickedObject(this);
             ProcessManager.instance.addAnimatedObject(this);
             
-            screenParent = Global.mainClass;
+            screenParent = PBE.mainClass;
         }
         
         /**

@@ -32,7 +32,7 @@ package com.pblabs.box2D
       {
          if (_body)
          {
-            Logger.printWarning(this, "set Manager", "The manager can only be set before the component is registered.");
+            Logger.warn(this, "set Manager", "The manager can only be set before the component is registered.");
             return; 
          }
          
@@ -245,7 +245,7 @@ package com.pblabs.box2D
       {
          if (!_body)
          {
-            Logger.printWarning(this, "buildCollisionShapes", "Cannot build collision shapes prior to registration.");
+            Logger.warn(this, "buildCollisionShapes", "Cannot build collision shapes prior to registration.");
             return;
          }
          
@@ -291,7 +291,7 @@ package com.pblabs.box2D
       {
          if (!_manager)
          {
-            Logger.printWarning(this, "onAdd", "A Box2DSpatialComponent cannot be registered without a manager.");
+            Logger.warn(this, "onAdd", "A Box2DSpatialComponent cannot be registered without a manager.");
             return;
          }
          

@@ -50,7 +50,7 @@ package com.pblabs.rendering2D
        * If set, a SpriteRenderComponent we can use to fulfill point occupied
        * tests.
        */
-      public var spriteForPointChecks:SpriteRenderComponent;
+      public var spriteForPointChecks:DisplayObjectRenderer;
       
       /**
        * The position of the object.
@@ -72,6 +72,11 @@ package com.pblabs.rendering2D
        * The linear velocity of the object in world units per second.
        */
       public var velocity:Point = new Point(0, 0);
+	  
+	  /**
+	   * The angular velocity of the object in degrees per second.
+	   */
+	  public var angularVelocity:Number = 0;
       
       /**
        * @inheritDoc
@@ -80,6 +85,7 @@ package com.pblabs.rendering2D
       {
          position.x += velocity.x * tickRate;
          position.y += velocity.y * tickRate;
+		 rotation   += angularVelocity * tickRate;
       }
       
       /**
@@ -141,14 +147,14 @@ package com.pblabs.rendering2D
        * All points in our bounding box are occupied.
        * @inheritDoc
        */
-      public function pointOccupied(pos:Point, scene:IDrawManager2D):Boolean
+      public function pointOccupied(pos:Point, scene:DisplayObjectScene):Boolean
       {
          // If no sprite then we just test our bounds.
          if(!spriteForPointChecks || !scene)
             return worldExtents.containsPoint(pos);
          
          // OK, so pass it over to the sprite.
-         return spriteForPointChecks.pointOccupied(pos, scene);
+         return spriteForPointChecks.pointOccupied(scene.transformWorldToScreen(pos));
       }
       
       private var _objectMask:ObjectType;

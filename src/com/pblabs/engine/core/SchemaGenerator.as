@@ -9,6 +9,7 @@
 package com.pblabs.engine.core
 {
    import com.pblabs.engine.debug.Logger;
+   import com.pblabs.engine.PBE;
    
    import flash.events.StatusEvent;
    import flash.net.LocalConnection;
@@ -84,7 +85,7 @@ package com.pblabs.engine.core
        */
       public function generateSchema():void
       {
-         if (Global.IS_SHIPPING_BUILD)
+         if (PBE.IS_SHIPPING_BUILD)
             return;
          
          _connection = new LocalConnection();
@@ -107,7 +108,7 @@ package com.pblabs.engine.core
             catch (error:Error)
             {
                _connection.send("_SchemaConnection", "OnSchemaReceived", "ERROR", "Schema data for " + description.@name + " is too big!");
-               Logger.printError(this, "GenerateSchema", "Schema data for " + description.@name + " is too big!");
+               Logger.error(this, "GenerateSchema", "Schema data for " + description.@name + " is too big!");
             }
          }
          
@@ -128,7 +129,7 @@ package com.pblabs.engine.core
          }
          
          if (_failed)
-            Logger.printError(this, "GenerateSchema", "Schema generation failed!");
+            Logger.error(this, "GenerateSchema", "Schema generation failed!");
       }
       
       private var _failed:Boolean = false;

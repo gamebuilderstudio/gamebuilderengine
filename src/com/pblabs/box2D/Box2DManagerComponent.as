@@ -59,7 +59,7 @@ package com.pblabs.box2D
       {
          if (_world)
          {
-            Logger.printWarning(this, "AllowSleep", "This property cannot be changed once the world has been created!");
+            Logger.warn(this, "AllowSleep", "This property cannot be changed once the world has been created!");
             return;
          }
          
@@ -90,7 +90,7 @@ package com.pblabs.box2D
       {
          if (_world)
          {
-            Logger.printWarning(this, "WorldBounds", "This property cannot be changed once the world has been created!");
+            Logger.warn(this, "WorldBounds", "This property cannot be changed once the world has been created!");
             return;
          }
          

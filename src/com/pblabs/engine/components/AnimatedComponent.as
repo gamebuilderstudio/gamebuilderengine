@@ -24,6 +24,12 @@ package com.pblabs.engine.components
          */
         public var updatePriority:Number = 0.0;
 
+		
+		/**
+		 * Set to false before onAdd is called to suppress registering for updates. 
+		 */
+		public var registerForUpdates:Boolean = true;
+		
         /**
          * @inheritDoc
          */
@@ -33,12 +39,14 @@ package com.pblabs.engine.components
 
         override protected function onAdd():void
         {
-            ProcessManager.instance.addAnimatedObject(this, updatePriority);
+			if(registerForUpdates)
+            	ProcessManager.instance.addAnimatedObject(this, updatePriority);
         }
 
         override protected function onRemove():void
         {
-            ProcessManager.instance.removeAnimatedObject(this);
+			if(registerForUpdates)
+            	ProcessManager.instance.removeAnimatedObject(this);
         }
     }
 }

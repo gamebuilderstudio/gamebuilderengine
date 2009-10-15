@@ -22,7 +22,7 @@ package com.pblabs.engine.components
          var gm:GroupManagerComponent = NameManager.instance.lookupComponentByType(groupName, GroupManagerComponent) as GroupManagerComponent
          
          if ((gm == null) && (autoCreateNamedGroups)) {
-         	Logger.printWarning(GroupManagerComponent, "GetGroupByName", "Autocreating non-existent group '" + groupName + "'");
+         	Logger.warn(GroupManagerComponent, "GetGroupByName", "Autocreating non-existent group '" + groupName + "'");
          	
          	var ent:IEntity = allocateEntity();
          	ent.initialize(groupName);

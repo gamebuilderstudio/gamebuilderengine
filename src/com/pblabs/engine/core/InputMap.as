@@ -8,6 +8,7 @@
  ******************************************************************************/
 package com.pblabs.engine.core
 {
+    import com.pblabs.engine.PBE;
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.serialization.ISerializable;
     
@@ -214,17 +215,17 @@ package com.pblabs.engine.core
             // stageX/stageY get reset to 0 on the event dispatch from the InputManager.
             if (_lastMouseX == Number.NEGATIVE_INFINITY)
             {
-                _lastMouseX = Global.mainStage.mouseX;
-                _lastMouseY = Global.mainStage.mouseY;
+                _lastMouseX = PBE.mainStage.mouseX;
+                _lastMouseY = PBE.mainStage.mouseY;
                 _suppressDeltaNextTime = true;
                 return;
             }
 
             if (event.stageX != _lastMouseX || _suppressDeltaNextTime)
-                onInputEvent(InputKey.MOUSE_X.keyCode, _suppressDeltaNextTime ? 0 : Global.mainStage.mouseX - _lastMouseX);
+                onInputEvent(InputKey.MOUSE_X.keyCode, _suppressDeltaNextTime ? 0 : PBE.mainStage.mouseX - _lastMouseX);
 
             if (event.stageY != _lastMouseY || _suppressDeltaNextTime)
-                onInputEvent(InputKey.MOUSE_Y.keyCode, _suppressDeltaNextTime ? 0 : Global.mainStage.mouseY - _lastMouseY);
+                onInputEvent(InputKey.MOUSE_Y.keyCode, _suppressDeltaNextTime ? 0 : PBE.mainStage.mouseY - _lastMouseY);
 
             _lastMouseX = event.stageX;
             _lastMouseY = event.stageY;

@@ -6,10 +6,11 @@
  * This file is licensed under the terms of the MIT license, which is included
  * in the License.html file at the root directory of this SDK.
  ******************************************************************************/
-package com.pblabs.rendering2D
+package com.pblabs.rendering2D.spritesheet
 {
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.resource.ResourceManager;
+    import com.pblabs.engine.resource.ImageResource;
     
     import flash.display.BitmapData;
     import flash.geom.Point;
@@ -40,8 +41,6 @@ package com.pblabs.rendering2D
          */
         public override function get isLoaded():Boolean
         {
-        	if (_forcedBitmaps && _forcedBitmaps.length>0) return true;
-        	
             return imageData != null;
         }
         
@@ -163,7 +162,7 @@ package com.pblabs.rendering2D
         
         protected function onImageFailed(resource:ImageResource):void
         {
-            Logger.printError(this, "onImageFailed", "Failed to load '" + (resource ? resource.filename : "(unknown)") + "'");
+            Logger.error(this, "onImageFailed", "Failed to load '" + (resource ? resource.filename : "(unknown)") + "'");
         }
         
         private var _image:ImageResource = null;

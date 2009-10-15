@@ -99,6 +99,8 @@ package com.pblabs.engine.resource
 
                 if (mc.totalFrames >= frame)
                     mc.gotoAndStop(frame);
+                else
+                    mc.gotoAndStop(mc.totalFrames);
 
                 advanceChildClips(mc, frame);
             }

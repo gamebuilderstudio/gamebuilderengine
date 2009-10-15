@@ -19,9 +19,6 @@ package com.pblabs.engine.resource
      * To use, create a descendant class and embed resources as public variables, then
      *  instantiate your new class.  ResourceBundle will handle loading all of those resources
      *  into the ResourceManager. 
-     * 
-     * @see ../../../../../Reference/ResourceManager.html The Resource Manager
-     * @see ../../../../../Examples/UsingResources.html Using Resources
      */
     public class ResourceBundle
     {
@@ -38,10 +35,10 @@ package com.pblabs.engine.resource
          */
         
         public static var ExtensionTypes:Object = {
-            png:"com.pblabs.rendering2D.ImageResource",
-            jpg:"com.pblabs.rendering2D.ImageResource",
-            gif:"com.pblabs.rendering2D.ImageResource",
-            bmp:"com.pblabs.rendering2D.ImageResource",
+            png:"com.pblabs.engine.resource.ImageResource",
+            jpg:"com.pblabs.engine.resource.ImageResource",
+            gif:"com.pblabs.engine.resource.ImageResource",
+            bmp:"com.pblabs.engine.resource.ImageResource",
             xml:"com.pblabs.engine.resource.XMLResource",
             pbelevel:"com.pblabs.engine.resource.XMLResource",
             mp3:"com.pblabs.engine.resource.MP3Resource"
@@ -65,6 +62,9 @@ package com.pblabs.engine.resource
             
             // Force linkage.
             new DataResource();
+            new ImageResource();
+            new XMLResource();
+            new MP3Resource();
             
             // Loop through each public variable in this class
             for each (var v:XML in desc.variable)
@@ -117,7 +117,7 @@ package com.pblabs.engine.resource
                 // Sanity check:
                 if ( !resIsEmbedded || resSource == "" || res == null ) 
                 {
-                    Logger.printError(this, "ResourceBundle", "A resource in the resource bundle with the name '" + v.@name + "' has failed to embed properly.  Please ensure that you have the command line option \"--keep-as3-metadata+=TypeHint,EditorData,Embed\" set properly.  Additionally, please check that the [embed] metadata syntax is correct."); 
+                    Logger.error(this, "ResourceBundle", "A resource in the resource bundle with the name '" + v.@name + "' has failed to embed properly.  Please ensure that you have the command line option \"--keep-as3-metadata+=TypeHint,EditorData,Embed\" set properly.  Additionally, please check that the [Embed] metadata syntax is correct.");
                     continue;
                 }
                 
@@ -133,7 +133,7 @@ package com.pblabs.engine.resource
                     // If the extension type is recognized or not...
                     if ( !ExtensionTypes.hasOwnProperty(ext) )
                     {
-                        Logger.printWarning(this, "ResourceBundle", "No resource type specified for extension '." + ext + "'.  In the ExtensionTypes parameter, expected to see something like: ResourceBundle.ExtensionTypes.mycustomext = \"com.mydomain.customresource\" where mycustomext is the (lower-case) extension, and \"com.mydomain.customresource\" is a string of the fully qualified resource class name.  Defaulting to generic DataResource.");
+                        Logger.warn(this, "ResourceBundle", "No resource type specified for extension '." + ext + "'.  In the ExtensionTypes parameter, expected to see something like: ResourceBundle.ExtensionTypes.mycustomext = \"com.mydomain.customresource\" where mycustomext is the (lower-case) extension, and \"com.mydomain.customresource\" is a string of the fully qualified resource class name.  Defaulting to generic DataResource.");
                         
                         // Default to a DataResource if no other name is specified.
                         resTypeName = "com.pblabs.engine.resource.DataResource";
@@ -160,7 +160,7 @@ package com.pblabs.engine.resource
                 
                 if (!resType)
                 {
-                    Logger.printError(this, "ResourceBundle", "The resource type '" + resTypeName + "' specified for the embedded asset '" + resSource + "' could not be found.  Please ensure that the path name is correct, and that the class is explicity referenced somewhere in the project, so that it is available at runtime.  Did you properly reference this class in your References.as / References.mxml?");
+                    Logger.error(this, "ResourceBundle", "The resource type '" + resTypeName + "' specified for the embedded asset '" + resSource + "' could not be found.  Please ensure that the path name is correct, and that the class is explicity referenced somewhere in the project, so that it is available at runtime.  Did you properly reference this class in your References.as / References.mxml?");
                     continue;
                 }
                 
@@ -168,7 +168,7 @@ package com.pblabs.engine.resource
                 var testResource:* = new resType();
                 if (!(testResource is Resource))
                 {
-                    Logger.printError(this, "ResourceBundle", "The resource type '" + resTypeName + "' specified for the embedded asset '" + resSource + "' is not a descendant from Resource.  Please ensure that the resource class descends properly from com.pblabs.engine.resource.Resource, and is defined correctly.");
+                    Logger.error(this, "ResourceBundle", "The resource type '" + resTypeName + "' specified for the embedded asset '" + resSource + "' is not a descendant from Resource.  Please ensure that the resource class descends properly from com.pblabs.engine.resource.Resource, and is defined correctly.");
                     continue;
                 }
                 

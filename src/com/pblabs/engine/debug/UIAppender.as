@@ -1,6 +1,6 @@
-package com.pblabs.engine.debug.log4PBE
+package com.pblabs.engine.debug
 {
-   import com.pblabs.engine.core.Global;
+   import com.pblabs.engine.PBE;
    import com.pblabs.engine.core.InputKey;
    import com.pblabs.engine.core.InputManager;
    import com.pblabs.engine.serialization.TypeUtility;
@@ -11,7 +11,7 @@ package com.pblabs.engine.debug.log4PBE
     * LogAppender for displaying log messages in a LogViewer flex ui component. The LogViewer will be
     * attached and detached from the main view when the tilde (~) key is pressed.
     */
-   public class UIAppender extends LogAppender
+   public class UIAppender implements ILogAppender
    {
       public function UIAppender()
       {
@@ -36,21 +36,16 @@ package com.pblabs.engine.debug.log4PBE
 			 if (_logViewer.parent)
 				 _logViewer.parent.removeChild(_logViewer); 
 			 else
-				 Global.mainStage.addChild(_logViewer);
+				 PBE.mainClass.addChild(_logViewer);
              
              _logViewer.updateSize();
          }
       }
       
-      override public function addLogMessage(level:String, loggerName:String, errorNumber:int, message:String, arguments:Array):void
+      public function addLogMessage(level:String, loggerName:String, message:String):void
       {
-          // Drop all but the class name for the logger name to make it easier to read.
-          var lastIdx:int = loggerName.lastIndexOf(".") + 1;
-          if(lastIdx != 0)
-            loggerName = loggerName.substr(lastIdx);
-          
 		  if(_logViewer)
-         	_logViewer.addLogMessage(level, loggerName, errorNumber, replace(message, arguments), []);
+         	_logViewer.addLogMessage(level, loggerName, message);
       }
       
       private var _logViewer:*;

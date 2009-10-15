@@ -65,14 +65,14 @@ package com.pblabs.engine.mxml
       {      	
          if (!resourceClass)
          {
-            Logger.printError("ResourceBinding", "", "Invalid resourceClass specified for binding of " + filename + ".");
+            Logger.error("ResourceBinding", "", "Invalid resourceClass specified for binding of " + filename + ".");
             return;
          }
          
          var resource:* = new resourceType();
          if (!(resource is Resource))
          {
-            Logger.printError("ResourceBinding", "", "Invalid resourceType specified for binding of " + filename + ".");
+            Logger.error("ResourceBinding", "", "Invalid resourceType specified for binding of " + filename + ".");
             return;
          }
          
@@ -80,7 +80,7 @@ package com.pblabs.engine.mxml
                           
          /*if (!(item is ByteArray))
          {
-            //Logger.printError("ResourceBinding", "", "The loaded resourceClass for binding of " + filename + " is not a ByteArray.");
+            //Logger.error("ResourceBinding", "", "The loaded resourceClass for binding of " + filename + " is not a ByteArray.");
             //return;
          } */
          

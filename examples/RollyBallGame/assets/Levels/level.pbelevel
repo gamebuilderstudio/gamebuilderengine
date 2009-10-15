@@ -9,21 +9,21 @@
 <things version="1">
 
 	<entity name="BallSheet">
-		<component type="com.pblabs.rendering2D.SpriteSheetComponent"
+		<component type="com.pblabs.rendering2D.spritesheet.SpriteSheetComponent"
 			name="SpriteSheet">
 			<image filename="../Assets/Images/ball.png" />
 		</component>
 	</entity>
 
 	<entity name="CoinSheet">
-		<component type="com.pblabs.rendering2D.SpriteSheetComponent"
+		<component type="com.pblabs.rendering2D.spritesheet.SpriteSheetComponent"
 			name="SpriteSheet">
 			<image filename="../Assets/Images/coin.png" />
 		</component>
 	</entity>
 
 	<entity name="WelcomeSheet">
-		<component type="com.pblabs.rendering2D.SpriteSheetComponent"
+		<component type="com.pblabs.rendering2D.spritesheet.SpriteSheetComponent"
 			name="SpriteSheet">
 			<image filename="../Assets/Images/welcome.png" />
 			<center>
@@ -39,45 +39,26 @@
 	</entity>
 
 	<entity name="Scene">
-		<component type="com.pblabs.rendering2D.Scene2DComponent"
+		<component type="com.pblabs.rendering2D.DisplayObjectScene"
 			name="Scene">
-			<spatialDatabase componentReference="SpatialDB"
-				componentName="Manager" />
 			<sceneViewName>MainView</sceneViewName>
 			<position>
-				<x>320</x>
-				<y>240</y>
+				<x>-320</x>
+				<y>-240</y>
 			</position>
-			<renderMask childType="String">
-				<_0>Renderable</_0>
-			</renderMask>
 		</component>
 	</entity>
 
 	<entity name="WelcomeScreen">
-		<component type="com.pblabs.rendering2D.SimpleSpatialComponent"
-			name="Spatial">
-			<spatialManager componentReference="SpatialDB" />
-			<objectMask>
-				<_>Renderable</_>
-			</objectMask>
-			<position>
-				<x>320</x>
-				<y>240</y>
-			</position>
-			<size>
-				<x>640</x>
-				<y>480</y>
-			</size>
-		</component>
-		<component type="com.pblabs.rendering2D.SpriteRenderComponent"
+		<component type="com.pblabs.rendering2D.SpriteSheetRenderer"
 			name="Sprite">
+            <scene entityName="Scene" componentName="Scene"/>
 			<spriteSheet componentReference="WelcomeSheet" />
 			<layerIndex>4</layerIndex>
 		</component>
 		<component type="com.pblabs.animation.AnimatorComponent"
 			name="FadeAnimator">
-			<reference>@Sprite.fade</reference>
+			<reference>@Sprite.alpha</reference>
 			<defaultAnimation></defaultAnimation>
 			<animations>
 				<FadeOut type="com.pblabs.animation.Animator">
@@ -93,17 +74,17 @@
 	<template name="BasePlayer">
 		<component type="com.pblabs.rollyGame.BallSpriteRenderer"
 			name="Sprite">
+            <scene entityName="Scene" componentName="Scene"/>
 			<layerIndex>2</layerIndex>
-			<positionReference>@Spatial.position
-			</positionReference>
+			<positionProperty>@Spatial.position</positionProperty>
 			<sizeReference>@Spatial.BallScale</sizeReference>
 		</component>
 		<component type="com.pblabs.rollyGame.BallShadowRenderer"
 			name="Shadow">
+            <scene entityName="Scene" componentName="Scene"/>
 			<Map componentReference="Level1Map" />
 			<layerIndex>1</layerIndex>
-			<positionReference>@Spatial.position
-			</positionReference>
+			<positionProperty>@Spatial.position</positionProperty>
 		</component>
 		<component type="com.pblabs.rollyGame.BallMover" name="Spatial">
 			<Map componentReference="Level1Map" />
@@ -149,11 +130,11 @@
 				<y>24</y>
 			</size>
 		</component>
-		<component type="com.pblabs.rendering2D.SpriteRenderComponent"
+		<component type="com.pblabs.rendering2D.SpriteSheetRenderer"
 			name="Sprite">
+			<scene entityName="Scene" componentName="Scene"/>
 			<spriteSheet componentReference="CoinSheet" />
-			<positionReference>@Spatial.position
-			</positionReference>
+			<positionProperty>@Spatial.position</positionProperty>
 			<layerIndex>1</layerIndex>
 		</component>
 	</template>
@@ -168,44 +149,30 @@
 	</group>
 
 	<template name="BaseLevel">
-		<component type="com.pblabs.rendering2D.SpriteSheetComponent"
+		<component type="com.pblabs.rendering2D.spritesheet.SpriteSheetComponent"
 			name="Normal">
 			<center>
 				<x>0</x>
 				<y>0</y>
 			</center>
 		</component>
-		<component type="com.pblabs.rendering2D.SpriteSheetComponent"
+		<component type="com.pblabs.rendering2D.spritesheet.SpriteSheetComponent"
 			name="Diffuse">
 			<center>
 				<x>0</x>
 				<y>0</y>
 			</center>
 		</component>
-		<component type="com.pblabs.rendering2D.SpriteSheetComponent"
+		<component type="com.pblabs.rendering2D.spritesheet.SpriteSheetComponent"
 			name="Height">
 			<center>
 				<x>0</x>
 				<y>0</y>
 			</center>
 		</component>
-		<component type="com.pblabs.rendering2D.SimpleSpatialComponent"
-			name="Spatial">
-			<spatialManager componentReference="SpatialDB" />
-			<objectMask>
-				<_>Renderable</_>
-			</objectMask>
-			<position>
-				<x>320</x>
-				<y>240</y>
-			</position>
-			<size>
-				<x>640</x>
-				<y>480</y>
-			</size>
-		</component>
-		<component type="com.pblabs.rendering2D.SpriteRenderComponent"
+		<component type="com.pblabs.rendering2D.SpriteSheetRenderer"
 			name="Sprite">
+            <scene entityName="Scene" componentName="Scene"/>
 			<spriteSheet componentName="Diffuse" />
 		</component>
 		<component type="com.pblabs.rollyGame.NormalMap" name="Normals">

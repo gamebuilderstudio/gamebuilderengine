@@ -133,7 +133,7 @@ package com.pblabs.engine.core
       {
          if (_isReady)
          {
-            Logger.printError(this, "Start", "The LevelManager has already been started.");
+            Logger.error(this, "Start", "The LevelManager has already been started.");
             return;
          }
          
@@ -158,7 +158,7 @@ package com.pblabs.engine.core
       {
          if (_isReady)
          {
-            Logger.printError(this, "Load", "The LevelManager has already been started.");
+            Logger.error(this, "Load", "The LevelManager has already been started.");
             return;
          }
          
@@ -176,10 +176,10 @@ package com.pblabs.engine.core
       {
          if (resource)
          {
-            Logger.printError(this, "Load", "Failed to load level descriptions file " + resource.filename + "!");    }
+            Logger.error(this, "Load", "Failed to load level descriptions file " + resource.filename + "!");    }
          else
          {
-            Logger.printError(this, "Load", "Failed to load level descriptions file!");
+            Logger.error(this, "Load", "Failed to load level descriptions file!");
          }
       }
       
@@ -232,7 +232,7 @@ package com.pblabs.engine.core
                else if (itemXML.name() == "group")
                   addGroupReference(index, itemXML.@name);
                else
-                  Logger.printError(this, "Load", "Encountered unknown tag " + itemXML.name() + " in level description.");
+                  Logger.error(this, "Load", "Encountered unknown tag " + itemXML.name() + " in level description.");
             }
          }
          
@@ -247,7 +247,7 @@ package com.pblabs.engine.core
       {
          if (!_isLevelLoaded)
          {
-            Logger.printError(this, "SaveState", "Cannot save state. No level is loaded.");
+            Logger.error(this, "SaveState", "Cannot save state. No level is loaded.");
             return;
          }
          
@@ -262,7 +262,7 @@ package com.pblabs.engine.core
       {
          if (!_isReady)
          {
-            Logger.printError(this, "LoadState", "Cannot load state. The LevelManager has not been started.");
+            Logger.error(this, "LoadState", "Cannot load state. The LevelManager has not been started.");
             return;
          }
          
@@ -281,20 +281,20 @@ package com.pblabs.engine.core
       {
          if (!_isReady)
          {
-            Logger.printError(this, "LoadEntity", "Cannot load entities. The LevelManager has not been started.");
+            Logger.error(this, "LoadEntity", "Cannot load entities. The LevelManager has not been started.");
             return null;
          }
          
          if (!_isLevelLoaded)
          {
-            Logger.printError(this, "LoadEntity", "Cannot load entities. No level is loaded.");
+            Logger.error(this, "LoadEntity", "Cannot load entities. No level is loaded.");
             return null;
          }
          
          var entity:IEntity = TemplateManager.instance.instantiateEntity(name);
          if (!entity)
          {
-            Logger.printError(this, "LoadEntity", "Failed to instantiate an entity with name " + name + ".");
+            Logger.error(this, "LoadEntity", "Failed to instantiate an entity with name " + name + ".");
             return null;
          }
          
@@ -314,12 +314,12 @@ package com.pblabs.engine.core
       {
           if(!_isReady)
           {
-              Logger.printWarning(this, "loadLevel", "Warning: trying to loadLevel() without having first called start()! This probably won't work." );
+              Logger.warn(this, "loadLevel", "Warning: trying to loadLevel() without having first called start()! This probably won't work." );
           }
           
          if (!hasLevelData(index))
          {
-            Logger.printError(this, "LoadLevel", "Level data for level " + index + " does not exist.");
+            Logger.error(this, "LoadLevel", "Level data for level " + index + " does not exist.");
             return;
          }
          
@@ -363,7 +363,7 @@ package com.pblabs.engine.core
       
       private function onFileLoadFailed(event:Event):void
       {
-         Logger.printError(this, "LoadLevel", "One of the files for level " + _currentLevel + " failed to load.");
+         Logger.error(this, "LoadLevel", "One of the files for level " + _currentLevel + " failed to load.");
          finishLoad();
       }
       
@@ -385,7 +385,7 @@ package com.pblabs.engine.core
             var groupEntities:Array = TemplateManager.instance.instantiateGroup(groupName);
             if (!groupEntities)
             {
-               Logger.printError(this, "LoadLevel", "Failed to instantiate the group " + groupName + ".");
+               Logger.error(this, "LoadLevel", "Failed to instantiate the group " + groupName + ".");
                continue;
             }
             
@@ -414,7 +414,7 @@ package com.pblabs.engine.core
       {
          if (!_isLevelLoaded)
          {
-            Logger.printError(this, "UnloadCurrentLevel", "No level is loaded.");
+            Logger.error(this, "UnloadCurrentLevel", "No level is loaded.");
             return;
          }
          
@@ -519,7 +519,7 @@ package com.pblabs.engine.core
       {
          if (_isLevelLoaded && (_currentLevel == index))
          {
-            Logger.printError(this, "AddFileReference", "Cannot add level information to a level that is loaded.");
+            Logger.error(this, "AddFileReference", "Cannot add level information to a level that is loaded.");
             return;
          }
          
@@ -537,14 +537,14 @@ package com.pblabs.engine.core
       {
          if (!hasLevelData(index))
          {
-            Logger.printError(this, "RemoveFileReference", "No level data exists for level " + index + ".");
+            Logger.error(this, "RemoveFileReference", "No level data exists for level " + index + ".");
             return;
          }
          
          var levelIndex:int = levelDescription.files.indexOf(filename);
          if (levelIndex == -1)
          {
-            Logger.printError(this, "RemoveFileReference", "The file " + filename + " was not found in the level " + index + ".");
+            Logger.error(this, "RemoveFileReference", "The file " + filename + " was not found in the level " + index + ".");
             return;
          }
          
@@ -562,7 +562,7 @@ package com.pblabs.engine.core
       {
          if (_isLevelLoaded && (_currentLevel == index))
          {
-            Logger.printError(this, "AddGroupReference", "Cannot add level information to a level that is loaded.");
+            Logger.error(this, "AddGroupReference", "Cannot add level information to a level that is loaded.");
             return;
          }
          
@@ -580,14 +580,14 @@ package com.pblabs.engine.core
       {
          if (!hasLevelData(index))
          {
-            Logger.printError(this, "RemoveGroupReference", "No level data exists for level " + index + ".");
+            Logger.error(this, "RemoveGroupReference", "No level data exists for level " + index + ".");
             return;
          }
          
          var groupIndex:int = levelDescription.groups.indexOf(name);
          if (groupIndex == -1)
          {
-            Logger.printError(this, "RemoveFileReference", "The group " + name + " was not found in the level " + index + ".");
+            Logger.error(this, "RemoveFileReference", "The group " + name + " was not found in the level " + index + ".");
             return;
          }
          
@@ -604,7 +604,7 @@ package com.pblabs.engine.core
       {
          if (!hasLevelData(index))
          {
-            Logger.printError(this, "RemoveLevel", "No level data exists for level " + index + ".");
+            Logger.error(this, "RemoveLevel", "No level data exists for level " + index + ".");
             return;
          }
          

@@ -4,7 +4,7 @@
  *		   Date: 09/05/2009
  * 	Description: An ActionScript only version of the LogViewer.
  */
-package com.pblabs.engine.debug.log4PBE
+package com.pblabs.engine.debug
 {
 	import flash.display.Sprite;
 	import flash.text.TextField;
@@ -58,21 +58,17 @@ package com.pblabs.engine.debug.log4PBE
                 if(!_truncating)
 				{
 					_truncating = true;
-					Logger.getLogger(UIAppender).warn("You have exceeded "+_maxLength+" characters in LogViewerAS. " +
+					Logger.warn(this, "truncateOutput", "You have exceeded "+_maxLength+" characters in LogViewerAS. " +
 						"It will now only show the latest "+_maxLength+" characters of the log.");
 				}
 			}
 		}
 
-		public function addLogMessage(level:String, loggerName:String, errorNumber:int, message:String, arguments:Array):void
+		public function addLogMessage(level:String, loggerName:String, message:String):void
 		{
 			var color:String = LogColor.getColor(level);
 			
-			var numberString:String = "";
-			if (errorNumber >= 0)
-				numberString = " - " + errorNumber;
-			
-			var text:String = level + ": " + loggerName + numberString + " - " + message;
+			var text:String = level + ": " + loggerName + " - " + message;
 			if (_output)
 			{
 				var append:String = "<p><font size=\"13\" color=\""+ color +"\"><b>" + text + "</b></font></p>";

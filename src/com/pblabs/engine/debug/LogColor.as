@@ -1,4 +1,4 @@
-package com.pblabs.engine.debug.log4PBE
+package com.pblabs.engine.debug
 {
 	public class LogColor
 	{

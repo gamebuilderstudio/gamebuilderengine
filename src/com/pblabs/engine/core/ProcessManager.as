@@ -8,450 +8,461 @@
  ******************************************************************************/
 package com.pblabs.engine.core
 {
-   import com.pblabs.engine.debug.*;
-   import com.pblabs.engine.serialization.TypeUtility;
-   import flash.utils.getTimer;
-   
-   import flash.events.Event;
-
-   /**
-    * The process manager manages all time related functionality in the engine.
-    * It provides mechanisms for performing actions every frame, every tick, or
-    * at a specific time in the future.
-    * 
-    * <p>A tick happens at a set interval defined by the TICKS_PER_SECOND constant.
-    * Using ticks for various tasks that need to happen repeatedly instead of
-    * performing those tasks every frame results in much more consistent output.
-    * However, for animation related tasks, frame events should be used so the
-    * display remains smooth.</p>
-    * 
-    * @see ITickedObject
-    * @see IAnimatedObject
-    */
-   public class ProcessManager
-   {
-      /**
-       * The number of ticks that will happen every second.
-       */
-      public static const TICKS_PER_SECOND:int = 30;
-      
-      /**
-       * The rate at which ticks are fired, in seconds.
-       */
-      public static const TICK_RATE:Number = 1.0 / TICKS_PER_SECOND;
-      
-      /**
-       * The rate at which ticks are fired, in milliseconds.
-       */
-      public static const TICK_RATE_MS:Number = TICK_RATE * 1000;
-      
-      /**
-       * The maximum number of ticks that can be processed in a frame.
-       * 
-       * <p>In some cases, a single frame can take an extremely long amount of
-       * time. If several ticks then need to be processed, a game can
-       * quickly get in a state where it has so many ticks to process
-       * it can never catch up. This is known as a death spiral.</p>
-       * 
-       * <p>To prevent this we have a safety limit. Time is dropped so the
-       * system can catch up in extraordinary cases. If your game is just
-       * slow, then you will see that the ProcessManager can never catch up
-       * and you will constantly get the "too many ticks per frame" warning.</p>
-       */
-      public static const MAX_TICKS_PER_FRAME:int = 10;
-      
-      /**
-       * The singleton ProcessManager instance.
-       */
-      public static function get instance():ProcessManager
-      {
-         if (!_instance)
-            _instance = new ProcessManager();
-         
-         return _instance;
-      }
-      
-      private static var _instance:ProcessManager = null;
-      
-      /**
-       * The scale at which time advances. If this is set to 2, the game
-       * will essentially play twice as fast. A value of 0.5 will run the
-       * game at half speed. A value of 1 is normal.
-       */
-      public function get timeScale():Number
-      {
-         return _timeScale;
-      }
-      
-      /**
-       * @private
-       */
-      public function set timeScale(value:Number):void
-      {
-          _timeScale = value;
-      }
-
-      /**
-       * TweenMax uses timeScale as a config property, so by also having a
-       * capitalized version, we can tween TimeScale and get along just fine.
-       */
-      public function set TimeScale(value:Number):void
-      {
-          timeScale = value;
-      }
-
-      /**
-       * @private
-       */ 
-      public function get TimeScale():Number
-      {
-          return timeScale;
-      }
-      
-      /**
-       * Used to determine how far we are between ticks. 0.0 at the start of a tick, and
-       * 1.0 at the end. Useful for smoothly interpolating visual elements.
-       */
-      public function get interpolationFactor():Number
-      {
-         return _interpolationFactor;
-      }
-      
-      /**
-       * The amount of time that has been processed by the process manager. This does
-       * take the time scale into account. Time is in milliseconds.
-       */
-      public function get virtualTime():Number
-      {
-         return _virtualTime;
-      }
-      
-      /**
-       * Starts the process manager. This is automatically called when the first object
-       * is added to the process manager. If the manager is stopped manually, then this
-       * will have to be called to restart it.
-       */
-      public function start():void
-      {
-         if (started)
-         {
-            Logger.printWarning(this, "Start", "The ProcessManager is already started.");
-            return;
-         }
-         
-         lastTime = -1.0;
-         elapsed = 0.0;
-         Global.mainStage.addEventListener(Event.ENTER_FRAME, onFrame);
-         started = true;
-      }
-      
-      /**
-       * Stops the process manager. This is automatically called when the last object
-       * is removed from the process manager, but can also be called manually to, for
-       * example, pause the game.
-       */
-      public function stop():void
-      {
-         if (!started)
-         {
-            Logger.printWarning(this, "Stop", "The ProcessManager isn't started.");
-            return;
-         }
-         
-         started = false;
-         Global.mainStage.removeEventListener(Event.ENTER_FRAME, onFrame);
-      }
-      
-      /**
-       * Returns true if the process manager is advancing.
-       */ 
-      public function get isTicking():Boolean
-      {
-         return started;
-      }
-      
-      /**
-       * Schedules a function to be called at a specified time in the future.
-       * 
-       * @param delay The number of milliseconds in the future to call the function.
-       * @param thisObject The object on which the function should be called. This
-       * becomes the 'this' variable in the function.
-       * @param callback The function to call.
-       * @param arguments The arguments to pass to the function when it is called.
-       */
-      public function schedule(delay:Number, thisObject:Object, callback:Function, ...arguments):void
-      {
-         if (!started)
-            start();
-         
-         var schedule:ScheduleObject = new ScheduleObject();
-         schedule.dueTime = _virtualTime + delay;
-         schedule.thisObject = thisObject;
-         schedule.callback = callback;
-         schedule.arguments = arguments;
-
-         //find where to insert this item in the array.
-         //we'll place it before the first item that is scheduled further out.
-         //by keeping this array ordered we only have to iterate over schedules that are due at a given tick.
-         var spliced:Boolean = false;
-         for (var i:int = 0; i < scheduleEvents.length; i++)
-         {
-            var s:ScheduleObject = scheduleEvents[i];
-            if (s.dueTime > schedule.dueTime)
-            {
-               scheduleEvents.splice(i, 0, schedule);
-               spliced = true;
-               break;
-            }
-         }
+    import com.pblabs.engine.PBE;
+    import com.pblabs.engine.debug.*;
+    import com.pblabs.engine.serialization.TypeUtility;
+    
+    import flash.events.Event;
+    import flash.utils.getTimer;
+    
+    /**
+     * The process manager manages all time related functionality in the engine.
+     * It provides mechanisms for performing actions every frame, every tick, or
+     * at a specific time in the future.
+     * 
+     * <p>A tick happens at a set interval defined by the TICKS_PER_SECOND constant.
+     * Using ticks for various tasks that need to happen repeatedly instead of
+     * performing those tasks every frame results in much more consistent output.
+     * However, for animation related tasks, frame events should be used so the
+     * display remains smooth.</p>
+     * 
+     * @see ITickedObject
+     * @see IAnimatedObject
+     */
+    public class ProcessManager
+    {
+        /**
+         * The number of ticks that will happen every second.
+         */
+        public static const TICKS_PER_SECOND:int = 30;
         
-         //no schedules were found further out (or this is the first schedule). append to the end!
-         if (!spliced)
-            scheduleEvents.push(schedule);
-      }
-      
-      /**
-       * Registers an object to receive frame callbacks.
-       * 
-       * @param object The object to add.
-       * @param priority The priority of the object. Objects added with higher priorities
-       * will receive their callback before objects with lower priorities.
-       */
-      public function addAnimatedObject(object:IAnimatedObject, priority:Number = 0.0):void
-      {
-         addObject(object, priority, animatedObjects);
-      }
-      
-      /**
-       * Registers an object to receive tick callbacks.
-       * 
-       * @param object The object to add.
-       * @param priority The priority of the object. Objects added with higher priorities
-       * will receive their callback before objects with lower priorities.
-       */
-      public function addTickedObject(object:ITickedObject, priority:Number = 0.0):void
-      {
-         addObject(object, priority, tickedObjects);
-      }
-      
-      /**
-       * Unregisters an object from receiving frame callbacks.
-       * 
-       * @param object The object to remove.
-       */
-      public function removeAnimatedObject(object:IAnimatedObject):void
-      {
-         removeObject(object, animatedObjects);
-      }
-      
-      /**
-       * Unregisters an object from receiving tick callbacks.
-       * 
-       * @param object The object to remove.
-       */
-      public function removeTickedObject(object:ITickedObject):void
-      {
-         removeObject(object, tickedObjects);
-      }
-      
-      /**
-       * Forces the process manager to advance by the specified amount. This should
-       * only be used for unit testing.
-       * 
-       * @param amount The amount of time to simulate.
-       */
-      public function testAdvance(amount:Number):void
-      {
-         advance(amount * _timeScale, true);
-      }
-      
-      private function get listenerCount():int
-      {
-         return tickedObjects.length + animatedObjects.length;
-      }
-      
-      private function addObject(object:*, priority:Number, list:Array):void
-      {
-         if (!started)
-            start();
-         
-         var position:int = -1;
-         for (var i:int = 0; i < list.length; i++)
-         {
-            if (list[i].listener == object)
+        /**
+         * The rate at which ticks are fired, in seconds.
+         */
+        public static const TICK_RATE:Number = 1.0 / TICKS_PER_SECOND;
+        
+        /**
+         * The rate at which ticks are fired, in milliseconds.
+         */
+        public static const TICK_RATE_MS:Number = TICK_RATE * 1000;
+        
+        /**
+         * The maximum number of ticks that can be processed in a frame.
+         * 
+         * <p>In some cases, a single frame can take an extremely long amount of
+         * time. If several ticks then need to be processed, a game can
+         * quickly get in a state where it has so many ticks to process
+         * it can never catch up. This is known as a death spiral.</p>
+         * 
+         * <p>To prevent this we have a safety limit. Time is dropped so the
+         * system can catch up in extraordinary cases. If your game is just
+         * slow, then you will see that the ProcessManager can never catch up
+         * and you will constantly get the "too many ticks per frame" warning.</p>
+         */
+        public static const MAX_TICKS_PER_FRAME:int = 10;
+        
+        /**
+         * The singleton ProcessManager instance.
+         */
+        public static function get instance():ProcessManager
+        {
+            if (!_instance)
+                _instance = new ProcessManager();
+            
+            return _instance;
+        }
+        
+        private static var _instance:ProcessManager = null;
+        
+        /**
+         * The scale at which time advances. If this is set to 2, the game
+         * will essentially play twice as fast. A value of 0.5 will run the
+         * game at half speed. A value of 1 is normal.
+         */
+        public function get timeScale():Number
+        {
+            return _timeScale;
+        }
+        
+        /**
+         * @private
+         */
+        public function set timeScale(value:Number):void
+        {
+            _timeScale = value;
+        }
+        
+        /**
+         * TweenMax uses timeScale as a config property, so by also having a
+         * capitalized version, we can tween TimeScale and get along just fine.
+         */
+        public function set TimeScale(value:Number):void
+        {
+            timeScale = value;
+        }
+        
+        /**
+         * @private
+         */ 
+        public function get TimeScale():Number
+        {
+            return timeScale;
+        }
+        
+        /**
+         * Used to determine how far we are between ticks. 0.0 at the start of a tick, and
+         * 1.0 at the end. Useful for smoothly interpolating visual elements.
+         */
+        public function get interpolationFactor():Number
+        {
+            return _interpolationFactor;
+        }
+        
+        /**
+         * The amount of time that has been processed by the process manager. This does
+         * take the time scale into account. Time is in milliseconds.
+         */
+        public function get virtualTime():Number
+        {
+            return _virtualTime;
+        }
+        
+        /**
+         * Starts the process manager. This is automatically called when the first object
+         * is added to the process manager. If the manager is stopped manually, then this
+         * will have to be called to restart it.
+         */
+        public function start():void
+        {
+            if (started)
             {
-               Logger.printWarning(object, "AddProcessObject", "This object has already been added to the process manager.");
-               return;
+                Logger.warn(this, "Start", "The ProcessManager is already started.");
+                return;
             }
             
-            if (list[i].priority < priority)
+            lastTime = -1.0;
+            elapsed = 0.0;
+            PBE.mainStage.addEventListener(Event.ENTER_FRAME, onFrame);
+            started = true;
+        }
+        
+        /**
+         * Stops the process manager. This is automatically called when the last object
+         * is removed from the process manager, but can also be called manually to, for
+         * example, pause the game.
+         */
+        public function stop():void
+        {
+            if (!started)
             {
-               position = i;
-               break;
+                Logger.warn(this, "Stop", "The ProcessManager isn't started.");
+                return;
             }
-         }
-         
-         var processObject:ProcessObject = new ProcessObject();
-         processObject.listener = object;
-         processObject.priority = priority;
-         processObject.profilerKey = TypeUtility.getObjectClassName(object);
-         
-         if (position < 0 || position >= list.length)
-            list.push(processObject);
-         else
-            list.splice(position, 0, processObject);
-      }
-      
-      private function removeObject(object:*, list:Array):void
-      {
-         if (listenerCount == 1 && scheduleEvents.length == 0)
-            stop();
-         
-         for (var i:int = 0; i < list.length; i++)
-         {
-            if (list[i].listener == object)
+            
+            started = false;
+            PBE.mainStage.removeEventListener(Event.ENTER_FRAME, onFrame);
+        }
+        
+        /**
+         * Returns true if the process manager is advancing.
+         */ 
+        public function get isTicking():Boolean
+        {
+            return started;
+        }
+        
+        /**
+         * Schedules a function to be called at a specified time in the future.
+         * 
+         * @param delay The number of milliseconds in the future to call the function.
+         * @param thisObject The object on which the function should be called. This
+         * becomes the 'this' variable in the function.
+         * @param callback The function to call.
+         * @param arguments The arguments to pass to the function when it is called.
+         */
+        public function schedule(delay:Number, thisObject:Object, callback:Function, ...arguments):void
+        {
+            if (!started)
+                start();
+            
+            var schedule:ScheduleObject = new ScheduleObject();
+            schedule.dueTime = _virtualTime + delay;
+            schedule.thisObject = thisObject;
+            schedule.callback = callback;
+            schedule.arguments = arguments;
+            
+            //find where to insert this item in the array.
+            //we'll place it before the first item that is scheduled further out.
+            //by keeping this array ordered we only have to iterate over schedules that are due at a given tick.
+            var spliced:Boolean = false;
+            for (var i:int = 0; i < scheduleEvents.length; i++)
             {
-               list.splice(i, 1);
-               return;
+                var s:ScheduleObject = scheduleEvents[i];
+                if (s.dueTime > schedule.dueTime)
+                {
+                    scheduleEvents.splice(i, 0, schedule);
+                    spliced = true;
+                    break;
+                }
             }
-         }
-         
-         Logger.printWarning(object, "RemoveProcessObject", "This object has not been added to the process manager.");
-      }
-      
-      private function onFrame(event:Event):void
-      {
-          // This is called from a system event, so it had better be at the 
-          // root of the profiler stack!
-          Profiler.ensureAtRoot();
-
-          // Track current time.
-          var currentTime:Number = getTimer();
-          if (lastTime < 0)
-          {
-              lastTime = currentTime;
-              return;
-          }
-          
-          // Calculate time since last frame and advance that much.
-          var deltaTime:Number = Number(currentTime - lastTime) * _timeScale;
-          advance(deltaTime);
-          
-          // Note new last time.
-          lastTime = currentTime;
-      }
-      
-      private function advance(deltaTime:Number, suppressSafety:Boolean = false):void
-      {
-          var startTime:Number = _virtualTime;
-
-          // Add time to the accumulator.
-          elapsed += deltaTime;
-          
-          // Perform ticks, respecting tick caps.
-          var tickCount:int = 0;
-          while (elapsed >= TICK_RATE_MS && (suppressSafety || tickCount < MAX_TICKS_PER_FRAME))
-          {
-              // Ticks always happen on interpolation boundary.
-              _interpolationFactor = 0.0;
-              
-              // Process pending events at this tick.
-              // This is done in the loop to ensure the correct order of events.
-              processScheduledObjects();
-
-              // Do the onTick callbacks, noting time in profiler appropriately.
-              Profiler.enter("Tick");
-              
-              for each (var object:ProcessObject in tickedObjects)
-              {
-                  Profiler.enter(object.profilerKey);
-                  object.listener.onTick(TICK_RATE);
-                  Profiler.exit(object.profilerKey);
-              }
-              
-              Profiler.exit("Tick");
-              
-              // Update virtual time by subtracting from accumulator.
-              _virtualTime += TICK_RATE_MS;
-              elapsed -= TICK_RATE_MS;
-              tickCount++;
-          }
-          
-          // Safety net - don't do more than a few ticks per frame to avoid death spirals.
-          if (tickCount >= MAX_TICKS_PER_FRAME && !suppressSafety)
-          {
-              Logger.printWarning(this, "Advance", "Exceeded maximum number of ticks for frame (" + elapsed + "ms dropped) .");
-              elapsed = 0;
-          }
-          
-          _virtualTime = startTime + deltaTime;
-
-          // We process scheduled items again after tick processing to ensure between-tick schedules are hit
-          processScheduledObjects();
-          
-          // Update objects wanting OnFrame callbacks.
-          Profiler.enter("frame");
-          _interpolationFactor = elapsed / TICK_RATE_MS;
-          for each (var animatedObject:ProcessObject in animatedObjects)
-          {
-              Profiler.enter(animatedObject.profilerKey);
-              animatedObject.listener.onFrame(deltaTime / 1000);
-              Profiler.exit(animatedObject.profilerKey);
-          }
-          Profiler.exit("frame");
-          
-          Profiler.ensureAtRoot();
-      }
-      
-      private function processScheduledObjects():void
-      {
-          Profiler.enter("PendingEvents");
-          
-          // Walk the list of scheduled events...
-          for (var i:int = 0; i < scheduleEvents.length; i++)
-          {
-              // Looking for events that are due...
-              var schedule:ScheduleObject = scheduleEvents[i];
-              if (schedule.dueTime <= _virtualTime)
-              {
-                  schedule.callback.apply(schedule.thisObject, schedule.arguments);
-                  scheduleEvents.splice(i, 1);
-                  i--;
-              }
-              else
-              {
-                 // Our scheduled event array is sorted by due time, so once we
-                 // that isn't due we can stop.
-                 break;
-              }
-          }
-          
-          Profiler.exit("PendingEvents");      	
-      }
-      
-      private var started:Boolean = false;
-      private var _virtualTime:Number = 0.0;
-      private var _interpolationFactor:Number = 0.0;
-      private var _timeScale:Number = 1.0;
-      private var lastTime:Number = -1.0;
-      private var elapsed:Number = 0.0;
-      private var animatedObjects:Array = new Array();
-      private var tickedObjects:Array = new Array();
-      private var scheduleEvents:Array = new Array();
-   }
+            
+            //no schedules were found further out (or this is the first schedule). append to the end!
+            if (!spliced)
+                scheduleEvents.push(schedule);
+        }
+        
+        /**
+         * Registers an object to receive frame callbacks.
+         * 
+         * @param object The object to add.
+         * @param priority The priority of the object. Objects added with higher priorities
+         * will receive their callback before objects with lower priorities.
+         */
+        public function addAnimatedObject(object:IAnimatedObject, priority:Number = 0.0):void
+        {
+            addObject(object, priority, animatedObjects);
+        }
+        
+        /**
+         * Registers an object to receive tick callbacks.
+         * 
+         * @param object The object to add.
+         * @param priority The priority of the object. Objects added with higher priorities
+         * will receive their callback before objects with lower priorities.
+         */
+        public function addTickedObject(object:ITickedObject, priority:Number = 0.0):void
+        {
+            addObject(object, priority, tickedObjects);
+        }
+        
+        /**
+         * Unregisters an object from receiving frame callbacks.
+         * 
+         * @param object The object to remove.
+         */
+        public function removeAnimatedObject(object:IAnimatedObject):void
+        {
+            removeObject(object, animatedObjects);
+        }
+        
+        /**
+         * Unregisters an object from receiving tick callbacks.
+         * 
+         * @param object The object to remove.
+         */
+        public function removeTickedObject(object:ITickedObject):void
+        {
+            removeObject(object, tickedObjects);
+        }
+        
+        /**
+         * Forces the process manager to advance by the specified amount. This should
+         * only be used for unit testing.
+         * 
+         * @param amount The amount of time to simulate.
+         */
+        public function testAdvance(amount:Number):void
+        {
+            advance(amount * _timeScale, true);
+        }
+        
+        /**
+         * Forces the process manager to seek its virtualTime by the specified amount.
+         * This moves virtualTime without calling advance and without processing ticks or frames.
+         * WARNING: USE WITH CAUTION AND ONLY IF YOU REALLY KNOW THE CONSEQUENCES!
+         */
+        public function seek(amount:Number):void
+        {
+            _virtualTime += amount;
+        }
+        
+        private function get listenerCount():int
+        {
+            return tickedObjects.length + animatedObjects.length;
+        }
+        
+        private function addObject(object:*, priority:Number, list:Array):void
+        {
+            if (!started)
+                start();
+            
+            var position:int = -1;
+            for (var i:int = 0; i < list.length; i++)
+            {
+                if (list[i].listener == object)
+                {
+                    Logger.warn(object, "AddProcessObject", "This object has already been added to the process manager.");
+                    return;
+                }
+                
+                if (list[i].priority < priority)
+                {
+                    position = i;
+                    break;
+                }
+            }
+            
+            var processObject:ProcessObject = new ProcessObject();
+            processObject.listener = object;
+            processObject.priority = priority;
+            processObject.profilerKey = TypeUtility.getObjectClassName(object);
+            
+            if (position < 0 || position >= list.length)
+                list.push(processObject);
+            else
+                list.splice(position, 0, processObject);
+        }
+        
+        private function removeObject(object:*, list:Array):void
+        {
+            if (listenerCount == 1 && scheduleEvents.length == 0)
+                stop();
+            
+            for (var i:int = 0; i < list.length; i++)
+            {
+                if (list[i].listener == object)
+                {
+                    list.splice(i, 1);
+                    return;
+                }
+            }
+            
+            Logger.warn(object, "RemoveProcessObject", "This object has not been added to the process manager.");
+        }
+        
+        private function onFrame(event:Event):void
+        {
+            // This is called from a system event, so it had better be at the 
+            // root of the profiler stack!
+            Profiler.ensureAtRoot();
+            
+            // Track current time.
+            var currentTime:Number = getTimer();
+            if (lastTime < 0)
+            {
+                lastTime = currentTime;
+                return;
+            }
+            
+            // Calculate time since last frame and advance that much.
+            var deltaTime:Number = Number(currentTime - lastTime) * _timeScale;
+            advance(deltaTime);
+            
+            // Note new last time.
+            lastTime = currentTime;
+        }
+        
+        private function advance(deltaTime:Number, suppressSafety:Boolean = false):void
+        {
+            var startTime:Number = _virtualTime;
+            
+            // Add time to the accumulator.
+            elapsed += deltaTime;
+            
+            // Perform ticks, respecting tick caps.
+            var tickCount:int = 0;
+            while (elapsed >= TICK_RATE_MS && (suppressSafety || tickCount < MAX_TICKS_PER_FRAME))
+            {
+                // Ticks always happen on interpolation boundary.
+                _interpolationFactor = 0.0;
+                
+                // Process pending events at this tick.
+                // This is done in the loop to ensure the correct order of events.
+                processScheduledObjects();
+                
+                // Do the onTick callbacks, noting time in profiler appropriately.
+                Profiler.enter("Tick");
+                
+                for each (var object:ProcessObject in tickedObjects)
+                {
+                    Profiler.enter(object.profilerKey);
+                    object.listener.onTick(TICK_RATE);
+                    Profiler.exit(object.profilerKey);
+                }
+                
+                Profiler.exit("Tick");
+                
+                // Update virtual time by subtracting from accumulator.
+                _virtualTime += TICK_RATE_MS;
+                elapsed -= TICK_RATE_MS;
+                tickCount++;
+            }
+            
+            // Safety net - don't do more than a few ticks per frame to avoid death spirals.
+            if (tickCount >= MAX_TICKS_PER_FRAME && !suppressSafety)
+            {
+                Logger.warn(this, "Advance", "Exceeded maximum number of ticks for frame (" + elapsed + "ms dropped) .");
+                elapsed = 0;
+            }
+            
+            _virtualTime = startTime + deltaTime;
+            
+            // We process scheduled items again after tick processing to ensure between-tick schedules are hit
+            processScheduledObjects();
+            
+            // Update objects wanting OnFrame callbacks.
+            Profiler.enter("frame");
+            _interpolationFactor = elapsed / TICK_RATE_MS;
+            for each (var animatedObject:ProcessObject in animatedObjects)
+            {
+                Profiler.enter(animatedObject.profilerKey);
+                animatedObject.listener.onFrame(deltaTime / 1000);
+                Profiler.exit(animatedObject.profilerKey);
+            }
+            Profiler.exit("frame");
+            
+            Profiler.ensureAtRoot();
+        }
+        
+        private function processScheduledObjects():void
+        {
+            Profiler.enter("PendingEvents");
+            
+            // Walk the list of scheduled events...
+            for (var i:int = 0; i < scheduleEvents.length; i++)
+            {
+                // Looking for events that are due...
+                var schedule:ScheduleObject = scheduleEvents[i];
+                if (schedule.dueTime <= _virtualTime)
+                {
+                    schedule.callback.apply(schedule.thisObject, schedule.arguments);
+                    scheduleEvents.splice(i, 1);
+                    i--;
+                }
+                else
+                {
+                    // Our scheduled event array is sorted by due time, so once we
+                    // that isn't due we can stop.
+                    break;
+                }
+            }
+            
+            Profiler.exit("PendingEvents");      	
+        }
+        
+        private var started:Boolean = false;
+        private var _virtualTime:Number = 0.0;
+        private var _interpolationFactor:Number = 0.0;
+        private var _timeScale:Number = 1.0;
+        private var lastTime:Number = -1.0;
+        private var elapsed:Number = 0.0;
+        private var animatedObjects:Array = new Array();
+        private var tickedObjects:Array = new Array();
+        private var scheduleEvents:Array = new Array();
+    }
 }
 
 class ScheduleObject
 {
-   public var dueTime:Number = 0.0;
-   public var thisObject:Object = null;
-   public var callback:Function = null;
-   public var arguments:Array = null;
+    public var dueTime:Number = 0.0;
+    public var thisObject:Object = null;
+    public var callback:Function = null;
+    public var arguments:Array = null;
 }
 
 class ProcessObject
 {
-   public var profilerKey:String = null;
-   public var listener:* = null;
-   public var priority:Number = 0.0;
+    public var profilerKey:String = null;
+    public var listener:* = null;
+    public var priority:Number = 0.0;
 }

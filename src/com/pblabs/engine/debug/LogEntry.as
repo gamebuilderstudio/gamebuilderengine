@@ -42,7 +42,7 @@ package com.pblabs.engine.debug
       /**
        * The object that printed the message to the log.
        */
-      public var reporter:* = null;
+      public var reporter:Class = null;
       
       /**
        * The method the entry was printed from.

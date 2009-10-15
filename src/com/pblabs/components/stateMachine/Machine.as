@@ -92,7 +92,7 @@ package com.pblabs.components.stateMachine
         public function set currentStateName(value:String):void
         {
             if(!setCurrentState(value))
-                Logger.printWarning(this, "set currentStateName", "Could not transition to state '" + value + "'");
+                Logger.warn(this, "set currentStateName", "Could not transition to state '" + value + "'");
         }
         
         public function getPreviousState():IState

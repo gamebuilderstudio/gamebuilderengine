@@ -8,16 +8,20 @@
 package com.pblabs.rollyGame
 {
     import com.pblabs.rendering2D.*;
+    
     import flash.display.*;
     import flash.utils.*;
     
-    public class BallShadowRenderer extends BaseRenderComponent
+    public class BallShadowRenderer extends DisplayObjectRenderer
     {
         public var Map:NormalMap;
         
-        protected var _Sprite:Sprite = new Sprite();
+        public function BallShadowRenderer()
+        {
+            displayObject = new Sprite();
+        }
         
-        public override function onDraw(manager:IDrawManager2D):void
+        public override function onFrame(dt:Number):void
         {
             if(!Map)
                 throw new Error("No normalmap specified!");
@@ -29,7 +33,7 @@ package com.pblabs.rollyGame
             var silhouetteX:Number = 0, silhouetteY:Number = 0, silhouetteZ:Number = 8;
             var deltaX:Number, deltaY:Number, deltaZ:Number, deltaLen:Number;
             
-            var graphics:Graphics = _Sprite.graphics;
+            var graphics:Graphics = (displayObject as Sprite).graphics;
             
             // Get the ball.
             var ball:BallMover = owner.lookupComponentByType(BallMover) as BallMover;
@@ -88,9 +92,7 @@ package com.pblabs.rollyGame
                     graphics.lineTo(silhouetteX, silhouetteY);
             }
             graphics.endFill();
-            
-            manager.drawDisplayObject(_Sprite);
-            
+
         }
     }
 }

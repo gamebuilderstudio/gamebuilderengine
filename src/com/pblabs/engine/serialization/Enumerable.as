@@ -66,7 +66,7 @@ package com.pblabs.engine.serialization
          var stringValue:String = xml.toString();
          if (!typeMap[stringValue])
          {
-            Logger.printError(this, "deserialize", stringValue + " is not a valid value for this enumeration.");
+            Logger.error(this, "deserialize", stringValue + " is not a valid value for this enumeration.");
             return defaultType;
          }
          

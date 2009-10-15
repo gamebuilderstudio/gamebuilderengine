@@ -8,6 +8,8 @@
  ******************************************************************************/
 package com.pblabs.rendering2D
 {
+    import com.pblabs.rendering2D.spritesheet.SpriteContainerComponent;
+
     /**
      * Information describing an animation, for use in an AnimationController.
      *

@@ -168,7 +168,7 @@ package com.pblabs.engine.resource
             
             if (!_resources[filename + resourceType])
             {
-                Logger.printWarning(this, "Unload", "The resource from file " + filename + " of type " + resourceType + " is not loaded.");
+                Logger.warn(this, "Unload", "The resource from file " + filename + " of type " + resourceType + " is not loaded.");
                 return;
             }
             
@@ -198,7 +198,7 @@ package com.pblabs.engine.resource
             
             if (_resources[resourceIdentifier])
             {
-                Logger.printWarning(this, "registerEmbeddedResource", "A resource from file " + filename + " has already been embedded.");
+                Logger.warn(this, "registerEmbeddedResource", "A resource from file " + filename + " has already been embedded.");
                 return;
             }
             
@@ -215,7 +215,7 @@ package com.pblabs.engine.resource
             }
             catch(e:Error)
             {
-                Logger.printError(this, "registerEmbeddedResources", "Could not instantiate resource " + filename + " due to error:\n" + e.toString());
+                Logger.error(this, "registerEmbeddedResources", "Could not instantiate resource " + filename + " due to error:\n" + e.toString());
                 return;
             }
         }
@@ -233,7 +233,7 @@ package com.pblabs.engine.resource
         
         private function fail(resource:Resource, onFailed:Function, message:String):void
         {
-            Logger.printError(this, "Load", message);
+            Logger.error(this, "Load", message);
             if (onFailed != null)
                 setTimeout(onFailed, 1, resource);
         }

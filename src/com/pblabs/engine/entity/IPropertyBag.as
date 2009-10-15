@@ -28,8 +28,6 @@ package com.pblabs.engine.entity
        * this entity.
        * 
        * @return True if the property exists, false otherwise.
-       * 
-       * @see ../../../../../Reference/PropertySystem.html Property System Overview
        */
       function doesPropertyExist(property:PropertyReference):Boolean;
       
@@ -41,8 +39,6 @@ package com.pblabs.engine.entity
        * @param defaultValue If the property is not found, return this value.
        * 
        * @return The current value of the property, or null if it doesn't exist.
-       * 
-       * @see ../../../../../Reference/PropertySystem.html Property System Overview
        */
       function getProperty(property:PropertyReference, defaultValue:* = null):*;
       
@@ -53,8 +49,6 @@ package com.pblabs.engine.entity
        * this entity.
        * 
        * @param value The value to set on the specified property.
-       * 
-       * @see ../../../../../Reference/PropertySystem.html Property System Overview
        */
       function setProperty(property:PropertyReference, value:*):void;      
    }

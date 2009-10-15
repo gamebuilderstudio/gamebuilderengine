@@ -48,7 +48,7 @@ package com.pblabs.rendering2D
          var index:int = _objectList.indexOf(object);
          if (index == -1)
          {
-            Logger.printWarning(this, "removeSpatialObject", "The object was not found in this spatial manager.");
+            Logger.warn(this, "removeSpatialObject", "The object was not found in this spatial manager.");
             return;
          }
          
@@ -132,7 +132,7 @@ package com.pblabs.rendering2D
       /**
        * @inheritDoc
        */
-      public function objectsUnderPoint(point:Point, mask:ObjectType, results:Array, scene:IDrawManager2D):Boolean
+      public function objectsUnderPoint(point:Point, mask:ObjectType, results:Array, scene:DisplayObjectScene):Boolean
       {
          var tmpResults:Array = new Array();
          

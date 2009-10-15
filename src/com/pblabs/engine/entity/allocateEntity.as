@@ -101,7 +101,7 @@ class Entity extends EventDispatcher implements IEntity
             // Error if it's an unexpected tag.
             if(componentXML.name().toString().toLowerCase() != "component")
             {
-                Logger.printError(this, "deserialize", "Found unexpected tag '" + componentXML.name().toString() + "', only <component/> is valid, ignoring tag. Error in entity '" + name + "'.");
+                Logger.error(this, "deserialize", "Found unexpected tag '" + componentXML.name().toString() + "', only <component/> is valid, ignoring tag. Error in entity '" + name + "'.");
                 continue;
             }
             
@@ -114,7 +114,7 @@ class Entity extends EventDispatcher implements IEntity
                 component = TypeUtility.instantiate(componentClassName) as IEntityComponent;
                 if (!component)
                 {
-                    Logger.printError(this, "deserialize", "Unable to instantiate component " + componentName + " of type " + componentClassName + " on entity '" + name + "'.");
+                    Logger.error(this, "deserialize", "Unable to instantiate component " + componentName + " of type " + componentClassName + " on entity '" + name + "'.");
                     continue;
                 }
                 
@@ -126,7 +126,7 @@ class Entity extends EventDispatcher implements IEntity
                 component = lookupComponentByName(componentName);
                 if (!component)
                 {
-                    Logger.printError(this, "deserialize", "No type specified for the component " + componentName + " and the component doesn't exist on a parent template for entity '" + name + "'.");
+                    Logger.error(this, "deserialize", "No type specified for the component " + componentName + " and the component doesn't exist on a parent template for entity '" + name + "'.");
                     continue;
                 }
             }
@@ -226,18 +226,18 @@ class Entity extends EventDispatcher implements IEntity
     {
         if (componentName == "")
         {
-            Logger.printWarning(this, "AddComponent", "A component name was not specified. This might cause problems later.");
+            Logger.warn(this, "AddComponent", "A component name was not specified. This might cause problems later.");
         }
 
         if (component.owner)
         {
-            Logger.printError(this, "AddComponent", "The component " + componentName + " already has an owner. (" + name + ")");
+            Logger.error(this, "AddComponent", "The component " + componentName + " already has an owner. (" + name + ")");
             return false;
         }
         
         if (_components[componentName])
         {
-            Logger.printError(this, "AddComponent", "A component with name " + componentName + " already exists on this entity (" + name + ").");
+            Logger.error(this, "AddComponent", "A component with name " + componentName + " already exists on this entity (" + name + ").");
             return false;
         }
         
@@ -249,13 +249,13 @@ class Entity extends EventDispatcher implements IEntity
     {
         if (component.owner != this)
         {
-            Logger.printError(this, "AddComponent", "The component " + component.name + " is not owned by this entity. (" + name + ")");
+            Logger.error(this, "AddComponent", "The component " + component.name + " is not owned by this entity. (" + name + ")");
             return false;
         }
         
         if (!_components[component.name])
         {
-            Logger.printError(this, "AddComponent", "The component " + component.name + " was not found on this entity. (" + name + ")");
+            Logger.error(this, "AddComponent", "The component " + component.name + " was not found on this entity. (" + name + ")");
             return false;
         }
         
@@ -307,7 +307,7 @@ class Entity extends EventDispatcher implements IEntity
             if(!cachedWalk)
             {
                 if(!suppressErrors)
-                    Logger.printWarning(this, "findProperty", "Could not resolve component named '" + cl[0] + "' for property '" + reference.property + "' with cached reference. " + Logger.getCallStack());
+                    Logger.warn(this, "findProperty", "Could not resolve component named '" + cl[0] + "' for property '" + reference.property + "' with cached reference. " + Logger.getCallStack());
                 Profiler.exit("Entity.findProperty");
                 return null;
             }
@@ -318,7 +318,7 @@ class Entity extends EventDispatcher implements IEntity
                 if(cachedWalk == null)
                 {
                     if(!suppressErrors)
-                        Logger.printWarning(this, "findProperty", "Could not resolve property '" + cl[i] + "' for property reference '" + reference.property + "' with cached reference"  + Logger.getCallStack());
+                        Logger.warn(this, "findProperty", "Could not resolve property '" + cl[i] + "' for property reference '" + reference.property + "' with cached reference"  + Logger.getCallStack());
                     Profiler.exit("Entity.findProperty");
                     return null;
                 }
@@ -349,7 +349,7 @@ class Entity extends EventDispatcher implements IEntity
             parentElem = lookupComponentByName(curLookup);
             if(!parentElem)
             {
-                Logger.printWarning(this, "findProperty", "Could not resolve component named '" + curLookup + "' for property '" + reference.property + "'");
+                Logger.warn(this, "findProperty", "Could not resolve component named '" + curLookup + "' for property '" + reference.property + "'");
                 Profiler.exit("Entity.findProperty");
                 return null;
             }
@@ -364,7 +364,7 @@ class Entity extends EventDispatcher implements IEntity
             parentElem = NameManager.instance.lookup(curLookup);
             if(!parentElem)
             {
-                Logger.printWarning(this, "findProperty", "Could not resolve named object named '" + curLookup + "' for property '" + reference.property + "'");
+                Logger.warn(this, "findProperty", "Could not resolve named object named '" + curLookup + "' for property '" + reference.property + "'");
                 Profiler.exit("Entity.findProperty");
                 return null;
             }
@@ -375,7 +375,7 @@ class Entity extends EventDispatcher implements IEntity
             var comLookup:IEntityComponent = (parentElem as IEntity).lookupComponentByName(curLookup);
             if(!comLookup)
             {
-                Logger.printWarning(this, "findProperty", "Could not find component '" + curLookup + "' on named entity '" + (parentElem as IEntity).name + "' for property '" + reference.property + "'");
+                Logger.warn(this, "findProperty", "Could not find component '" + curLookup + "' on named entity '" + (parentElem as IEntity).name + "' for property '" + reference.property + "'");
                 Profiler.exit("Entity.findProperty");
                 return null;
             }
@@ -388,7 +388,7 @@ class Entity extends EventDispatcher implements IEntity
             parentElem = TemplateManager.instance.getXML(curLookup, "template", "entity");
             if(!parentElem)
             {
-                Logger.printWarning(this, "findProperty", "Could not find XML named '" + curLookup + "' for property '" + reference.property + "'");
+                Logger.warn(this, "findProperty", "Could not find XML named '" + curLookup + "' for property '" + reference.property + "'");
                 Profiler.exit("Entity.findProperty");
                 return null;
             }
@@ -425,7 +425,7 @@ class Entity extends EventDispatcher implements IEntity
             // Error if we don't have it!
             if(!nextElem)
             {
-                Logger.printWarning(this, "findProperty", "Could not find component '" + path[1] + "' in XML template '" + path[0].slice(1) + "' for property '" + reference.property + "'");
+                Logger.warn(this, "findProperty", "Could not find component '" + path[1] + "' in XML template '" + path[0].slice(1) + "' for property '" + reference.property + "'");
                 Profiler.exit("Entity.findProperty");
                 return null;
             }
@@ -438,7 +438,7 @@ class Entity extends EventDispatcher implements IEntity
         }
         else
         {
-            Logger.printWarning(this, "findProperty", "Got a property path that doesn't start with !, #, or @. Started with '" + startChar + "' for property '" + reference.property + "'");
+            Logger.warn(this, "findProperty", "Got a property path that doesn't start with !, #, or @. Started with '" + startChar + "' for property '" + reference.property + "'");
             Profiler.exit("Entity.findProperty");
             return null;
         }
@@ -482,7 +482,7 @@ class Entity extends EventDispatcher implements IEntity
             
             if(gotEmpty)
             {
-                Logger.printWarning(this, "findProperty", "Could not resolve property '" + curLookup + "' for property reference '" + reference.property + "'");
+                Logger.warn(this, "findProperty", "Could not resolve property '" + curLookup + "' for property reference '" + reference.property + "'");
                 Profiler.exit("Entity.findProperty");
                 return null;
             }

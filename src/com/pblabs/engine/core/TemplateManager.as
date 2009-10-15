@@ -134,7 +134,7 @@ package com.pblabs.engine.core
             var xml:XML = getXML(name, "template", "entity");
             if (!xml)
             {
-               Logger.printError(this, "instantiateEntity", "Unable to find a template or entity with the name " + name + ".");
+               Logger.error(this, "instantiateEntity", "Unable to find a template or entity with the name " + name + ".");
                Profiler.exit("instantiateEntity");
                return null;
             }
@@ -144,7 +144,7 @@ package com.pblabs.engine.core
          }
          catch(e:Error)
          {
-            Logger.printError(this, "instantiateEntity", "Failed instantiating '" + name + "' due to: " + e.toString() + "\n" + e.getStackTrace());
+            Logger.error(this, "instantiateEntity", "Failed instantiating '" + name + "' due to: " + e.toString() + "\n" + e.getStackTrace());
             entity = null;
             Profiler.exit("instantiateEntity");
          }
@@ -193,7 +193,7 @@ package com.pblabs.engine.core
           }
           catch(e:Error)
           {
-              Logger.printError(this, "instantiateEntity", "Failed instantiating '" + name + "' due to: " + e.toString() + "\n" + e.getStackTrace());
+              Logger.error(this, "instantiateEntity", "Failed instantiating '" + name + "' due to: " + e.toString() + "\n" + e.getStackTrace());
               entity = null;
               Profiler.exit("instantiateEntity");
           }
@@ -236,7 +236,7 @@ package com.pblabs.engine.core
          }
          catch (e:Error)
          {
-            Logger.printError(this, "instantiateGroup", "Failed to instantiate group '" + name + "' due to: " + e.toString());
+            Logger.error(this, "instantiateGroup", "Failed to instantiate group '" + name + "' due to: " + e.toString());
             return null;
          }
          
@@ -259,13 +259,13 @@ package com.pblabs.engine.core
          var name:String = xml.attribute("name");
          if (name.length == 0)
          {
-            Logger.printWarning(this, "AddXML", "XML object description added without a 'name' attribute.");
+            Logger.warn(this, "AddXML", "XML object description added without a 'name' attribute.");
             return;
          }
          
          if (_things[name])
          {
-            Logger.printWarning(this, "AddXML", "An XML object description with name " + name + " has already been added.");
+            Logger.warn(this, "AddXML", "An XML object description with name " + name + " has already been added.");
             return;
          }
          
@@ -430,14 +430,14 @@ package com.pblabs.engine.core
          
          if (tree[templateName])
          {
-            Logger.printWarning(this, "instantiateTemplate", "Cyclical template detected. " + templateName + " has already been instantiated.");
+            Logger.warn(this, "instantiateTemplate", "Cyclical template detected. " + templateName + " has already been instantiated.");
             return false;
          }
          
          var templateXML:XML = getXML(templateName, "template");
          if (!templateXML)
          {
-            Logger.printWarning(this, "instantiate", "Unable to find the template " + templateName + ".");
+            Logger.warn(this, "instantiate", "Unable to find the template " + templateName + ".");
             return false;
          }
          
@@ -475,7 +475,7 @@ package com.pblabs.engine.core
                }
                catch(err:*)
                {
-                  Logger.printWarning(this, "instantiateGroup", "Failed to instantiate group '" + childName + "' from groupReference in '" + name + "' due to: " + err);
+                  Logger.warn(this, "instantiateGroup", "Failed to instantiate group '" + childName + "' from groupReference in '" + name + "' due to: " + err);
                   return false;
                }
             }
@@ -487,7 +487,7 @@ package com.pblabs.engine.core
             }
             else
             {
-               Logger.printWarning(this, "instantiateGroup", "Encountered unknown tag " + objectXML.name() + " in group.");
+               Logger.warn(this, "instantiateGroup", "Encountered unknown tag " + objectXML.name() + " in group.");
             }
          }
          

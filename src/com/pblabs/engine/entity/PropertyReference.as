@@ -25,7 +25,6 @@ package com.pblabs.engine.entity
      * @see IEntity#DoesPropertyExist()
      * @see IEntity#getProperty()
      * @see IEntity#setProperty()
-     * @see ../../../../../Reference/PropertySystem.html Property System Overview
      */
     public class PropertyReference implements ISerializable
     {
@@ -64,7 +63,7 @@ package com.pblabs.engine.entity
         public function deserialize(xml:XML):*
         {
             if(_property)
-                Logger.printWarning(this, "deserialize", "Overwriting property; was '" + _property + "', new value is '" + xml.toString() + "'");
+                Logger.warn(this, "deserialize", "Overwriting property; was '" + _property + "', new value is '" + xml.toString() + "'");
             _property = xml.toString();
             return this;
         }

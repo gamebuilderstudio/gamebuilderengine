@@ -8,7 +8,7 @@
  ******************************************************************************/
 package com.pblabs.rendering2D.ui
 {
-    import com.pblabs.engine.core.Global;
+    import com.pblabs.engine.PBE;
     
     import flash.display.DisplayObject;
     import flash.display.Sprite;
@@ -45,11 +45,14 @@ package com.pblabs.rendering2D.ui
         
         public function SceneView()
         {
-            Global.mainStage.addChild(this);
-            
-            // Intelligent default size.
-            width = Global.mainStage.stage.stageWidth;
-            height = Global.mainStage.stage.stageHeight;
+            if(PBE.mainStage)
+            {
+                PBE.mainStage.addChild(this);
+                
+                // Intelligent default size.
+                width = PBE.mainStage.stage.stageWidth;
+                height = PBE.mainStage.stage.stageHeight;                
+            }
         }
         
         public function addDisplayObject(dobj:DisplayObject):void
@@ -61,6 +64,16 @@ package com.pblabs.rendering2D.ui
         {
             while(numChildren)
                 removeChildAt(0);
+        }
+        
+        public function removeDisplayObject(dObj:DisplayObject):void
+        {
+            removeChild(dObj);
+        }
+        
+        public function setDisplayObjectIndex(dObj:DisplayObject, index:int):void
+        {
+            setChildIndex(dObj, index);
         }
         
         private var _width:Number = 0;

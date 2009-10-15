@@ -6,14 +6,14 @@
  * This file is licensed under the terms of the MIT license, which is included
  * in the License.html file at the root directory of this SDK.
  ******************************************************************************/
-package com.pblabs.rendering2D
+package com.pblabs.rendering2D.spritesheet
 {
     import com.pblabs.engine.resource.SWFResource;
-
+    
     import flash.display.*;
     import flash.geom.*;
     import flash.utils.Dictionary;
-
+    
     /**
      * A class that is similar to the SpriteSheetComponent
      * except the frames are loaded by rasterizing a MovieClip
@@ -27,7 +27,7 @@ package com.pblabs.rendering2D
          * with the same values for swf, smoothing, and clipName.
          */
         public var cached:Boolean = true;
-
+        
         /**
          * The SWF to be rasterized into frames.
          */
@@ -35,7 +35,7 @@ package com.pblabs.rendering2D
         {
             return _resource;
         }
-
+        
         public function set swf(value:SWFResource):void
         {
             _resource = value;
@@ -43,7 +43,7 @@ package com.pblabs.rendering2D
             _clip = null;
             deleteFrames();
         }
-
+        
         /**
          * The name of the clip to instantiate from the SWF.
          * If this is null the root clip will be used.
@@ -52,7 +52,7 @@ package com.pblabs.rendering2D
         {
             return _clipName;
         }
-
+        
         public function set clipName(value:String):void
         {
             _clipName = value;
@@ -60,7 +60,7 @@ package com.pblabs.rendering2D
             _clip = null;
             deleteFrames();
         }
-
+        
         /**
          * The bounds of the source MovieClip.
          * This can be used for clips that are expected to be rendered based on their bounds.
@@ -69,7 +69,7 @@ package com.pblabs.rendering2D
         {
             return _bounds;
         }
-
+        
         /**
          * Whether or not the bitmaps that are drawn should be smoothed. Default is True.
          */
@@ -81,18 +81,18 @@ package com.pblabs.rendering2D
         {
             _smoothing = value;
         }
-
+        
         override public function get isLoaded() : Boolean
         {
             if (!_resource) 
                 return false;
-
+            
             if (!_frames) 
                 rasterize();
-
+            
             return _frames != null;
         }
-
+        
         /**
          * Rasterizes the associated Clip and returns a list of frames.
          */
@@ -103,10 +103,10 @@ package com.pblabs.rendering2D
             
             if (!_frames)
                 rasterize();
-
+            
             return _frames;
         }
-
+        
         /**
          * Reads the frames from the cache. Returns a null reference if they are not cached.
          */
@@ -114,10 +114,10 @@ package com.pblabs.rendering2D
         {
             if (!cached) 
                 return null;
-
+            
             return _frameCache[getFramesCacheKey()] as CachedFramesData;
         }
-
+        
         /**
          * Caches the frames based on the current values.
          */
@@ -125,15 +125,30 @@ package com.pblabs.rendering2D
         {
             if (!cached) 
                 return;
-
+            
             _frameCache[getFramesCacheKey()] = frames;
         }
-
+        
         protected function getFramesCacheKey():String
         {
             return _resource.filename + ":" + (clipName ? clipName : "") + (_smoothing ? ":1" : ":0");
         }
-
+        
+        override protected function getRawFrame(index:int) : BitmapData
+        {
+            var frame:BitmapData = super.getRawFrame(index);
+            if (frame)
+                return frame;
+            
+            if (!_frames || !_clip)
+                return null;
+            
+            frame = rasterizeFrame(_clip, index + 1);
+            _frames[index] = frame;
+            
+            return frame;
+        }
+        
         /**
          * Rasterizes the clip into an Array of BitmapData objects.
          * This array can then be used just like a sprite sheet.
@@ -148,7 +163,7 @@ package com.pblabs.rendering2D
                 _clip = frames.clip;
                 return;
             }
-
+            
             if (_clipName)
             {
                 _clip = _resource.getExportedAsset(_clipName) as MovieClip;
@@ -159,12 +174,12 @@ package com.pblabs.rendering2D
             {
                 _clip = _resource.clip;
             }
-
+            
             _frames = onRasterize(_clip);
             _bounds = _clip.getBounds(_clip);
             setCachedFrames(new CachedFramesData(_frames, _bounds, _clip));
         }
-
+        
         /**
          * Performs the actual rasterizing. Override this to perform custom rasterizing of a clip.
          */
@@ -172,41 +187,44 @@ package com.pblabs.rendering2D
         {
             var maxFrames:int = swf.findMaxFrames(mc, mc.totalFrames);
             var rasterized:Array = new Array(maxFrames);
-
-            for(var i:int=1; i <= maxFrames; i++)
-            {
-                if (mc.totalFrames >= i)
-                    mc.gotoAndStop(i);
-
-                swf.advanceChildClips(mc, i);
-                var bd:BitmapData = getBitmapDataByDisplay(mc);            
-                rasterized[i - 1] = bd;
-            }
-
+            
+            if (maxFrames > 0)
+                rasterized[0] = rasterizeFrame(mc, 1);
+            
             return rasterized;
         }
-
-
+        
+        protected function rasterizeFrame(mc:MovieClip, frameIndex:int):BitmapData
+        {
+            if (mc.totalFrames >= frameIndex)
+                mc.gotoAndStop(frameIndex);
+            
+            swf.advanceChildClips(mc, frameIndex);
+            var bd:BitmapData = getBitmapDataByDisplay(mc);
+            
+            return bd;
+        }
+        
         /**
          * Draws the DisplayObject to a BitmapData using the bounds of the object.
          */
         protected function getBitmapDataByDisplay(display:DisplayObject):BitmapData 
         {
             var bounds:Rectangle = display.getBounds(display);
-
+            
             var bd:BitmapData = new BitmapData(
                 Math.max(1, Math.min(2880, bounds.width)),
                 Math.max(1, Math.min(2880, bounds.height)),
-                _smoothing,
+                true,
                 0x00000000);
-
+            
             bd.draw(display, new Matrix(1, 0, 0, 1, -bounds.x, -bounds.y), null, null, null, _smoothing);
-
+            
             return bd;
         }
-
+        
         protected static var _frameCache:Dictionary = new Dictionary(true);
-
+        
         private var _smoothing:Boolean = true;
         private var _frames:Array;
         private var _resource:SWFResource;

@@ -13,7 +13,7 @@ package com.pblabs.engine.core
     import flash.events.KeyboardEvent;
     import flash.events.MouseEvent;
 
-    import com.pblabs.engine.core.Global;
+    import com.pblabs.engine.PBE;
 
     /**
      * The input manager wraps the default input events produced by Flash to make
@@ -49,14 +49,14 @@ package com.pblabs.engine.core
 
         public function InputManager()
         {
-            Global.mainStage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
-            Global.mainStage.addEventListener(KeyboardEvent.KEY_UP,   onKeyUp);
-            Global.mainStage.addEventListener(MouseEvent.MOUSE_DOWN,  onMouseDown);
-            Global.mainStage.addEventListener(MouseEvent.MOUSE_UP,    onMouseUp);
-            Global.mainStage.addEventListener(MouseEvent.MOUSE_MOVE,  onMouseMove);
-            Global.mainStage.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel);
-            Global.mainStage.addEventListener(MouseEvent.MOUSE_OVER,  onMouseOver);
-            Global.mainStage.addEventListener(MouseEvent.MOUSE_OUT,   onMouseOut);
+            PBE.mainStage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+            PBE.mainStage.addEventListener(KeyboardEvent.KEY_UP,   onKeyUp);
+            PBE.mainStage.addEventListener(MouseEvent.MOUSE_DOWN,  onMouseDown);
+            PBE.mainStage.addEventListener(MouseEvent.MOUSE_UP,    onMouseUp);
+            PBE.mainStage.addEventListener(MouseEvent.MOUSE_MOVE,  onMouseMove);
+            PBE.mainStage.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel);
+            PBE.mainStage.addEventListener(MouseEvent.MOUSE_OVER,  onMouseOver);
+            PBE.mainStage.addEventListener(MouseEvent.MOUSE_OUT,   onMouseOut);
         }
 
         /**

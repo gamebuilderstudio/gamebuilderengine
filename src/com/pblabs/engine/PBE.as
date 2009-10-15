@@ -6,9 +6,11 @@ package com.pblabs.engine
 	import com.pblabs.rendering2D.*;
 	import com.pblabs.rendering2D.ui.*;
 	
+	import flash.display.DisplayObject;
+	import flash.display.DisplayObjectContainer;
 	import flash.display.Sprite;
+	import flash.display.Stage;
 	import flash.geom.*;
-	
 
 	/**
 	 * Utility class to simplify working with PushButton Engine.
@@ -72,43 +74,48 @@ package com.pblabs.engine
 		/**
 		 * Start the engine by giving it a reference to the root of the display hierarchy.
 		 */
-		public static function startup(mainClass:Sprite):void
+		static public function startup(mainClass:Sprite):void
 		{
-			Global.startup(mainClass);
+            Logger.print(PBE, "PushButton Engine - r523");
+			_main = mainClass;
+			
+			if (!IS_SHIPPING_BUILD && (_main.loaderInfo && _main.loaderInfo.parameters && _main.loaderInfo.parameters["generateSchema"] == "1"))
+				SchemaGenerator.instance.generateSchema();
+
+            Logger.startup();
 		}
-		
-		private static var spatialManager:ISpatialManager2D;
-		private static var theScene:Scene2DComponent;
 
 		/**
 		 * Helper function to set up a basic scene using default Rendering2D
 		 * classes. Very useful for getting started quickly.
 		 */
-		public static function initializeScene(theView:IUITarget, sceneName:String = "SceneDB"):void
+		static public function initializeScene(theView:IUITarget, sceneName:String = "SceneDB", sceneClass:Class = null, spatialManagerClass:Class = null):void
 		{
 			// You will notice this is straight out of lesson #2.
 			var scene:IEntity = allocateEntity();                                // Allocate our Scene entity
 			scene.initialize(sceneName);                                         // Register with the name "Scene"
 
-			var spatial:BasicSpatialManager2D = new BasicSpatialManager2D();     // Allocate our Spatial DB component
+			if(!spatialManagerClass)
+				spatialManagerClass = BasicSpatialManager2D;
+			
+			var spatial:BasicSpatialManager2D = new spatialManagerClass();     // Allocate our Spatial DB component
 			spatialManager = spatial;
 			scene.addComponent( spatial, "Spatial" );                            // Add to Scene with name "Spatial"
 			
-			var renderer:Scene2DComponent = new Scene2DComponent();               // Allocate our renderering component
-			theScene = renderer;
-			renderer.spatialDatabase = spatial;                                   // Point renderer at Spatial (for entity location information)
-			renderer.sceneView = theView;                                         // Point the Renderer's SceneView at the view we just created.
-			renderer.position = new Point(theView.width / 2, theView.height / 2); // Point the camera (center of render view) at 0,0
-			renderer.renderMask = new ObjectType("Renderable");                   // Set the render mask to only draw entities explicitly marked as "Renderable"
-			scene.addComponent( renderer, "Renderer" );                           // Add our Renderer component to the scene entity with the name "Renderer"			
+			if(!sceneClass)
+				sceneClass = DisplayObjectScene;
+			
+			theScene = new sceneClass();               // Allocate our renderering component
+            theScene.sceneView = theView;                                         // Point the Renderer's SceneView at the view we just created.
+			scene.addComponent( theScene, "Scene" );                           // Add our Renderer component to the scene entity with the name "Renderer"			
 		}
 		
-		public static function getSpatialManager():ISpatialManager2D
+		static public function getSpatialManager():ISpatialManager2D
 		{
 			return spatialManager;
 		}
 		
-		public static function getScene():Scene2DComponent
+		static public function getScene():IScene2D
 		{
 			return theScene;
 		}
@@ -181,12 +188,97 @@ package com.pblabs.engine
 				else
 				{
 					// Error case.
-					Logger.printError(PBE, "MakeEntity", "Unexpected key '" + key + "'; can only handle String or PropertyReference.");
+					Logger.error(PBE, "MakeEntity", "Unexpected key '" + key + "'; can only handle String or PropertyReference.");
 				}
 			}
 			
 			// Give it to the user.
 			return entity;
 		}
+        
+        /**
+         * Print a message to the log. 
+         * @param reporter Usually 'this'; the class initiating the logging.
+         * @param message The message to log.
+         * 
+         */
+        static public function log(reporter:*, message:String):void
+        {
+            Logger.(reporter, message);
+        }
+
+		/**
+		 * Set this to true to get rid of a bunch of development related functionality that isn't
+		 * needed in a final release build.
+		 */
+		public static const IS_SHIPPING_BUILD:Boolean = false;
+		
+		/**
+		 * The stage. This is the root of the display heirarchy and is automatically created by
+		 * flash when the application starts up.
+		 */
+		public static function get mainStage():Stage
+		{
+			if (!_main)
+				throw new Error("Cannot retrieve the global stage instance until mainClass has been set to the startup class!");
+			
+			return _main.stage;
+		}
+		
+		/**
+		 * A reference to the main class of the application. This must be set when the application
+		 * first loads as several core subsystems rely on it's presence.
+		 */
+		public static function get mainClass():Sprite
+		{
+			return _main;
+		}
+		
+		public static function gethostingDomain():String
+		{
+			// Get at the hosting domain.
+			var urlString:String = _main.stage.loaderInfo.url;
+			var urlParts:Array = urlString.split("://");
+			var wwwPart:Array = urlParts[1].split("/");
+			if(wwwPart.length)
+				return wwwPart[0];
+			else
+				return "[unknown]";
+		}
+		
+		/**
+		 * Recursively searches for an object with the specified name that has been added to the
+		 * display hierarchy.
+		 * 
+		 * @param name The name of the object to find.
+		 * 
+		 * @return The display object with the specified name, or null if it wasn't found.
+		 */
+		public static function findChild(name:String):DisplayObject
+		{
+			return _findChild(name, _main);
+		}
+		
+		private static function _findChild(name:String, parent:DisplayObjectContainer):DisplayObject
+		{
+			if (!parent)
+				return null;
+			
+			if (parent.name == name)
+				return parent;
+			
+			for (var i:int = 0; i < parent.numChildren; i++)
+			{
+				var child:DisplayObject = _findChild(name, parent.getChildAt(i) as DisplayObjectContainer);
+				if (child)
+					return child;
+			}
+			
+			return null;
+		}
+		
+		private static var _main:Sprite = null;		
+        static private var spatialManager:ISpatialManager2D;
+		static private var theScene:DisplayObjectScene;
 	}
 }
