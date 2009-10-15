@@ -8,7 +8,7 @@
  ******************************************************************************/
 package com.pblabs.engine.mxml
 {
-   import com.pblabs.engine.core.Global;
+   import com.pblabs.engine.PBE;
    import com.pblabs.engine.core.SchemaGenerator;
    
    import flash.utils.getQualifiedClassName;
@@ -38,7 +38,7 @@ package com.pblabs.engine.mxml
        */
       public function initialized(document:Object, id:String):void
       {
-         if (!Global.IS_SHIPPING_BUILD)
+         if (!PBE.IS_SHIPPING_BUILD)
          {
             var name:String = getQualifiedClassName(type);
             SchemaGenerator.instance.addClass(name, type);
