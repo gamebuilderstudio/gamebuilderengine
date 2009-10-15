@@ -132,7 +132,7 @@ package com.pblabs.rendering2D
       /**
        * @inheritDoc
        */
-      public function objectsUnderPoint(point:Point, mask:ObjectType, results:Array, scene:DisplayObjectScene):Boolean
+      public function objectsUnderPoint(point:Point, mask:ObjectType, results:Array, scene:IScene2D):Boolean
       {
          var tmpResults:Array = new Array();
          

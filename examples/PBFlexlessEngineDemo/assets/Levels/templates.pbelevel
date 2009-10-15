@@ -38,11 +38,12 @@
         <y>64</y>
       </size>
     </component>
-    <component type="com.pblabs.rendering2D.SpriteRenderComponent" name="Render">
-      <positionReference>@Spatial.position</positionReference>
-      <rotationReference>@Spatial.rotation</rotationReference>
-      <sizeReference>@Spatial.size</sizeReference>
-      <spriteSheet componentReference="PlatformSpriteSheet"/>
+    <component type="com.pblabs.rendering2D.SpriteSheetRenderer" name="Render">
+      <positionProperty>@Spatial.position</positionProperty>
+      <rotationProperty>@Spatial.rotation</rotationProperty>
+      <sizeProperty>@Spatial.size</sizeProperty>
+      <spriteSheet entityName="PlatformSpriteSheet"/>
+      <scene entityName="Scene"/>
     </component>
   </template>
 </things>

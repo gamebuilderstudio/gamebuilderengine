@@ -37,7 +37,7 @@ package com.pblabs.engine.resource
          if (data is ByteArray)
          {
          	// convert ByteArray data to a string
-         	data = data.toString();
+         	data = (data as ByteArray).readUTFBytes((data as ByteArray).length);
          }
             
          try

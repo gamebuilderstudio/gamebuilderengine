@@ -1,4 +1,11 @@
-<LevelDescriptions>
+<levelDescriptions>
+   <level index="0">
+      <file filename="../Assets/Levels/spriteSheets.pbelevel"/>
+      <group name="SpriteSheets"/>
+      <file filename="../Assets/Levels/templates.pbelevel"/>
+      <file filename="../Assets/Levels/common.pbelevel"/>
+      <group name="Common"/>
+   </level>
    <level index="1" name="Bowl">
       <file filename="../Assets/Levels/spriteSheets.pbelevel"/>
       <group name="SpriteSheets"/>
@@ -26,4 +33,4 @@
       <file filename="../Assets/Levels/level3.pbelevel"/>
       <group name="Level3Data"/>
    </level>
-</LevelDescriptions>
+</levelDescriptions>

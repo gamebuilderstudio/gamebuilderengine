@@ -9,7 +9,7 @@
 
 package
 {
-   import com.pblabs.engine.core.Global;
+   import com.pblabs.engine.PBE;
    import com.pblabs.engine.core.LevelManager;
    
    import flash.display.Sprite;
@@ -23,9 +23,8 @@ package
          _resources = new Resources();
          _references = new References();
          
-         Global.startup(this);
+         PBE.startup(this);
          
-         //LevelManager.instance.addEventListener(LevelEvent.LEVEL_LOADED_EVENT, _OnLevelLoaded);
          LevelManager.instance.load("../assets/levelDescriptions.xml");
          
          // Load first level momentarily.

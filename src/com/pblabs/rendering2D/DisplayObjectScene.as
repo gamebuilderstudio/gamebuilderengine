@@ -36,6 +36,8 @@ package com.pblabs.rendering2D
 
         public var minZoom:Number = .01;
         public var maxZoom:Number = 5;
+        public var sceneAlignment:String = SceneAlignment.DEFAULT_ALIGNMENT;
+        public var trackObject:DisplayObjectRenderer;
         
         public function DisplayObjectScene()
         {
@@ -138,11 +140,15 @@ package com.pblabs.rendering2D
         
         protected var _sceneViewBoundsCache:Rectangle = new Rectangle();
         
+        protected var _tempPoint:Point = new Point();
+        
         public function get sceneViewBounds():Rectangle
         {
             // What region of the scene are we currently viewing?
-            _sceneViewBoundsCache.x = -position.x - (sceneView.width / zoom) * 0.5; 
-            _sceneViewBoundsCache.y = -position.y - (sceneView.height / zoom) * 0.5;
+            SceneAlignment.calculate(_tempPoint, sceneAlignment, sceneView.width / zoom, sceneView.height / zoom);
+            
+            _sceneViewBoundsCache.x = -position.x - _tempPoint.x; 
+            _sceneViewBoundsCache.y = -position.y - _tempPoint.y;
             _sceneViewBoundsCache.width = sceneView.width / zoom;
             _sceneViewBoundsCache.height = sceneView.height / zoom;
             
@@ -267,7 +273,12 @@ package com.pblabs.rendering2D
             _rootTransform.identity();
             _rootTransform.translate(_rootPosition.x, _rootPosition.y);
             _rootTransform.scale(zoom, zoom);
-            _rootTransform.translate(sceneView.width * 0.5, sceneView.height * 0.5);
+            
+            // Center it appropriately.
+            SceneAlignment.calculate(_tempPoint, sceneAlignment, sceneView.width, sceneView.height);
+            _rootTransform.translate(_tempPoint.x, _tempPoint.y);
+            
+            // Apply rotation.
             _rootTransform.rotate(_rootRotation);
             
             _rootSprite.transform.matrix = _rootTransform;
@@ -279,6 +290,12 @@ package com.pblabs.rendering2D
             {
                 Logger.warn(this, "updateTransform", "sceneView is null, so we aren't rendering."); 
                 return;
+            }
+            
+            if(trackObject)
+            {
+                position = new Point(-(trackObject.sceneBounds.x + trackObject.sceneBounds.width * 0.5), 
+                                     -(trackObject.sceneBounds.y + trackObject.sceneBounds.height * 0.5));
             }
 
             updateTransform();

@@ -66,6 +66,6 @@ package com.pblabs.rendering2D
        * @param mask Only consider objects that match this ObjectType.
        * @param results An array into which ISpatialObject2Ds are added based on what is under point.
        */
-      function objectsUnderPoint(point:Point, mask:ObjectType, results:Array, scene:DisplayObjectScene):Boolean;
+      function objectsUnderPoint(point:Point, mask:ObjectType, results:Array, scene:IScene2D):Boolean;
    }
 }

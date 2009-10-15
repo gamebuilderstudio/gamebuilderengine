@@ -9,12 +9,12 @@
  
 package
 {
-   import com.pblabs.rendering2D.Scene2DComponent;
-   import com.pblabs.rendering2D.SpriteRenderComponent;
-   import com.pblabs.rendering2D.SpriteSheetComponent;
+   import com.pblabs.rendering2D.DisplayObjectScene;
+   import com.pblabs.rendering2D.SpriteSheetRenderer;
+   import com.pblabs.rendering2D.spritesheet.SpriteSheetComponent;
    import com.pblabs.rendering2D.SimpleSpatialComponent;
    import com.pblabs.rendering2D.BasicSpatialManager2D;
-   import com.pblabs.rendering2D.CellCountDivider;
+   import com.pblabs.rendering2D.spritesheet.CellCountDivider;
    import com.pblabs.box2D.Box2DDebugComponent;
    import com.pblabs.box2D.Box2DManagerComponent;
    import com.pblabs.box2D.Box2DSpatialComponent;
@@ -26,12 +26,12 @@ package
    
    public class References
    {
-      private var _scene2DComponent:com.pblabs.rendering2D.Scene2DComponent;
-      private var _spriteRenderComponent:com.pblabs.rendering2D.SpriteRenderComponent;
-      private var _spriteSheetComponent:com.pblabs.rendering2D.SpriteSheetComponent;
+      private var _scene2DComponent:com.pblabs.rendering2D.DisplayObjectScene;
+      private var _spriteRenderComponent:com.pblabs.rendering2D.SpriteSheetRenderer;
       private var _simpleSpatialComponent:com.pblabs.rendering2D.SimpleSpatialComponent;
       private var _basicSpatialManager2D:com.pblabs.rendering2D.BasicSpatialManager2D;
-      private var _cellCountDivider:com.pblabs.rendering2D.CellCountDivider;
+      private var _cellCountDivider:com.pblabs.rendering2D.spritesheet.CellCountDivider;
+      private var _spriteSheetComponent:com.pblabs.rendering2D.spritesheet.SpriteSheetComponent;
       private var _box2DDebugComponent:com.pblabs.box2D.Box2DDebugComponent;
       private var _box2DManagerComponent:com.pblabs.box2D.Box2DManagerComponent;
       private var _box2DSpatialComponent:com.pblabs.box2D.Box2DSpatialComponent;
