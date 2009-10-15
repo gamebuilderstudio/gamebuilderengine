@@ -1,8 +1,16 @@
-package com.pblabs.engine.debug.log4PBE
+package com.pblabs.engine.debug
 {
-   public class ExceptionAppender extends LogAppender
+   public class ExceptionAppender implements ILogAppender
    {
-      override public function addLogMessage(level:String, loggerName:String, errorNumber:int, message:String, arguments:Array):void
+	   public function addLogMessage(level:String, loggerName:String, message:String):void
+	   {
+		   if (level != "FATAL")
+			   return;
+		   
+		   throw new Error(message);
+	   }
+	   
+     /* public function addLogMessage(level:String, loggerName:String, message:String, arguments:Array):void
       {
          if (level != "FATAL")
             return;
@@ -12,6 +20,6 @@ package com.pblabs.engine.debug.log4PBE
             numberString = "Error #" + errorNumber;
          
          throw new Error(numberString + replace(message, arguments));
-      }
+      }*/
    }
 }

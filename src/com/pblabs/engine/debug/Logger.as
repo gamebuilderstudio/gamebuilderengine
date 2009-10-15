@@ -79,6 +79,24 @@ package com.pblabs.engine.debug
             processEntry(entry);
         }
         
+		/**
+		 * Prints an info message to the log. Log entries created with this method
+		 * will have the INFO type.
+		 * 
+		 * @param reporter The object that reported the warning. This can be null.
+		 * @param method The name of the method that the warning was reported from.
+		 * @param message The warning to print to the log.
+		 */
+		public static function info(reporter:*, method:String, message:String):void
+		{
+			var entry:LogEntry = new LogEntry();
+			entry.reporter = TypeUtility.getClass(reporter);
+			entry.method = method;
+			entry.message = method + " - " + message;
+			entry.type = LogEntry.INFO;
+			processEntry(entry);
+		}
+		
         /**
          * Prints a warning message to the log. Log entries created with this method
          * will have the WARNING type.
@@ -158,7 +176,13 @@ package com.pblabs.engine.debug
             owner = _owner;
             enabled = defaultEnabled;
         }
-
+		
+		public function info(method:String, message:String):void
+		{
+			if(enabled)
+				Logger.warn(owner, method, message);
+		}
+		
         public function warn(method:String, message:String):void
         {
             if(enabled)

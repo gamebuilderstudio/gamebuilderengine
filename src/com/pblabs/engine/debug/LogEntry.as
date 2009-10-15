@@ -31,6 +31,13 @@ package com.pblabs.engine.debug
        * @see Logger#PrintWarning()
        */
       public static const WARNING:String = "WARNING";
+	  
+	  /**
+	   * Entry type given to warnings.
+	   * 
+	   * @see Logger#PrintInfo()
+	   */
+	  public static const INFO:String = "INFO";
       
       /**
        * Entry type given to generic messages.
