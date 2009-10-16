@@ -5,6 +5,8 @@ package com.pblabs.engine
 	import com.pblabs.engine.entity.*;
 	import com.pblabs.rendering2D.*;
 	import com.pblabs.rendering2D.ui.*;
+	import com.pblabs.engine.version.VersionDetails;
+	import com.pblabs.engine.version.VersionUtil;
 	
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
@@ -22,6 +24,13 @@ package com.pblabs.engine
 	 */
 	public class PBE
 	{
+		private static var _main:Sprite = null;	
+		private static var _versionDetails:VersionDetails;
+		
+		private static var spatialManager:ISpatialManager2D;
+		private static var theScene:DisplayObjectScene;
+
+		
 		/**
 		 * Register a type with PushButton Engine so that it can be deserialized,
 		 * even if no code directly uses it.
@@ -74,10 +83,12 @@ package com.pblabs.engine
 		/**
 		 * Start the engine by giving it a reference to the root of the display hierarchy.
 		 */
-		static public function startup(mainClass:Sprite):void
+		public static function startup(mainClass:Sprite):void
 		{
-            Logger.print(PBE, "PushButton Engine - r523");
 			_main = mainClass;
+			_versionDetails = VersionUtil.checkVersion(mainClass);
+
+			Logger.print(PBE, "PushButton Engine - r523 - "+_versionDetails);
 			
 			if (!IS_SHIPPING_BUILD && (_main.loaderInfo && _main.loaderInfo.parameters && _main.loaderInfo.parameters["generateSchema"] == "1"))
 				SchemaGenerator.instance.generateSchema();
@@ -89,7 +100,7 @@ package com.pblabs.engine
 		 * Helper function to set up a basic scene using default Rendering2D
 		 * classes. Very useful for getting started quickly.
 		 */
-		static public function initializeScene(theView:IUITarget, sceneName:String = "SceneDB", sceneClass:Class = null, spatialManagerClass:Class = null):void
+		public static function initializeScene(theView:IUITarget, sceneName:String = "SceneDB", sceneClass:Class = null, spatialManagerClass:Class = null):void
 		{
 			// You will notice this is straight out of lesson #2.
 			var scene:IEntity = allocateEntity();                                // Allocate our Scene entity
@@ -110,12 +121,12 @@ package com.pblabs.engine
 			scene.addComponent( theScene, "Scene" );                           // Add our Renderer component to the scene entity with the name "Renderer"			
 		}
 		
-		static public function getSpatialManager():ISpatialManager2D
+		public static function getSpatialManager():ISpatialManager2D
 		{
 			return spatialManager;
 		}
 		
-		static public function getScene():IScene2D
+		public static function getScene():IScene2D
 		{
 			return theScene;
 		}
@@ -202,7 +213,7 @@ package com.pblabs.engine
          * @param message The message to log.
          * 
          */
-        static public function log(reporter:*, message:String):void
+        public static function log(reporter:*, message:String):void
         {
             Logger.(reporter, message);
         }
@@ -234,7 +245,12 @@ package com.pblabs.engine
 			return _main;
 		}
 		
-		public static function gethostingDomain():String
+		public static function get versionDetails():VersionDetails
+		{
+			return _versionDetails;
+		}
+		
+		public static function getHostingDomain():String
 		{
 			// Get at the hosting domain.
 			var urlString:String = _main.stage.loaderInfo.url;
@@ -277,8 +293,5 @@ package com.pblabs.engine
 			return null;
 		}
 		
-		private static var _main:Sprite = null;		
-        static private var spatialManager:ISpatialManager2D;
-		static private var theScene:DisplayObjectScene;
 	}
 }
