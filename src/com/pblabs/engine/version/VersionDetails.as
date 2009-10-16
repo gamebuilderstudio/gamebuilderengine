@@ -3,11 +3,11 @@ package com.pblabs.engine.version
 	public class VersionDetails extends Object
 	{
 		public var type:String;
-		public var version:String;
+		public var flexVersion:FlexSDKVersion;
 		
 		public function toString():String
 		{
-			return type + (version ? " ("+version+")" : "");	
+			return type + (flexVersion ? " ("+flexVersion+")" : "");	
 		}
 	}
 }

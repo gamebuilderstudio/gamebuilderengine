@@ -21,7 +21,7 @@ package com.pblabs.engine.version
 			{
 				detail.type = VersionType.AIR;
 				testClass = getDefinitionByName("spark.components::WindowedApplication");
-				detail.version = testClass.VERSION;
+				detail.flexVersion = new FlexSDKVersion(testClass.VERSION);
 				return detail;
 			}
 			
@@ -31,7 +31,7 @@ package com.pblabs.engine.version
 			{
 				detail.type = VersionType.AIR;
 				testClass = getDefinitionByName("mx.core::WindowedApplication");
-				detail.version = testClass.VERSION;
+				detail.flexVersion = new FlexSDKVersion(testClass.VERSION);
 				return detail;
 			}
 			
@@ -41,7 +41,7 @@ package com.pblabs.engine.version
 			{
 				detail.type = VersionType.FLEX;
 				testClass = getDefinitionByName("spark.components::Application");
-				detail.version = testClass.VERSION;
+				detail.flexVersion = new FlexSDKVersion(testClass.VERSION);
 				return detail;
 			}
 			
@@ -51,7 +51,7 @@ package com.pblabs.engine.version
 			{
 				detail.type = VersionType.FLEX;
 				testClass = getDefinitionByName("mx.core::Application");
-				detail.version = testClass.VERSION;
+				detail.flexVersion = new FlexSDKVersion(testClass.VERSION);
 				return detail;
 			}
 			
