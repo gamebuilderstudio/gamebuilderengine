@@ -180,7 +180,7 @@ package com.pblabs.engine.debug
 		public function info(method:String, message:String):void
 		{
 			if(enabled)
-				Logger.warn(owner, method, message);
+				Logger.info(owner, method, message);
 		}
 		
         public function warn(method:String, message:String):void
