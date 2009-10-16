@@ -26,11 +26,15 @@ package com.pblabs.rendering2D
             if (!spriteSheet || !spriteSheet.isLoaded)
                 return null;
             
-            if (!_setRegistration)
+            //if (!_setRegistration)
             {
 	            // Our registration point is the center of a frame as specified by the spritesheet
-    	        if (spriteSheet && spriteSheet.isLoaded && spriteSheet.center)
+    	        if(spriteSheet && spriteSheet.isLoaded && spriteSheet.center)
+                {
     	            registrationPoint = spriteSheet.center.clone();
+                    registrationPoint.x *= -1;
+                    registrationPoint.y *= -1;
+                }
     	        
     	        _setRegistration = true;
             }
