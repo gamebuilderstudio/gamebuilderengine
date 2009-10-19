@@ -166,7 +166,8 @@ package com.pblabs.engine.debug
 		
 		protected function processCommand():void
 		{
-			addLogMessage("CMD", "", "Processing Command: "+_input.text);
+			addLogMessage("CMD", ">", _input.text);
+            Console.processLine(_input.text);
 			_consoleHistory.push(_input.text);
 			_historyIndex = _consoleHistory.length;
 			_input.text = "";
