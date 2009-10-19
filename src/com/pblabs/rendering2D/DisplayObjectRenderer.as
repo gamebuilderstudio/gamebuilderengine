@@ -349,9 +349,10 @@ package com.pblabs.rendering2D
         {
             _transformMatrix.identity();
             _transformMatrix.scale(_scale.x, _scale.y);
+            _transformMatrix.translate(-_registrationPoint.x, -_registrationPoint.y);
             _transformMatrix.rotate(Utility.getRadiansFromDegrees(_rotation));
-            _transformMatrix.translate(_position.x - _registrationPoint.x, _position.y - _registrationPoint.y);
-
+            _transformMatrix.translate(_position.x , _position.y);
+            
             displayObject.transform.matrix = _transformMatrix;
             displayObject.alpha = _alpha;
             displayObject.visible = (alpha > 0);

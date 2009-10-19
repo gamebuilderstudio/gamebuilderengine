@@ -8,7 +8,7 @@ package com.pblabs.engine.debug
 {
 	import com.pblabs.engine.PBE;
 	import com.pblabs.engine.core.InputKey;
-    
+	
 	import flash.display.Sprite;
 	import flash.events.KeyboardEvent;
 	import flash.text.TextField;
@@ -117,6 +117,12 @@ package com.pblabs.engine.debug
 			return _input;
 		}
 		
+        protected function setHistory(old:String):void
+        {
+            _input.text = old;
+            _input.setSelection(old.length - 2, old.length - 1);            
+        }
+        
 		protected function onInputKeyDown(event:KeyboardEvent):void
 		{
 			if(event.keyCode == Keyboard.ENTER)
@@ -131,14 +137,14 @@ package com.pblabs.engine.debug
 			{
 				if(_historyIndex > 0)
 				{
-					_input.text = _consoleHistory[--_historyIndex];
+                    setHistory(_consoleHistory[--_historyIndex]); 
 				}
 			}
 			else if(event.keyCode == Keyboard.DOWN)
 			{
 				if(_historyIndex < _consoleHistory.length-1)
 				{
-					_input.text = _consoleHistory[++_historyIndex];
+                    setHistory(_consoleHistory[++_historyIndex]); 
 				}
 				else if (_historyIndex == _consoleHistory.length-1)
 				{
@@ -150,7 +156,7 @@ package com.pblabs.engine.debug
                 // Hide the console window, have to check here due to 
                 // propagation stop at end of function.
                 parent.removeChild(this);
-                this.deactivate();
+                deactivate();
             }
             
             // Keep console input from propagating up to the stage and messing up the game.
