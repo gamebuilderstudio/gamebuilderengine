@@ -56,7 +56,14 @@ package com.pblabs.engine.debug
             }
 
             // Now call the command.
-            potentialCommand.callback.apply(null, args.slice(1));
+            try
+            {
+                potentialCommand.callback.apply(null, args.slice(1));                
+            }
+            catch(e:Error)
+            {
+                Logger.error(Console, args[0], "Error: " + e.toString());
+            }
         }
         
         public static function init():void

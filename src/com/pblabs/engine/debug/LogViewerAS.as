@@ -7,7 +7,8 @@
 package com.pblabs.engine.debug
 {
 	import com.pblabs.engine.PBE;
-	
+	import com.pblabs.engine.core.InputKey;
+    
 	import flash.display.Sprite;
 	import flash.events.KeyboardEvent;
 	import flash.text.TextField;
@@ -144,7 +145,16 @@ package com.pblabs.engine.debug
 					_input.text = "";
 				}
 			}
-			
+            else if(event.keyCode == InputKey.TILDE.keyCode)
+            {
+                // Hide the console window, have to check here due to 
+                // propagation stop at end of function.
+                parent.removeChild(this);
+                this.deactivate();
+            }
+            
+            // Keep console input from propagating up to the stage and messing up the game.
+            event.stopImmediatePropagation();
 		}
 		
 		protected function truncateOutput():void

@@ -38,6 +38,8 @@ package com.pblabs.rendering2D
         public var maxZoom:Number = 5;
         public var sceneAlignment:String = SceneAlignment.DEFAULT_ALIGNMENT;
         public var trackObject:DisplayObjectRenderer;
+        protected var _sceneViewBoundsCache:Rectangle = new Rectangle();
+        protected var _tempPoint:Point = new Point();
         
         public function DisplayObjectScene()
         {
@@ -137,10 +139,6 @@ package com.pblabs.rendering2D
         {
             _sceneViewName = value;
         }
-        
-        protected var _sceneViewBoundsCache:Rectangle = new Rectangle();
-        
-        protected var _tempPoint:Point = new Point();
         
         public function get sceneViewBounds():Rectangle
         {
