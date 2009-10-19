@@ -17,13 +17,8 @@ package com.pblabs.engine.debug
       {
          InputManager.instance.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 		 
-	 	 // Try to create the flex LogViewer.
-		 _logViewer = TypeUtility.instantiate("com.pblabs.engine.debug.log4PBE.LogViewer", true);
-         if(!_logViewer)
-		 {
-			 // Fail over to ActionScript only Log Viewer
-			 _logViewer = new LogViewerAS();
-		 }
+		 // todo NB - Get rid of LogViewer.mxml and rename LogViewerAS to LogViewer
+		 _logViewer = new LogViewerAS();
       }
       
       private function onKeyDown(event:KeyboardEvent):void
@@ -34,11 +29,16 @@ package com.pblabs.engine.debug
 		 if(_logViewer)
 		 {
 			 if (_logViewer.parent)
-				 _logViewer.parent.removeChild(_logViewer); 
+			 {
+				 _logViewer.parent.removeChild(_logViewer);
+				 _logViewer.deactivate();
+			 }
 			 else
-				 PBE.mainClass.addChild(_logViewer);
-             
-             _logViewer.updateSize();
+			 {
+				 PBE.mainStage.addChild(_logViewer);
+				 _logViewer.activate();
+			 }
+			 
          }
       }
       
