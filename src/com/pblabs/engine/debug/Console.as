@@ -77,6 +77,11 @@ package com.pblabs.engine.debug
                     Logger.print(Console, "   " + cc.name + " - " + (cc.docs ? cc.docs : ""));
                 }
             }, "List known commands.");
+			
+			registerCommand("hatewreck", function():void
+			{
+				Logger.print("", "THIS IS PUSHBUTTON!!! kicks you down a well");
+			}, "");
         }
 	}
 }
