@@ -15,6 +15,7 @@ package com.pblabs.engine.debug
 	import flash.text.TextFieldType;
 	import flash.text.TextFormat;
 	import flash.ui.Keyboard;
+    import flash.utils.setTimeout;
 	
 	public class LogViewerAS extends Sprite implements ILogAppender
 	{
@@ -50,7 +51,7 @@ package com.pblabs.engine.debug
 		
 		protected function addListeners():void
 		{
-			_input.addEventListener(KeyboardEvent.KEY_DOWN, onInputKeyDown, false, 0, true);
+			_input.addEventListener(KeyboardEvent.KEY_DOWN, onInputKeyDown, false, 1, true);
 		}
 		
 		protected function removeListeners():void
@@ -120,7 +121,7 @@ package com.pblabs.engine.debug
         protected function setHistory(old:String):void
         {
             _input.text = old;
-            _input.setSelection(old.length - 2, old.length - 1);            
+            setTimeout(function():void { _input.setSelection(_input.length, _input.length); }, 0);
         }
         
 		protected function onInputKeyDown(event:KeyboardEvent):void
@@ -139,6 +140,12 @@ package com.pblabs.engine.debug
 				{
                     setHistory(_consoleHistory[--_historyIndex]); 
 				}
+                else
+                {
+                    setHistory(_consoleHistory[0]);
+                }
+                
+                event.preventDefault();
 			}
 			else if(event.keyCode == Keyboard.DOWN)
 			{
@@ -150,6 +157,8 @@ package com.pblabs.engine.debug
 				{
 					_input.text = "";
 				}
+                
+                event.preventDefault();
 			}
             else if(event.keyCode == InputKey.TILDE.keyCode)
             {
