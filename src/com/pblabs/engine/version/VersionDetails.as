@@ -1,6 +1,9 @@
 package com.pblabs.engine.version
 {
-	public class VersionDetails extends Object
+    /**
+     * Utility class to store version information. 
+     */
+	public class VersionDetails
 	{
 		public var type:String;
 		public var flexVersion:FlexSDKVersion;
