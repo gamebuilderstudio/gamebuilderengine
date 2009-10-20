@@ -41,7 +41,7 @@ package com.pblabs.rendering2D.spritesheet
          */
         public override function get isLoaded():Boolean
         {
-            return imageData != null;
+            return (imageData != null || _forcedBitmaps)
         }
         
         [EditorData(ignore="true")]
