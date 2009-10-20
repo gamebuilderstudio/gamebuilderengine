@@ -17,7 +17,7 @@ package com.pblabs.engine.debug
     import flash.ui.Keyboard;
     import flash.utils.setTimeout;
     
-    public class LogViewerAS extends Sprite implements ILogAppender
+    public class LogViewer extends Sprite implements ILogAppender
     {
         protected var _messageQueue:Array = [];
         protected var _maxLength:uint = 200000;
@@ -32,7 +32,7 @@ package com.pblabs.engine.debug
         protected var _output:TextField;
         protected var _input:TextField;
         
-        public function LogViewerAS():void
+        public function LogViewer():void
         {
             layout();
             addListeners();

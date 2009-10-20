@@ -3,7 +3,6 @@ package com.pblabs.engine.debug
    import com.pblabs.engine.PBE;
    import com.pblabs.engine.core.InputKey;
    import com.pblabs.engine.core.InputManager;
-   import com.pblabs.engine.serialization.TypeUtility;
    
    import flash.events.KeyboardEvent;
 
@@ -17,8 +16,7 @@ package com.pblabs.engine.debug
       {
          InputManager.instance.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 		 
-		 // todo NB - Get rid of LogViewer.mxml and rename LogViewerAS to LogViewer
-		 _logViewer = new LogViewerAS();
+		 _logViewer = new LogViewer();
       }
       
       private function onKeyDown(event:KeyboardEvent):void
