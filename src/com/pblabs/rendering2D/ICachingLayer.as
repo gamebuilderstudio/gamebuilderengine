@@ -1,5 +1,7 @@
 package com.pblabs.rendering2D
 {
+    import flash.geom.Rectangle;
+    
     /**
      * Interface for a scene layer which does caching and needs to know when a
      * renderer has changed its state.
@@ -12,5 +14,7 @@ package com.pblabs.rendering2D
          * @param dirtyRenderer The renderer which has changed.
          */
         function invalidate(dirtyRenderer:DisplayObjectRenderer):void;
+        
+        function invalidateRectangle(dirty:Rectangle):void;
     }
 }

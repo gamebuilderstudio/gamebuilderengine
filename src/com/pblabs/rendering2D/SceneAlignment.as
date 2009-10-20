@@ -2,6 +2,9 @@ package com.pblabs.rendering2D
 {
 	import flash.geom.Point;
 
+    /**
+     * Helper class for controlling alignment of scene relative to its position.
+     */
 	public final class SceneAlignment
 	{
 		public static const TOP_LEFT:String = "topLeft";
@@ -14,6 +17,14 @@ package com.pblabs.rendering2D
 		
 		// todo add additional alignments
 		
+        /**
+         * Given an alignment constant from this class, calculate 
+         * @param outPoint
+         * @param alignment
+         * @param sceneWidth
+         * @param sceneHeight
+         * 
+         */
 		public static function calculate(outPoint:Point, alignment:String, sceneWidth:int, sceneHeight:int):void
 		{
 			switch(alignment)

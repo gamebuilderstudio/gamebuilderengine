@@ -8,6 +8,9 @@ package com.pblabs.rendering2D
      */
 	public interface ILayerMouseHandler
 	{
+        /**
+         * @see IScene2D.getRenderersUnderPoint
+         */ 
         function getRenderersUnderPoint(screenPosition:Point, mask:ObjectType, results:Array):void;
 	}
 }

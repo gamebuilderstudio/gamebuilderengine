@@ -3,6 +3,9 @@ package com.pblabs.rendering2D
     import flash.display.*;
     import flash.geom.*;
     
+    /**
+     * Simple way to render a bitmap to a scene.
+     */
 	public class BitmapRenderer extends DisplayObjectRenderer
 	{
         protected var bitmap:Bitmap = new Bitmap();
@@ -18,6 +21,9 @@ package com.pblabs.rendering2D
             bitmap.pixelSnapping = PixelSnapping.AUTO;
 		}
                
+        /**
+         * @see Bitmap.smoothing 
+         */
         public function set smoothing(value:Boolean):void
         {
             _smoothing = value;
@@ -29,6 +35,11 @@ package com.pblabs.rendering2D
             return _smoothing;
         }
         
+        /**
+         * @see Bitmap.bitmapData 
+         * @return 
+         * 
+         */
         public function get bitmapData():BitmapData
         {
             return bitmap.bitmapData;

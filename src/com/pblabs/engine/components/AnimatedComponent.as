@@ -23,7 +23,6 @@ package com.pblabs.engine.components
          * OnFrame called before lower priorities.
          */
         public var updatePriority:Number = 0.0;
-
 		
 		/**
 		 * Set to false before onAdd is called to suppress registering for updates. 

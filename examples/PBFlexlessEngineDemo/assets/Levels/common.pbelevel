@@ -41,6 +41,10 @@
       <collidesWithTypes childType="String">
         <_0>Platform</_0>
       </collidesWithTypes>
+      <collisionType childType="String">
+        <_0>Dude</_0>
+        <_1>Renderable</_1>
+      </collisionType>
       <collisionShapes childType="com.pblabs.box2D.CollisionShape">
         <_0 type="com.pblabs.box2D.CircleCollisionShape">
           <offset type="">
@@ -49,10 +53,6 @@
           <radius>0.5</radius>
         </_0>
       </collisionShapes>
-      <collisionType childType="String">
-        <_0>Dude</_0>
-        <_1>Renderable</_1>
-      </collisionType>
       <manager componentReference="SpatialDB"/>
       <position type="">
         <x>400</x>

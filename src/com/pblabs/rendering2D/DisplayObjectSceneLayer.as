@@ -3,12 +3,32 @@ package com.pblabs.rendering2D
     import flash.display.Sprite;
     import flash.display.DisplayObject;
     
+    /**
+     * Layer within a DisplayObjectScene which manages a list of 
+     * DisplayObjectRenderers. The layer is responsible for keeping
+     * itself sorted. This is also a good site for custom render
+     * effects, parallaxing, etc.
+     */
     public class DisplayObjectSceneLayer extends Sprite
     {
+        /**
+         * Array.sort() compatible function used to determine draw order. 
+         */
         public var drawOrderFunction:Function;
-        public var rendererList:Array = new Array();
-        public var needSort:Boolean = false;
         
+        /**
+         * All the renderers in this layer. 
+         */
+        public var rendererList:Array = new Array();
+        
+        /**
+         * Set to true when we need to resort the layer. 
+         */
+        internal var needSort:Boolean = false;
+        
+        /**
+         * Default sort function, which orders by zindex.
+         */
         static public function defaultSortFunction(a:DisplayObjectRenderer, b:DisplayObjectRenderer):int
         {
             return a.zIndex - b.zIndex;
@@ -19,6 +39,9 @@ package com.pblabs.rendering2D
             drawOrderFunction = defaultSortFunction;
         }
         
+        /**
+         * Indicates this layer is dirty and needs to resort.
+         */
         public function markDirty():void
         {
             needSort = true;

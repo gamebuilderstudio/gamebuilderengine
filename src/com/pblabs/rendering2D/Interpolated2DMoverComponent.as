@@ -5,11 +5,18 @@ package com.pblabs.rendering2D
    
    import flash.geom.Point;
 
+   /**
+    * A simple spatial component which moves towards a goal point and heading. 
+    * Useful as a building block for more complex movement behaviors.
+    */
    public class Interpolated2DMoverComponent extends SimpleSpatialComponent
    {
       private var _goalPosition:Point = new Point();
 
       [EditorData(ignore="true")]
+      /**
+       * The goal to which we want to move.
+       */
       public function set goalPosition(value:Point):void
       {
           if(lockGoal)
@@ -24,42 +31,88 @@ package com.pblabs.rendering2D
       }
       
       [EditorData(ignore="true")]
+      /**
+       * The direction in which we want to face. 
+       * @see faceInMovementDirection
+       */
       public var goalRotation:Number = 0;
 
       [EditorData(defaultValue="5")]
+      /**
+       * How fast will we move towards our goal position? 
+       */
       public var translationSpeed:Number = 5.0;
 
       [EditorData(defaultValue="1")]
+      /**
+       * How quickly will we turn towards our goal heading? 
+       */
       public var rotationSpeed:Number = 0.2;
 
+      /**
+       * When true, we turn to face the goal position before moving towards it. 
+       */
       public var faceInMovementDirection:Boolean = false;
 
       [EditorData(defaultValue="1")]
+      /**
+       * Coefficient which allows the movement speed to be fudged.
+       */
       public var nudge:Number = 1.0;
 
+      /**
+       * Property to check to see if we can move. 
+       */
       public var allowMovementProperty:PropertyReference = null;
+
+      /**
+       * If the allowMovementProperty is equal to this value, allow movement. 
+       */
       public var allowMovementValue:String = null;
 
+      /**
+       * Within how many degrees must we be of our goal heading before we
+       * will start moving towards the goal position? 
+       */
       public var movementHeadingThreshold:Number = 100;
+      
+      /**
+       * If true, the goal position cannot be changed. Useful for when you have
+       * many other components trying to set the goal.
+       */
       public var lockGoal:Boolean = false;
 
+      /**
+       * Sets our position and goalPosition to the same value, useful for
+       * setting up initial state.
+       */
       public function set initialPosition(value:Point):void
       {
          goalPosition = value.clone();
          position = value.clone();
       }
 
+      /**
+       * Sets our rotation and goalRotation to the same value, useful for
+       * setting up initial state.
+       */
       public function set initialRotation(value:Number):void
       {
          goalRotation = value;
          rotation = value;
       }
 
+      /**
+       * How far are we from our goal position?
+       */
       public function get moveDelta():Point
       {
          return goalPosition.subtract(position).clone();
       }
 
+      /**
+       * Can we currently move (as determined by allowMovementProperty and allowMovementValue)? 
+       */
       private function get checkMovementAllowed():Boolean
       {
          if(!allowMovementProperty)

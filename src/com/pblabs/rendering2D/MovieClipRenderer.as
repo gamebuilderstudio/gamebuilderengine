@@ -4,9 +4,24 @@ package com.pblabs.rendering2D
     
     import flash.display.MovieClip;
 
+    /**
+     * Renderer which is for displaying MovieClips/SWFs and playing their
+     * animation correctly.
+     * 
+     * <p>It can be used one of two ways. You can either subclass it and
+     * override getClipInstance(), or you create one and set the clip 
+     * property.
+     */
 	public class MovieClipRenderer extends DisplayObjectRenderer
 	{
+        /**
+         * Framerate for playback. 
+         */
 		public var frameRate:Number = 25;
+
+        /**
+         * Should we loop the animation? 
+         */
 		public var loop:Boolean = false;
 		
         protected var _clipFrame:int;

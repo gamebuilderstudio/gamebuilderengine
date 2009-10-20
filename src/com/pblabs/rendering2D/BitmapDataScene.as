@@ -13,7 +13,7 @@ package com.pblabs.rendering2D
      */
 	public class BitmapDataScene extends DisplayObjectScene
 	{
-        public var backbuffer:BitmapData = new BitmapData(640, 480);
+        public var backbuffer:BitmapData;
         public var bitmap:Bitmap = new Bitmap();
         
         public override function set sceneView(value:IUITarget):void
@@ -38,7 +38,8 @@ package com.pblabs.rendering2D
             super.onFrame(elapsed);
 
             // Make sure back buffer is good.
-            if(backbuffer.width != sceneView.width 
+            if(!backBuffer 
+                || backbuffer.width != sceneView.width 
                 || backbuffer.height != sceneView.height)
             {
                 backbuffer = new BitmapData(sceneView.width, sceneView.height);

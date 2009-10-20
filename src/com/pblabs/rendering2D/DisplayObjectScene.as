@@ -5,6 +5,7 @@ package com.pblabs.rendering2D
     import com.pblabs.engine.core.ObjectType;
     import com.pblabs.engine.core.ObjectTypeManager;
     import com.pblabs.engine.debug.Logger;
+    import com.pblabs.engine.math.Utility;
     import com.pblabs.rendering2D.ui.IUITarget;
     
     import flash.display.DisplayObject;
@@ -17,10 +18,38 @@ package com.pblabs.rendering2D
      * Basic Rendering2D scene; it is given a SceneView and some 
      * DisplayObjectRenderers, and makes sure that they are drawn. Extensible
      * for more complex rendering scenarios. Enforces sorting order, too.
-     * 
      */
     public class DisplayObjectScene extends AnimatedComponent implements IScene2D
     {
+        /**
+         * Minimum allowed zoom level.
+         * 
+         * @see zoom 
+         */
+        public var minZoom:Number = .01;
+        
+        
+        /**
+         * Maximum allowed zoom level.
+         * 
+         * @see zoom 
+         */
+        public var maxZoom:Number = 1;
+        
+        /**
+         * How the scene is aligned relative to its position property.
+         * 
+         * @see SceneAlignment
+         * @see position 
+         */
+        public var sceneAlignment:String = SceneAlignment.DEFAULT_ALIGNMENT;
+        
+        /**
+         * If set, every frame, trackObject's position is read and assigned
+         * to the scene's position, so that the scene follows the trackObject.
+         */
+        public var trackObject:DisplayObjectRenderer;
+        
         protected var _sceneView:IUITarget;
         protected var _sceneViewName:String = null;
         protected var _rootSprite:Sprite;
@@ -34,13 +63,9 @@ package com.pblabs.rendering2D
         protected var _transformDirty:Boolean = true;
         protected var _currentWorldCenter:Point = new Point();
 
-        public var minZoom:Number = .01;
-        public var maxZoom:Number = 5;
-        public var sceneAlignment:String = SceneAlignment.DEFAULT_ALIGNMENT;
-        public var trackObject:DisplayObjectRenderer;
         protected var _sceneViewBoundsCache:Rectangle = new Rectangle();
         protected var _tempPoint:Point = new Point();
-        
+
         public function DisplayObjectScene()
         {
             // Get ticked after all the renderers.
@@ -79,20 +104,28 @@ package com.pblabs.rendering2D
             return _layers[index];
         }
         
-        public function invalidateRectangle(dirtyRect:Rectangle):void
+        public function invalidate(dirtyRenderer:DisplayObjectRenderer):void
         {
-            // TODO: Propagate to relevant layers.
+            var layerToDirty:DisplayObjectSceneLayer = getLayer(dirtyRenderer.layerIndex);
+            if(!layerToDirty)
+                return;
+            
+            if(layerToDirty is ICachingLayer)
+                ICachingLayer(layerToDirty).invalidate(dirtyRenderer);
         }
         
-        public function invalidate(dirtyRenderer:DisplayObjectRenderer):void
+        public function invalidateRectangle(dirty:Rectangle):void
         {
             for each(var l:DisplayObjectSceneLayer in _layers)
             {
                 if(l is ICachingLayer)
-                    (l as ICachingLayer).invalidate(dirtyRenderer);
-            }
+                    (l as ICachingLayer).invalidateRectangle(dirty);
+            }            
         }
         
+        /**
+         * Convenience function for subclasses to create a custom root sprite. 
+         */
         protected function generateRootSprite():Sprite
         {
             var s:Sprite = new Sprite();
@@ -102,6 +135,10 @@ package com.pblabs.rendering2D
             return s;
         }
         
+        /**
+         * Convenience funtion for subclasses to control what class of layer
+         * they are using.
+         */
         protected function generateLayer(layerIndex:int):DisplayObjectSceneLayer
         {
             var l:DisplayObjectSceneLayer = new DisplayObjectSceneLayer();
@@ -363,8 +400,7 @@ package com.pblabs.rendering2D
         public function set zoom(value:Number):void
         {
             // Make sure our zoom level stays within the desired bounds
-            value = Math.max(value, minZoom);
-            value = Math.min(value, maxZoom);
+            value = Utility.clamp(value, minZoom, maxZoom);
             
             if (_zoom == value)
                 return;
