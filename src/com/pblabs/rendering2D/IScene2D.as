@@ -63,6 +63,11 @@ package com.pblabs.rendering2D
          */
         function invalidate(dirtyRenderer:DisplayObjectRenderer):void;
         
+        /**
+         * Just like invalidate, but indicates a specific region in scene 
+         * coordinates. All layers will have that region redrawn.
+         * @param dirty The region to redraw.
+         */
         function invalidateRectangle(dirty:Rectangle):void;
         
         /**

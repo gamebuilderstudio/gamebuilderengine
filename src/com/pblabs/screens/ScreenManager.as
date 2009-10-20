@@ -62,6 +62,9 @@ package com.pblabs.screens
             return screenDictionary[name];
         }
         
+        /**
+         * Go to a named screen.
+         */
         private function set currentScreen(value:String):void
         {
             if(_currentScreen)

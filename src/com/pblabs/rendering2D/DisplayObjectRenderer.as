@@ -2,8 +2,8 @@ package com.pblabs.rendering2D
 {
     import com.pblabs.engine.components.AnimatedComponent;
     import com.pblabs.engine.core.ObjectType;
-    import com.pblabs.engine.entity.PropertyReference;
     import com.pblabs.engine.core.ProcessManager;
+    import com.pblabs.engine.entity.PropertyReference;
     import com.pblabs.engine.math.Utility;
     
     import flash.display.DisplayObject;
@@ -384,10 +384,20 @@ package com.pblabs.rendering2D
         
         override public function onFrame(elapsed:Number) : void
         {
-            // Lookup and apply properties. This only makes adjustments to the underlying DisplayObject if necessary.
+            // Lookup and apply properties. This only makes adjustments to the 
+            // underlying DisplayObject if necessary.
             if (!displayObject)
                 return;
             
+            updateProperties();
+            
+            // Now that we've read all our properties, apply them to our transform.
+            if (_transformDirty)
+                updateTransform();
+        }
+        
+        protected function updateProperties():void
+        {
             // Sync our zIndex.
             if (zIndexProperty)
                 zIndex = owner.getProperty(zIndexProperty, zIndex);
@@ -408,7 +418,7 @@ package com.pblabs.rendering2D
                 _layerIndex = tmp;
                 
                 _scene.add(this);
-            
+                
                 _lastLayerIndex = _layerIndex;
                 _layerIndexDirty = false;
             }
@@ -456,20 +466,23 @@ package com.pblabs.rendering2D
             if (reg)
             {
                 registrationPoint = reg;
-            }
-            
-            // Now that we've read all our properties, apply them to our transform.
-            if (_transformDirty)
-                updateTransform();
+            }            
         }
         
         /**
          * Update the object's transform based on its current state. Normally
          * called automatically, but in some cases you might have to force it
-         * to update immediately. 
+         * to update immediately.
+         * @param updateProps Read fresh values from any mapped properties. 
          */
-        public function updateTransform():void
+        public function updateTransform(updateProps:Boolean = false):void
         {
+            if(!displayObject)
+                return;
+            
+            if(updateProps)
+                updateProperties();
+            
             _transformMatrix.identity();
             _transformMatrix.scale(_scale.x, _scale.y);
             _transformMatrix.translate(-_registrationPoint.x, -_registrationPoint.y);

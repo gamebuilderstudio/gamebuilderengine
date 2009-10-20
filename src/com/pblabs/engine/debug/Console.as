@@ -3,15 +3,27 @@ package com.pblabs.engine.debug
 	import com.pblabs.engine.PBE;
 
     /**
-     * Process simple text commands from the user.
+     * Process simple text commands from the user. Useful for debugging.
      */ 
 	public class Console
 	{
         /**
-         * The commands. 
+         * The commands, indexed by name. 
          */
         protected static var commands:Object = {};
         
+        /**
+         * Register a command which the user can execute via the console.
+         * 
+         * <p>Arguments are parsed and cast to match the arguments in the user's
+         * function. Command names must be alphanumeric plus underscore with no
+         * spaces.</p>
+         *  
+         * @param name The name of the command as it will be typed by the user. No spaces.
+         * @param callback The function that will be called. Can be anonymous.
+         * @param docs A description of what the command does, its arguments, etc.
+         * 
+         */
         public static function registerCommand(name:String, callback:Function, docs:String = null):void
         {
             // Sanity checks.
@@ -37,6 +49,10 @@ package com.pblabs.engine.debug
             commands[name] = c;
         }
         
+        /**
+         * Take a line of console input and process it, executing any command.
+         * @param line String to parse for command.
+         */
         public static function processLine(line:String):void
         {
             // Register default commands.
@@ -68,6 +84,9 @@ package com.pblabs.engine.debug
             }
         }
         
+        /**
+         * Internal initialization, this will get called on its own. 
+         */
         public static function init():void
         {
             registerCommand("help", function():void

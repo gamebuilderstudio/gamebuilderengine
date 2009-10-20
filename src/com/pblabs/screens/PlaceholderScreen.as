@@ -3,6 +3,10 @@ package com.pblabs.screens
     import com.pblabs.rendering2D.ui.PBLabel;
     import flash.geom.*;
 
+    /**
+     * Simple placeholder screen which has a background fill and a caption in 
+     * the top left. Useful for blocking out your screen flow. 
+     */
 	public class PlaceholderScreen extends BaseScreen
 	{
 		public function PlaceholderScreen(caption:String, bgColor:uint)

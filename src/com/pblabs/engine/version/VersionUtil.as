@@ -7,6 +7,10 @@ package com.pblabs.engine.version
 	
 	use namespace mx_internal;
 
+    /**
+     * Utility class to determine the version of the Flex SDK we are compiled
+     * against, and what runtime we are on. 
+     */
 	public class VersionUtil
 	{
 		public static function checkVersion(mainClass:Sprite):VersionDetails

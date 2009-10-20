@@ -15,9 +15,9 @@ package com.pblabs.rendering2D.spritesheet
     import flash.utils.Dictionary;
     
     /**
-     * A class that is similar to the SpriteSheetComponent
-     * except the frames are loaded by rasterizing a MovieClip
-     * rather than a single image.
+     * A class that is similar to the SpriteSheetComponent except the frames
+     * are loaded by rasterizing frames from a MovieClip rather than splitting
+     * a single image.
      */
     public class SWFSpriteSheetComponent extends SpriteContainerComponent
     {
@@ -94,7 +94,7 @@ package com.pblabs.rendering2D.spritesheet
         }
         
         /**
-         * Rasterizes the associated Clip and returns a list of frames.
+         * Rasterizes the associated MovieClip and returns a list of frames.
          */
         override protected function getSourceFrames() : Array
         {

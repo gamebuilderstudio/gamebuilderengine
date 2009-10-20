@@ -38,7 +38,7 @@ package com.pblabs.rendering2D
             super.onFrame(elapsed);
 
             // Make sure back buffer is good.
-            if(!backBuffer 
+            if(!backbuffer 
                 || backbuffer.width != sceneView.width 
                 || backbuffer.height != sceneView.height)
             {

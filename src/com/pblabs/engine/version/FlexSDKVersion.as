@@ -1,5 +1,8 @@
 package com.pblabs.engine.version
 {
+    /**
+     * Utility class to parse Flex SDK version strings.  
+     */
 	public class FlexSDKVersion
 	{
 		public var major:uint;

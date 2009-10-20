@@ -16,6 +16,8 @@ package com.pblabs.rendering2D.spritesheet
     /**
      * An abstract class to allow access to a set of sprites.
      * This needs to be inherited to be of any use.
+     * @see SpriteSheetComponent
+     * @see SWFSpriteSheetComponent
      */
     public class SpriteContainerComponent extends EntityComponent
     {

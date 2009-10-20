@@ -2,6 +2,10 @@ package com.pblabs.screens
 {
     import flash.display.Sprite;
 
+    /**
+     * Most basic implementation of IScreen. You will probably want to use a
+     * subclass.
+     */
 	public class BaseScreen extends Sprite implements IScreen
 	{
 		public function onShow():void

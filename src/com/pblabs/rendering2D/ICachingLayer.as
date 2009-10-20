@@ -15,6 +15,10 @@ package com.pblabs.rendering2D
          */
         function invalidate(dirtyRenderer:DisplayObjectRenderer):void;
         
+        /**
+         * A region of the scene has become dirty and needs to be redrawn.
+         * @param dirty The region in screen coordinates that is dirtied.
+         */ 
         function invalidateRectangle(dirty:Rectangle):void;
     }
 }
