@@ -1,5 +1,7 @@
 package com.pblabs.engine.debug
 {
+	import com.pblabs.engine.PBE;
+
     /**
      * Process simple text commands from the user.
      */ 
@@ -85,10 +87,10 @@ package com.pblabs.engine.debug
                 }
             }, "List known commands.");
 			
-			registerCommand("hatewreck", function():void
+			registerCommand("version", function():void
 			{
-				Logger.print("", "THIS IS PUSHBUTTON!!! kicks you down a well");
-			}, "");
+				Logger.print(Console, "PushButton Engine - r"+ PBE.REVISION +" - "+PBE.versionDetails);
+			}, "Echo PushButton Engine version information.");
         }
 	}
 }

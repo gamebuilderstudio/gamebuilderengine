@@ -3,10 +3,10 @@ package com.pblabs.engine
 	import com.pblabs.engine.core.*;
 	import com.pblabs.engine.debug.*;
 	import com.pblabs.engine.entity.*;
-	import com.pblabs.rendering2D.*;
-	import com.pblabs.rendering2D.ui.*;
 	import com.pblabs.engine.version.VersionDetails;
 	import com.pblabs.engine.version.VersionUtil;
+	import com.pblabs.rendering2D.*;
+	import com.pblabs.rendering2D.ui.*;
 	
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
@@ -24,12 +24,13 @@ package com.pblabs.engine
 	 */
 	public class PBE
 	{
+		public static const REVISION:uint = 556;
+		
 		private static var _main:Sprite = null;	
 		private static var _versionDetails:VersionDetails;
 		
-		private static var spatialManager:ISpatialManager2D;
-		private static var theScene:DisplayObjectScene;
-
+		private static var _spatialManager:ISpatialManager2D;
+		private static var _scene:DisplayObjectScene;
 		
 		/**
 		 * Register a type with PushButton Engine so that it can be deserialized,
@@ -88,7 +89,7 @@ package com.pblabs.engine
 			_main = mainClass;
 			_versionDetails = VersionUtil.checkVersion(mainClass);
 
-			Logger.print(PBE, "PushButton Engine - r523 - "+_versionDetails);
+			Logger.print(PBE, "PushButton Engine - r"+ REVISION +" - "+_versionDetails);
 			
 			if (!IS_SHIPPING_BUILD && (_main.loaderInfo && _main.loaderInfo.parameters && _main.loaderInfo.parameters["generateSchema"] == "1"))
 				SchemaGenerator.instance.generateSchema();
@@ -100,7 +101,7 @@ package com.pblabs.engine
 		 * Helper function to set up a basic scene using default Rendering2D
 		 * classes. Very useful for getting started quickly.
 		 */
-		public static function initializeScene(theView:IUITarget, sceneName:String = "SceneDB", sceneClass:Class = null, spatialManagerClass:Class = null):void
+		public static function initializeScene(view:IUITarget, sceneName:String = "SceneDB", sceneClass:Class = null, spatialManagerClass:Class = null):void
 		{
 			// You will notice this is straight out of lesson #2.
 			var scene:IEntity = allocateEntity();                                // Allocate our Scene entity
@@ -110,25 +111,25 @@ package com.pblabs.engine
 				spatialManagerClass = BasicSpatialManager2D;
 			
 			var spatial:BasicSpatialManager2D = new spatialManagerClass();     // Allocate our Spatial DB component
-			spatialManager = spatial;
+			_spatialManager = spatial;
 			scene.addComponent( spatial, "Spatial" );                            // Add to Scene with name "Spatial"
 			
 			if(!sceneClass)
 				sceneClass = DisplayObjectScene;
 			
-			theScene = new sceneClass();               // Allocate our renderering component
-            theScene.sceneView = theView;                                         // Point the Renderer's SceneView at the view we just created.
-			scene.addComponent( theScene, "Scene" );                           // Add our Renderer component to the scene entity with the name "Renderer"			
+			_scene = new sceneClass();               // Allocate our renderering component
+            _scene.sceneView = view;                                         // Point the Renderer's SceneView at the view we just created.
+			scene.addComponent( _scene, "Scene" );                           // Add our Renderer component to the scene entity with the name "Renderer"			
 		}
 		
 		public static function getSpatialManager():ISpatialManager2D
 		{
-			return spatialManager;
+			return _spatialManager;
 		}
 		
 		public static function getScene():IScene2D
 		{
-			return theScene;
+			return _scene;
 		}
 		
 		/**
