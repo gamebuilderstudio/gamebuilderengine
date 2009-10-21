@@ -179,6 +179,18 @@ package com.pblabs.rendering2D
         
         public function get sceneViewBounds():Rectangle
         {
+            if(!sceneView)
+                return null;
+
+            // Make sure we are up to date with latest track.
+            if(trackObject)
+            {
+                position = new Point(-(trackObject.position.x), 
+                                     -(trackObject.position.y));
+            }
+            
+            updateTransform();
+
             // What region of the scene are we currently viewing?
             SceneAlignment.calculate(_tempPoint, sceneAlignment, sceneView.width / zoom, sceneView.height / zoom);
             
@@ -329,8 +341,8 @@ package com.pblabs.rendering2D
             
             if(trackObject)
             {
-                position = new Point(-(trackObject.sceneBounds.x + trackObject.sceneBounds.width * 0.5), 
-                                     -(trackObject.sceneBounds.y + trackObject.sceneBounds.height * 0.5));
+                position = new Point(-(trackObject.position.x), 
+                                     -(trackObject.position.y));
             }
 
             updateTransform();
