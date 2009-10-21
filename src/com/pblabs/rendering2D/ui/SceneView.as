@@ -45,9 +45,9 @@ package com.pblabs.rendering2D.ui
         
         public function SceneView()
         {
-            if(PBE.mainStage)
+            if(PBE.mainClass)
             {
-                PBE.mainStage.addChild(this);
+                PBE.mainClass.addChild(this);
                 
                 // Intelligent default size.
                 width = PBE.mainStage.stage.stageWidth;
