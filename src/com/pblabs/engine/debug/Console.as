@@ -110,6 +110,12 @@ package com.pblabs.engine.debug
 			{
 				Logger.print(Console, "PushButton Engine - r"+ PBE.REVISION +" - "+PBE.versionDetails);
 			}, "Echo PushButton Engine version information.");
+            
+            registerCommand("showFps", function():void
+            {
+                PBE.mainStage.addChild(new Stats());
+                Logger.print(Console, "Enabled FPS display.");
+            }, "Show an FPS/Memory usage indicator.");
         }
 	}
 }

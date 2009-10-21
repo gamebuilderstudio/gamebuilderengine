@@ -35,11 +35,8 @@ package com.pblabs.engine.debug
     import flash.text.TextFormat;
     import flash.utils.getTimer;
     
-    import mx.core.UIComponent;
-
-    public class Stats extends UIComponent
+    public class Stats extends Sprite
     {
-
         public function Stats()
         {
             addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
