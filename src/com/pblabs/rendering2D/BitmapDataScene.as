@@ -56,8 +56,13 @@ package com.pblabs.rendering2D
             // Now traverse everything and draw it!
             // TODO: Be friendly towards caching layers.
             var m:Matrix = new Matrix();
-            for each(var l:DisplayObjectSceneLayer in _layers)
+            for(var i:int=0; i<_layers.length; i++)
             {
+                var l:DisplayObjectSceneLayer = _layers[i];
+                
+                if(!l)
+                    continue;
+                
                 for each(var d:DisplayObjectRenderer in l.rendererList)
                 {
                     var localMat:Matrix = d.displayObject.transform.matrix;
