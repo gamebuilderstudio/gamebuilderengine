@@ -42,6 +42,11 @@ package com.pblabs.rendering2D
        * Return all the spatial objects that overlap with the specified box and match
        * one or more of the types in the mask.
        * 
+       * <p>Note that if you pass in a populated array, this method appends to it.
+       * This can be useful if you want to combine the results of several
+       * queries. If you just want the results from one query, make sure to
+       * set results.length=0; before you pass it to queryRectangle.</p>
+       * 
        * @return True if one or more objects were found and push()'ed to results.
        */ 
       function queryRectangle(box:Rectangle, mask:ObjectType, results:Array):Boolean;
