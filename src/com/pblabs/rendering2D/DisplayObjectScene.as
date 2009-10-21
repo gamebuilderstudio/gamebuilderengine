@@ -73,6 +73,13 @@ package com.pblabs.rendering2D
             _rootSprite = generateRootSprite();
         }
         
+        protected override function onRemove() : void
+        {
+            // Make sure we don't leave any lingering content.
+            if(_sceneView)
+                _sceneView.clearDisplayObjects();
+        }
+        
         public function get layerCount():int
         {
             return _layers.length;
