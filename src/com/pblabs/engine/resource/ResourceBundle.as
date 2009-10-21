@@ -41,6 +41,7 @@ package com.pblabs.engine.resource
             bmp:"com.pblabs.engine.resource.ImageResource",
             xml:"com.pblabs.engine.resource.XMLResource",
             pbelevel:"com.pblabs.engine.resource.XMLResource",
+            swf:"com.pblabs.engine.resource.SWFResource",
             mp3:"com.pblabs.engine.resource.MP3Resource"
         };
         

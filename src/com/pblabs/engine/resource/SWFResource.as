@@ -8,6 +8,8 @@
  ******************************************************************************/
 package com.pblabs.engine.resource 
 {
+    import com.pblabs.engine.PBE;
+    
     import flash.display.*;
     import flash.geom.*;
     import flash.system.ApplicationDomain;
@@ -128,9 +130,12 @@ package com.pblabs.engine.resource
             if(content)
                 _clip = content as MovieClip;
 
-            if (super.resourceLoader.contentLoaderInfo)
-                _appDomain = super.resourceLoader.contentLoaderInfo.applicationDomain;
-
+            // Get the app domain...
+            if (resourceLoader && resourceLoader.contentLoaderInfo)
+                _appDomain = resourceLoader.contentLoaderInfo.applicationDomain;
+            else if(content.loaderInfo)
+                _appDomain = content.loaderInfo.applicationDomain;
+            
             return _clip != null;
         }
 
