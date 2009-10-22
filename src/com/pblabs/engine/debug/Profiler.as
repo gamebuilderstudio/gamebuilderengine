@@ -27,7 +27,8 @@ package com.pblabs.engine.debug
    public class Profiler
    {
       public static var enabled:Boolean = false;
-      public static var nameFieldWidth:int = 80;
+      public static var nameFieldWidth:int = 50;
+      public static var indentAmount:int = 3;
 
       /**
        * Indicate we are entering a named execution block.
@@ -192,8 +193,16 @@ package com.pblabs.engine.debug
             displayNonSubTime = selfTime / Number(_rootNode.totalTime) * 100;
          
          // Print us.
-         var entry:String = sprintf( "%-" + (indent * 3) + "s%-" + (nameFieldWidth - indent * 3) + "s%-8s%-8s%-8s%-8s%-8s%-8s", "",
-            (hasKids ? "+" : "-") + pi.name, pi.activations, displayTime.toFixed(2), displayNonSubTime.toFixed(2), (Number(pi.totalTime) / Number(pi.activations)).toFixed(1), pi.minTime, pi.maxTime);
+         var entry:String = null;
+         if(indent == 0)
+         {
+             entry = "+Root";
+         }
+         else
+         {
+             entry = sprintf( "%-" + (indent * indentAmount) + "s%-" + (nameFieldWidth - indent * indentAmount) + "s%-8s%-8s%-8s%-8s%-8s%-8s", "",
+                 (hasKids ? "+" : "-") + pi.name, pi.activations, displayTime.toFixed(2), displayNonSubTime.toFixed(2), (Number(pi.totalTime) / Number(pi.activations)).toFixed(1), pi.minTime, pi.maxTime);             
+         }
          Logger.print(Profiler, entry);
          
          // Sort and draw our kids.
@@ -233,7 +242,7 @@ package com.pblabs.engine.debug
    }
 }
 
-class ProfileInfo
+final class ProfileInfo
 {
    public var name:String;
    public var children:Object = {};
@@ -243,13 +252,13 @@ class ProfileInfo
    public var maxTime:int = int.MIN_VALUE;
    public var minTime:int = int.MAX_VALUE;
    
-   public function ProfileInfo(n:String, p:ProfileInfo = null)
+   final public function ProfileInfo(n:String, p:ProfileInfo = null)
    {
       name = n;
       parent = p;
    }
    
-   public function wipe():void
+   final public function wipe():void
    {
       startTime = totalTime = activations = 0;
       maxTime = int.MIN_VALUE;

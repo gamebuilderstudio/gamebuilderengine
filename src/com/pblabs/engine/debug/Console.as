@@ -12,6 +12,8 @@ package com.pblabs.engine.debug
          */
         protected static var commands:Object = {};
         
+        public static var verbosity:int = 0;
+        
         /**
          * Register a command which the user can execute via the console.
          * 
@@ -116,6 +118,12 @@ package com.pblabs.engine.debug
                 PBE.mainStage.addChild(new Stats());
                 Logger.print(Console, "Enabled FPS display.");
             }, "Show an FPS/Memory usage indicator.");
+            
+            registerCommand("verbose", function(level:int):void
+            {
+                Console.verbosity = level;
+                Logger.print(Console, "Verbosity set to " + level);
+            }, "Set verbosity level of console output.");
         }
 	}
 }

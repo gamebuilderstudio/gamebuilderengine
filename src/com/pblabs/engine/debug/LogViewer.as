@@ -206,7 +206,16 @@ package com.pblabs.engine.debug
         {
             var color:String = LogColor.getColor(level);
             
-            var text:String = level + ": " + loggerName + " - " + message;
+            // Cut down on the logger level if verbosity requests.
+            if(Console.verbosity < 2)
+            {
+                var dotIdx:int = loggerName.lastIndexOf("::");
+                if(dotIdx != -1)
+                    loggerName = loggerName.substr(dotIdx + 2);
+            }
+            
+            var text:String = ((Console.verbosity > 0) ? level + ": " : "") + loggerName + " - " + message;
+
             if (_output)
             {
                 var append:String = "<p><font size=\"" +
