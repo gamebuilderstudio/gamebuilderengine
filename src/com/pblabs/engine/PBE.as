@@ -12,6 +12,8 @@ package com.pblabs.engine
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Sprite;
 	import flash.display.Stage;
+	import flash.display.StageAlign;
+	import flash.display.StageScaleMode;
 	import flash.geom.*;
 
 	/**
@@ -88,6 +90,10 @@ package com.pblabs.engine
 		{
 			_main = mainClass;
 			_versionDetails = VersionUtil.checkVersion(mainClass);
+			
+			// Set the stage alignment and scalemode
+			mainClass.stage.align = StageAlign.TOP_LEFT;
+			mainClass.stage.scaleMode = StageScaleMode.NO_SCALE;
 
 			Logger.print(PBE, "PushButton Engine - r"+ REVISION +" - "+_versionDetails);
 			
