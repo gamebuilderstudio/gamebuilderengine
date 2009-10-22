@@ -42,7 +42,7 @@ package com.pblabs.rendering2D
          * @see SceneAlignment
          * @see position 
          */
-        public var sceneAlignment:String = SceneAlignment.DEFAULT_ALIGNMENT;
+        public var sceneAlignment:SceneAlignment = SceneAlignment.DEFAULT_ALIGNMENT;
         
         /**
          * If set, every frame, trackObject's position is read and assigned

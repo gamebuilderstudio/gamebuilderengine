@@ -1,21 +1,54 @@
 package com.pblabs.rendering2D
 {
+	import com.pblabs.engine.serialization.Enumerable;
+	import com.pblabs.engine.serialization.ISerializable;
+	
 	import flash.geom.Point;
+	import flash.utils.Dictionary;
 
     /**
      * Helper class for controlling alignment of scene relative to its position.
      */
-	public final class SceneAlignment
+	public final class SceneAlignment extends Enumerable implements ISerializable
 	{
-		public static const TOP_LEFT:String = "topLeft";
-		public static const TOP_RIGHT:String = "topRight";
-		public static const BOTTOM_LEFT:String = "bottomLeft";
-		public static const BOTTOM_RIGHT:String = "bottomRight";
-		public static const CENTER:String = "center";
 		
-		public static const DEFAULT_ALIGNMENT:String = CENTER;
+		private static var _typeMap:Dictionary = null;
+		
+		public static const TOP_LEFT:SceneAlignment = new SceneAlignment();
+		public static const TOP_RIGHT:SceneAlignment = new SceneAlignment();
+		public static const BOTTOM_LEFT:SceneAlignment = new SceneAlignment();
+		public static const BOTTOM_RIGHT:SceneAlignment = new SceneAlignment();
+		public static const CENTER:SceneAlignment = new SceneAlignment();
+		
+		public static const DEFAULT_ALIGNMENT:SceneAlignment = CENTER;
 		
 		// todo add additional alignments
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function get typeMap():Dictionary
+		{
+			if (!_typeMap)
+			{
+				_typeMap = new Dictionary();
+				_typeMap["TOP_LEFT"] = TOP_LEFT;
+				_typeMap["TOP_RIGHT"] = TOP_RIGHT;
+				_typeMap["BOTTOM_LEFT"] = BOTTOM_LEFT;
+				_typeMap["BOTTOM_RIGHT"] = BOTTOM_RIGHT;
+				_typeMap["CENTER"] = CENTER;
+			}
+			
+			return _typeMap;
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function get defaultType():Enumerable
+		{
+			return CENTER;
+		}
 		
         /**
          * Given an alignment constant from this class, calculate 
@@ -25,7 +58,7 @@ package com.pblabs.rendering2D
          * @param sceneHeight
          * 
          */
-		public static function calculate(outPoint:Point, alignment:String, sceneWidth:int, sceneHeight:int):void
+		public static function calculate(outPoint:Point, alignment:SceneAlignment, sceneWidth:int, sceneHeight:int):void
 		{
 			switch(alignment)
 			{
