@@ -6,20 +6,20 @@ package com.pblabs.rendering2D
     /**
      * Simple way to render a bitmap to a scene.
      */
-	public class BitmapRenderer extends DisplayObjectRenderer
-	{
+    public class BitmapRenderer extends DisplayObjectRenderer
+    {
         protected var bitmap:Bitmap = new Bitmap();
         protected var _smoothing:Boolean = false;
 
-		public function BitmapRenderer()
-		{
-		    super();
+        public function BitmapRenderer()
+        {
+            super();
             
             _displayObject = new Sprite();
             (_displayObject as Sprite).addChild(bitmap);
             smoothing = true;
             bitmap.pixelSnapping = PixelSnapping.AUTO;
-		}
+        }
                
         /**
          * @see Bitmap.smoothing 
@@ -76,5 +76,5 @@ package com.pblabs.rendering2D
         }
         
         static protected var zeroPoint:Point = new Point();
-	}
+    }
 }

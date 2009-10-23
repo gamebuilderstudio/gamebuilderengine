@@ -1,16 +1,16 @@
 package com.pblabs.rendering2D
 {
-    import com.pblabs.rendering2D.ui.IUITarget;
     import com.pblabs.engine.core.ObjectType;
-    import flash.geom.Matrix;
+    import com.pblabs.rendering2D.ui.IUITarget;
+    
     import flash.geom.Point;
     import flash.geom.Rectangle;
     
     /**
      * Base interface for a 2d scene.
      */
-	public interface IScene2D
-	{
+    public interface IScene2D
+    {
         /**
          * Layers are assigned positive integers between 0 and N. This tells 
          * you what N is. This can be the same as how many layers there are,
@@ -117,6 +117,16 @@ package com.pblabs.rendering2D
          */
         function get sceneViewBounds():Rectangle;
         
+
+        function get trackLimitRectangle():Rectangle;
+
+        /**
+         * If set, this clamps the camera to scroll no further than its boundaries
+         */
+        function set trackLimitRectangle(value:Rectangle):void;
+        
+        
+        
         function transformWorldToScene(inPos:Point):Point;
         function transformSceneToWorld(inPos:Point):Point;
 
@@ -127,5 +137,5 @@ package com.pblabs.rendering2D
         function transformScreenToWorld(inPos:Point):Point;
         
         function sortSpatials(array:Array):void;
-	}
+    }
 }

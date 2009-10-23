@@ -9,8 +9,8 @@ package com.pblabs.rendering2D
     * @see IDrawManager2D
     * 
     */ 
-	public final class RenderCacheKeyManager
-	{
-	   public static var Token:int = 0;
-	}
+    public final class RenderCacheKeyManager
+    {
+       public static var Token:int = 0;
+    }
 }

@@ -65,6 +65,8 @@ package com.pblabs.rendering2D
 
         protected var _sceneViewBoundsCache:Rectangle = new Rectangle();
         protected var _tempPoint:Point = new Point();
+        
+        protected var _trackLimitRectangle:Rectangle = null;
 
         public function DisplayObjectScene()
         {
@@ -214,6 +216,23 @@ package com.pblabs.rendering2D
             _transformDirty = true;
         }
         
+        /**
+         * @inheritDoc
+         */
+        public function get trackLimitRectangle():Rectangle
+        {
+            return _trackLimitRectangle;
+        }
+        
+        /**
+         * @inheritDoc
+         */
+        public function set trackLimitRectangle(value:Rectangle):void
+        {
+            _trackLimitRectangle = value;
+        }
+        
+        
         public function add(dor:DisplayObjectRenderer):void
         {
             // Add to the appropriate layer.
@@ -350,6 +369,15 @@ package com.pblabs.rendering2D
             {
                 position = new Point(-(trackObject.position.x), 
                                      -(trackObject.position.y));
+            }
+            
+            if(trackLimitRectangle != null)
+            {
+            	var centeredLimitBounds:Rectangle = new Rectangle( trackLimitRectangle.x     + sceneView.width * 0.5, trackLimitRectangle.y      + sceneView.height * 0.5,
+            	                                                   trackLimitRectangle.width - sceneView.width      , trackLimitRectangle.height - sceneView.height );
+                
+                position = new Point(Utility.clamp(position.x, -centeredLimitBounds.right, -centeredLimitBounds.left ), 
+                                     Utility.clamp(position.y, -centeredLimitBounds.bottom, -centeredLimitBounds.top) );
             }
 
             updateTransform();
