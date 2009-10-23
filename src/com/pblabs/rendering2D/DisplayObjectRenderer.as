@@ -244,7 +244,12 @@ package com.pblabs.rendering2D
 		
 		public function set x(value:Number):void
 		{
-			_position.x = value;
+			var intX:int = int(value);
+			
+			if (intX == _position.x)
+				return;
+			
+			_position.x = intX;
 			_transformDirty = true;
 		}
 		
@@ -258,7 +263,12 @@ package com.pblabs.rendering2D
 		
 		public function set y(value:Number):void
 		{
-			_position.y = value;
+			var intY:int = int(value);
+			
+			if (intY == _position.y)
+				return;
+			
+			_position.y = intY;
 			_transformDirty = true;
 		}
         
