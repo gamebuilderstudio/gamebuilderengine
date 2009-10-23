@@ -38,6 +38,13 @@ package com.pblabs.engine.resource
                 return;
             }
             else
+            if (data is BitmapData)
+            {
+            	// If they gave us a BitmapData object create a new Bitmap from that
+                onContentReady(new Bitmap(data as BitmapData));
+                onLoadComplete();            	
+            }
+            else
             if (data is Sprite)
             {
             	// If they gave us a Sprite draw this onto a transparent filled BitmapData object
