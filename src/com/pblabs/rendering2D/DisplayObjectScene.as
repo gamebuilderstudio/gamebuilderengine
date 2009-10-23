@@ -198,6 +198,15 @@ package com.pblabs.rendering2D
                                      -(trackObject.position.y));
             }
             
+            if(trackLimitRectangle != null)
+            {
+                var centeredLimitBounds:Rectangle = new Rectangle( trackLimitRectangle.x     + sceneView.width * 0.5, trackLimitRectangle.y      + sceneView.height * 0.5,
+                                                                   trackLimitRectangle.width - sceneView.width      , trackLimitRectangle.height - sceneView.height );
+                
+                position = new Point(Utility.clamp(position.x, -centeredLimitBounds.right, -centeredLimitBounds.left ), 
+                                     Utility.clamp(position.y, -centeredLimitBounds.bottom, -centeredLimitBounds.top) );
+            }
+
             updateTransform();
 
             // What region of the scene are we currently viewing?
