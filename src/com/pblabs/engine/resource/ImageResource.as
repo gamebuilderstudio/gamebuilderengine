@@ -8,9 +8,9 @@
  ******************************************************************************/
 package com.pblabs.engine.resource
 {
-    import com.pblabs.engine.resource.Resource;
-    
     import flash.display.Bitmap;
+    import flash.display.BitmapData;
+    import flash.display.Sprite;
     
     [EditorData(extensions="jpg,png,gif")]
     
@@ -30,12 +30,23 @@ package com.pblabs.engine.resource
         
         override public function initialize(data:*):void
         {
-            // Directly load embedded resources if they gave us a Bitmap.
-            if(data is Bitmap)
+            if (data is Bitmap)
             {
+            	// Directly load embedded resources if they gave us a Bitmap.
                 onContentReady(data);
                 onLoadComplete();
                 return;
+            }
+            else
+            if (data is Sprite)
+            {
+            	// If they gave us a Sprite draw this onto a transparent filled BitmapData object
+            	var bmd:BitmapData = new BitmapData((data as Sprite).width,(data as Sprite).height,true,0x000000);
+            	bmd.draw((data as Sprite));
+            	// Use the BitmapData to create a new Bitmap for this ImageResource 
+                onContentReady(new Bitmap(bmd));
+                onLoadComplete();
+                return;            	
             }
             
             // Otherwise it must be a ByteArray, pass it over to the normal path.
