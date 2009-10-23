@@ -108,6 +108,5 @@ package com.pblabs.engine.math
         {
             return clamp((((Math.random() + bias) * (max - min)) + min), min, max);
         }
-        
     }
 }

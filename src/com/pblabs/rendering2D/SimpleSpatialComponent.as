@@ -24,6 +24,27 @@ package com.pblabs.rendering2D
        * The spatial manager this object belongs to.
        */
       [EditorData(referenceType="componentReference")]
+
+      public function get size():Point
+      {
+          return _size;
+      }
+
+      public function set size(value:Point):void
+      {
+          _size = value;
+      }
+
+      public function get position():Point
+      {
+          return _position;
+      }
+
+      public function set position(value:Point):void
+      {
+          _position = value;
+      }
+
       public function get spatialManager():ISpatialManager2D
       {
          return _spatialManager;
@@ -55,7 +76,7 @@ package com.pblabs.rendering2D
       /**
        * The position of the object.
        */
-      public var position:Point = new Point(0, 0);
+      private var _position:Point = new Point(0, 0);
       
       /**
        * The rotation of the object.
@@ -66,7 +87,7 @@ package com.pblabs.rendering2D
        * The size of the object.
        */
       [EditorData(defaultValue="100|100")]
-      public var size:Point = new Point(100, 100);
+      private var _size:Point = new Point(100, 100);
       
       /**
        * The linear velocity of the object in world units per second.

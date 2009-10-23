@@ -433,23 +433,6 @@ package com.pblabs.rendering2D
             if (layerIndexProperty)
                 layerIndex = owner.getProperty(layerIndexProperty, layerIndex);
             
-            // Make sure we're in the right layer and at the right zIndex in the scene.
-            if (_layerIndexDirty && _scene)
-            {
-                var tmp:int = _layerIndex;
-                _layerIndex = _lastLayerIndex;
-                
-                if(_lastLayerIndex != -1)
-                    _scene.remove(this);
-                
-                _layerIndex = tmp;
-                
-                _scene.add(this);
-                
-                _lastLayerIndex = _layerIndex;
-                _layerIndexDirty = false;
-            }
-            
             // Maybe we were in the right layer, but have the wrong zIndex.
             if (_zIndexDirty && _scene)
             {
@@ -493,6 +476,25 @@ package com.pblabs.rendering2D
             if (reg)
             {
                 registrationPoint = reg;
+            }
+
+            // Make sure we're in the right layer and at the right zIndex in the scene.
+            // Do this last to be more caching-layer-friendly. If we change position and
+            // layer we can just do this at end and it works.
+            if (_layerIndexDirty && _scene)
+            {
+                var tmp:int = _layerIndex;
+                _layerIndex = _lastLayerIndex;
+                
+                if(_lastLayerIndex != -1)
+                    _scene.remove(this);
+                
+                _layerIndex = tmp;
+                
+                _scene.add(this);
+                
+                _lastLayerIndex = _layerIndex;
+                _layerIndexDirty = false;
             }            
         }
         
