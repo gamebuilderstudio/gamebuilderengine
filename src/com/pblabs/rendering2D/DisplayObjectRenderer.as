@@ -2,7 +2,6 @@ package com.pblabs.rendering2D
 {
     import com.pblabs.engine.components.AnimatedComponent;
     import com.pblabs.engine.core.ObjectType;
-    import com.pblabs.engine.core.ProcessManager;
     import com.pblabs.engine.entity.PropertyReference;
     import com.pblabs.engine.math.Utility;
     
@@ -234,14 +233,32 @@ package com.pblabs.rendering2D
             _position.y = intY;
             _transformDirty = true;
         }
-        
+		
+		/**
+		 * The x value of our scene space position.
+		 */
+		public function get x():Number
+		{
+			return _position.x;
+		}
+		
+		public function set x(value:Number):void
+		{
+			_position.x = value;
+		}
+		
         /**
          * The y component of our scene space position. Used for sorting.
          */
-        public function get positionY():Number
+        public function get y():Number
         {
             return _position.y;
         }
+		
+		public function set y(value:Number):void
+		{
+			_position.y = value;
+		}
         
         /**
          * Convenience method to allow placing the renderer in world coordinates. 
