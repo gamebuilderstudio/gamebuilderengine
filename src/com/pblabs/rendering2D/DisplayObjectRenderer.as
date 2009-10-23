@@ -245,6 +245,7 @@ package com.pblabs.rendering2D
 		public function set x(value:Number):void
 		{
 			_position.x = value;
+			_transformDirty = true;
 		}
 		
         /**
@@ -258,6 +259,7 @@ package com.pblabs.rendering2D
 		public function set y(value:Number):void
 		{
 			_position.y = value;
+			_transformDirty = true;
 		}
         
         /**
