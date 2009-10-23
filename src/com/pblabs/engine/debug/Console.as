@@ -44,11 +44,11 @@ package com.pblabs.engine.debug
             c.callback = callback;
             c.docs = docs;
             
-            if(commands[name])
+            if(commands[name.toLowerCase()])
                 Logger.warn(Console, "registerCommand", "Replacing existing command '" + name + "'.");
             
             // Set it.
-            commands[name] = c;
+            commands[name.toLowerCase()] = c;
         }
         
         /**
@@ -67,7 +67,7 @@ package com.pblabs.engine.debug
             // Look up the command.
             if(args.length == 0)
                 return;
-            var potentialCommand:ConsoleCommand = commands[args[0].toString()]; 
+            var potentialCommand:ConsoleCommand = commands[args[0].toString().toLowerCase()]; 
             
             if(!potentialCommand)
             {
