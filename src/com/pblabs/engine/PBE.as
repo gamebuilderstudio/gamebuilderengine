@@ -284,17 +284,22 @@ package com.pblabs.engine
 			return _findChild(name, _main);
 		}
 		
-		private static function _findChild(name:String, parent:DisplayObjectContainer):DisplayObject
+		private static function _findChild(name:String, current:DisplayObject):DisplayObject
 		{
-			if (!parent)
+			if (!current)
 				return null;
 			
-			if (parent.name == name)
-				return parent;
+			if (current.name == name)
+				return current;
 			
+			var parent:DisplayObjectContainer = current as DisplayObjectContainer;
+			
+			if (!parent)
+			    return null;
+			     
 			for (var i:int = 0; i < parent.numChildren; i++)
 			{
-				var child:DisplayObject = _findChild(name, parent.getChildAt(i) as DisplayObjectContainer);
+				var child:DisplayObject = _findChild(name, parent.getChildAt(i));
 				if (child)
 					return child;
 			}
