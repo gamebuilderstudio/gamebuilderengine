@@ -15,6 +15,7 @@ package com.pblabs.engine
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
 	import flash.geom.*;
+	import flash.system.Security;
 
 	/**
 	 * Utility class to simplify working with PushButton Engine.
@@ -97,7 +98,7 @@ package com.pblabs.engine
 			mainClass.stage.align = StageAlign.TOP_LEFT;
 			mainClass.stage.scaleMode = StageScaleMode.NO_SCALE;
 
-			Logger.print(PBE, "PushButton Engine - r"+ REVISION +" - "+_versionDetails);
+			Logger.print(PBE, "PushButton Engine - r"+ REVISION +" - "+_versionDetails + " - " + Security.sandboxType);
 			
 			if (!IS_SHIPPING_BUILD && (_main.loaderInfo && _main.loaderInfo.parameters && _main.loaderInfo.parameters["generateSchema"] == "1"))
 				SchemaGenerator.instance.generateSchema();
