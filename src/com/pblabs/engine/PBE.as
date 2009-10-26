@@ -109,7 +109,7 @@ package com.pblabs.engine
 		 * Helper function to set up a basic scene using default Rendering2D
 		 * classes. Very useful for getting started quickly.
 		 */
-		public static function initializeScene(view:IUITarget, sceneName:String = "SceneDB", sceneClass:Class = null, spatialManagerClass:Class = null):void
+		public static function initializeScene(view:IUITarget, sceneName:String = "SceneDB", sceneClass:Class = null, spatialManagerClass:Class = null):IEntity
 		{
 			// You will notice this is straight out of lesson #2.
 			var scene:IEntity = allocateEntity();                                // Allocate our Scene entity
@@ -127,7 +127,9 @@ package com.pblabs.engine
 			
 			_scene = new sceneClass();               // Allocate our renderering component
             _scene.sceneView = view;                                         // Point the Renderer's SceneView at the view we just created.
-			scene.addComponent( _scene, "Scene" );                           // Add our Renderer component to the scene entity with the name "Renderer"			
+			scene.addComponent( _scene, "Scene" );                           // Add our Renderer component to the scene entity with the name "Renderer"
+			
+			return scene;
 		}
 		
 		public static function getSpatialManager():ISpatialManager2D
