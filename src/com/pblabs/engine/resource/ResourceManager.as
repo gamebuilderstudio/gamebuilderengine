@@ -10,8 +10,8 @@ package com.pblabs.engine.resource
 {
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.resource.provider.EmbeddedResourceProvider;
-    import com.pblabs.engine.resource.provider.IResourceProvider;
     import com.pblabs.engine.resource.provider.FallbackResourceProvider;
+    import com.pblabs.engine.resource.provider.IResourceProvider;
     import com.pblabs.engine.serialization.TypeUtility;
     
     import flash.events.Event;
@@ -22,9 +22,6 @@ package com.pblabs.engine.resource
      * The resource manager handles all tasks related to using asset files (images, xml, etc)
      * in a project. This includes loading files, managing embedded resources, and cleaninp up
      * resources no longer in use.
-     * 
-     * @see ../../../../../Reference/ResourceManager.html The Resource Manager
-     * @see ../../../../../Examples/UsingResources.html Using Resources
      */
     public class ResourceManager
     {
@@ -99,7 +96,10 @@ package com.pblabs.engine.resource
                 // Then it wasn't embedded, so error if we're configured for that. 
                 if(onlyLoadEmbeddedResources && !EmbeddedResourceProvider.instance.isResourceKnown(filename, resourceType))
                 {
-                    fail(null, onFailed, "'" + filename + "' was not loaded because it was not embedded in the SWF.");
+                    var tmpR:Resource = new Resource();
+                    tmpR.filename = filename;
+                    tmpR.fail("not embedded in the SWF with type " + resourceType + ".");
+                    fail(tmpR, onFailed, "'" + filename + "' was not loaded because it was not embedded in the SWF with type " + resourceType + ".");
                     if(onEmbeddedFail != null)
                         onEmbeddedFail(filename);
                     return;
@@ -233,6 +233,9 @@ package com.pblabs.engine.resource
         
         private function fail(resource:Resource, onFailed:Function, message:String):void
         {
+            if(!resource)
+                throw new Error("Tried to fail null resource.");
+            
             Logger.error(this, "Load", message);
             if (onFailed != null)
                 setTimeout(onFailed, 1, resource);

@@ -42,28 +42,35 @@ package com.pblabs.engine.resource
                 onLoadComplete();
                 return;
             }
-            else
-            if (data is BitmapData)
+            else if (data is BitmapData)
             {
             	// If they gave us a BitmapData object create a new Bitmap from that
                 onContentReady(new Bitmap(data as BitmapData));
                 onLoadComplete();            	
             }
-            else
-            if (data is Sprite)
+            else if (data is DisplayObject)
             {
-            	// get sprite's targetSpace
+                var dObj:DisplayObject = data as DisplayObject;
+                
+                // get sprite's targetSpace
             	var targetSpace:DisplayObject;
-            	((data as Sprite).parent)?targetSpace=(data as Sprite).parent:targetSpace=PBE.mainStage;
-            	// get sprite's rectangle 
-            	var spriteRect:Rectangle = (data as Sprite).getBounds(targetSpace);
-            	// create transform matrix for drawing this sprite;
+                if(dObj.parent)
+                    targetSpace = dObj.parent;
+                else
+                    targetSpace = PBE.mainStage;
+
+                // get sprite's rectangle 
+            	var spriteRect:Rectangle = dObj.getBounds(targetSpace);
+            	
+                // create transform matrix for drawing this sprite;
             	var m:Matrix = new Matrix();
-            	m.translate((spriteRect.x*-1),(spriteRect.y*-1));            	  
-            	// If they gave us a Sprite draw this onto a transparent filled BitmapData object
+            	m.translate(spriteRect.x*-1, spriteRect.y*-1);            	  
+            	
+                // If they gave us a Sprite draw this onto a transparent filled BitmapData object
             	var bmd:BitmapData = new BitmapData(spriteRect.width,spriteRect.height,true,0x000000);
-            	bmd.draw((data as Sprite),m);
-            	// Use the BitmapData to create a new Bitmap for this ImageResource 
+            	bmd.draw(dObj, m);
+            	
+                // Use the BitmapData to create a new Bitmap for this ImageResource 
                 onContentReady(new Bitmap(bmd));
                 onLoadComplete();
                 return;            	

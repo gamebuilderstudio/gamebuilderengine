@@ -66,8 +66,6 @@ package com.pblabs.rollyGame
          velocity.x += n.x * NormalForce;
          velocity.y += n.y * NormalForce;
          
-         //trace(n.toString());
-         
          // Apply drag.
          velocity.x *= DragCoefficient;
          velocity.y *= DragCoefficient;

@@ -10,6 +10,7 @@ package
     import com.pblabs.animation.*;
     import com.pblabs.engine.PBE;
     import com.pblabs.engine.core.*;
+    import com.pblabs.engine.resource.ResourceManager;
     import com.pblabs.rendering2D.*;
     import com.pblabs.rendering2D.spritesheet.*;
     import com.pblabs.rendering2D.ui.*;
@@ -27,6 +28,10 @@ package
         
         public function RollyBallGame()
         {
+            // Enable this to ensure all resources are embedded.
+            //ResourceManager.instance.onEmbeddedFail = trace;
+            //ResourceManager.instance.onlyLoadEmbeddedResources = true;
+            
             // Register our types.
             PBE.registerType(com.pblabs.rendering2D.DisplayObjectScene);
             PBE.registerType(com.pblabs.rendering2D.SpriteSheetRenderer);

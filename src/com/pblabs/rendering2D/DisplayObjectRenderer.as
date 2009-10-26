@@ -404,7 +404,7 @@ package com.pblabs.rendering2D
         {
             super.onRemove();
 
-            // Remove ourself from the scene when we are removed
+            // Remove ourselves from the scene when we are removed
             if(_scene && _displayObject)
                 _scene.remove(this);
         }

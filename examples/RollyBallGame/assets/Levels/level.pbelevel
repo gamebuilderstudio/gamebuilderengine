@@ -11,21 +11,21 @@
 	<entity name="BallSheet">
 		<component type="com.pblabs.rendering2D.spritesheet.SpriteSheetComponent"
 			name="SpriteSheet">
-			<image filename="../Assets/Images/ball.png" />
+			<image filename="../assets/Images/ball.png" />
 		</component>
 	</entity>
 
 	<entity name="CoinSheet">
 		<component type="com.pblabs.rendering2D.spritesheet.SpriteSheetComponent"
 			name="SpriteSheet">
-			<image filename="../Assets/Images/coin.png" />
+			<image filename="../assets/Images/coin.png" />
 		</component>
 	</entity>
 
 	<entity name="WelcomeSheet">
 		<component type="com.pblabs.rendering2D.spritesheet.SpriteSheetComponent"
 			name="SpriteSheet">
-			<image filename="../Assets/Images/welcome.png" />
+			<image filename="../assets/Images/welcome.png" />
 			<center>
 				<x>0</x>
 				<y>0</y>
@@ -82,21 +82,21 @@
 		<component type="com.pblabs.rollyGame.BallShadowRenderer"
 			name="Shadow">
             <scene entityName="Scene" componentName="Scene"/>
-			<Map componentReference="Level1Map" />
+			<Map entityName="LevelMap" />
 			<layerIndex>1</layerIndex>
 			<positionProperty>@Spatial.position</positionProperty>
 		</component>
 		<component type="com.pblabs.rollyGame.BallMover" name="Spatial">
-			<Map componentReference="Level1Map" />
+			<Map entityName="LevelMap" />
 			<position>
 				<x>320</x>
 				<y>240</y>
 			</position>
-			<PickupSound filename="../Assets/Sounds/pickup.mp3" />
+			<PickupSound filename="../assets/Sounds/pickup.mp3" />
 			<PickupType>
 				<_>Coin</_>
 			</PickupType>
-			<spatialManager componentReference="SpatialDB" />
+			<spatialManager entityName="SpatialDB" />
 			<size>
 				<x>32</x>
 				<y>32</y>
@@ -181,26 +181,22 @@
 		</component>
 	</template>
 
-	<entity name="Level1Map" template="BaseLevel">
+	<entity name="Level1Map" alias="LevelMap" template="BaseLevel">
 		<component name="Normal">
-			<image filename="../Assets/Images/level1_normal.png" />
+			<image filename="../assets/Images/level1_normal.png" />
 		</component>
 		<component name="Diffuse">
-			<image filename="../Assets/Images/level1_diffuse.png" />
+			<image filename="../assets/Images/level1_diffuse.png" />
 		</component>
 		<component name="Height">
-			<image filename="../Assets/Images/level1_height.png" />
+			<image filename="../assets/Images/level1_height.png" />
 		</component>
 	</entity>
 
 	<entity name="Player1" template="BasePlayer">
-		<component name="Shadow">
-			<Map componentReference="Level1Map" />
-		</component>
 		<component name="Spatial">
 			<OnFirstMoveAnimation componentReference="WelcomeScreen"
 				componentName="FadeAnimator" />
-			<Map componentReference="Level1Map" />
 		</component>
 	</entity>
 
@@ -210,30 +206,21 @@
 		<objectReference name="Coin" />
 	</group>
 
-	<entity name="Level2Map" template="BaseLevel">
+	<entity name="Level2Map" alias="LevelMap" template="BaseLevel">
 		<component name="Normal">
-			<image filename="../Assets/Images/level2_normal.png" />
+			<image filename="../assets/Images/level2_normal.png" />
 		</component>
 		<component name="Diffuse">
-			<image filename="../Assets/Images/level2_diffuse.png" />
+			<image filename="../assets/Images/level2_diffuse.png" />
 		</component>
 		<component name="Height">
-			<image filename="../Assets/Images/level2_height.png" />
-		</component>
-	</entity>
-
-	<entity name="Player2" template="BasePlayer">
-		<component name="Shadow">
-			<Map componentReference="Level2Map" />
-		</component>
-		<component name="Spatial">
-			<Map componentReference="Level2Map" />
+			<image filename="../assets/Images/level2_height.png" />
 		</component>
 	</entity>
 
 	<group name="Level2">
 		<objectReference name="Level2Map" />
-		<objectReference name="Player2" />
+		<objectReference name="BasePlayer" />
 		<objectReference name="Coin" />
 	</group>
 

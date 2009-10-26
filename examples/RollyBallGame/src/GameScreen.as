@@ -40,8 +40,6 @@ package
         
         public override function onFrame(delta:Number) : void
         {
-            stage.focus = stage;
-            
             // Update time.
             RollyBallGame.currentTime = RollyBallGame.levelDuration - (ProcessManager.instance.virtualTime - RollyBallGame.startTimer);
             if(RollyBallGame.currentTime >= 0)
