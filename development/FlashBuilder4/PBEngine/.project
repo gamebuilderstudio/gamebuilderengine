@@ -17,9 +17,9 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>[source path] src</name>
+			<name>pbe</name>
 			<type>2</type>
-			<locationURI>PBE/src</locationURI>
+			<locationURI>PBE</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
