@@ -1,6 +1,8 @@
 package com.pblabs.engine.debug
 {
 	import com.pblabs.engine.PBE;
+	
+	import flash.system.Security;
 
     /**
      * Process simple text commands from the user. Useful for debugging.
@@ -110,7 +112,8 @@ package com.pblabs.engine.debug
 			
 			registerCommand("version", function():void
 			{
-				Logger.print(Console, "PushButton Engine - r"+ PBE.REVISION +" - "+PBE.versionDetails);
+				Logger.print(Console, "PushButton Engine - r"+ PBE.REVISION +" - "+
+								PBE.versionDetails +" - "+Security.sandboxType);
 			}, "Echo PushButton Engine version information.");
             
             registerCommand("showFps", function():void
