@@ -79,6 +79,7 @@ package com.pblabs.engine.core
         public function simulateKeyDown(keyCode:int):void
         {
             dispatchEvent(new KeyboardEvent(KeyboardEvent.KEY_DOWN, true, false, 0, keyCode));
+            _keyState[keyCode] = true;
         }
 
         /**
@@ -92,6 +93,7 @@ package com.pblabs.engine.core
         public function simulateKeyUp(keyCode:int):void
         {
             dispatchEvent(new KeyboardEvent(KeyboardEvent.KEY_UP, true, false, 0, keyCode));
+            _keyState[keyCode] = false;
         }
 
         /**
