@@ -42,8 +42,6 @@ package com.pblabs.engine.resource
      * necessarily a requirement</p>
      * 
      * @see ResourceManager
-     * @see ../../../../../Examples/CreatingResources.html Creating Resources
-     * @see ../../../../../Examples/UsingResources.html Using Resources
      */
     public class Resource extends EventDispatcher
     {

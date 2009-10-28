@@ -83,7 +83,7 @@ package com.pblabs.engine.resource.provider
             } 
 						
 			// the resource has to be loaded so add to BulkLoader
-			loader.add(uri, { id : resourceIdentifier  } );
+			loader.add(uri, { id : resourceIdentifier, type:"binary"  } );
 			if (!loader.isRunning) loader.start();	
 
 			// let BulkLoader give a notification when this resource has been
@@ -106,7 +106,7 @@ package com.pblabs.engine.resource.provider
 		{
 			// if resource of current LoadingItem exists, initialize it. 			
 			if (resources[(event.currentTarget as LoadingItem).id]!=null)
-			   (resources[(event.currentTarget as LoadingItem).id] as Resource).initialize(loader.getContent( (event.currentTarget as LoadingItem).id ));
+			   (resources[(event.currentTarget as LoadingItem).id] as Resource).initialize(loader.getBinary( (event.currentTarget as LoadingItem).id ));
 		}		
 
 		private function resourceError(event:ErrorEvent):void

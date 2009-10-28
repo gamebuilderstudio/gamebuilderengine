@@ -84,7 +84,7 @@ package com.pblabs.engine.debug
             }
             catch(e:Error)
             {
-                Logger.error(Console, args[0], "Error: " + e.toString());
+                Logger.error(Console, args[0], "Error: " + e.toString() + " - " + e.getStackTrace());
             }
         }
         
