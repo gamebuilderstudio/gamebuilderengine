@@ -108,5 +108,36 @@ package com.pblabs.engine.math
         {
             return clamp((((Math.random() + bias) * (max - min)) + min), min, max);
         }
+        
+        /**
+         * Assigns parameters from source to destination by name.
+         * 
+         * <p>This allows duck typing - you can accept a generic object
+         * (giving you nice {foo:bar} syntax) and cast to a typed object for
+         * easier internal processing and validation.</p>
+         * 
+         * @param source Object to read fields from.
+         * @param dest Object to assign fields to.
+         * @param abortOnMismatch If true, throw an error if a field in source is absent in destination.
+         * 
+         */
+        public static function duckAssign(source:Object, destination:Object, abortOnMismatch:Boolean = false):void
+        {
+            for(var field:String in source)
+            {
+                try
+                {
+                    // Try to assign.
+                    destination[field] = source[field];
+                }
+                catch(e:Error)
+                {
+                    // Abort or continue, depending on user settings.
+                    if(!abortOnMismatch)
+                        continue;
+                    throw new Error("Field '" + field + "' in source was not present in destination.");
+                }
+            }
+        }
     }
 }
