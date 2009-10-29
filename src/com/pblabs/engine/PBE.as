@@ -35,6 +35,8 @@ package com.pblabs.engine
 		private static var _spatialManager:ISpatialManager2D;
 		private static var _scene:DisplayObjectScene;
 		
+        private static var _stageQualityStack:Array = [];
+        
 		/**
 		 * Register a type with PushButton Engine so that it can be deserialized,
 		 * even if no code directly uses it.
@@ -273,6 +275,32 @@ package com.pblabs.engine
 			else
 				return "[unknown]";
 		}
+        
+        /**
+         * Set stage quality to a new value, and store the old value so we
+         * can restore it later. Useful if you want to temporarily toggle
+         * render quality.
+         *  
+         * @param newQuality From StafeQuality, new quality level to use. 
+         */
+        public static function pushStageQuality(newQuality:String):void
+        {
+            _stageQualityStack.push(mainStage.quality);
+            mainStage.quality = newQuality;
+        }
+        
+        /**
+         * Restore stage quality to previous value.
+         * 
+         * @see pushStageQuality
+         */
+        public static function popStageQuality():void
+        {
+            if(_stageQualityStack.length == 0)
+                throw new Error("Bottomed out in stage quality stack! You have mismatched push/pop calls!");
+            
+            mainStage.quality = _stageQualityStack.pop();
+        }
 		
 		/**
 		 * Recursively searches for an object with the specified name that has been added to the
