@@ -4,7 +4,6 @@ package com.pblabs.engine.resource.provider
 	import com.pblabs.engine.resource.ResourceManager;
 	
 	import flash.utils.Dictionary;
-	import flash.utils.getQualifiedClassName;
 	
     /**
      * The ResourceProviderBase class can be extended to create a ResourceProvider 
@@ -12,10 +11,14 @@ package com.pblabs.engine.resource.provider
      */
 	public class ResourceProviderBase implements IResourceProvider
 	{
-		public function ResourceProviderBase()
+		public function ResourceProviderBase(registerProvider:Boolean = true)
 		{
 			// register this ResourceProvider with the ResourceManager
-			ResourceManager.instance.registerResourceProvider(this);			
+			if (registerProvider)
+			  ResourceManager.instance.registerResourceProvider(this);
+			
+			// create the Dictionary object that will keep all resources 			
+			resources = new Dictionary();
 		}
 
         /**
@@ -49,7 +52,7 @@ package com.pblabs.engine.resource.provider
 		// ------------------------------------------------------------
 		// private and protected variables
 		// ------------------------------------------------------------
-        protected var resources:Dictionary = new Dictionary();
+        protected var resources:Dictionary;
 		
 	}
 }

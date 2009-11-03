@@ -5,11 +5,10 @@ package com.pblabs.engine.resource.provider
 	import br.com.stimuli.loading.loadingtypes.LoadingItem;
 	
 	import com.pblabs.engine.resource.Resource;
-	import com.pblabs.engine.resource.XMLResource;
 	
+	import flash.display.Bitmap;
 	import flash.events.ErrorEvent;
 	import flash.events.Event;
-	import flash.utils.ByteArray;
 	
     /**
      * The BulkLoaderResourceProvider  provides the ResourceManager with resources
@@ -35,18 +34,11 @@ package com.pblabs.engine.resource.provider
         /**
          * Constructor
          */
-		public function BulkLoaderResourceProvider(name:String, numConnections:int = 12)
+		public function BulkLoaderResourceProvider(name:String, numConnections:int = 12, registerAsProvider:Boolean=true)
 		{
-			// call ResourceProviderBase constructor to auto-register this provider
-			// with the ResourceManager
-			super();
-									 
+			super(registerAsProvider);									 
 			// create this provider's bulk loader object
 			loader = new BulkLoader(name, numConnections);
-			
-			// attach processed and progress events to BulkLoader
-			loader.addEventListener(BulkProgressEvent.COMPLETE, resourcesLoaded)
-			loader.addEventListener(BulkProgressEvent.PROGRESS, resourcesProgress)			
 		}
 
         /**
@@ -54,20 +46,37 @@ package com.pblabs.engine.resource.provider
         */
 		public override function getResource(uri:String, type:Class, forceReload:Boolean = false):Resource
 		{
-           	var resourceIdentifier:String = uri.toLowerCase() + type;
-			if (forceReload)
+            var resourceIdentifier:String = uri.toLowerCase() + type;
+            
+            // if resource is known return it.
+            if (resources[resourceIdentifier]!=null && !forceReload) 
+            {
+             	return resources[resourceIdentifier];
+            }
+            
+            if (loader.get(resourceIdentifier)!=null)
+            	loader.remove(resourceIdentifier);
+            
+			// the resource has to be loaded so add to BulkLoader
+			loader.add(uri, { id : resourceIdentifier, type:"binary"  } );
+			if (!loader.isRunning) loader.start();	
+
+			// let BulkLoader give a notification when this resource has been
+			// load so we can initialize it.
+			loader.get(resourceIdentifier).addEventListener(Event.COMPLETE,resourceLoaded)
+			loader.get(resourceIdentifier).addEventListener(BulkLoader.ERROR,resourceError)
+			
+			if (resources[resourceIdentifier]==null)
 			{
-				if (loader.get( resourceIdentifier )!=null)
-				{
-					// let BulkLoader give a notification when this resource has been
-					// load so we can initialize it.
-				    loader.get(resourceIdentifier).addEventListener(Event.COMPLETE,resourceLoaded)					
-					loader.get(resourceIdentifier).addEventListener(BulkLoader.ERROR,resourceError)					
-					loader.reload(resourceIdentifier);
-					if (!loader.isRunning) loader.start();					
-				}				            	 					
-			}			
-			return resources[resourceIdentifier];
+				// create resource and provide it to the ResourceManager
+				var resource:Resource = new type();
+				resource.filename = uri;
+				resources[resourceIdentifier] = resource;
+			}
+			else
+			  resource = resources[resourceIdentifier];			
+			
+			return resource;
 		}
 
 		
@@ -107,6 +116,14 @@ package com.pblabs.engine.resource.provider
 		
 			// starting phase = 1	
 			_phase = 1;
+
+
+			// attach processed and progress events to BulkLoader
+			if (!loader.hasEventListener(BulkProgressEvent.COMPLETE))
+			  loader.addEventListener(BulkProgressEvent.COMPLETE, resourcesLoaded)
+			  
+			if (!loader.hasEventListener(BulkProgressEvent.PROGRESS))
+			  loader.addEventListener(BulkProgressEvent.PROGRESS, resourcesProgress)			
 			
 			// load resources from first phase
 			loadResources();										 			
@@ -120,7 +137,22 @@ package com.pblabs.engine.resource.provider
 		{
 			// if resource of current LoadingItem exists, initialize it. 			
 			if (resources[(event.currentTarget as LoadingItem).id]!=null)
-			   (resources[(event.currentTarget as LoadingItem).id] as Resource).initialize(loader.getContent( (event.currentTarget as LoadingItem).id ));
+			{
+			    // get content from bulkLoader and release memory
+			    var content:* = loader.getContent( (event.currentTarget as LoadingItem).id , true);			   
+
+				// initalize resource with the content from bulkloader						
+				if (content is Bitmap)
+				{
+					// initialize the ImageResource with a copy of the 'raw' BitmapData
+				    (resources[(event.currentTarget as LoadingItem).id] as Resource).initialize((content as Bitmap).bitmapData.clone());
+				    // dispose old bitmap 
+					(content as Bitmap).bitmapData.dispose();
+					content = null;
+				}
+				else
+				  (resources[(event.currentTarget as LoadingItem).id] as Resource).initialize(content);
+			}
 		}		
 
 		private function resourceError(event:ErrorEvent):void
@@ -230,10 +262,24 @@ package com.pblabs.engine.resource.provider
 					{
 						// create a new resource of type
 						var resource:Resource = new bulkResources[r].type();
+						
+						// get content from bulkLoader and release memory
+						var content:* = loader.getContent( resourceIdentifier , true);
 						resource.filename = bulkResources[r].url;
 												
-						// initalize it with the data
-						resource.initialize(loader.getContent( resourceIdentifier ));
+						// initalize resource with the content from bulkloader						
+						if (content is Bitmap)
+						{
+							// initialize the ImageResource with a copy of the 'raw' BitmapData
+						    resource.initialize((content as Bitmap).bitmapData.clone());
+						    // dispose old bitmap 
+							(content as Bitmap).bitmapData.dispose();
+							content = null;
+						}
+						else
+						  resource.initialize(content);
+						
+						
 						// set lookup for later resource retrieval						
 						resources[resourceIdentifier] = resource
 				 	}

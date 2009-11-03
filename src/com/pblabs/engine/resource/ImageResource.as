@@ -13,7 +13,6 @@ package com.pblabs.engine.resource
     import flash.display.Bitmap;
     import flash.display.BitmapData;
     import flash.display.DisplayObject;
-    import flash.display.Sprite;
     import flash.geom.Matrix;
     import flash.geom.Rectangle;
     
@@ -30,23 +29,32 @@ package com.pblabs.engine.resource
          */
         public function get image():Bitmap
         {
+        	// if we have BitmapData but no Bitmap yet .. create one..
+        	if (_image==null && _bitmapData!=null)
+        		_image = new Bitmap(_bitmapData);
             return _image;
         }
         
-        override public function initialize(data:*):void
+        public function  get bitmapData():BitmapData
         {
+        	return _bitmapData;
+        }
+        
+        override public function initialize(data:*):void
+        {        	
             if (data is Bitmap)
             {
             	// Directly load embedded resources if they gave us a Bitmap.
-                onContentReady(data);
+                onContentReady(data.bitmapData);
                 onLoadComplete();
                 return;
             }
             else if (data is BitmapData)
             {
             	// If they gave us a BitmapData object create a new Bitmap from that
-                onContentReady(new Bitmap(data as BitmapData));
-                onLoadComplete();            	
+                onContentReady(data as BitmapData);
+                onLoadComplete();  
+                return;          	
             }
             else if (data is DisplayObject)
             {
@@ -71,7 +79,7 @@ package com.pblabs.engine.resource
             	bmd.draw(dObj, m);
             	
                 // Use the BitmapData to create a new Bitmap for this ImageResource 
-                onContentReady(new Bitmap(bmd));
+                onContentReady(bmd);
                 onLoadComplete();
                 return;            	
             }
@@ -85,11 +93,21 @@ package com.pblabs.engine.resource
          */
         override protected function onContentReady(content:*):Boolean 
         {
-            if(content)
-                _image = content as Bitmap;
-            return _image != null;
+            if (content is BitmapData)
+                _bitmapData = content as BitmapData;
+            else
+            if (content is Bitmap)
+            {
+            	// a .png is initialized as a ByteArray and will be provided
+            	// through the super(). Resource class as a Bitmap
+            	_bitmapData = (content as Bitmap).bitmapData.clone();
+            	(content as Bitmap).bitmapData.dispose();
+            	content = null;
+            }
+            return _bitmapData != null;
         }
         
         private var _image:Bitmap = null;
+        private var _bitmapData:BitmapData = null;
     }
 }
