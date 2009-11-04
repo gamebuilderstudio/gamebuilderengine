@@ -145,9 +145,8 @@ package com.pblabs.engine.resource.provider
 				if (content is Bitmap)
 				{
 					// initialize the ImageResource with a copy of the 'raw' BitmapData
-				    (resources[(event.currentTarget as LoadingItem).id] as Resource).initialize((content as Bitmap).bitmapData.clone());
-				    // dispose old bitmap 
-					(content as Bitmap).bitmapData.dispose();
+				    (resources[(event.currentTarget as LoadingItem).id] as Resource).initialize((content as Bitmap).bitmapData);
+				    // set variable of this Bitmap to null so it will be picked up by GC 
 					content = null;
 				}
 				else
@@ -271,15 +270,13 @@ package com.pblabs.engine.resource.provider
 						if (content is Bitmap)
 						{
 							// initialize the ImageResource with a copy of the 'raw' BitmapData
-						    resource.initialize((content as Bitmap).bitmapData.clone());
-						    // dispose old bitmap 
-							(content as Bitmap).bitmapData.dispose();
+						    resource.initialize((content as Bitmap).bitmapData);
+				    	    // set variable of this Bitmap to null so it will be picked up by GC 
 							content = null;
 						}
 						else
 						  resource.initialize(content);
-						
-						
+												
 						// set lookup for later resource retrieval						
 						resources[resourceIdentifier] = resource
 				 	}

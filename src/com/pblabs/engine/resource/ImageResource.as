@@ -100,8 +100,7 @@ package com.pblabs.engine.resource
             {
             	// a .png is initialized as a ByteArray and will be provided
             	// through the super(). Resource class as a Bitmap
-            	_bitmapData = (content as Bitmap).bitmapData.clone();
-            	(content as Bitmap).bitmapData.dispose();
+            	_bitmapData = (content as Bitmap).bitmapData;
             	content = null;
             }
             return _bitmapData != null;
