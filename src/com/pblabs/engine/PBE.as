@@ -310,9 +310,9 @@ package com.pblabs.engine
 		 * 
 		 * @return The display object with the specified name, or null if it wasn't found.
 		 */
-		public static function findChild(name:String):DisplayObject
+		public static function findChild(name:String, displayObjectToSearch:DisplayObject = null):DisplayObject
 		{
-			return _findChild(name, _main);
+			return _findChild(name, displayObjectToSearch ? displayObjectToSearch : _main);
 		}
 		
 		private static function _findChild(name:String, current:DisplayObject):DisplayObject
