@@ -37,12 +37,13 @@ package com.pblabs.rendering2D
 
       public function get position():Point
       {
-          return _position;
+          return _position.clone();
       }
 
       public function set position(value:Point):void
       {
-          _position = value;
+          _position.x = value.x;
+          _position.y = value.y;
       }
 
       public function get spatialManager():ISpatialManager2D
