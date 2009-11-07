@@ -26,16 +26,6 @@ package com.pblabs.engine.math
         }
         
         /**
-         * Keep a number between a min and a max.
-         */
-        public static function clamp(v:Number, min:Number = 0, max:Number = 1):Number
-        {
-            if(v < min) return min;
-            if(v > max) return max;
-            return v;
-        }
-        
-        /**
          * Converts an angle in degrees to an angle in radians.
          * 
          * @param degrees The angle to convert.
@@ -46,7 +36,32 @@ package com.pblabs.engine.math
         {
             return degrees * Math.PI / 180;
         }
-        
+		
+        /**
+         * Keep a number between a min and a max.
+         */
+        public static function clamp(v:Number, min:Number = 0, max:Number = 1):Number
+        {
+            if(v < min) return min;
+            if(v > max) return max;
+            return v;
+        }
+		
+		/**
+		 * Clones an array.
+		 * @param array Array to clone.
+		 * @return a cloned array.
+		 */		
+		public static function cloneArray(array:Array):Array
+		{
+			var newArray:Array = [];
+
+			for each (var item:* in array)
+				newArray.push(item);
+			
+			return newArray;
+		}
+		
         /**
          * Take a radian measure and make sure it is between 0..2pi.
          */
