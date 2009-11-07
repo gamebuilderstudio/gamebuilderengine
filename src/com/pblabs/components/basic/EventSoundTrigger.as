@@ -2,72 +2,72 @@ package com.pblabs.components.basic
 {
 	import com.pblabs.engine.entity.EntityComponent;
 	import com.pblabs.engine.resource.MP3Resource;
-	
+
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
 	import flash.utils.setTimeout;
 
-   /**
-    * Play sounds when events are triggered on an entity.
-    */
+	/**
+	 * Play sounds when events are triggered on an entity.
+	 */
 	public class EventSoundTrigger extends EntityComponent
 	{
-      /**
-       * Sounds indexed by event type to trigger them.
-       */
-      [TypeHint(type="com.pblabs.engine.resource.MP3Resource")]
-		public var events:Array = new Array();
-		
-      /**
-       * Play a sound when we are created?
-       */
-      public var startSound:MP3Resource = null;
-      
-      private var _didSchedule:Boolean = false 
-	  private var _firedStartSound:Boolean = false
-      
+		/**
+		 * Sounds indexed by event type to trigger them.
+		 */
+		[TypeHint(type="com.pblabs.engine.resource.MP3Resource")]
+		public var events:Array=new Array();
+
+		/**
+		 * Play a sound when we are created?
+		 */
+		public var startSound:MP3Resource=null;
+
+		private var _didSchedule:Boolean=false
+		private var _firedStartSound:Boolean=false
+
 		override protected function onAdd():void
 		{
 			// Register events.
-			var ed:IEventDispatcher = owner.eventDispatcher;
-			for(var key:String in events)
+			var ed:IEventDispatcher=owner.eventDispatcher;
+			for (var key:String in events)
 				ed.addEventListener(key, soundEventHandler);
-         
-         if(!_firedStartSound && startSound)
-         {
-            startSound.soundObject.play();
-            _firedStartSound = true;
-         }
-         
-         if(!_didSchedule)
-         {
-            setTimeout(onReset, 100);
-            _didSchedule = true;
-         }
+
+			if (!_firedStartSound && startSound)
+			{
+				startSound.soundObject.play();
+				_firedStartSound=true;
+			}
+
+			if (!_didSchedule)
+			{
+				setTimeout(onReset, 100);
+				_didSchedule=true;
+			}
 		}
-		
+
 		override protected function onRemove():void
 		{
 			// Unregister events.
-			var ed:IEventDispatcher = owner.eventDispatcher;
-			for(var key:String in events)
+			var ed:IEventDispatcher=owner.eventDispatcher;
+			for (var key:String in events)
 				ed.removeEventListener(key, soundEventHandler);
 		}
-      
-      override protected function onReset():void
-      {
-         // Since we get callbacks from setTimeout, we have to sanity check.
-         if(!owner)
-            return;
-         
-         onRemove();
-         onAdd();
-      }
+
+		override protected function onReset():void
+		{
+			// Since we get callbacks from setTimeout, we have to sanity check.
+			if (!owner)
+				return;
+
+			onRemove();
+			onAdd();
+		}
 
 		private function soundEventHandler(event:Event):void
 		{
-         var sound:MP3Resource = events[event.type];
-         sound.soundObject.play();
+			var sound:MP3Resource=events[event.type];
+			sound.soundObject.play();
 		}
 
 	}
