@@ -17,7 +17,7 @@ package com.pblabs.box2D
    import com.pblabs.engine.core.ObjectType;
    import com.pblabs.engine.debug.Logger;
    import com.pblabs.engine.entity.EntityComponent;
-   import com.pblabs.engine.math.Utility;
+   import com.pblabs.engine.PBUtil;
    
    import flash.geom.Point;
 
@@ -100,12 +100,12 @@ package com.pblabs.box2D
          if (_body)
             rotation = _body.GetAngle();
          
-         return Utility.getDegreesFromRadians(rotation);
+         return PBUtil.getDegreesFromRadians(rotation);
       }
       
       public function set rotation(value:Number):void
       {
-         var rotation:Number = Utility.getRadiansFromDegrees(value);
+         var rotation:Number = PBUtil.getRadiansFromDegrees(value);
          _bodyDef.angle = rotation;
          
          if (_body)
@@ -154,7 +154,7 @@ package com.pblabs.box2D
          if (_body)
          {
             var velocity:Number = _body.GetAngularVelocity();
-            _angularVelocity = Utility.getDegreesFromRadians(velocity);
+            _angularVelocity = PBUtil.getDegreesFromRadians(velocity);
          }
          
          return _angularVelocity;
@@ -166,7 +166,7 @@ package com.pblabs.box2D
          
          if (_body)
          {
-            var velocity:Number = Utility.getRadiansFromDegrees(value);
+            var velocity:Number = PBUtil.getRadiansFromDegrees(value);
             _body.SetAngularVelocity(velocity);
          }
       }

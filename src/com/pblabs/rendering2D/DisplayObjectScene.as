@@ -5,7 +5,7 @@ package com.pblabs.rendering2D
     import com.pblabs.engine.core.ObjectType;
     import com.pblabs.engine.core.ObjectTypeManager;
     import com.pblabs.engine.debug.Logger;
-    import com.pblabs.engine.math.Utility;
+    import com.pblabs.engine.PBUtil;
     import com.pblabs.rendering2D.ui.IUITarget;
     
     import flash.display.DisplayObject;
@@ -203,8 +203,8 @@ package com.pblabs.rendering2D
                 var centeredLimitBounds:Rectangle = new Rectangle( trackLimitRectangle.x     + sceneView.width * 0.5, trackLimitRectangle.y      + sceneView.height * 0.5,
                                                                    trackLimitRectangle.width - sceneView.width      , trackLimitRectangle.height - sceneView.height );
                 
-                position = new Point(Utility.clamp(position.x, -centeredLimitBounds.right, -centeredLimitBounds.left ), 
-                                     Utility.clamp(position.y, -centeredLimitBounds.bottom, -centeredLimitBounds.top) );
+                position = new Point(PBUtil.clamp(position.x, -centeredLimitBounds.right, -centeredLimitBounds.left ), 
+                                     PBUtil.clamp(position.y, -centeredLimitBounds.bottom, -centeredLimitBounds.top) );
             }
 
             updateTransform();
@@ -385,8 +385,8 @@ package com.pblabs.rendering2D
             	var centeredLimitBounds:Rectangle = new Rectangle( trackLimitRectangle.x     + sceneView.width * 0.5, trackLimitRectangle.y      + sceneView.height * 0.5,
             	                                                   trackLimitRectangle.width - sceneView.width      , trackLimitRectangle.height - sceneView.height );
                 
-                position = new Point(Utility.clamp(position.x, -centeredLimitBounds.right, -centeredLimitBounds.left ), 
-                                     Utility.clamp(position.y, -centeredLimitBounds.bottom, -centeredLimitBounds.top) );
+                position = new Point(PBUtil.clamp(position.x, -centeredLimitBounds.right, -centeredLimitBounds.left ), 
+                                     PBUtil.clamp(position.y, -centeredLimitBounds.bottom, -centeredLimitBounds.top) );
             }
 
             updateTransform();
@@ -456,7 +456,7 @@ package com.pblabs.rendering2D
         public function set zoom(value:Number):void
         {
             // Make sure our zoom level stays within the desired bounds
-            value = Utility.clamp(value, minZoom, maxZoom);
+            value = PBUtil.clamp(value, minZoom, maxZoom);
             
             if (_zoom == value)
                 return;

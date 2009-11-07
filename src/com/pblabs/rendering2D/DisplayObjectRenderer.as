@@ -3,7 +3,7 @@ package com.pblabs.rendering2D
     import com.pblabs.engine.components.AnimatedComponent;
     import com.pblabs.engine.core.ObjectType;
     import com.pblabs.engine.entity.PropertyReference;
-    import com.pblabs.engine.math.Utility;
+    import com.pblabs.engine.PBUtil;
     
     import flash.display.DisplayObject;
     import flash.geom.Matrix;
@@ -515,7 +515,7 @@ package com.pblabs.rendering2D
             _transformMatrix.identity();
             _transformMatrix.scale(_scale.x, _scale.y);
             _transformMatrix.translate(-_registrationPoint.x * _scale.x, -_registrationPoint.y * _scale.y);
-            _transformMatrix.rotate(Utility.getRadiansFromDegrees(_rotation));
+            _transformMatrix.rotate(PBUtil.getRadiansFromDegrees(_rotation));
             _transformMatrix.translate(_position.x , _position.y);
             
             displayObject.transform.matrix = _transformMatrix;

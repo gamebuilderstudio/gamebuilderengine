@@ -6,12 +6,12 @@
  * This file is licensed under the terms of the MIT license, which is included
  * in the License.html file at the root directory of this SDK.
  ******************************************************************************/
-package com.pblabs.engine.math
+package com.pblabs.engine
 {
     /**
      * Contains math related utility methods.
      */
-    public class Utility
+    public class PBUtil
     {
         /**
          * Converts an angle in radians to an angle in degrees.

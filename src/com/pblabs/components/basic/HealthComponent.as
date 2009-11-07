@@ -3,7 +3,7 @@ package com.pblabs.components.basic
 	import com.pblabs.engine.core.ProcessManager;
 	import com.pblabs.engine.entity.EntityComponent;
 	import com.pblabs.engine.entity.IEntity;
-	import com.pblabs.engine.math.Utility;
+	import com.pblabs.engine.PBUtil;
 
     /**
      * General purpose component for tracking health.
@@ -43,7 +43,7 @@ package com.pblabs.components.basic
             var f:Number = 1.0 - (timeSinceLastDamage / lastDamageTimeFade);
             f *= damageMagnitude;
             
-            return Utility.clamp(f);
+            return PBUtil.clamp(f);
         }
         
         /**

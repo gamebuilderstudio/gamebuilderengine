@@ -1,7 +1,7 @@
 package com.pblabs.rendering2D
 {
    import com.pblabs.engine.entity.PropertyReference;
-   import com.pblabs.engine.math.Utility;
+   import com.pblabs.engine.PBUtil;
    
    import flash.geom.Point;
 
@@ -136,7 +136,7 @@ package com.pblabs.rendering2D
          if(moveDelta.length > 0.001 && checkMovementAllowed)
          {
             // Check our heading
-            if(Math.abs(Utility.getRadianShortDelta(movementHeading, rotation)) <= movementHeadingThreshold)
+            if(Math.abs(PBUtil.getRadianShortDelta(movementHeading, rotation)) <= movementHeadingThreshold)
                position = position.add(moveDelta);
 
             // Only update position if we really need to move.
@@ -148,7 +148,7 @@ package com.pblabs.rendering2D
             goalRotation = movementHeading
 
          // Interpolate heading.
-         var headingDelta:Number = Utility.getRadianShortDelta(rotation, goalRotation);
+         var headingDelta:Number = PBUtil.getRadianShortDelta(rotation, goalRotation);
 
          if(headingDelta < -rotationSpeed)
             headingDelta = -rotationSpeed;
