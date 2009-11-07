@@ -144,7 +144,7 @@ package com.pblabs.engine.debug
                 {
                     setHistory(_consoleHistory[--_historyIndex]); 
                 }
-                else
+                else if (_consoleHistory.length > 0)
                 {
                     setHistory(_consoleHistory[0]);
                 }
