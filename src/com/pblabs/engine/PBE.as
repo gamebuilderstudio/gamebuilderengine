@@ -229,7 +229,7 @@ package com.pblabs.engine
          */
         public static function log(reporter:*, message:String):void
         {
-            Logger.(reporter, message);
+            Logger.print(reporter, message);
         }
 
 		/**
