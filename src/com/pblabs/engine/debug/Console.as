@@ -2,6 +2,8 @@ package com.pblabs.engine.debug
 {
 	import com.pblabs.engine.PBE;
 	
+	import flash.display.DisplayObject;
+	import flash.display.DisplayObjectContainer;
 	import flash.system.Security;
 
     /**
@@ -127,7 +129,50 @@ package com.pblabs.engine.debug
                 Console.verbosity = level;
                 Logger.print(Console, "Verbosity set to " + level);
             }, "Set verbosity level of console output.");
+			
+			registerCommand("listDisplayObjects", function():void
+			{
+				Console._findChild(PBE.mainStage, 0);
+			}, "Outputs the display list.");
         }
+		
+		protected static function _findChild(current:DisplayObject, indent:int):DisplayObject
+		{
+			if (!current)
+				return null;
+			
+			Logger.print(Console, 
+				Console.generateIndent(indent) + 
+				current.name + 
+				" ("+ current.x + ","+ current.y+") " +
+				current.visible);
+			
+			var parent:DisplayObjectContainer = current as DisplayObjectContainer;
+			
+			if (!parent)
+				return null;
+			
+			for (var i:int = 0; i < parent.numChildren; i++)
+			{
+				var child:DisplayObject = Console._findChild(parent.getChildAt(i), indent+1);
+				if (child)
+					return child;
+			}
+			
+			return null;
+		}
+		
+		protected static function generateIndent(indent:int):String
+		{
+			var str:String = "";
+			for(var i:int=0; i<indent; i++)
+			{
+				// Add 2 spaces for indent
+				str += "  ";
+			}
+			
+			return str;
+		}
 	}
 }
 
