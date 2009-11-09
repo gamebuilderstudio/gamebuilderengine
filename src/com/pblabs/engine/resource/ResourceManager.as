@@ -220,6 +220,14 @@ package com.pblabs.engine.resource
             }
         }
         
+        /**
+         * Provide a source for resources to the ResourceManager. Once added,
+         * the ResourceManager will use this IResourceProvider to try to fulfill
+         * resource load requests.
+         *  
+         * @param resourceProvider Provider to add.
+         * @see IResourceProvider
+         */
         public function registerResourceProvider(resourceProvider:IResourceProvider):void
         {
             // check if resourceProvider is already registered
@@ -231,6 +239,25 @@ package com.pblabs.engine.resource
             resourceProviders.push(resourceProvider);
         }
         
+        /**
+         * Check if a resource is loaded and ready to go. 
+         * @param filename Same as request to load()
+         * @param type Same as request to load().
+         * @return True if resource is loaded.
+         */
+        public function isLoaded(filename:String, resourceType:Class):Boolean
+        {
+            var resourceIdentifier:String = filename.toLowerCase() + resourceType;
+            if(!_resources[resourceIdentifier])
+                return false;
+            
+            var r:Resource = _resources[resourceIdentifier];
+            return r.isLoaded;                
+        }
+        
+        /**
+         * Properly mark a resource as failed-to-load.
+         */
         private function fail(resource:Resource, onFailed:Function, message:String):void
         {
             if(!resource)
@@ -242,7 +269,14 @@ package com.pblabs.engine.resource
         }
         
         
+        /**
+         * Dictionary of loaded resources indexed by resource name and type. 
+         */
         private var _resources:Dictionary = new Dictionary();
+        
+        /**
+         * List of resource providers used to get resources. 
+         */        
         private var resourceProviders:Array = new Array();
     }
 }

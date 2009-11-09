@@ -276,6 +276,21 @@ package com.pblabs.engine.core
             _virtualTime += amount;
         }
         
+        /**
+         * Deferred function callback - called back at start of processing for next frame. Useful
+         * any time you are going to do setTimeout(someFunc, 1) - it's a lot cheaper to do it 
+         * this way.
+         * @param method Function to call.
+         * @param args Any arguments.
+         */
+        public function callLater(method:Function, args:Array = null):void
+        {
+            var dm:DeferredMethod = new DeferredMethod();
+            dm.method = method;
+            dm.args = args;
+            deferredMethodQueue.push(dm);
+        }
+        
         private function get listenerCount():int
         {
             return tickedObjects.length + animatedObjects.length;
@@ -418,6 +433,23 @@ package com.pblabs.engine.core
         {
             Profiler.enter("PendingEvents");
             
+            // Do any deferred methods.
+            var oldDeferredMethodQueue:Array = deferredMethodQueue;
+            if(oldDeferredMethodQueue.length)
+            {
+                // Put a new array in the queue.
+                deferredMethodQueue = [];
+                
+                for(var j:int=0; j<oldDeferredMethodQueue.length; j++)
+                {
+                    var curDM:DeferredMethod = oldDeferredMethodQueue[j] as DeferredMethod;
+                    curDM.method.apply(null, curDM.args);
+                }
+                
+                // Wipe the old array now we're done with it.
+                oldDeferredMethodQueue.length = 0;
+            }
+            
             // Walk the list of scheduled events...
             for (var i:int = 0; i < scheduleEvents.length; i++)
             {
@@ -440,6 +472,7 @@ package com.pblabs.engine.core
             Profiler.exit("PendingEvents");      	
         }
         
+        private var deferredMethodQueue:Array = [];
         private var started:Boolean = false;
         private var _virtualTime:Number = 0.0;
         private var _interpolationFactor:Number = 0.0;
@@ -452,7 +485,7 @@ package com.pblabs.engine.core
     }
 }
 
-class ScheduleObject
+final class ScheduleObject
 {
     public var dueTime:Number = 0.0;
     public var thisObject:Object = null;
@@ -460,9 +493,15 @@ class ScheduleObject
     public var arguments:Array = null;
 }
 
-class ProcessObject
+final class ProcessObject
 {
     public var profilerKey:String = null;
     public var listener:* = null;
     public var priority:Number = 0.0;
+}
+
+final class DeferredMethod
+{
+    public var method:Function = null;;
+    public var args:Array = null;
 }

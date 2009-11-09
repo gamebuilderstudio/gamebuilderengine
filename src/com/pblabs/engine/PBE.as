@@ -302,6 +302,16 @@ package com.pblabs.engine
             mainStage.quality = _stageQualityStack.pop();
         }
 		
+        /**
+         * Defer a call until the start of the next tick or frame. 
+         * @param method Method to call.
+         * @param args Arguments, if any.
+         */
+        public static function callLater(method:Function, args:Array = null):void
+        {
+            ProcessManager.instance.callLater(method, args);
+        }
+        
 		/**
 		 * Recursively searches for an object with the specified name that has been added to the
 		 * display hierarchy.
