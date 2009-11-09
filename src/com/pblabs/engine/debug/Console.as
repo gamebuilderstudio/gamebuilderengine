@@ -132,34 +132,27 @@ package com.pblabs.engine.debug
 			
 			registerCommand("listDisplayObjects", function():void
 			{
-				Console._findChild(PBE.mainStage, 0);
+				Console._listDisplayObjects(PBE.mainStage, 0);
 			}, "Outputs the display list.");
         }
 		
-		protected static function _findChild(current:DisplayObject, indent:int):DisplayObject
+		protected static function _listDisplayObjects(current:DisplayObject, indent:int):void
 		{
 			if (!current)
-				return null;
+				return;
 			
 			Logger.print(Console, 
 				Console.generateIndent(indent) + 
 				current.name + 
-				" ("+ current.x + ","+ current.y+") " +
+				" ("+ current.x + ","+ current.y+") visible=" +
 				current.visible);
 			
 			var parent:DisplayObjectContainer = current as DisplayObjectContainer;
-			
 			if (!parent)
-				return null;
+				return;
 			
 			for (var i:int = 0; i < parent.numChildren; i++)
-			{
-				var child:DisplayObject = Console._findChild(parent.getChildAt(i), indent+1);
-				if (child)
-					return child;
-			}
-			
-			return null;
+			    _listDisplayObjects(parent.getChildAt(i), indent+1);
 		}
 		
 		protected static function generateIndent(indent:int):String
