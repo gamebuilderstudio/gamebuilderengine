@@ -54,6 +54,7 @@ package com.pblabs.rendering2D
             
             // Due to a bug, this has to be reset after setting bitmapData.
             smoothing = _smoothing;
+            _transformDirty = true;
         }
         
         override public function set displayObject(value:DisplayObject):void

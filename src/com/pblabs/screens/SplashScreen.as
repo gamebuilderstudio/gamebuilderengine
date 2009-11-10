@@ -10,7 +10,7 @@ package com.pblabs.screens
      * Simple screen to display an image, and advance to another screen
      * when the user clicks.
      */ 
-	public class SplashScreen extends BaseScreen
+	public class SplashScreen extends ImageScreen
 	{
         /**
          * See class description. 
@@ -20,6 +20,9 @@ package com.pblabs.screens
          */
 		public function SplashScreen(image:String, nextScreen:String)
 		{
+            // Set up the image.
+            super(image);
+            
             // Note where we're going next.
             next = nextScreen;
 
@@ -30,25 +33,7 @@ package com.pblabs.screens
                     ScreenManager.instance.goto(next);
                 }
             );
-            
-            // Load the image.
-            ResourceManager.instance.load(image, ImageResource, onImageSucceed, onImageFail);
  		}
-        
-        private function onImageSucceed(i:ImageResource):void
-        {
-            // Display the bitmap.
-            cacheAsBitmap = true;
-            graphics.clear();
-            graphics.beginBitmapFill(i.image.bitmapData);
-            graphics.drawRect(0, 0, i.image.bitmapData.width, i.image.bitmapData.height);
-            graphics.endFill();
-        }
-        
-        private function onImageFail(i:ImageResource):void
-        {
-            Logger.print(this, "Failed to load image '" + i.filename + "'");
-        }
         
         public var next:String = "";
 	}
