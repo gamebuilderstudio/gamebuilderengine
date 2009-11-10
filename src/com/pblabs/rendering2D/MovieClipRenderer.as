@@ -24,6 +24,12 @@ package com.pblabs.rendering2D
          */
 		public var loop:Boolean = false;
 		
+        /**
+         * Should we destroy the entity when animation is over? Useful for
+         * things like explosions.
+         */
+        public var destroyOnEnd:Boolean = false;
+        
         protected var _clipFrame:int;
         protected var _clipLastUpdate:Number;
         protected var _clipDirty:Boolean = true;
@@ -80,7 +86,8 @@ package com.pblabs.rendering2D
                     else 
                     {
                         //Logger.(this, "Finished playback, destroying self.");
-                        owner.destroy();
+                        if(destroyOnEnd)
+                            owner.destroy();
                         return;
                     }
                 }
