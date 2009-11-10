@@ -34,6 +34,7 @@ package com.pblabs.rendering2D.ui
             _label.mouseEnabled = false;
             _label.multiline = true;
             _label.wordWrap = true;
+            _label.autoSize = TextFieldAutoSize.LEFT;
             
             // The text format.
             _labelStyle.size = fontSize;

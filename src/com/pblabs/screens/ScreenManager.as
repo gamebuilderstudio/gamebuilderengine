@@ -94,6 +94,17 @@ package com.pblabs.screens
         }
         
         /**
+         * Return true if a screen of given name exists. 
+         * @param screenName Name of screen.
+         * @return True if screen exists.
+         * 
+         */
+        public function hasScreen(screenName:String):Boolean
+        {
+            return get(screenName) != null;
+        }
+        
+        /**
          * Switch to the specified screen, altering the top of the stack.
          * @param screenName Name of the screen to switch to.
          */
