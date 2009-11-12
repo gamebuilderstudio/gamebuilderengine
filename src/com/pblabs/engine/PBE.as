@@ -27,7 +27,7 @@ package com.pblabs.engine
 	 */
 	public class PBE
 	{
-		public static const REVISION:uint = 624;
+		public static const REVISION:uint = 625;
 		
 		private static var _main:Sprite = null;	
 		private static var _versionDetails:VersionDetails;
@@ -208,7 +208,15 @@ package com.pblabs.engine
 				else if(key is String)
 				{
 					// Slow case.
-					entity.setProperty(new PropertyReference(key), params[key]);
+					// Special case to allow "@foo": to assign foo as a new component... named foo.
+					if(String(key).charAt(0) == "@" && String(key).indexOf(".") == -1)
+					{
+						entity.addComponent(IEntityComponent(params[key]), String(key).substring(1));
+					}
+					else
+					{
+						entity.setProperty(new PropertyReference(key), params[key]);
+					}
 				}
 				else
 				{
