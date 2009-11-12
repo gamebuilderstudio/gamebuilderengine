@@ -27,7 +27,7 @@ package com.pblabs.engine
 	 */
 	public class PBE
 	{
-		public static const REVISION:uint = 556;
+		public static const REVISION:uint = 624;
 		
 		private static var _main:Sprite = null;	
 		private static var _versionDetails:VersionDetails;
