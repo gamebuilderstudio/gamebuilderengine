@@ -44,8 +44,8 @@ package com.pblabs.rendering2D.ui
             _labelStyle.align = TextFormatAlign.CENTER;
             _label.defaultTextFormat = _labelStyle;
             
-            // And the caption.
-            _label.text = caption;
+            // And the label.
+            _label.text = label;
             
             cacheAsBitmap = true;
         }
@@ -63,15 +63,15 @@ package com.pblabs.rendering2D.ui
         /**
          * Text the button displays.
          */
-        public var caption:String = "Button";
+        public var label:String = "Button";
         
         /**
-         * Size of button caption font.
+         * Size of button label font.
          */
         public var fontSize:Number = 24;
         
         /**
-         * Color of the button's caption.
+         * Color of the button's label.
          */
         public var fontColor:uint = 0x00FF00;
         
