@@ -66,6 +66,17 @@ package com.pblabs.engine.core
         {
             return _keyState[keyCode];
         }
+        
+        /**
+         * Returns true if any key is down.
+         */
+        public function isAnyKeyDown():Boolean
+        {
+            for each(var b:Boolean in _keyState)
+                if(b)
+                    return true;
+            return false;
+        }
 
         /**
          * Simulates a key press. The key will remain 'down' until SimulateKeyUp is called

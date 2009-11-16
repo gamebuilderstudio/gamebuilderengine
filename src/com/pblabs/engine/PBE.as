@@ -153,7 +153,15 @@ package com.pblabs.engine
 			return InputManager.instance.isKeyDown(key.keyCode);
 		}
 		
-		/**
+        /**
+         * Return true if any key is down.
+         */
+        public static function isAnyKeyDown():Boolean
+        {
+            return InputManager.instance.isAnyKeyDown();
+        }
+
+        /**
 		 * Locate an entity by its name.
 		 */
 		public static function lookup(entityName:String):IEntity
