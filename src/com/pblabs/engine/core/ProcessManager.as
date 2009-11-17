@@ -74,6 +74,12 @@ package com.pblabs.engine.core
         
         private static var _instance:ProcessManager = null;
         
+        public function ProcessManager()
+        {
+            //thinkQueueStart.nextQueueItem = thinkQueueEnd;
+            //thinkQueueEnd.prevQueueItem = thinkQueueStart;
+        }
+        
         /**
          * The scale at which time advances. If this is set to 2, the game
          * will essentially play twice as fast. A value of 0.5 will run the
@@ -190,25 +196,8 @@ package com.pblabs.engine.core
             schedule.thisObject = thisObject;
             schedule.callback = callback;
             schedule.arguments = arguments;
-            
-            //find where to insert this item in the array.
-            //we'll place it before the first item that is scheduled further out.
-            //by keeping this array ordered we only have to iterate over schedules that are due at a given tick.
-            var spliced:Boolean = false;
-            for (var i:int = 0; i < scheduleEvents.length; i++)
-            {
-                var s:ScheduleObject = scheduleEvents[i];
-                if (s.dueTime > schedule.dueTime)
-                {
-                    scheduleEvents.splice(i, 0, schedule);
-                    spliced = true;
-                    break;
-                }
-            }
-            
-            //no schedules were found further out (or this is the first schedule). append to the end!
-            if (!spliced)
-                scheduleEvents.push(schedule);
+
+            thinkHeap.enqueue(schedule);
         }
         
         /**
@@ -233,6 +222,24 @@ package com.pblabs.engine.core
         public function addTickedObject(object:ITickedObject, priority:Number = 0.0):void
         {
             addObject(object, priority, tickedObjects);
+        }
+        
+        /**
+         * Queue an IQueuedObject for callback. This is a very cheap way to have a callback
+         * happen on an object. If an object is queued when it is already in the queue, it
+         * is removed, then added.
+         */
+        public function queueObject(object:IQueuedObject):void
+        {
+            // Assert if this is in the past.
+            if(object.nextThinkTime < _virtualTime)
+                throw new Error("Tried to queue something into the past, but no flux capacitor is present!");
+            
+            Profiler.enter("queueObject");
+            
+            thinkHeap.enqueue(object);
+            
+            Profiler.exit("queueObject");
         }
         
         /**
@@ -330,7 +337,7 @@ package com.pblabs.engine.core
         
         private function removeObject(object:*, list:Array):void
         {
-            if (listenerCount == 1 && scheduleEvents.length == 0)
+            if (listenerCount == 1 && thinkHeap.size == 0)
                 stop();
             
             for (var i:int = 0; i < list.length; i++)
@@ -431,12 +438,12 @@ package com.pblabs.engine.core
         
         private function processScheduledObjects():void
         {
-            Profiler.enter("PendingEvents");
-            
             // Do any deferred methods.
             var oldDeferredMethodQueue:Array = deferredMethodQueue;
             if(oldDeferredMethodQueue.length)
             {
+                Profiler.enter("callLater");
+
                 // Put a new array in the queue.
                 deferredMethodQueue = [];
                 
@@ -448,28 +455,43 @@ package com.pblabs.engine.core
                 
                 // Wipe the old array now we're done with it.
                 oldDeferredMethodQueue.length = 0;
+
+                Profiler.exit("callLater");      	
             }
-            
-            // Walk the list of scheduled events...
-            for (var i:int = 0; i < scheduleEvents.length; i++)
+
+
+            // Process any queued items.
+            if(thinkHeap.size)
             {
-                // Looking for events that are due...
-                var schedule:ScheduleObject = scheduleEvents[i];
-                if (schedule.dueTime <= _virtualTime)
+                Profiler.enter("Queue");
+                
+                while(thinkHeap.front && thinkHeap.front.priority >= -_virtualTime)
                 {
-                    schedule.callback.apply(schedule.thisObject, schedule.arguments);
-                    scheduleEvents.splice(i, 1);
-                    i--;
+                    var itemRaw:IPrioritizable = thinkHeap.dequeue();
+                    var qItem:IQueuedObject = itemRaw as IQueuedObject;
+                    var sItem:ScheduleObject = itemRaw as ScheduleObject;
+                    
+                    var type:String = TypeUtility.getObjectClassName(itemRaw);
+                    
+                    Profiler.enter(type);
+                    if(qItem)
+                    {
+                        qItem.nextThinkCallback();
+                    }
+                    else if(sItem)
+                    {
+                        sItem.callback.apply(sItem.thisObject, sItem.arguments);                    
+                    }
+                    else
+                    {
+                        throw new Error("Unknown type found in thinkHeap.");
+                    }
+                    Profiler.exit(type);                    
+                    
                 }
-                else
-                {
-                    // Our scheduled event array is sorted by due time, so once we
-                    // that isn't due we can stop.
-                    break;
-                }
+                
+                Profiler.exit("Queue");                
             }
-            
-            Profiler.exit("PendingEvents");      	
         }
         
         private var deferredMethodQueue:Array = [];
@@ -481,16 +503,29 @@ package com.pblabs.engine.core
         private var elapsed:Number = 0.0;
         private var animatedObjects:Array = new Array();
         private var tickedObjects:Array = new Array();
-        private var scheduleEvents:Array = new Array();
+        
+        private var thinkHeap:SimplePriorityQueue = new SimplePriorityQueue(1024);
     }
 }
 
-final class ScheduleObject
+import com.pblabs.engine.core.IPrioritizable;
+
+final class ScheduleObject implements IPrioritizable
 {
     public var dueTime:Number = 0.0;
     public var thisObject:Object = null;
     public var callback:Function = null;
     public var arguments:Array = null;
+    
+    public function get priority():int
+    {
+        return -dueTime;
+    }
+    
+    public function set priority(value:int):void
+    {
+        throw new Error("Unimplemented.");
+    }
 }
 
 final class ProcessObject
