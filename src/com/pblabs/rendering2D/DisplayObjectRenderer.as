@@ -4,7 +4,7 @@ package com.pblabs.rendering2D
     import com.pblabs.engine.components.AnimatedComponent;
     import com.pblabs.engine.core.ObjectType;
     import com.pblabs.engine.entity.PropertyReference;
-
+    
     import flash.display.DisplayObject;
     import flash.geom.Matrix;
     import flash.geom.Point;
@@ -91,6 +91,7 @@ package com.pblabs.rendering2D
         protected var _lastLayerIndex:int = -1;
         protected var _zIndex:int = 0;
 
+        protected var _rotationOffset:Number = 0;
         protected var _registrationPoint:Point = new Point();
         protected var _scale:Point = new Point(1, 1);
         protected var _rotation:Number = 0;
@@ -416,6 +417,27 @@ package com.pblabs.rendering2D
         }
 
         /**
+         * Rotation offset applied to the child DisplayObject. Used if, for instance,
+         * your art is rotated 90deg off from where you want it.
+         *
+         * @return Number Offset Rotation angle in degrees
+         */
+        public function get rotationOffset():Number 
+        {
+            return PBUtil.getDegreesFromRadians(_rotationOffset);
+        }
+        
+        /**
+         * Rotation offset applied to the child DisplayObject.
+         *
+         * @param value Offset Rotation angle in degrees
+         */
+        public function set rotationOffset(value:Number):void 
+        {
+            _rotationOffset = PBUtil.unwrapRadian(PBUtil.getRadiansFromDegrees(value));
+        }
+        
+        /**
          * Is the rendered object opaque at the request position in screen space?
          * @param pos Location in screen space we are curious about.
          * @return True if object is opaque there.
@@ -550,7 +572,7 @@ package com.pblabs.rendering2D
             _transformMatrix.identity();
             _transformMatrix.scale(_scale.x, _scale.y);
             _transformMatrix.translate(-_registrationPoint.x * _scale.x, -_registrationPoint.y * _scale.y);
-            _transformMatrix.rotate(PBUtil.getRadiansFromDegrees(_rotation));
+            _transformMatrix.rotate(PBUtil.getRadiansFromDegrees(_rotation) + _rotationOffset);
             _transformMatrix.translate(_position.x , _position.y);
 
             displayObject.transform.matrix = _transformMatrix;
