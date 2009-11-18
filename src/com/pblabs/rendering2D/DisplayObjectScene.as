@@ -1,11 +1,11 @@
 package com.pblabs.rendering2D
 {
     import com.pblabs.engine.PBE;
+    import com.pblabs.engine.PBUtil;
     import com.pblabs.engine.components.AnimatedComponent;
     import com.pblabs.engine.core.ObjectType;
     import com.pblabs.engine.core.ObjectTypeManager;
     import com.pblabs.engine.debug.Logger;
-    import com.pblabs.engine.PBUtil;
     import com.pblabs.rendering2D.ui.IUITarget;
     
     import flash.display.DisplayObject;
@@ -296,6 +296,7 @@ package com.pblabs.rendering2D
         {
             // Query normal DO hierarchy.
             var unfilteredResults:Array = _rootSprite.getObjectsUnderPoint(screenPosition);
+            var worldPosition:Point = transformScreenToWorld(screenPosition);
             
             // TODO: rewrite to splice from unfilteredResults to avoid alloc?
             var results:Array = new Array();
@@ -303,19 +304,31 @@ package com.pblabs.rendering2D
             for each (var o:* in unfilteredResults)
             {
                 var renderer:DisplayObjectRenderer = getRendererForDisplayObject(o);
-                if (renderer 
-                    && renderer.pointOccupied(screenPosition) 
-                    && renderer.owner 
-                    && (!mask || ObjectTypeManager.instance.doTypesOverlap(mask, renderer.objectMask)))
-                    results.push(renderer.owner);
+                
+                if(!renderer)
+                    continue;
+                
+                if(!renderer.owner)
+                    continue;
+                
+                if(mask && !ObjectTypeManager.instance.doTypesOverlap(mask, renderer.objectMask))
+                    continue;
+                
+                if(!renderer.pointOccupied(worldPosition))
+                    continue;
+                
+                results.push(renderer);
             }
 
-            // Also give layers opportunity to return entities.
+            // Also give layers opportunity to return renderers.
             var scenePosition:Point = transformScreenToScene(screenPosition);
             for each(var l:DisplayObjectSceneLayer in _layers)
             {
-                if(l is ILayerMouseHandler)
-                    (l as ILayerMouseHandler).getRenderersUnderPoint(scenePosition, mask, results);
+                // Skip them if they don't use the interface.
+                if(!(l is ILayerMouseHandler))
+                    continue;
+                
+                (l as ILayerMouseHandler).getRenderersUnderPoint(scenePosition, mask, results);
             }
             
             return results;

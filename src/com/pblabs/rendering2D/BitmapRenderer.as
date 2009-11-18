@@ -1,5 +1,7 @@
 package com.pblabs.rendering2D
 {
+    import com.pblabs.engine.debug.Logger;
+    
     import flash.display.*;
     import flash.geom.*;
     

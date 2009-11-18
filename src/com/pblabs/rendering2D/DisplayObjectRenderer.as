@@ -3,6 +3,7 @@ package com.pblabs.rendering2D
     import com.pblabs.engine.PBUtil;
     import com.pblabs.engine.components.AnimatedComponent;
     import com.pblabs.engine.core.ObjectType;
+    import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.entity.PropertyReference;
     
     import flash.display.DisplayObject;
@@ -467,6 +468,10 @@ package com.pblabs.rendering2D
             if (!displayObject || !scene)
                 return false;
 
+            // Sanity check.
+            if(displayObject.stage == null)
+                Logger.warn(this, "pointOccupied", "DisplayObject is not on stage, so hitTestPoint will probably not work right.");
+            
             // This is the generic version, which uses hitTestPoint. hitTestPoint
             // takes a coordinate in screen space, so do that.
             worldPosition = scene.transformWorldToScreen(worldPosition);
