@@ -95,8 +95,8 @@ package com.pblabs.engine
 			_versionDetails = VersionUtil.checkVersion(mainClass);
 			
 			// Set the stage alignment and scalemode
-			/* We do this to be consistent with CS4/Flex apps, if you want stage alignment
-			and scale mode to be different just set these values after you call PBE.startup. */
+			// We do this to be consistent between CS4/Flex apps, if you want stage alignment
+			// and scale mode to be different just set these values after you call PBE.startup.
 			mainClass.stage.align = StageAlign.TOP_LEFT;
 			mainClass.stage.scaleMode = StageScaleMode.NO_SCALE;
 
@@ -114,23 +114,23 @@ package com.pblabs.engine
 		 */
 		public static function initializeScene(view:IUITarget, sceneName:String = "SceneDB", sceneClass:Class = null, spatialManagerClass:Class = null):IEntity
 		{
-			// You will notice this is straight out of lesson #2.
+			// You will notice this is almost straight out of lesson #2.
 			var scene:IEntity = allocateEntity();                                // Allocate our Scene entity
 			scene.initialize(sceneName);                                         // Register with the name "Scene"
 
 			if(!spatialManagerClass)
 				spatialManagerClass = BasicSpatialManager2D;
 			
-			var spatial:BasicSpatialManager2D = new spatialManagerClass();     // Allocate our Spatial DB component
+			var spatial:ISpatialManager2D = new spatialManagerClass();           // Allocate our Spatial DB component
 			_spatialManager = spatial;
-			scene.addComponent( spatial, "Spatial" );                            // Add to Scene with name "Spatial"
+			scene.addComponent( spatial as IEntityComponent, "Spatial" );        // Add to Scene with name "Spatial"
 			
 			if(!sceneClass)
 				sceneClass = DisplayObjectScene;
 			
 			_scene = new sceneClass();               // Allocate our renderering component
-            _scene.sceneView = view;                                         // Point the Renderer's SceneView at the view we just created.
-			scene.addComponent( _scene, "Scene" );                           // Add our Renderer component to the scene entity with the name "Renderer"
+            _scene.sceneView = view;                 // Point the Renderer's SceneView at the view we just created.
+			scene.addComponent( _scene, "Scene" );   // Add our Renderer component to the scene entity with the name "Renderer"
 			
 			return scene;
 		}
