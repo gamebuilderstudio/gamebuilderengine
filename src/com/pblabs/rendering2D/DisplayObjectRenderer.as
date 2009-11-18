@@ -438,18 +438,39 @@ package com.pblabs.rendering2D
         }
         
         /**
-         * Is the rendered object opaque at the request position in screen space?
-         * @param pos Location in screen space we are curious about.
-         * @return True if object is opaque there.
-         *
+         * Transform a point from world space to object space. 
          */
-        public function pointOccupied(pos:Point):Boolean
+        public function transformWorldToObject(p:Point):Point
+        {
+            // Oh goodness.
+            var tmp:Matrix = _transformMatrix.clone();
+            tmp.invert();
+
+            return tmp.transformPoint(p);
+        }
+        
+        /**
+         * Transform a point from object space to world space. 
+         */
+        public function transformObjectToWorld(p:Point):Point
+        {
+            return _transformMatrix.transformPoint(p);            
+        }
+
+        /**
+         * Is the rendered object opaque at the request position in screen space?
+         * @param pos Location in world space we are curious about.
+         * @return True if object is opaque there.
+         */
+        public function pointOccupied(worldPosition:Point):Boolean
         {
             if (!displayObject || !scene)
                 return false;
 
-            // This is the generic version.
-            return displayObject.hitTestPoint(pos.x, pos.y, true);
+            // This is the generic version, which uses hitTestPoint. hitTestPoint
+            // takes a coordinate in screen space, so do that.
+            worldPosition = scene.transformWorldToScreen(worldPosition);
+            return displayObject.hitTestPoint(worldPosition.x, worldPosition.y, true);
         }
 
         override protected function onAdd() : void

@@ -69,17 +69,13 @@ package com.pblabs.rendering2D
             renderTarget.copyPixels(bitmap.bitmapData, bitmap.bitmapData.rect, objectToScreen.transformPoint(zeroPoint), null, null, true);
         }
         
-        override public function pointOccupied(pos:Point):Boolean
+        override public function pointOccupied(worldPosition:Point):Boolean
         {            
             if(!bitmap || !bitmap.bitmapData)
                 return false;
             
-            // Make sure we're dealing in the same coordinate space as the provided position (screen global)
-            //var localPos:Point = bitmap.globalToLocal(pos);
-            //return bitmap.bitmapData.hitTest(zeroPoint, 0x01, localPos);
-            
             // Figure local position.
-            var localPos:Point = new Point(pos.x - (_position.x - _registrationPoint.x), pos.y - (_position.y - _registrationPoint.y));
+            var localPos:Point = transformWorldToObject(worldPosition);
             return bitmap.bitmapData.hitTest(zeroPoint, 0x01, localPos);
         }
         
