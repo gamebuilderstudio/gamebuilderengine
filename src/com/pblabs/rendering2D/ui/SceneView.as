@@ -23,6 +23,20 @@ package com.pblabs.rendering2D.ui
      */
     public class SceneView extends Sprite implements IUITarget
     {
+		
+		public function SceneView()
+		{
+			if(PBE.mainClass)
+			{
+				PBE.mainClass.addChild(this);
+				
+				// Intelligent default size.
+				width = PBE.mainStage.stage.stageWidth;
+				height = PBE.mainStage.stage.stageHeight;
+				name = "SceneView";
+			}
+		}
+		
         override public function get width():Number
         {
             return _width;
@@ -41,18 +55,6 @@ package com.pblabs.rendering2D.ui
         override public function set height(value:Number):void
         {
             _height = value;
-        }
-        
-        public function SceneView()
-        {
-            if(PBE.mainClass)
-            {
-                PBE.mainClass.addChild(this);
-                
-                // Intelligent default size.
-                width = PBE.mainStage.stage.stageWidth;
-                height = PBE.mainStage.stage.stageHeight;                
-            }
         }
         
         public function addDisplayObject(dobj:DisplayObject):void

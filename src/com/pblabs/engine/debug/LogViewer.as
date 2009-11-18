@@ -36,6 +36,8 @@ package com.pblabs.engine.debug
         {
             layout();
             addListeners();
+			
+			name = "Console";
         }
         
         protected function layout():void
@@ -97,6 +99,7 @@ package com.pblabs.engine.debug
             _output.setTextFormat(format);
             _output.defaultTextFormat = format;
             _output.htmlText = "";
+			_output.name = "ConsoleOutput";
             
             return _output;
         }
@@ -118,6 +121,7 @@ package com.pblabs.engine.debug
             _input.setTextFormat(format);
             _input.defaultTextFormat = format;
             _input.restrict = "^`";		// Tilde's are not allowed in the input since they close the window
+			_input.name = "ConsoleInput";
             
             return _input;
         }

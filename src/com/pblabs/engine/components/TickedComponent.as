@@ -34,7 +34,7 @@ package com.pblabs.engine.components
       /**
        * @inheritDoc
        */
-      public function onTick(tickRate:Number):void
+      public function onTick(deltaTime:Number):void
       {
       }
       

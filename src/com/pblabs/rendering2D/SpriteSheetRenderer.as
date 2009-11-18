@@ -8,38 +8,40 @@
  ******************************************************************************/
 package com.pblabs.rendering2D
 {
+    import com.pblabs.engine.entity.PropertyReference;
     import com.pblabs.rendering2D.spritesheet.SpriteContainerComponent;
     
     import flash.display.BitmapData;
-    import flash.geom.Point;
     
 	public class SpriteSheetRenderer extends BitmapRenderer
 	{
 	    private var _spriteSheet:SpriteContainerComponent;
 	    private var _setRegistration:Boolean = false;
-	    
+		
 	    public var spriteSheet:SpriteContainerComponent;
         public var spriteIndex:int = 0;
+		public var directionReference:PropertyReference;
 
         protected function getCurrentFrame():BitmapData
         {
             if (!spriteSheet || !spriteSheet.isLoaded)
                 return null;
             
-            //if (!_setRegistration)
+            //if (!_setRegistration) for garnee's sake.
+            // Our registration point is the center of a frame as specified by the spritesheet
+	        if(spriteSheet && spriteSheet.isLoaded && spriteSheet.center)
             {
-	            // Our registration point is the center of a frame as specified by the spritesheet
-    	        if(spriteSheet && spriteSheet.isLoaded && spriteSheet.center)
-                {
-    	            registrationPoint = spriteSheet.center.clone();
-                    registrationPoint.x *= -1;
-                    registrationPoint.y *= -1;
-                }
-    	        
-    	        _setRegistration = true;
+	            registrationPoint = spriteSheet.center.clone();
+                registrationPoint.x *= -1;
+                registrationPoint.y *= -1;
             }
+	        
+	        _setRegistration = true;
             
-            return spriteSheet.getFrame(spriteIndex);
+			if(directionReference)
+				return spriteSheet.getFrame(spriteIndex, owner.getProperty(directionReference) as Number);
+			else
+            	return spriteSheet.getFrame(spriteIndex);
         }
         
         override public function onFrame(elapsed:Number) : void

@@ -31,6 +31,6 @@ package com.pblabs.engine.core
        * 
        * @see ProcessManager#AddTickedObject()
        */
-      function onTick(tickRate:Number):void;
+      function onTick(deltaTime:Number):void;
    }
 }
