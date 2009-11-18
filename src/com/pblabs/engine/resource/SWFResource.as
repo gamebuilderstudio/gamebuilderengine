@@ -133,7 +133,7 @@ package com.pblabs.engine.resource
             // Get the app domain...
             if (resourceLoader && resourceLoader.contentLoaderInfo)
                 _appDomain = resourceLoader.contentLoaderInfo.applicationDomain;
-            else if(content.loaderInfo)
+            else if(content && content.loaderInfo)
                 _appDomain = content.loaderInfo.applicationDomain;
             
             return _clip != null;
