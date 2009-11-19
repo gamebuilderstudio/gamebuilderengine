@@ -190,13 +190,13 @@ package com.pblabs.engine.core
 				if (!_inGroup)
 					Serializer.instance.reportMissingReferences();
 
-				Profiler.exit("instantiateEntity");
+				Profiler.exit("instantiateEntityFromXML");
 			}
 			catch (e:Error)
 			{
 				Logger.error(this, "instantiateEntity", "Failed instantiating '" + name + "' due to: " + e.toString() + "\n" + e.getStackTrace());
 				entity=null;
-				Profiler.exit("instantiateEntity");
+				Profiler.exit("instantiateEntityFromXML");
 			}
 
 			return entity;
