@@ -237,7 +237,8 @@ package com.pblabs.box2D
       public function set collisionShapes(value:Array):void
       {
          _collisionShapes = value;
-        buildCollisionShapes();
+         if (_body)
+            buildCollisionShapes();
       }
       
       public function buildCollisionShapes():void
