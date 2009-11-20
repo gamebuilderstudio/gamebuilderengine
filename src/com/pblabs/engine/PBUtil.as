@@ -13,6 +13,8 @@ package com.pblabs.engine
      */
     public class PBUtil
     {
+        public static const TWO_PI:Number = 2.0 * Math.PI;
+        
         /**
          * Converts an angle in radians to an angle in degrees.
          * 
@@ -67,11 +69,9 @@ package com.pblabs.engine
          */
         public static function unwrapRadian(r:Number):Number
         {
-            while(r > Math.PI * 2)
-                r -= Math.PI * 2;
-            while(r < 0)
-                r += Math.PI * 2;
-            
+            r = r % TWO_PI;
+            if(r < -TWO_PI)
+                r += TWO_PI;
             return r;
         }
         
