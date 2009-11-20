@@ -3,10 +3,12 @@ package com.pblabs.engine
 	import com.pblabs.engine.core.*;
 	import com.pblabs.engine.debug.*;
 	import com.pblabs.engine.entity.*;
+	import com.pblabs.engine.resource.ResourceManager;
 	import com.pblabs.engine.version.VersionDetails;
 	import com.pblabs.engine.version.VersionUtil;
 	import com.pblabs.rendering2D.*;
 	import com.pblabs.rendering2D.ui.*;
+	import com.pblabs.screens.ScreenManager;
 	
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
@@ -275,9 +277,87 @@ package com.pblabs.engine
 			return _main;
 		}
 		
+		/**
+		 * Returns information about the current running swf.
+		 * @return VersionDetails Object
+		 */		
 		public static function get versionDetails():VersionDetails
 		{
 			return _versionDetails;
+		}
+		
+		/**
+		 * Returns the LevelManager instance
+		 * @return LevelManager instance
+		 */		
+		public static function get levelManager():LevelManager
+		{
+			return LevelManager.instance;
+		}
+		
+		/**
+		 * Returns the ScreenManager instance
+		 * @return ScreenManager
+		 */		
+		public static function get screenManager():ScreenManager
+		{
+			return ScreenManager.instance;
+		}
+		
+		/**
+		 * Returns the NameManager instance 
+		 * @return NameManager instance
+		 */		
+		public static function get nameManager():NameManager
+		{
+			return NameManager.instance;
+		}
+		
+		/**
+		 * Returns the ProcessManager instance 
+		 * @return ProcessManager instance
+		 */		
+		public static function get processManager():ProcessManager
+		{
+			return ProcessManager.instance;
+		}
+		
+		/**
+		 * Returns the TemplateManager instance.
+		 * @return TemplateManager instance 
+		 */		
+		public static function get templateManager():TemplateManager
+		{
+			return TemplateManager.instance;
+		}
+		
+		/**
+		 * Returns the InputManager instance. 
+		 * @return InputManager instance.
+		 * 
+		 */		
+		public static function get inputManager():InputManager
+		{
+			return InputManager.instance;
+		}
+		
+		/**
+		 * Returns the ObjectTypeManager instance. 
+		 * @return ObjectTypeManager instance.
+		 * 
+		 */		
+		public static function get objectTypeManager():ObjectTypeManager
+		{
+			return ObjectTypeManager.instance;
+		}
+		
+		/**
+		 * Returns the ResourceManager instance. 
+		 * @return ResourceManager instance.
+		 */		
+		public static function get resourceManager():ResourceManager
+		{
+			return ResourceManager.instance;
 		}
 		
 		public static function getHostingDomain():String
@@ -318,6 +398,37 @@ package com.pblabs.engine
             mainStage.quality = _stageQualityStack.pop();
         }
 		
+		/**
+		 * Loads a resource from a file. If the resource has already been loaded or is embedded, a
+		 * reference to the existing resource will be given. The resource is not returned directly
+		 * since loading is asynchronous. Instead, it will be passed to the function specified in
+		 * the onLoaded parameter. Even if the resource has already been loaded, it cannot be
+		 * assumed that the callback will happen synchronously.
+		 * 
+		 * <p>This will not attempt to load resources that have previously failed to load. Instead,
+		 * the load will fail instantly.</p>
+		 * 
+		 * @param filename The url of the file to load.
+		 * @param resourceType The Resource subclass specifying the type of resource that is being
+		 * requested.
+		 * @param onLoaded A function that will be called on successful load of the resource. The
+		 * function should take a single parameter of the type specified in the resourceType
+		 * parameter.
+		 * @param onFailed A function that will be called if loading of the resource fails. The
+		 * function should take a single parameter of the type specified in the resourceType
+		 * parameter. The resource passed to the function will be invalid, but the filename
+		 * property will be correct.
+		 * @param forceReload Always reload the resource, even if it has already been loaded.
+		 * 
+		 * @see Resource
+		 */
+		public static function loadResource(filename:String, resourceType:Class, 
+											onLoaded:Function = null, onFailed:Function = null, 
+											forceReload:Boolean = false):void
+		{
+			resourceManager.load(filename, resourceType, onLoaded, onFailed, forceReload);
+		}
+		
         /**
          * Defer a call until the start of the next tick or frame. 
          * @param method Method to call.
@@ -327,7 +438,7 @@ package com.pblabs.engine
         {
             ProcessManager.instance.callLater(method, args);
         }
-        
+		
 		/**
 		 * Recursively searches for an object with the specified name that has been added to the
 		 * display hierarchy.
