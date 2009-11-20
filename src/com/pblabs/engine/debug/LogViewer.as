@@ -38,6 +38,7 @@ package com.pblabs.engine.debug
             addListeners();
 			
 			name = "Console";
+			Console.registerCommand("clear", onClearCommand, "Clears the console history.");
         }
         
         protected function layout():void
@@ -60,6 +61,11 @@ package com.pblabs.engine.debug
         {
             _input.removeEventListener(KeyboardEvent.KEY_DOWN, onInputKeyDown);
         }
+		
+		protected function onClearCommand():void
+		{
+			_output.htmlText = "";
+		}
         
         protected function resize():void
         {
@@ -137,7 +143,11 @@ package com.pblabs.engine.debug
             if(event.keyCode == Keyboard.ENTER)
             {
                 if(_input.text.length <= 0)
-                    return;
+				{
+					// Enter a blank line
+					addLogMessage("CMD", ">", _input.text);
+					return;
+				}
                 
                 // If Enter was pressed, process the command
                 processCommand();
