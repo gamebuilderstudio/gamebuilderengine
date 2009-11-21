@@ -10,7 +10,7 @@ package com.pblabs.rendering2D
      * 
      * <p>It can be used one of two ways. You can either subclass it and
      * override getClipInstance(), or you create one and set the clip 
-     * property.
+     * property.</p>
      */
 	public class MovieClipRenderer extends DisplayObjectRenderer
 	{
