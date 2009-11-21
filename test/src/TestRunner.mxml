@@ -4,6 +4,7 @@
         <![CDATA[
             import com.pblabs.PBEngineTestSuite;
             import com.pblabs.engine.PBE;
+            import com.pblabs.engine.debug.Logger;
             import com.pblabs.testFramework.JUnitListener;
             
             import org.flexunit.listeners.UIListener;
@@ -17,13 +18,18 @@
 
             public function runMe(outputDir:String, exitOnComplete:Boolean):void
             {
+                if(PBE.started)
+                {
+                    Logger.warn(this, "runMe", "Tried to run tests twice, aborting...");
+                    return;
+                }
+                
                 PBE.startup(this);
 
                 core = new FlexUnitCore();
 
                 //Listener for the UI, optional
                 core.addListener(new UIListener(uiListener));
-                
                 core.addListener(new JUnitListener(outputDir, exitOnComplete));
 
                 //FlexUnit wants the class reference, not an instance				

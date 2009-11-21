@@ -264,7 +264,7 @@ package com.pblabs.testFramework
 			
 			var xml : XML =
 				<failure type={ "" }>
-				{ message }
+				{ message.toString() }
 				</failure>;
 			
 			return xml;
