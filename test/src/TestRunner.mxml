@@ -2,24 +2,22 @@
 <mx:WindowedApplication xmlns:mx = "http://www.adobe.com/2006/mxml" xmlns:fu="http://www.adobe.com/2009/flexUnitUIRunner" invoke="windowedapplication1_invokeHandler(event)">
     <mx:Script>
         <![CDATA[
-            import com.pblabs.testFramework.JUnitListener;
-            import org.flexunit.runner.notification.async.XMLListener;
-            import org.flexunit.listeners.UIListener;
-            import org.flexunit.runner.Request;
-
-            import org.flexunit.runner.FlexUnitCore;
-
             import com.pblabs.PBEngineTestSuite;
-            import com.pblabs.engine.core.Global;
+            import com.pblabs.engine.PBE;
+            import com.pblabs.testFramework.JUnitListener;
+            
+            import org.flexunit.listeners.UIListener;
+            import org.flexunit.runner.FlexUnitCore;
+            import org.flexunit.runner.Request;
+            import org.flexunit.runner.notification.async.XMLListener;
 
-            var testResources:TestResources = new TestResources();
+            private var testResources:TestResources = new TestResources();
 
             private var core:FlexUnitCore;
 
             public function runMe(outputDir:String, exitOnComplete:Boolean):void
             {
-
-                Global.startup(this);
+                PBE.startup(this);
 
                 core = new FlexUnitCore();
 
@@ -50,7 +48,7 @@
         ]]>
     </mx:Script>
     <mx:Style>
-		Application {
+		WindowedApplication {
 			   backgroundColor: #3872b2;
 			   backgroundGradientColors: #3872b2, #0c1a3d;
 			   backgroundGradientAlphas: 1, 1;

@@ -169,6 +169,16 @@ package com.pblabs.engine.debug
             return "[no callstack available]";
         }
 
+        public static function printHeader(report:*, message:String):void
+        {
+            print(report, message);
+        }
+        
+        public static function printFooter(report:*, message:String):void
+        {
+            print(report, message);
+        }
+        
         public var enabled:Boolean;
         protected var owner:Class;
         public function Logger(_owner:Class, defaultEnabled:Boolean = true)
