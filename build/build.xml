@@ -75,7 +75,11 @@
 
    <target name="ensureValidEnvironment">
       <condition property="buildPropertiesIsValid">
-         <available file="${buildFilesDir}/build.properties"/>
+         <or>
+			<available file="${buildFilesDir}/build.properties"/>
+			<!-- We -DbuildSystem=1 if we are doing an automated build -->
+			<isset property="buildSystem"/>
+	     </or>
       </condition>
       <fail unless="buildPropertiesIsValid">
          No ${buildFilesDir}/build.properties file is present!
