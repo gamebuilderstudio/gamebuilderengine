@@ -18,7 +18,6 @@ package com.pblabs.engine.tests
      */
     public class ProcessTests
     {
-
         private var _scheduleCount:int = 0;
 
         [Test]
@@ -80,12 +79,12 @@ package com.pblabs.engine.tests
 
             ProcessManager.instance.testAdvance((ProcessManager.TICK_RATE_MS * 4) + 8);
             Assert.assertEquals(4, tickObject.tickCount);
-            Assert.assertTrue(Math.abs(tickObject.interpolationFactor - 8.0 / ProcessManager.TICK_RATE_MS) < 0.001);
+            //Assert.assertTrue(Math.abs(tickObject.interpolationFactor - 8.0 / ProcessManager.TICK_RATE_MS) < 0.001);
 
             ProcessManager.instance.timeScale = 0.5;
             ProcessManager.instance.testAdvance((ProcessManager.TICK_RATE_MS * 4) + 8);
             Assert.assertEquals(6, tickObject.tickCount);
-            Assert.assertTrue(Math.abs(tickObject.interpolationFactor - 12.0 / ProcessManager.TICK_RATE_MS) < 0.001);
+            //Assert.assertTrue(Math.abs(tickObject.interpolationFactor - 12.0 / ProcessManager.TICK_RATE_MS) < 0.001);
             ProcessManager.instance.timeScale = 1.0;
 
             ProcessManager.instance.removeTickedObject(tickObject);
@@ -193,11 +192,6 @@ class TickTest implements ITickedObject
         return _tickCount;
     }
 
-    public function get interpolationFactor():Number
-    {
-        return _interpolationFactor;
-    }
-
     public function TickTest(priority:int)
     {
         _priority = priority;
@@ -220,10 +214,4 @@ class TickTest implements ITickedObject
             _tickCount++;
         }
     }
-
-    public function onInterpolateTick(factor:Number):void
-    {
-        _interpolationFactor = factor;
-    }
-
 }
