@@ -38,6 +38,7 @@ package com.pblabs.engine
 		private static var _scene:DisplayObjectScene;
 		
         private static var _stageQualityStack:Array = [];
+        private static var _started:Boolean = false;
         
 		/**
 		 * Register a type with PushButton Engine so that it can be deserialized,
@@ -93,7 +94,10 @@ package com.pblabs.engine
 		 */
 		public static function startup(mainClass:Sprite):void
 		{
-			_main = mainClass;
+            if(_started)
+                throw new Error("You can only call PBE.startup once.");
+
+            _main = mainClass;
 			_versionDetails = VersionUtil.checkVersion(mainClass);
 			
 			// Set the stage alignment and scalemode
@@ -108,6 +112,8 @@ package com.pblabs.engine
 				SchemaGenerator.instance.generateSchema();
 
             Logger.startup();
+            
+            _started = true;
 		}
 
 		/**
@@ -146,6 +152,14 @@ package com.pblabs.engine
 		{
 			return _scene;
 		}
+        
+        /**
+         * True if PBE.startup has been called.
+         */
+        public static function get started():Boolean
+        {
+            return _started;
+        }
 		
 		/**
 		 * Return true if the specified key is down.
