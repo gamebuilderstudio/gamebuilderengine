@@ -74,12 +74,6 @@ package com.pblabs.engine.core
         
         private static var _instance:ProcessManager = null;
         
-        public function ProcessManager()
-        {
-            //thinkQueueStart.nextQueueItem = thinkQueueEnd;
-            //thinkQueueEnd.prevQueueItem = thinkQueueStart;
-        }
-        
         /**
          * The scale at which time advances. If this is set to 2, the game
          * will essentially play twice as fast. A value of 0.5 will run the
