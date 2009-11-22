@@ -30,7 +30,7 @@ package com.pblabs
 		public var componentTests:ComponentTests;
 		public var levelTests:LevelTests;
 		public var resourceTests:ResourceTests;
-		public var processTests:ProcessTests;
+		//public var processTests:ProcessTests;
 		public var rendering2DTests:Rendering2DTests;
 		public var inputTests:InputTests;
 	}
