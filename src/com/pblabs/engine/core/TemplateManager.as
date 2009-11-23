@@ -22,6 +22,11 @@ package com.pblabs.engine.core
 	import flash.utils.Dictionary;
 
 	/**
+	 * @eventType com.pblabs.engine.core.TemplateEvent.GROUP_LOADED
+	 */
+	[Event(name="GROUP_LOADED", type="com.pblabs.engine.core.TemplateEvent")]
+	
+	/**
 	 * The template manager loads and unloads level files and stores information
 	 * about their contents. The Serializer is used to deserialize object
 	 * descriptions.
@@ -218,6 +223,9 @@ package com.pblabs.engine.core
 			{
 				if (_things[name].entityCallback)
 					throw new Error("Thing '" + name + "' is an entity callback!");
+				
+				// We won't dispatch the GROUP_LOADED event here as it's the callback
+				// author's responsibility.
 				if (_things[name].groupCallback)
 					return _things[name].groupCallback();
 			}
@@ -232,7 +240,10 @@ package com.pblabs.engine.core
 
 					return null;
 				}
-
+				
+				if(hasEventListener(TemplateEvent.GROUP_LOADED))
+					dispatchEvent(new TemplateEvent(TemplateEvent.GROUP_LOADED, name));
+					
 				return group;
 			}
 			catch (e:Error)
