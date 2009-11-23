@@ -154,5 +154,33 @@ package com.pblabs.engine
                 }
             }
         }
+		
+		/**
+		 * Replaces instances of less then, greater then, ampersand, single and double quotes.
+		 * @param str String to escape.
+		 * @return A string that can be used in an htmlText property.
+		 */		
+		public static function escapeHTMLText(str:String):String
+		{
+			var chars:Array = 
+			[
+				{char:"&", repl:"|amp|"},
+				{char:"<", repl:"&lt;"},
+				{char:">", repl:"&gt;"},
+				{char:"\'", repl:"&apos;"},
+				{char:"\"", repl:"&quot;"},
+				{char:"|amp|", repl:"&amp;"}
+			];
+			
+			for(var i:int=0; i < chars.length; i++)
+			{
+				while(str.indexOf(chars[i].char) != -1)
+				{
+					str = str.replace(chars[i].char, chars[i].repl);
+				}
+			}
+			
+			return str;
+		}
     }
 }

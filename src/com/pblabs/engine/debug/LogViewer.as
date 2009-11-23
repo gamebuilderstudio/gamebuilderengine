@@ -7,6 +7,7 @@
 package com.pblabs.engine.debug
 {
     import com.pblabs.engine.PBE;
+    import com.pblabs.engine.PBUtil;
     import com.pblabs.engine.core.InputKey;
     
     import flash.display.Sprite;
@@ -235,7 +236,7 @@ package com.pblabs.engine.debug
                 var append:String = "<p><font size=\"" +
                     _input.getTextFormat().size+"\" color=\"" + 
                     color +"\"><b>" + 
-                    text + "</b></font></p>";
+                    PBUtil.escapeHTMLText(text) + "</b></font></p>";
                 _output.htmlText += append;
                 truncateOutput();
                 
