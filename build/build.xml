@@ -38,8 +38,8 @@
    <property name="DEBUG" value="true"/>
    
    <!-- Docs appearance settings. -->
-   <property name="windowtitle" value="PushButton Engine Documentation" />
-   <property name="maintitle" value="PushButton Engine Documentation" />
+   <property name="windowtitle" value="PushButton API Reference" />
+   <property name="maintitle" value="PushButton API Reference" />
    <property name="footer" value="http://pushbuttonengine.com/" />
 
    <!-- Paths for the PBEngine SDK. -->
