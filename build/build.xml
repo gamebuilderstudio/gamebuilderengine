@@ -131,13 +131,20 @@
    </target>
 
    <target name="generateDocs" description="Generates docs" depends="cleanDocs,identifyClasses">
+       <!-- Get the current revision. -->
+      <typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="localClasspath" />
+      <svn>
+         <status path="." revisionProperty="svn.revision"/>
+      </svn>
+         
+         
       <echo>Generating documentation for '${docsdir}'...</echo>
       <exec executable="${asdoc}" failonerror="true">
          <arg line="-source-path &quot;${classesdir}&quot;" />
          <arg line="-doc-classes ${path.classes}" />
          <arg line="-exclude-dependencies=true" />
-         <arg line="-window-title '${windowtitle}'" />
-         <arg line="-main-title '${maintitle}'" />
+         <arg line="-window-title '${windowtitle} - r${svn.revision}'" />
+         <arg line="-main-title '${maintitle} - r${svn.revision}'" />
          <arg line="-footer '${footer}'" />
          <arg line="-output '${docsdir}'" />
       </exec>
