@@ -9,7 +9,7 @@
 
 package
 {
-   import com.pblabs.engine.core.*;
+   import com.pblabs.engine.PBE;
    import com.pblabs.engine.entity.*;
    import com.pblabs.rendering2D.*;
    import com.pblabs.rendering2D.ui.*;
@@ -22,7 +22,7 @@ package
    {
       public function Lesson2Base()
       {
-         Global.startup(this);                                                // Start up PBE
+         PBE.startup(this);                                                // Start up PBE
       }
    }
 }

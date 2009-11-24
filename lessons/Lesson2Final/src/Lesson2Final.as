@@ -9,7 +9,7 @@
 
 package
 {
-   import com.pblabs.engine.core.*;
+   import com.pblabs.engine.PBE;
    import com.pblabs.engine.entity.*;
    import com.pblabs.rendering2D.*;
    import com.pblabs.rendering2D.ui.*;
@@ -22,10 +22,12 @@ package
    {
       public function Lesson2Final()
       {
-         Global.startup(this);                                                // Start up PBE
+	     // Start PBE.
+         PBE.startup(this);
 
-         CreateScene();                                                       // Set up a simple scene entity
-         
+         // Initialize scene.
+         PBE.initializeScene("Scene");
+
          CreateHero();                                                        // Create a simple avatar entity
       }
       
