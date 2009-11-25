@@ -2,31 +2,31 @@ package com.pblabs.engine.debug
 {
 	public class LogColor
 	{
-		public static const TRACE:String = "#000000";
-		public static const DEBUG:String = "#0000CD";
-		public static const INFO:String = "#008000";
-		public static const WARN:String = "#FFCC33";
-		public static const ERROR:String = "#FF0000";
-		public static const FATAL:String = "#FF4500";
+		public static const DEBUG:String 	= "#666666";
+		public static const INFO:String 	= "#000000";
+		public static const WARN:String 	= "#FF6600";
+		public static const ERROR:String 	= "#FF0000";
+		public static const MESSAGE:String 	= "#000000";
+		public static const CMD:String 		= "#006600";
 		
 		public static function getColor(level:String):String
 		{
 			switch(level)
 			{
-				case "TRACE":
-					return TRACE;
-				case "DEBUG":
+				case LogEntry.DEBUG:
 					return DEBUG;
-				case "INFO":
+				case LogEntry.INFO:
 					return INFO;
-				case "WARN":
+				case LogEntry.WARNING:
 					return WARN;
-				case "ERROR":
+				case LogEntry.ERROR:
 					return ERROR;
-				case "FATAL":
-					return FATAL;
+				case LogEntry.MESSAGE:
+					return MESSAGE;
+				case "CMD":
+					return CMD;
 				default:
-					return TRACE;
+					return MESSAGE;
 			}
 		}
 	}

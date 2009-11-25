@@ -97,6 +97,24 @@ package com.pblabs.engine.debug
 			processEntry(entry);
 		}
 		
+		/**
+		 * Prints a debug message to the log. Log entries created with this method
+		 * will have the DEBUG type.
+		 * 
+		 * @param reporter The object that reported the debug message. This can be null.
+		 * @param method The name of the method that the debug message was reported from.
+		 * @param message The debug message to print to the log.
+		 */
+		public static function debug(reporter:*, method:String, message:String):void
+		{
+			var entry:LogEntry = new LogEntry();
+			entry.reporter = TypeUtility.getClass(reporter);
+			entry.method = method;
+			entry.message = method + " - " + message;
+			entry.type = LogEntry.DEBUG;
+			processEntry(entry);
+		}
+		
         /**
          * Prints a warning message to the log. Log entries created with this method
          * will have the WARNING type.
