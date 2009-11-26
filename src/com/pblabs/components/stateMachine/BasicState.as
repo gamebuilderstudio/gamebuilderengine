@@ -30,7 +30,7 @@ package com.pblabs.components.stateMachine
       
       public function addTransition(t:ITransition):void
       {
-         transitions.push(t);
+         transitions[transitions.length] = t;
       }
       
       public function tick(fsm:IMachine):void
