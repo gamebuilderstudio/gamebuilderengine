@@ -1,9 +1,3 @@
-/*
-*	  File name: LogViewerAS.as
-*	     Author: Nate Beck (blog.natebeck.net)
-*		   Date: 09/05/2009
-* 	Description: An ActionScript only version of the LogViewer.
-*/
 package com.pblabs.engine.debug
 {
     import com.pblabs.engine.PBE;
@@ -18,6 +12,9 @@ package com.pblabs.engine.debug
     import flash.ui.Keyboard;
     import flash.utils.setTimeout;
     
+    /**
+     * Console UI, which shows console log activity in-game, and also accepts input from the user.
+     */
     public class LogViewer extends Sprite implements ILogAppender
     {
         protected var _messageQueue:Array = [];

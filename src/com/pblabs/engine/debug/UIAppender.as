@@ -7,7 +7,7 @@ package com.pblabs.engine.debug
 	import flash.events.KeyboardEvent;
 
 	/**
-	 * LogAppender for displaying log messages in a LogViewer flex ui component. The LogViewer will be
+	 * LogAppender for displaying log messages in a LogViewer. The LogViewer will be
      * attached and detached from the main view when the defined hot key is pressed. The tilde (~) key 
 	 * is the default hot key.
 	 */	
