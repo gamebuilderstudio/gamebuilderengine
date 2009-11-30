@@ -10,6 +10,7 @@ package com.pblabs.rendering2D
     
     import flash.display.DisplayObject;
     import flash.display.Sprite;
+    import flash.display.StageQuality;
     import flash.events.Event;
     import flash.geom.*;
     import flash.utils.Dictionary;
@@ -404,9 +405,13 @@ package com.pblabs.rendering2D
 
             updateTransform();
             
+            //PBE.pushStageQuality(StageQuality.LOW);
+            
             // Give layers a chance to sort and update.
             for each(var l:DisplayObjectSceneLayer in _layers)
                 l.onRender();
+
+            //PBE.pushStageQuality(StageQuality.HIGH);
         }
                 
         public function setWorldCenter(pos:Point):void
