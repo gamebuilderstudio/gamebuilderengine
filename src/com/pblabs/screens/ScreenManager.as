@@ -5,6 +5,7 @@ package com.pblabs.screens
     
     import flash.display.DisplayObject;
     import flash.display.DisplayObjectContainer;
+    import flash.display.Sprite;
     import flash.events.*;
     import flash.utils.*;
 
@@ -70,7 +71,7 @@ package com.pblabs.screens
             if(_currentScreen)
             {
                 _currentScreen.onHide();
-                screenParent.removeChild(_currentScreen as DisplayObject);
+
                 _currentScreen = null;
             }
             
@@ -79,8 +80,7 @@ package com.pblabs.screens
                 _currentScreen = screenDictionary[value];
                 if(!_currentScreen)
                     throw new Error("No such screen '" + value + "'");
-                
-                screenParent.addChild(_currentScreen as DisplayObject);
+
                 _currentScreen.onShow();
             }
         }
@@ -110,8 +110,8 @@ package com.pblabs.screens
          */
         public function goto(screenName:String):void
         {
-            screenStack[screenStack.length - 1] = screenName;
-            currentScreen = screenName;
+            pop();
+            push(screenName);
         }
         
         /**
@@ -123,6 +123,8 @@ package com.pblabs.screens
         {
             screenStack.push(screenName);
             currentScreen = screenName;
+
+            screenParent.addChild(get(screenName) as DisplayObject);
         }
         
         /**
@@ -134,6 +136,9 @@ package com.pblabs.screens
         {
             screenStack.pop();
             currentScreen = screenStack[screenStack.length - 1];
+            
+            if(screenParent.numChildren)
+                screenParent.removeChildAt(screenParent.numChildren-1);
         }
         
         /**
