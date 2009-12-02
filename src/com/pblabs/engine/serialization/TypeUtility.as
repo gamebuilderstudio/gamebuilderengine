@@ -81,6 +81,10 @@ package com.pblabs.engine.serialization
             // Deal with strings explicitly as they are a primitive.
             if (className == "String")
                 return "";
+
+            // Class is also a primitive type.
+            if(className == "Class")
+                return Class;
             
             // Check for overrides.
             if (_instantiators[className])

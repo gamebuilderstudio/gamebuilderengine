@@ -45,6 +45,7 @@ package com.pblabs.engine.serialization
          _deserializers["Boolean"] = deserializeBoolean;
          _deserializers["Array"] = deserializeDictionary;
          _deserializers["flash.utils::Dictionary"] = deserializeDictionary;
+         _deserializers["Class"] = deserializeClass;
          
          _serializers["::DefaultSimple"] = serializeSimple;
          _serializers["::DefaultComplex"] = serializeComplex;
@@ -352,7 +353,12 @@ package com.pblabs.engine.serialization
          
          return object;
       }
-      
+
+      private function deserializeClass(object:*, xml:XML, typeHint:String):*
+      {
+         return TypeUtility.getClassFromName(xml.toString());
+      }
+
       /**
        * A tag can have attributes which encode references of various types. This method
        * parses them and resolves the references.
