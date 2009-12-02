@@ -13,7 +13,7 @@ package
    import com.pblabs.engine.entity.*;
    import com.pblabs.rendering2D.*;
    import com.pblabs.rendering2D.ui.*;
-
+   
    import flash.display.Sprite;
    import flash.geom.Point;
    
@@ -22,36 +22,20 @@ package
    {
       public function Lesson2Final()
       {
-	     // Start PBE.
-         PBE.startup(this);
+         PBE.startup(this);                                                   // Start PBE.
 
-         // Initialize scene.
-         PBE.initializeScene("Scene");
+         CreateScene();                                                       // Set up a simple scene entity
 
          CreateHero();                                                        // Create a simple avatar entity
       }
       
       private function CreateScene():void 
       {
-         var Scene:IEntity = allocateEntity();                                // Allocate our Scene entity
-         Scene.initialize("Scene");                                           // Register with the name "Scene"
-         var Spatial:BasicSpatialManager2D = new BasicSpatialManager2D();     // Allocate our Spatial DB component
-         Scene.addComponent( Spatial, "Spatial" );                            // Add to Scene with name "Spatial"
-
-         var Renderer:Scene2DComponent = new Scene2DComponent();              // Allocate our renderering component 
-        
-         Renderer.spatialDatabase = Spatial;                                  // Point renderer at Spatial (for object location information)
-        
-         var View:SceneView = new SceneView();                                // Create a view for our Renderer
-         View.width = 800;                                                    // Set the width of our Scene View
-         View.height = 600;                                                   // Set the height of our Scene View
-         Renderer.sceneView = View;                                           // Point the Renderer's SceneView at the view we just created.
-        
-         Renderer.position = new Point(0,0);                                  // Point the camera (center of render view) at 0,0
-        
-         Renderer.renderMask = new ObjectType("Renderable");                  // Set the render mask to only draw objects explicitly marked as "Renderable"
-        
-         Scene.addComponent( Renderer, "Renderer" );                          // Add our Renderer component to the scene entity with the name "Renderer"
+         var sceneView:SceneView = new SceneView();                           // Make the SceneView
+         sceneView.width = 800;
+         sceneView.height = 600;
+	     
+         PBE.initializeScene(sceneView);                                      // This is just a helper function that will set up a basic scene for us
       }
 
 
@@ -62,24 +46,25 @@ package
          
          var Spatial:SimpleSpatialComponent = new SimpleSpatialComponent();   // Create our spatial component
          
-         // Do a named lookup to register our hero with the scene spatial database
-         Spatial.spatialManager = NameManager.instance.lookupComponentByName("Scene", "Spatial") as ISpatialManager2D;                            
-         
-         Spatial.objectMask = new ObjectType("Renderable");                   // Set a mask flag for this object as "Renderable" to be seen by the scene Renderer
          Spatial.position = new Point(0,0);                                   // Set our hero's spatial position as 0,0
          Spatial.size = new Point(50,50);                                     // Set our hero's size as 50,50
         
          Hero.addComponent( Spatial, "Spatial" );                             // Add our spatial component to the Hero entity with the name "Spatial"
         
-         // Create a simple render component to display our object
-         var Render:SimpleShapeRenderComponent = new SimpleShapeRenderComponent();
-         Render.showCircle = true;                                            // Specify to draw the object as a circle
-         Render.radius = 25;                                                  // Mark the radius of the circle as 25
+         var circleSprite:Sprite = new Sprite();                              // Make the sprite that will be rendered
+         circleSprite.graphics.lineStyle(2, 0x000000);
+         circleSprite.graphics.beginFill(0x0000FF0);
+         circleSprite.graphics.drawCircle(0, 0, 25);
+         circleSprite.graphics.endFill();
+         
+         var Render:DisplayObjectRenderer = new DisplayObjectRenderer();      // Create a DisplayObjectRenderer to display our object
+         Render.displayObject = circleSprite;                                 // Specify the display object to use
+         Render.scene = PBE.getScene();                                       // Set which scene this is apart of
          
          // Point the render component to this entity's Spatial component for position information
-         Render.positionReference = new PropertyReference("@Spatial.position");
+         Render.positionProperty = new PropertyReference("@Spatial.position");
          // Point the render component to this entity's Spatial component for rotation information
-         Render.rotationReference = new PropertyReference("@Spatial.rotation");
+         Render.rotationProperty = new PropertyReference("@Spatial.rotation");
         
          Hero.addComponent( Render, "Render" );                               // Add our render component to the Hero entity with the name "Render"
       }
