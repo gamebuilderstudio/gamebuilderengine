@@ -201,9 +201,10 @@ package com.pblabs.rendering2D
             
             if(trackLimitRectangle != null)
             {
-                var centeredLimitBounds:Rectangle = new Rectangle( trackLimitRectangle.x     + sceneView.width * 0.5, trackLimitRectangle.y      + sceneView.height * 0.5,
-                                                                   trackLimitRectangle.width - sceneView.width      , trackLimitRectangle.height - sceneView.height );
+            	var centeredLimitBounds:Rectangle = new Rectangle( trackLimitRectangle.x     + (sceneView.width * 0.5) / zoom, trackLimitRectangle.y      + (sceneView.height * 0.5) / zoom,
+            	                                                   trackLimitRectangle.width - (sceneView.width / zoom)      , trackLimitRectangle.height - (sceneView.height/zoom) );
                 
+				
                 position = new Point(PBUtil.clamp(position.x, -centeredLimitBounds.right, -centeredLimitBounds.left ), 
                                      PBUtil.clamp(position.y, -centeredLimitBounds.bottom, -centeredLimitBounds.top) );
             }
