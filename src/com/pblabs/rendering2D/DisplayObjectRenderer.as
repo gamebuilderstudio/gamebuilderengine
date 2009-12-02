@@ -10,7 +10,7 @@ package com.pblabs.rendering2D
     import flash.geom.Matrix;
     import flash.geom.Point;
     import flash.geom.Rectangle;
-
+    
     /**
      * Base renderer for Rendering2D. It wraps a DisplayObject, allows it
      * to be controlled by PropertyReferences, and hooks it into a scene.
@@ -34,43 +34,48 @@ package com.pblabs.rendering2D
          * Reference value used for sorting in some scenes.
          */
         public var renderKey:int = 0;
-
+        
         /**
          * If set, position is gotten from this property every frame.
          */
         public var positionProperty:PropertyReference;
-
+        
         /**
-        * if set this to false, positions will be handeled with numbers insteed of integers
-        * makes slow movement smoother for example
-        */
+         * if set this to false, positions will be handeled with numbers insteed of integers
+         * makes slow movement smoother for example
+         */
         public var snapToNearestPixels:Boolean = true;
-
+        
         /**
          * If set, scale is gotten from this property every frame.
          */
         public var scaleProperty:PropertyReference;
-
+        
+        /**
+         * If set, size is determined by this property every frame.
+         */
+        public var sizeProperty:PropertyReference;
+        
         /**
          * If set, rotation is gotten from this property every frame.
          */
         public var rotationProperty:PropertyReference;
-
+        
         /**
          * If set, alpha is gotten from this property every frame.
          */
         public var alphaProperty:PropertyReference;
-
+        
         /**
          * If set, the layer index is gotten from this property every frame.
          */
         public var layerIndexProperty:PropertyReference;
-
+        
         /**
          * If set, our z-index is gotten from this property every frame.
          */
         public var zIndexProperty:PropertyReference;
-
+        
         /**
          * If set, our registration point is gotten from this property every frame.
          *
@@ -79,38 +84,39 @@ package com.pblabs.rendering2D
          * sprite sheet it is rendering.</p>
          */
         public var registrationPointProperty:PropertyReference;
-
+        
         /**
          * The types for this object; used for picking queries primarily.
          */
         public var objectMask:ObjectType;
-
+        
         protected var _displayObject:DisplayObject;
         protected var _scene:IScene2D;
-
+        
         protected var _layerIndex:int = 0;
         protected var _lastLayerIndex:int = -1;
         protected var _zIndex:int = 0;
-
+        
         protected var _rotationOffset:Number = 0;
         protected var _registrationPoint:Point = new Point();
         protected var _scale:Point = new Point(1, 1);
         protected var _rotation:Number = 0;
         protected var _alpha:Number = 1;
         protected var _position:Point = new Point();
-
+        protected var _size:Point;
+        
         protected var _transformMatrix:Matrix = new Matrix();
-
+        
         protected var _transformDirty:Boolean = true;
         protected var _layerIndexDirty:Boolean = true;
         protected var _zIndexDirty:Boolean = true;
         protected var _hitTestDirty:Boolean = true;
-
+        
         public function get layerIndex():int
         {
             return _layerIndex;
         }
-
+        
         /**
          * In what layer of the scene is this renderer drawn?
          */
@@ -118,16 +124,16 @@ package com.pblabs.rendering2D
         {
             if (_layerIndex == value)
                 return;
-
+            
             _layerIndex = value;
             _layerIndexDirty = true;
         }
-
+        
         public function get zIndex():int
         {
             return _zIndex;
         }
-
+        
         /**
          * By default, layers are sorted based on the z-index, from small
          * to large.
@@ -137,17 +143,16 @@ package com.pblabs.rendering2D
         {
             if (_zIndex == value)
                 return;
-
+            
             _zIndex = value;
             _zIndexDirty = true;
         }
-
-
+        
         public function get registrationPoint():Point
         {
             return _registrationPoint.clone();
         }
-
+        
         /**
          * The registration point can be used to offset the sprite
          * so that rotation and scaling work properly.
@@ -158,20 +163,20 @@ package com.pblabs.rendering2D
         {
             var intX:int = int(value.x);
             var intY:int = int(value.y);
-
+            
             if (intX == _registrationPoint.x && intY == _registrationPoint.y)
                 return;
-
+            
             _registrationPoint.x = intX;
             _registrationPoint.y = intY;
             _transformDirty = true;
         }
-
+        
         public function get scale():Point
         {
             return _scale.clone();
         }
-
+        
         /**
          * You can scale things on the X and Y axes.
          */
@@ -179,17 +184,43 @@ package com.pblabs.rendering2D
         {
             if (value.x == _scale.x && value.y == _scale.y)
                 return;
-
+            
             _scale.x = value.x;
             _scale.y = value.y;
             _transformDirty = true;
         }
-
+        
+        /**
+         * Explicitly set the size. This overrides scale if it is set.
+         */
+        public function set size(value:Point):void
+        {
+            if(!value)
+            {
+                _size = null;
+                return;
+            }
+            
+            if(!_size)
+                _size = new Point();
+            
+            _size.x = value.x;
+            _size.y = value.y;
+            _transformDirty = true;
+        }
+        
+        public function get size():Point
+        {
+            if(!_size)
+                return _size;
+            return _size.clone();
+        }
+        
         public function get rotation():Number
         {
             return _rotation;
         }
-
+        
         /**
          * Rotation in degrees, with 0 being Y+.
          */
@@ -197,16 +228,16 @@ package com.pblabs.rendering2D
         {
             if (value == _rotation)
                 return;
-
+            
             _rotation = value;
             _transformDirty = true;
         }
-
+        
         public function get alpha():Number
         {
             return _alpha;
         }
-
+        
         /**
          * Transparency, 0 being completely transparent and 1 being opaque.
          */
@@ -214,16 +245,16 @@ package com.pblabs.rendering2D
         {
             if (value == _alpha)
                 return;
-
+            
             _alpha = value;
             _transformDirty = true;
         }
-
+        
         public function get position():Point
         {
             return _position.clone();
         }
-
+        
         /**
          * Position of the renderer in scene space.
          *
@@ -231,56 +262,56 @@ package com.pblabs.rendering2D
          */
         public function set position(value:Point):void
         {
-         var posX:Number;
-         var posY:Number;
-
-         if (snapToNearestPixels)
-         {
-               posX = int(value.x);
-               posY = int(value.y);
-         }
-         else
-         {
-            posX = value.x;
-               posY = value.y;
-         }
-
+            var posX:Number;
+            var posY:Number;
+            
+            if (snapToNearestPixels)
+            {
+                posX = int(value.x);
+                posY = int(value.y);
+            }
+            else
+            {
+                posX = value.x;
+                posY = value.y;
+            }
+            
             if (posX == _position.x && posY == _position.y)
                 return;
-
+            
             _position.x = posX;
             _position.y = posY;
             _transformDirty = true;
         }
-
-      /**
-       * The x value of our scene space position.
-       */
-      public function get x():Number
-      {
-         return _position.x;
-      }
-
-      public function set x(value:Number):void
-      {
-         var posX:Number;
-
-         if(snapToNearestPixels)
-         {
-            posX = int(value);
-         }
-         else
-         {
-            posX = value;
-         }
-
-         if (posX == _position.x)
-            return;
-
-         _position.x = posX;
-         _transformDirty = true;
-      }
-
+        
+        /**
+         * The x value of our scene space position.
+         */
+        public function get x():Number
+        {
+            return _position.x;
+        }
+        
+        public function set x(value:Number):void
+        {
+            var posX:Number;
+            
+            if(snapToNearestPixels)
+            {
+                posX = int(value);
+            }
+            else
+            {
+                posX = value;
+            }
+            
+            if (posX == _position.x)
+                return;
+            
+            _position.x = posX;
+            _transformDirty = true;
+        }
+        
         /**
          * The y component of our scene space position. Used for sorting.
          */
@@ -288,45 +319,45 @@ package com.pblabs.rendering2D
         {
             return _position.y;
         }
-
-      public function set y(value:Number):void
-      {
-         var posY:Number;
-
-         if(snapToNearestPixels)
-         {
-            posY = int(value);
-         }
-         else
-         {
-            posY = value;
-         }
-
-         if (posY == _position.y)
-            return;
-
-         _position.y = posY;
-         _transformDirty = true;
-      }
-
+        
+        public function set y(value:Number):void
+        {
+            var posY:Number;
+            
+            if(snapToNearestPixels)
+            {
+                posY = int(value);
+            }
+            else
+            {
+                posY = value;
+            }
+            
+            if (posY == _position.y)
+                return;
+            
+            _position.y = posY;
+            _transformDirty = true;
+        }
+        
         /**
          * Convenience method to allow placing the renderer in world coordinates.
          */
         public function set worldPosition(value:Point):void
         {
             scene.remove(this);
-
+            
             position = scene.transformWorldToScene(value);
             updateTransform();
-
+            
             scene.add(this);
         }
-
+        
         public function get worldPosition():Point
         {
             return scene.transformSceneToWorld(position);
         }
-
+        
         /**
          * Our bounds in scene coordinates.
          */
@@ -335,17 +366,17 @@ package com.pblabs.rendering2D
             // NOP if no DO.
             if(!displayObject)
                 return null;
-
+            
             var bounds:Rectangle = displayObject.getBounds(displayObject);
-
+            
             // Just translation for now.
             bounds.x += displayObject.x;
             bounds.y += displayObject.y;
-
+            
             // And hand it back.
             return bounds;
         }
-
+        
         /**
          * @return Bounds in object space, relative to its local origin.
          */
@@ -353,10 +384,10 @@ package com.pblabs.rendering2D
         {
             if(!displayObject)
                 return null;
-
+            
             return displayObject.getBounds(displayObject);
         }
-
+        
         public function get scene():IScene2D
         {
             return _scene;
@@ -372,9 +403,9 @@ package com.pblabs.rendering2D
             // Remove from old scene if appropriate.
             if(_scene && _displayObject)
                 _scene.remove(this);
-
+            
             _scene = value;
-
+            
             // And add to new scene (clearing dirty state).
             if(_scene && _displayObject)
             {
@@ -383,12 +414,12 @@ package com.pblabs.rendering2D
                 _layerIndexDirty = _zIndexDirty = false;
             }
         }
-
+        
         public function get displayObject():DisplayObject
         {
             return _displayObject;
         }
-
+        
         /**
          * The displayObject which this DisplayObjectRenderer will draw.
          */
@@ -397,9 +428,9 @@ package com.pblabs.rendering2D
             // Remove old object from scene.
             if(_scene && _displayObject)
                 _scene.remove(this);
-
+            
             _displayObject = value;
-
+            
             // Add new scene.
             if(_scene && _displayObject)
             {
@@ -408,7 +439,7 @@ package com.pblabs.rendering2D
                 _layerIndexDirty = _zIndexDirty = false;
             }
         }
-
+        
         /**
          * Where in the scene will this object be rendered?
          */
@@ -416,7 +447,7 @@ package com.pblabs.rendering2D
         {
             return new Point(displayObject.x, displayObject.y);
         }
-
+        
         /**
          * Rotation offset applied to the child DisplayObject. Used if, for instance,
          * your art is rotated 90deg off from where you want it.
@@ -446,7 +477,7 @@ package com.pblabs.rendering2D
             // Oh goodness.
             var tmp:Matrix = _transformMatrix.clone();
             tmp.invert();
-
+            
             return tmp.transformPoint(p);
         }
         
@@ -457,7 +488,7 @@ package com.pblabs.rendering2D
         {
             return _transformMatrix.transformPoint(p);            
         }
-
+        
         /**
          * Is the rendered object opaque at the request position in screen space?
          * @param pos Location in world space we are curious about.
@@ -467,7 +498,7 @@ package com.pblabs.rendering2D
         {
             if (!displayObject || !scene)
                 return false;
-
+            
             // Sanity check.
             if(displayObject.stage == null)
                 Logger.warn(this, "pointOccupied", "DisplayObject is not on stage, so hitTestPoint will probably not work right.");
@@ -477,52 +508,52 @@ package com.pblabs.rendering2D
             worldPosition = scene.transformWorldToScreen(worldPosition);
             return displayObject.hitTestPoint(worldPosition.x, worldPosition.y, true);
         }
-
+        
         override protected function onAdd() : void
         {
             super.onAdd();
         }
-
+        
         override protected function onRemove() : void
         {
             super.onRemove();
-
+            
             // Remove ourselves from the scene when we are removed
             if(_scene && _displayObject)
                 _scene.remove(this);
         }
-
+        
         override public function onFrame(elapsed:Number) : void
         {
             // Lookup and apply properties. This only makes adjustments to the
             // underlying DisplayObject if necessary.
             if (!displayObject)
                 return;
-
+            
             updateProperties();
-
+            
             // Now that we've read all our properties, apply them to our transform.
             if (_transformDirty)
                 updateTransform();
         }
-
+        
         protected function updateProperties():void
         {
             // Sync our zIndex.
             if (zIndexProperty)
                 zIndex = owner.getProperty(zIndexProperty, zIndex);
-
+            
             // Sync our layerIndex.
             if (layerIndexProperty)
                 layerIndex = owner.getProperty(layerIndexProperty, layerIndex);
-
+            
             // Maybe we were in the right layer, but have the wrong zIndex.
             if (_zIndexDirty && _scene)
             {
                 _scene.getLayer(_layerIndex).markDirty();
                 _zIndexDirty = false;
             }
-
+            
             // Position.
             var pos:Point = owner.getProperty(positionProperty) as Point;
             if (pos)
@@ -532,35 +563,42 @@ package com.pblabs.rendering2D
                 else
                     position = pos;
             }
-
+            
             // Scale.
             var scale:Point = owner.getProperty(scaleProperty) as Point;
             if (scale)
             {
                 this.scale = scale;
             }
-
+            
+            // Size.
+            var size:Point = owner.getProperty(sizeProperty) as Point;
+            if (size)
+            {
+                this.size = size;
+            }
+            
             // Rotation.
             if (rotationProperty)
             {
                 var rot:Number = owner.getProperty(rotationProperty) as Number;
                 this.rotation = rot;
             }
-
+            
             // Alpha.
             if (alphaProperty)
             {
                 var alpha:Number = owner.getProperty(alphaProperty) as Number;
                 this.alpha = alpha;
             }
-
+            
             // Registration Point.
             var reg:Point = owner.getProperty(registrationPointProperty) as Point;
             if (reg)
             {
                 registrationPoint = reg;
             }
-
+            
             // Make sure we're in the right layer and at the right zIndex in the scene.
             // Do this last to be more caching-layer-friendly. If we change position and
             // layer we can just do this at end and it works.
@@ -568,19 +606,19 @@ package com.pblabs.rendering2D
             {
                 var tmp:int = _layerIndex;
                 _layerIndex = _lastLayerIndex;
-
+                
                 if(_lastLayerIndex != -1)
                     _scene.remove(this);
-
+                
                 _layerIndex = tmp;
-
+                
                 _scene.add(this);
-
+                
                 _lastLayerIndex = _layerIndex;
                 _layerIndexDirty = false;
             }
         }
-
+        
         /**
          * Update the object's transform based on its current state. Normally
          * called automatically, but in some cases you might have to force it
@@ -591,20 +629,28 @@ package com.pblabs.rendering2D
         {
             if(!displayObject)
                 return;
-
+            
             if(updateProps)
                 updateProperties();
-
+            
+            // If size is active, it always takes precedence over scale.
+            if(_size)
+            {
+                var localDimensions:Rectangle = displayObject.getBounds(displayObject);
+                _scale.x = _size.x / localDimensions.width;
+                _scale.y = _size.y / localDimensions.height;
+            }
+            
             _transformMatrix.identity();
             _transformMatrix.scale(_scale.x, _scale.y);
             _transformMatrix.translate(-_registrationPoint.x * _scale.x, -_registrationPoint.y * _scale.y);
             _transformMatrix.rotate(PBUtil.getRadiansFromDegrees(_rotation) + _rotationOffset);
             _transformMatrix.translate(_position.x , _position.y);
-
+            
             displayObject.transform.matrix = _transformMatrix;
             displayObject.alpha = _alpha;
             displayObject.visible = (alpha > 0);
-
+            
             _transformDirty = false;
         }
     }
