@@ -36,6 +36,11 @@ package com.pblabs.box2D
             _drawer.m_lineThickness = 1.0;
             _drawer.m_drawFlags = b2DebugDraw.e_shapeBit|b2DebugDraw.e_jointBit;
         }
+
+        override protected function onRemove():void
+        {
+	        // Suppress auto-registration behavior. 
+        }
         
         override protected function onReset():void 
         {
