@@ -74,7 +74,11 @@ package com.pblabs.rendering2D
                     m.ty = localMat.ty;
                     m.concat(_rootSprite.transform.matrix);
                     
-                    backbuffer.draw(d.displayObject, m);
+                    var dcp:ICopyPixelsRenderer = d as ICopyPixelsRenderer;
+                    if(dcp && dcp.isPixelPathActive(m))
+                        dcp.drawPixels(m, backbuffer);
+                    else
+                        backbuffer.draw(d.displayObject, m);                        
                 }
             }
             

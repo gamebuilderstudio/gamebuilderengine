@@ -64,6 +64,11 @@ package com.pblabs.rendering2D
             throw new Error("Cannot set displayObject in BitmapRenderer; it is always a Sprite containing a Bitmap.");
         }
         
+        public function isPixelPathActive(objectToScreen:Matrix):Boolean
+        {
+            // No rotation/scaling.
+            return (objectToScreen.a == 1 && objectToScreen.b == 0 && objectToScreen.c == 0 && objectToScreen.d == 1)
+        }
         
         public function drawPixels(objectToScreen:Matrix, renderTarget:BitmapData):void
         {
