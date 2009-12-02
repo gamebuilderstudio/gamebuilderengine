@@ -380,6 +380,9 @@ package com.pblabs.animation
             if ((endN - startN) < 0)
                 return startN - ((startN - endN) * time);
 
+            if(time > 1.0)
+               time = 1.0;
+
             return startN + ((endN - startN) * time);
         }
     }
