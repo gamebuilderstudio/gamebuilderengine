@@ -55,18 +55,34 @@
    
    <p>Loading files externally is a bad idea. It makes it harder to distribute your game, and the extra round trips to the server can increase loading time significantly. In addition, resources embedded in the SWF can have additional compression put on them.</p>
    
-   <p>The easiest way to embed a resource in PBE is with the ResourceBundle class.  Create a child of the ResourceBundle class, where each file to be included in the swf is given an [embed] tag.</p>
+   <p>The easiest way to embed a resource in PBE is with the ResourceBundle class.  Create a subclass of the ResourceBundle class, where each file to be included in the swf is given an [Embed] tag. Here are some examples of how to embed your resources in a ResourceBundle.</p>
+
+   <p>For most file types, this is all you have to do for them to show up and work properly. However, for XML and pbelevel files, we must include the mimeType='application/octet-stream' in the [Embed()] tag. Otherwise the compiler will fail to include them in the right format. If you have a SWF file, omitting the mimeType will cause the compiler to re-encode the SWF, stripping any ActionScript it contains. Images without mimeType tags may be re-compressed, so be careful if download size is important.</p>
    
    <pre class="brush: js">
    public class MyResources extends ResourceBundle
    {
-      [Embed(source="../assets/myimage.png", mimeType='application/octet-stream')]
+	  // Images and sounds can be embedded directly.
+      [Embed(source=&quot;../assets/myimage.png&quot;)]
       public var resmyimage:Class;
-      
+
+      [Embed(source=&quot;../assets/myjpg.jpg&quot;)]
+      public var resmyjpg:Class;
+
+      [Embed(source = &quot;../assets/sounds/mysound.mp3&quot;)]
+      public var resmysound:Class;
+
+      // Note that we are specifying mimeType for xml so it is embedded properly.
+      [Embed(source = &quot;../assets/levelDescriptions.xml&quot;, mimeType = 'application/octet-stream')]
+      public var resmyleveldescriptions:Class;
+
+      [Embed(source=&quot;../assets/levels/mylevel.pbelevel&quot;, mimeType='application/octet-stream')]
+      public var resmylevel:Class;
+
    }   
    </pre>
    
-   <p>Instantiate that class, and PBE will register all of the resources with the ResourceManager according to their proper type.</p>
+   <p>Instantiate that class, and PBE will register all of the resources with the ResourceManager according to their proper type. Usually you will want to do this immediately after your call PBE.startup.</p>
    
    <pre class="brush: js">
    new MyResources();
