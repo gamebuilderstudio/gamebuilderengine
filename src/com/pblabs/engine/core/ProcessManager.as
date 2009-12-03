@@ -470,9 +470,12 @@ package com.pblabs.engine.core
                     Profiler.enter(type);
                     if(qItem)
                     {
-                        qItem.nextThinkCallback();
+                        // Check here to avoid else block that throws an error - empty callback
+                        // means it unregisterd.
+                        if(qItem.nextThinkCallback != null)
+                            qItem.nextThinkCallback();
                     }
-                    else if(sItem)
+                    else if(sItem && sItem.callback != null)
                     {
                         sItem.callback.apply(sItem.thisObject, sItem.arguments);                    
                     }
