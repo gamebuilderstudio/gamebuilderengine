@@ -18,6 +18,11 @@ package com.pblabs.engine.core
         protected var _nextThinkTime:int;
         protected var _nextThinkCallback:Function;
         
+        /**
+         * Schedule the next time this component should think. 
+         * @param nextCallback Function to be executed.
+         * @param timeTillThink Time in ms from now at which to execute the function (approximately).
+         */
         public function think(nextCallback:Function, timeTillThink:int):void
         {
             _nextThinkTime = ProcessManager.instance.virtualTime + timeTillThink;
@@ -26,6 +31,15 @@ package com.pblabs.engine.core
             ProcessManager.instance.queueObject(this);
         }
         
+        override protected function onRemove() : void
+        {
+            super.onRemove();
+            
+            // Do not allow us to be called back if we are still
+            // in the queue.
+            _nextThinkCallback = null;
+        }
+            
         public function get nextThinkTime():Number
         {
             return _nextThinkTime;

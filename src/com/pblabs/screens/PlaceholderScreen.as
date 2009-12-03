@@ -1,6 +1,8 @@
 package com.pblabs.screens
 {
+    import com.pblabs.engine.PBE;
     import com.pblabs.rendering2D.ui.PBLabel;
+    
     import flash.geom.*;
 
     /**
@@ -28,7 +30,7 @@ package com.pblabs.screens
             // Draw a background that fills the screen.
             graphics.clear();
             graphics.beginFill(fillColor);
-            graphics.drawRoundRect(0, 0, stage.stageWidth, stage.stageHeight, 16, 16);
+            graphics.drawRoundRect(0, 0, PBE.mainStage.stageWidth, PBE.mainStage.stageHeight, 16, 16);
             graphics.endFill();
         }
         
