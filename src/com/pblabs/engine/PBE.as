@@ -12,6 +12,7 @@ package com.pblabs.engine
 	
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
+	import flash.display.LoaderInfo;
 	import flash.display.Sprite;
 	import flash.display.Stage;
 	import flash.display.StageAlign;
@@ -152,6 +153,11 @@ package com.pblabs.engine
 		{
 			return _scene;
 		}
+        
+        public static function getFlashVars():Object
+        {
+            return LoaderInfo(mainStage.loaderInfo).parameters;
+        }
         
         /**
          * True if PBE.startup has been called.

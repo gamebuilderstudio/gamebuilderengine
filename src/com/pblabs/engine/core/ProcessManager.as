@@ -231,6 +231,9 @@ package com.pblabs.engine.core
             
             Profiler.enter("queueObject");
             
+            if(object.nextThinkTime >= _virtualTime && thinkHeap.contains(object))
+                thinkHeap.remove(object);
+            
             thinkHeap.enqueue(object);
             
             Profiler.exit("queueObject");
