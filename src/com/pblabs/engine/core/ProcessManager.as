@@ -475,10 +475,10 @@ package com.pblabs.engine.core
                     {
                         // Check here to avoid else block that throws an error - empty callback
                         // means it unregisterd.
-                        if(qItem.nextThinkCallback != null)
+                        if(qItem.nextThinkCallback)
                             qItem.nextThinkCallback();
                     }
-                    else if(sItem && sItem.callback != null)
+                    else if(sItem && sItem.callback)
                     {
                         sItem.callback.apply(sItem.thisObject, sItem.arguments);                    
                     }
