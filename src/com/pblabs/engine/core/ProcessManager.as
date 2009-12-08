@@ -128,6 +128,15 @@ package com.pblabs.engine.core
         }
         
         /**
+         * Current time reported by getTimer(), updated every frame. Use this to avoid
+         * costly calls to getTimer().
+         */
+        public function get platformTime():Number
+        {
+            return _platformTime;
+        }
+        
+        /**
          * Starts the process manager. This is automatically called when the first object
          * is added to the process manager. If the manager is stopped manually, then this
          * will have to be called to restart it.
@@ -373,6 +382,10 @@ package com.pblabs.engine.core
         
         private function advance(deltaTime:Number, suppressSafety:Boolean = false):void
         {
+            // Update platform time, to avoid lots of costly calls to getTimer.
+            _platformTime = getTimer();
+            
+            // Note virtual time we started advancing from.
             var startTime:Number = _virtualTime;
             
             // Add time to the accumulator.
@@ -494,17 +507,19 @@ package com.pblabs.engine.core
             }
         }
         
-        private var deferredMethodQueue:Array = [];
-        private var started:Boolean = false;
-        private var _virtualTime:Number = 0.0;
-        private var _interpolationFactor:Number = 0.0;
-        private var _timeScale:Number = 1.0;
-        private var lastTime:Number = -1.0;
-        private var elapsed:Number = 0.0;
-        private var animatedObjects:Array = new Array();
-        private var tickedObjects:Array = new Array();
+        protected var deferredMethodQueue:Array = [];
+        protected var started:Boolean = false;
+        protected var _virtualTime:Number = 0.0;
+        protected var _interpolationFactor:Number = 0.0;
+        protected var _timeScale:Number = 1.0;
+        protected var lastTime:Number = -1.0;
+        protected var elapsed:Number = 0.0;
+        protected var animatedObjects:Array = new Array();
+        protected var tickedObjects:Array = new Array();
         
-        private var thinkHeap:SimplePriorityQueue = new SimplePriorityQueue(1024);
+        protected var _platformTime:Number;
+        
+        protected var thinkHeap:SimplePriorityQueue = new SimplePriorityQueue(1024);
     }
 }
 
