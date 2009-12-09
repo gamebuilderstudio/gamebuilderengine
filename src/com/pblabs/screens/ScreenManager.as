@@ -2,6 +2,7 @@ package com.pblabs.screens
 {
     import com.pblabs.engine.PBE;
     import com.pblabs.engine.core.*;
+    import com.pblabs.engine.debug.Logger;
     
     import flash.display.DisplayObject;
     import flash.display.DisplayObjectContainer;
@@ -134,11 +135,17 @@ package com.pblabs.screens
          */ 
         public function pop():void
         {
-            screenStack.pop();
+            if(screenStack.length == 0)
+            {
+                Logger.warn(this, "pop", "Trying to pop empty ScreenManager.");
+                return;
+            }
+            
+            var oldScreen:DisplayObject = get(screenStack.pop()) as DisplayObject;
             currentScreen = screenStack[screenStack.length - 1];
             
-            if(screenParent.numChildren)
-                screenParent.removeChildAt(screenParent.numChildren-1);
+            if(oldScreen && oldScreen.parent)
+                oldScreen.parent.removeChild(oldScreen);
         }
         
         /**
