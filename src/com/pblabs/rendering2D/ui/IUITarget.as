@@ -33,7 +33,9 @@ package com.pblabs.rendering2D.ui
       function setDisplayObjectIndex(dobj:DisplayObject, index:int):void;
       
       function get width():Number;
+      function set width(value:Number):void;
       function get height():Number;
+      function set height(value:Number):void;
       function get x():Number;
       function get y():Number;
 	}

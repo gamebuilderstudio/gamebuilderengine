@@ -1,5 +1,7 @@
 package com.pblabs.rendering2D
 {
+    import com.pblabs.engine.PBE;
+    import com.pblabs.engine.debug.Logger;
     import com.pblabs.rendering2D.ui.IUITarget;
     
     import flash.display.Bitmap;
@@ -37,6 +39,25 @@ package com.pblabs.rendering2D
             // Let things update.
             super.onFrame(elapsed);
 
+            if(sceneView.width == 0 || sceneView.height == 0)
+            {
+                // Firefox 3 bug - we can get stageHeight/stageWidth of 0 which
+                // trickles down and causes this problem. So if they are zero, 
+                // just reassign to stageHeight/stageWidth.
+                Logger.warn(this, "onFrame", "Zero size sceneView! Resetting to stage size (" + PBE.mainStage.stageWidth + "x" + PBE.mainStage.stageHeight + ")");
+                
+                if(PBE.mainStage.stageWidth == 0 || PBE.mainStage.stageHeight == 0)
+                {
+                    Logger.warn(this, "onFrame", "Stage is also zero size! This might be a Firefox bug (see http://bugs.adobe.com/jira/browse/FP-434).");
+                    Logger.warn(this, "onFrame", "If it doesn't go away after a few frames, it is probably another issue.");
+                } 
+                
+                sceneView.width = PBE.mainStage.stageWidth;
+                sceneView.height = PBE.mainStage.stageHeight;
+                
+                return;
+            }
+            
             // Make sure back buffer is good.
             if(!backbuffer 
                 || backbuffer.width != sceneView.width 
