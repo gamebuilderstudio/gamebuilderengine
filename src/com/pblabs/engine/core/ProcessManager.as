@@ -517,7 +517,7 @@ package com.pblabs.engine.core
         protected var animatedObjects:Array = new Array();
         protected var tickedObjects:Array = new Array();
         
-        protected var _platformTime:Number;
+        protected var _platformTime:Number = 0;
         
         protected var thinkHeap:SimplePriorityQueue = new SimplePriorityQueue(1024);
     }
