@@ -94,6 +94,25 @@ package com.pblabs.engine.core
       {
          return _levelDescriptions[index].Groups;
       }
+	  
+	  /**
+	   * Gets a level index based on the registered level name.  Case sensitive.
+	   * 
+	   * Returns -1 if the level name is not found.
+	   */ 
+	  public function getlevelIndexByName(levelName:String):int
+	  {
+		 for each (var level:LevelDescription in _levelDescriptions)
+		 {
+			 if (level.name == levelName) {
+				 return level.index;
+			 }
+		 }
+		 
+		 return -1;
+		 
+		  
+	  }
       
       /**
        * With this method, you can override the default file loading methods by having
