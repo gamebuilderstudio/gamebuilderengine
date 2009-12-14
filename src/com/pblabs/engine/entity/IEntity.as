@@ -115,11 +115,15 @@ package com.pblabs.engine.entity
       function deserialize(xml:XML, registerComponents:Boolean = true):void;
       
       /**
-       * Gets a component of a specific type from this entity. If more than one
+       * <p>Gets a component of a specific type from this entity. If more than one
        * component of a specific type exists, there is no guarantee which one
        * will be returned. To retrieve all components of a specified type, use
-       * lookupComponentsByType.
+       * lookupComponentsByType.</p>
        * 
+       * <p>This check uses the is operator, so if you pass a parent type,
+       * subclasses will be considered to match, as will things implementing
+       * an interface you have passed.</p>
+       *
        * @param componentType The type of the component to retrieve.
        * 
        * @return The component, or null if none of the specified type were found.
@@ -131,7 +135,11 @@ package com.pblabs.engine.entity
       /**
        * Gets a list of all the components of a specific type that are on this
        * entity.
-       * 
+       *
+       * <p>This check uses the is operator, so if you pass a parent type,
+       * subclasses will be considered to match, as will things implementing
+       * an interface you have passed.</p>
+       *
        * @param componentType The type of components to retrieve.
        * 
        * @return An array containing all the components of the specified type on
