@@ -1,3 +1,11 @@
+/*******************************************************************************
+ * PushButton Engine
+ * Copyright (C) 2009 PushButton Labs, LLC
+ * For more information see http://www.pushbuttonengine.com
+ * 
+ * This file is licensed under the terms of the MIT license, which is included
+ * in the License.html file at the root directory of this SDK.
+ ******************************************************************************/
 package com.pblabs.engine.debug
 {
 	import com.pblabs.engine.PBE;
@@ -15,9 +23,11 @@ package com.pblabs.engine.debug
          * The commands, indexed by name. 
          */
         protected static var commands:Object = {};
-        
+		protected static var _stats:Stats;
+		
         public static var verbosity:int = 0;
         
+		
         /**
          * Register a command which the user can execute via the console.
          * 
@@ -118,11 +128,21 @@ package com.pblabs.engine.debug
 								PBE.versionDetails +" - "+Security.sandboxType);
 			}, "Echo PushButton Engine version information.");
             
+			// NB - Do we want to rename this to "toggleFps"?
             registerCommand("showFps", function():void
             {
-                PBE.mainStage.addChild(new Stats());
-                Logger.print(Console, "Enabled FPS display.");
-            }, "Show an FPS/Memory usage indicator.");
+				if(!_stats)
+				{
+	                _stats = new Stats();
+					PBE.mainStage.addChild(_stats);
+	                Logger.print(Console, "Enabled FPS display.");
+				}
+				else
+				{
+					PBE.mainStage.removeChild(_stats);
+					_stats = null;
+				}
+            }, "Toggle an FPS/Memory usage indicator.");
             
             registerCommand("verbose", function(level:int):void
             {
