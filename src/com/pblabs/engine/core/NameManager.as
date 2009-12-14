@@ -66,8 +66,13 @@ package com.pblabs.engine.core
        */
       public function removeEntity(entity:IEntity):void
       {
+      	if (entity.alias && _entities[entity.name] == _entities[entity.alias])
+      	{
+           _entities[entity.alias] = null;
+           delete _entities[entity.alias];                  
+      	}      	      	
          _entities[entity.name] = null;
-         delete _entities[entity.name];
+         delete _entities[entity.name];                  
       }
       
       /**

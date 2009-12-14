@@ -34,6 +34,7 @@ package com.pblabs.engine.entity
        * @see #initialize()
        */
       function get name():String;
+      function get alias():String;
       
       /**
        * initializes the entity, optionally assigning it a name. This should be

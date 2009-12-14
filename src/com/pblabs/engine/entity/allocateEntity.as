@@ -37,12 +37,18 @@ import flash.events.Event;
 import flash.events.EventDispatcher;
 import flash.events.IEventDispatcher;
 import flash.utils.Dictionary;
+import flash.utils.getQualifiedClassName;
 
 class Entity extends EventDispatcher implements IEntity
 {
     public function get name():String
     {
         return _name;
+    }
+
+    public function get alias():String
+    {
+        return _alias;
     }
     
     public function get eventDispatcher():IEventDispatcher
@@ -82,10 +88,10 @@ class Entity extends EventDispatcher implements IEntity
     }
     
     public function serialize(xml:XML):void
-    {
+    {    	
         for each (var component:IEntityComponent in _components)
-        {
-            var componentXML:XML = new XML(<Component/>);
+        {        	
+            var componentXML:XML = <component type={getQualifiedClassName(component).replace(/::/,".")} name={name} />;
             Serializer.instance.serialize(component, componentXML);
             xml.appendChild(componentXML);
         }
