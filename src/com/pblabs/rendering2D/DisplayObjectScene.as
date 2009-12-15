@@ -99,7 +99,7 @@ package com.pblabs.rendering2D
             
             // Allocate the layer.
             _layers[index] = generateLayer(index);
-            
+                        
             // Order the layers. This is suboptimal but we are probably not going
             // to be adding a lot of layers all the time.
             while(_rootSprite.numChildren)
@@ -141,6 +141,7 @@ package com.pblabs.rendering2D
             var s:Sprite = new Sprite();
             
             //TODO: set any properties we want for our root host sprite
+            s.name = "DisplayObjectSceneRoot";
             
             return s;
         }
@@ -154,6 +155,7 @@ package com.pblabs.rendering2D
             var l:DisplayObjectSceneLayer = new DisplayObjectSceneLayer();
             
             //TODO: set any properties we want for our layer.
+            l.name = "Layer" + layerIndex;
             
             return l;
         }
