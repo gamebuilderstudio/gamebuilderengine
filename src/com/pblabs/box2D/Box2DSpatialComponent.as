@@ -18,6 +18,7 @@ package com.pblabs.box2D
     import com.pblabs.engine.core.ObjectType;
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.entity.EntityComponent;
+	import com.pblabs.rendering2D.IMobileSpatialObject2D;
     import com.pblabs.rendering2D.IScene2D;
     import com.pblabs.rendering2D.ISpatialObject2D;
     import com.pblabs.rendering2D.RayHitInfo;
@@ -25,7 +26,7 @@ package com.pblabs.box2D
     import flash.geom.Point;
     import flash.geom.Rectangle;
     
-    public class Box2DSpatialComponent extends EntityComponent implements ISpatialObject2D
+    public class Box2DSpatialComponent extends EntityComponent implements IMobileSpatialObject2D
     {
         public function get manager():Box2DManagerComponent
         {

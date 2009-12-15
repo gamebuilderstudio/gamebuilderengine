@@ -44,6 +44,5 @@ package com.pblabs.rendering2D
        *              need access to the scene we're doing the check from.
        */
       function pointOccupied(pos:Point, scene:IScene2D):Boolean;
-   }
-   
+	  }
 }

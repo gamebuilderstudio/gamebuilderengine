@@ -8,6 +8,7 @@
  ******************************************************************************/
 package com.pblabs.rendering2D
 {
+	import com.pblabs.engine.PBE;
     import com.pblabs.engine.core.ObjectType;
     import com.pblabs.engine.core.ObjectTypeManager;
     import com.pblabs.engine.debug.Logger;
@@ -77,9 +78,12 @@ package com.pblabs.rendering2D
          var foundAny:Boolean = false;
          for each (var object:ISpatialObject2D in _objectList)
          {
-            if (!ObjectTypeManager.instance.doTypesOverlap(object.objectMask, mask))
-               continue;
-            
+			if (mask != null)
+			{
+				if (!ObjectTypeManager.instance.doTypesOverlap(object.objectMask, mask))
+					continue;
+            }
+			
             if(!boxVsBox(object.worldExtents, box))
                continue;
             
@@ -105,8 +109,11 @@ package com.pblabs.rendering2D
          
          for each (var object:ISpatialObject2D in _objectList)
          {
-            if (!ObjectTypeManager.instance.doTypesOverlap(object.objectMask, mask))
-               continue;
+			if (mask != null)
+			{
+				if (!ObjectTypeManager.instance.doTypesOverlap(object.objectMask, mask))
+					continue;
+			}
             
             // Avoid allocations - so manually copy.
             tmpRect = object.worldExtents;
@@ -132,19 +139,19 @@ package com.pblabs.rendering2D
       /**
        * @inheritDoc
        */
-      public function objectsUnderPoint(point:Point, mask:ObjectType, results:Array, scene:IScene2D):Boolean
+	  public function getObjectsUnderPoint(worldPosition:Point, results:Array, mask:ObjectType = null):Boolean
       {
          var tmpResults:Array = new Array();
          
          // First use the normal spatial query...
-         if(!queryCircle(point, 64, mask, tmpResults))
+         if(!queryCircle(worldPosition, 64, mask, tmpResults))
             return false;
          
          // Ok, now pass control to the objects and see what they think.
          var hitAny:Boolean = false;
          for each(var tmp:ISpatialObject2D in tmpResults)
          {
-            if(!tmp.pointOccupied(point, scene))
+            if (!tmp.pointOccupied(worldPosition, PBE.getScene()))
                continue;
             
             results.push(tmp);
@@ -152,8 +159,8 @@ package com.pblabs.rendering2D
          }
          
          // Sort the results.
-         if(scene)
-            scene.sortSpatials(results);
+         if(PBE.getScene())
+            PBE.getScene().sortSpatials(results);
          
          return hitAny;
       }

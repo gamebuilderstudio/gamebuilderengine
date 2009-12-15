@@ -294,14 +294,11 @@ package com.pblabs.rendering2D
             return _rootSprite.globalToLocal(inPos);            
         }
         
-        public function getRenderersUnderPoint(screenPosition:Point, mask:ObjectType=null):Array
+		public function getRenderersUnderPoint(screenPosition:Point, results:Array, mask:ObjectType = null):Boolean
         {
             // Query normal DO hierarchy.
             var unfilteredResults:Array = _rootSprite.getObjectsUnderPoint(screenPosition);
             var worldPosition:Point = transformScreenToWorld(screenPosition);
-            
-            // TODO: rewrite to splice from unfilteredResults to avoid alloc?
-            var results:Array = new Array();
             
             for each (var o:* in unfilteredResults)
             {
@@ -333,7 +330,7 @@ package com.pblabs.rendering2D
                 (l as ILayerMouseHandler).getRenderersUnderPoint(scenePosition, mask, results);
             }
             
-            return results;
+            return results.length > 0 ? true : false;
         }
         
         protected function getRendererForDisplayObject(displayObject:DisplayObject):DisplayObjectRenderer

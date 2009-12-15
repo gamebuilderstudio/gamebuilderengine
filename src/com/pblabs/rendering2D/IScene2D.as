@@ -75,11 +75,11 @@ package com.pblabs.rendering2D
          * screen position.
          *  
          * @param screenPosition Location on screen we are curious about.
-         * @param mask Only renderers with one or more of these bits set on their objectMask will be returned.
-         * @return A new array containing any renderers under the point.
-         * 
+		 * @param results An array into which DisplayObjectRenderers are added based on what is under point.  
+         * @param mask Only renderers with one or more of these bits set on their objectMask will be returned. Null uses all types.
+		 * @return Found something under point or not.
          */
-        function getRenderersUnderPoint(screenPosition:Point, mask:ObjectType=null):Array;
+		function getRenderersUnderPoint(screenPosition:Point, results:Array, mask:ObjectType = null):Boolean;
 
         /**
          * Center the view on a position in world space.

@@ -64,13 +64,14 @@ package com.pblabs.rendering2D
       function castRay(start:Point, end:Point, flags:ObjectType, result:RayHitInfo):Boolean;
 
       /**
-       * Return all the objects under a given point. Objects can optionally implement
+       * Return all the spatial objects under a given point. Objects can optionally implement
        * pixel-level collision checking.
        *
-       * @param point Point in worldspace to check.
-       * @param mask Only consider objects that match this ObjectType.
+       * @param worldPosition Point in worldspace to check.
        * @param results An array into which ISpatialObject2Ds are added based on what is under point.
+       * @param mask Only consider objects that match this ObjectType. Null uses all types.
+  	   * @return Found something under point or not.
        */
-      function objectsUnderPoint(point:Point, mask:ObjectType, results:Array, scene:IScene2D):Boolean;
+      function getObjectsUnderPoint(worldPosition:Point, results:Array, mask:ObjectType = null):Boolean;
    }
 }

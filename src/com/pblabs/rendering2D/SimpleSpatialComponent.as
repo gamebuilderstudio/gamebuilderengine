@@ -18,7 +18,7 @@ package com.pblabs.rendering2D
     * Very basic spatial component that exists at a position. Velocity can be
     * applied, but no physical simulation is done.
     */ 
-   public class SimpleSpatialComponent extends TickedComponent implements ISpatialObject2D
+   public class SimpleSpatialComponent extends TickedComponent implements IMobileSpatialObject2D
    {
       /**
        * The spatial manager this object belongs to.
@@ -45,6 +45,16 @@ package com.pblabs.rendering2D
           _position.x = value.x;
           _position.y = value.y;
       }
+	  
+      public function get rotation():Number
+      {
+		  return _rotation;
+      }
+      
+      public function set rotation(value:Number):void
+      {
+		  _rotation = value;
+      }	  
 
       public function get spatialManager():ISpatialManager2D
       {
@@ -82,7 +92,7 @@ package com.pblabs.rendering2D
       /**
        * The rotation of the object.
        */
-      public var rotation:Number = 0;
+      private var _rotation:Number = 0;
       
       /**
        * The size of the object.

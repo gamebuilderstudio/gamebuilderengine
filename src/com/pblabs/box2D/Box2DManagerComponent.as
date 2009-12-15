@@ -16,6 +16,7 @@ package com.pblabs.box2D
     import Box2D.Dynamics.b2DebugDraw;
     import Box2D.Dynamics.b2World;
     
+	import com.pblabs.engine.PBE;
     import com.pblabs.engine.core.ITickedObject;
     import com.pblabs.engine.core.ObjectType;
     import com.pblabs.engine.core.ObjectTypeManager;
@@ -49,6 +50,10 @@ package com.pblabs.box2D
             return 1 / _scale;
         }
         
+        public function get world():b2World
+        {
+            return _world;
+        }
         [EditorData(defaultValue="true")]
         public function get allowSleep():Boolean
         {
@@ -192,20 +197,23 @@ package com.pblabs.box2D
             aabb.upperBound = b2Vec2.Make(box.bottomRight.x / scale, box.bottomRight.y / scale);
             
             var resultShapes:Array = new Array(1024);
-            if(_world.Query(aabb, resultShapes, 1024)==0)
-                return false;
+			var numFoundShapes:int = _world.Query(aabb, resultShapes, 1024);
             
-            // Now get the owning components back from the results and give to user.
-            for(var i:int=0; i<1024; i++)
-            {
-                if(!resultShapes[i])
-                    break;
-                
-                var curShape:b2Shape = resultShapes[i] as b2Shape;
-                var curComponent:Box2DSpatialComponent = curShape.GetBody().GetUserData() as Box2DSpatialComponent;
-                if(ObjectTypeManager.instance.doTypesOverlap(curComponent.collisionType, mask))
-                    results.push(curComponent);
-            }
+			var i:int = 0;
+			if(numFoundShapes > 0)
+			{
+				// Now get the owning components back from the results and give to user.
+				for(i=0; i<1024; i++)
+				{
+					if(!resultShapes[i])
+						break;
+					
+					var curShape:b2Shape = resultShapes[i] as b2Shape;
+					var curComponent:Box2DSpatialComponent = curShape.GetBody().GetUserData() as Box2DSpatialComponent;
+					if(ObjectTypeManager.instance.doTypesOverlap(curComponent.collisionType, mask) || mask == null)
+						results.push(curComponent);
+				}
+			}
             
             // Let the other items have a turn.
             i += _otherItems.queryRectangle(box, mask, results) ? 1 : 0;
@@ -216,7 +224,32 @@ package com.pblabs.box2D
         
         public function queryCircle(center:Point, radius:Number, mask:ObjectType, results:Array):Boolean
         {
-            return _otherItems.queryCircle(center, radius, mask, results);
+			//Let's make life easy. We'll just use queryRectangle.
+			//queryRectangle(box:Rectangle, mask:ObjectType, results:Array):Boolean
+			var box:Rectangle = new Rectangle(center.x - radius / 2, center.y - radius / 2,
+				radius, radius );
+			
+			//Query the Box2D objects:
+			var foundObject:Boolean = queryRectangle(box, mask, results);
+			
+			//Note: no need to query for other objects, as this is also done in queryRectangle!
+			//In case somebody wants to re-write the queryCircle, you'd wanna use _otherItems.queryCircle like 
+			//commented out below:
+			//Query the "other" spatial objects:
+			//var tmpResults:Array = new Array();
+			//var foundOtherObjects:Boolean = _otherItems.queryCircle(center, radius, mask, tmpResults);
+			
+			//If we found "other" spatial objects, add them to the result array:
+			//if (foundOtherObjects == true)
+			//{
+			//	for (var i:int = 0; i < tmpResults.length; i++)
+			//	{
+			//		results.push(tmpResults[i]);
+			//	}
+			//}
+			
+			//return wheter we found object(s) or not:
+			return foundObject; //|| foundOtherObjects;
         }
         
         public function castRay(start:Point, end:Point, mask:ObjectType, result:RayHitInfo):Boolean
@@ -227,19 +260,19 @@ package com.pblabs.box2D
         /**
          * @inheritDoc
          */
-        public function objectsUnderPoint(point:Point, mask:ObjectType, results:Array, scene:IScene2D):Boolean
+		public function getObjectsUnderPoint(worldPosition:Point, results:Array, mask:ObjectType = null):Boolean
         {
             var tmpResults:Array = new Array();
-            
+			
             // First use the normal spatial query...
-            if(!queryCircle(point, 0.01, mask, tmpResults))
+            if(!queryCircle(worldPosition, 0.01, mask, tmpResults))
                 return false;
             
             // Ok, now pass control to the objects and see what they think.
             var hitAny:Boolean = false;
             for each(var tmp:ISpatialObject2D in tmpResults)
             {
-                if(!tmp.pointOccupied(point, scene))
+                if (!tmp.pointOccupied(worldPosition, PBE.getScene()))
                     continue;
                 
                 results.push(tmp);
