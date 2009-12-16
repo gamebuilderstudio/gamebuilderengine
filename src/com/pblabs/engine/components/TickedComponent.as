@@ -30,7 +30,7 @@ package com.pblabs.engine.components
       /**
        * Set to register/unregister for tick updates.
        */
-      public function set registerForUpdates(value:Boolean):void
+      public function set registerForTicks(value:Boolean):void
       {
           _registerForUpdates = value;
           
@@ -49,7 +49,7 @@ package com.pblabs.engine.components
       /**
        * @private
        */
-      public function get registerForUpdates():Boolean
+      public function get registerForTicks():Boolean
       {
           return _registerForUpdates;
       }
@@ -64,13 +64,13 @@ package com.pblabs.engine.components
       override protected function onAdd():void
       {
           // This causes the component to be registerd if it isn't already.
-          registerForUpdates = registerForUpdates;
+          registerForTicks = registerForTicks;
       }
       
       override protected function onRemove():void
       {
           // Make sure we are unregistered.
-          registerForUpdates = false;
+          registerForTicks = false;
       }
    }
 }

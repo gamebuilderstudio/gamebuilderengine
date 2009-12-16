@@ -1,6 +1,8 @@
-package com.pblabs.engine.core
+package com.pblabs.engine.components
 {
     import com.pblabs.engine.entity.EntityComponent;
+    import com.pblabs.engine.core.IQueuedObject;
+    import com.pblabs.engine.core.ProcessManager;
     
     /**
      * Base class for components which want to use think notifications.
