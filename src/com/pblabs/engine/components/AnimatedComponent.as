@@ -37,14 +37,14 @@ package com.pblabs.engine.components
             if(_registerForUpdates && !_isRegisteredForUpdates)
             {
                 // Need to register.
-                ProcessManager.instance.addAnimatedObject(this, updatePriority);
                 _isRegisteredForUpdates = true;
+                ProcessManager.instance.addAnimatedObject(this, updatePriority);
             }
             else if(!_registerForUpdates && _isRegisteredForUpdates)
             {
                 // Need to unregister.
-                ProcessManager.instance.removeAnimatedObject(this);
                 _isRegisteredForUpdates = false;
+                ProcessManager.instance.removeAnimatedObject(this);
             }
         }
 

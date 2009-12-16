@@ -37,14 +37,14 @@ package com.pblabs.engine.components
           if(_registerForUpdates && !_isRegisteredForUpdates)
           {
               // Need to register.
-              ProcessManager.instance.addTickedObject(this, updatePriority);                
               _isRegisteredForUpdates = true;
+              ProcessManager.instance.addTickedObject(this, updatePriority);                
           }
           else if(!_registerForUpdates && _isRegisteredForUpdates)
           {
               // Need to unregister.
-              ProcessManager.instance.removeTickedObject(this);
               _isRegisteredForUpdates = false;
+              ProcessManager.instance.removeTickedObject(this);
           }
       }
       
