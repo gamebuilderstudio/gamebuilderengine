@@ -24,11 +24,36 @@ package com.pblabs.engine.components
          */
         public var updatePriority:Number = 0.0;
 		
-		/**
-		 * Set to false before onAdd is called to suppress registering for updates. 
-		 */
-		public var registerForUpdates:Boolean = true;
-		
+		private var _registerForUpdates:Boolean = true;
+		private var _isRegisteredForUpdates:Boolean = false;
+        
+        /**
+         * Set to register/unregister for frame updates.
+         */
+        public function set registerForUpdates(value:Boolean):void
+        {
+            _registerForUpdates = value;
+            
+            if(_registerForUpdates && !_isRegisteredForUpdates)
+            {
+                // Need to register.
+                ProcessManager.instance.addAnimatedObject(this, updatePriority);                
+            }
+            else if(!_registerForUpdates && _isRegisteredForUpdates)
+            {
+                // Need to unregister.
+                ProcessManager.instance.removeAnimatedObject(this);
+            }
+        }
+
+        /**
+         * @private
+         */
+        public function get registerForUpdates():Boolean
+        {
+            return _registerForUpdates;
+        }
+
         /**
          * @inheritDoc
          */
@@ -38,14 +63,14 @@ package com.pblabs.engine.components
 
         override protected function onAdd():void
         {
-			if(registerForUpdates)
-            	ProcessManager.instance.addAnimatedObject(this, updatePriority);
+            // This causes the component to be registerd if it isn't already.
+            registerForUpdates = registerForUpdates;
         }
 
         override protected function onRemove():void
         {
-			if(registerForUpdates)
-            	ProcessManager.instance.removeAnimatedObject(this);
+            // Make sure we are unregistered.
+            registerForUpdates = false;
         }
     }
 }

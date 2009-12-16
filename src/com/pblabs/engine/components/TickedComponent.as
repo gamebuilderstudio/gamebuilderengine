@@ -19,17 +19,40 @@ package com.pblabs.engine.components
    public class TickedComponent extends EntityComponent implements ITickedObject
    {
       /**
-       * Do we actually want to register for ticks? Useful if a subclass wants
-       * to disable the functionality. Only checked at onAdd/onRemove time.
-       */
-      [EditorData(DefaultValue="true")]
-      public var registerForTicks:Boolean = true;
-      
-      /**
        * The update priority for this component. Higher numbered priorities have
        * onInterpolateTick and onTick called before lower priorities.
        */
       public var updatePriority:Number = 0.0;
+      
+      private var _registerForUpdates:Boolean = true;
+      private var _isRegisteredForUpdates:Boolean = false;
+      
+      /**
+       * Set to register/unregister for tick updates.
+       */
+      public function set registerForUpdates(value:Boolean):void
+      {
+          _registerForUpdates = value;
+          
+          if(_registerForUpdates && !_isRegisteredForUpdates)
+          {
+              // Need to register.
+              ProcessManager.instance.addTickedObject(this, updatePriority);                
+          }
+          else if(!_registerForUpdates && _isRegisteredForUpdates)
+          {
+              // Need to unregister.
+              ProcessManager.instance.removeTickedObject(this);
+          }
+      }
+      
+      /**
+       * @private
+       */
+      public function get registerForUpdates():Boolean
+      {
+          return _registerForUpdates;
+      }
       
       /**
        * @inheritDoc
@@ -40,14 +63,14 @@ package com.pblabs.engine.components
       
       override protected function onAdd():void
       {
-         if(registerForTicks)
-            ProcessManager.instance.addTickedObject(this, updatePriority);
+          // This causes the component to be registerd if it isn't already.
+          registerForUpdates = registerForUpdates;
       }
       
       override protected function onRemove():void
       {
-         if(registerForTicks)
-            ProcessManager.instance.removeTickedObject(this);
+          // Make sure we are unregistered.
+          registerForUpdates = false;
       }
    }
 }
