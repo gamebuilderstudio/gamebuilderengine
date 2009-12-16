@@ -38,11 +38,13 @@ package com.pblabs.engine.components
           {
               // Need to register.
               ProcessManager.instance.addTickedObject(this, updatePriority);                
+              _isRegisteredForUpdates = true;
           }
           else if(!_registerForUpdates && _isRegisteredForUpdates)
           {
               // Need to unregister.
               ProcessManager.instance.removeTickedObject(this);
+              _isRegisteredForUpdates = false;
           }
       }
       
