@@ -112,6 +112,8 @@ package com.pblabs.rendering2D
         protected var _zIndexDirty:Boolean = true;
         protected var _hitTestDirty:Boolean = true;
         
+        protected var _inScene:Boolean = false;
+        
         public function get layerIndex():int
         {
             return _layerIndex;
@@ -345,12 +347,12 @@ package com.pblabs.rendering2D
          */
         public function set worldPosition(value:Point):void
         {
-            scene.remove(this);
+            removeFromScene();
             
             position = scene.transformWorldToScene(value);
             updateTransform();
-            
-            scene.add(this);
+
+            addToScene();
         }
         
         public function get worldPosition():Point
@@ -401,18 +403,12 @@ package com.pblabs.rendering2D
         public function set scene(value:IScene2D):void
         {
             // Remove from old scene if appropriate.
-            if(_scene && _displayObject)
-                _scene.remove(this);
+            removeFromScene();
             
             _scene = value;
             
             // And add to new scene (clearing dirty state).
-            if(_scene && _displayObject)
-            {
-                _scene.add(this);
-                _lastLayerIndex = _layerIndex;
-                _layerIndexDirty = _zIndexDirty = false;
-            }
+            addToScene();
         }
         
         public function get displayObject():DisplayObject
@@ -426,18 +422,12 @@ package com.pblabs.rendering2D
         public function set displayObject(value:DisplayObject):void
         {
             // Remove old object from scene.
-            if(_scene && _displayObject)
-                _scene.remove(this);
+            removeFromScene();
             
             _displayObject = value;
             
             // Add new scene.
-            if(_scene && _displayObject)
-            {
-                _scene.add(this);
-                _lastLayerIndex = _layerIndex;
-                _layerIndexDirty = _zIndexDirty = false;
-            }
+            addToScene();
         }
         
         /**
@@ -509,18 +499,33 @@ package com.pblabs.rendering2D
             return displayObject.hitTestPoint(worldPosition.x, worldPosition.y, true);
         }
         
-        override protected function onAdd() : void
-        {
-            super.onAdd();
-        }
-        
         override protected function onRemove() : void
         {
             super.onRemove();
             
-            // Remove ourselves from the scene when we are removed
-            if(_scene && _displayObject)
+            // Remove ourselves from the scene when we are removed.
+            removeFromScene();
+        }
+        
+        protected function removeFromScene():void
+        {
+            if(_scene && _displayObject && _inScene)
+            {
                 _scene.remove(this);
+                _inScene = false;
+            }            
+        }
+        
+        protected function addToScene():void
+        {
+            if(_scene && _displayObject && !_inScene)
+            {
+                _scene.add(this);
+                _inScene = true;
+
+                _lastLayerIndex = _layerIndex;
+                _layerIndexDirty = _zIndexDirty = false;
+            }
         }
         
         override public function onFrame(elapsed:Number) : void
@@ -608,11 +613,11 @@ package com.pblabs.rendering2D
                 _layerIndex = _lastLayerIndex;
                 
                 if(_lastLayerIndex != -1)
-                    _scene.remove(this);
-                
+                    removeFromScene();
+
                 _layerIndex = tmp;
                 
-                _scene.add(this);
+                addToScene();
                 
                 _lastLayerIndex = _layerIndex;
                 _layerIndexDirty = false;
