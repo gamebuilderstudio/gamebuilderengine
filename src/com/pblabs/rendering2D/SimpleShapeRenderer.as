@@ -155,6 +155,9 @@ package com.pblabs.rendering2D
                 throw new Error("displayObject null or not a Sprite!");
             var g:Graphics = s.graphics;
             
+            // Don't forget to clear.
+            g.clear();
+            
             // Prep line/fill settings.
             g.lineStyle(_lineSize, _lineColor, _lineAlpha);
             g.beginFill(_fillColor, _fillAlpha);
