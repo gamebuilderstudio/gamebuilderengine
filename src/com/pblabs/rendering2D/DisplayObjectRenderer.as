@@ -348,6 +348,9 @@ package com.pblabs.rendering2D
         public function set worldPosition(value:Point):void
         {
             removeFromScene();
+
+            if(!scene)
+                throw new Error("Not attached to a scene, so cannot transform from world space.");
             
             position = scene.transformWorldToScene(value);
             updateTransform();
@@ -357,6 +360,9 @@ package com.pblabs.rendering2D
         
         public function get worldPosition():Point
         {
+            if(!scene)
+                throw new Error("Not attached to a scene, so cannot transform from world space.");
+
             return scene.transformSceneToWorld(position);
         }
         
