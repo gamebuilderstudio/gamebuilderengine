@@ -8,6 +8,9 @@ package
     import flash.geom.Rectangle;
     import flash.text.TextFormatAlign;
 
+    /**
+     * Screen displayed when the game is over.
+     */
     public class GameOverScreen extends BaseScreen
     {
         public var statusLabel:PBLabel = new PBLabel();
@@ -23,7 +26,7 @@ package
             statusLabel.refresh();
             
             addChild(restartButton);
-            restartButton.caption = "Restart";
+            restartButton.label = "Restart";
             restartButton.extents = new Rectangle(387, 308, 160, 40);
             restartButton.fontSize = 32;
             restartButton.refresh();

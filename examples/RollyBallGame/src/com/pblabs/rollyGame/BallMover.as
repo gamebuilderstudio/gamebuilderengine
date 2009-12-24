@@ -7,14 +7,19 @@
  ******************************************************************************/
 package com.pblabs.rollyGame
 {
-   import com.pblabs.rendering2D.*;
    import com.pblabs.animation.*;
    import com.pblabs.engine.PBE;
    import com.pblabs.engine.core.*;
    import com.pblabs.engine.entity.*;
    import com.pblabs.engine.resource.*;
+   import com.pblabs.rendering2D.*;
+   
    import flash.geom.*;
 
+   /**
+    * Class responsible for ball physics, input handling, and gameplay (ie, 
+    * picking up gems).
+    */
    public class BallMover extends SimpleSpatialComponent
    {
       public var Map:NormalMap;
@@ -81,8 +86,9 @@ package com.pblabs.rollyGame
             velocity.y = -velocity.y * 0.9;
          
          // Update position.
-         position.x += velocity.x * tickRate;
-         position.y += velocity.y * tickRate;
+         position = new Point( 
+             position.x + velocity.x * tickRate,
+             position.y + velocity.y * tickRate); 
          
          // Look for stuff to pick up.
          var results:Array = new Array();

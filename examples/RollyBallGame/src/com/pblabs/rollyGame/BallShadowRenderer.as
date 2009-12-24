@@ -12,6 +12,9 @@ package com.pblabs.rollyGame
     import flash.display.*;
     import flash.utils.*;
     
+    /**
+     * Special effect renderer to give illusion of ball shadow.
+     */
     public class BallShadowRenderer extends DisplayObjectRenderer
     {
         public var Map:NormalMap;

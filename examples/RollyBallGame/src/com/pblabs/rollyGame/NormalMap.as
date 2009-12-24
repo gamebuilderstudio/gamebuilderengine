@@ -15,7 +15,7 @@ package com.pblabs.rollyGame
     import flash.geom.*;
     
     /**
-     * Store normal and height information for a level.
+     * Store normal and height information for a RollyBallGame level.
      */
     public class NormalMap extends EntityComponent
     {

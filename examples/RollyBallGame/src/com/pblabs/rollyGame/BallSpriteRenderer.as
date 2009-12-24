@@ -14,6 +14,9 @@ package com.pblabs.rollyGame
     import flash.filters.*;
     import flash.geom.*;
     
+    /**
+     * Renderer that draws what is (apparently) a rolling ball.
+     */
     public class BallSpriteRenderer extends DisplayObjectRenderer
     {
         private var _BallChecker:BitmapData;

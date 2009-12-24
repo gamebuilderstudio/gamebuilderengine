@@ -2,6 +2,10 @@ package
 {
 	import com.pblabs.engine.resource.ResourceBundle;
  	
+    /**
+     * All the game's resources are embedded here so they are immediately available,
+     * instead of streaming in later.
+     */
 	public class GameResources extends ResourceBundle
 	{
         [Embed(source='../assets/Levels/level.pbelevel', mimeType='application/octet-stream')]

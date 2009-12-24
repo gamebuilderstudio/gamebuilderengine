@@ -35,14 +35,14 @@ package
             
             addChild(btnContinue);
             btnContinue.extents = new Rectangle(320, 480-64, 200, 50);
-            btnContinue.caption = "Continue >>";
+            btnContinue.label = "Continue >>";
             btnContinue.fontColor = 0xFFFFFF;
             btnContinue.color = 0x00FF00;
             btnContinue.refresh();
             
             addChild(btnRetry);
             btnRetry.extents = new Rectangle(60, 480-64, 200, 50);
-            btnRetry.caption = "<< Retry";
+            btnRetry.label = "<< Retry";
             btnRetry.fontColor = 0xFFFFFF;
             btnRetry.color = 0xFF0000;
             btnRetry.refresh();

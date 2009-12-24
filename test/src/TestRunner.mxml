@@ -3,6 +3,7 @@
     <mx:Script>
         <![CDATA[
             import com.pblabs.PBEngineTestSuite;
+            import com.pblabs.box2D.Box2DSpatialComponent;
             import com.pblabs.engine.PBE;
             import com.pblabs.engine.debug.Logger;
             import com.pblabs.testFramework.JUnitListener;
@@ -27,6 +28,7 @@
                 PBE.startup(this);
 
                 core = new FlexUnitCore();
+var b:Box2DSpatialComponent;
 
                 //Listener for the UI, optional
                 core.addListener(new UIListener(uiListener));
