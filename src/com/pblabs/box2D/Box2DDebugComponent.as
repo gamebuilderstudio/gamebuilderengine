@@ -15,6 +15,10 @@ package com.pblabs.box2D
     import flash.display.Sprite;
     import flash.geom.Point;
     
+    /**
+     * Helper component to visualize Box2D debug state. Properties let you
+     * toggle what is drawn.
+     */
     public class Box2DDebugComponent extends DisplayObjectRenderer
     {
         public var manager:Box2DManagerComponent;
@@ -48,6 +52,128 @@ package com.pblabs.box2D
                 manager.setDebugDrawer(_drawer);
         }
 
+        public function get drawShapes():Boolean
+        {
+            return _drawShapes;
+        }
+        
+        public function set drawShapes(value:Boolean):void
+        {
+            _drawShapes = value;
+            applyDebugFlags();
+        }
+        
+        public function get drawJoints():Boolean
+        {
+            return _drawJoints;
+        }
+        
+        public function set drawJoints(value:Boolean):void
+        {
+            _drawJoints = value;
+            applyDebugFlags();
+        }
+        
+        public function get drawCoreShapes():Boolean
+        {
+            return _drawCoreShapes;
+        }
+        
+        public function set drawCoreShapes(value:Boolean):void
+        {
+            _drawCoreShapes = value;
+            applyDebugFlags();
+        }
+        
+        public function get drawAABB():Boolean
+        {
+            return _drawAABB;
+        }
+        
+        public function set drawAABB(value:Boolean):void
+        {
+            _drawAABB = value;
+            applyDebugFlags();
+        }
+        
+        public function get drawOBB():Boolean
+        {
+            return _drawOBB;
+        }
+        
+        public function set drawOBB(value:Boolean):void
+        {
+            _drawOBB = value; 
+            applyDebugFlags();        
+        }
+        
+        public function get drawPairs():Boolean
+        {
+            return _drawPairs;
+        }
+        
+        public function set drawPairs(value:Boolean):void
+        {
+            _drawPairs = value;
+            applyDebugFlags();
+        }
+        
+        public function get drawCenterOfMass():Boolean
+        {
+            return _drawCenterOfMass;
+        }
+        
+        public function set drawCenterOfMass(value:Boolean):void
+        {
+            _drawCenterOfMass = value;
+            applyDebugFlags();
+        }
+        
+        public function applyDebugFlags():void
+        {
+            if (_drawShapes) 
+                _drawer.AppendFlags(b2DebugDraw.e_shapeBit);
+            else 
+                _drawer.ClearFlags(b2DebugDraw.e_shapeBit);
+            
+            if (_drawJoints) 
+                _drawer.AppendFlags(b2DebugDraw.e_jointBit);
+            else 
+                _drawer.ClearFlags(b2DebugDraw.e_jointBit);
+            
+            if (_drawCoreShapes) 
+                _drawer.AppendFlags(b2DebugDraw.e_coreShapeBit);
+            else 
+                _drawer.ClearFlags(b2DebugDraw.e_coreShapeBit);
+            
+            if (_drawAABB) 
+                _drawer.AppendFlags(b2DebugDraw.e_aabbBit);
+            else 
+                _drawer.ClearFlags(b2DebugDraw.e_aabbBit);
+            
+            if (_drawOBB) 
+                _drawer.AppendFlags(b2DebugDraw.e_obbBit);
+            else 
+                _drawer.ClearFlags(b2DebugDraw.e_obbBit);
+            
+            if (_drawPairs)
+                _drawer.AppendFlags(b2DebugDraw.e_pairBit);
+            else 
+                _drawer.ClearFlags(b2DebugDraw.e_pairBit);
+            
+            if (_drawCenterOfMass) 
+                _drawer.AppendFlags(b2DebugDraw.e_centerOfMassBit);
+            else 
+                _drawer.ClearFlags(b2DebugDraw.e_centerOfMassBit);
+        }        
+        
         protected var _drawer:b2DebugDraw = new b2DebugDraw();
+        protected var _drawShapes:Boolean = true; 
+        protected var _drawJoints:Boolean = true;      
+        protected var _drawCoreShapes:Boolean = true;
+        protected var _drawAABB:Boolean = true;
+        protected var _drawOBB:Boolean = true;
+        protected var _drawPairs:Boolean = true;
+        protected var _drawCenterOfMass:Boolean = true;
     }
 }
