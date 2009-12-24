@@ -76,6 +76,17 @@ package com.pblabs.engine
         }
         
         /**
+         * Take a degree measure and make sure it is between 0..360.
+         */
+        public static function unwrapDegrees(r:Number):Number
+        {
+            r = r % 360;
+            if(r < -360)
+                r += 360;
+            return r;
+        }
+
+        /**
          * Return the shortest distance to get from from to to, in radians.
          */
         public static function getRadianShortDelta(from:Number, to:Number):Number
@@ -97,6 +108,28 @@ package com.pblabs.engine
             return delta;
         }
         
+        /**
+         * Return the shortest distance to get from from to to, in degrees.
+         */
+        public static function getDegreesShortDelta(from:Number, to:Number):Number
+        {
+            // Unwrap both from and to.
+            from = unwrapDegrees(from);
+            to = unwrapDegrees(to);
+            
+            // Calc delta.
+            var delta:Number = to - from;
+            
+            // Make sure delta is shortest path around circle.
+            if(delta > 180)
+                delta -= 360;            
+            if(delta < -180)
+                delta += 360;            
+            
+            // Done
+            return delta;
+        }
+
         /**
          * Get number of bits required to encode values from 0..max.
          *

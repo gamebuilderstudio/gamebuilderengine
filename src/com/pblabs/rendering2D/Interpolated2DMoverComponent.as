@@ -47,7 +47,7 @@ package com.pblabs.rendering2D
       /**
        * How quickly will we turn towards our goal heading? 
        */
-      public var rotationSpeed:Number = 0.2;
+      public var rotationSpeed:Number = 20;
 
       /**
        * When true, we turn to face the goal position before moving towards it. 
@@ -131,12 +131,12 @@ package com.pblabs.rendering2D
             moveDelta.normalize(moveAmount);
 
          var didMove:Boolean = false;
-         var movementHeading:Number = Math.atan2(moveDelta.y, moveDelta.x);
+         var movementHeading:Number = PBUtil.getDegreesFromRadians(Math.atan2(moveDelta.y, moveDelta.x));
 
          if(moveDelta.length > 0.001 && checkMovementAllowed)
          {
             // Check our heading
-            if(Math.abs(PBUtil.getRadianShortDelta(movementHeading, rotation)) <= movementHeadingThreshold)
+            if(Math.abs(PBUtil.getDegreesShortDelta(movementHeading, rotation)) <= movementHeadingThreshold)
                position = position.add(moveDelta);
 
             // Only update position if we really need to move.
@@ -148,7 +148,7 @@ package com.pblabs.rendering2D
             goalRotation = movementHeading
 
          // Interpolate heading.
-         var headingDelta:Number = PBUtil.getRadianShortDelta(rotation, goalRotation);
+         var headingDelta:Number = PBUtil.getDegreesShortDelta(rotation, goalRotation);
 
          if(headingDelta < -rotationSpeed)
             headingDelta = -rotationSpeed;

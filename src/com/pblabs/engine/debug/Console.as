@@ -8,26 +8,26 @@
  ******************************************************************************/
 package com.pblabs.engine.debug
 {
-	import com.pblabs.engine.PBE;
-	
-	import flash.display.DisplayObject;
-	import flash.display.DisplayObjectContainer;
-	import flash.system.Security;
-
+    import com.pblabs.engine.PBE;
+    
+    import flash.display.DisplayObject;
+    import flash.display.DisplayObjectContainer;
+    import flash.system.Security;
+    
     /**
      * Process simple text commands from the user. Useful for debugging.
      */ 
-	public class Console
-	{
+    public class Console
+    {
         /**
          * The commands, indexed by name. 
          */
         protected static var commands:Object = {};
-		protected static var _stats:Stats;
-		
+        protected static var _stats:Stats;
+        
         public static var verbosity:int = 0;
         
-		
+        
         /**
          * Register a command which the user can execute via the console.
          * 
@@ -45,10 +45,10 @@ package com.pblabs.engine.debug
             // Sanity checks.
             if(callback == null)
                 Logger.error(Console, "registerCommand", "Command '" + name + "' has no callback!");
-
+            
             if(!name || name.length == 0)
                 Logger.error(Console, "registerCommand", "Command has no name!");
-
+            
             if(name.indexOf(" ") != -1)
                 Logger.error(Console, "registerCommand", "Command '" + name + "' has a space in it, it will not work.");
             
@@ -88,7 +88,7 @@ package com.pblabs.engine.debug
                 Logger.warn(Console, "processLine", "No such command '" + args[0].toString() + "'!");
                 return;
             }
-
+            
             // Now call the command.
             try
             {
@@ -121,27 +121,27 @@ package com.pblabs.engine.debug
                     Logger.print(Console, "   " + cc.name + " - " + (cc.docs ? cc.docs : ""));
                 }
             }, "List known commands.");
-			
-			registerCommand("version", function():void
-			{
-				Logger.print(Console, "PushButton Engine - r"+ PBE.REVISION +" - "+
-								PBE.versionDetails +" - "+Security.sandboxType);
-			}, "Echo PushButton Engine version information.");
             
-			// NB - Do we want to rename this to "toggleFps"?
+            registerCommand("version", function():void
+            {
+                Logger.print(Console, "PushButton Engine - r"+ PBE.REVISION +" - "+
+                    PBE.versionDetails +" - "+Security.sandboxType);
+            }, "Echo PushButton Engine version information.");
+            
+            // NB - Do we want to rename this to "toggleFps"?
             registerCommand("showFps", function():void
             {
-				if(!_stats)
-				{
-	                _stats = new Stats();
-					PBE.mainStage.addChild(_stats);
-	                Logger.print(Console, "Enabled FPS display.");
-				}
-				else
-				{
-					PBE.mainStage.removeChild(_stats);
-					_stats = null;
-				}
+                if(!_stats)
+                {
+                    _stats = new Stats();
+                    PBE.mainStage.addChild(_stats);
+                    Logger.print(Console, "Enabled FPS display.");
+                }
+                else
+                {
+                    PBE.mainStage.removeChild(_stats);
+                    _stats = null;
+                }
             }, "Toggle an FPS/Memory usage indicator.");
             
             registerCommand("verbose", function(level:int):void
@@ -149,44 +149,44 @@ package com.pblabs.engine.debug
                 Console.verbosity = level;
                 Logger.print(Console, "Verbosity set to " + level);
             }, "Set verbosity level of console output.");
-			
-			registerCommand("listDisplayObjects", function():void
-			{
-				Console._listDisplayObjects(PBE.mainStage, 0);
-			}, "Outputs the display list.");
+            
+            registerCommand("listDisplayObjects", function():void
+            {
+                Console._listDisplayObjects(PBE.mainStage, 0);
+            }, "Outputs the display list.");
         }
-		
-		protected static function _listDisplayObjects(current:DisplayObject, indent:int):void
-		{
-			if (!current)
-				return;
-			
-			Logger.print(Console, 
-				Console.generateIndent(indent) + 
-				current.name + 
-				" ("+ current.x + ","+ current.y+") visible=" +
-				current.visible);
-			
-			var parent:DisplayObjectContainer = current as DisplayObjectContainer;
-			if (!parent)
-				return;
-			
-			for (var i:int = 0; i < parent.numChildren; i++)
-			    _listDisplayObjects(parent.getChildAt(i), indent+1);
-		}
-		
-		protected static function generateIndent(indent:int):String
-		{
-			var str:String = "";
-			for(var i:int=0; i<indent; i++)
-			{
-				// Add 2 spaces for indent
-				str += "  ";
-			}
-			
-			return str;
-		}
-	}
+        
+        protected static function _listDisplayObjects(current:DisplayObject, indent:int):void
+        {
+            if (!current)
+                return;
+            
+            Logger.print(Console, 
+                Console.generateIndent(indent) + 
+                current.name + 
+                " ("+ current.x + ","+ current.y+") visible=" +
+                current.visible);
+            
+            var parent:DisplayObjectContainer = current as DisplayObjectContainer;
+            if (!parent)
+                return;
+            
+            for (var i:int = 0; i < parent.numChildren; i++)
+                _listDisplayObjects(parent.getChildAt(i), indent+1);
+        }
+        
+        protected static function generateIndent(indent:int):String
+        {
+            var str:String = "";
+            for(var i:int=0; i<indent; i++)
+            {
+                // Add 2 spaces for indent
+                str += "  ";
+            }
+            
+            return str;
+        }
+    }
 }
 
 final class ConsoleCommand
