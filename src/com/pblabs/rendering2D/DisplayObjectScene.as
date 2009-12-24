@@ -80,7 +80,7 @@ package com.pblabs.rendering2D
         {
             // Make sure we don't leave any lingering content.
             if(_sceneView)
-                _sceneView.clearDisplayObjects();
+                _sceneView.removeDisplayObject(_rootSprite);
         }
         
         public function get layerCount():int
@@ -168,6 +168,10 @@ package com.pblabs.rendering2D
             return _sceneView;
         }
         
+        /**
+         * The IUITarget to which we will be displaying the scene. A scene can
+         * only draw to on IUITarget at a time.
+         */
         public function set sceneView(value:IUITarget):void
         {
             if(_sceneView)
