@@ -282,21 +282,25 @@ package com.pblabs.rendering2D
         
         public function transformSceneToScreen(inPos:Point):Point
         {
+            updateTransform();
             return _rootSprite.localToGlobal(inPos);
         }
         
         public function transformScreenToScene(inPos:Point):Point
         {
+            updateTransform();
             return _rootSprite.globalToLocal(inPos);
         }
         
         public function transformWorldToScreen(inPos:Point):Point
         {
+            updateTransform();
             return _rootSprite.localToGlobal(inPos);            
         }
         
         public function transformScreenToWorld(inPos:Point):Point
         {
+            updateTransform();
             return _rootSprite.globalToLocal(inPos);            
         }
         
