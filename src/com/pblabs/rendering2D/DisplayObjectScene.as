@@ -378,13 +378,14 @@ package com.pblabs.rendering2D
             _rootTransform.translate(_rootPosition.x, _rootPosition.y);
             _rootTransform.scale(zoom, zoom);
             
+            // Apply rotation.
+            _rootTransform.rotate(_rootRotation);
+
             // Center it appropriately.
             SceneAlignment.calculate(_tempPoint, sceneAlignment, sceneView.width, sceneView.height);
             _rootTransform.translate(_tempPoint.x, _tempPoint.y);
-            
-            // Apply rotation.
-            _rootTransform.rotate(_rootRotation);
-            
+
+            // Apply the transform.
             _rootSprite.transform.matrix = _rootTransform;
         }
         
@@ -396,12 +397,14 @@ package com.pblabs.rendering2D
                 return;
             }
             
+            // Update our state based on the tracked object, if any.
             if(trackObject)
             {
                 position = new Point(-(trackObject.position.x), 
                                      -(trackObject.position.y));
             }
             
+            // Apply limit to camera movement.
             if(trackLimitRectangle != null)
             {
             	var centeredLimitBounds:Rectangle = new Rectangle( trackLimitRectangle.x     + sceneView.width * 0.5, trackLimitRectangle.y      + sceneView.height * 0.5,
@@ -411,7 +414,11 @@ package com.pblabs.rendering2D
                                      PBUtil.clamp(position.y, -centeredLimitBounds.bottom, -centeredLimitBounds.top) );
             }
 
+            // Make sure transforms are up to date.
             updateTransform();
+            
+            // This is disabled, because it causes everything in the screen
+            // to invalidate and redraw.
             
             //PBE.pushStageQuality(StageQuality.LOW);
             
