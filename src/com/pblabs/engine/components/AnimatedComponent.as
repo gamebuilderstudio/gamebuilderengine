@@ -59,7 +59,7 @@ package com.pblabs.engine.components
         /**
          * @inheritDoc
          */
-        public function onFrame(elapsed:Number):void
+        public function onFrame(deltaTime:Number):void
         {
         }
 

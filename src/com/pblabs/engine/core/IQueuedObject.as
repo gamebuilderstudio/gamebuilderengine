@@ -22,7 +22,6 @@ package com.pblabs.engine.core
          */
         function get nextThinkTime():Number;
         
-        
         /**
          * Callback to call at the nextThinkTime.
          */

@@ -27,7 +27,7 @@ package com.pblabs.engine.core
        * This method is called every tick by the ProcessManager on any objects
        * that have been added to it with the AddTickedObject method.
        * 
-       * @param tickRate The amount of time (in seconds) specified for a tick.
+       * @param deltaTime The amount of time (in seconds) specified for a tick.
        * 
        * @see ProcessManager#AddTickedObject()
        */

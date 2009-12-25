@@ -27,11 +27,11 @@ package com.pblabs.engine.core
        * This method is called every frame by the ProcessManager on any objects
        * that have been added to it with the AddAnimatedObject method.
        * 
-       * @param elapsed The amount of time (in seconds) that has elapsed since
+       * @param deltaTime The amount of time (in seconds) that has elapsed since
        * the last frame.
        * 
        * @see ProcessManager#AddAnimatedObject()
        */
-      function onFrame(elapsed:Number):void;
+      function onFrame(deltaTime:Number):void;
    }
 }
