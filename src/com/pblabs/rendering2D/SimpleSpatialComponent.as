@@ -46,6 +46,26 @@ package com.pblabs.rendering2D
             _position.y = value.y;
         }
         
+        public function set x(value:Number):void
+        {
+            _position.x = value;
+        }
+        
+        public function get x():Number
+        {
+            return _position.x;
+        }
+        
+        public function set y(value:Number):void
+        {
+            _position.y = value;
+        }
+        
+        public function get y():Number
+        {
+            return _position.y;
+        }
+
         public function get rotation():Number
         {
             return _rotation;
