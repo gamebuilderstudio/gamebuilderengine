@@ -23,11 +23,11 @@ package com.pblabs.engine.entity
     }
 }
 
+import com.pblabs.engine.core.NameManager;
+import com.pblabs.engine.core.TemplateManager;
 import com.pblabs.engine.entity.IEntity;
 import com.pblabs.engine.entity.IEntityComponent;
 import com.pblabs.engine.entity.PropertyReference;
-import com.pblabs.engine.core.NameManager;
-import com.pblabs.engine.core.TemplateManager;
 import com.pblabs.engine.debug.Logger;
 import com.pblabs.engine.debug.Profiler;
 import com.pblabs.engine.serialization.Serializer;
@@ -58,6 +58,9 @@ class Entity extends EventDispatcher implements IEntity
     
     public function initialize(name:String = null, alias:String = null):void
     {
+        // Resolve any pending components.
+        resolveComponents();
+        
         _name = name;
         if (_name == null || _name == "")
             return;
@@ -147,13 +150,22 @@ class Entity extends EventDispatcher implements IEntity
         }
     }
     
-    public function addComponent(component:IEntityComponent, componentName:String):void
+    public function addComponent(component:IEntityComponent, componentName:String, defer:Boolean = false):void
     {
         if (!doAddComponent(component, componentName))
             return;
         
+        if(defer)
+            return;
+        
         component.register(this, componentName);
         doResetComponents();
+    }
+    
+    public function resolveComponents():void
+    {
+        if(doRegisterComponents())
+            doResetComponents();
     }
     
     public function removeComponent(component:IEntityComponent):void
@@ -273,22 +285,27 @@ class Entity extends EventDispatcher implements IEntity
      * Register any unregistered components on this entity. Useful when you are
      * deferring registration (for instance due to template processing).
      */
-    private function doRegisterComponents():void
+    private function doRegisterComponents():int
     {
+        var numDone:int = 0;
+        
         for (var name:String in _components)
         {
             // Skip ones we have already registered.
             if(_components[name].isRegistered)
                 continue;
-            
+        
+            numDone++;
             _components[name].register(this, name);
         }
+        
+        return numDone;
     }
     
     private function doResetComponents():void
     {
         for each(var component:IEntityComponent in _components)
-        component.reset();
+            component.reset();
     }
     
     private function findProperty(reference:PropertyReference, willSet:Boolean = false, providedPi:PropertyInfo = null, suppressErrors:Boolean = false):PropertyInfo

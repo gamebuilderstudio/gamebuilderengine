@@ -28,7 +28,6 @@
                 PBE.startup(this);
 
                 core = new FlexUnitCore();
-var b:Box2DSpatialComponent;
 
                 //Listener for the UI, optional
                 core.addListener(new UIListener(uiListener));

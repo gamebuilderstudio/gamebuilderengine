@@ -71,10 +71,24 @@ package com.pblabs.engine.entity
        * 
        * @param component The component to add.
        * @param componentName The name to set for the component. This is the value
-       * to use in lookupComponentByName to get a reference to the component. The
-       * name must be unique across all components on this entity.
+       *        to use in lookupComponentByName to get a reference to the component.
+       *        The name must be unique across all components on this entity.
+       * @param defer If true, just store the component in the name dictionary,
+       *        but don't do its callbacks; this is used when doing templated
+       *        initialization. Any deferred components are registered when you
+       *        call initialize(), but you can also call registerComponent() if
+       *        if you need to manually register them at a certain point. We
+       *        highly recommend the former option (using initialize()). 
        */
-      function addComponent(component:IEntityComponent, componentName:String):void;
+      function addComponent(component:IEntityComponent, componentName:String, defer:Boolean = false):void;
+      
+      /**
+       * If any components were added via addComponent with defer=true, then they
+       * can be fully registered by calling this method. initialize() calls this
+       * for you; calling resolveComponents() directly is only needed in specific
+       * situations.
+       */
+      function resolveComponents():void;
       
       /**
        * Removes a component from the entity.

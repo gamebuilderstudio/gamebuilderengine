@@ -9,6 +9,7 @@
 package com.pblabs
 {
 	import com.pblabs.engine.tests.ComponentTests;
+	import com.pblabs.engine.tests.EntityRegistrationTests;
 	import com.pblabs.engine.tests.InputTests;
 	import com.pblabs.engine.tests.LevelTests;
 	import com.pblabs.engine.tests.ProcessTests;
@@ -33,5 +34,6 @@ package com.pblabs
 		//public var processTests:ProcessTests;
 		public var rendering2DTests:Rendering2DTests;
 		public var inputTests:InputTests;
+        public var entityRegistrationTests:EntityRegistrationTests;
 	}
 }
