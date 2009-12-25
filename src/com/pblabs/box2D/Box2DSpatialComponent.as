@@ -26,14 +26,22 @@ package com.pblabs.box2D
     import flash.geom.Point;
     import flash.geom.Rectangle;
     
+    /**
+     * Wraps a b2Body for use with a Box2DManagerComponent and integration into
+     * PushButton Engine.
+     * 
+     * <p>Most properties map directly to actions in Box2D, so most of the time
+     * your questions about this component will really be Box2D questions in
+     * disguise.</p> 
+     */
     public class Box2DSpatialComponent extends EntityComponent implements IMobileSpatialObject2D
     {
-        public function get manager():Box2DManagerComponent
+        public function get spatialManager():Box2DManagerComponent
         {
             return _manager;
         }
         
-        public function set manager(value:Box2DManagerComponent):void
+        public function set spatialManager(value:Box2DManagerComponent):void
         {
             if (_body)
             {
@@ -44,6 +52,21 @@ package com.pblabs.box2D
             _manager = value;
         }
         
+        public function get manager():Box2DManagerComponent
+        {
+            Logger.warn(this, "get manager", "manager is deprecated; switch to spatialManager.");
+            return spatialManager;
+        }
+        
+        public function set manager(value:Box2DManagerComponent):void
+        {
+            spatialManager = value;
+            Logger.warn(this, "set manager", "manager is deprecated; switch to spatialManager.");
+        }
+        
+        /**
+         * The Box2D b2Body wrapped by this component.
+         */
         public function get body():b2Body
         {
             return _body;
