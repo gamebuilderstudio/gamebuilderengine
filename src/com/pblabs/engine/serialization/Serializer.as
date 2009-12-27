@@ -202,7 +202,8 @@ package com.pblabs.engine.serialization
         private function dserializeComplex(object:*, xml:XML, typeHint:String):*
         {
             var isDynamic:Boolean = (object is Array) || (object is Dictionary) || (TypeUtility.isDynamic(object));
-            
+            var xmlPath:String = '';			
+			
             for each (var fieldXML:XML in xml.*)
             {
                 // Figure out the field we're setting, and make sure it is present.
@@ -234,7 +235,7 @@ package com.pblabs.engine.serialization
                         
                         if(foundOffcaseMatch == false)
                         {
-                            var xmlPath:String = reportXMLPath(fieldXML);
+                            xmlPath = reportXMLPath(fieldXML);
                             Logger.warn(object, "deserialize", "The field '" + fieldName + "' does not exist on the class " + TypeUtility.getObjectClassName(object) + ". " + xmlPath);
                             continue;
                         }                    
@@ -267,7 +268,7 @@ package com.pblabs.engine.serialization
                     }
                     catch(e:Error)
                     {
-                        var xmlPath:String = reportXMLPath(fieldXML);
+                        xmlPath = reportXMLPath(fieldXML);
                         Logger.error(object, "deserialize", "The field " + fieldName + " could not be set to '" + child + "' due to: " + e.toString() + " " + xmlPath);
                     }
                 }
