@@ -311,6 +311,13 @@ package com.pblabs.engine.core
         
         private function addObject(object:*, priority:Number, list:Array):void
         {
+            // If we are in a tick, defer the add.
+            if(duringAdvance)
+            {
+                PBE.callLater(addObject, [ object, priority, list]);
+                return;
+            }
+            
             if (!started)
                 start();
             
@@ -343,6 +350,13 @@ package com.pblabs.engine.core
         
         private function removeObject(object:*, list:Array):void
         {
+            // If we are in a tick, defer the remove.
+            if(duringAdvance)
+            {
+                PBE.callLater(removeObject, [ object, list]);
+                return;
+            }
+
             if (listenerCount == 1 && thinkHeap.size == 0)
                 stop();
             
@@ -405,12 +419,16 @@ package com.pblabs.engine.core
                 // Do the onTick callbacks, noting time in profiler appropriately.
                 Profiler.enter("Tick");
                 
-                for each (var object:ProcessObject in tickedObjects)
+                duringAdvance = true;
+                for(var j:int; j<tickedObjects.length; j++)
                 {
+                    var object:ProcessObject = tickedObjects[j] as ProcessObject;
+                    
                     Profiler.enter(object.profilerKey);
-                    object.listener.onTick(TICK_RATE);
+                    (object.listener as ITickedObject).onTick(TICK_RATE);
                     Profiler.exit(object.profilerKey);
                 }
+                duringAdvance = false;
                 
                 Profiler.exit("Tick");
                 
@@ -434,15 +452,19 @@ package com.pblabs.engine.core
             
             // Update objects wanting OnFrame callbacks.
             Profiler.enter("frame");
+            duringAdvance = true;
             _interpolationFactor = elapsed / TICK_RATE_MS;
-            for each (var animatedObject:ProcessObject in animatedObjects)
+            for(var i:int=0; i<animatedObjects.length; i++)
             {
+                var animatedObject:ProcessObject = animatedObjects[i] as ProcessObject;
+                
                 Profiler.enter(animatedObject.profilerKey);
-                animatedObject.listener.onFrame(deltaTime / 1000);
+                (animatedObject.listener as IAnimatedObject).onFrame(deltaTime / 1000);
                 Profiler.exit(animatedObject.profilerKey);
             }
+            duringAdvance = false;
             Profiler.exit("frame");
-            
+
             Profiler.ensureAtRoot();
         }
         
@@ -518,6 +540,8 @@ package com.pblabs.engine.core
         protected var tickedObjects:Array = new Array();
         
         protected var _platformTime:Number = 0;
+        
+        protected var duringAdvance:Boolean = false;
         
         protected var thinkHeap:SimplePriorityQueue = new SimplePriorityQueue(1024);
     }
