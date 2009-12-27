@@ -16,8 +16,6 @@ package com.pblabs.engine.entity
     * derive from this class rather than implementing IEntityComponent directly.
     * 
     * @see IEntity
-    * @see ../../../../../Examples/CreatingComponents.html Creating Custom Components
-    * @see ../../../../../Reference/ComponentSystem.html Component System Overview
     */
    public class EntityComponent implements IEntityComponent
    {
@@ -27,6 +25,11 @@ package com.pblabs.engine.entity
       public function get owner():IEntity
       {
          return _owner;
+      }
+      
+      public function set owner(value:IEntity):void
+      {
+          _owner = value;
       }
       
       /**
@@ -42,7 +45,7 @@ package com.pblabs.engine.entity
        */
       public function get isRegistered():Boolean
       {
-         return _owner != null;
+         return _isRegistered;
       }
       
       /**
@@ -56,6 +59,7 @@ package com.pblabs.engine.entity
          _name = name;
          _owner = owner;
          onAdd();
+         _isRegistered = true;
       }
       
       /**
@@ -66,6 +70,7 @@ package com.pblabs.engine.entity
          if(!isRegistered)
             throw new Error("Trying to unregister an unregistered component!");
 
+         _isRegistered = false;
          onRemove();
          _owner = null;
          _name = null;
@@ -110,6 +115,7 @@ package com.pblabs.engine.entity
       {
       }
       
+      private var _isRegistered:Boolean = false;
       private var _owner:IEntity = null;
       private var _name:String = null;
    }

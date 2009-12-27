@@ -136,7 +136,7 @@ package com.pblabs.engine.core
 					}
 				}
 
-				var xml:XML=getXML(name, "template", "entity");
+				var xml:XML = getXML(name, "template", "entity");
 				if (!xml)
 				{
 					Logger.error(this, "instantiateEntity", "Unable to find a template or entity with the name " + name + ".");
@@ -166,23 +166,29 @@ package com.pblabs.engine.core
 
 			try
 			{
-				var name:String=xml.attribute("name");
+                // Get at the name...
+				var name:String = xml.attribute("name");
 				if (xml.name() == "template")
 					name="";
 
+                // And the alias...
 				var alias:String=xml.attribute("alias");
 				if (alias == "")
 					alias=null;
 
+                // Make the IEntity instance.
 				var entity:IEntity;
 				if (!_entityType)
 					entity=allocateEntity();
 				else
 					entity=new _entityType();
 
-				entity.initialize(name, alias);
-
-				if (!doInstantiateTemplate(entity, xml.attribute("template"), new Dictionary()))
+                // To aid with reference handling, initialize FIRST but defer the
+                // reset...
+                entity.initialize(name, alias);
+                entity.deferring = true;
+                
+                if (!doInstantiateTemplate(entity, xml.attribute("template"), new Dictionary()))
 				{
 					entity.destroy();
 					Profiler.exit("instantiateEntityFromXML");
@@ -191,6 +197,9 @@ package com.pblabs.engine.core
 
 				Serializer.instance.deserialize(entity, xml);
 				Serializer.instance.clearCurrentEntity();
+
+                // Don't forget to disable deferring.
+                entity.deferring = false;
 
 				if (!_inGroup)
 					Serializer.instance.reportMissingReferences();

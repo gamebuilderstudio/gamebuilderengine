@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:WindowedApplication xmlns:mx = "http://www.adobe.com/2006/mxml" xmlns:fu="http://www.adobe.com/2009/flexUnitUIRunner" invoke="windowedapplication1_invokeHandler(event)">
+<mx:WindowedApplication 
+    xmlns:mx = "http://www.adobe.com/2006/mxml" 
+    xmlns:fu="http://www.adobe.com/2009/flexUnitUIRunner" 
+    width="1024"
+    height="768"
+    invoke="invokeHandler(event)">
     <mx:Script>
         <![CDATA[
             import com.pblabs.PBEngineTestSuite;
@@ -38,7 +43,7 @@
                 core.run(PBEngineTestSuite);
             }
 
-            protected function windowedapplication1_invokeHandler(event:InvokeEvent):void
+            protected function invokeHandler(event:InvokeEvent):void
             {
                 var file:File = File.applicationStorageDirectory.resolvePath("testresults");
                 var outputDir:String = file.nativePath;
@@ -51,7 +56,7 @@
                         
                 runMe(outputDir, exitOnComplete);
             }
-
+ 
         ]]>
     </mx:Script>
     <mx:Style>

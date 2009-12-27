@@ -36,20 +36,25 @@ package com.pblabs.engine.entity
        * A reference to the entity that this component currently belongs to. If
        * the component has not been added to an entity, this will be null.
        * 
-       * This value should be equivelent to the first parameter passed to the Register
-       * method.
+       * <p>This value should be equivalent to the first parameter passed to the register
+       * method.</p>
        * 
-       * @see #Register() 
+       * @see #register() 
        */
       function get owner():IEntity;
       
       /**
+       * Set the owner. This should only be set by the owning IEntity.
+       */
+      function set owner(value:IEntity):void;
+      
+      /**
        * The name given to the component when it is added to an entity.
        * 
-       * This value should be equivelent to the second parameter passed to the Register
+       * This value should be equivelent to the second parameter passed to the register
        * method.
        * 
-       * @see #Register() 
+       * @see #register() 
        */
       function get name():String;
       
@@ -57,10 +62,10 @@ package com.pblabs.engine.entity
        * Whether or not the component is currently registered with an entity.
        */
       function get isRegistered():Boolean;
-      
+
       /**
        * Registers the component with an entity. This should only ever be called by
-       * an entity class from the AddComponent method.
+       * an IEntity from the addComponent method.
        * 
        * @param owner The entity to register the component with.
        * @param name The name to assign to the component.
@@ -69,7 +74,7 @@ package com.pblabs.engine.entity
       
       /**
        * Unregisters the component from an entity. This should only ever be called by
-       * an entity class from the RemoveComponent method.
+       * an entity class from the removeComponent method.
        */
       function unregister():void;
       

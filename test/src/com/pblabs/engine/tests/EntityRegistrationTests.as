@@ -17,7 +17,7 @@ package com.pblabs.engine.tests
         {
             // Recursively add components to an entity, then initialize it so onAdd is called.
             var e:IEntity = PBE.allocateEntity();
-            e.addComponent(new RecursiveAddRemoveTestComponent(), "addRoot", true);
+            e.addComponent(new RecursiveAddRemoveTestComponent(), "addRoot");
             e.initialize(null);
             
             // Validate only one is present by the time initialize finishes.
@@ -35,7 +35,7 @@ package com.pblabs.engine.tests
         {
             // Recursively add components to an entity, then initialize it so onAdd is called.
             var e:IEntity = PBE.allocateEntity();
-            e.addComponent(new RecursiveAddTestComponent(), "addRoot", true);
+            e.addComponent(new RecursiveAddTestComponent(), "addRoot");
             e.initialize(null);
             
             // Validate they are all present by the time initialize finishes.
@@ -59,7 +59,7 @@ class RecursiveAddTestComponent extends EntityComponent
     {
         if(addCount)
         {
-            owner.addComponent(new RecursiveAddTestComponent(), "c" + addCount + "add", true);
+            owner.addComponent(new RecursiveAddTestComponent(), "c" + addCount + "add");
             addCount--;
         }
     }
@@ -76,7 +76,7 @@ class RecursiveAddRemoveTestComponent extends EntityComponent
     {
         if(addCount)
         {
-            owner.addComponent(new RecursiveAddRemoveTestComponent(), "c" + addCount + "addRemove", true);
+            owner.addComponent(new RecursiveAddRemoveTestComponent(), "c" + addCount + "addRemove");
             owner.removeComponent(this);
             addCount--;
         }

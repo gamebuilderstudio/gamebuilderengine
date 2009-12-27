@@ -34,6 +34,17 @@ package com.pblabs.engine.entity
        * @see #initialize()
        */
       function get name():String;
+      
+      /**
+       * Since the PBE level format references template definitions by name, and
+       * that same name is used to name the entities created by the format, it
+       * is useful to be able to look things up by a common name. So you might
+       * have Level1Background, Level2Background, Level3Background etc. but give
+       * them all the alias LevelBackground so you can look up the current level's
+       * background easily.
+       * 
+       * <p>This is set by the second parameter to #initialize()</p>
+       */
       function get alias():String;
       
       /**
@@ -61,11 +72,14 @@ package com.pblabs.engine.entity
        */
       function destroy():void;
       
+      function get deferring():Boolean;
+      function set deferring(value:Boolean):void;
+      
       /**
        * Adds a component to the entity.
        * 
-       * <p>When a component is added, it will have its Register method called
-       * (or onAdd if it is derived from EntityComponent). Also, Reset will be
+       * <p>When a component is added, it will have its register() method called
+       * (or onAdd if it is derived from EntityComponent). Also, reset() will be
        * called on all components currently attached to the entity (or onReset
        * if it is derived from EntityComponent).</p>
        * 
@@ -73,22 +87,8 @@ package com.pblabs.engine.entity
        * @param componentName The name to set for the component. This is the value
        *        to use in lookupComponentByName to get a reference to the component.
        *        The name must be unique across all components on this entity.
-       * @param defer If true, just store the component in the name dictionary,
-       *        but don't do its callbacks; this is used when doing templated
-       *        initialization. Any deferred components are registered when you
-       *        call initialize(), but you can also call registerComponent() if
-       *        if you need to manually register them at a certain point. We
-       *        highly recommend the former option (using initialize()). 
        */
-      function addComponent(component:IEntityComponent, componentName:String, defer:Boolean = false):void;
-      
-      /**
-       * If any components were added via addComponent with defer=true, then they
-       * can be fully registered by calling this method. initialize() calls this
-       * for you; calling resolveComponents() directly is only needed in specific
-       * situations.
-       */
-      function resolveComponents():void;
+      function addComponent(component:IEntityComponent, componentName:String):void;
       
       /**
        * Removes a component from the entity.
@@ -111,8 +111,6 @@ package com.pblabs.engine.entity
        * @param xml The xml object describing the entity. The parent tag should be
        * included in this variable when the function is called, so only child tags
        * need to be created.
-       * 
-       * @see ../../../../../Reference/XMLFormat.html The XML Format
        */
       function serialize(xml:XML):void;
       
@@ -123,9 +121,6 @@ package com.pblabs.engine.entity
        * @param registerComponents Set this to false to add components to the entity
        * without registering them. This is used by the level manager to facilitate
        * creating entities from templates. 
-       * 
-       * @see ../../../../../Reference/XMLFormat.html The XML Format
-       * @see ../../../../../Reference/Levels.html Levels
        */
       function deserialize(xml:XML, registerComponents:Boolean = true):void;
       
