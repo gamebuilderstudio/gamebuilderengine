@@ -72,9 +72,14 @@ package com.pblabs.engine.entity
        */
       function destroy():void;
       
-      function get deferring():Boolean;
+      /**
+       * When true, onAdd/onRemove callbacks are deferred. When set to false, any
+       * pending callbacks are processed.
+       */
       function set deferring(value:Boolean):void;
       
+      function get deferring():Boolean;
+
       /**
        * Adds a component to the entity.
        * 
@@ -88,7 +93,7 @@ package com.pblabs.engine.entity
        *        to use in lookupComponentByName to get a reference to the component.
        *        The name must be unique across all components on this entity.
        */
-      function addComponent(component:IEntityComponent, componentName:String):void;
+      function addComponent(component:IEntityComponent, componentName:String):Boolean;
       
       /**
        * Removes a component from the entity.

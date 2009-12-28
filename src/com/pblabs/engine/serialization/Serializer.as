@@ -59,7 +59,7 @@ package com.pblabs.engine.serialization
         }
         
         /**
-         * serializes an object to XML. This is currently not implemented.
+         * Serializes an object to XML. This is currently not implemented.
          * 
          * @param object The object to serialize. If this object implements ISerializable,
          * its serialize method will be called to do the serialization, otherwise the default
@@ -92,7 +92,7 @@ package com.pblabs.engine.serialization
         }
         
         /**
-         * deserializes an object from an xml description.
+         * Deserializes an object from an xml description.
          * 
          * @param object The object on which the xml description will be applied.
          * @param xml The xml to deserialize from.
@@ -277,6 +277,10 @@ package com.pblabs.engine.serialization
             return object;
         }
         
+        /**
+         * Given an XML element, walk up its parent references and show the path
+         * in the document, including any name attributes.
+         */
         public function reportXMLPath(item:*):String
         {
             // Report each tag and its name attribute if any.

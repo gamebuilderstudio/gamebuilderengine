@@ -169,19 +169,19 @@ package com.pblabs.engine.core
                 // Get at the name...
 				var name:String = xml.attribute("name");
 				if (xml.name() == "template")
-					name="";
+					name = "";
 
                 // And the alias...
 				var alias:String=xml.attribute("alias");
 				if (alias == "")
-					alias=null;
+					alias = null;
 
                 // Make the IEntity instance.
 				var entity:IEntity;
 				if (!_entityType)
-					entity=allocateEntity();
+					entity = allocateEntity();
 				else
-					entity=new _entityType();
+					entity = new _entityType();
 
                 // To aid with reference handling, initialize FIRST but defer the
                 // reset...

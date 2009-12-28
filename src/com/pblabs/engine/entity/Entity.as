@@ -118,7 +118,12 @@ package com.pblabs.engine.entity
         {
             // Note what entity we're deserializing to the Serializer.
             Serializer.instance.setCurrentEntity(this);
+
+            // Push the deferred state.
+            var oldDefer:Boolean = deferring;
+            deferring = true;
             
+            // Process each component tag in the xml.
             for each (var componentXML:XML in xml.*)
             {
                 // Error if it's an unexpected tag.
@@ -134,6 +139,7 @@ package com.pblabs.engine.entity
                 
                 if (componentClassName.length > 0)
                 {
+                    // If it specifies a type, instantie a component and add it.
                     component = TypeUtility.instantiate(componentClassName) as IEntityComponent;
                     if (!component)
                     {
@@ -141,11 +147,12 @@ package com.pblabs.engine.entity
                         continue;
                     }
                     
-                    if (!doAddComponent(component, componentName))
+                    if (!addComponent(component, componentName))
                         continue;
                 }
                 else
                 {
+                    // Otherwise just get the existing one of that name.
                     component = lookupComponentByName(componentName);
                     if (!component)
                     {
@@ -154,15 +161,19 @@ package com.pblabs.engine.entity
                     }
                 }
                 
+                // Deserialize the XML into the component.
                 Serializer.instance.deserialize(component, componentXML);
             }
+            
+            // Restore deferred state.
+            deferring = oldDefer;
         }
         
-        public function addComponent(component:IEntityComponent, componentName:String):void
+        public function addComponent(component:IEntityComponent, componentName:String):Boolean
         {
             // Add it to the dictionary.
             if (!doAddComponent(component, componentName))
-                return;
+                return false;
 
             // If we are deferring registration, put it on the list.
             if(deferring)
@@ -171,7 +182,7 @@ package com.pblabs.engine.entity
                 p.item = component;
                 p.name = componentName;
                 _deferredComponents.push(p);
-                return;
+                return true;
             }
 
             // We have to be careful w.r.t. adding components from another component.
@@ -179,6 +190,8 @@ package com.pblabs.engine.entity
             
             // Fire off the reset.
             doResetComponents();
+            
+            return true;
         }
         
         public function removeComponent(component:IEntityComponent):void
