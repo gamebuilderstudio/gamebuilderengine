@@ -21,8 +21,34 @@ package com.pblabs.box2D
      */
     public class Box2DDebugComponent extends DisplayObjectRenderer
     {
-        public var manager:Box2DManagerComponent;
+        public function get spatialManager():Box2DManagerComponent
+        {
+            return _manager;
+        }
         
+        public function set spatialManager(value:Box2DManagerComponent):void
+        {
+            if (_body)
+            {
+                Logger.warn(this, "set Manager", "The manager can only be set before the component is registered.");
+                return; 
+            }
+            
+            _manager = value;
+        }
+        
+        public function get manager():Box2DManagerComponent
+        {
+            Logger.warn(this, "get manager", "manager is deprecated; switch to spatialManager.");
+            return spatialManager;
+        }
+        
+        public function set manager(value:Box2DManagerComponent):void
+        {
+            spatialManager = value;
+            Logger.warn(this, "set manager", "manager is deprecated; switch to spatialManager.");
+        }
+                
         override public function get layerIndex():int
         {
             // Always draw last.
@@ -167,6 +193,7 @@ package com.pblabs.box2D
                 _drawer.ClearFlags(b2DebugDraw.e_centerOfMassBit);
         }        
         
+        private var _manager:Box2DManagerComponent = null;
         protected var _drawer:b2DebugDraw = new b2DebugDraw();
         protected var _drawShapes:Boolean = true; 
         protected var _drawJoints:Boolean = true;      
