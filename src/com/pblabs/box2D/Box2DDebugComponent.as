@@ -28,12 +28,6 @@ package com.pblabs.box2D
         
         public function set spatialManager(value:Box2DManagerComponent):void
         {
-            if (_body)
-            {
-                Logger.warn(this, "set Manager", "The manager can only be set before the component is registered.");
-                return; 
-            }
-            
             _manager = value;
         }
         
