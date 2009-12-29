@@ -10,6 +10,7 @@ package com.pblabs.box2D
 {
     import Box2D.Dynamics.b2DebugDraw;
     
+    import com.pblabs.engine.debug.Logger;
     import com.pblabs.rendering2D.DisplayObjectRenderer;
     
     import flash.display.Sprite;
