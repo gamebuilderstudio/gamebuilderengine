@@ -32,8 +32,6 @@ package com.pblabs.engine.entity
             return _alias;
         }
         
-        private var _deferring:Boolean = true;
-        
         public function get deferring():Boolean
         {
             return _deferring;
@@ -41,20 +39,25 @@ package com.pblabs.engine.entity
         
         public function set deferring(value:Boolean):void
         {
-            // Resolve everything, and everything that that resolution triggers.
-            var needReset:Boolean = _deferredComponents.length > 0;
-            while(_deferredComponents.length)
+            if(_deferring == true && value == false)
             {
-                var pc:PendingComponent = _deferredComponents.shift() as PendingComponent;
-                pc.item.register(this, pc.name);
+                // Resolve everything, and everything that that resolution triggers.
+                var needReset:Boolean = _deferredComponents.length > 0;
+                while(_deferredComponents.length)
+                {
+                    var pc:PendingComponent = _deferredComponents.shift() as PendingComponent;
+                    pc.item.register(this, pc.name);
+                }
+                
+                // Mark deferring as done.
+                _deferring = false;
+                
+                // Fire off the reset.
+                if(needReset)
+                    doResetComponents();                
             }
             
-            // Mark deferring as done.
-            _deferring = false;
-            
-            // Fire off the reset.
-            if(needReset)
-                doResetComponents();
+            _deferring = value;
         }
         
         public function get eventDispatcher():IEventDispatcher
@@ -567,6 +570,8 @@ package com.pblabs.engine.entity
             Profiler.exit("Entity.findProperty");
             return null;
         }
+        
+        private var _deferring:Boolean = true;
         
         protected var _name:String = null;
         protected var _alias:String = null;
