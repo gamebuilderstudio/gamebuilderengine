@@ -101,8 +101,8 @@ package com.pblabs.sound
             if (!sound)
                 return;
 
-            if (!sound.soundComponent)
-                throw new Error("Sound info had no sound component!");
+            if (!sound.sound)
+                throw new Error("Sound info had no SoundResource!");
                 
             // Fire start event.
             if (sound.startEvent)
