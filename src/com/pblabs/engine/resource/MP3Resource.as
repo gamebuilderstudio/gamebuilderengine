@@ -8,60 +8,65 @@
  ******************************************************************************/
 package com.pblabs.engine.resource
 {
-   import flash.events.Event;
-   import flash.events.IOErrorEvent;
-   import flash.media.Sound;
-   import flash.net.URLRequest;
-
-   [EditorData(extensions="mp3")]
-   
-   /**
-    * This is a Resource subclass for mp3 audio files.
-    */
-   public class MP3Resource extends Resource
-   {
-      /**
-       * The loaded sound.
-       */
-      public var soundObject:Sound = null;
-      
-      override public function load(filename:String):void
-      {
-         _filename = filename;
-         
-         var request:URLRequest = new URLRequest(filename);
-         _loadingSound = new Sound();
-         _loadingSound.addEventListener(Event.COMPLETE, onSoundLoadComplete);
-         _loadingSound.addEventListener(IOErrorEvent.IO_ERROR, onSoundDownloadError);
-         _loadingSound.load(request);
-      }
-      
-      private function onSoundLoadComplete(event:Event):void
-      {
-         soundObject = _loadingSound;
-         onLoadComplete();
-      }
-      
-      private function onSoundDownloadError(event:IOErrorEvent):void
-      {
-         onFailed(event.text);
-      }
-      
-      override public function initialize(d:*):void
-      {
-         soundObject = d;
-         onLoadComplete();
-      }
-      
-      /**
-       * @inheritDoc
-       */
-      override protected function onContentReady(content:*):Boolean 
-      {
-         return soundObject != null;
-      }
-      
-      // store the sound here until it's loaded
-      private var _loadingSound:Sound;
-   }
+    import flash.events.Event;
+    import flash.events.IOErrorEvent;
+    import flash.media.Sound;
+    import flash.net.URLRequest;
+    
+    [EditorData(extensions="mp3")]
+    
+    /**
+     * Load Sounds from MP3s using Flash Player's built in MP3 loading code.
+     */
+    public class MP3Resource extends SoundResource
+    {
+        /**
+         * The loaded sound.
+         */
+        protected var _soundObject:Sound = null;
+        
+        override public function get soundObject() : Sound
+        {
+            return _soundObject;
+        }
+        
+        override public function load(filename:String):void
+        {
+            _filename = filename;
+            
+            var request:URLRequest = new URLRequest(filename);
+            _loadingSound = new Sound();
+            _loadingSound.addEventListener(Event.COMPLETE, onSoundLoadComplete);
+            _loadingSound.addEventListener(IOErrorEvent.IO_ERROR, onSoundDownloadError);
+            _loadingSound.load(request);
+        }
+        
+        private function onSoundLoadComplete(event:Event):void
+        {
+            _soundObject = _loadingSound;
+            onLoadComplete();
+        }
+        
+        private function onSoundDownloadError(event:IOErrorEvent):void
+        {
+            onFailed(event.text);
+        }
+        
+        override public function initialize(d:*):void
+        {
+            _soundObject = d;
+            onLoadComplete();
+        }
+        
+        /**
+         * @inheritDoc
+         */
+        override protected function onContentReady(content:*):Boolean 
+        {
+            return soundObject != null;
+        }
+        
+        // store the sound here until it's loaded
+        private var _loadingSound:Sound;
+    }
 }

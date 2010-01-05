@@ -181,7 +181,7 @@ package com.pblabs.engine.resource
          */
         public function fail(message:String):void
         {
-        	onFailed(message);        	
+            onFailed(message);        	
         }
         
         /**
@@ -258,8 +258,6 @@ package com.pblabs.engine.resource
             _urlLoader = null;
             _loader = null;
         }
-	
-		                
         
         protected var _filename:String = null;
         private var _isLoaded:Boolean = false;
