@@ -69,8 +69,8 @@ package com.pblabs.box2D
         
         override protected function onReset():void 
         {
-            if (manager)
-                manager.setDebugDrawer(_drawer);
+            if (spatialManager)
+                spatialManager.setDebugDrawer(_drawer);
         }
 
         public function get drawShapes():Boolean
