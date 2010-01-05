@@ -13,6 +13,9 @@ package com.pblabs.engine
      */
     public class PBUtil
     {
+        /**
+         * Two times PI. 
+         */
         public static const TWO_PI:Number = 2.0 * Math.PI;
         
         /**
@@ -65,23 +68,23 @@ package com.pblabs.engine
 		}
 		
         /**
-         * Take a radian measure and make sure it is between 0..2pi.
+         * Take a radian measure and make sure it is between -pi..pi.
          */
         public static function unwrapRadian(r:Number):Number
         {
-            r = r % TWO_PI;
-            if(r < -TWO_PI)
+            r = r % Math.PI;
+            if(r < -Math.PI)
                 r += TWO_PI;
             return r;
         }
         
         /**
-         * Take a degree measure and make sure it is between 0..360.
+         * Take a degree measure and make sure it is between -180..180.
          */
         public static function unwrapDegrees(r:Number):Number
         {
-            r = r % 360;
-            if(r < -360)
+            r = r % 180;
+            if(r < -180)
                 r += 360;
             return r;
         }
