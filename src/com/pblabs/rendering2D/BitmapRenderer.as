@@ -77,7 +77,7 @@ package com.pblabs.rendering2D
         }
         
         override public function pointOccupied(worldPosition:Point):Boolean
-        {            
+        {
             if(!bitmap || !bitmap.bitmapData)
                 return false;
             

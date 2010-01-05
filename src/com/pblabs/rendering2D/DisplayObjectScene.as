@@ -308,7 +308,7 @@ package com.pblabs.rendering2D
         {
             // Query normal DO hierarchy.
             var unfilteredResults:Array = _rootSprite.getObjectsUnderPoint(screenPosition);
-            var worldPosition:Point = transformScreenToWorld(screenPosition);
+            var scenePosition:Point = transformScreenToScene(screenPosition);
             
             for each (var o:* in unfilteredResults)
             {
@@ -323,7 +323,7 @@ package com.pblabs.rendering2D
                 if(mask && !ObjectTypeManager.instance.doTypesOverlap(mask, renderer.objectMask))
                     continue;
                 
-                if(!renderer.pointOccupied(worldPosition))
+                if(!renderer.pointOccupied(scenePosition))
                     continue;
                 
                 results.push(renderer);

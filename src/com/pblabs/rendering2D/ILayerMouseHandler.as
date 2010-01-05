@@ -11,6 +11,6 @@ package com.pblabs.rendering2D
         /**
          * @see IScene2D.getRenderersUnderPoint
          */ 
-        function getRenderersUnderPoint(screenPosition:Point, mask:ObjectType, results:Array):void;
+        function getRenderersUnderPoint(scenePosition:Point, mask:ObjectType, results:Array):void;
 	}
 }
