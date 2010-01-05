@@ -45,7 +45,7 @@ package com.pblabs.sound
             if (!_start || !music || !music.soundObject)
                 return;
             
-            _channel = SoundManager.instance.play(music.soundObject, SoundManager.MUSIC_MIXER_CATEGORY, int.MAX_VALUE, 0);
+            _channel = SoundManager.instance.play(music, SoundManager.MUSIC_MIXER_CATEGORY, int.MAX_VALUE, 0);
             if (_channel)
             {
                 _playing = true;
