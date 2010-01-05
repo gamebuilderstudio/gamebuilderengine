@@ -73,18 +73,22 @@ package com.pblabs.engine
         public static function unwrapRadian(r:Number):Number
         {
             r = r % Math.PI;
-            if(r < -Math.PI)
+            if (r > Math.PI)
+                r -= TWO_PI;
+            if (r < -Math.PI)
                 r += TWO_PI;
             return r;
         }
         
         /**
-         * Take a degree measure and make sure it is between -180..180.
+         * Take a degree measure and make sure it is between 0..360.
          */
         public static function unwrapDegrees(r:Number):Number
         {
-            r = r % 180;
-            if(r < -180)
+            r = r % 360;
+            if (r > 180)
+                r -= 360;
+            if (r < -180)
                 r += 360;
             return r;
         }
