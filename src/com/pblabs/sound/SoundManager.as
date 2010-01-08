@@ -1,299 +1,236 @@
 package com.pblabs.sound
 {
+    import com.pblabs.engine.core.ITickedObject;
     import com.pblabs.engine.debug.Logger;
+    import com.pblabs.engine.debug.Profiler;
+    import com.pblabs.engine.resource.MP3Resource;
     import com.pblabs.engine.resource.ResourceManager;
     import com.pblabs.engine.resource.SoundResource;
     
-    import flash.events.Event;
     import flash.media.Sound;
-    import flash.media.SoundChannel;
     import flash.media.SoundTransform;
-    import flash.utils.Dictionary;
+    import flash.net.URLRequest;
     
-    public class SoundManager
+    public class SoundManager implements ISoundManager, ITickedObject
     {
-        private static var _instance:SoundManager = null;
-        
-        public static const SFX_MIXER_CATEGORY:String = "sfx";
         public static const MUSIC_MIXER_CATEGORY:String = "music";
+        public static const SFX_MIXER_CATEGORY:String = "sfx";
         
-        private var _playing:Dictionary = new Dictionary();
-        private var _transforms:Dictionary = new Dictionary();
-        private var _muted:Dictionary = new Dictionary();
-        private var _allMuted:Boolean = false;
-        private var _concurrency:int = 0;
-        
-        public var muteTransform:SoundTransform = new SoundTransform(0, 0);
-        public var defaultTransform:SoundTransform = new SoundTransform(1, 0);
-        
-        /**
-         * The absolute maximum number of sounds that can be playing concurrently.
-         * If this limit is reached new sounds are ignored.
-         */
         public var maxConcurrentSounds:int = 5;
+
+        protected var playingSounds:Array = [];
+        protected var categories:Object = {};
+        protected var rootCategory:SoundCategory = new SoundCategory();
+        protected var cachedSounds:Object = {};
         
-        /**
-         * The singleton SoundManager instance.
-         */
-        public static function get instance():SoundManager
+        public function SoundManager()
         {
-            if (!_instance)
-                _instance = new SoundManager();
-            
-            return _instance;
+            createCategory(MUSIC_MIXER_CATEGORY);
+            createCategory(SFX_MIXER_CATEGORY);
         }
         
-        public function setTransform(mixerCategory:String, transform:SoundTransform):void
+        public function play(sound:*, category:String="sfx", pan:Number=0.0, loopCount:int=0, startDelay:Number=0.0):SoundHandle
         {
-            _transforms[mixerCategory] = transform;
-        }
-        
-        protected var _fileCache:Object = {};
-        
-        public function playFile(uri:String, mixerCategory:String=SFX_MIXER_CATEGORY, loops:int=0, startDelay:Number=0.0):SoundChannel
-        {
-            // Play immediately if the file is present.
-            if(_fileCache[uri])
-                return play(_fileCache[uri] as SoundResource, mixerCategory, loops, startDelay);
-            
-            // Else, request it and play on success.
-            ResourceManager.instance.load(uri, SoundResource, function(r:*):void
-            {
-                _fileCache[uri] = r;
-                play(r as SoundResource, mixerCategory, loops, startDelay);
-            });
-            
-            return null;
-        }
-        
-        public function play(sound:SoundResource, mixerCategory:String=SFX_MIXER_CATEGORY, loops:int=0, startDelay:Number=0.0):SoundChannel
-        {
-            var info:SoundControllerInfo = new SoundControllerInfo();
-            info.loops = loops;
-            info.mixerCategory = mixerCategory;
-            info.overrides = false;
-            info.sound = sound;
-            
-            return playFromInfo(info);
-        }
-        
-        public function playFromInfo(sci:SoundControllerInfo):SoundChannel
-        {
-            if (!sci  || !sci.sound)
-            {
-                Logger.warn(this, "play", "Tried to play a non-existant sound. Make sure your soundComponent is properly defined and your sound resource is loaded.");
-                return null;
-            }
-            
-            if (!shouldPlay(sci))
-            {
-                //TODO: Might want to queue or push out an old one, or something more interesting than just not playing the sound?
-                Logger.print(this, "Not playing a sound due to the sound policy. There are probably too many playing right now.");
-                return null;
-            }
-            
-            var mixerTransform:SoundTransform = _transforms[sci.mixerCategory];
-            var transform:SoundTransform = isMuted(sci.mixerCategory) ? muteTransform : mixerTransform;
-            var channel:SoundChannel = sci.sound.soundObject.play(sci.startTime, sci.loops, transform ? transform : defaultTransform);
-            
-            if (!channel)
+            // Cap sound playback.
+            if(playingSounds.length > maxConcurrentSounds)
                 return null;
             
-            if (!_playing[sci.mixerCategory])
-                _playing[sci.mixerCategory] = new Array();
-            
-            _concurrency++;    
-            _playing[sci.mixerCategory].push(new SoundNote(channel, sci));
-            channel.addEventListener(Event.SOUND_COMPLETE, soundCompleteCallback);
-            
-            return channel;
-        }
-        
-        public function stop(mixerCategory:String=null, channel:SoundChannel=null):void
-        {
-            var sounds:Array;
-            var sound:SoundNote;
-            
-            if (mixerCategory)
+            // Infer type of sound, and get the Sound object.
+            var actualSound:Sound = null;
+            if(sound is Sound)
+                actualSound = sound as Sound;
+            else if(sound is SoundResource)
+                actualSound = (sound as SoundResource).soundObject;
+            else if(sound is String)
             {
-                var category:Array = _playing[mixerCategory];
-                if (!category) 
-                    return;
-                
-                for each (sound in category)
+                // Check if it is a known loaded sound, if so, then get the resource
+                // and play that.
+                if(cachedSounds[sound])
+                    actualSound = (cachedSounds[sound] as SoundResource).soundObject;
+                else
                 {
-                    _concurrency--;
-                    sound.channel.removeEventListener(Event.SOUND_COMPLETE, soundCompleteCallback);   
-                    sound.channel.stop();
-                }
-                
-                delete _playing[mixerCategory];
-            }
-            
-            if (channel)
-            {
-                for each (sounds in _playing)
-                {
-                    for (var i:int = 0; i < sounds.length; i++)
+                    // Otherwise queue the resource and play it when it is loaded.
+                    ResourceManager.instance.load(sound, MP3Resource, function(r:*):void
                     {
-                        sound = sounds[i];
-                        if (sound.channel === channel)
-                        {
-                            _concurrency--;
-                            sounds.splice(i, 1);
-                            sound.channel.removeEventListener(Event.SOUND_COMPLETE, soundCompleteCallback);   
-                            sound.channel.stop();
-                            break;
-                        }
-                    }
-                }
-            }
-            
-            if (!channel && !mixerCategory)
-            {
-                for each (sounds in _playing)
-                {
-                    for each (sound in sounds)
-                    {
-                        sound.channel.removeEventListener(Event.SOUND_COMPLETE, soundCompleteCallback);   
-                        sound.channel.stop();
-                    }
+                        cachedSounds[sound] = r;
+                        play(r as SoundResource, category, pan, loopCount, startDelay);
+                    });
+                    
+                    return null;
                 }
                 
-                _concurrency = 0;
-                _playing = new Dictionary();
-            }
-        }
-        
-        public function isMuted(mixerCategory:String=null):Boolean
-        {
-            return _allMuted || (mixerCategory && _muted[mixerCategory]);
-        }
-        
-        public function mute(mixerCategory:String=null):void
-        {
-            var sounds:Array;
-            var sound:SoundNote;
-            
-            if (mixerCategory)
-            {
-                _muted[mixerCategory] = true;
-                
-                var category:Array = _playing[mixerCategory];
-                if (!category) 
-                    return;
-                
-                for each (sound in category)
-                sound.channel.soundTransform = muteTransform;
             }
             else
             {
-                _allMuted = true;
-                for each (sounds in _playing)
-                {
-                    for each (sound in sounds)
-                    sound.channel.soundTransform = muteTransform;
-                }
+                throw new Error("Parameter sound is of unexpected type. Should be Sound, SoundResource, or String.");
             }
+            
+            // Great, so set up the SoundHandle, start it, and return it.
+            var sh:SoundHandle = new SoundHandle(this, actualSound, category, pan, loopCount, startDelay);            
+            playingSounds.push(sh);
+            return sh;
+        }
+
+        public function stream(url:String, category:String = "sfx", pan:Number = 0.0, loopCount:int = 1, startDelay:Number = 0.0):SoundHandle
+        {
+            // Create a Sound from the URL.
+            try
+            {
+                var ur:URLRequest = new URLRequest(url);
+                var s:Sound = new Sound(ur);
+            }
+            catch(e:Error)
+            {
+                Logger.error(this, "stream", "Failed to stream Sound due to:" + e.toString() + "\n" + e.getStackTrace());
+                return null;
+            }
+            
+            // Great, so set up the SoundHandle, start it, and return it.
+            var sh:SoundHandle = new SoundHandle(this, s, category, pan, loopCount, startDelay);            
+            playingSounds.push(sh);
+            return sh;
         }
         
-        public function unMute(mixerCategory:String=null):void
+        public function set muted(value:Boolean):void
         {
-            var sounds:Array;
-            var sound:SoundNote;
-            var transform:SoundTransform;
-            if (mixerCategory)
+            rootCategory.muted = value;
+            rootCategory.dirty = true;
+        }
+        
+        public function get muted():Boolean
+        {
+            return rootCategory.muted;
+        }
+        
+        public function set volume(value:Number):void
+        {
+            rootCategory.transform.volume = value;
+            rootCategory.dirty = true;
+        }
+        
+        public function get volume():Number
+        {
+            return rootCategory.transform.volume;
+        }
+        
+        public function createCategory(category:String):void
+        {
+            categories[category] = new SoundCategory();
+        }
+        
+        public function removeCategory(category:String):void
+        {
+            // TODO: Will tend to break if any sounds are using this category.
+            categories[category] = null;
+            delete categories[category];
+        }
+        
+        public function setCategoryMuted(category:String, value:Boolean):void
+        {
+            categories[category].muted = value;
+            categories[category].dirty = true;
+        }
+        
+        public function getCategoryMuted(category:String):Boolean
+        {
+            return categories[category].muted;
+        }
+        
+        public function setCategoryVolume(category:String, value:Number):void
+        {
+            categories[category].transform.volume = value;
+            categories[category].dirty = true;
+        }
+        
+        public function getCategoryVolume(category:String):Number
+        {
+            return categories[category].transform.volume;
+        }
+        
+        public function setCategoryTransform(category:String, transform:SoundTransform):void
+        {
+            categories[category].transform = transform;
+            categories[category].dirty = true;            
+        }
+        
+        public function getCategoryTransform(category:String):SoundTransform
+        {
+            return categories[category].transform;
+        }
+
+        internal function updateSounds():void
+        {
+            Profiler.enter("SoundManager.updateSounds");
+
+            // Push dirty state down.
+            if(!rootCategory.dirty)
             {
-                _muted[mixerCategory] = false;
-                
-                var category:Array = _playing[mixerCategory];
-                if (!category) 
-                    return;
-                
-                for each (sound in category)
+                // Each category must dirty its sounds.
+                for(var categoryName:String in categories)
                 {
-                    transform = _transforms[sound.sound.mixerCategory];
-                    sound.channel.soundTransform = transform ? transform : defaultTransform;
+                    // Skip clean.
+                    if(categories[categoryName].dirty == false)
+                        continue;
+                    
+                    // OK, mark appropriate sounds as dirty.
+                    for(var j:int=0; j<playingSounds.length; j++)
+                    {
+                        var csh:SoundHandle = playingSounds[j] as SoundHandle;
+
+                        if(csh.category != categoryName)
+                            continue;
+                        
+                        csh.dirty = true;
+                    }
+
+                    // Clean the state.
+                    categories[categoryName].dirty = false;
                 }
             }
             else
             {
-                _allMuted = false;
-                for each (sounds in _playing)
-                {
-                    for each (sound in sounds)
-                    {
-                        transform = _transforms[sound.sound.mixerCategory];
-                        sound.channel.soundTransform = transform ? transform : defaultTransform;
-                    }
-                }
+                // Root state is dirty, so we can clean all the categories.
+                for(var categoryName2:String in categories)
+                    categories[categoryName2].dirty = false;
             }
-        }
-        
-        public function setVolume(volume:Number=1, mixerCategory:String=null):void
-        {
-            if (mixerCategory)
-            {
-                var oldTransform:SoundTransform = _transforms[mixerCategory];
-                
-                if (oldTransform)
-                {
-                    oldTransform.volume = volume;
-                    return;
-                }
-                
-                var newTransform:SoundTransform = new SoundTransform(volume);
-                setTransform(mixerCategory, newTransform);
-                
-                var category:Array = _playing[mixerCategory];
-                if (!category)
-                    return;
-                
-                for each (var sound:SoundNote in category)
-                sound.channel.soundTransform = newTransform;
-            }
-            else
-            {
-                defaultTransform.volume = volume;
-            }
-        }
-        
-        private function soundCompleteCallback(event:Event):void
-        {
-            _concurrency--;
             
-            for each (var sounds:Array in _playing)
+            // Now, update every dirty sound.
+            for(var i:int=0; i<playingSounds.length; i++)
             {
-                for (var i:int = 0; i < sounds.length; i++)
+                var curSoundHandle:SoundHandle = playingSounds[i] as SoundHandle;
+                if(curSoundHandle.dirty == false && rootCategory.dirty == false)
+                    continue;
+                
+                // It is dirty, so update the transform.
+                if(curSoundHandle.channel)
                 {
-                    if (event.target === sounds[i].channel)
-                    {
-                        sounds.splice(i, 1);
-                        break;
-                    }
+                    curSoundHandle.channel.soundTransform = 
+                        SoundCategory.applyCategoriesToTransform(
+                            false, curSoundHandle.pan, curSoundHandle.volume, 
+                            rootCategory, categories[curSoundHandle.category]);                    
                 }
+                
+                // Clean it.
+                curSoundHandle.dirty = false;
             }
+            
+            // Clean the root category.
+            rootCategory.dirty = false;
+            
+            Profiler.exit("SoundManager.updateSounds");
         }
         
-        private function shouldPlay(sound:SoundControllerInfo):Boolean
+        public function onTick(elapsed:Number):void
         {
-            //TODO: Probably want to make this extensible through something like an ISoundPolicy interface
-            return _concurrency < maxConcurrentSounds;
+            updateSounds();
+        }
+        
+        internal function removeSoundHandle(sh:SoundHandle):void
+        {
+            var idx:int = playingSounds.indexOf(sh);
+            if(idx == -1)
+                throw new Error("Could not find in list of playing sounds!");
+            playingSounds.splice(idx, 1);
         }
     }
-}
-
-import flash.media.SoundChannel;
-import com.pblabs.sound.SoundControllerInfo;
-
-final class SoundNote
-{
-    public function SoundNote(channel:SoundChannel, sound:SoundControllerInfo)
-    {
-        this.channel = channel;
-        this.sound = sound;
-    }
-    
-    public var channel:SoundChannel;
-    public var sound:SoundControllerInfo;
 }

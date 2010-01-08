@@ -112,7 +112,7 @@ package com.pblabs.sound
             if (sound.overrides)
                 stopCurrentSounds();
             
-            var channel:SoundChannel = SoundManager.instance.playFromInfo(sound);
+            var channel:SoundChannel = SoundManager.instance.playSoundControllerInfo(sound);
             if (channel)
             {
                 _soundsPlaying.push(channel);

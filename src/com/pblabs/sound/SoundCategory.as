@@ -1,0 +1,43 @@
+package com.pblabs.sound
+{
+    import flash.media.SoundTransform;
+
+    final public class SoundCategory
+    {
+        public var dirty:Boolean = false;
+        public var muted:Boolean = false;
+        public var transform:SoundTransform = new SoundTransform();
+        
+        /**
+         * Accumulate the effects of multiple SoundCategories, applying them
+         * to a specified SoundTransform.
+         *  
+         * @param targetTransform Transform to store results into.
+         * @param muted Starting mute state.
+         * @param pan Starting pan.
+         * @param volume Starting volume.
+         * @param categories List of categories to combine.
+         */
+        static public function applyCategoriesToTransform(muted:Boolean, pan:Number, volume:Number, ...categories):SoundTransform
+        {
+            // Accumulate the effects of the categories.
+            for(var i:int=0; i<categories.length; i++)
+            {
+                var c:SoundCategory = categories[i] as SoundCategory;
+                
+                if(c.muted)
+                    muted = true;
+                
+                volume *= c.transform.volume;
+                pan += c.transform.pan;
+            }
+            
+            // Apply results to the target transform.
+            var targetTransform:SoundTransform = new SoundTransform();
+            targetTransform.volume = muted ? 0 : volume;
+            targetTransform.pan = pan;
+            trace(targetTransform.volume);
+            return targetTransform;
+        }
+    }
+}
