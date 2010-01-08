@@ -36,7 +36,6 @@ package com.pblabs.sound
             var targetTransform:SoundTransform = new SoundTransform();
             targetTransform.volume = muted ? 0 : volume;
             targetTransform.pan = pan;
-            trace(targetTransform.volume);
             return targetTransform;
         }
     }
