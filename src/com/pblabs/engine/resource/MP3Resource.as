@@ -30,28 +30,6 @@ package com.pblabs.engine.resource
             return _soundObject;
         }
         
-        override public function load(filename:String):void
-        {
-            _filename = filename;
-            
-            var request:URLRequest = new URLRequest(filename);
-            _loadingSound = new Sound();
-            _loadingSound.addEventListener(Event.COMPLETE, onSoundLoadComplete);
-            _loadingSound.addEventListener(IOErrorEvent.IO_ERROR, onSoundDownloadError);
-            _loadingSound.load(request);
-        }
-        
-        private function onSoundLoadComplete(event:Event):void
-        {
-            _soundObject = _loadingSound;
-            onLoadComplete();
-        }
-        
-        private function onSoundDownloadError(event:IOErrorEvent):void
-        {
-            onFailed(event.text);
-        }
-        
         override public function initialize(d:*):void
         {
             _soundObject = d;
@@ -65,8 +43,5 @@ package com.pblabs.engine.resource
         {
             return soundObject != null;
         }
-        
-        // store the sound here until it's loaded
-        private var _loadingSound:Sound;
     }
 }

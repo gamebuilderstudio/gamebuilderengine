@@ -9,6 +9,8 @@ package com.pblabs.engine
     import com.pblabs.rendering2D.*;
     import com.pblabs.rendering2D.ui.*;
     import com.pblabs.screens.ScreenManager;
+    import com.pblabs.sound.ISoundManager;
+    import com.pblabs.sound.SoundManager;
     
     import flash.display.DisplayObject;
     import flash.display.DisplayObjectContainer;
@@ -40,6 +42,8 @@ package com.pblabs.engine
         
         private static var _stageQualityStack:Array = [];
         private static var _started:Boolean = false;
+        
+        private static var _soundManager:SoundManager = null;
         
         /**
          * Register a type with PushButton Engine so that it can be deserialized,
@@ -113,6 +117,10 @@ package com.pblabs.engine
                 SchemaGenerator.instance.generateSchema();
             
             Logger.startup();
+            
+            // Initialize the SoundManager.
+            _soundManager = new SoundManager();
+            processManager.addTickedObject(_soundManager, 100);
             
             _started = true;
         }
@@ -378,6 +386,14 @@ package com.pblabs.engine
         public static function get resourceManager():ResourceManager
         {
             return ResourceManager.instance;
+        }
+        
+        /**
+         * Returns the global SoundManager instance.
+         */
+        public static function get soundManager():ISoundManager
+        {
+            return _soundManager;
         }
         
         public static function getHostingDomain():String

@@ -4,6 +4,7 @@ package com.pblabs.engine.resource.provider
 	import br.com.stimuli.loading.BulkProgressEvent;
 	import br.com.stimuli.loading.loadingtypes.LoadingItem;
 	
+	import com.pblabs.engine.resource.MP3Resource;
 	import com.pblabs.engine.resource.Resource;
 	
 	import flash.display.Bitmap;
@@ -58,7 +59,8 @@ package com.pblabs.engine.resource.provider
             	loader.remove(resourceIdentifier);
             
 			// the resource has to be loaded so add to BulkLoader
-			loader.add(uri, { id : resourceIdentifier, type:"binary"  } );
+            // Special case so that MP3Resource gets a sound like it wants.
+			loader.add(uri, { id : resourceIdentifier, type: type == MP3Resource ? "sound" : "binary"  } );
 			if (!loader.isRunning) loader.start();	
 
 			// let BulkLoader give a notification when this resource has been
