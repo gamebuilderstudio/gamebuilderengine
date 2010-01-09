@@ -66,6 +66,7 @@ package com.pblabs.sound
         {
             pausedPosition = channel.position;
             channel.stop();
+            playing = false;
         }
         
         public function resume():void
@@ -74,6 +75,7 @@ package com.pblabs.sound
             
             dirty = true;
             channel = sound.play(pausedPosition);
+            playing = true;
             
             Profiler.exit("SoundHandle.resume");
         }
@@ -86,9 +88,15 @@ package com.pblabs.sound
             manager.removeSoundHandle(this);
         }
         
+        public function get isPlaying():Boolean
+        {
+            return playing;
+        }
+        
         internal var manager:SoundManager;
         internal var dirty:Boolean = true;
         internal var _category:String;
+        internal var playing:Boolean;
         
         internal var sound:Sound;
         internal var channel:SoundChannel;
