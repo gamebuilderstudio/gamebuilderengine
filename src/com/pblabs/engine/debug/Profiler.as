@@ -103,7 +103,7 @@ package com.pblabs.engine.debug
             return;
          
          if(blockName != _currentNode.name)
-            throw new Error("Mismatched Profiler.enter/Profiler.exit calls, was expecting '" + _currentNode.name + "' but got '" + blockName + "'");
+            throw new Error("Mismatched Profiler.enter/Profiler.exit calls, got '" + _currentNode.name + "' but was expecting '" + blockName + "'");
          
          // Update stats for this node.
          var elapsedTime:int = flash.utils.getTimer() - _currentNode.startTime;

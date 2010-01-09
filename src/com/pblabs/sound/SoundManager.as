@@ -31,9 +31,14 @@ package com.pblabs.sound
         
         public function play(sound:*, category:String="sfx", pan:Number=0.0, loopCount:int=0, startDelay:Number=0.0):SoundHandle
         {
+            Profiler.enter("SoundManager.play");
+            
             // Cap sound playback.
             if(playingSounds.length > maxConcurrentSounds)
+            {
+                Profiler.exit("SoundManager.play");
                 return null;
+            }
             
             // Infer type of sound, and get the Sound object.
             var actualSound:Sound = null;
@@ -56,6 +61,7 @@ package com.pblabs.sound
                         play(r as SoundResource, category, pan, loopCount, startDelay);
                     });
                     
+                    Profiler.exit("SoundManager.play");
                     return null;
                 }
                 
@@ -68,6 +74,8 @@ package com.pblabs.sound
             // Great, so set up the SoundHandle, start it, and return it.
             var sh:SoundHandle = new SoundHandle(this, actualSound, category, pan, loopCount, startDelay);            
             playingSounds.push(sh);
+            
+            Profiler.exit("SoundManager.play");
             return sh;
         }
 

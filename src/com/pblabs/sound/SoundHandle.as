@@ -1,5 +1,7 @@
 package com.pblabs.sound
 {
+    import com.pblabs.engine.debug.Profiler;
+    
     import flash.media.Sound;
     import flash.media.SoundChannel;
     import flash.media.SoundTransform;
@@ -68,8 +70,12 @@ package com.pblabs.sound
         
         public function resume():void
         {
+            Profiler.enter("SoundHandle.resume");
+            
             dirty = true;
-            channel = sound.play(pausedPosition)
+            channel = sound.play(pausedPosition);
+            
+            Profiler.exit("SoundHandle.resume");
         }
         
         public function stop():void
