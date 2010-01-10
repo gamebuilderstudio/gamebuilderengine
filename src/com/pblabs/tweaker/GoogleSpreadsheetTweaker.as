@@ -118,11 +118,11 @@ package com.pblabs.tweaker
          loader.addEventListener(IOErrorEvent.IO_ERROR, onLoadFail);
          loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onLoadFail);
          loader.addEventListener(HTTPStatusEvent.HTTP_STATUS, 
-               function(event:HTTPStatusEvent):void { Logger.(this, "Got status back: " + event.toString()); }
+               function(event:HTTPStatusEvent):void { Logger.print(this, "Got status back: " + event.toString()); }
                );
          loader.load(ur);
          
-         Logger.(this, "Requesting spreadsheet " + spreadsheetUrl);
+         Logger.print(this, "Requesting spreadsheet " + spreadsheetUrl);
       }
 
       private function onLoadComplete(e:Event):void
@@ -139,7 +139,7 @@ package com.pblabs.tweaker
         var res:XMLList = tweakXML.xmlns::entry;
         for each(var entryXML:XML in res)
         {
-           //Logger.(this, "Cell " + entryXML.xmlns::title.toString() + " = " + entryXML.xmlns::content.toString());
+           //Logger.print(this, "Cell " + entryXML.xmlns::title.toString() + " = " + entryXML.xmlns::content.toString());
            cellDictionary[entryXML.xmlns::title.toString()] = entryXML.xmlns::content.toString();
         }
 
@@ -160,12 +160,12 @@ package com.pblabs.tweaker
         }
 
         // Give some status.
-        Logger.(this, "Updated " + config.length + " properties from " + spreadsheetUrl);
+        Logger.print(this, "Updated " + config.length + " properties from " + spreadsheetUrl);
       }
 
       private function onLoadFail(e:Event):void
       {
-         Logger.(this, "Failed to load google spreadsheet tweak url: " + e.toString());
+         Logger.print(this, "Failed to load google spreadsheet tweak url: " + e.toString());
       }
    }
 }
