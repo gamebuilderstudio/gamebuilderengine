@@ -330,7 +330,7 @@ package com.pblabs.rendering2D
             }
 
             // Also give layers opportunity to return renderers.
-            var scenePosition:Point = transformScreenToScene(screenPosition);
+            scenePosition = transformScreenToScene(screenPosition);
             for each(var l:DisplayObjectSceneLayer in _layers)
             {
                 // Skip them if they don't use the interface.
