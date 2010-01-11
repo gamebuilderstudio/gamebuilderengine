@@ -2,6 +2,8 @@ package com.pblabs.sound
 {
     import com.pblabs.engine.debug.Profiler;
     
+    import flash.events.Event;
+    import flash.events.SampleDataEvent;
     import flash.media.Sound;
     import flash.media.SoundChannel;
     import flash.media.SoundTransform;
@@ -74,18 +76,48 @@ package com.pblabs.sound
             Profiler.enter("SoundHandle.resume");
             
             dirty = true;
-            channel = sound.play(pausedPosition);
+            
+            // Note: if pausedPosition is anything but zero, the loops will not reset properly.
+            // For now, the ability to "pause" should be avoided.
+            channel = sound.play(pausedPosition, loopCount);
             playing = true;
             
+            // notify when this sound is done (all loops completed)
+            channel.addEventListener(Event.SOUND_COMPLETE, onSoundComplete);
+
             Profiler.exit("SoundHandle.resume");
+        }
+        
+        /**
+         * To correctly handle the pause scenario, we need to be notified at the end of each loop,
+         * so that we can reset the sound's starting position to 0.
+         */
+        private function onSoundComplete(e:Event):void
+        {
+            // since we're tracking the number of loops, decrement the count
+            loopCount -= 1;
+
+            if(loopCount > 0)
+            {
+                pausedPosition = 0;
+                resume();
+            }
+            else if(manager.isInPlayingSounds(this))
+            {
+                // Remove from the manager.
+                manager.removeSoundHandle(this);
+            }
         }
         
         public function stop():void
         {
             pause();
             
-            // Remove from the manager.
-            manager.removeSoundHandle(this);
+            if(manager.isInPlayingSounds(this))
+            {
+                // Remove from the manager.
+                manager.removeSoundHandle(this);
+            }
         }
         
         public function get isPlaying():Boolean

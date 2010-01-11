@@ -47,5 +47,9 @@ package com.pblabs.sound
          */
         function get category():String;
         
+        /**
+         * Returns whether or not this sound is currently playing
+         */
+        function get isPlaying():Boolean;
     }
 }

@@ -55,7 +55,7 @@ package com.pblabs.sound
                 else
                 {
                     // Otherwise queue the resource and play it when it is loaded.
-                    ResourceManager.instance.load(sound, MP3Resource, function(r:*):void
+                    ResourceManager.instance.load(sound, SoundResource, function(r:*):void
                     {
                         cachedSounds[sound] = r;
                         play(r as SoundResource, category, pan, loopCount, startDelay);
@@ -233,6 +233,12 @@ package com.pblabs.sound
             updateSounds();
         }
         
+        internal function isInPlayingSounds(sh:SoundHandle):Boolean
+        {
+            var idx:int = playingSounds.indexOf(sh);
+            return idx != -1;
+        }
+
         internal function removeSoundHandle(sh:SoundHandle):void
         {
             var idx:int = playingSounds.indexOf(sh);
