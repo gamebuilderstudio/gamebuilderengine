@@ -493,7 +493,6 @@ package com.pblabs.engine.core
                 Profiler.exit("callLater");      	
             }
 
-
             // Process any queued items.
             if(thinkHeap.size)
             {
