@@ -448,7 +448,8 @@ package com.pblabs.engine.core
             _virtualTime = startTime + deltaTime;
             
             // We process scheduled items again after tick processing to ensure between-tick schedules are hit
-            processScheduledObjects();
+            // Commenting this out because it can cause too-often calling of callLater methods.
+            // processScheduledObjects();
             
             // Update objects wanting OnFrame callbacks.
             Profiler.enter("frame");
@@ -476,7 +477,8 @@ package com.pblabs.engine.core
             {
                 Profiler.enter("callLater");
 
-                // Put a new array in the queue.
+                // Put a new array in the queue to avoid getting into corrupted
+                // state due to more calls being added.
                 deferredMethodQueue = [];
                 
                 for(var j:int=0; j<oldDeferredMethodQueue.length; j++)

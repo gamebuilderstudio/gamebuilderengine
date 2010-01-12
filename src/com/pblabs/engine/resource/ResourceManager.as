@@ -162,7 +162,7 @@ package com.pblabs.engine.resource
             
             // mas : we probably have to unload the resource @ the specific resourceProvider
             // 		 as well! so we have to take this into account when we reactivate the
-            //		 unload.             
+            //		 unload.
             
             return;
             
