@@ -3,7 +3,6 @@ package com.pblabs.sound
     import com.pblabs.engine.debug.Profiler;
     
     import flash.events.Event;
-    import flash.events.SampleDataEvent;
     import flash.media.Sound;
     import flash.media.SoundChannel;
     import flash.media.SoundTransform;
