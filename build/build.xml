@@ -170,6 +170,7 @@
          <arg line="-output &quot;${bindir}/PBEngine.swc&quot;" />
          <arg line="-include-classes ${path.classes}" />
          <arg line="--keep-as3-metadata+=TypeHint,EditorData,Embed,ResourceType" />
+         <arg line="-target-player=9.0.124" />
          <arg line="-debug=${DEBUG}"/>
       </exec>
    </target>
