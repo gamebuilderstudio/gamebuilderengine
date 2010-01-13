@@ -195,6 +195,14 @@ package com.pblabs.engine
             }
         }
 		
+        /**
+         * Calculate length of a vector. 
+         */
+        public static function xyLength(x:Number, y:Number):Number
+        {
+            return Math.sqrt((x*x)+(y*y));
+        }
+        
 		/**
 		 * Replaces instances of less then, greater then, ampersand, single and double quotes.
 		 * @param str String to escape.
