@@ -17,6 +17,11 @@ package com.pblabs.engine.core
             items.splice(idx, 1);
         }
         
+        public function getItems():Array
+        {
+            return items;
+        }
+        
         public override function destroy() : void
         {
             // Delete the items we own.
