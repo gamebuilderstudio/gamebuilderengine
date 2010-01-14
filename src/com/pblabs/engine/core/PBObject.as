@@ -15,7 +15,9 @@ package com.pblabs.engine.core
             if(!value)
                 throw new Error("Must always be in a group - cannot set owningGroup to null!");
             
-            _owningGroup.removeFromGroup(this);
+            if(_owningGroup)
+                _owningGroup.removeFromGroup(this);
+            
             _owningGroup = value;
             _owningGroup.addToGroup(this);
         }

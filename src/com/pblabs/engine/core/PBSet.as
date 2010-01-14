@@ -4,12 +4,19 @@ package com.pblabs.engine.core
     {
         protected var items:Array = [];
 
-        public function getItems():Array
+        public function getItem(index:int):PBObject
         {
             if(items == null)
-                throw new Error("Accessing destroy()'ed set.");
-
-            return items;
+                return null;
+            
+            if(index < 0 || index >= items.length)
+                return null;
+            return items[index];
+        }
+        
+        public function get length():int
+        {
+            return items ? items.length : 0;
         }
         
         public function contains(item:PBObject):Boolean

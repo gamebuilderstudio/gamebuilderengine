@@ -4,22 +4,32 @@ package com.pblabs.engine.core
     {
         protected var items:Array = [];
         
-        internal function addToGroup(item:PBObject):void
+        internal function addToGroup(item:PBObject):Boolean
         {
             items.push(item);
+            return true;
         }
         
-        internal function removeFromGroup(item:PBObject):void
+        internal function removeFromGroup(item:PBObject):Boolean
         {
             var idx:int = items.indexOf(item);
             if(idx == -1)
-                throw new Error("item wasn't a member of this group!");
+                return false;
+            
             items.splice(idx, 1);
+            return true
+        }
+
+        public function getItem(index:int):PBObject
+        {
+            if(index < 0 || index >= items.length)
+                return null;
+            return items[index];
         }
         
-        public function getItems():Array
+        public function get length():int
         {
-            return items;
+            return items.length;
         }
         
         public override function destroy() : void
