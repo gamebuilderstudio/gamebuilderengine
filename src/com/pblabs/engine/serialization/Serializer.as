@@ -316,15 +316,20 @@ package com.pblabs.engine.serialization
         
         private function serializeComplex(object:*, xml:XML):void
         {
+        	if (object==null) return;
+        	
             var classDescription:XML = TypeUtility.getTypeDescription(object);
             for each (var property:XML in classDescription.child("accessor"))
             {
                 if (property.@access == "readwrite")
                 {
                     var propertyName:String = property.@name;
-                    var propertyXML:XML = <{propertyName}/>
-                    serialize(object[propertyName], propertyXML);
-                    xml.appendChild(propertyXML);
+                    if (!(object[propertyName] is IEntity))
+                    {
+                      var propertyXML:XML = <{propertyName}/>
+                      serialize(object[propertyName], propertyXML);
+                      xml.appendChild(propertyXML);
+                    }
                 }
             }
             
