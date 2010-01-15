@@ -14,7 +14,8 @@ package com.pblabs.rendering2D
 		// public getter/setter functions 
 		//----------------------------------------------------------
 						
-   	    /**
+        
+        /**
         * Resource (file)name of the ImageResource 
         */ 
 		public function get fileName():String
@@ -36,6 +37,7 @@ package com.pblabs.rendering2D
    	    /**
         * Indicates if the resource is beeing loaded 
         */ 
+        [EditorData(ignore="true")]
 		public function get loading():Boolean
 		{
 			return _loading;
@@ -44,6 +46,7 @@ package com.pblabs.rendering2D
    	    /**
         * Indicates if the ImageResource has been loaded 
         */ 
+        [EditorData(ignore="true")]
 		public function get loaded():Boolean
 		{
 			return _loaded;
@@ -51,7 +54,8 @@ package com.pblabs.rendering2D
 
    	    /**
         * Indicates if the ImageResource has failed loading 
-        */ 
+        */
+        [EditorData(ignore="true")]
 		public function get failed():Boolean
 		{
 			return _failed;
@@ -60,6 +64,7 @@ package com.pblabs.rendering2D
    	    /**
         * Loaded ImageResource 
         */ 
+        [EditorData(ignore="true")]
 		public function get resource():ImageResource
 		{
 			return _resource;
@@ -107,7 +112,6 @@ package com.pblabs.rendering2D
 		//----------------------------------------------------------
 		// private and protected variables
 		//----------------------------------------------------------
-		
 		private var _fileName:String;
 		private var _loading:Boolean = false;
 		private var _loaded:Boolean = false;

@@ -22,6 +22,7 @@ package com.pblabs.engine.entity
       /**
        * @inheritDoc
        */
+      [EditorData(ignore="true")]
       public function get owner():IEntity
       {
          return _owner;
@@ -35,6 +36,7 @@ package com.pblabs.engine.entity
       /**
        * @inheritDoc
        */
+      [EditorData(ignore="true")]
       public function get name():String
       {
          return _name;
@@ -43,6 +45,7 @@ package com.pblabs.engine.entity
       /**
        * @inheritDoc
        */
+      [EditorData(ignore="true")]
       public function get isRegistered():Boolean
       {
          return _isRegistered;

@@ -26,6 +26,7 @@ package com.pblabs.rendering2D
         /**
          * @see Bitmap.smoothing 
          */
+        [EditorData(ignore="true")]
         public function set smoothing(value:Boolean):void
         {
             _smoothing = value;
@@ -42,6 +43,7 @@ package com.pblabs.rendering2D
          * @return 
          * 
          */
+        [EditorData(ignore="true")]
         public function get bitmapData():BitmapData
         {
             return bitmap.bitmapData;
@@ -59,6 +61,7 @@ package com.pblabs.rendering2D
             _transformDirty = true;
         }
         
+        [EditorData(ignore="true")]
         override public function set displayObject(value:DisplayObject):void
         {
             throw new Error("Cannot set displayObject in BitmapRenderer; it is always a Sprite containing a Bitmap.");

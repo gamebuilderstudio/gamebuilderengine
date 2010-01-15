@@ -22,6 +22,7 @@ package com.pblabs.engine.components
          * The update priority for this component. Higher numbered priorities have
          * OnFrame called before lower priorities.
          */
+        [EditorData(ignore="true")]
         public var updatePriority:Number = 0.0;
 		
 		private var _registerForUpdates:Boolean = true;
@@ -30,6 +31,7 @@ package com.pblabs.engine.components
         /**
          * Set to register/unregister for frame updates.
          */
+        [EditorData(ignore="true")]
         public function set registerForUpdates(value:Boolean):void
         {
             _registerForUpdates = value;

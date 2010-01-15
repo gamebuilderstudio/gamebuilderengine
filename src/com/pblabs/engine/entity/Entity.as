@@ -32,6 +32,11 @@ package com.pblabs.engine.entity
             return _alias;
         }
         
+        public function get components():Dictionary
+        {
+            return _components;
+        }
+        
         public function get deferring():Boolean
         {
             return _deferring;

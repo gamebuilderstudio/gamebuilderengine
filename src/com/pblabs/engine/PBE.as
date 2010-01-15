@@ -21,6 +21,7 @@ package com.pblabs.engine
     import flash.display.StageScaleMode;
     import flash.geom.*;
     import flash.system.Security;
+    import flash.utils.getQualifiedClassName;
     
     /**
      * Utility class to simplify working with PushButton Engine.
@@ -51,6 +52,7 @@ package com.pblabs.engine
          */
         public static function registerType(type:Class):void
         {
+            SchemaGenerator.instance.addClass(getQualifiedClassName(type), type);
             // Do nothing - the compiler will include the class by virtue of it
             // having been used.
         }

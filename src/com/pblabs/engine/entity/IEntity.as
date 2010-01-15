@@ -8,6 +8,8 @@
  ******************************************************************************/
 package com.pblabs.engine.entity
 {
+    import flash.utils.Dictionary;
+    
    /**
     * Game objects in PBE are referred to as entities. This interface defines the
     * behavior for an entity. A full featured implementation of this interface is
@@ -46,6 +48,11 @@ package com.pblabs.engine.entity
        * <p>This is set by the second parameter to #initialize()</p>
        */
       function get alias():String;
+      
+      /**
+       * Gets the added components as Dictionary.
+       */
+      function get components():Dictionary;
       
       /**
        * initializes the entity, optionally assigning it a name. This should be

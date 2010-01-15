@@ -24,7 +24,6 @@ package com.pblabs.rendering2D
          * The spatial manager this object belongs to.
          */
         [EditorData(referenceType="componentReference")]
-        
         public function get size():Point
         {
             return _size;
@@ -76,6 +75,10 @@ package com.pblabs.rendering2D
             _rotation = value;
         }	  
         
+        /**
+         * The spatial manager this object belongs to.
+         */
+        [EditorData(referenceType="componentReference")]
         public function get spatialManager():ISpatialManager2D
         {
             return _spatialManager;

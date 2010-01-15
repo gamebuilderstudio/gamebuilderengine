@@ -289,6 +289,7 @@ package com.pblabs.rendering2D
         /**
          * The x value of our scene space position.
          */
+        [EditorData(ignore="true")]
         public function get x():Number
         {
             return _position.x;
@@ -317,6 +318,7 @@ package com.pblabs.rendering2D
         /**
          * The y component of our scene space position. Used for sorting.
          */
+        [EditorData(ignore="true")]
         public function get y():Number
         {
             return _position.y;
@@ -345,6 +347,7 @@ package com.pblabs.rendering2D
         /**
          * Convenience method to allow placing the renderer in world coordinates.
          */
+        [EditorData(ignore="true")]
         public function set worldPosition(value:Point):void
         {
             removeFromScene();
@@ -369,6 +372,7 @@ package com.pblabs.rendering2D
         /**
          * Our bounds in scene coordinates.
          */
+        [EditorData(ignore="true")]
         public function get sceneBounds():Rectangle
         {
             // NOP if no DO.
@@ -388,6 +392,7 @@ package com.pblabs.rendering2D
         /**
          * @return Bounds in object space, relative to its local origin.
          */
+        [EditorData(ignore="true")]
         public function get localBounds():Rectangle
         {
             if(!displayObject)
@@ -396,6 +401,7 @@ package com.pblabs.rendering2D
             return displayObject.getBounds(displayObject);
         }
         
+        [EditorData(ignore="true")]
         public function get scene():IScene2D
         {
             return _scene;
@@ -417,6 +423,7 @@ package com.pblabs.rendering2D
             addToScene();
         }
         
+        [EditorData(ignore="true")]
         public function get displayObject():DisplayObject
         {
             return _displayObject;
@@ -439,6 +446,7 @@ package com.pblabs.rendering2D
         /**
          * Where in the scene will this object be rendered?
          */
+        [EditorData(ignore="true")]
         public function get renderPosition():Point
         {
             return new Point(displayObject.x, displayObject.y);
