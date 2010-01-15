@@ -56,6 +56,10 @@ package com.pblabs.engine.debug
             
             addChild(_output);
             addChild(_input);
+            graphics.clear();
+            graphics.beginFill(0x666666, .95);
+            graphics.drawRoundRect(0,0,_width,_height,5);
+            graphics.endFill();
         }
         
         protected function addListeners():void
@@ -75,9 +79,9 @@ package com.pblabs.engine.debug
         
         protected function resize():void
         {
-            _output.x = 0;
+            _output.x = 5;
             _output.y = 0;
-            _input.x = 0;
+            _input.x = 5;
             
             if(stage)		
             {
@@ -86,28 +90,25 @@ package com.pblabs.engine.debug
             }
             
             _output.height = _height-30;
-            _output.width = _width;
+            _output.width = _width-10;
             
             _input.height = 18;
-            _input.width = _width;
+            _input.width = _width-10;
             
-            _input.y = _output.height + 2;
+            _input.y = _output.height + 7;
         }
         
         protected function createOutputField():TextField
         {
             _output = new TextField();
             _output.type = TextFieldType.DYNAMIC;
-            _output.border = true;
-            _output.borderColor = 0;
-            _output.background = true;
-            _output.backgroundColor = 0xFFFFFF;
             _output.multiline = true;
             _output.wordWrap = true;
             _output.condenseWhite = false;
             var format:TextFormat = _output.getTextFormat();
             format.font = "_typewriter";
             format.size = 11;
+            format.color = 0xFFFFFF;
             _output.setTextFormat(format);
             _output.defaultTextFormat = format;
             _output.htmlText = "";
@@ -121,15 +122,14 @@ package com.pblabs.engine.debug
             _input = new TextField();
             _input.type = TextFieldType.INPUT;
             _input.border = true;
-            _input.borderColor = 0;
-            _input.background = true;
-            _input.backgroundColor = 0xFFFFFF;
+            _input.borderColor = 0xFFFFFF;
             _input.multiline = false;
             _input.wordWrap = false;
             _input.condenseWhite = false;
             var format:TextFormat = _input.getTextFormat();
             format.font = "_typewriter";
             format.size = 11;
+            format.color = 0xFFFFFF;
             _input.setTextFormat(format);
             _input.defaultTextFormat = format;
             _input.restrict = "^`";		// Tilde's are not allowed in the input since they close the window
@@ -262,7 +262,7 @@ package com.pblabs.engine.debug
         
         public function activate():void
         {
-            resize();
+            layout();
             _input.text = "";
             addListeners();
             PBE.mainStage.focus = _input;
