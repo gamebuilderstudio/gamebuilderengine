@@ -214,22 +214,23 @@ package com.pblabs.engine.debug
             var parentEntity:IEntity = current as IEntity;
             
             var sum:int = 1;
+			var i:int = 0;
 
             if(parentSet)
             {
-                for(var i:int=0; i<parentSet.length; i++)
+                for(i=0; i<parentSet.length; i++)
                     sum += _listPBObjects(parentSet.getItem(i), indent+1);
             }
             else if(parentGroup)
             {
-                for(var i:int=0; i<parentGroup.length; i++)
+                for(i=0; i<parentGroup.length; i++)
                     sum += _listPBObjects(parentGroup.getItem(i), indent+1);                
             }
             else if(parentEntity)
             {
                 // Get all the components. Components don't count for the sum.
                 var c:Array = parentEntity.lookupComponentsByType(IEntityComponent);
-                for(var i:int=0; i<c.length; i++)
+                for(i=0; i<c.length; i++)
                 {
                     var iec:IEntityComponent = c[i] as IEntityComponent;
                     type = " ("+ TypeUtility.getObjectClassName(iec) +")";

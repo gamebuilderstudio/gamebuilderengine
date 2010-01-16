@@ -24,11 +24,6 @@ package com.pblabs.engine.entity
      */
     internal class Entity extends PBObject implements IEntity
     {        
-        public function get components():Dictionary
-        {
-            return _components;
-        }
-        
         public function get deferring():Boolean
         {
             return _deferring;

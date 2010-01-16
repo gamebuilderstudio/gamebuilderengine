@@ -31,11 +31,6 @@ package com.pblabs.engine.entity
    public interface IEntity extends IPropertyBag, IPBObject
    {
       /**
-       * Gets the added components as Dictionary.
-       */
-      function get components():Dictionary;
-
-      /**
        * When true, onAdd/onRemove callbacks are deferred. When set to false, any
        * pending callbacks are processed.
        */
