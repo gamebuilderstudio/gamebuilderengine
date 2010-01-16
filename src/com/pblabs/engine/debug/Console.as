@@ -134,8 +134,7 @@ package com.pblabs.engine.debug
                     PBE.versionDetails + " - " + Security.sandboxType);
             }, "Echo PushButton Engine version information.");
             
-            // NB - Do we want to rename this to "toggleFps"?
-            registerCommand("showFps", function():void
+            registerCommand("fps", function():void
             {
                 if(!_stats)
                 {
