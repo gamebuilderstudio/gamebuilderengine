@@ -8,15 +8,16 @@
  ******************************************************************************/
 package com.pblabs.engine.tests
 {
+    import com.pblabs.engine.PBE;
     import com.pblabs.engine.core.NameManager;
     import com.pblabs.engine.core.TemplateManager;
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.entity.IEntity;
     import com.pblabs.engine.entity.PropertyReference;
     import com.pblabs.engine.entity.allocateEntity;
-
+    
     import flash.geom.Point;
-
+    
     import flexunit.framework.Assert;
 
     /**
@@ -51,7 +52,7 @@ package com.pblabs.engine.tests
             var entity:IEntity = allocateEntity();
             entity.initialize("TestEntity");
 
-            Assert.assertEquals(entity, NameManager.instance.lookup("TestEntity"));
+            Assert.assertEquals(entity, PBE.lookup("TestEntity"));
 
             var a:TestComponentA = new TestComponentA();
             var b:TestComponentB = new TestComponentB();
@@ -74,7 +75,7 @@ package com.pblabs.engine.tests
 
             entity.destroy();
             Assert.assertEquals(null, entity.lookupComponentByName("B"));
-            Assert.assertEquals(null, NameManager.instance.lookup("TestEntity"));
+            Assert.assertEquals(null, PBE.lookup("TestEntity"));
 
             Logger.printFooter(null, "");
         }
@@ -119,7 +120,7 @@ package com.pblabs.engine.tests
             TemplateManager.instance.addXML(_testXML, "UnitTestXML", 1);
             var entity:IEntity = TemplateManager.instance.instantiateEntity("XMLTestEntity");
             Assert.assertNotNull(entity, "Should have gotten something back from TemplateManager!");
-            var lookedupEntity:IEntity = NameManager.instance.lookup("XMLTestEntity");
+            var lookedupEntity:IEntity = PBE.lookup("XMLTestEntity");
             Assert.assertEquals(entity, lookedupEntity);
 
             var a:TestComponentA = entity.lookupComponentByName("A") as TestComponentA;

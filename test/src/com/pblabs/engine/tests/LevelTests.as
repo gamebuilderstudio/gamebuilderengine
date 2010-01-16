@@ -8,6 +8,8 @@
  ******************************************************************************/
 package com.pblabs.engine.tests
 {
+   import com.pblabs.PBEngineTestSuite;
+   import com.pblabs.engine.PBE;
    import com.pblabs.engine.core.NameManager;
    import com.pblabs.engine.core.TemplateManager;
    import com.pblabs.engine.debug.Logger;
@@ -19,8 +21,6 @@ package com.pblabs.engine.tests
    import flexunit.framework.Assert;
    
    import org.flexunit.async.Async;
-   
-   import com.pblabs.PBEngineTestSuite;
 
    /**
     * @private
@@ -58,7 +58,7 @@ package com.pblabs.engine.tests
          var testTemplate1:IEntity = TemplateManager.instance.instantiateEntity("TestTemplate1");
          Assert.assertTrue(testTemplate1);
          Assert.assertEquals(19, testTemplate1.getProperty(_testValueAReference));
-         Assert.assertEquals(null, NameManager.instance.lookup("TestTemplate1"));
+         Assert.assertEquals(null, PBE.lookup("TestTemplate1"));
          testTemplate1.destroy();
          
          var testTemplate2:IEntity = TemplateManager.instance.instantiateEntity("TestTemplate2");
@@ -71,7 +71,7 @@ package com.pblabs.engine.tests
          
          var testEntity1:IEntity = TemplateManager.instance.instantiateEntity("TestEntity1");
          Assert.assertTrue(testEntity1);
-         Assert.assertEquals(testEntity1, NameManager.instance.lookup("TestEntity1"));
+         Assert.assertEquals(testEntity1, PBE.lookup("TestEntity1"));
          Assert.assertEquals(14, testEntity1.getProperty(_testValueAReference));
          Assert.assertEquals(81.347, testEntity1.getProperty(_testComplexXReference));
          Assert.assertEquals(92.762, testEntity1.getProperty(_testComplexYReference));
@@ -81,7 +81,7 @@ package com.pblabs.engine.tests
          
          var testEntity2:IEntity = TemplateManager.instance.instantiateEntity("TestEntity2");
          Assert.assertTrue(testEntity2);
-         Assert.assertEquals(testEntity2, NameManager.instance.lookup("TestEntity2"));
+         Assert.assertEquals(testEntity2, PBE.lookup("TestEntity2"));
          Assert.assertEquals(638, testEntity2.getProperty(_testValueAReference));
          Assert.assertEquals(1036, testEntity2.getProperty(_testValueA2Reference));
          Assert.assertEquals(8.237, testEntity2.getProperty(_testComplexXReference));
