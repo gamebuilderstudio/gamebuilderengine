@@ -12,22 +12,28 @@ package com.pblabs.engine.tests
         {
             // Set up test groups.
             var rootGroup:PBGroup = new PBGroup();
+            rootGroup.initialize();
             
             var childGroup:PBGroup = new PBGroup();
             childGroup.owningGroup = rootGroup;
+            childGroup.initialize();
             
             var grandChildGroup:PBGroup = new PBGroup();
             grandChildGroup.owningGroup = childGroup;
+            grandChildGroup.initialize();
 
             // Set up test sets.
             var setA:PBSet = new PBSet();
             setA.owningGroup = rootGroup;
+            setA.initialize();
             
             var setB:PBSet = new PBSet();
             setB.owningGroup = childGroup;
+            setB.initialize();
             
             var setC:PBSet = new PBSet();
             setC.owningGroup = grandChildGroup;
+            setC.initialize();
             
             // Make them mutual members.
             Assert.assertTrue("could not add set B to A", setA.add(setB));
@@ -40,14 +46,17 @@ package com.pblabs.engine.tests
             // Add probe objects all around.
             var curProbe:DestructTester = new DestructTester();
             curProbe.owningGroup = rootGroup;
+            curProbe.initialize();
             Assert.assertTrue("could not add probe to setA.", setA.add(curProbe));
             
             curProbe = new DestructTester();
             curProbe.owningGroup = childGroup;
+            curProbe.initialize();
             Assert.assertTrue("could not add probe to setB.", setB.add(curProbe));
 
             curProbe = new DestructTester();
             curProbe.owningGroup = grandChildGroup;
+            curProbe.initialize();
             Assert.assertTrue("could not add probe to setC.", setC.add(curProbe));
             
             // Shut it down and see how it behaves.

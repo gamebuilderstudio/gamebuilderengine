@@ -17,6 +17,8 @@ package com.pblabs.engine.core
         {
             if(!_sets)
                 _sets = [];
+            if(_sets.indexOf(s) != -1)
+                return;      
             _sets.push(s);
         }
         
@@ -56,7 +58,7 @@ package com.pblabs.engine.core
         }
 
         public function initialize(name:String = null, alias:String = null):void
-        {            
+        {           
             // Note the names.
             _name = name;
             _alias = alias;
@@ -74,17 +76,18 @@ package com.pblabs.engine.core
             // Remove from the name manager.
             PBE.nameManager.remove(this);
             
+            // Remove from any sets.
+            while(_sets && _sets.length)
+            {
+                // remove() cuts us from the list.
+                _sets[_sets.length-1].remove(this);
+            }
+
             // Remove from our owning group.
             if(_owningGroup)
             {
                 _owningGroup.removeFromGroup(this);
                 _owningGroup = null;                
-            }
-            
-            // Remove from any sets.
-            while(_sets && _sets.length)
-            {
-                (_sets.pop() as PBSet).remove(this);
             }
         }
     }
