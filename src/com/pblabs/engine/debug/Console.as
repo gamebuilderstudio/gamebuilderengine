@@ -9,6 +9,12 @@
 package com.pblabs.engine.debug
 {
     import com.pblabs.engine.PBE;
+    import com.pblabs.engine.core.PBGroup;
+    import com.pblabs.engine.core.PBObject;
+    import com.pblabs.engine.core.PBSet;
+    import com.pblabs.engine.entity.IEntity;
+    import com.pblabs.engine.entity.IEntityComponent;
+    import com.pblabs.engine.serialization.TypeUtility;
     
     import flash.display.DisplayObject;
     import flash.display.DisplayObjectContainer;
@@ -125,7 +131,7 @@ package com.pblabs.engine.debug
             registerCommand("version", function():void
             {
                 Logger.print(Console, "PushButton Engine - r"+ PBE.REVISION +" - "+
-                    PBE.versionDetails +" - "+Security.sandboxType);
+                    PBE.versionDetails + " - " + Security.sandboxType);
             }, "Echo PushButton Engine version information.");
             
             // NB - Do we want to rename this to "toggleFps"?
@@ -152,14 +158,21 @@ package com.pblabs.engine.debug
             
             registerCommand("listDisplayObjects", function():void
             {
-                Console._listDisplayObjects(PBE.mainStage, 0);
+                var sum:int = Console._listDisplayObjects(PBE.mainStage, 0);
+                Logger.print(Console, " " + sum + " total display objects.");
             }, "Outputs the display list.");
+            
+            registerCommand("tree", function():void
+            {
+                var sum:int = Console._listPBObjects(PBE.rootGroup, 0);
+                Logger.print(Console, " " + sum + " total PBObjects.");
+            }, "List all the PBObjects in the game.");
         }
         
-        protected static function _listDisplayObjects(current:DisplayObject, indent:int):void
+        protected static function _listDisplayObjects(current:DisplayObject, indent:int):int
         {
             if (!current)
-                return;
+                return 0;
             
             Logger.print(Console, 
                 Console.generateIndent(indent) + 
@@ -169,10 +182,63 @@ package com.pblabs.engine.debug
             
             var parent:DisplayObjectContainer = current as DisplayObjectContainer;
             if (!parent)
-                return;
+                return 1;
             
+            var sum:int = 1;
             for (var i:int = 0; i < parent.numChildren; i++)
-                _listDisplayObjects(parent.getChildAt(i), indent+1);
+                sum += _listDisplayObjects(parent.getChildAt(i), indent+1);
+            return sum;
+        }
+
+        protected static function _listPBObjects(current:PBObject, indent:int):int
+        {
+            if (!current)
+                return 0;
+            
+            var type:String = " ("+ TypeUtility.getObjectClassName(current) +")";
+            if(current.name || current.alias)
+            {
+                Logger.print(Console, 
+                    Console.generateIndent(indent) + 
+                    current.name + type + " alias = " + current.alias);
+            }
+            else
+            {
+                Logger.print(Console, 
+                    Console.generateIndent(indent) + 
+                    "[anonymous]" + type);                
+            }
+            
+            // Recurse if it's a known type.
+            var parentSet:PBSet = current as PBSet;
+            var parentGroup:PBGroup = current as PBGroup;
+            var parentEntity:IEntity = current as IEntity;
+            
+            var sum:int = 1;
+
+            if(parentSet)
+            {
+                for(var i:int=0; i<parentSet.length; i++)
+                    sum += _listPBObjects(parentSet.getItem(i), indent+1);
+            }
+            else if(parentGroup)
+            {
+                for(var i:int=0; i<parentGroup.length; i++)
+                    sum += _listPBObjects(parentGroup.getItem(i), indent+1);                
+            }
+            else if(parentEntity)
+            {
+                // Get all the components. Components don't count for the sum.
+                var c:Array = parentEntity.lookupComponentsByType(IEntityComponent);
+                for(var i:int=0; i<c.length; i++)
+                {
+                    var iec:IEntityComponent = c[i] as IEntityComponent;
+                    type = " ("+ TypeUtility.getObjectClassName(iec) +")";
+                    Logger.print(Console, Console.generateIndent(indent + 1) + iec.name + type);
+                }
+            }
+            
+            return sum;
         }
         
         protected static function generateIndent(indent:int):String

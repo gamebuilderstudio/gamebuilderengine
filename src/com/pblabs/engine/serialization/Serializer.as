@@ -525,15 +525,15 @@ package com.pblabs.engine.serialization
     }
 }
 
-import com.pblabs.engine.entity.IEntity;
-import com.pblabs.engine.entity.IEntityComponent;
-import com.pblabs.engine.debug.Logger;
+import com.pblabs.engine.PBE;
 import com.pblabs.engine.core.NameManager;
 import com.pblabs.engine.core.TemplateManager;
-import com.pblabs.engine.serialization.TypeUtility;
+import com.pblabs.engine.debug.Logger;
+import com.pblabs.engine.entity.IEntity;
+import com.pblabs.engine.entity.IEntityComponent;
 import com.pblabs.engine.resource.Resource;
 import com.pblabs.engine.resource.ResourceManager;
-import com.pblabs.engine.serialization.Serializer;
+import com.pblabs.engine.serialization.*;
 
 internal class ResourceNote
 {
@@ -574,7 +574,7 @@ internal class ReferenceNote
         // Look up by name.
         if (nameReference != "")
         {
-            var namedObject:IEntity = NameManager.instance.lookup(nameReference);
+            var namedObject:IEntity = PBE.nameManager.lookup(nameReference);
             if (!namedObject)
                 return false;
             
@@ -586,7 +586,7 @@ internal class ReferenceNote
         // Look up a component on a named object by name (first) or type (second).
         if (componentReference != "")
         {
-            var componentObject:IEntity = NameManager.instance.lookup(componentReference);
+            var componentObject:IEntity = PBE.nameManager.lookup(componentReference);
             if (!componentObject)
                 return false;
             

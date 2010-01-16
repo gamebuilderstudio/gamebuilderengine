@@ -33,7 +33,7 @@ package com.pblabs.engine
      */
     public class PBE
     {
-        public static const REVISION:uint = 625;
+        public static const REVISION:uint = 808;
         
         private static var _main:Sprite = null;	
         private static var _versionDetails:VersionDetails;
@@ -45,6 +45,10 @@ package com.pblabs.engine
         private static var _started:Boolean = false;
         
         private static var _soundManager:SoundManager = null;
+        private static var _nameManager:NameManager = null;
+        
+        private static var _rootGroup:PBGroup = null;
+        private static var _currentGroup:PBGroup = null;
         
         /**
          * Register a type with PushButton Engine so that it can be deserialized,
@@ -52,9 +56,11 @@ package com.pblabs.engine
          */
         public static function registerType(type:Class):void
         {
-            SchemaGenerator.instance.addClass(getQualifiedClassName(type), type);
-            // Do nothing - the compiler will include the class by virtue of it
+            // Do nothing else - the compiler will include the class by virtue of it
             // having been used.
+
+            // Note this type in the schema generator.
+            SchemaGenerator.instance.addClass(getQualifiedClassName(type), type);
         }
         
         /**
@@ -106,6 +112,15 @@ package com.pblabs.engine
             
             _main = mainClass;
             _versionDetails = VersionUtil.checkVersion(mainClass);
+            
+            // Set up some managers.
+            _nameManager = new NameManager();
+            
+            // Set up the root group, and make it the current group.
+            var rg:PBGroup = new PBGroup();
+            _rootGroup = rg;
+            _currentGroup = rg;
+            rg.initialize("RootGroup");
             
             // Set the stage alignment and scalemode
             // We do this to be consistent between CS4/Flex apps, if you want stage alignment
@@ -198,7 +213,7 @@ package com.pblabs.engine
          */
         public static function lookup(entityName:String):IEntity
         {
-            return NameManager.instance.lookup(entityName);
+            return _nameManager.lookup(entityName);
         }
         
         /**
@@ -206,7 +221,7 @@ package com.pblabs.engine
          */
         public static function lookupComponentByName(entityName:String, componentName:String):IEntityComponent
         {
-            return NameManager.instance.lookupComponentByName(entityName, componentName);
+            return _nameManager.lookupComponentByName(entityName, componentName);
         }
         
         /**
@@ -214,7 +229,7 @@ package com.pblabs.engine
          */
         public static function lookupComponentByType(entityName:String, componentType:Class):IEntityComponent
         {
-            return NameManager.instance.lookupComponentByType(entityName, componentType);
+            return _nameManager.lookupComponentByType(entityName, componentType);
         }
         
         /**
@@ -340,7 +355,7 @@ package com.pblabs.engine
          */		
         public static function get nameManager():NameManager
         {
-            return NameManager.instance;
+            return _nameManager;
         }
         
         /**
@@ -434,6 +449,33 @@ package com.pblabs.engine
                 throw new Error("Bottomed out in stage quality stack! You have mismatched push/pop calls!");
             
             mainStage.quality = _stageQualityStack.pop();
+        }
+        
+        /**
+         * The root group; all sets and groups should be ultimately owned by
+         * this guy.
+         */
+        public static function get rootGroup():PBGroup
+        {
+            return _rootGroup;
+        }
+        
+        /**
+         * PBObjects are automatically added to the currentGroup when they are
+         * created, so that nothing is every unrooted in the PBObject tree. You
+         * can set this to whatever you like.
+         */
+        public static function get currentGroup():PBGroup
+        {
+            return _currentGroup;
+        }
+        
+        public static function set currentGroup(value:PBGroup):void
+        {
+            if(value == null)
+                throw new Error("You cannot set the currentGroup to null; it must always be a valid PBGroup.");
+            
+            _currentGroup = value;
         }
         
         /**

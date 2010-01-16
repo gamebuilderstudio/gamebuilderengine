@@ -1,6 +1,8 @@
 package com.pblabs.engine.entity
 {
+    import com.pblabs.engine.PBE;
     import com.pblabs.engine.core.NameManager;
+    import com.pblabs.engine.core.PBObject;
     import com.pblabs.engine.core.TemplateManager;
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.debug.Profiler;
@@ -20,18 +22,8 @@ package com.pblabs.engine.entity
      * us to pool Entities at a later date if needed and do other tricks. Please
      * program against IEntity, not Entity, to avoid dependencies.</p>
      */
-    internal class Entity extends EventDispatcher implements IEntity
-    {
-        public function get name():String
-        {
-            return _name;
-        }
-        
-        public function get alias():String
-        {
-            return _alias;
-        }
-        
+    internal class Entity extends PBObject implements IEntity
+    {        
         public function get components():Dictionary
         {
             return _components;
@@ -67,38 +59,23 @@ package com.pblabs.engine.entity
         
         public function get eventDispatcher():IEventDispatcher
         {
-            return this as IEventDispatcher;
+            return _eventDispatcher;
         }
         
-        public function initialize(name:String = null, alias:String = null):void
+        public override function initialize(name:String = null, alias:String = null):void
         {            
-            // Note the name...
-            _name = name;
-            if (_name != null && _name != "")
-            {
-                NameManager.instance.addEntity(this, _name);
-            }
-            
-            // And the alias.
-            _alias = alias;
-            if(_alias)
-            {
-                NameManager.instance.addEntity(this, _alias);
-            }
+            // Pass control up.
+            super.initialize(name, alias);
 
             // Resolve any pending components.
             deferring = false;
         }
         
-        public function destroy():void
+        public override function destroy():void
         {
             // Give listeners a chance to act before we start destroying stuff.
-            if(hasEventListener("EntityDestroyed"))
-                dispatchEvent(new Event("EntityDestroyed"));
-            
-            // Get out of the NameManager.
-            NameManager.instance.removeEntity(this);
-            _name = null;
+            if(_eventDispatcher.hasEventListener("EntityDestroyed"))
+                _eventDispatcher.dispatchEvent(new Event("EntityDestroyed"));
             
             // Unregister our components.
             for each(var component:IEntityComponent in _components)
@@ -110,6 +87,9 @@ package com.pblabs.engine.entity
             // And remove their references from the dictionary.
             for (var name:String in _components)
                 delete _components[name];
+
+            // Get out of the NameManager and other general cleanup stuff.
+            super.destroy();
         }
         
         public function serialize(xml:XML):void
@@ -432,7 +412,7 @@ package com.pblabs.engine.entity
             else if(startChar == "#")
             {
                 // Named object reference. Look up the entity in the NameManager.
-                parentElem = NameManager.instance.lookup(curLookup);
+                parentElem = PBE.nameManager.lookup(curLookup);
                 if(!parentElem)
                 {
                     Logger.warn(this, "findProperty", "Could not resolve named object named '" + curLookup + "' for property '" + reference.property + "'");
@@ -578,11 +558,10 @@ package com.pblabs.engine.entity
         
         private var _deferring:Boolean = true;
         
-        protected var _name:String = null;
-        protected var _alias:String = null;
         protected var _components:Dictionary = new Dictionary();
         protected var _tempPropertyInfo:PropertyInfo = new PropertyInfo();
         protected var _deferredComponents:Array = new Array();
+        protected var _eventDispatcher:EventDispatcher = new EventDispatcher();
     }
 }
 

@@ -56,10 +56,17 @@ package com.pblabs.engine.debug
             
             addChild(_output);
             addChild(_input);
+            
             graphics.clear();
+                        
             graphics.beginFill(0x666666, .95);
             graphics.drawRoundRect(0,0,_width,_height,5);
             graphics.endFill();
+
+            graphics.beginFill(0xFFFFFF, 1);
+            graphics.drawRoundRect(4,4,_width-8,_height-30,5);
+            graphics.endFill();
+
         }
         
         protected function addListeners():void
@@ -108,7 +115,7 @@ package com.pblabs.engine.debug
             var format:TextFormat = _output.getTextFormat();
             format.font = "_typewriter";
             format.size = 11;
-            format.color = 0xFFFFFF;
+            format.color = 0x0;
             _output.setTextFormat(format);
             _output.defaultTextFormat = format;
             _output.htmlText = "";
@@ -126,10 +133,12 @@ package com.pblabs.engine.debug
             _input.multiline = false;
             _input.wordWrap = false;
             _input.condenseWhite = false;
+            _input.background = true;
+            _input.backgroundColor = 0xFFFFFF;
             var format:TextFormat = _input.getTextFormat();
             format.font = "_typewriter";
             format.size = 11;
-            format.color = 0xFFFFFF;
+            format.color = 0x0;
             _input.setTextFormat(format);
             _input.defaultTextFormat = format;
             _input.restrict = "^`";		// Tilde's are not allowed in the input since they close the window
@@ -242,6 +251,10 @@ package com.pblabs.engine.debug
                     _input.getTextFormat().size+"\" color=\"" + 
                     color +"\"><b>" + 
                     PBUtil.escapeHTMLText(text) + "</b></font></p>";
+                
+                // We should use appendText but it introduces formatting issues,
+                // so we stick with htmlText for now. appendText should be good
+                // speed up.
                 _output.htmlText += append;
                 truncateOutput();
                 

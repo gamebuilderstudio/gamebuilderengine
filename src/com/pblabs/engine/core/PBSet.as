@@ -1,5 +1,12 @@
 package com.pblabs.engine.core
 {
+    import flash.events.Event;
+
+    /**
+     * Set of PBObjects. A PBObject may be in many sets; sets do not destroy
+     * their contained objects when they are destroyed. Sets automatically
+     * remove destroy()'ed objects. 
+     */
     public class PBSet extends PBObject
     {
         protected var items:Array = [];
@@ -37,6 +44,7 @@ package com.pblabs.engine.core
                 return false;
             
             // No, add it.
+            item.noteInSet(this);
             items.push(item);
             return true;
         }
@@ -52,6 +60,7 @@ package com.pblabs.engine.core
                 return false;
             
             // Yes, remove it.
+            item.noteOutOfSet(this);
             items.splice(idx, 1);
             return true;
         }
@@ -61,9 +70,12 @@ package com.pblabs.engine.core
             if(items == null)
                 throw new Error("Accessing destroy()'ed set.");
 
-            items.length = 0;
+            // Clear out items.
+            while(items.length)
+                remove(items.pop() as PBObject);
             items = null;
             
+            // Pass control up.
             super.destroy();
         }
     }

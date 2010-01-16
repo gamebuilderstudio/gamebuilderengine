@@ -8,6 +8,7 @@
  ******************************************************************************/
 package com.pblabs.engine.entity
 {
+    import com.pblabs.engine.core.IPBObject;
     import flash.utils.Dictionary;
     
    /**
@@ -27,64 +28,18 @@ package com.pblabs.engine.entity
     * @see IEntityComponent
     * @see com.pblabs.engine.entity.allocateEntity()
     */
-   public interface IEntity extends IPropertyBag
+   public interface IEntity extends IPropertyBag, IPBObject
    {
-      /**
-       * The name of the entity. This is set by passing a name to the initialize
-       * method after the entity is first created.
-       * 
-       * @see #initialize()
-       */
-      function get name():String;
-      
-      /**
-       * Since the PBE level format references template definitions by name, and
-       * that same name is used to name the entities created by the format, it
-       * is useful to be able to look things up by a common name. So you might
-       * have Level1Background, Level2Background, Level3Background etc. but give
-       * them all the alias LevelBackground so you can look up the current level's
-       * background easily.
-       * 
-       * <p>This is set by the second parameter to #initialize()</p>
-       */
-      function get alias():String;
-      
       /**
        * Gets the added components as Dictionary.
        */
       function get components():Dictionary;
-      
-      /**
-       * initializes the entity, optionally assigning it a name. This should be
-       * called immediately after the entity is created.
-       * 
-       * @param name The name to assign to the entity. If this is null or an empty
-       * string, the entity will not register itself with the name manager.
-       * 
-       * @param alias An alternate name under which this entity can be looked up.
-       * Useful when you need to distinguish between multiple things but refer
-       * to the active one by a consistent name.
-       *
-       * @see com.pblabs.engine.core.NameManager
-       */
-      function initialize(name:String = null, alias:String = null):void;
 
-      /**
-       * Destroys the entity by removing all components and unregistering it from
-       * the name manager.
-       * 
-       * <p>Currently this will not invalidate external references to the entity
-       * so the entity will only be cleaned up by the garbage collector if those
-       * are set to null manually.</p>
-       */
-      function destroy():void;
-      
       /**
        * When true, onAdd/onRemove callbacks are deferred. When set to false, any
        * pending callbacks are processed.
        */
       function set deferring(value:Boolean):void;
-      
       function get deferring():Boolean;
 
       /**

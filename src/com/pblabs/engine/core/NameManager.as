@@ -8,37 +8,24 @@
  ******************************************************************************/
 package com.pblabs.engine.core
 {
+    import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.entity.IEntity;
     import com.pblabs.engine.entity.IEntityComponent;
-    import com.pblabs.engine.debug.Logger;
     
     import flash.utils.Dictionary;
     
     /**
-     * The name manager stores references to entites that have been given
-     * names. These entities can then be looked up by that name.
+     * The name manager stores references to PBObjects that have been given
+     * names. These PBObjects can be looked up by name.
      */
     public class NameManager
     {
         /**
-         * The singleton NameManager instance.
+         * The list of registered PBObjects.
          */
-        public static function get instance():NameManager
+        public function get objectList():Dictionary
         {
-            if (!_instance)
-                _instance = new NameManager();
-            
-            return _instance;
-        }
-        
-        private static var _instance:NameManager = null;
-        
-        /**
-         * The list of registered entities.
-         */
-        public function get entityList():Dictionary
-        {
-            return _entities;
+            return _objects;
         }
         
         /**
@@ -48,49 +35,57 @@ package com.pblabs.engine.core
          * @param entity The entity to add.
          * @param name The name to register the entity under.
          */
-        public function addEntity(entity:IEntity, name:String):void
+        public function add(object:IPBObject):void
         {
-            if (_entities[name])
-                Logger.warn(this, "AddEntity", "An entity with the name " + name + " already exists. Future lookups by this name will return this new entity. Did you mean to make this entity a template?");
+            var isNameValid:Boolean = (object.name != null && object.name != "");
+            var isAliasValid:Boolean = (object.alias != null && object.alias != "");
+            
+            if (isNameValid && _objects[object.name])
+                Logger.warn(this, "add", "A PBObject with the name " + object.name + " already exists. Future lookups by this name will return the newest object. Did you mean to make an entity a template?");
             
             if(TemplateManager.VERBOSE_LOGGING)
-                Logger.print(this, "Registering entity '" + name + "'");
+                Logger.print(this, "Registering PBObject '" + object.name + "', alias '" + object.alias + "'");
             
-            _entities[name] = entity;
+            
+            if(isNameValid)
+                _objects[object.name] = object;
+            
+            if(isAliasValid)
+                _objects[object.alias] = object;
         }
         
         /**
-         * Removes an entity from the manager.
+         * Removes an object from the manager.
          * 
-         * @param entity The entity to remove.
+         * @param entity The IPBObject to remove.
          */
-        public function removeEntity(entity:IEntity):void
+        public function remove(object:IPBObject):void
         {
-            // Unregister its alias, if it has one.
-            if (entity.alias != null && _entities[entity.name] == _entities[entity.alias])
+            // Unregister its alias, if it has one and the alias points to us.
+            if (object.alias != null && object.alias != "" && _objects[object.alias] == object)
             {
-                _entities[entity.alias] = null;
-                delete _entities[entity.alias];                  
+                _objects[object.alias] = null;
+                delete _objects[object.alias];                  
             }
             
-            // And the normal name.
-            if(entity.name != null && entity.name != "")
+            // And the normal name, if it is us.
+            if(object.name != null && object.name != "" && _objects[object.name] == object )
             {
-                _entities[entity.name] = null;
-                delete _entities[entity.name];
+                _objects[object.name] = null;
+                delete _objects[object.name];
             }
         }
         
         /**
-         * Looks up an entity with the specified name.
+         * Looks up a PBObject with the specified name.
          * 
-         * @param name The name of the entity to lookup.
+         * @param name The name of the object to look up.
          * 
-         * @return The entity with the specified name, or null if it wasn't found.
+         * @return The object with the specified name, or null if it wasn't found.
          */
-        public function lookup(name:String):IEntity
+        public function lookup(name:String):*
         {
-            return _entities[name];
+            return _objects[name];
         }
         
         /**
@@ -104,12 +99,12 @@ package com.pblabs.engine.core
          */
         public function validateName(name:String):String
         {
-            if (!_entities[name])
+            if (!_objects[name])
                 return name;
             
             var index:int = 1;
             var testName:String = name + index;
-            while (_entities[testName])
+            while (_objects[testName])
                 testName = name + index++;
             
             return testName;
@@ -169,6 +164,6 @@ package com.pblabs.engine.core
             return entity.lookupComponentByName(componentName);
         }
         
-        private var _entities:Dictionary = new Dictionary();
+        private var _objects:Dictionary = new Dictionary();
     }
 }
