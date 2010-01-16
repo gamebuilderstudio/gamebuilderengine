@@ -1,9 +1,10 @@
 package com.pblabs.engine.components
 {
-    import com.pblabs.engine.entity.EntityComponent;
-    import com.pblabs.engine.entity.IEntity;
+    import com.pblabs.engine.PBE;
     import com.pblabs.engine.core.NameManager;
     import com.pblabs.engine.debug.Logger;
+    import com.pblabs.engine.entity.EntityComponent;
+    import com.pblabs.engine.entity.IEntity;
     import com.pblabs.engine.entity.allocateEntity;
    
     /**
@@ -19,7 +20,7 @@ package com.pblabs.engine.components
         {
             var groupName:String = name;
          
-            var gm:GroupManagerComponent = NameManager.instance.lookupComponentByType(groupName, GroupManagerComponent) as GroupManagerComponent
+            var gm:GroupManagerComponent = PBE.lookupComponentByType(groupName, GroupManagerComponent) as GroupManagerComponent
          
             if (gm == null) 
             {
