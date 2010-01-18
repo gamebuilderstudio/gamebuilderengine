@@ -112,9 +112,15 @@ package com.pblabs.engine.resource
                         resource  = (resourceProviders[rp] as IResourceProvider).getResource(filename,resourceType,forceReload);
                 }
                 
+                // If we couldn't find a match, fall back to the default provider.
                 if (!resource)
                     resource = FallbackResourceProvider.instance.getResource(filename,resourceType, forceReload);
                 
+                // Make sure the filename is set.
+                if(!resource.filename)
+                    resource.filename = filename;
+                
+                // Store it in the resource dictionary.
                 _resources[resourceIdentifier] = resource;
             }
             else if (!(resource is resourceType))
@@ -123,6 +129,7 @@ package com.pblabs.engine.resource
                 return;
             }
             
+            // Deal with it if it already failed, already loaded, or if it is still pending.
             if (resource.didFail)
             {
                 fail(resource, onFailed, "The resource " + filename + " has previously failed to load");
@@ -142,6 +149,7 @@ package com.pblabs.engine.resource
                     resource.addEventListener(ResourceEvent.FAILED_EVENT, function (event:Event):void { onFailed(resource); } );
             }
             
+            // Don't forget to bump its ref count.
             resource.incrementReferenceCount();
         }
         
