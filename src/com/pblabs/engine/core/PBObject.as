@@ -3,7 +3,7 @@ package com.pblabs.engine.core
     import com.pblabs.engine.PBE;
 
     /**
-     * Base implementation of a named object that can exist in sets or groups.
+     * Base implementation of a named object that can exist in PBSets or PBGroups.
      * 
      * @see IPBObject
      */

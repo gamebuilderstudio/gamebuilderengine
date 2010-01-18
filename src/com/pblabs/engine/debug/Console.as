@@ -9,6 +9,7 @@
 package com.pblabs.engine.debug
 {
     import com.pblabs.engine.PBE;
+    import com.pblabs.engine.core.IPBObject;
     import com.pblabs.engine.core.PBGroup;
     import com.pblabs.engine.core.PBObject;
     import com.pblabs.engine.core.PBSet;
@@ -189,7 +190,7 @@ package com.pblabs.engine.debug
             return sum;
         }
 
-        protected static function _listPBObjects(current:PBObject, indent:int):int
+        protected static function _listPBObjects(current:IPBObject, indent:int):int
         {
             if (!current)
                 return 0;
@@ -224,7 +225,7 @@ package com.pblabs.engine.debug
             else if(parentGroup)
             {
                 for(i=0; i<parentGroup.length; i++)
-                    sum += _listPBObjects(parentGroup.getItem(i), indent+1);                
+                    sum += _listPBObjects(parentGroup.getItem(i), indent+1);
             }
             else if(parentEntity)
             {
