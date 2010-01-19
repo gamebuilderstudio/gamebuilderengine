@@ -8,6 +8,7 @@
  ******************************************************************************/
 package com.pblabs.engine.tests
 {
+    import com.pblabs.engine.PBE;
     import com.pblabs.engine.core.InputKey;
     import com.pblabs.engine.core.InputManager;
     import com.pblabs.engine.core.InputMap;
@@ -35,16 +36,16 @@ package com.pblabs.engine.tests
             inputMap.mapActionToHandler("MouseButton", onMouseButton);
             inputMap.mapActionToHandler("MouseX", onMouseX);
 
-            InputManager.instance.simulateKeyDown(InputKey.SPACE.keyCode);
+            PBE.inputManager.simulateKeyDown(InputKey.SPACE.keyCode);
             validateInputs(1, 0, false);
-            InputManager.instance.simulateKeyUp(InputKey.SPACE.keyCode);
+            PBE.inputManager.simulateKeyUp(InputKey.SPACE.keyCode);
             validateInputs(0, 0, false);
 
-            InputManager.instance.simulateMouseDown();
-            InputManager.instance.simulateMouseMove();
-            InputManager.instance.simulateMouseMove();
+            PBE.inputManager.simulateMouseDown();
+            PBE.inputManager.simulateMouseMove();
+            PBE.inputManager.simulateMouseMove();
             validateInputs(0, 1, true);
-            InputManager.instance.simulateMouseUp();
+            PBE.inputManager.simulateMouseUp();
             validateInputs(0, 0, true);
             
             inputMap.destroy();

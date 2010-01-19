@@ -1,7 +1,7 @@
 package com.pblabs.rendering2D
 {
+    import com.pblabs.engine.PBE;
 	import com.pblabs.engine.resource.ImageResource;
-	import com.pblabs.engine.resource.ResourceManager;
 	
 	import flash.geom.Point;
 	

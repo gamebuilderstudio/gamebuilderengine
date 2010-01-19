@@ -1,5 +1,6 @@
 package
 {
+    import com.pblabs.engine.PBE;
     import com.pblabs.engine.core.*;
     import com.pblabs.rendering2D.ui.PBLabel;
     import com.pblabs.rendering2D.ui.SceneView;
@@ -49,7 +50,7 @@ package
          */
         public override function onFrame(delta:Number) : void
         {
-            RollyBallGame.currentTime = RollyBallGame.levelDuration - (ProcessManager.instance.virtualTime - RollyBallGame.startTimer);
+            RollyBallGame.currentTime = RollyBallGame.levelDuration - (PBE.processManager.virtualTime - RollyBallGame.startTimer);
 
             // Update time.
             if(RollyBallGame.currentTime >= 0)
@@ -70,10 +71,10 @@ package
         public override function onTick(delta:Number) : void
         {
             // Deal with timing logic.
-            if(RollyBallGame.currentTime <= 0 && ProcessManager.instance.isTicking)
+            if(RollyBallGame.currentTime <= 0 && PBE.processManager.isTicking)
             {
                 // Stop playing!
-                ProcessManager.instance.stop();
+                PBE.processManager.stop();
                 
                 // Kick off the scoreboard.
                 var sb:Scoreboard = new Scoreboard();

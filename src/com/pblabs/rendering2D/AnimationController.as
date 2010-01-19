@@ -8,6 +8,7 @@
  ******************************************************************************/
 package com.pblabs.rendering2D
 {
+    import com.pblabs.engine.PBE;
     import com.pblabs.engine.components.AnimatedComponent;
     import com.pblabs.engine.core.ProcessManager;
     import com.pblabs.engine.debug.Logger;

@@ -8,6 +8,7 @@
  ******************************************************************************/
 package com.pblabs.components.basic
 {
+    import com.pblabs.engine.PBE;
 	import com.pblabs.engine.core.ProcessManager;
 	import com.pblabs.engine.entity.EntityComponent;
 	import com.pblabs.engine.entity.IEntity;

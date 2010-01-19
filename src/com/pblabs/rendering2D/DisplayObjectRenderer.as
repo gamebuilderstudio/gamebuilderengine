@@ -558,6 +558,9 @@ package com.pblabs.rendering2D
         
         protected function updateProperties():void
         {
+            if(!owner)
+                return;
+            
             // Sync our zIndex.
             if (zIndexProperty)
                 zIndex = owner.getProperty(zIndexProperty, zIndex);

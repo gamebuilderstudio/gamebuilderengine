@@ -1,5 +1,6 @@
 package com.pblabs.components.stateMachine
 {
+    import com.pblabs.engine.PBE;
     import com.pblabs.engine.core.ProcessManager;
     import com.pblabs.engine.entity.IPropertyBag;
     import com.pblabs.engine.debug.Logger;

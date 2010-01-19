@@ -37,39 +37,39 @@ package com.pblabs.engine.tests
         {
             Logger.printHeader(null, "Running Level Loading and Instantiating Test");
             
-            TemplateManager.instance.addEventListener(TemplateManager.LOADED_EVENT, Async.asyncHandler(this, onLevelLoaded, 2000 ));
-            //TemplateManager.instance.addEventListener(TemplateManager.FAILED_EVENT, Async.asyncHandler(this, onLevelLoadFailed, 2000 ));
-            TemplateManager.instance.loadFile(PBEngineTestSuite.testLevel);
+            PBE.templateManager.addEventListener(TemplateManager.LOADED_EVENT, Async.asyncHandler(this, onLevelLoaded, 2000 ));
+            //PBE.templateManager.addEventListener(TemplateManager.FAILED_EVENT, Async.asyncHandler(this, onLevelLoadFailed, 2000 ));
+            PBE.templateManager.loadFile(PBEngineTestSuite.testLevel);
         }
         
         private function onLevelLoaded(event:Event, passthru:Object):void
         {
-            Assert.assertTrue(TemplateManager.instance.getXML("TestTemplate1"));
-            Assert.assertTrue(TemplateManager.instance.getXML("TestTemplate2"));
-            Assert.assertTrue(TemplateManager.instance.getXML("CyclicalTestTemplate1"));
-            Assert.assertTrue(TemplateManager.instance.getXML("CyclicalTestTemplate2"));
-            Assert.assertTrue(TemplateManager.instance.getXML("TestEntity1"));
-            Assert.assertTrue(TemplateManager.instance.getXML("TestEntity2"));
-            Assert.assertTrue(TemplateManager.instance.getXML("SimpleGroup"));
-            Assert.assertTrue(TemplateManager.instance.getXML("ComplexGroup"));
-            Assert.assertTrue(TemplateManager.instance.getXML("CyclicalGroup1"));
-            Assert.assertTrue(TemplateManager.instance.getXML("CyclicalGroup2"));
+            Assert.assertTrue(PBE.templateManager.getXML("TestTemplate1"));
+            Assert.assertTrue(PBE.templateManager.getXML("TestTemplate2"));
+            Assert.assertTrue(PBE.templateManager.getXML("CyclicalTestTemplate1"));
+            Assert.assertTrue(PBE.templateManager.getXML("CyclicalTestTemplate2"));
+            Assert.assertTrue(PBE.templateManager.getXML("TestEntity1"));
+            Assert.assertTrue(PBE.templateManager.getXML("TestEntity2"));
+            Assert.assertTrue(PBE.templateManager.getXML("SimpleGroup"));
+            Assert.assertTrue(PBE.templateManager.getXML("ComplexGroup"));
+            Assert.assertTrue(PBE.templateManager.getXML("CyclicalGroup1"));
+            Assert.assertTrue(PBE.templateManager.getXML("CyclicalGroup2"));
             
-            var testTemplate1:IEntity = TemplateManager.instance.instantiateEntity("TestTemplate1");
+            var testTemplate1:IEntity = PBE.templateManager.instantiateEntity("TestTemplate1");
             Assert.assertTrue(testTemplate1);
             Assert.assertEquals(19, testTemplate1.getProperty(_testValueAReference));
             Assert.assertEquals(null, PBE.lookup("TestTemplate1"));
             testTemplate1.destroy();
             
-            var testTemplate2:IEntity = TemplateManager.instance.instantiateEntity("TestTemplate2");
+            var testTemplate2:IEntity = PBE.templateManager.instantiateEntity("TestTemplate2");
             Assert.assertTrue(testTemplate2);
             Assert.assertEquals(43, testTemplate2.getProperty(_testValueAReference));
             testTemplate2.destroy();
             
-            var cyclicalTemplate:IEntity = TemplateManager.instance.instantiateEntity("CyclicalTestTemplate1");
+            var cyclicalTemplate:IEntity = PBE.templateManager.instantiateEntity("CyclicalTestTemplate1");
             Assert.assertEquals(null, cyclicalTemplate);
             
-            var testEntity1:IEntity = TemplateManager.instance.instantiateEntity("TestEntity1");
+            var testEntity1:IEntity = PBE.templateManager.instantiateEntity("TestEntity1");
             Assert.assertTrue(testEntity1);
             Assert.assertEquals(testEntity1, PBE.lookup("TestEntity1"));
             Assert.assertEquals(14, testEntity1.getProperty(_testValueAReference));
@@ -79,7 +79,7 @@ package com.pblabs.engine.tests
             var bComponent:TestComponentB = testEntity1.lookupComponentByType(TestComponentB) as TestComponentB;
             Assert.assertEquals(bComponent.getTestValueFromA(), 14);
             
-            var testEntity2:IEntity = TemplateManager.instance.instantiateEntity("TestEntity2");
+            var testEntity2:IEntity = PBE.templateManager.instantiateEntity("TestEntity2");
             Assert.assertTrue(testEntity2);
             Assert.assertEquals(testEntity2, PBE.lookup("TestEntity2"));
             Assert.assertEquals(638, testEntity2.getProperty(_testValueAReference));
@@ -96,31 +96,31 @@ package com.pblabs.engine.tests
             testEntity1.destroy();
             testEntity2.destroy();
             
-            var testGroup1:Array = TemplateManager.instance.instantiateGroup("SimpleGroup");
+            var testGroup1:Array = PBE.templateManager.instantiateGroup("SimpleGroup");
             Assert.assertEquals(2, testGroup1.length);
             testGroup1[0].destroy();
             testGroup1[1].destroy();
             
-            var testGroup2:Array = TemplateManager.instance.instantiateGroup("ComplexGroup");
+            var testGroup2:Array = PBE.templateManager.instantiateGroup("ComplexGroup");
             Assert.assertEquals(3, testGroup2.length);
             testGroup2[0].destroy();
             testGroup2[1].destroy();
             testGroup2[2].destroy();
             
-            var cyclicalGroup:Array = TemplateManager.instance.instantiateGroup("CyclicalGroup1");
+            var cyclicalGroup:Array = PBE.templateManager.instantiateGroup("CyclicalGroup1");
             Assert.assertEquals(null, cyclicalGroup);
             
-            TemplateManager.instance.unloadFile(PBEngineTestSuite.testLevel);
-            Assert.assertTrue(!TemplateManager.instance.getXML("TestTemplate1"));
-            Assert.assertTrue(!TemplateManager.instance.getXML("TestTemplate2"));
-            Assert.assertTrue(!TemplateManager.instance.getXML("CyclicalTestTemplate1"));
-            Assert.assertTrue(!TemplateManager.instance.getXML("CyclicalTestTemplate2"));
-            Assert.assertTrue(!TemplateManager.instance.getXML("TestEntity1"));
-            Assert.assertTrue(!TemplateManager.instance.getXML("TestEntity2"));
-            Assert.assertTrue(!TemplateManager.instance.getXML("SimpleGroup"));
-            Assert.assertTrue(!TemplateManager.instance.getXML("ComplexGroup"));
-            Assert.assertTrue(!TemplateManager.instance.getXML("CyclicalGroup1"));
-            Assert.assertTrue(!TemplateManager.instance.getXML("CyclicalGroup2"));
+            PBE.templateManager.unloadFile(PBEngineTestSuite.testLevel);
+            Assert.assertTrue(!PBE.templateManager.getXML("TestTemplate1"));
+            Assert.assertTrue(!PBE.templateManager.getXML("TestTemplate2"));
+            Assert.assertTrue(!PBE.templateManager.getXML("CyclicalTestTemplate1"));
+            Assert.assertTrue(!PBE.templateManager.getXML("CyclicalTestTemplate2"));
+            Assert.assertTrue(!PBE.templateManager.getXML("TestEntity1"));
+            Assert.assertTrue(!PBE.templateManager.getXML("TestEntity2"));
+            Assert.assertTrue(!PBE.templateManager.getXML("SimpleGroup"));
+            Assert.assertTrue(!PBE.templateManager.getXML("ComplexGroup"));
+            Assert.assertTrue(!PBE.templateManager.getXML("CyclicalGroup1"));
+            Assert.assertTrue(!PBE.templateManager.getXML("CyclicalGroup2"));
             
             Logger.printFooter(null, "");
         }

@@ -1,5 +1,6 @@
 package
 {
+    import com.pblabs.engine.PBE;
     import com.pblabs.engine.core.*;
     import com.pblabs.engine.resource.*;
     import com.pblabs.rendering2D.ui.PBButton;
@@ -8,10 +9,10 @@ package
     
     import flash.display.*;
     import flash.events.*;
-    import flash.media.*;
-    import flash.utils.*;
     import flash.geom.*;
+    import flash.media.*;
     import flash.text.*;
+    import flash.utils.*;
 
     public class Scoreboard extends Sprite
     {
@@ -24,7 +25,7 @@ package
 
         public function Scoreboard()
         {
-            ResourceManager.instance.load("../Assets/Sounds/scorechunk.mp3", MP3Resource, _OnSound);
+            PBE.resourceManager.load("../Assets/Sounds/scorechunk.mp3", MP3Resource, _OnSound);
 
             addChild(lblScore);
             lblScore.extents = new Rectangle(50, 80, 490, 50);

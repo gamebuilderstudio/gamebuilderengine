@@ -1,7 +1,8 @@
 package com.pblabs.screens
 {
-    import com.pblabs.engine.debug.*;
-    import com.pblabs.engine.resource.*;
+    import com.pblabs.engine.PBE;
+    import com.pblabs.engine.debug.Logger;
+    import com.pblabs.engine.resource.ImageResource;
     
     import flash.display.*;
     import flash.events.*;

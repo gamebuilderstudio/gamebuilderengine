@@ -1,6 +1,6 @@
 package com.pblabs.rendering2D
 {
-    import com.pblabs.engine.core.ProcessManager;
+    import com.pblabs.engine.PBE;
     
     import flash.display.MovieClip;
 

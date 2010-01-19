@@ -117,8 +117,8 @@ package com.pblabs.engine.tests
         {
             Logger.printHeader(null, "Running Component Serialization Test");
 
-            TemplateManager.instance.addXML(_testXML, "UnitTestXML", 1);
-            var entity:IEntity = TemplateManager.instance.instantiateEntity("XMLTestEntity");
+            PBE.templateManager.addXML(_testXML, "UnitTestXML", 1);
+            var entity:IEntity = PBE.templateManager.instantiateEntity("XMLTestEntity");
             Assert.assertNotNull(entity, "Should have gotten something back from TemplateManager!");
             var lookedupEntity:IEntity = PBE.lookup("XMLTestEntity");
             Assert.assertEquals(entity, lookedupEntity);
@@ -134,8 +134,8 @@ package com.pblabs.engine.tests
 
             entity.destroy();
 
-            TemplateManager.instance.removeXML("UnitTestXML");
-            Assert.assertEquals(null, TemplateManager.instance.getXML("XMLTestEntity"));
+            PBE.templateManager.removeXML("UnitTestXML");
+            Assert.assertEquals(null, PBE.templateManager.getXML("XMLTestEntity"));
 
             Logger.printFooter(null, "");
         }
@@ -145,22 +145,22 @@ package com.pblabs.engine.tests
         {
             Logger.printHeader(null, "Running TemplateManager Entity/Group Callbacks Test");
 
-            TemplateManager.instance.registerEntityCallback("TestEntityCallback", entityCallback);
-            TemplateManager.instance.registerGroupCallback("TestGroupCallback", groupCallback);
+            PBE.templateManager.registerEntityCallback("TestEntityCallback", entityCallback);
+            PBE.templateManager.registerGroupCallback("TestGroupCallback", groupCallback);
 
-            var e:IEntity = TemplateManager.instance.instantiateEntity("TestEntityCallback");
+            var e:IEntity = PBE.templateManager.instantiateEntity("TestEntityCallback");
             Assert.assertTrue(e);
             Assert.assertTrue(e.lookupComponentByType(TestComponentA));
             Assert.assertTrue(e.lookupComponentByType(TestComponentB));
 
-            var g:Array = TemplateManager.instance.instantiateGroup("TestGroupCallback");
+            var g:Array = PBE.templateManager.instantiateGroup("TestGroupCallback");
             Assert.assertTrue(g.length == 3);
 
-            TemplateManager.instance.unregisterEntityCallback("TestEntityCallback");
-            TemplateManager.instance.unregisterGroupCallback("TestGroupCallback");
+            PBE.templateManager.unregisterEntityCallback("TestEntityCallback");
+            PBE.templateManager.unregisterGroupCallback("TestGroupCallback");
 
-            Assert.assertTrue(!TemplateManager.instance.instantiateEntity("TestEntityCallback"));
-            Assert.assertTrue(!TemplateManager.instance.instantiateGroup("TestGroupCallback"));
+            Assert.assertTrue(!PBE.templateManager.instantiateEntity("TestEntityCallback"));
+            Assert.assertTrue(!PBE.templateManager.instantiateGroup("TestGroupCallback"));
 
             Logger.printFooter(null, "");
         }

@@ -87,30 +87,30 @@ package com.pblabs.engine.core
             {
                 if (key == InputKey.MOUSE_BUTTON)
                 {
-                    InputManager.instance.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
-                    InputManager.instance.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+                    PBE.inputManager.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+                    PBE.inputManager.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
                 }
                 else if ((key == InputKey.MOUSE_X) && !(_keymap[InputKey.MOUSE_Y]))
                 {
-                    InputManager.instance.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+                    PBE.inputManager.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
                 }
                 else if ((key == InputKey.MOUSE_Y) && !(_keymap[InputKey.MOUSE_X]))
                 {
-                    InputManager.instance.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+                    PBE.inputManager.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
                 }
                 else if (key == InputKey.MOUSE_WHEEL)
                 {
-                    InputManager.instance.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel);
+                    PBE.inputManager.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel);
                 }
                 else if (key == InputKey.MOUSE_HOVER)
                 {
-                    InputManager.instance.addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
-                    InputManager.instance.addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);            	
+                    PBE.inputManager.addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
+                    PBE.inputManager.addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);            	
                 }
                 else if (!_registeredForKeyEvents)
                 {
-                    InputManager.instance.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
-                    InputManager.instance.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
+                    PBE.inputManager.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+                    PBE.inputManager.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
                     _registeredForKeyEvents = true;
                 }
             }
@@ -181,12 +181,12 @@ package com.pblabs.engine.core
 
         public function destroy():void
         {
-            InputManager.instance.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
-            InputManager.instance.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
-            InputManager.instance.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
-            InputManager.instance.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
-            InputManager.instance.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
-            InputManager.instance.removeEventListener(KeyboardEvent.KEY_UP, onKeyUp);
+            PBE.inputManager.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+            PBE.inputManager.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+            PBE.inputManager.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+            PBE.inputManager.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+            PBE.inputManager.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+            PBE.inputManager.removeEventListener(KeyboardEvent.KEY_UP, onKeyUp);
         }
 
         private function onKeyDown(event:KeyboardEvent):void

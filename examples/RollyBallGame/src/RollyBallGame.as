@@ -65,8 +65,8 @@ package
             stage.scaleMode = StageScaleMode.SHOW_ALL; 
             
             // Pause/resume based on focus.
-            stage.addEventListener(Event.DEACTIVATE, function():void{ ProcessManager.instance.timeScale = 0; });
-            stage.addEventListener(Event.ACTIVATE, function():void{ ProcessManager.instance.timeScale = 1; });
+            stage.addEventListener(Event.DEACTIVATE, function():void{ PBE.processManager.timeScale = 0; });
+            stage.addEventListener(Event.ACTIVATE, function():void{ PBE.processManager.timeScale = 1; });
             
             // Set up our screens.
             ScreenManager.instance.registerScreen("splash", new SplashScreen("../assets/Images/level1_normal.png", "game"));
@@ -91,7 +91,7 @@ package
             LevelManager.instance.loadLevel(curLevel);
             
             // Reset the timer and score.
-            startTimer = ProcessManager.instance.virtualTime;
+            startTimer = PBE.processManager.virtualTime;
             currentScore = 0;
             levelDuration = 45000;
             currentTime = 60.0;
@@ -104,7 +104,7 @@ package
             LevelManager.instance.loadLevel(1);
             
             // Reset the timer and score.
-            startTimer = ProcessManager.instance.virtualTime;
+            startTimer = PBE.processManager.virtualTime;
             currentScore = 0;
         }
         
@@ -115,7 +115,7 @@ package
                 LevelManager.instance.loadNextLevel();               
                 
                 // Reset the timer.
-                startTimer = ProcessManager.instance.virtualTime;
+                startTimer = PBE.processManager.virtualTime;
                 currentScore = 0;
                 
                 ScreenManager.instance.goto("game");

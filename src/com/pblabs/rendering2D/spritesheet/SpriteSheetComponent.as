@@ -8,6 +8,7 @@
  ******************************************************************************/
 package com.pblabs.rendering2D.spritesheet
 {
+    import com.pblabs.engine.PBE;
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.resource.ResourceManager;
     import com.pblabs.engine.resource.ImageResource;
