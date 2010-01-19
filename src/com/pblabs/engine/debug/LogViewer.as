@@ -150,7 +150,7 @@ package com.pblabs.engine.debug
         protected function setHistory(old:String):void
         {
             _input.text = old;
-            setTimeout(function():void { _input.setSelection(_input.length, _input.length); }, 0);
+            PBE.callLater(function():void { _input.setSelection(_input.length, _input.length); });
         }
         
         protected function onInputKeyDown(event:KeyboardEvent):void

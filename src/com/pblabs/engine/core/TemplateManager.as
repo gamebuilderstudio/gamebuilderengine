@@ -16,6 +16,7 @@ package com.pblabs.engine.core
 	import com.pblabs.engine.resource.XMLResource;
 	import com.pblabs.engine.serialization.Serializer;
 	import com.pblabs.engine.serialization.TypeUtility;
+    import com.pblabs.engine.PBE;
 
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
@@ -61,19 +62,9 @@ package com.pblabs.engine.core
 		 */
 		public static var VERBOSE_LOGGING:Boolean=false;
 
-		/**
-		 * The singleton TemplateManager instance.
-		 */
-		public static function get instance():TemplateManager
-		{
-			if (!_instance)
-				_instance=new TemplateManager();
-
-			return _instance;
-		}
-
-		private static var _instance:TemplateManager=null;
-
+        /**
+         * Allow specifying an alternate class to use for IEntity.
+         */
 		public function set entityType(value:Class):void
 		{
 			_entityType=value;
@@ -91,7 +82,7 @@ package com.pblabs.engine.core
 		 */
 		public function loadFile(filename:String):void
 		{
-			ResourceManager.instance.load(filename, XMLResource, onLoaded, onFailed);
+			PBE.resourceManager.load(filename, XMLResource, onLoaded, onFailed);
 		}
 
 		/**
@@ -103,7 +94,7 @@ package com.pblabs.engine.core
 		public function unloadFile(filename:String):void
 		{
 			removeXML(filename);
-			ResourceManager.instance.unload(filename, XMLResource);
+			PBE.resourceManager.unload(filename, XMLResource);
 		}
 
 		/**

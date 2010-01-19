@@ -1,5 +1,6 @@
 package com.pblabs.engine.components
 {
+    import com.pblabs.engine.PBE;
     import com.pblabs.engine.entity.EntityComponent;
     import com.pblabs.engine.core.IQueuedObject;
     import com.pblabs.engine.core.ProcessManager;
@@ -27,10 +28,10 @@ package com.pblabs.engine.components
          */
         public function think(nextCallback:Function, timeTillThink:int):void
         {
-            _nextThinkTime = ProcessManager.instance.virtualTime + timeTillThink;
+            _nextThinkTime = PBE.processManager.virtualTime + timeTillThink;
             _nextThinkCallback = nextCallback;
 
-            ProcessManager.instance.queueObject(this);
+            PBE.processManager.queueObject(this);
         }
         
         override protected function onRemove() : void

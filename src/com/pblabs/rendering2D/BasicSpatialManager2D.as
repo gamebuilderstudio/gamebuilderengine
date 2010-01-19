@@ -80,7 +80,7 @@ package com.pblabs.rendering2D
          {
 			if (mask != null)
 			{
-				if (!ObjectTypeManager.instance.doTypesOverlap(object.objectMask, mask))
+				if (!PBE.objectTypeManager.doTypesOverlap(object.objectMask, mask))
 					continue;
             }
 			
@@ -111,7 +111,7 @@ package com.pblabs.rendering2D
          {
 			if (mask != null)
 			{
-				if (!ObjectTypeManager.instance.doTypesOverlap(object.objectMask, mask))
+				if (!PBE.objectTypeManager.doTypesOverlap(object.objectMask, mask))
 					continue;
 			}
             
@@ -151,7 +151,7 @@ package com.pblabs.rendering2D
          var hitAny:Boolean = false;
          for each(var tmp:ISpatialObject2D in tmpResults)
          {
-            if (!tmp.pointOccupied(worldPosition, PBE.getScene()))
+            if (!tmp.pointOccupied(worldPosition, PBE.scene))
                continue;
             
             results.push(tmp);
@@ -159,8 +159,8 @@ package com.pblabs.rendering2D
          }
          
          // Sort the results.
-         if(PBE.getScene())
-            PBE.getScene().sortSpatials(results);
+         if(PBE.scene)
+            PBE.scene.sortSpatials(results);
          
          return hitAny;
       }

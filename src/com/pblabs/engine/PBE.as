@@ -33,22 +33,38 @@ package com.pblabs.engine
      */
     public class PBE
     {
+        /**
+         * Set this to true to get rid of a bunch of development related functionality that isn't
+         * needed in a final release build.
+         */
+        public static const IS_SHIPPING_BUILD:Boolean = false;
+
+        /**
+         * We update this constant intermittently, usually when we introduce breaking API changes.
+         * 
+         * It is not the exact version, but it is close, and useful for distinguishing builds. 
+         */
         public static const REVISION:uint = 808;
         
         private static var _main:Sprite = null;	
         private static var _versionDetails:VersionDetails;
         
-        private static var _spatialManager:ISpatialManager2D;
-        private static var _scene:DisplayObjectScene;
+        protected static var _spatialManager:ISpatialManager2D;
+        protected static var _scene:DisplayObjectScene;
         
         private static var _stageQualityStack:Array = [];
         private static var _started:Boolean = false;
         
-        private static var _soundManager:SoundManager = null;
-        private static var _nameManager:NameManager = null;
+        protected static var _soundManager:SoundManager = null;
+        protected static var _nameManager:NameManager = null;
+        protected static var _resourceManager:ResourceManager = null;
+        protected static var _templateManager:TemplateManager = null;
+        protected static var _inputManager:InputManager = null;
+        protected static var _processManager:ProcessManager = null;
+        protected static var _objectTypeManager:ObjectTypeManager = null;
         
-        private static var _rootGroup:PBGroup = null;
-        private static var _currentGroup:PBGroup = null;
+        protected static var _rootGroup:PBGroup = null;
+        protected static var _currentGroup:PBGroup = null;
         
         /**
          * Register a type with PushButton Engine so that it can be deserialized,
@@ -87,7 +103,7 @@ package com.pblabs.engine
          */
         public static function defineEntityByFunction(name:String, definition:Function):void
         {
-            TemplateManager.instance.registerEntityCallback(name, definition);
+            PBE.templateManager.registerEntityCallback(name, definition);
         }
         
         /**
@@ -114,13 +130,7 @@ package com.pblabs.engine
             _versionDetails = VersionUtil.checkVersion(mainClass);
             
             // Set up some managers.
-            _nameManager = new NameManager();
-            
-            // Set up the root group, and make it the current group.
-            var rg:PBGroup = new PBGroup();
-            _rootGroup = rg;
-            _currentGroup = rg;
-            rg.initialize("RootGroup");
+            initializeManagers();
             
             // Set the stage alignment and scalemode
             // We do this to be consistent between CS4/Flex apps, if you want stage alignment
@@ -128,18 +138,57 @@ package com.pblabs.engine
             mainClass.stage.align = StageAlign.TOP_LEFT;
             mainClass.stage.scaleMode = StageScaleMode.NO_SCALE;
             
+            // Welcome message.
             Logger.print(PBE, "PushButton Engine - r"+ REVISION +" - "+_versionDetails + " - " + Security.sandboxType);
             
+            // Kick out schema if required.
             if (!IS_SHIPPING_BUILD && (_main.loaderInfo && _main.loaderInfo.parameters && _main.loaderInfo.parameters["generateSchema"] == "1"))
                 SchemaGenerator.instance.generateSchema();
             
+            // Have to be able to log!
             Logger.startup();
             
-            // Initialize the SoundManager.
-            _soundManager = new SoundManager();
-            processManager.addTickedObject(_soundManager, 100);
-            
+            // Initialization complete.
             _started = true;
+        }
+        
+        protected static function initializeManagers():void
+        {
+            // Name manager first.
+            if(!_nameManager)
+                _nameManager = new NameManager();
+            
+            // Set up the root group, and make it the current group.
+            if(!_rootGroup)
+            {
+                var rg:PBGroup = new PBGroup();
+                _rootGroup = rg;
+                _currentGroup = rg;
+                rg.initialize("RootGroup");                
+            }
+            
+            if(!_processManager)
+                _processManager = new ProcessManager();
+            
+            if(!_objectTypeManager)
+                _objectTypeManager = new ObjectTypeManager();
+            
+            // Initialize the SoundManager.
+            if(!_soundManager)
+            {
+                _soundManager = new SoundManager();
+                processManager.addTickedObject(_soundManager, 100);                
+            }
+            
+            // Set up other managers.
+            if(!_resourceManager)
+                _resourceManager = new ResourceManager();
+            
+            if(!_templateManager)
+                _templateManager = new TemplateManager();
+            
+            if(!_inputManager)
+                _inputManager = new InputManager();
         }
         
         /**
@@ -169,12 +218,12 @@ package com.pblabs.engine
             return scene;
         }
         
-        public static function getSpatialManager():ISpatialManager2D
+        public static function get spatialManager():ISpatialManager2D
         {
             return _spatialManager;
         }
         
-        public static function getScene():IScene2D
+        public static function get scene():IScene2D
         {
             return _scene;
         }
@@ -197,7 +246,7 @@ package com.pblabs.engine
          */
         public static function isKeyDown(key:InputKey):Boolean
         {
-            return InputManager.instance.isKeyDown(key.keyCode);
+            return _inputManager.isKeyDown(key.keyCode);
         }
         
         /**
@@ -205,7 +254,7 @@ package com.pblabs.engine
          */
         public static function isAnyKeyDown():Boolean
         {
-            return InputManager.instance.isAnyKeyDown();
+            return _inputManager.isAnyKeyDown();
         }
         
         /**
@@ -245,7 +294,7 @@ package com.pblabs.engine
         public static function makeEntity(entityName:String, params:Object = null):IEntity
         {
             // Create the entity.
-            var entity:IEntity = TemplateManager.instance.instantiateEntity(entityName);
+            var entity:IEntity = PBE.templateManager.instantiateEntity(entityName);
             if(!entity)
                 return null;
             
@@ -294,13 +343,7 @@ package com.pblabs.engine
         {
             Logger.print(reporter, message);
         }
-        
-        /**
-         * Set this to true to get rid of a bunch of development related functionality that isn't
-         * needed in a final release build.
-         */
-        public static const IS_SHIPPING_BUILD:Boolean = false;
-        
+                
         /**
          * The stage. This is the root of the display heirarchy and is automatically created by
          * flash when the application starts up.
@@ -364,7 +407,7 @@ package com.pblabs.engine
          */		
         public static function get processManager():ProcessManager
         {
-            return ProcessManager.instance;
+            return _processManager;
         }
         
         /**
@@ -373,7 +416,7 @@ package com.pblabs.engine
          */		
         public static function get templateManager():TemplateManager
         {
-            return TemplateManager.instance;
+            return _templateManager;
         }
         
         /**
@@ -383,7 +426,7 @@ package com.pblabs.engine
          */		
         public static function get inputManager():InputManager
         {
-            return InputManager.instance;
+            return _inputManager;
         }
         
         /**
@@ -393,7 +436,7 @@ package com.pblabs.engine
          */		
         public static function get objectTypeManager():ObjectTypeManager
         {
-            return ObjectTypeManager.instance;
+            return _objectTypeManager;
         }
         
         /**
@@ -402,7 +445,7 @@ package com.pblabs.engine
          */		
         public static function get resourceManager():ResourceManager
         {
-            return ResourceManager.instance;
+            return _resourceManager;
         }
         
         /**
@@ -516,7 +559,7 @@ package com.pblabs.engine
          */
         public static function callLater(method:Function, args:Array = null):void
         {
-            ProcessManager.instance.callLater(method, args);
+            PBE.processManager.callLater(method, args);
         }
         
         /**

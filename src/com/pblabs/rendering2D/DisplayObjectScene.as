@@ -320,7 +320,7 @@ package com.pblabs.rendering2D
                 if(!renderer.owner)
                     continue;
                 
-                if(mask && !ObjectTypeManager.instance.doTypesOverlap(mask, renderer.objectMask))
+                if(mask && !PBE.objectTypeManager.doTypesOverlap(mask, renderer.objectMask))
                     continue;
                 
                 if(!renderer.pointOccupied(scenePosition))

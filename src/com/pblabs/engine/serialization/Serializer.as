@@ -542,7 +542,7 @@ internal class ResourceNote
     
     public function load(filename:String, type:Class):void
     {
-        ResourceManager.instance.load(filename, type, onLoaded, onFailed);
+        PBE.resourceManager.load(filename, type, onLoaded, onFailed);
     }
     
     public function onLoaded(resource:Resource):void
@@ -625,7 +625,7 @@ internal class ReferenceNote
         // Or instantiate a new entity.
         if (objectReference != "")
         {
-            owner[fieldName] = TemplateManager.instance.instantiateEntity(objectReference);
+            owner[fieldName] = PBE.templateManager.instantiateEntity(objectReference);
             reportSuccess();
             return true;
         }

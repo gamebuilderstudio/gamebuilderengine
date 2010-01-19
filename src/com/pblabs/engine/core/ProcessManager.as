@@ -60,20 +60,7 @@ package com.pblabs.engine.core
          * and you will constantly get the "too many ticks per frame" warning.</p>
          */
         public static const MAX_TICKS_PER_FRAME:int = 10;
-        
-        /**
-         * The singleton ProcessManager instance.
-         */
-        public static function get instance():ProcessManager
-        {
-            if (!_instance)
-                _instance = new ProcessManager();
-            
-            return _instance;
-        }
-        
-        private static var _instance:ProcessManager = null;
-        
+                
         /**
          * The scale at which time advances. If this is set to 2, the game
          * will essentially play twice as fast. A value of 0.5 will run the

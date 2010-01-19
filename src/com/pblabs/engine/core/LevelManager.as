@@ -14,6 +14,7 @@ package com.pblabs.engine.core
    import com.pblabs.engine.resource.XMLResource;
    import com.pblabs.engine.serialization.ISerializable;
    import com.pblabs.engine.serialization.Serializer;
+   import com.pblabs.engine.PBE;
    
    import flash.events.Event;
    import flash.events.EventDispatcher;
@@ -156,8 +157,8 @@ package com.pblabs.engine.core
             return;
          }
          
-         TemplateManager.instance.addEventListener(TemplateManager.LOADED_EVENT, onFileLoaded);
-         TemplateManager.instance.addEventListener(TemplateManager.FAILED_EVENT, onFileLoadFailed);
+         PBE.templateManager.addEventListener(TemplateManager.LOADED_EVENT, onFileLoaded);
+         PBE.templateManager.addEventListener(TemplateManager.FAILED_EVENT, onFileLoadFailed);
          
          _isReady = true;
          dispatchEvent(new LevelEvent(LevelEvent.READY_EVENT, -1));
@@ -182,7 +183,7 @@ package com.pblabs.engine.core
          }
          
          _initialLevel = initialLevel;
-         ResourceManager.instance.load(filename, XMLResource, onLevelDescriptionsLoaded, onLevelDescriptionsLoadFailed);
+         PBE.resourceManager.load(filename, XMLResource, onLevelDescriptionsLoaded, onLevelDescriptionsLoadFailed);
       }
       
       private function onLevelDescriptionsLoaded(resource:XMLResource):void
@@ -310,7 +311,7 @@ package com.pblabs.engine.core
             return null;
          }
          
-         var entity:IEntity = TemplateManager.instance.instantiateEntity(name);
+         var entity:IEntity = PBE.templateManager.instantiateEntity(name);
          if (!entity)
          {
             Logger.error(this, "LoadEntity", "Failed to instantiate an entity with name " + name + ".");
@@ -369,7 +370,7 @@ package com.pblabs.engine.core
             if (_loadFileCallback != null)
                _loadFileCallback(filename, finishLoad)
             else
-               TemplateManager.instance.loadFile(filename);
+               PBE.templateManager.loadFile(filename);
          }
          
          finishLoad();
@@ -401,7 +402,7 @@ package com.pblabs.engine.core
                continue;
             }
             
-            var groupEntities:Array = TemplateManager.instance.instantiateGroup(groupName);
+            var groupEntities:Array = PBE.templateManager.instantiateGroup(groupName);
             if (!groupEntities)
             {
                Logger.error(this, "LoadLevel", "Failed to instantiate the group " + groupName + ".");
@@ -491,7 +492,7 @@ package com.pblabs.engine.core
                continue;
             }
             
-            TemplateManager.instance.unloadFile(filename);
+            PBE.templateManager.unloadFile(filename);
             _loadedFiles[filename] = null;
             delete _loadedFiles[filename];
          }

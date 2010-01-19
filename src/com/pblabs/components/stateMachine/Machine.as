@@ -139,7 +139,7 @@ package com.pblabs.components.stateMachine
             newState.enter(this);
             
             // Note the time at which we entered this state.             
-            _enteredStateTime = ProcessManager.instance.virtualTime;
+            _enteredStateTime = PBE.processManager.virtualTime;
 
             // Fire a transition event, if we have a dispatcher.
             if(_propertyBag)

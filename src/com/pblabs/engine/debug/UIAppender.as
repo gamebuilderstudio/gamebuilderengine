@@ -27,7 +27,7 @@ package com.pblabs.engine.debug
 	   
 		public function UIAppender()
 		{
-			InputManager.instance.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+			PBE.inputManager.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			
 			_hotKey = InputKey.TILDE.keyCode;
 			_logViewer = new LogViewer();

@@ -8,71 +8,72 @@
  ******************************************************************************/
 package com.pblabs.engine.components
 {
-   import com.pblabs.engine.core.ITickedObject;
-   import com.pblabs.engine.core.ProcessManager;
-   import com.pblabs.engine.entity.EntityComponent;
-   
-   /**
-    * Base class for components that need to perform actions every tick. This
-    * needs to be subclassed to be useful.
-    */
-   public class TickedComponent extends EntityComponent implements ITickedObject
-   {
-      /**
-       * The update priority for this component. Higher numbered priorities have
-       * onInterpolateTick and onTick called before lower priorities.
-       */
-      public var updatePriority:Number = 0.0;
-      
-      private var _registerForUpdates:Boolean = true;
-      private var _isRegisteredForUpdates:Boolean = false;
-      
-      /**
-       * Set to register/unregister for tick updates.
-       */
-      public function set registerForTicks(value:Boolean):void
-      {
-          _registerForUpdates = value;
-          
-          if(_registerForUpdates && !_isRegisteredForUpdates)
-          {
-              // Need to register.
-              _isRegisteredForUpdates = true;
-              ProcessManager.instance.addTickedObject(this, updatePriority);                
-          }
-          else if(!_registerForUpdates && _isRegisteredForUpdates)
-          {
-              // Need to unregister.
-              _isRegisteredForUpdates = false;
-              ProcessManager.instance.removeTickedObject(this);
-          }
-      }
-      
-      /**
-       * @private
-       */
-      public function get registerForTicks():Boolean
-      {
-          return _registerForUpdates;
-      }
-      
-      /**
-       * @inheritDoc
-       */
-      public function onTick(deltaTime:Number):void
-      {
-      }
-      
-      override protected function onAdd():void
-      {
-          // This causes the component to be registerd if it isn't already.
-          registerForTicks = registerForTicks;
-      }
-      
-      override protected function onRemove():void
-      {
-          // Make sure we are unregistered.
-          registerForTicks = false;
-      }
-   }
+    import com.pblabs.engine.PBE;
+    import com.pblabs.engine.core.ITickedObject;
+    import com.pblabs.engine.core.ProcessManager;
+    import com.pblabs.engine.entity.EntityComponent;
+    
+    /**
+     * Base class for components that need to perform actions every tick. This
+     * needs to be subclassed to be useful.
+     */
+    public class TickedComponent extends EntityComponent implements ITickedObject
+    {
+        /**
+         * The update priority for this component. Higher numbered priorities have
+         * onInterpolateTick and onTick called before lower priorities.
+         */
+        public var updatePriority:Number = 0.0;
+        
+        private var _registerForUpdates:Boolean = true;
+        private var _isRegisteredForUpdates:Boolean = false;
+        
+        /**
+         * Set to register/unregister for tick updates.
+         */
+        public function set registerForTicks(value:Boolean):void
+        {
+            _registerForUpdates = value;
+            
+            if(_registerForUpdates && !_isRegisteredForUpdates)
+            {
+                // Need to register.
+                _isRegisteredForUpdates = true;
+                PBE.processManager.addTickedObject(this, updatePriority);                
+            }
+            else if(!_registerForUpdates && _isRegisteredForUpdates)
+            {
+                // Need to unregister.
+                _isRegisteredForUpdates = false;
+                PBE.processManager.removeTickedObject(this);
+            }
+        }
+        
+        /**
+         * @private
+         */
+        public function get registerForTicks():Boolean
+        {
+            return _registerForUpdates;
+        }
+        
+        /**
+         * @inheritDoc
+         */
+        public function onTick(deltaTime:Number):void
+        {
+        }
+        
+        override protected function onAdd():void
+        {
+            // This causes the component to be registerd if it isn't already.
+            registerForTicks = registerForTicks;
+        }
+        
+        override protected function onRemove():void
+        {
+            // Make sure we are unregistered.
+            registerForTicks = false;
+        }
+    }
 }

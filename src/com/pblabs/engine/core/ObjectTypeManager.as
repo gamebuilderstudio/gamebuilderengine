@@ -22,19 +22,6 @@ package com.pblabs.engine.core
    public class ObjectTypeManager
    {
       /**
-       * The singleton ObjectTypeManager instance.
-       */
-      public static function get instance():ObjectTypeManager
-      {
-         if (!_instance)
-            _instance = new ObjectTypeManager();
-         
-         return _instance;
-      }
-      
-      private static var _instance:ObjectTypeManager = null;
-      
-      /**
        * The number of object types that have been registered.
        */
       public function get typeCount():uint

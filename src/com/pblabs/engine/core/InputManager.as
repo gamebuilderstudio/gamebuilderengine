@@ -29,24 +29,6 @@ package com.pblabs.engine.core
      */
     public class InputManager extends EventDispatcher
     {
-        /**
-         * The singleton InputManager instance.
-         */
-        public static function get instance():InputManager
-        {
-            if (!_instance)
-                _instance = new InputManager();
-
-            return _instance;
-        }
-
-        public static function isKeyDown(key:InputKey):Boolean
-        {
-            return instance.isKeyDown(key.keyCode);
-        }
-
-        private static var _instance:InputManager = null;
-
         public function InputManager()
         {
             PBE.mainStage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);

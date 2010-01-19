@@ -74,7 +74,7 @@ package com.pblabs.rendering2D
             }
             
             // Update to next frame when appropriate.
-            if(ProcessManager.instance.virtualTime - _clipLastUpdate > 1000/frameRate)
+            if(PBE.processManager.virtualTime - _clipLastUpdate > 1000/frameRate)
             {
                 // If we're on the last frame, loop or self-destruct.
                 if(++_clipFrame > _maxFrames)
@@ -98,7 +98,7 @@ package com.pblabs.rendering2D
                 // Update child clips as well.
                 updateChildClips(clip, _clipFrame);
 
-                _clipLastUpdate = ProcessManager.instance.virtualTime;
+                _clipLastUpdate = PBE.processManager.virtualTime;
             }
             
             

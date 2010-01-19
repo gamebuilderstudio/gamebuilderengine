@@ -2,7 +2,7 @@ package com.pblabs.engine.debug
 {
    
    import com.pblabs.engine.core.InputKey;
-   import com.pblabs.engine.core.InputManager;
+   import com.pblabs.engine.PBE;
    import com.pblabs.engine.core.sprintf;
    
    import flash.utils.getTimer;
@@ -46,7 +46,7 @@ package com.pblabs.engine.debug
          {
             // Hack - if they press, then release insert, start/stop and dump
             // the profiler.
-            if(InputManager.instance.isKeyDown(InputKey.P.keyCode))
+            if(PBE.isKeyDown(InputKey.P))
             {
                if(!enabled)
                {

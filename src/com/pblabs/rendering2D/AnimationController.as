@@ -137,7 +137,7 @@ package com.pblabs.rendering2D
 
             // Expire current animation if it has finished playing and it's what we
             // want to keep playing.
-            if (_currentAnimation !== nextAnim && ProcessManager.instance.virtualTime > (_currentAnimationStartTime + _currentAnimationDuration))
+            if (_currentAnimation !== nextAnim && PBE.processManager.virtualTime > (_currentAnimationStartTime + _currentAnimationDuration))
                 _currentAnimation = null;
 
             // If we do not have a current animation, start playing the next.
@@ -170,7 +170,7 @@ package com.pblabs.rendering2D
                 if (frameTime > _currentAnimation.maxFrameDelay)
                     frameTime = _currentAnimation.maxFrameDelay;
     
-                var animationAge:Number = ProcessManager.instance.virtualTime - _currentAnimationStartTime;
+                var animationAge:Number = PBE.processManager.virtualTime - _currentAnimationStartTime;
                 var curFrame:int = Math.floor(animationAge / frameTime);
     
                 // Deal with clamping/looping.
@@ -226,10 +226,10 @@ package com.pblabs.rendering2D
             if (currentAnimationStartTimeReference)
                 _currentAnimationStartTime = owner.getProperty(currentAnimationStartTimeReference);
             else
-                _currentAnimationStartTime = ProcessManager.instance.virtualTime;
+                _currentAnimationStartTime = PBE.processManager.virtualTime;
 
             updateAnimationDuration();
-            //trace("Age at start was " + (ProcessManager.instance.virtualTime - _currentAnimationStartTime));
+            //trace("Age at start was " + (PBE.processManager.virtualTime - _currentAnimationStartTime));
 
             //Logger.(this, "Changed animation to: " + _currentAnimation.spriteSheet.name + ". duration is " + _currentAnimationDuration);
 

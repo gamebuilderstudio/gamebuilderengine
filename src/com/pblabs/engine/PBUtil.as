@@ -230,5 +230,16 @@ package com.pblabs.engine
 			
 			return str;
 		}
+        
+        public static function getFileExtension(file:String):String
+        {
+            var extensionIndex:Number = file.lastIndexOf(".");
+           if (extensionIndex == -1) {
+                //No extension
+                return "";
+            } else {
+                return file.substr(extensionIndex + 1,file.length);
+            }
+        }
     }
 }

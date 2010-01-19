@@ -6,6 +6,7 @@ package com.pblabs.sound
     import com.pblabs.engine.resource.MP3Resource;
     import com.pblabs.engine.resource.ResourceManager;
     import com.pblabs.engine.resource.SoundResource;
+    import com.pblabs.engine.PBE;
     
     import flash.media.Sound;
     import flash.media.SoundTransform;
@@ -55,7 +56,7 @@ package com.pblabs.sound
                 else
                 {
                     // Otherwise queue the resource and play it when it is loaded.
-                    ResourceManager.instance.load(sound, SoundResource, function(r:*):void
+                    PBE.resourceManager.load(sound, SoundResource, function(r:*):void
                     {
                         cachedSounds[sound] = r;
                         play(r as SoundResource, category, pan, loopCount, startDelay);

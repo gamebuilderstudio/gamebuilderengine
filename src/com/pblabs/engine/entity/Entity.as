@@ -431,7 +431,7 @@ package com.pblabs.engine.entity
             {
                 // XML reference. Look it up inside the TemplateManager. We only support
                 // templates and entities - no groups.
-                parentElem = TemplateManager.instance.getXML(curLookup, "template", "entity");
+                parentElem = PBE.templateManager.getXML(curLookup, "template", "entity");
                 if(!parentElem)
                 {
                     Logger.warn(this, "findProperty", "Could not find XML named '" + curLookup + "' for property '" + reference.property + "'");

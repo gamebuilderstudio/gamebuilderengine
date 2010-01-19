@@ -8,10 +8,11 @@
  ******************************************************************************/
 package com.pblabs.engine.components
 {
+    import com.pblabs.engine.PBE;
     import com.pblabs.engine.core.IAnimatedObject;
     import com.pblabs.engine.core.ProcessManager;
     import com.pblabs.engine.entity.EntityComponent;
-
+    
     /**
      * Base class for components that need to perform actions every frame. This
      * needs to be subclassed to be useful.
@@ -24,9 +25,9 @@ package com.pblabs.engine.components
          */
         [EditorData(ignore="true")]
         public var updatePriority:Number = 0.0;
-		
-		private var _registerForUpdates:Boolean = true;
-		private var _isRegisteredForUpdates:Boolean = false;
+        
+        private var _registerForUpdates:Boolean = true;
+        private var _isRegisteredForUpdates:Boolean = false;
         
         /**
          * Set to register/unregister for frame updates.
@@ -40,16 +41,16 @@ package com.pblabs.engine.components
             {
                 // Need to register.
                 _isRegisteredForUpdates = true;
-                ProcessManager.instance.addAnimatedObject(this, updatePriority);
+                PBE.processManager.addAnimatedObject(this, updatePriority);
             }
             else if(!_registerForUpdates && _isRegisteredForUpdates)
             {
                 // Need to unregister.
                 _isRegisteredForUpdates = false;
-                ProcessManager.instance.removeAnimatedObject(this);
+                PBE.processManager.removeAnimatedObject(this);
             }
         }
-
+        
         /**
          * @private
          */
@@ -57,20 +58,20 @@ package com.pblabs.engine.components
         {
             return _registerForUpdates;
         }
-
+        
         /**
          * @inheritDoc
          */
         public function onFrame(deltaTime:Number):void
         {
         }
-
+        
         override protected function onAdd():void
         {
             // This causes the component to be registerd if it isn't already.
             registerForUpdates = registerForUpdates;
         }
-
+        
         override protected function onRemove():void
         {
             // Make sure we are unregistered.

@@ -40,7 +40,7 @@ package com.pblabs.components.basic
          */
         public function get timeSinceLastDamage():Number
         {
-            return ProcessManager.instance.virtualTime - _timeOfLastDamage;
+            return PBE.processManager.virtualTime - _timeOfLastDamage;
         }
         
         /**
@@ -136,7 +136,7 @@ package com.pblabs.components.basic
             
             // For the flash magnitude, average in preceding fade. 
             damageMagnitude = Math.min(1.0 , (amount / _health) * 4);
-            _timeOfLastDamage = ProcessManager.instance.virtualTime;
+            _timeOfLastDamage = PBE.processManager.virtualTime;
             
             // Apply the damage.
             health -= amount;

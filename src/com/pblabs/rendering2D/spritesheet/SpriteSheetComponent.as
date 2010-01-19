@@ -60,11 +60,11 @@ package com.pblabs.rendering2D.spritesheet
         {
             if (_image)
             {
-                ResourceManager.instance.unload(_image.filename, ImageResource);
+                PBE.resourceManager.unload(_image.filename, ImageResource);
                 image = null;
             }
             
-            ResourceManager.instance.load(value, ImageResource, onImageLoaded, onImageFailed);
+            PBE.resourceManager.load(value, ImageResource, onImageLoaded, onImageFailed);
         }
         
         /**

@@ -2,7 +2,8 @@ package com.pblabs.engine.resource.provider
 {
     import com.pblabs.engine.resource.Resource;
     import com.pblabs.engine.resource.ResourceManager;
-    
+    import com.pblabs.engine.PBE;
+
     import flash.utils.Dictionary;
     
     /**
@@ -15,7 +16,7 @@ package com.pblabs.engine.resource.provider
         {
             // register this ResourceProvider with the ResourceManager
             if (registerProvider)
-                ResourceManager.instance.registerResourceProvider(this);
+                ResourceManager.registerResourceProvider(this);
             
             // create the Dictionary object that will keep all resources 			
             resources = new Dictionary();
@@ -47,7 +48,6 @@ package com.pblabs.engine.resource.provider
             var resourceIdentifier:String = uri.toLowerCase() + type;
             resources[resourceIdentifier] = resource;        	
         }
-        
         
         // ------------------------------------------------------------
         // private and protected variables

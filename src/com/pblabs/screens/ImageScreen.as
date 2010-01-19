@@ -18,7 +18,7 @@ package com.pblabs.screens
         public function ImageScreen(image:String)
         {
             // Load the image.
-            ResourceManager.instance.load(image, ImageResource, onImageSucceed, onImageFail);
+            PBE.resourceManager.load(image, ImageResource, onImageSucceed, onImageFail);
         }
         
         private function onImageSucceed(i:ImageResource):void

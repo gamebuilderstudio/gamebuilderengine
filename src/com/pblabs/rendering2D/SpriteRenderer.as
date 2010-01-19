@@ -30,7 +30,7 @@ package com.pblabs.rendering2D
 				_fileName = value;
 				_loading = true;
 				// Tell the ResourceManager to load the IMageResource
-				ResourceManager.instance.load(fileName,ImageResource,imageLoadCompleted,imageLoadFailed,false);				
+				PBE.resourceManager.load(fileName,ImageResource,imageLoadCompleted,imageLoadFailed,false);				
 			}	
 		}
 		

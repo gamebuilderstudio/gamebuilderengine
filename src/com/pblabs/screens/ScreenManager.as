@@ -40,8 +40,8 @@ package com.pblabs.screens
         
         public function ScreenManager()
         {
-            ProcessManager.instance.addTickedObject(this);
-            ProcessManager.instance.addAnimatedObject(this);
+            PBE.processManager.addTickedObject(this);
+            PBE.processManager.addAnimatedObject(this);
             
             screenParent = PBE.mainClass;
         }

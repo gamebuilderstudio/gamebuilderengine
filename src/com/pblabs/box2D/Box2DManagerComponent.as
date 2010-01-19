@@ -104,7 +104,7 @@ package com.pblabs.box2D
         
         override protected function onAdd():void
         {
-            ProcessManager.instance.addTickedObject(this);
+            PBE.processManager.addTickedObject(this);
             createWorld();
         }
         
@@ -115,7 +115,7 @@ package com.pblabs.box2D
             //defer until we know it should not be locked anymore.
             if (_world.m_lock)
             {
-                ProcessManager.instance.schedule(0, this, onRemove);
+                PBE.processManager.schedule(0, this, onRemove);
             }
             else
             {
@@ -128,7 +128,7 @@ package com.pblabs.box2D
                 
                 _world = null;
                 
-                ProcessManager.instance.removeTickedObject(this);
+                PBE.processManager.removeTickedObject(this);
             }
         }
         
@@ -141,7 +141,7 @@ package com.pblabs.box2D
             //defer until we know it should not be locked anymore.
             if (_world.m_lock)
             {
-                ProcessManager.instance.schedule(0, thisArg, add, bodyDef, thisArg, completedCallback);
+                PBE.processManager.schedule(0, thisArg, add, bodyDef, thisArg, completedCallback);
             }
             else
             {
@@ -158,7 +158,7 @@ package com.pblabs.box2D
                 //the world is locked. this was called from a collision or other event.
                 //defer until we know it should not be locked anymore.
                 if (_world.m_lock)
-                    ProcessManager.instance.schedule(0, this, remove, body);
+                    PBE.processManager.schedule(0, this, remove, body);
                 else
                     _world.DestroyBody(body);
             }
@@ -210,7 +210,7 @@ package com.pblabs.box2D
 					
 					var curShape:b2Shape = resultShapes[i] as b2Shape;
 					var curComponent:Box2DSpatialComponent = curShape.GetBody().GetUserData() as Box2DSpatialComponent;
-					if(ObjectTypeManager.instance.doTypesOverlap(curComponent.collisionType, mask) || mask == null)
+					if(PBE.objectTypeManager.doTypesOverlap(curComponent.collisionType, mask) || mask == null)
 						results.push(curComponent);
 				}
 			}
@@ -272,7 +272,7 @@ package com.pblabs.box2D
             var hitAny:Boolean = false;
             for each(var tmp:ISpatialObject2D in tmpResults)
             {
-                if (!tmp.pointOccupied(worldPosition, PBE.getScene()))
+                if (!tmp.pointOccupied(worldPosition, PBE.scene))
                     continue;
                 
                 results.push(tmp);

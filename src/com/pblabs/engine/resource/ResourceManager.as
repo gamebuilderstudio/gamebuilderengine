@@ -8,6 +8,8 @@
  ******************************************************************************/
 package com.pblabs.engine.resource
 {
+    import com.pblabs.engine.PBE;
+    import com.pblabs.engine.PBUtil;
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.resource.provider.EmbeddedResourceProvider;
     import com.pblabs.engine.resource.provider.FallbackResourceProvider;
@@ -24,20 +26,7 @@ package com.pblabs.engine.resource
      * resources no longer in use.
      */
     public class ResourceManager
-    {
-        /**
-         * The singleton instance of the resource manager.
-         */
-        public static function get instance():ResourceManager
-        {
-            if (!_instance)
-                _instance = new ResourceManager();
-            
-            return _instance;
-        }
-        
-        private static var _instance:ResourceManager = null;
-        
+    {        
         /**
          * If true, we will never get resources from outside the SWF - only resources
          * that have been properly embedded and registered with the ResourceManager
@@ -77,7 +66,7 @@ package com.pblabs.engine.resource
          * @see Resource
          */
         public function load(filename:String, resourceType:Class, onLoaded:Function = null, onFailed:Function = null, forceReload:Boolean = false):void
-        {          
+        {
             // Look up the resource.
             var resourceIdentifier:String = filename.toLowerCase() + resourceType;
             var resource:Resource = _resources[resourceIdentifier];
@@ -105,16 +94,21 @@ package com.pblabs.engine.resource
                     return;
                 }
                 
+                // Hack for MP3 and WAV files. TODO: Generalize this for arbitrary formats.
+                var fileExtension:String = PBUtil.getFileExtension(filename).toLocaleLowerCase();
+                if(resourceType == SoundResource && (fileExtension == "mp3" || fileExtension == "wav"))
+                    resourceType = MP3Resource;
+                
                 // check available resource providers and request the resource if it is known
                 for (var rp:int = 0; rp < resourceProviders.length; rp++)
                 {
-                    if ((resourceProviders[rp] as IResourceProvider).isResourceKnown(filename,resourceType))
-                        resource  = (resourceProviders[rp] as IResourceProvider).getResource(filename,resourceType,forceReload);
+                    if ((resourceProviders[rp] as IResourceProvider).isResourceKnown(filename, resourceType))
+                        resource  = (resourceProviders[rp] as IResourceProvider).getResource(filename, resourceType, forceReload);
                 }
                 
                 // If we couldn't find a match, fall back to the default provider.
                 if (!resource)
-                    resource = FallbackResourceProvider.instance.getResource(filename,resourceType, forceReload);
+                    resource = FallbackResourceProvider.instance.getResource(filename, resourceType, forceReload);
                 
                 // Make sure the filename is set.
                 if(!resource.filename)
@@ -137,7 +131,7 @@ package com.pblabs.engine.resource
             else if (resource.isLoaded)
             {
                 if (onLoaded != null)
-                    setTimeout(onLoaded, 1, resource);
+                    PBE.callLater(onLoaded, [ resource ]);
             }
             else
             {
@@ -198,7 +192,7 @@ package com.pblabs.engine.resource
          * @param data A byte array containing the data for the resource. This should match
          * up with the data expected by the specific Resource subclass.
          * 
-         * @see com.pblabs.engine.mxml.ResourceBinding
+         * @see com.pblabs.engine.resource.ResourceBundle
          */
         public function registerEmbeddedResource(filename:String, resourceType:Class, data:*):void
         {
@@ -210,9 +204,9 @@ package com.pblabs.engine.resource
                 return;
             }
             
-            // Set up the resource, but don't process it yet.
             try
             {
+                // Set up the resource, but don't process it yet.
                 var resource:Resource = new resourceType();
                 resource.filename = filename;
                 resource.initialize(data);
@@ -236,12 +230,14 @@ package com.pblabs.engine.resource
          * @param resourceProvider Provider to add.
          * @see IResourceProvider
          */
-        public function registerResourceProvider(resourceProvider:IResourceProvider):void
+        public static function registerResourceProvider(resourceProvider:IResourceProvider):void
         {
             // check if resourceProvider is already registered
-            for (var rp:int=0; rp < resourceProviders.length; rp++)
-                if (resourceProviders.indexOf(resourceProvider)>=0)
-                    return;
+            if (resourceProviders.indexOf(resourceProvider) != -1)
+            {
+                Logger.warn(ResourceManager, "registerResourceProvider", "Tried to register ResourceProvider '" + resourceProvider + "' twice. Ignoring...");
+                return;
+            }
             
             // add resourceProvider to list of known resourceProviders
             resourceProviders.push(resourceProvider);
@@ -276,7 +272,6 @@ package com.pblabs.engine.resource
                 setTimeout(onFailed, 1, resource);
         }
         
-        
         /**
          * Dictionary of loaded resources indexed by resource name and type. 
          */
@@ -285,6 +280,6 @@ package com.pblabs.engine.resource
         /**
          * List of resource providers used to get resources. 
          */        
-        private var resourceProviders:Array = new Array();
+        private static var resourceProviders:Array = new Array();
     }
 }
