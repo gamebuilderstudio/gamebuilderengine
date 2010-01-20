@@ -108,7 +108,7 @@
       <echo>Build Number: ${env.BUILD_NUMBER}</echo>
       
       <copy file="${classesdir}/com/pblabs/engine/version/BuildVersion.as.templ"
-         tofile="${classesdir}/com/pblabs/engine/version/BuildVersion.as" />
+         tofile="${classesdir}/com/pblabs/engine/version/BuildVersion.as" overwrite="true" />
          
       <replace file="${classesdir}/com/pblabs/engine/version/BuildVersion.as"
          token="@revNumber@" value="${env.SVN_REVISION}" />
