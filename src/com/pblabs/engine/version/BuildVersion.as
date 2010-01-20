@@ -4,6 +4,5 @@ package com.pblabs.engine.version
 	{
 		// This will be populated from the BuildVersion.as.templ
 		public static const BUILD_NUMBER:String = "0";
-		public static const REV_NUMBER:String = "$Rev$";
 	}
 }
