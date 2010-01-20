@@ -65,6 +65,8 @@
    <property name="compc" value="${flexbindir}/compc${binaryExtension}" />
    <property name="mxmlc" value="${flexbindir}/mxmlc${binaryExtension}" />
    <property name="adl" value="${flexbindir}/adl${binaryExtension}" />
+   
+   <property environment="env" />
 
    <!-- Local classpath useed for custom tasks -->
    <path id="localClasspath">
@@ -102,7 +104,7 @@
    </target>
    
    <target name="checkBuildServer" description="Checks if this is the build server">
-      <condition property="isBuildServer">
+      <condition property="isBuildServer" value="false">
          <and>
             <isset property="env.SVN_REVISION"/>
             <isset property="env.BUILD_NUMBER"/>
@@ -112,8 +114,6 @@
    
    <target name="populateBuildVersion" description="Creates an updated BuildVersion.as" 
       depends="checkBuildServer" if="isBuildServer">
-      
-      <property environment="env" />
       
       <echo>Revision Number: ${env.SVN_REVISION}</echo>
       <echo>Build Number: ${env.BUILD_NUMBER}</echo>
