@@ -39,13 +39,6 @@ package com.pblabs.engine
          */
         public static const IS_SHIPPING_BUILD:Boolean = false;
 
-        /**
-         * We update this constant intermittently, usually when we introduce breaking API changes.
-         * 
-         * It is not the exact version, but it is close, and useful for distinguishing builds. 
-         */
-        public static const REVISION:uint = 808;
-        
         private static var _main:Sprite = null;	
         private static var _versionDetails:VersionDetails;
         
@@ -139,7 +132,7 @@ package com.pblabs.engine
             mainClass.stage.scaleMode = StageScaleMode.NO_SCALE;
             
             // Welcome message.
-            Logger.print(PBE, "PushButton Engine - r"+ REVISION +" - "+_versionDetails + " - " + Security.sandboxType);
+            Logger.print(PBE, _versionDetails.toString());
             
             // Kick out schema if required.
             if (!IS_SHIPPING_BUILD && (_main.loaderInfo && _main.loaderInfo.parameters && _main.loaderInfo.parameters["generateSchema"] == "1"))

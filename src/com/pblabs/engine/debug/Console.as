@@ -131,8 +131,7 @@ package com.pblabs.engine.debug
             
             registerCommand("version", function():void
             {
-                Logger.print(Console, "PushButton Engine - r"+ PBE.REVISION +" - "+
-                    PBE.versionDetails + " - " + Security.sandboxType);
+                Logger.print(Console, PBE.versionDetails.toString());
             }, "Echo PushButton Engine version information.");
             
             registerCommand("fps", function():void

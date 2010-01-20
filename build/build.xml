@@ -100,8 +100,24 @@
          Set the flexdir parameter by editing the build.properties file.
       </fail>
    </target>
+   
+   <target name="populateBuildVersion" description="Creates an updated BuildVersion.as">
+      <property environment="env" />
+      
+      <echo>Revision Number: ${env.SVN_REVISION}</echo>
+      <echo>Build Number: ${env.BUILD_NUMBER}</echo>
+      
+      <copy file="${classesdir}/com/pblabs/engine/version/BuildVersion.as.templ"
+         tofile="${classesdir}/com/pblabs/engine/version/BuildVersion.as" />
+         
+      <replace file="${classesdir}/com/pblabs/engine/version/BuildVersion.as"
+         token="@revNumber@" value="${env.SVN_REVISION}" />
+      <replace file="${classesdir}/com/pblabs/engine/version/BuildVersion.as"
+         token="@buildNumber@" value="${env.BUILD_NUMBER}" />
+   </target>
 
    <target name="compile" description="Creates SWC and API docs." unless="isUpToDate" depends="printUpToDate,ensureValidEnvironment">
+      <antcall target="populateBuildVersion" />
       <antcall target="generateSWC" />
       <antcall target="generateDocs" />
    </target>
@@ -163,7 +179,7 @@
       <echo>PBEngine.swc is up to date, skipping.</echo>
    </target>
 
-   <target name="generateSWC" description="Generates PBEngine SWC." unless="isUpToDate" depends="printUpToDate,identifyClasses">
+   <target name="generateSWC" description="Generates PBEngine SWC." unless="isUpToDate" depends="populateBuildVersion,printUpToDate,identifyClasses">
       <echo>Generating PBEngine.SWC using '${classesdir}'</echo>
       <exec executable="${compc}" failonerror="true">
          <arg line="-source-path &quot;${classesdir}&quot;" />

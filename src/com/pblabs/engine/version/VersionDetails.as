@@ -1,5 +1,7 @@
 package com.pblabs.engine.version
 {
+	import flash.system.Security;
+	
     /**
      * Utility class to store version information. 
      */
@@ -10,7 +12,9 @@ package com.pblabs.engine.version
 		
 		public function toString():String
 		{
-			return type + (flexVersion ? " ("+flexVersion+")" : "");	
+			return "PushButton Engine - r" + BuildVersion.REV_NUMBER +" - "
+				+ type + (flexVersion ? " ("+flexVersion+")" : "") 
+				+ " - " + Security.sandboxType;	
 		}
 	}
 }
