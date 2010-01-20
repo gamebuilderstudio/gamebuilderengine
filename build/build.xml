@@ -117,7 +117,6 @@
    </target>
 
    <target name="compile" description="Creates SWC and API docs." unless="isUpToDate" depends="printUpToDate,ensureValidEnvironment">
-      <antcall target="populateBuildVersion" />
       <antcall target="generateSWC" />
       <antcall target="generateDocs" />
    </target>
