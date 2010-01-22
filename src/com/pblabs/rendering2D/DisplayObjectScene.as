@@ -188,6 +188,11 @@ package com.pblabs.rendering2D
         }
         
         
+        public function get sceneViewName():String
+        {
+            return _sceneViewName;
+        }
+        
         public function set sceneViewName(value:String):void
         {
             _sceneViewName = value;
