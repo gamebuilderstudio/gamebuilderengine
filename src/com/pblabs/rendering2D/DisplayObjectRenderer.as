@@ -7,6 +7,7 @@ package com.pblabs.rendering2D
     import com.pblabs.engine.entity.PropertyReference;
     
     import flash.display.DisplayObject;
+	import flash.display.BlendMode;
     import flash.geom.Matrix;
     import flash.geom.Point;
     import flash.geom.Rectangle;
@@ -65,6 +66,11 @@ package com.pblabs.rendering2D
          * If set, alpha is gotten from this property every frame.
          */
         public var alphaProperty:PropertyReference;
+		
+		/**
+		 * If set, blend mode is gotten from this property every frame.
+		 */
+		public var blendModeProperty:PropertyReference;
         
         /**
          * If set, the layer index is gotten from this property every frame.
@@ -102,6 +108,7 @@ package com.pblabs.rendering2D
         protected var _scale:Point = new Point(1, 1);
         protected var _rotation:Number = 0;
         protected var _alpha:Number = 1;
+		protected var _blendMode:String = BlendMode.NORMAL;
         protected var _position:Point = new Point();
         protected var _size:Point;
         
@@ -251,7 +258,51 @@ package com.pblabs.rendering2D
             _alpha = value;
             _transformDirty = true;
         }
-        
+		
+		public function get blendMode():String
+		{
+			return _blendMode;
+		}
+
+		/**
+		 * Blend mode, using strings from flash.display.BlendMode
+		 * 
+		 * @see flash.display.BlendMode
+		 */
+		public function set blendMode(value:String):void
+		{
+			if (value == _blendMode)
+				return;
+			
+			// Blend mode values must be lower case, but the enumeration is given in all upper case, which could easily lend itself to confusion.
+			value = value.toLowerCase();
+			
+			// Perform some sanity checks, because setting an incorrect value here can cause a failing exception later
+			if ((value != BlendMode.ADD) &&
+				(value != BlendMode.ALPHA) &&
+				(value != BlendMode.DARKEN) &&
+				(value != BlendMode.DIFFERENCE) &&
+				(value != BlendMode.ERASE) &&
+				(value != BlendMode.HARDLIGHT) &&
+				(value != BlendMode.INVERT) &&
+				(value != BlendMode.LAYER) &&
+				(value != BlendMode.LIGHTEN) &&
+				(value != BlendMode.MULTIPLY) &&
+				(value != BlendMode.NORMAL) &&
+				(value != BlendMode.OVERLAY) &&
+				(value != BlendMode.SCREEN) &&
+				(value != BlendMode.SHADER) &&
+				(value != BlendMode.SUBTRACT))
+			{
+				Logger.warn(this, "set blendMode", "Could not set the blend mode to '" + value + "', because it is not a valid BlendMode");
+				return;
+			}
+			
+			_blendMode = value;
+			_transformDirty = true;
+		}
+		
+		
         public function get position():Point
         {
             return _position.clone();
@@ -613,7 +664,14 @@ package com.pblabs.rendering2D
                 var alpha:Number = owner.getProperty(alphaProperty) as Number;
                 this.alpha = alpha;
             }
-            
+
+			// Blend Mode.
+			if (blendModeProperty)
+			{
+				var blendMode:String = owner.getProperty(blendModeProperty) as String;
+				this.blendMode = blendMode;
+			}			
+			
             // Registration Point.
             var reg:Point = owner.getProperty(registrationPointProperty) as Point;
             if (reg)
@@ -671,6 +729,7 @@ package com.pblabs.rendering2D
             
             displayObject.transform.matrix = _transformMatrix;
             displayObject.alpha = _alpha;
+			displayObject.blendMode = _blendMode;
             displayObject.visible = (alpha > 0);
             
             _transformDirty = false;
