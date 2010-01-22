@@ -8,6 +8,8 @@ package com.pblabs.rendering2D
     import flash.display.BitmapData;
     import flash.display.Sprite;
     import flash.geom.Matrix;
+	import flash.geom.ColorTransform;
+	import flash.display.BlendMode;
 
     /**
      * A scene which draws to a BitmapData. Useful when you want to do
@@ -99,7 +101,10 @@ package com.pblabs.rendering2D
                     if(dcp && dcp.isPixelPathActive(m))
                         dcp.drawPixels(m, backbuffer);
                     else
-                        backbuffer.draw(d.displayObject, m);                        
+						if (d.alpha == 1)
+							backbuffer.draw(d.displayObject, m);
+						else
+	                        backbuffer.draw(d.displayObject, m, new ColorTransform( 1.0, 1.0, 1.0, d.alpha ));                        
                 }
             }
             

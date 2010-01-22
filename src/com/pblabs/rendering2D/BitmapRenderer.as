@@ -69,8 +69,8 @@ package com.pblabs.rendering2D
         
         public function isPixelPathActive(objectToScreen:Matrix):Boolean
         {
-            // No rotation/scaling.
-            return (objectToScreen.a == 1 && objectToScreen.b == 0 && objectToScreen.c == 0 && objectToScreen.d == 1)
+            // No rotation/scaling/translucency.
+            return (objectToScreen.a == 1 && objectToScreen.b == 0 && objectToScreen.c == 0 && objectToScreen.d == 1 && alpha == 1);
         }
         
         public function drawPixels(objectToScreen:Matrix, renderTarget:BitmapData):void
