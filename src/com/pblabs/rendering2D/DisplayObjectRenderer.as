@@ -291,7 +291,7 @@ package com.pblabs.rendering2D
 				(value != BlendMode.NORMAL) &&
 				(value != BlendMode.OVERLAY) &&
 				(value != BlendMode.SCREEN) &&
-				(value != BlendMode.SHADER) &&
+				(value != "shader") && // Only supported in Flex 4.0 and higher
 				(value != BlendMode.SUBTRACT))
 			{
 				Logger.warn(this, "set blendMode", "Could not set the blend mode to '" + value + "', because it is not a valid BlendMode");
