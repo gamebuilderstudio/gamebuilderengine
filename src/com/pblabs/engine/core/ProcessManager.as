@@ -311,6 +311,9 @@ package com.pblabs.engine.core
             var position:int = -1;
             for (var i:int = 0; i < list.length; i++)
             {
+                if(!list[i])
+                    continue;
+                
                 if (list[i].listener == object)
                 {
                     Logger.warn(object, "AddProcessObject", "This object has already been added to the process manager.");
@@ -337,21 +340,26 @@ package com.pblabs.engine.core
         
         private function removeObject(object:*, list:Array):void
         {
-            // If we are in a tick, defer the remove.
-            if(duringAdvance)
-            {
-                PBE.callLater(removeObject, [ object, list]);
-                return;
-            }
-
             if (listenerCount == 1 && thinkHeap.size == 0)
                 stop();
             
             for (var i:int = 0; i < list.length; i++)
             {
+                if(!list[i])
+                    continue;
+                
                 if (list[i].listener == object)
                 {
-                    list.splice(i, 1);
+                    if(duringAdvance)
+                    {
+                        list[i] = null;
+                        needPurgeEmpty = true;
+                    }
+                    else
+                    {
+                        list.splice(i, 1);                        
+                    }
+                    
                     return;
                 }
             }
@@ -410,6 +418,8 @@ package com.pblabs.engine.core
                 for(var j:int; j<tickedObjects.length; j++)
                 {
                     var object:ProcessObject = tickedObjects[j] as ProcessObject;
+                    if(!object)
+                        continue;
                     
                     Profiler.enter(object.profilerKey);
                     (object.listener as ITickedObject).onTick(TICK_RATE);
@@ -445,6 +455,8 @@ package com.pblabs.engine.core
             for(var i:int=0; i<animatedObjects.length; i++)
             {
                 var animatedObject:ProcessObject = animatedObjects[i] as ProcessObject;
+                if(!animatedObject)
+                    continue;
                 
                 Profiler.enter(animatedObject.profilerKey);
                 (animatedObject.listener as IAnimatedObject).onFrame(deltaTime / 1000);
@@ -453,6 +465,34 @@ package com.pblabs.engine.core
             duringAdvance = false;
             Profiler.exit("frame");
 
+            // Purge the lists if needed.
+            if(needPurgeEmpty)
+            {
+                needPurgeEmpty = false;
+                
+                Profiler.enter("purgeEmpty");
+                
+                for(var j:int=0; j<animatedObjects.length; j++)
+                {
+                    if(animatedObjects[j])
+                        continue;
+                    
+                    animatedObjects.splice(j, 1);
+                    j--;
+                }
+                
+                for(var k:int=0; k<tickedObjects.length; k++)
+                {                    
+                    if(tickedObjects[k])
+                        continue;
+                    
+                    tickedObjects.splice(k, 1);
+                    k--;
+                }
+
+                Profiler.exit("purgeEmpty");
+            }
+            
             Profiler.ensureAtRoot();
         }
         
@@ -526,6 +566,7 @@ package com.pblabs.engine.core
         protected var elapsed:Number = 0.0;
         protected var animatedObjects:Array = new Array();
         protected var tickedObjects:Array = new Array();
+        protected var needPurgeEmpty:Boolean = false;
         
         protected var _platformTime:Number = 0;
         
