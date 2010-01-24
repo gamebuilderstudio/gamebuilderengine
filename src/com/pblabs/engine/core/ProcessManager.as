@@ -537,7 +537,7 @@ package com.pblabs.engine.core
                     if(qItem)
                     {
                         // Check here to avoid else block that throws an error - empty callback
-                        // means it unregisterd.
+                        // means it unregistered.
                         if(qItem.nextThinkCallback != null)
                             qItem.nextThinkCallback();
                     }
