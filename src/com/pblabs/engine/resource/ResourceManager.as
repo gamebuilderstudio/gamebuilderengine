@@ -67,6 +67,10 @@ package com.pblabs.engine.resource
          */
         public function load(filename:String, resourceType:Class, onLoaded:Function = null, onFailed:Function = null, forceReload:Boolean = false):void
         {
+            // Sanity!
+            if(filename == null)
+                filename = "";
+            
             // Look up the resource.
             var resourceIdentifier:String = filename.toLowerCase() + resourceType;
             var resource:Resource = _resources[resourceIdentifier];
