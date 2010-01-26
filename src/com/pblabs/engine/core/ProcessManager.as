@@ -472,7 +472,7 @@ package com.pblabs.engine.core
                 
                 Profiler.enter("purgeEmpty");
                 
-                for(var j:int=0; j<animatedObjects.length; j++)
+                for(j=0; j<animatedObjects.length; j++)
                 {
                     if(animatedObjects[j])
                         continue;
