@@ -8,6 +8,8 @@
  ******************************************************************************/
 package com.pblabs.engine
 {
+    import com.pblabs.engine.debug.Logger;
+
     /**
      * Contains math related utility methods.
      */
@@ -231,6 +233,12 @@ package com.pblabs.engine
 			return str;
 		}
         
+        /**
+         * Determine the file extension of a file. 
+         * @param file A path to a file.
+         * @return The file extension.
+         * 
+         */
         public static function getFileExtension(file:String):String
         {
             var extensionIndex:Number = file.lastIndexOf(".");
@@ -240,6 +248,34 @@ package com.pblabs.engine
             } else {
                 return file.substr(extensionIndex + 1,file.length);
             }
+        }
+        
+        /**
+         * Log an object to the console. Based on http://dev.base86.com/solo/47/actionscript_3_equivalent_of_phps_printr.html 
+         * @param thisObject Object to display for logging.
+         * @param obj Object to dump.
+         */
+        public static function dumpObjectToLogger(thisObject:*, obj:*, level:int = 0, output:String = ""):String
+        {
+            var tabs:String = "";
+            for(var i:int = 0; i < level; i++, tabs += "\t");
+            
+            for(var child:* in obj) {
+                output += tabs +"["+ child +"] => "+ obj[child];
+                
+                var childOutput:String = dumpObjectToLogger(thisObject, obj[child], level+1);
+                if(childOutput != '') output += ' {\n'+ childOutput + tabs +'}';
+                
+                output += "\n";
+            }
+            
+            if(level == 0)
+            {
+                Logger.print(thisObject, output);
+                return "";
+            }
+            
+            return output;
         }
     }
 }
