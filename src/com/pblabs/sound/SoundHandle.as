@@ -1,5 +1,6 @@
 package com.pblabs.sound
 {
+    import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.debug.Profiler;
     
     import flash.events.Event;
@@ -78,11 +79,19 @@ package com.pblabs.sound
             
             // Note: if pausedPosition is anything but zero, the loops will not reset properly.
             // For now, the ability to "pause" should be avoided.
-            channel = sound.play(pausedPosition, loopCount);
-            playing = true;
+            try
+            {
+                channel = sound.play(pausedPosition, loopCount);
+                playing = true;                
+
+                // notify when this sound is done (all loops completed)
+                channel.addEventListener(Event.SOUND_COMPLETE, onSoundComplete);
+            }
+            catch(e:Error)
+            {
+                Logger.error(this, "resume", "Error starting sound playback: " + e.toString());
+            }
             
-            // notify when this sound is done (all loops completed)
-            channel.addEventListener(Event.SOUND_COMPLETE, onSoundComplete);
 
             Profiler.exit("SoundHandle.resume");
         }
