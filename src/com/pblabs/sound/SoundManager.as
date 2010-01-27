@@ -1,13 +1,14 @@
 package com.pblabs.sound
 {
+    import com.pblabs.engine.PBE;
     import com.pblabs.engine.core.ITickedObject;
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.debug.Profiler;
     import com.pblabs.engine.resource.MP3Resource;
     import com.pblabs.engine.resource.ResourceManager;
     import com.pblabs.engine.resource.SoundResource;
-    import com.pblabs.engine.PBE;
     
+    import flash.events.IOErrorEvent;
     import flash.media.Sound;
     import flash.media.SoundTransform;
     import flash.net.URLRequest;
@@ -87,6 +88,7 @@ package com.pblabs.sound
             {
                 var ur:URLRequest = new URLRequest(url);
                 var s:Sound = new Sound(ur);
+                s.addEventListener(IOErrorEvent.IO_ERROR, _handleStreamFailure, false, 0, true);
             }
             catch(e:Error)
             {
@@ -98,6 +100,11 @@ package com.pblabs.sound
             var sh:SoundHandle = new SoundHandle(this, s, category, pan, loopCount, startDelay);            
             playingSounds.push(sh);
             return sh;
+        }
+        
+        protected function _handleStreamFailure(e:IOErrorEvent):void
+        {
+            Logger.error(this, "_handleStreamFailure", "Error streaming sound: " + e.toString());
         }
         
         public function set muted(value:Boolean):void
