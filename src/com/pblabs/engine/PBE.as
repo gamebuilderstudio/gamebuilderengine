@@ -322,6 +322,10 @@ package com.pblabs.engine
                 }
             }
             
+            // Finish deferring.
+            if(entity.deferring)
+                entity.deferring = false;
+            
             // Give it to the user.
             return entity;
         }
