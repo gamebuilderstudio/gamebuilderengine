@@ -87,8 +87,9 @@ package com.pblabs.sound
             try
             {
                 var ur:URLRequest = new URLRequest(url);
-                var s:Sound = new Sound(ur);
+                var s:Sound = new Sound();
                 s.addEventListener(IOErrorEvent.IO_ERROR, _handleStreamFailure, false, 0, true);
+                s.load(ur);
             }
             catch(e:Error)
             {
