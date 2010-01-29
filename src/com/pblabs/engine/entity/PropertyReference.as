@@ -68,6 +68,11 @@ package com.pblabs.engine.entity
             return this;
         }
         
+        public function toString():String
+        {
+            return _property;
+        }
+        
         private var _property:String = null;
         public var cachedLookup:Array;
     }
