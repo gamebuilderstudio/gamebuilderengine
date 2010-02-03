@@ -714,18 +714,19 @@ package com.pblabs.rendering2D
                 updateProperties();
             
             // If size is active, it always takes precedence over scale.
-            var tmpScale:Point = _scale.clone();
+            var tmpScaleX:Number = _scale.x;
+            var tmpScaleY:Number = _scale.y;
             if(_size)
             {
                 var localDimensions:Rectangle = displayObject.getBounds(displayObject);
-                tmpScale.x = _scale.x * (_size.x / localDimensions.width);
-                tmpScale.y = _scale.y * (_size.y / localDimensions.height);
+                tmpScaleX = _scale.x * (_size.x / localDimensions.width);
+                tmpScaleY = _scale.y * (_size.y / localDimensions.height);
             }
             
             
             _transformMatrix.identity();
-            _transformMatrix.scale(tmpScale.x, tmpScale.y);
-            _transformMatrix.translate(-_registrationPoint.x * tmpScale.x, -_registrationPoint.y * tmpScale.y);
+            _transformMatrix.scale(tmpScaleX, tmpScaleY);
+            _transformMatrix.translate(-_registrationPoint.x * tmpScaleX, -_registrationPoint.y * tmpScaleY);
             _transformMatrix.rotate(PBUtil.getRadiansFromDegrees(_rotation) + _rotationOffset);
             _transformMatrix.translate(_position.x , _position.y);
             
