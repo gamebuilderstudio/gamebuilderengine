@@ -251,9 +251,9 @@ package com.pblabs.engine
         }
         
         /**
-         * Locate an entity by its name.
+         * Locate a PBObject (entity, set, group) by its name.
          */
-        public static function lookup(entityName:String):IEntity
+        public static function lookup(entityName:String):PBObject
         {
             return _nameManager.lookup(entityName);
         }
