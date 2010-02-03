@@ -137,6 +137,11 @@ package com.pblabs.engine.debug
                 // Get commands in alphabetical order.
                 ensureCommandsOrdered();
                 
+                Logger.print(Console, "Keyboard shortcuts: ");
+                Logger.print(Console, "[SHIFT]-TAB - Cycle through autocompleted commands.");
+                Logger.print(Console, "PGUP/PGDN   - Page log view up/down a page.");
+                Logger.print(Console, "");
+                
                 // Display results.
                 Logger.print(Console, "Commands:");
                 for(var i:int=0; i<commandList.length; i++)
