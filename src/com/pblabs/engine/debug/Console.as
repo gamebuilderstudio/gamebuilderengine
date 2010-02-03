@@ -30,6 +30,13 @@ package com.pblabs.engine.debug
          * The commands, indexed by name. 
          */
         protected static var commands:Object = {};
+        
+        /**
+         * Alphabetically ordered list of commands.
+         */
+        protected static var commandList:Array = [];
+        protected static var commandListOrdered:Boolean = false;
+        
         protected static var _stats:Stats;
         
         public static var verbosity:int = 0;
@@ -70,6 +77,20 @@ package com.pblabs.engine.debug
             
             // Set it.
             commands[name.toLowerCase()] = c;
+            
+            // Update the list.
+            commandList.push(c);
+            commandListOrdered = false;
+        }
+        
+        /**
+         * @return An alphabetically sorted list of all the console commands.
+         */
+        public static function getCommandList():Array
+        {
+            ensureCommandsOrdered();
+            
+            return commandList;
         }
         
         /**
@@ -78,9 +99,8 @@ package com.pblabs.engine.debug
          */
         public static function processLine(line:String):void
         {
-            // Register default commands.
-            if(commands.help == null)
-                init();
+            // Make sure everything is in order.
+            ensureCommandsOrdered();
             
             // Split it by spaces.
             var args:Array = line.split(" ");
@@ -112,22 +132,26 @@ package com.pblabs.engine.debug
          */
         public static function init():void
         {
-            registerCommand("help", function():void
+            registerCommand("help", function(prefix:String = null):void
             {
                 // Get commands in alphabetical order.
-                var tempList:Array = [];
-                for(var cmd:String in commands)
-                    tempList.push(cmd);
-                tempList.sort();
+                ensureCommandsOrdered();
                 
                 // Display results.
                 Logger.print(Console, "Commands:");
-                for(var i:int=0; i<tempList.length; i++)
+                for(var i:int=0; i<commandList.length; i++)
                 {
-                    var cc:ConsoleCommand = commands[tempList[i]] as ConsoleCommand;
+                    var cc:ConsoleCommand = commandList[i] as ConsoleCommand;
+                    
+                    // Do prefix filtering.
+                    if(prefix && prefix.length > 0 && cc.name.substr(0, prefix.length) != prefix)
+                        continue;
+                    
                     Logger.print(Console, "   " + cc.name + " - " + (cc.docs ? cc.docs : ""));
                 }
-            }, "List known commands.");
+                
+                // List input options.
+            }, "[prefix] - List known commands, optionally filtering by prefix.");
             
             registerCommand("version", function():void
             {
@@ -166,6 +190,29 @@ package com.pblabs.engine.debug
                 var sum:int = Console._listPBObjects(PBE.rootGroup, 0);
                 Logger.print(Console, " " + sum + " total PBObjects.");
             }, "List all the PBObjects in the game.");
+        }
+        
+        protected static function ensureCommandsOrdered():void
+        {
+            // Avoid extra work.
+            if(commandListOrdered == true)
+                return;
+
+            // Register default commands.
+            if(commands.help == null)
+                init();
+
+            // Note we are done.
+            commandListOrdered = true;
+            
+            // Do the sort.
+            commandList.sort(function(a:ConsoleCommand, b:ConsoleCommand):int
+            {
+                if(a.name > b.name)
+                    return 1;
+                else
+                    return -1;
+            });
         }
         
         protected static function _listDisplayObjects(current:DisplayObject, indent:int):int

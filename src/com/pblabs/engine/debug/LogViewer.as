@@ -38,6 +38,11 @@ package com.pblabs.engine.debug
         protected var _output:TextField;
         protected var _input:TextField;
         
+        protected var tabCompletionPrefix:String = "";
+        protected var tabCompletionCurrentStart:int = 0;
+        protected var tabCompletionCurrentEnd:int = 0;
+        protected var tabCompletionCurrentOffset:int = 0;
+        
         public function LogViewer():void
         {
             layout();
@@ -119,6 +124,7 @@ package com.pblabs.engine.debug
             _output.setTextFormat(format);
             _output.defaultTextFormat = format;
             _output.htmlText = "";
+            _output.embedFonts = false;
 			_output.name = "ConsoleOutput";
             
             return _output;
@@ -155,11 +161,20 @@ package com.pblabs.engine.debug
         
         protected function onInputKeyDown(event:KeyboardEvent):void
         {
+            // If this was a non-tab input, clear tab completion state.
+            if(event.keyCode != Keyboard.TAB && event.keyCode != Keyboard.SHIFT)
+            {
+                tabCompletionPrefix = _input.text;
+                tabCompletionCurrentStart = -1;
+                tabCompletionCurrentOffset = 0;
+            }
+
             if(event.keyCode == Keyboard.ENTER)
             {
+                // Execute an entered command.
                 if(_input.text.length <= 0)
 				{
-					// Enter a blank line
+					// display a blank line
 					addLogMessage("CMD", ">", _input.text);
 					return;
 				}
@@ -169,6 +184,7 @@ package com.pblabs.engine.debug
             }
             else if (event.keyCode == Keyboard.UP)
             {
+                // Go to previous command.
                 if(_historyIndex > 0)
                 {
                     setHistory(_consoleHistory[--_historyIndex]); 
@@ -182,6 +198,7 @@ package com.pblabs.engine.debug
             }
             else if(event.keyCode == Keyboard.DOWN)
             {
+                // Go to next command.
                 if(_historyIndex < _consoleHistory.length-1)
                 {
                     setHistory(_consoleHistory[++_historyIndex]); 
@@ -192,6 +209,85 @@ package com.pblabs.engine.debug
                 }
                 
                 event.preventDefault();
+            }
+            else if(event.keyCode == Keyboard.PAGE_UP)
+            {
+                // Page the console view up.
+                _output.scrollV -= Math.floor(_output.height / _output.getLineMetrics(0).height);
+            }
+            else if(event.keyCode == Keyboard.PAGE_DOWN)
+            {
+                // Page the console view down.
+                _output.scrollV += Math.floor(_output.height / _output.getLineMetrics(0).height);
+            }
+            else if(event.keyCode == Keyboard.TAB)
+            {
+                // We are doing tab searching.
+                var list:Array = Console.getCommandList();
+                
+                // Is this the first step?
+                var isFirst:Boolean = false;
+                if(tabCompletionCurrentStart == -1)
+                {
+                    tabCompletionPrefix = _input.text;
+                    tabCompletionCurrentStart = int.MAX_VALUE;
+                    tabCompletionCurrentEnd = -1;
+
+                    for(var i:int=0; i<list.length; i++)
+                    {
+                        // If we found a prefix match...
+                        if(list[i].name.substr(0, tabCompletionPrefix.length) == tabCompletionPrefix)
+                        {
+                            // Note it.
+                            if(i < tabCompletionCurrentStart)
+                                tabCompletionCurrentStart = i;
+                            if(i > tabCompletionCurrentEnd)
+                                tabCompletionCurrentEnd = i;
+
+                            isFirst = true;
+                        }
+                    }
+                    
+                    tabCompletionCurrentOffset = tabCompletionCurrentStart;
+                }
+                
+                // If there is a match, tab complete.
+                if(tabCompletionCurrentEnd != -1)
+                {
+                    // Update offset if appropriate.
+                    if(!isFirst)
+                    {
+                        if(event.shiftKey)
+                            tabCompletionCurrentOffset--;
+                        else
+                            tabCompletionCurrentOffset++;
+                        
+                        // Wrap the offset.
+                        if(tabCompletionCurrentOffset < tabCompletionCurrentStart)
+                        {
+                            tabCompletionCurrentOffset = tabCompletionCurrentEnd;
+                        }
+                        else if(tabCompletionCurrentOffset > tabCompletionCurrentEnd)
+                        {
+                            tabCompletionCurrentOffset = tabCompletionCurrentStart;
+                        }
+                    }
+
+                    // Get the match.
+                    var potentialMatch:String = list[tabCompletionCurrentOffset].name;
+                    
+                    // Update the text with the current completion, caret at the end.
+                    _input.text = potentialMatch;
+                    _input.setSelection(potentialMatch.length + 1, potentialMatch.length + 1);
+                }
+                
+                // Make sure we keep focus. TODO: This is not ideal, it still flickers the yellow box.
+                var oldfr:* = stage.stageFocusRect;
+                stage.stageFocusRect = false;
+                PBE.callLater(function():void {
+                    stage.focus = _input;
+                    stage.stageFocusRect = oldfr;
+                });
             }
             else if(event.keyCode == InputKey.TILDE.keyCode)
             {
