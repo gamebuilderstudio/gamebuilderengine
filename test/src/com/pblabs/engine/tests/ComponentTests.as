@@ -120,7 +120,7 @@ package com.pblabs.engine.tests
             PBE.templateManager.addXML(_testXML, "UnitTestXML", 1);
             var entity:IEntity = PBE.templateManager.instantiateEntity("XMLTestEntity");
             Assert.assertNotNull(entity, "Should have gotten something back from TemplateManager!");
-            var lookedupEntity:IEntity = PBE.lookup("XMLTestEntity");
+            var lookedupEntity:IEntity = PBE.lookup("XMLTestEntity") as IEntity;
             Assert.assertEquals(entity, lookedupEntity);
 
             var a:TestComponentA = entity.lookupComponentByName("A") as TestComponentA;
