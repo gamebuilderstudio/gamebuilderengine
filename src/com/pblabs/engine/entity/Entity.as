@@ -3,6 +3,7 @@ package com.pblabs.engine.entity
     import com.pblabs.engine.PBE;
     import com.pblabs.engine.core.NameManager;
     import com.pblabs.engine.core.PBObject;
+    import com.pblabs.engine.core.PBSet;
     import com.pblabs.engine.core.TemplateManager;
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.debug.Profiler;
@@ -122,7 +123,7 @@ package com.pblabs.engine.entity
                 
                 if (componentClassName.length > 0)
                 {
-                    // If it specifies a type, instantie a component and add it.
+                    // If it specifies a type, instantiate a component and add it.
                     component = TypeUtility.instantiate(componentClassName) as IEntityComponent;
                     if (!component)
                     {
@@ -147,6 +148,31 @@ package com.pblabs.engine.entity
                 // Deserialize the XML into the component.
                 Serializer.instance.deserialize(component, componentXML);
             }
+            
+            // Deal with set membership.
+            var setsAttr:String = xml.attribute("sets");
+            if (setsAttr)
+            {
+                // The entity wants to be in some sets.
+                var setNames:Array = setsAttr.split(",");
+                if (setNames)
+                {
+                    // There's a valid-ish set string, let's loop through the entries
+                    var thisName:String;
+                    while (thisName = setNames.pop())
+                    {
+                        var pbset:PBSet = PBE.lookup(thisName) as PBSet;
+                        if (!pbset) 
+                        {
+                            // Set doesn't exist, create a new one.
+                            pbset = new PBSet();
+                            pbset.initialize(thisName);
+                            Logger.warn(this, "deserialize", "Auto-creating set '" + thisName + "'.");
+                        }
+                        pbset.add(this as PBObject);
+                    }
+                }
+            }            
             
             // Restore deferred state.
             deferring = oldDefer;
