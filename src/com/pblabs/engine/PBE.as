@@ -261,7 +261,7 @@ package com.pblabs.engine
         /**
          * Locate an IEntity by its name.
          */
-        public static function lookupEntity(entityName):IEntity
+        public static function lookupEntity(entityName:String):IEntity
         {
             return _nameManager.lookup(entityName) as IEntity;
         }
