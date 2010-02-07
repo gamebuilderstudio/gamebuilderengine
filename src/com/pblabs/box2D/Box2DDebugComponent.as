@@ -55,16 +55,19 @@ package com.pblabs.box2D
         
         override protected function onAdd():void
         {
+			super.onAdd();
             displayObject = new Sprite();
+			_zIndex = 30000;
             _drawer.m_sprite = displayObject as Sprite;
             _drawer.m_fillAlpha = 0.3;
             _drawer.m_lineThickness = 1.0;
-            _drawer.m_drawFlags = b2DebugDraw.e_shapeBit|b2DebugDraw.e_jointBit;
+            applyDebugFlags();
         }
 
         override protected function onRemove():void
         {
 	        // Suppress auto-registration behavior. 
+			super.onRemove();
         }
         
         override protected function onReset():void 
@@ -192,10 +195,10 @@ package com.pblabs.box2D
         protected var _drawer:b2DebugDraw = new b2DebugDraw();
         protected var _drawShapes:Boolean = true; 
         protected var _drawJoints:Boolean = true;      
-        protected var _drawCoreShapes:Boolean = true;
-        protected var _drawAABB:Boolean = true;
-        protected var _drawOBB:Boolean = true;
-        protected var _drawPairs:Boolean = true;
-        protected var _drawCenterOfMass:Boolean = true;
+        protected var _drawCoreShapes:Boolean = false;
+        protected var _drawAABB:Boolean = false;
+        protected var _drawOBB:Boolean = false;
+        protected var _drawPairs:Boolean = false;
+        protected var _drawCenterOfMass:Boolean = false;
     }
 }
