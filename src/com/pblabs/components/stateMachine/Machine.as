@@ -68,7 +68,6 @@ package com.pblabs.components.stateMachine
             {
                 _previousState = _currentState;
             }
-            
         }
         
         public function getCurrentState():IState
