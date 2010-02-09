@@ -167,8 +167,8 @@
          <arg line="-source-path &quot;${classesdir}&quot;" />
          <arg line="-doc-classes ${path.classes}" />
          <arg line="-exclude-dependencies=true" />
-         <arg line="-window-title '${windowtitle} - r${svn.revision}'" />
-         <arg line="-main-title '${maintitle} - r${svn.revision}'" />
+         <arg line="-window-title '${windowtitle} - r${env.SVN_REVISION} (ZaaBot build #${env.BUILD_NUMBER})'" />
+         <arg line="-main-title '${maintitle} - r${env.SVN_REVISION} (ZaaBot build #${env.BUILD_NUMBER})' " />
          <arg line="-footer '${footer}'" />
          <arg line="-output '${docsdir}'" />
       </exec>
