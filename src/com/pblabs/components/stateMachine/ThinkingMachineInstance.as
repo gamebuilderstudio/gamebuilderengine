@@ -46,6 +46,29 @@ package com.pblabs.components.stateMachine
             return _enteredStateTime;
         }
         
+        public function set enteredStateTime(value:Number):void
+        {
+            // Update the value and reschedule based on new time.
+            _enteredStateTime = value;
+            
+            if(_currentState is BasicThinkingState)
+            {
+                var targetDuration:int = (_currentState as BasicThinkingState).getDuration(this);
+                think(tick, targetDuration - (PBE.processManager.virtualTime - _enteredStateTime));
+            }
+        }
+        
+        /**
+         * Time remaining before the state is due to advance.
+         */
+        public function get timeRemaining():Number
+        {
+            if(!(_currentState is BasicThinkingState))
+                return 0;
+
+            return (_currentState as BasicThinkingState).getDuration(this) - (PBE.processManager.virtualTime - enteredStateTime);
+        }
+        
         public function get propertyBag():IPropertyBag
         {
             return owner;
@@ -65,7 +88,11 @@ package com.pblabs.components.stateMachine
                 setCurrentState(description.defaultState);
             
             if(_currentState)
-                _currentState.tick(this);
+            {
+                // Only tick if it is due to tick.
+                if(timeRemaining <= 0)
+                    _currentState.tick(this);
+            }
             
             //Logger.print(this, "Ticked, now in " + getStateName(_currentState) + " from " + getStateName(_previousState) + "! duration=" + (PBE.processManager.virtualTime - _nextThinkTime));
 
