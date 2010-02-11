@@ -68,8 +68,11 @@ package com.pblabs.engine.resource
         public function load(filename:String, resourceType:Class, onLoaded:Function = null, onFailed:Function = null, forceReload:Boolean = false):void
         {
             // Sanity!
-            if(filename == null)
-                filename = "";
+            if(filename == null || filename == "")
+            {
+                Logger.error(this, "load", "Cannot load a " + resourceType + " with empty filename.");
+                return;
+            }
             
             // Look up the resource.
             var resourceIdentifier:String = filename.toLowerCase() + resourceType;
