@@ -6,8 +6,8 @@ package com.pblabs.rendering2D
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.entity.PropertyReference;
     
+    import flash.display.BlendMode;
     import flash.display.DisplayObject;
-	import flash.display.BlendMode;
     import flash.geom.Matrix;
     import flash.geom.Point;
     import flash.geom.Rectangle;
@@ -110,6 +110,7 @@ package com.pblabs.rendering2D
         protected var _alpha:Number = 1;
 		protected var _blendMode:String = BlendMode.NORMAL;
         protected var _position:Point = new Point();
+		protected var _positionOffset:Point = new Point();
         protected var _size:Point;
         
         protected var _transformMatrix:Matrix = new Matrix();
@@ -299,6 +300,26 @@ package com.pblabs.rendering2D
 			}
 			
 			_blendMode = value;
+			_transformDirty = true;
+		}
+		
+		public function get positionOffset():Point
+		{
+			return _positionOffset.clone();
+		}
+		
+		/**
+		 * Sets a position offset that will offset the sprite.
+		 * 
+		 * Please note: This is unaffected by rotation.
+		 */
+		public function set positionOffset(value:Point):void
+		{
+			if (value.x == _positionOffset.x && value.y == _positionOffset.y)
+				return;
+			
+			_positionOffset.x = value.x;
+			_positionOffset.y = value.y;
 			_transformDirty = true;
 		}
 		
@@ -728,7 +749,7 @@ package com.pblabs.rendering2D
             _transformMatrix.scale(tmpScaleX, tmpScaleY);
             _transformMatrix.translate(-_registrationPoint.x * tmpScaleX, -_registrationPoint.y * tmpScaleY);
             _transformMatrix.rotate(PBUtil.getRadiansFromDegrees(_rotation) + _rotationOffset);
-            _transformMatrix.translate(_position.x , _position.y);
+            _transformMatrix.translate(_position.x + _positionOffset.x, _position.y + _positionOffset.y);
             
             displayObject.transform.matrix = _transformMatrix;
             displayObject.alpha = _alpha;
