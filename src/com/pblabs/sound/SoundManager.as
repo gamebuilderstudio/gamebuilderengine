@@ -17,7 +17,7 @@ package com.pblabs.sound
      * This class implements the ISoundManager interface. See ISoundManager
      * for full documentation.
      * 
-     * @see ISoundManager for full documentation.
+     * @see ISoundManager See ISoundManager for full documentation.
      */
     public class SoundManager implements ISoundManager, ITickedObject
     {
