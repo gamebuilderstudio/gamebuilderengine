@@ -85,6 +85,22 @@ package com.pblabs.sound
          * @param transform New SoundTransform to apply to this category.
          */
         function setCategoryTransform(category:String, transform:SoundTransform):void;
-        function getCategoryTransform(category:String):SoundTransform;            
+        function getCategoryTransform(category:String):SoundTransform; 
+        
+        /**
+         * Stop all the sounds playing in a category.
+         */
+        function stopCategorySounds(category:String):void
+
+        /**
+         * Stop all the sounds playing in the SoundManager.
+         */
+        function stopAll():void
+
+        /**
+         * Fetch all the SoundHandles in the specified category and store them 
+         * in the provided array.
+         */
+        function getSoundHandlesInCategory(category:String, outArray:Array):void        
     }
 }

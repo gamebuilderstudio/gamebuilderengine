@@ -13,6 +13,12 @@ package com.pblabs.sound
     import flash.media.SoundTransform;
     import flash.net.URLRequest;
     
+    /**
+     * This class implements the ISoundManager interface. See ISoundManager
+     * for full documentation.
+     * 
+     * @see ISoundManager for full documentation.
+     */
     public class SoundManager implements ISoundManager, ITickedObject
     {
         public static const MUSIC_MIXER_CATEGORY:String = "music";
@@ -174,7 +180,36 @@ package com.pblabs.sound
         {
             return categories[category].transform;
         }
+        
+        public function stopCategorySounds(category:String):void
+        {
+            for(var i:int=0; i<playingSounds.length; i++)
+            {
+                if((playingSounds[i] as SoundHandle).category != category)
+                    continue;
 
+                (playingSounds[i] as SoundHandle).stop();
+                i--;
+            }
+        }
+
+        public function stopAll():void
+        {
+            while(playingSounds.length)
+                (playingSounds[playingSounds.length-1] as SoundHandle).stop();
+        }
+        
+        public function getSoundHandlesInCategory(category:String, outArray:Array):void
+        {
+            for(var i:int=0; i<playingSounds.length; i++)
+            {
+                if((playingSounds[i] as SoundHandle).category != category)
+                    continue;
+                
+                outArray.push(playingSounds[i]);
+            }
+        }
+        
         internal function updateSounds():void
         {
             Profiler.enter("SoundManager.updateSounds");

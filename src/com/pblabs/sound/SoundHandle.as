@@ -11,6 +11,8 @@ package com.pblabs.sound
     /**
      * Track an active sound. You should only use ISoundHandle, not access this
      * directly.
+     * 
+     * @see ISoundHandle for documentation on this class.
      */
     internal class SoundHandle implements ISoundHandle
     {
