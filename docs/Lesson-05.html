@@ -57,24 +57,27 @@
    
    <p><strong>File: /Lesson5Base/src/Lesson5Base.as</strong></p>
    <pre class="brush: js">
-         // Create a simple render component to display our object
+       // Create a simple render component to display our object
 
-         // Here we've removed the reference to our simple shape renderer, and added a sprite render component.
-         var render:SpriteRenderComponent = new SpriteRenderComponent();
+       // Here we've removed the reference to our simple shape renderer, and added a sprite render component.
+       var render:SpriteRenderer = new SpriteRenderer();
 
-         // Tell the Render component to use one of the images in our assets directory
-         render.loadFromImage = "../assets/fanship.png";
-         
-         // Set our hero to render above the background.
-         render.layerIndex = 10;
-         
-         // Point the render component to this entity's Spatial component for position information
-         render.positionReference = new PropertyReference("@Spatial.position");
-         // Point the render component to this entity's Spatial component for size information
-         render.sizeReference = new PropertyReference("@Spatial.size");
-        
-         // Add our render component to the Hero entity with the name "Render"
-         hero.addComponent( render, "Render" );
+       // Tell the Render component to use one of the images embedded by our ResourceBundle
+       render.fileName = "../assets/fanship.png";
+       
+       // Add the renderer to the scene.
+       render.scene = PBE.scene;
+       
+       // Set our hero to render above the background.
+       render.layerIndex = 10;
+       
+       // Point the render component to this entity's Spatial component for position information
+       render.positionProperty = new PropertyReference("@Spatial.position");
+       // Point the render component to this entity's Spatial component for size information
+       render.sizeProperty = new PropertyReference("@Spatial.size");
+      
+       // Add our render component to the Hero entity with the name "Render"
+       hero.addComponent( render, "Render" );
    </pre>
 
    <p><a href="images/Lesson5_2.png"><img src="images/Lesson5_2.png" align="right" width="204" height="159" alt="Goodbye cruel circle"></a></p>
@@ -82,7 +85,7 @@
    <p>At this point, you should be able to compile and run the game.  If everything was done correctly, then you should now see a small hovercraft in place of your old blue circle.</p>
    
 
-   <p><em>Please note:</em> At this point, the hovercraft image is not embedded.  If you move or upload the SWF right now, it will not display any images.  This is fine for rapid development purposes, but to make the images work even after uploading or e-mailing, you will need the final step in this lesson -- embedding the images into the compiled SWF.</p>
+   <p><em>Please note:</em> At this point, the hovercraft image is not embedded.  If you move or upload the SWF right now, it will not display any images.  This is fine for rapid development purposes, but to make the images work even after uploading or e-mailing the SWF, you will need the final step in this lesson -- embedding the images into the compiled SWF.</p>
    
    <p><h2>Adding the Background</h2></p>  
 
@@ -92,36 +95,40 @@
 
    <p><strong>File: /Lesson5Base/src/Lesson5Base.as</strong></p>
    <pre class="brush: js">
-      private function createBackground():void
-      {
-         // Allocate an entity for our background sprite
-         var bg:IEntity = allocateEntity();
-         // Register the entity with PBE under the name "BG"
-         bg.initialize("BG");
-         
-         // Add our spatial component to the background entity ...
-         createSpatial( bg, 
-            // with location of 0,0...
-            new Point(0, 0)
-         );
-            
-         // Create a simple render component to display our object
+       private function createBackground():void
+       {
+          // Allocate an entity for our background sprite
+          var bg:IEntity = PBE.allocateEntity();
 
-         // Just like the hero, this also uses a SpriteRenderComponent
-         var render:SpriteRenderComponent = new SpriteRenderComponent();
-         
-         // Tell the Render component to use one of the images in our assets directory
-         render.loadFromImage = "../assets/bg.jpg";
-         
-         // Set our background to render below the hero.
-         render.layerIndex = 1;
-         
-         // Point the render component to this entity's Spatial component for position information
-         render.positionReference = new PropertyReference("@Spatial.position");
-        
-         // Add our render component to the BG entity with the name "Render"
-         bg.addComponent( render, "Render" );
-      }
+          // Add our spatial component to the background entity ...
+          createSpatial( bg, 
+             // with location of 0,0...
+             new Point(0, 0)
+          );
+
+          // Create a simple render component to display our object
+
+          // Just like the hero, this also uses a SpriteRenderComponent
+          var render:SpriteRenderer = new SpriteRenderer();
+
+          // Tell the Render component to use one of the images embedded by our ResourceLinker
+          render.fileName = "../assets/bg.jpg";
+
+          // Set our background to render below the hero.
+          render.layerIndex = 1;
+
+          // Add the renderer to the scene.
+          render.scene = PBE.scene;
+
+          // Point the render component to this entity's Spatial component for position information
+          render.positionProperty = new PropertyReference("@Spatial.position");
+
+          // Add our render component to the BG entity with the name "Render"
+          bg.addComponent( render, "Render" );
+
+          // Register the entity with PBE under the name "BG"
+          bg.initialize("BG");         
+       }
    </pre>
    
    <p>And then at the top of the file, don't forget to add a call to createBackground().</p>
@@ -166,10 +173,10 @@ package
    <pre class="brush: js">
    public class MyResources extends ResourceBundle
    {
-      [Embed(source="../assets/bg.jpg", mimeType='application/octet-stream')]
+      [Embed(source="../assets/bg.jpg")]
       public var resBg:Class;
       
-      [Embed(source="../assets/fanship.png", mimeType='application/octet-stream')]
+      [Embed(source="../assets/fanship.png")]
       public var resShip:Class;
    }
    </pre>
@@ -181,14 +188,13 @@ package
       public function Lesson5Final()
       {
          // Start up PBE
-         Global.startup(this);
+         PBE.startup(this);
          
          // Load up our embedded resources
          new MyResources( );
    </pre>
    
    <p>And that should do it!  That will embed those graphics and make them accessible to PBE.  Once a ResourceBundle is instantiated, it automatically looks at the resources that you embedded inside of it, and properly registers them with the PBE ResourceManager.</p>
-
 
    <p>That should be the end of it!</p>
    
@@ -197,27 +203,22 @@ package
    <p><a href="downloads/Lesson5Final.swf"><img src="images/Lesson5_1.png" width="204" height="159" alt="Here or there, we can fly (and copy) our hovercraft anywhere!"></a></p>
       
    <p><h2>In Review</h2></p>
-   <p>Here are some highlights of things that we learned in this lesson:
-   <ul>
-      <li>SpriteRenderComponent can be used to render a sprite for an entity.</li>
-      <li>Set the image of a SpriteRenderComponent through the loadFromImage property.</li>
-      <li>If you do not embed the assets into your compiled SWF, you will not be able to distribute your file to another location.</li>
-      <li>The easiest (and most universal) way to embed resources in PBE is by using the ResourceBundle.</li>
-      <li>To use ResourceBundle, use the following syntax:
+
+   <p><em>SpriteRenderComponent</em> can be used to render a sprite for an entity. Set the image of a <em>SpriteRenderComponent</em> through the fileName property.</p>
+   
+   <p>If you do not embed the assets into your compiled SWF, you will not be able to distribute your file to another location. The easiest (and most universal) way to embed resources in PBE is by using the <em>ResourceBundle</em>, although if you are using the CS4 Library, most components allow you to specify items from there directly (for instance <em>DisplayObjectRenderer</em> allows you to set its <em>displayObject</em> member with a direct reference to a <em>new ItemFromLibrary()</em>).</li>
+
+   <p>To use ResourceBundle, use the following syntax:
 
          <pre class="brush: js">
          public class MyResources extends ResourceBundle
          {
-            [Embed(source="../assets/imageFilename.png", mimeType='application/octet-stream')]
+            [Embed(source="../assets/imageFilename.png")]
             public var someName:Class;
          }
          </pre>
          
-         Where <em>"../assets/imageFilename.png"</em> is the path to your resource, and <em>someName</em> is a unique property name inside of ResourceBundle.  This name is not as important as the filename, because all resources in PBE are referenced through the filename.
-      </li>
-      <li>It's not enough to just define your ResourceBundle class -- to actually make the assets accessible to PBE, the final step in making the assets embed is to instantiate your custom ResourceBundle class.</li>
-   </ul>
-   </p>
+         Where <em>"../assets/imageFilename.png"</em> is the path to your resource, and <em>someName</em> is a unique property name inside of ResourceBundle.  This name is not as important as the filename, because all resources in PBE are referenced through the filename. It's not enough to just define your ResourceBundle class -- to actually make the assets accessible to PBE, the final step in making the assets embed is to instantiate your custom ResourceBundle class</p>
       
    <p><h2>Conclusion</h2></p>
    
