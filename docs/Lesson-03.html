@@ -73,54 +73,54 @@
    <p>Now that we know the basic plan, let's put it into action!  Create a new source file in the project Source directory with the name DemoControllerComponent.as, and use the following code listing for the file:</p>
    <p><strong>File: /Lesson3Base/Source/DemoControllerComponent.as</strong></p>
    <pre class="brush: js">
-package 
-{
-   import com.pblabs.engine.components.TickedComponent;
-   import com.pblabs.engine.entity.PropertyReference;
+       package 
+       {
+          import com.pblabs.engine.components.TickedComponent;
+          import com.pblabs.engine.entity.PropertyReference;
 
-   import flash.geom.Point;
+          import flash.geom.Point;
 
-   // Make a ticked component so that it can update itself every frame with onTick() 
-   public class DemoControllerComponent extends TickedComponent
-   {
-      // Keep a property reference to our entity's position.
-      public var positionReference:PropertyReference;
-      
-      // Store the direction that our entity is traveling: 1 is to the right, -1 is to the left.
-      private var direction:int = 1;   
-      
-      // onTick() is called every frame
-      public override function onTick(tickRate:Number):void
-      {
-         // Copy the owner entity's position into a local Point structure
-         var position:Point = owner.getProperty(positionReference);
-         
-         
-         // If we are over the left edge...
-         if (position.x < -375) {
-            // ...then push ourselves to the right for the time being.
-            direction = 1;
+          // Make a ticked component so that it can update itself every frame with onTick() 
+          public class DemoControllerComponent extends TickedComponent
+          {
+             // Keep a property reference to our entity's position.
+             public var positionReference:PropertyReference;
 
-            // Move our entity down a notch
-            position.y += 20;
-         }
-         // If we are over the right edge...
-         else if (position.x > 375) {
-            // ...then push ourselves to the left for the time being.
-            direction = -1;
-            
-            // Move our entity down a notch
-            position.y += 20;
-         }
-         
-         // Move 5 units in the direction that we're headed
-         position.x += direction * 5;
-         
-         // Set the spatial component's position based on our new value
-         owner.setProperty(positionReference, position);
-      }
-   }
-}
+             // Store the direction that our entity is traveling: 1 is to the right, -1 is to the left.
+             private var direction:int = 1;   
+
+             // onTick() is called every frame
+             public override function onTick(tickRate:Number):void
+             {
+                // Copy the owner entity's position into a local Point structure
+                var position:Point = owner.getProperty(positionReference);
+
+                // If we are over the left edge...
+                if (position.x < -375) {
+                   // ...then push ourselves to the right for the time being.
+                   direction = 1;
+
+                   // Move our entity down a notch
+                   position.y += 20;
+                }
+                // If we are over the right edge...
+                else if (position.x > 375) {
+                   // ...then push ourselves to the left for the time being.
+                   direction = -1;
+
+                   // Move our entity down a notch
+                   position.y += 20;
+                }
+
+                // Move 5 units in the direction that we're headed
+                position.x += direction * 5;
+
+                // Set the spatial component's position based on our new value
+                owner.setProperty(positionReference, position);
+             }
+
+          }
+       }
    </pre>   
    
    <h2>Connecting the Dots</h2>
@@ -130,13 +130,13 @@ package
    
    <p><strong>File: /Lesson3Base/Source/Lesson3Base.as</strong></p>
    <pre class="brush: js">
-         var controller:DemoControllerComponent = new DemoControllerComponent();
-         
-         // Point the controller component to this entity's Spatial component for position information
-         controller.PositionReference = new PropertyReference("@Spatial.position");
-         
-         // Add the demo controller component to the Hero entity with the name "Controller"
-         hero.addComponent( controller, "Controller" );
+       var controller:DemoControllerComponent = new DemoControllerComponent();
+
+       // Point the controller component to this entity's Spatial component for position information
+       controller.positionReference = new PropertyReference("@Spatial.position");
+
+       // Add the demo controller component to the Hero entity with the name "Controller"
+       hero.addComponent( controller, "Controller" );
    </pre>      
    
    <p>This creates an instance of the new DemoControllerComponent(), connects the position reference to the entity's spatial component, and adds the component to the entity.</p>

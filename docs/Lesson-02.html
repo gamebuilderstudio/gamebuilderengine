@@ -104,38 +104,35 @@
    <p>The second component is the render component -- it registers itself with the render manager, and tells the manager how the entity is to be drawn to the screen.  We are just using a simple circle for this lesson, but there are many more powerful options available.</p>
 
    <pre class="brush: js">
-      private function createHero():void
-      {
-         var hero:IEntity = allocateEntity();                                 // Allocate an entity for our hero avatar
-         
-         var spatial:SimpleSpatialComponent = new SimpleSpatialComponent();   // Create our spatial component
-         
-         spatial.position = new Point(0,0);                                   // Set our hero's spatial position as 0,0
-         spatial.size = new Point(50,50);                                     // Set our hero's size as 50,50
-        
-         hero.addComponent( Spatial, "Spatial" );                             // Add our spatial component to the Hero entity with the name "Spatial"
-        
-         var circleSprite:Sprite = new Sprite();                              // Make the sprite that will be rendered
-         circleSprite.graphics.lineStyle(2, 0x000000);
-         circleSprite.graphics.beginFill(0x0000FF0);
-         circleSprite.graphics.drawCircle(0, 0, 25);
-         circleSprite.graphics.endFill();
-         
-         var render:DisplayObjectRenderer = new DisplayObjectRenderer();      // Create a DisplayObjectRenderer to display our object
-         render.displayObject = circleSprite;                                 // Specify the display object to use
-         render.scene = PBE.getScene();                                       // Set which scene this is apart of
-         
-         // Point the render component to this entity's Spatial component for position information
-         render.positionProperty = new PropertyReference("@Spatial.position");
-         // Point the render component to this entity's Spatial component for rotation information
-         render.rotationProperty = new PropertyReference("@Spatial.rotation");
-        
-         hero.addComponent( Render, "Render" );                               // Add our render component to the Hero entity with the name "Render"
+       private function createHero():void
+       {
+           var hero:IEntity = allocateEntity();                                 // Allocate an entity for our hero avatar
+           
+           var spatial:SimpleSpatialComponent = new SimpleSpatialComponent();   // Create our spatial component
+           
+           spatial.position = new Point(0,0);                                   // Set our hero's spatial position as 0,0
+           spatial.size = new Point(50,50);                                     // Set our hero's size as 50,50
+           spatial.spatialManager = PBE.spatialManager;
 
-         hero.initialize("Hero");                                             // Register the entity with PBE under the name "Hero"
-
-      }
-   }
+           hero.addComponent( spatial, "Spatial" );                             // Add our spatial component to the Hero entity with the name "Spatial"
+           
+           var render:SimpleShapeRenderer = new SimpleShapeRenderer();          // Create a renderer to display our object
+           render.fillColor = 0x0000FF0;
+           render.isCircle = true;
+           render.lineSize = 2;
+           render.radius = 25;
+           render.lineColor = 0x000000;
+           render.scene = PBE.scene;                                            // Set which scene this is a part of
+           
+           // Point the render component to this entity's Spatial component for position information
+           render.positionProperty = new PropertyReference("@Spatial.position");
+           // Point the render component to this entity's Spatial component for rotation information
+           render.rotationProperty = new PropertyReference("@Spatial.rotation");
+           
+           hero.addComponent( render, "Render" );                               // Add our render component to the Hero entity with the name "Render"
+           
+           hero.initialize("Hero");                                             // Register the entity with PBE under the name "Hero"         
+       }
    </pre>   
 
    <p>And we're done!  At this point, things should be all ready to compile and see your new entity displayed on the screen!</p>
