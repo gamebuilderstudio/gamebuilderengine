@@ -65,12 +65,18 @@
 
       protected override function onAdd():void
       {
+         // Let superclass initialize, too.
+         super.onAdd();
+         
          // Initialize resources.
          // This will be called when the component is added to an entity.
       }
    
       protected override function onReset():void
       {
+         // Let superclass reset, too.
+         super.onReset();
+
          // (Re)acquire references to components inside the same entity.
          // This will be called after onAdd, whenever another component
          // is added or removed from the owning entity.
@@ -78,6 +84,9 @@
    
       protected override function onRemove():void
       {
+         // Let superclass remove, too.
+         super.onRemove();
+
          // Release resources and references.
          // Called when the component is removed from its entity, usually
          // as part of the entity's destruction.
@@ -108,7 +117,7 @@
    // Inside another component on an entity which has a TestComponent named Test:
    var value:String = owner.getProperty(new PropertyReference("@Test.aProperty")) as String;
    
-   trace(value); // Outputs "Hello!"
+   Logger.print(this, value); // Outputs "Hello!"
    </pre>
    
    <p>You can also access fields inside complex data types. Suppose aProperty were a Point. You could do the following:</p>
@@ -222,22 +231,26 @@
    
    <pre class="brush: js">
    // Just like the previous component, but it keeps the reference around longer.
-   class TestComponent extends EntityComponentity
+   class TestComponent extends EntityComponent
    {
       public var anotherComponent:IExampleInterface;
    
       protected function onAdd():void
       {
+         super.onAdd();
          anotherComponent = owner.LookupComponentByType(IExampleInterface) as IExampleInterface;
       }
       
       protected function onReset():void
       {
+         super.onReset();
          anotherComponent = owner.LookupComponentByType(IExampleInterface) as IExampleInterface;
       }
       
       protected function onRemove():void
       {
+         super.onRemove();
+         
          // Don't forget to clear the reference to prevent memory leaks.
          anotherComponent = null;
       }
@@ -245,35 +258,18 @@
       public function DoSomething():void
       {
          for each(var i:* in anotherComponent.getBigArray())
-            trace(i);
+            Logger.print(this, i);
       }
    }
    </pre>
    
    <h2>Linkage Issues</h2>
    
-   <p>When you are using components that are only mentioned in level files, the Flex compiler won't know they are being used and may remove them. To prevent this, you have two options.</p>
+   <p>When you are using components that are only mentioned in level files, the Flex compiler won't know they are being used and may remove them. To prevent this, use the helper function <em>PBE.registerType</em>. For example:</p>
    
-   <h3>TypeReference MXML Tag</h3>
-   
-   <p>For convenience, there is an MXML tag that lets you force a reference to a component class (or in fact any class) and make sure it will be present at runtime:</p>
-   
-   <pre class="brush: xml">
-	// Example Components.mxml
-&lt;?xml version="1.0" encoding="utf-8"?&gt;
-&lt;mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:pb="com.pblabs.engine.mxml.*"&gt;
-   &lt;pb:TypeReference type="com.pblabs.rendering2D.Scene2DComponent"/&gt;
-&lt;/mx:Canvas&gt;</pre>
-   
-   <p>Notice that a custom namespace is defined via the xmlns:pb tag in the mx:Canvas tag. This is necessary to use any of the PBEngine MXML tags.</p>
-
-   <h3>Direct Reference</h3>
-   
-   <p>We recommend the MXML tag approach if you are using Flex.</p>
-   
-   <p>However, you can force a reference to a class by putting something like the following in your main application class. This is equivalent to the preceding MXML example.</p>
-   
-   <pre class="brush: js">private var forceRef:com.pblabs.rendering2D.Scene2DComponent;</pre>
+    <pre class="brush: js">
+        PBE.registerType(com.pblabs.rendering2D.DisplayObjectRenderer);
+    </pre>
    
    <h2>Packaging Components</h2>
    

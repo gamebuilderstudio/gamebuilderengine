@@ -76,11 +76,9 @@
    
    <h3>Ticks</h3>
    
-   <p><b>Ticks</b> are extremely useful when trying to implement gameplay that doesn't break at very high or low framerates. Ticks are guaranteed to happen at a fixed interval (see ProcessManager API documenation for details on the interval). At the start of each frame, the ProcessManager checks to see how long it has been since the last tick was processed. If it has been one or more tick-intervals, then it processes a tick. If it has been a long time, then it will run many ticks - however are many needed to stay caught up with realtime.</p>
+   <p><b>Ticks</b> are extremely useful when trying to implement gameplay that doesn't break at very high or low framerates. Ticks are guaranteed to happen at a fixed interval (see ProcessManager API documentation for details on the interval). At the start of each frame, the ProcessManager checks to see how long it has been since the last tick was processed. If it has been one or more tick-intervals, then it processes a tick. If it has been a long time, then it will run many ticks - however are many needed to stay caught up with realtime.</p>
    
-   <p>The ProcessManager also interpolates between ticks - if the current frame is halfway between the last tick and time when the next tick will happen, then OnInterpolateTick is called with 0.5. 0 would be at the same time as the previous tick, 1 is the next tick.</p>
-   
-   <p>This is great for gameplay because it means the game runs consistently no matter what - internally, everything is processed at 32Hz (or whatever you set it the tick rate to). The rule is to implement any gameplay code in the onTick callbacks, and any "display" code - for instance updating a particle system or interpolating position for smoother display - in OnInterpolateTick or OnFrame.<p>
+   <p>This is great for gameplay because it means the game runs consistently no matter what - internally, everything is processed at 32Hz (or whatever you set it the tick rate to). The rule is to implement any gameplay code in the onTick callbacks, and any "display" code - for instance updating a particle system or interpolating position for smoother display - in onFrame.<p>
    
    <p>A simple component that receives ticked looks like this. Notice it implements the ITickedObject interface:</p>
    
@@ -91,11 +89,6 @@
       public function onTick(tickRate:Number):void
       {
          trace("A tick happened!");
-      }
-      
-      public function onInterpolateTick(factor:Number):void
-      {
-         trace("Interpolating between ticks - at " + factor);
       }
       
       protected override function onAdd():void
@@ -117,7 +110,6 @@
     <li>Process IAnimatedObject callbacks.</li>
     <li>Process any pending ticks by calling ITickedObject onTick zero or more times.</li>
     <li>Process any pending events.</li>
-    <li>Call OnInterpolateTick on ITickedObject based on where we are "between ticks."</li>
     </ol>
     
     <h3>Managing Time</h3>

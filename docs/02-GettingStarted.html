@@ -22,7 +22,7 @@
    
    <p>PushButton Engine is designed to be very easy to drop and start using. This chapter explains how you can start using it immediately with a variety of Flash development tools.</p>
    
-   <p>The rest of the chapters in this manual explain how to use the Engine.</p>
+   <p>The rest of the chapters in this manual explain how to use PBE.</p>
    
    <div id="pageToc"></div>
 
@@ -62,20 +62,20 @@
 <pre class="brush: js">package 
 {
 	import flash.display.Sprite;
-	import com.pblabs.engine.core.*;
+	import com.pblabs.engine.PBE;
 	import com.pblabs.engine.debug.*;
 	
 	public class Main extends Sprite 
 	{
 		public function Main():void 
 		{
-			Global.startup(this);
+			PBE.startup(this);
 			Logger.print(this, "Hello, world!");
 		}
 	}
 }</pre>
 
-   <p>If you run this, you'll see the "Hello, world!" message show up in the log pane at the bottom of FlashDevelop.</p>
+   <p>If you run this, you'll see the "Hello, world!" message show up in the log pane at the bottom of FlashDevelop. You can also hit tilde to view the PBE console, which will show <em>Hello, world!</em> along with other information.</p>
    
    <h3>Using the Flex SDK</h3>
    
@@ -87,12 +87,12 @@
 &lt;mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" applicationComplete="kickoff()"&gt;
    &lt;mx:Script&gt;
       &lt;![CDATA[
-         import com.pblabs.engine.core.*;
+         import com.pblabs.engine.PBE;
          import com.pblabs.engine.debug.*;
          
          public function kickoff():void
          {
-            Global.startup(this);
+            PBE.startup(this);
             Logger.print(this, "Hello, world!");
          }
       ]]&gt;
@@ -107,20 +107,20 @@
 <pre class="brush: js">package
 {
 	import flash.display.Sprite;
-	import com.pblabs.engine.core.*;
+	import com.pblabs.engine.PBE;
 	import com.pblabs.engine.debug.*;
 	
 	public class HelloWorld extends Sprite 
 	{
 		public function Main():void 
 		{
-			Global.startup(this);
+			PBE.startup(this);
 			Logger.print(this, "Hello, world!");
 		}
 	}
 }</pre>
 
-   <p>You can compile this into HelloWorld.swf by running <i>mxmlc HelloWorld.as</i>.</p>
+   <p>You can compile this into HelloWorld.swf by running <em>mxmlc HelloWorld.as</em>.</p>
 
    <h3>Using Ant</h3>
    

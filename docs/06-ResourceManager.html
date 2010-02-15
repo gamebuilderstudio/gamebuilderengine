@@ -57,7 +57,7 @@
    
    <p>The easiest way to embed a resource in PBE is with the ResourceBundle class.  Create a subclass of the ResourceBundle class, where each file to be included in the swf is given an [Embed] tag. Here are some examples of how to embed your resources in a ResourceBundle.</p>
 
-   <p>For most file types, this is all you have to do for them to show up and work properly. However, for XML and pbelevel files, we must include the mimeType='application/octet-stream' in the [Embed()] tag. Otherwise the compiler will fail to include them in the right format. If you have a SWF file, omitting the mimeType will cause the compiler to re-encode the SWF, stripping any ActionScript it contains. Images without mimeType tags may be re-compressed, so be careful if download size is important.</p>
+   <p>For most file types, this is all you have to do for them to show up and work properly. However, for XML and pbelevel files, we must include the mimeType='application/octet-stream' in the [Embed()] tag. Otherwise the compiler will fail to include them in the right format. If you have a SWF file, omitting the mimeType will cause mxmlc to re-encode the SWF, stripping any ActionScript it contains. Images without mimeType tags may be re-compressed, so be careful if download size is important.</p>
    
    <pre class="brush: js">
    public class MyResources extends ResourceBundle
@@ -82,15 +82,16 @@
    }   
    </pre>
    
-   <p>Instantiate that class, and PBE will register all of the resources with the ResourceManager according to their proper type. Usually you will want to do this immediately after your call PBE.startup.</p>
+   <p>Instantiate <em>MyResources</em>, and it will register all of the resources with the <em>ResourceManager</em> according to their proper type. Usually you will want to do this immediately after you call <em>PBE.startup</em>.</p>
    
    <pre class="brush: js">
+   PBE.startup(this);
    new MyResources();
    </pre>
    
    <h2>Adding New Resource Types</h2>
    
-   <p>The com.pblabs.engine.resource.Resource class is subclassed to add support for different resource types. This is very straightforward - just check out the XMLResource to see how it's done. You will want to override _onContentReady and provide accessors to get at whatever data is needed.</p>
+   <p>The com.pblabs.engine.resource.Resource class is subclassed to add support for different resource types. This is very straightforward - just check out the XMLResource to see how it's done. You will want to override <em>_onContentReady</em> and provide accessors to get at whatever data is needed.</p>
 
    </div>
 </body>
