@@ -45,6 +45,16 @@ package com.pblabs.rendering2D
         public var sceneAlignment:SceneAlignment = SceneAlignment.DEFAULT_ALIGNMENT;
         
         /**
+         * Holds DisplayObjectSceneLayer instances to use for various layers.
+         * That is, if index 3 of layers[] holds an instance of DisplayObjectSceneLayer
+         * or a subclass, then that instance will be used for layer #3.
+         * 
+         * Note this is only considered at layer setup time. Use getLayer() to
+         * get a layer that is being actively used.
+         */
+        public var layers:Array;
+        
+        /**
          * If set, every frame, trackObject's position is read and assigned
          * to the scene's position, so that the scene follows the trackObject.
          */
@@ -162,12 +172,21 @@ package com.pblabs.rendering2D
          */
         protected function generateLayer(layerIndex:int):DisplayObjectSceneLayer
         {
-            var l:DisplayObjectSceneLayer = new DisplayObjectSceneLayer();
+            var outLayer:DisplayObjectSceneLayer;
             
+            // Do we have that layer already specified?
+            if (layers && layers[layerIndex])
+                outLayer = layers[layerIndex] as DisplayObjectSceneLayer;
+
+            // Go with default.
+            if (!outLayer)
+                outLayer = new DisplayObjectSceneLayer();
+
             //TODO: set any properties we want for our layer.
-            l.name = "Layer" + layerIndex;
+            outLayer.name = "Layer" + layerIndex;
             
-            return l;
+            return outLayer;
+            
         }
         
         public function get sceneView():IUITarget
