@@ -45,14 +45,14 @@
    
    <p>In the last lesson, we saw how to create a simple controller component that moves the character based on a behavioral pattern.  Next, we'll add keyboard input, so that the movements are controlled by the player.</p>
    
-   <p>To help streamline user input, PBE provides a flexible component called the InputManager.  This lets us easily poll to see which keys are being pressed.</p>
+   <p>To help streamline user input, PBE provides a method to check if a key is down: PBE.isKeyDown().</p>
    
-   <p>For more advanced input configurations (such as allowing key remappings or special event notifications for keys), then PBE also provides an InputMap class that will be covered later on in the tutorial.  For now, we will try to keep things simpler by just focusing on the InputManager.</p>
+   <p>For more advanced input configurations (such as allowing key remappings or special event notifications for keys), PBE also provides the InputManager and the InputMap. These are more powerful, but often aren't needed for simpler games. We will not discuss them in this tutorial.</p>
    
-   <p><h2>Building a Component</h2></p>
+   <h2>Building a Component</h2>
    <p>Just like in our last lesson, we again set up a basic scene with three basic components: render, spatial, and controller.  And again, we will be creating a custom component that inherits from TickedComponent so that it updates itself every frame.</p>
 
-   <p>This new component will utilize the InputManager to let a player use the left and right keys to move an entity in two directions.</p>
+   <p>This new component will check if the left or right keys are down, and move the player's object if so.</p>
 
    <p>The various keys that we can poll are referenced through the InputKey class:</p>
    <pre class="brush: js">
@@ -62,14 +62,14 @@
    InputKey.stringToKey("LEFT")
    </pre>   
 
-   <p>In the base lesson directory, you will find the simple stub class HeroControllerComponent.  To make it respond to keyboard events, we will have the onTick() method ask the InputManager if the keys we are interested in are being pressed.  You can do this through the InputManager.isKeyDown() method, like so:</p>
+   <p>In the base lesson directory, you will find the simple stub class HeroControllerComponent.  To make it respond to keyboard events, we will have the onTick() method ask PBE if the keys we are interested in are being pressed.  You can do this through the PBE.isKeyDown() method, like so:</p>
 
    <pre class="brush: js">
-   // IsKeyDown() returns a boolean -- false means the key is up, and true means that the key is down.
-   if (InputManager.isKeyDown(InputKey.SPACE))
+   // isKeyDown() returns a boolean -- false means the key is up, and true means that the key is down.
+   if (PBE.isKeyDown(InputKey.SPACE))
    {
       // React to the key being depressed:
-      trace("Hey, cheer up!");
+      Logger.print(this, "Hey, cheer up!");
    }
    </pre>
 
@@ -104,56 +104,57 @@
    <p>Now that we know how we want it to act, let's actually implement it.  Modify the HeroControllerComponent to look like the following:</p>
    <p><strong>File: /Lesson4Base/Source/HeroControllerComponent.as</strong></p>
    <pre class="brush: js">
-package 
-{
-   import com.pblabs.engine.components.TickedComponent;
-   import com.pblabs.engine.core.InputManager;
-   import com.pblabs.engine.core.InputKey;
-   import com.pblabs.engine.entity.PropertyReference;
+       package 
+       {
+           import com.pblabs.engine.PBE;
+           import com.pblabs.engine.components.TickedComponent;
+           import com.pblabs.engine.core.InputKey;
+           import com.pblabs.engine.entity.PropertyReference;
 
-   import flash.geom.Point;
+           import flash.geom.Point;
 
-   // Make a ticked component so that it can update itself every frame with onTick() 
-   public class HeroControllerComponent extends TickedComponent
-   {
-      // Keep a property reference to our entity's position.
-      public var PositionReference:PropertyReference;
+           // Make a ticked component so that it can update itself every frame with onTick() 
+           public class HeroControllerComponent extends TickedComponent
+           {
+               // Keep a property reference to our entity's position.
+               public var positionReference:PropertyReference;
 
-      // onTick() is called every frame
-      public override function onTick(tickRate:Number):void
-      {
-         // Get references for our spatial position.
-         var position:Point = owner.getProperty(PositionReference);
+               // onTick() is called every frame
+               public override function onTick(tickRate:Number):void
+               {
+                   // Get references for our spatial position.
+                   var position:Point = owner.getProperty(positionReference);
 
-         // Look at our input keys to see which direction we should move. Left is -x, right is +x.
-         if (InputManager.isKeyDown(InputKey.RIGHT))
-         {
-            // Move our hero to the right
-            position.x += 15;
-         }
-         if (InputManager.isKeyDown(InputKey.LEFT))
-         {
-            // Move our hero to the left
-            position.x -= 15;
-         }
-         
-         // Finally, add some boundary limits so that we don't go off the edge of the screen.
-         if (position.x &gt 375)
-         {
-            // Set our position at the wall edge
-            position.x = 375;               
-         } 
-         else if (position.x &lt -375)
-         {
-            // Set our position at the wall edge
-            position.x = -375;
-         }
+                   // Look at our input keys to see which direction we should move. Left is -x, right is +x.
+                   if (PBE.isKeyDown(InputKey.RIGHT))
+                   {
+                       // Move our hero to the right
+                       position.x += 15;
+                   }
 
-         // Send our manipulated spatial variables back to the spatial manager
-         owner.setProperty(PositionReference, position);
-      }    
-   }
-}
+                   if (PBE.isKeyDown(InputKey.LEFT))
+                   {
+                       // Move our hero to the left
+                       position.x -= 15;
+                   }
+
+                   // Finally, add some boundary limits so that we don't go off the edge of the screen.
+                   if (position.x > 375)
+                   {
+                       // Set our position at the wall edge
+                       position.x = 375;               
+                   } 
+                   else if (position.x < -375)
+                   {
+                       // Set our position at the wall edge
+                       position.x = -375;
+                   }
+
+                   // Send our manipulated spatial variables back to the spatial manager
+                   owner.setProperty(positionReference, position);
+               }    
+           }
+       }
    </pre>   
    
    <p>And that should do it!</p>
@@ -162,20 +163,9 @@ package
    <p>After it's all compiled, you should have an .swf like the following (click to load):</p>
    <p><a href="downloads/Lesson4Final.swf"><img src="images/Lesson4_1.png" width="204" height="159" alt="I like to move it move it!"></a></p>
    
-   <p><h2>Going Further: Advanced Input Control</h2></p>
-   <p>To do more advanced input functionality, PBEngine provides an InputMap class.</p>
-   
-   <p>The InputMap acts as an intermediary, and creates the distinction of Keys, Actions, and Handlers.</p>
-
-   <p><img src="images/Lesson4_KeyTerms.png" alt="A brief glossary of key key terms." align="right"></a></p>
-
-   <p>If you want to have more than one entity on the screen controlled by different keys on the keyboard (such as for a two-player pong game, or a multiplayer racing game), then the InputMap provides a very flexible way of dealing with this.  Instead of assigning keys directly to method calls, you can use an intermediate step to assign keys to <em>actions</em>, and then from inside your component you can assign actions to method calls in your component.</p>
-   
-   <p>Many games won't need this level of flexibility, but it's a powerful class to have around nonetheless.  It also has some handy methods for handling mouse input, but covering it all is beyond the scope of this lesson.</p>
-   
    <p><h2>Conclusion</h2></p>
    
-   <p>Congratulations!  You have finished lesson #4, and given your game its first reaction to user input.</p>
+   <p>Congratulations!  You have finished lesson #4, and given your game the ability to react to user input.</p>
    
    <p>You can download the completed project source files for this project.
       <ul>
