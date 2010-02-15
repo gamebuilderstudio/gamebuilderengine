@@ -251,7 +251,7 @@ package com.pblabs.engine.debug
             {
                 Logger.print(Console, 
                     Console.generateIndent(indent) + 
-                    current.name + type + " alias = " + current.alias);
+                    current.name + type + (current.alias != null ? " alias = " + current.alias : ""));
             }
             else
             {
