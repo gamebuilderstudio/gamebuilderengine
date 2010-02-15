@@ -9,21 +9,15 @@
 
 package
 {
-   import com.pblabs.engine.core.Global;
-   import com.pblabs.engine.core.ObjectType;
-   import com.pblabs.engine.core.NameManager;
-   import com.pblabs.engine.entity.PropertyReference;
-   import com.pblabs.engine.entity.allocateEntity;
-   import com.pblabs.engine.entity.IEntity;
-   import com.pblabs.rendering2D.BasicSpatialManager2D;
-   import com.pblabs.rendering2D.ISpatialManager2D;
-   import com.pblabs.rendering2D.Scene2DComponent;
-   import com.pblabs.rendering2D.SimpleSpatialComponent;
-   import com.pblabs.rendering2D.SpriteRenderComponent;
-   import com.pblabs.rendering2D.ui.*;
-   
-   import flash.display.Sprite;
-   import flash.geom.Point;
+    import com.pblabs.engine.PBE;
+    import com.pblabs.engine.core.*;
+    import com.pblabs.engine.entity.IEntity;
+    import com.pblabs.engine.entity.PropertyReference;
+    import com.pblabs.rendering2D.*;
+    import com.pblabs.rendering2D.ui.*;
+    
+    import flash.display.Sprite;
+    import flash.geom.Point;
    
    [SWF(width="800", height="600", frameRate="60")]
    public class Lesson5Final extends Sprite
@@ -31,7 +25,7 @@ package
       public function Lesson5Final()
       {
          // Start up PBE
-         Global.startup(this);
+         PBE.startup(this);
          
          // Load up our embedded resources
          new MyResources( );
@@ -48,48 +42,17 @@ package
       
       private function createScene():void 
       {
-         // Allocate our Scene entity
-         var scene:IEntity = allocateEntity();
-         
-         // Register with the name "Scene"
-         scene.initialize("Scene");
-         
-         // Allocate our Spatial DB component
-         var spatial:BasicSpatialManager2D = new BasicSpatialManager2D();
-         
-         // Add to Scene with name "Spatial"
-         scene.addComponent( spatial, "Spatial" );
-
-         // Allocate our renderering component 
-         var renderer:Scene2DComponent = new Scene2DComponent();
-        
-         // Point renderer at Spatial (for object location information)
-         renderer.spatialDatabase = spatial;
-        
-         // Create a view for our Renderer
-         var view:SceneView = new SceneView();
-         
-         // Set the width of our Scene View
-         view.width = 800;
-         // Set the height of our Scene View
-         view.height = 600;
-         // Point the Renderer's SceneView at the view we just created.
-         renderer.sceneView = view;
-        
-         // Point the camera (center of render view) at 0,0
-         renderer.position = new Point(0,0);
-        
-         // Set the render mask to only draw objects explicitly marked as "Renderable"
-         renderer.renderMask = new ObjectType("Renderable");
-        
-         // Add our Renderer component to the scene entity with the name "Renderer"
-         scene.addComponent( renderer, "Renderer" );
+          var sceneView:SceneView = new SceneView();                        // Make the SceneView
+          sceneView.width = 800;
+          sceneView.height = 600;
+          
+          PBE.initializeScene(sceneView);                                   // This is just a helper function that will set up a basic scene for us
       }
 
       private function createHero():void
       {
          // Allocate an entity for our hero avatar
-         var hero:IEntity = allocateEntity();
+         var hero:IEntity = PBE.allocateEntity();
          // Register the entity with PBE under the name "Hero"
          hero.initialize("Hero");
          
@@ -104,18 +67,21 @@ package
          // Create a simple render component to display our object
 
          // Here we've removed the reference to our simple shape renderer, and added a sprite render component.
-         var render:SpriteRenderComponent = new SpriteRenderComponent();
+         var render:SpriteRenderer = new SpriteRenderer();
 
          // Tell the Render component to use one of the images embedded by our ResourceLinker
-         render.loadFromImage = "../assets/fanship.png";
+         render.fileName = "../assets/fanship.png";
+         
+         // Add the renderer to the scene.
+         render.scene = PBE.scene;
          
          // Set our hero to render above the background.
          render.layerIndex = 10;
          
          // Point the render component to this entity's Spatial component for position information
-         render.positionReference = new PropertyReference("@Spatial.position");
+         render.positionProperty = new PropertyReference("@Spatial.position");
          // Point the render component to this entity's Spatial component for size information
-         render.sizeReference = new PropertyReference("@Spatial.size");
+         render.sizeProperty = new PropertyReference("@Spatial.size");
         
          // Add our render component to the Hero entity with the name "Render"
          hero.addComponent( render, "Render" );
@@ -129,11 +95,10 @@ package
          hero.addComponent( controller, "Controller" );
       }
       
-
       private function createBackground():void
       {
          // Allocate an entity for our background sprite
-         var bg:IEntity = allocateEntity();
+         var bg:IEntity = PBE.allocateEntity();
          // Register the entity with PBE under the name "BG"
          bg.initialize("BG");
          
@@ -146,16 +111,19 @@ package
          // Create a simple render component to display our object
 
          // Just like the hero, this also uses a SpriteRenderComponent
-         var render:SpriteRenderComponent = new SpriteRenderComponent();
+         var render:SpriteRenderer = new SpriteRenderer();
          
          // Tell the Render component to use one of the images embedded by our ResourceLinker
-         render.loadFromImage = "../assets/bg.jpg";
+         render.fileName = "../assets/bg.jpg";
          
          // Set our background to render below the hero.
          render.layerIndex = 1;
          
+         // Add the renderer to the scene.
+         render.scene = PBE.scene;
+
          // Point the render component to this entity's Spatial component for position information
-         render.positionReference = new PropertyReference("@Spatial.position");
+         render.positionProperty = new PropertyReference("@Spatial.position");
         
          // Add our render component to the BG entity with the name "Render"
          bg.addComponent( render, "Render" );
@@ -164,24 +132,19 @@ package
       // This is a shortcut function to help simplify the creation of spatial components
       private function createSpatial( ent:IEntity, pos:Point, size:Point = null ):void
       {
-         // Create our spatial component
-         var spatial:SimpleSpatialComponent = new SimpleSpatialComponent();
-         
-         // Do a named lookup to register our background with the scene spatial database
-         spatial.spatialManager = NameManager.instance.lookupComponentByName("Scene", "Spatial") as ISpatialManager2D;
-         
-         // Set a mask flag for this object as "Renderable" to be seen by the scene Renderer
-         spatial.objectMask = new ObjectType("Renderable");
-         
-         // Set our background position in space
-         spatial.position = pos;
-
-         if (size != null) 
-         {
-            spatial.size = size;
-         }
-         
-         ent.addComponent(spatial, "Spatial");
+          // Create our spatial component
+          var spatial:SimpleSpatialComponent = new SimpleSpatialComponent();
+          
+          // Do a named lookup to register our background with the scene spatial database
+          spatial.spatialManager = PBE.spatialManager;
+          
+          // Set our background position in space
+          spatial.position = pos;
+          
+          if (size != null) 
+              spatial.size = size;
+          
+          ent.addComponent(spatial, "Spatial");
       }
    }
 }

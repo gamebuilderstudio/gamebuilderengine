@@ -38,7 +38,7 @@ package com.pblabs.engine
          * needed in a final release build.
          */
         public static const IS_SHIPPING_BUILD:Boolean = false;
-
+        
         private static var _main:Sprite = null;	
         private static var _versionDetails:VersionDetails;
         
@@ -67,7 +67,7 @@ package com.pblabs.engine
         {
             // Do nothing else - the compiler will include the class by virtue of it
             // having been used.
-
+            
             // Note this type in the schema generator.
             SchemaGenerator.instance.addClass(getQualifiedClassName(type), type);
         }
@@ -265,7 +265,7 @@ package com.pblabs.engine
         {
             return _nameManager.lookup(entityName) as IEntity;
         }
-            
+        
         /**
          * Locate a named component on a named entity.
          */
@@ -348,7 +348,7 @@ package com.pblabs.engine
         {
             Logger.print(reporter, message);
         }
-                
+        
         /**
          * The stage. This is the root of the display heirarchy and is automatically created by
          * flash when the application starts up.

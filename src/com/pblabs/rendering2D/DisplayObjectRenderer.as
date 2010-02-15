@@ -585,6 +585,14 @@ package com.pblabs.rendering2D
             return displayObject.hitTestPoint(worldPosition.x, worldPosition.y, true);
         }
         
+        override protected function onAdd() : void
+        {
+            super.onAdd();
+            
+            // Make sure we start with a correct transform.
+            updateTransform(true);
+        }
+        
         override protected function onRemove() : void
         {
             super.onRemove();
@@ -605,7 +613,7 @@ package com.pblabs.rendering2D
         protected function addToScene():void
         {
             if(_scene && _displayObject && !_inScene)
-            {
+            {                
                 _scene.add(this);
                 _inScene = true;
 

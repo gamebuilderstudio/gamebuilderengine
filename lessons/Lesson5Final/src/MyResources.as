@@ -13,10 +13,10 @@ package
    
    public class MyResources extends ResourceBundle
    {
-      [Embed(source="../assets/bg.jpg", mimeType='application/octet-stream')]
+      [Embed(source="../assets/bg.jpg")]
       public var resBg:Class;
       
-      [Embed(source="../assets/fanship.png", mimeType='application/octet-stream')]
+      [Embed(source="../assets/fanship.png")]
       public var resShip:Class;
    }
 }

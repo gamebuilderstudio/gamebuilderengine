@@ -29,7 +29,6 @@ package com.pblabs.rendering2D
          */
         public var minZoom:Number = .01;
         
-        
         /**
          * Maximum allowed zoom level.
          * 
@@ -76,8 +75,19 @@ package com.pblabs.rendering2D
             _rootSprite = generateRootSprite();
         }
         
+        protected override function onAdd() : void
+        {
+            super.onAdd();
+            
+            // Make sure we start with a correct transform.
+            _transformDirty = true;
+            updateTransform();
+        }
+        
         protected override function onRemove() : void
         {
+            super.onRemove();
+            
             // Make sure we don't leave any lingering content.
             if(_sceneView)
                 _sceneView.removeDisplayObject(_rootSprite);
@@ -186,7 +196,6 @@ package com.pblabs.rendering2D
                 _sceneView.addDisplayObject(_rootSprite);
             }
         }
-        
         
         public function get sceneViewName():String
         {
