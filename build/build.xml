@@ -261,7 +261,7 @@
       <copy file="${rootDir}/lessons/Lesson5Final/bin/Lesson5Final.swf" tofile="${rootDir}/docs/downloads/Lesson5Final.swf" failOnError="true" overwrite="true" />
    </target>
    
-   <target name="doFullPackagedBuild" description="Build a packaged ZIP of the whole SDK, ready for distribution." depends="clean,test,compile">
+   <target name="doFullPackagedBuild" description="Build a packaged ZIP of the whole SDK, ready for distribution." depends="clean,test,compile,doLessonsPackagedBuild">
       <!-- Build everything from scratch - dependencies do this. -->
       
       <!-- Get the current revision. -->
