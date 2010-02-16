@@ -163,7 +163,7 @@
     <classEntry path="com.pblabs.engine.entity.IPropertyBag"/>
     <classEntry path="com.pblabs.engine.entity.PropertyReference"/>
     <classEntry path="com.pblabs.engine.entity.allocateEntity"/>
-    <classEntry path="com.pblabs.engine.math.Utility"/>
+    <classEntry path="com.pblabs.engine.PBUtil"/>
     <classEntry path="com.pblabs.engine.mxml.GroupReference"/>
     <classEntry path="com.pblabs.engine.mxml.LevelFileReference"/>
     <classEntry path="com.pblabs.engine.mxml.ResourceBinding"/>
