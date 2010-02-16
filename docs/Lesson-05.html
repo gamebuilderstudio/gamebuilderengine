@@ -208,17 +208,21 @@ package
    
    <p>If you do not embed the assets into your compiled SWF, you will not be able to distribute your file to another location. The easiest (and most universal) way to embed resources in PBE is by using the <em>ResourceBundle</em>, although if you are using the CS4 Library, most components allow you to specify items from there directly (for instance <em>DisplayObjectRenderer</em> allows you to set its <em>displayObject</em> member with a direct reference to a <em>new ItemFromLibrary()</em>).</li>
 
-   <p>To use ResourceBundle, use the following syntax:
+   <p>To use ResourceBundle, use the following syntax:</p>
 
-         <pre class="brush: js">
-         public class MyResources extends ResourceBundle
-         {
-            [Embed(source="../assets/imageFilename.png")]
-            public var someName:Class;
-         }
-         </pre>
-         
-         Where <em>"../assets/imageFilename.png"</em> is the path to your resource, and <em>someName</em> is a unique property name inside of ResourceBundle.  This name is not as important as the filename, because all resources in PBE are referenced through the filename. It's not enough to just define your ResourceBundle class -- to actually make the assets accessible to PBE, the final step in making the assets embed is to instantiate your custom ResourceBundle class</p>
+     <pre class="brush: js">
+     public class MyResources extends ResourceBundle
+     {
+        [Embed(source="../assets/imageFilename.png")]
+        public var someName:Class;
+     }
+     </pre>
+ 
+    <p>Where <em>"../assets/imageFilename.png"</em> is the path to your resource, and <em>someName</em> is a unique property name inside of ResourceBundle.  This name is not as important as the filename, because all resources in PBE are referenced through the filename. It's not enough to just define your ResourceBundle class -- to actually make the assets accessible to PBE, the final step in making the assets embed is to instantiate your custom ResourceBundle class and register it with PBE:</p>
+      
+      <pre class="brush: js">
+      PBE.addResources(new MyResources());
+      </pre>
       
    <p><h2>Conclusion</h2></p>
    
