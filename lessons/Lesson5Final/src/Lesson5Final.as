@@ -28,7 +28,7 @@ package
          PBE.startup(this);
          
          // Load up our embedded resources
-         new MyResources( );
+         PBE.addResources(new MyResources());
 
          // Set up a simple scene entity
          createScene();
@@ -53,9 +53,7 @@ package
       {
          // Allocate an entity for our hero avatar
          var hero:IEntity = PBE.allocateEntity();
-         // Register the entity with PBE under the name "Hero"
-         hero.initialize("Hero");
-         
+                  
          // Add our spatial component to the Hero entity ...
          createSpatial( hero,
             // with location of 0,150...
@@ -69,7 +67,7 @@ package
          // Here we've removed the reference to our simple shape renderer, and added a sprite render component.
          var render:SpriteRenderer = new SpriteRenderer();
 
-         // Tell the Render component to use one of the images embedded by our ResourceLinker
+         // Tell the Render component to use one of the images embedded by our ResourceBundle
          render.fileName = "../assets/fanship.png";
          
          // Add the renderer to the scene.
@@ -93,14 +91,15 @@ package
 
          // Add the demo controller component to the Hero entity with the name "Controller"
          hero.addComponent( controller, "Controller" );
+
+         // Register the entity with PBE under the name "Hero"
+         hero.initialize("Hero");
       }
       
       private function createBackground():void
       {
          // Allocate an entity for our background sprite
          var bg:IEntity = PBE.allocateEntity();
-         // Register the entity with PBE under the name "BG"
-         bg.initialize("BG");
          
          // Add our spatial component to the background entity ...
          createSpatial( bg, 
@@ -127,6 +126,9 @@ package
         
          // Add our render component to the BG entity with the name "Render"
          bg.addComponent( render, "Render" );
+
+         // Register the entity with PBE under the name "BG"
+         bg.initialize("BG");         
       }
       
       // This is a shortcut function to help simplify the creation of spatial components
