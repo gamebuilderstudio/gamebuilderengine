@@ -59,7 +59,7 @@ package com.pblabs.engine.core
          * slow, then you will see that the ProcessManager can never catch up
          * and you will constantly get the "too many ticks per frame" warning.</p>
          */
-        public static const MAX_TICKS_PER_FRAME:int = 10;
+        public static const MAX_TICKS_PER_FRAME:int = 3;
         
         /**
          * The scale at which time advances. If this is set to 2, the game
@@ -438,7 +438,7 @@ package com.pblabs.engine.core
             // Safety net - don't do more than a few ticks per frame to avoid death spirals.
             if (tickCount >= MAX_TICKS_PER_FRAME && !suppressSafety)
             {
-                Logger.warn(this, "Advance", "Exceeded maximum number of ticks for frame (" + elapsed + "ms dropped) .");
+                Logger.warn(this, "Advance", "Exceeded maximum number of ticks for frame (" + elapsed.toFixed() + "ms dropped) .");
                 elapsed = 0;
             }
             

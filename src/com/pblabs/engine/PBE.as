@@ -3,6 +3,7 @@ package com.pblabs.engine
     import com.pblabs.engine.core.*;
     import com.pblabs.engine.debug.*;
     import com.pblabs.engine.entity.*;
+    import com.pblabs.engine.resource.ResourceBundle;
     import com.pblabs.engine.resource.ResourceManager;
     import com.pblabs.engine.version.VersionDetails;
     import com.pblabs.engine.version.VersionUtil;
@@ -182,6 +183,18 @@ package com.pblabs.engine
             
             if(!_inputManager)
                 _inputManager = new InputManager();
+        }
+        
+        
+        /**
+         * If you want to use a ResourceBundle, add it to PBE with this method.
+         */
+        public static function addResources(rb:ResourceBundle):void
+        {
+            if(!_main)
+                throw new Error("You can only register ResourceBundles AFTER calling PBE.startup.");
+            
+            // Nothing for now. Just instantiating the class was enough.
         }
         
         /**

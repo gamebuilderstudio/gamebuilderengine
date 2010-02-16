@@ -17,8 +17,11 @@ package com.pblabs.engine.resource
     /**
      * The resource bundle handles automatic loading and registering of embedded resources.
      * To use, create a descendant class and embed resources as public variables, then
-     *  instantiate your new class.  ResourceBundle will handle loading all of those resources
-     *  into the ResourceManager. 
+     * instantiate your class and pass it to PBE via 
+     * PBE.addResources(new MyResourceBundleSubclass());.  ResourceBundle will handle 
+     * loading all of those resources into the ResourceManager. 
+     * 
+     * @see PBE.addResources PBE.addResources
      */
     public class ResourceBundle
     {
