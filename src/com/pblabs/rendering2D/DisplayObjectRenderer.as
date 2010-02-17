@@ -570,7 +570,7 @@ package com.pblabs.rendering2D
          * @param pos Location in world space we are curious about.
          * @return True if object is opaque there.
          */
-        public function pointOccupied(worldPosition:Point):Boolean
+        public function pointOccupied(worldPosition:Point, mask:ObjectType):Boolean
         {
             if (!displayObject || !scene)
                 return false;

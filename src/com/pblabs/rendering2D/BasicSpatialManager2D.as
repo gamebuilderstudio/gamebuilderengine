@@ -151,7 +151,7 @@ package com.pblabs.rendering2D
          var hitAny:Boolean = false;
          for each(var tmp:ISpatialObject2D in tmpResults)
          {
-            if (!tmp.pointOccupied(worldPosition, PBE.scene))
+            if (!tmp.pointOccupied(worldPosition, mask, PBE.scene))
                continue;
             
             results.push(tmp);

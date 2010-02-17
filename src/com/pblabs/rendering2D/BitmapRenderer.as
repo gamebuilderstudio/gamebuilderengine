@@ -1,5 +1,6 @@
 package com.pblabs.rendering2D
 {
+    import com.pblabs.engine.core.ObjectType;
     import com.pblabs.engine.debug.Logger;
     
     import flash.display.*;
@@ -79,7 +80,7 @@ package com.pblabs.rendering2D
             renderTarget.copyPixels(bitmap.bitmapData, bitmap.bitmapData.rect, objectToScreen.transformPoint(zeroPoint), null, null, true);
         }
         
-        override public function pointOccupied(worldPosition:Point):Boolean
+        override public function pointOccupied(worldPosition:Point, mask:ObjectType):Boolean
         {
             if(!bitmap || !bitmap.bitmapData)
                 return false;

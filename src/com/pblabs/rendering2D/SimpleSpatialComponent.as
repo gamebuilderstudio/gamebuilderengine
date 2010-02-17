@@ -206,14 +206,14 @@ package com.pblabs.rendering2D
          * All points in our bounding box are occupied.
          * @inheritDoc
          */
-        public function pointOccupied(pos:Point, scene:IScene2D):Boolean
+        public function pointOccupied(pos:Point, mask:ObjectType, scene:IScene2D):Boolean
         {
             // If no sprite then we just test our bounds.
             if(!spriteForPointChecks || !scene)
                 return worldExtents.containsPoint(pos);
             
             // OK, so pass it over to the sprite.
-            return spriteForPointChecks.pointOccupied(scene.transformWorldToScreen(pos));
+            return spriteForPointChecks.pointOccupied(scene.transformWorldToScreen(pos), mask);
         }
         
         private var _objectMask:ObjectType;

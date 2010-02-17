@@ -356,7 +356,7 @@ package com.pblabs.rendering2D
                 if(mask && !PBE.objectTypeManager.doTypesOverlap(mask, renderer.objectMask))
                     continue;
                 
-                if(!renderer.pointOccupied(scenePosition))
+                if(!renderer.pointOccupied(scenePosition, mask))
                     continue;
                 
                 results.push(renderer);

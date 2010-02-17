@@ -113,7 +113,18 @@ package com.pblabs.engine.core
         public function remove(typeName:String):void
         { 		
             _bits &= (wildcard.bits - PBE.objectTypeManager.getType(typeName));	  		  	
-        }      
+        }
+        
+        /**
+         * Perform a bitwise-and against another ObjectType and return true if they match.
+         */
+        public function and(other:ObjectType):Boolean
+        {
+            if((other.bits & bits) != 0)
+                return true;
+            else
+                return false;
+        }
         
         /**
          * @inheritDoc
