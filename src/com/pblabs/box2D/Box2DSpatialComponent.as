@@ -18,7 +18,7 @@ package com.pblabs.box2D
     import com.pblabs.engine.core.ObjectType;
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.entity.EntityComponent;
-	import com.pblabs.rendering2D.IMobileSpatialObject2D;
+    import com.pblabs.rendering2D.IMobileSpatialObject2D;
     import com.pblabs.rendering2D.IScene2D;
     import com.pblabs.rendering2D.ISpatialObject2D;
     import com.pblabs.rendering2D.RayHitInfo;
@@ -101,7 +101,7 @@ package com.pblabs.box2D
          * All points in our bounding box are occupied.
          * @inheritDoc
          */
-        public function pointOccupied(pos:Point, scene:IScene2D):Boolean
+        public function pointOccupied(pos:Point, mask:ObjectType, scene:IScene2D):Boolean
         {
             return worldExtents.containsPoint(pos);
         }	  
