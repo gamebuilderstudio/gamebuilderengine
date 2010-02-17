@@ -229,14 +229,14 @@ package com.pblabs.engine.debug
                 var isFirst:Boolean = false;
                 if(tabCompletionCurrentStart == -1)
                 {
-                    tabCompletionPrefix = _input.text;
+                    tabCompletionPrefix = _input.text.toLowerCase();
                     tabCompletionCurrentStart = int.MAX_VALUE;
                     tabCompletionCurrentEnd = -1;
 
                     for(var i:int=0; i<list.length; i++)
                     {
                         // If we found a prefix match...
-                        if(list[i].name.substr(0, tabCompletionPrefix.length) == tabCompletionPrefix)
+                        if(list[i].name.substr(0, tabCompletionPrefix.length).toLowerCase() == tabCompletionPrefix)
                         {
                             // Note it.
                             if(i < tabCompletionCurrentStart)
