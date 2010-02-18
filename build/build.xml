@@ -340,7 +340,8 @@
       </copy>
 
       <!-- Execute the AIR app which generates junit format xml files for each test suite. --> 
-      <exec executable="${adl}" failonerror="true">
+      <!-- This will fail after 30 seconds -->
+      <exec executable="${adl}" failonerror="true" timeout="30000">
          <arg line="-nodebug"/>
          <arg line="&quot;${testRunDir}/application.xml&quot;"/>
          <arg line="--"/>
