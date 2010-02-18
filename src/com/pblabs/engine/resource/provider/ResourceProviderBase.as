@@ -16,7 +16,7 @@ package com.pblabs.engine.resource.provider
         {
             // register this ResourceProvider with the ResourceManager
             if (registerProvider)
-                ResourceManager.registerResourceProvider(this);
+                PBE.resourceManager.registerResourceProvider(this);
             
             // create the Dictionary object that will keep all resources 			
             resources = new Dictionary();

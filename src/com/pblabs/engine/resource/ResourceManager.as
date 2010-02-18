@@ -237,7 +237,7 @@ package com.pblabs.engine.resource
          * @param resourceProvider Provider to add.
          * @see IResourceProvider
          */
-        public static function registerResourceProvider(resourceProvider:IResourceProvider):void
+        public function registerResourceProvider(resourceProvider:IResourceProvider):void
         {
             // check if resourceProvider is already registered
             if (resourceProviders.indexOf(resourceProvider) != -1)
@@ -287,6 +287,6 @@ package com.pblabs.engine.resource
         /**
          * List of resource providers used to get resources. 
          */        
-        private static var resourceProviders:Array = new Array();
+        private var resourceProviders:Array = new Array();
     }
 }

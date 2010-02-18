@@ -29,8 +29,8 @@ package
         public function RollyBallGame()
         {
             // Enable this to ensure all resources are embedded.
-            //ResourceManager.instance.onEmbeddedFail = trace;
-            //ResourceManager.instance.onlyLoadEmbeddedResources = true;
+            //PBE.resourceManager.onEmbeddedFail = trace;
+            //PBE.resourceManager.onlyLoadEmbeddedResources = true;
             
             // Register our types.
             PBE.registerType(com.pblabs.rendering2D.DisplayObjectScene);
