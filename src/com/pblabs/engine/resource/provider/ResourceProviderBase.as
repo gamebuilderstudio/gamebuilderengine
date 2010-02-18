@@ -14,6 +14,12 @@ package com.pblabs.engine.resource.provider
     {
         public function ResourceProviderBase(registerProvider:Boolean = true)
         {
+            // Make sure PBE is initialized - no resource manager, no love.
+            if(!PBE.resourceManager)
+            {
+                throw new Error("Cannot instantiate a ResourceBundle until you have called PBE.startup(this);. Move the call to new YourResourceBundle(); to occur AFTER the call to PBE.startup().");
+            }
+            
             // register this ResourceProvider with the ResourceManager
             if (registerProvider)
                 PBE.resourceManager.registerResourceProvider(this);

@@ -8,6 +8,7 @@
  ******************************************************************************/
 package com.pblabs.engine.resource
 {
+    import com.pblabs.engine.PBE;
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.resource.provider.EmbeddedResourceProvider;
     
@@ -55,6 +56,11 @@ package com.pblabs.engine.resource
          */
         public function ResourceBundle()
         {
+            // Make sure PBE is initialized - no resource manager, no love.
+            if(!PBE.resourceManager)
+            {
+                throw new Error("Cannot instantiate a ResourceBundle until you have called PBE.startup(this);. Move the call to new YourResourceBundle(); to occur AFTER the call to PBE.startup().");
+            }
             
             // Get information about our members (which will be embedded resources)
             var desc:XML = describeType(this);
