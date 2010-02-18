@@ -18,8 +18,6 @@
             import org.flexunit.runner.Request;
             import org.flexunit.runner.notification.async.XMLListener;
 
-            private var testResources:TestResources = new TestResources();
-
             private var core:FlexUnitCore;
 
             public function runMe(outputDir:String, exitOnComplete:Boolean):void
@@ -31,7 +29,8 @@
                 }
                 
                 PBE.startup(this);
-
+                
+                var testResources:TestResources = new TestResources();
                 core = new FlexUnitCore();
 
                 //Listener for the UI, optional
