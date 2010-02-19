@@ -186,14 +186,12 @@ package com.pblabs.engine.core
                 return;
 
             _keyState[event.keyCode] = true;
-//			_justPressed[event.keyCode] = true;
             dispatchEvent(event);
         }
 
         private function onKeyUp(event:KeyboardEvent):void
         {
             _keyState[event.keyCode] = false;
-//			_justReleased[event.keyCode] = true;
             dispatchEvent(event);
         }
 
