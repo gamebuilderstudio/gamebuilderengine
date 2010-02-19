@@ -8,12 +8,11 @@
  ******************************************************************************/
 package com.pblabs.engine.core
 {
-    import flash.events.Event;
+    import com.pblabs.engine.PBE;
+    
     import flash.events.EventDispatcher;
     import flash.events.KeyboardEvent;
     import flash.events.MouseEvent;
-
-    import com.pblabs.engine.PBE;
 
     /**
      * The input manager wraps the default input events produced by Flash to make
@@ -27,7 +26,7 @@ package com.pblabs.engine.core
      *
      * @see InputMap
      */
-    public class InputManager extends EventDispatcher
+    public class InputManager extends EventDispatcher implements ITickedObject
     {
         public function InputManager()
         {
@@ -39,7 +38,58 @@ package com.pblabs.engine.core
             PBE.mainStage.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel);
             PBE.mainStage.addEventListener(MouseEvent.MOUSE_OVER,  onMouseOver);
             PBE.mainStage.addEventListener(MouseEvent.MOUSE_OUT,   onMouseOut);
+			
+			PBE.processManager.addTickedObject(this);
         }
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function onTick(deltaTime:Number):void
+		{
+			// Don't actually update our keystrokes here.
+			// Defer the update to happen at the beginning of the next tick, so as to be as up-to-date as possible.
+			PBE.processManager.callLater( updateKeys );
+		}
+		
+		private function updateKeys():void
+		{
+			// This function tracks which keys were just pressed (or released) within the last tick.
+			// It should be called at the beginning of the tick to give the most accurate responses possible.
+			
+			var cnt:int;
+			
+			for (cnt = 0; cnt < _keyState.length; cnt++)
+			{
+				if (_keyState[cnt] && !_keyStateOld[cnt])
+					_justPressed[cnt] = true;
+				else
+					_justPressed[cnt] = false;
+				
+				if (!_keyState[cnt] && _keyStateOld[cnt])
+					_justReleased[cnt] = true;
+				else
+					_justReleased[cnt] = false;
+				
+				_keyStateOld[cnt] = _keyState[cnt];
+			}
+		}
+		
+		/**
+		 * Returns whether or not a key was pressed since the last tick.
+		 */
+		public function keyJustPressed(keyCode:int):Boolean
+		{
+			return _justPressed[keyCode];
+		}
+		
+		/**
+		 * Returns whether or not a key was released since the last tick.
+		 */
+		public function keyJustReleased(keyCode:int):Boolean
+		{
+			return _justReleased[keyCode];
+		}
 
         /**
          * Returns whether or not a specific key is down.
@@ -136,12 +186,14 @@ package com.pblabs.engine.core
                 return;
 
             _keyState[event.keyCode] = true;
+//			_justPressed[event.keyCode] = true;
             dispatchEvent(event);
         }
 
         private function onKeyUp(event:KeyboardEvent):void
         {
             _keyState[event.keyCode] = false;
+//			_justReleased[event.keyCode] = true;
             dispatchEvent(event);
         }
 
@@ -175,7 +227,10 @@ package com.pblabs.engine.core
             dispatchEvent(event);
         }
 
-        private var _keyState:Array = new Array();
+        private var _keyState:Array = new Array();     // The most recent information on key states
+		private var _keyStateOld:Array = new Array();  // The state of the keys on the previous tick
+		private var _justPressed:Array = new Array();  // An array of keys that were just pressed within the last tick.
+		private var _justReleased:Array = new Array(); // An array of keys that were just released within the last tick.
     }
 }
 
