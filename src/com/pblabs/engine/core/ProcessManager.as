@@ -195,7 +195,8 @@ package com.pblabs.engine.core
          * 
          * @param object The object to add.
          * @param priority The priority of the object. Objects added with higher priorities
-         * will receive their callback before objects with lower priorities.
+         * will receive their callback before objects with lower priorities. The lowest 
+         * (last-processed) priority is Number.MAX_VALUE.
          */
         public function addAnimatedObject(object:IAnimatedObject, priority:Number = 0.0):void
         {
@@ -207,7 +208,8 @@ package com.pblabs.engine.core
          * 
          * @param object The object to add.
          * @param priority The priority of the object. Objects added with higher priorities
-         * will receive their callback before objects with lower priorities.
+         * will receive their callback before objects with lower priorities. The lowest
+         * (last-processed) priority is Number.MAX_VALUE.
          */
         public function addTickedObject(object:ITickedObject, priority:Number = 0.0):void
         {

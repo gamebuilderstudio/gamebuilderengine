@@ -52,7 +52,7 @@ package com.pblabs.rendering2D
          * Note this is only considered at layer setup time. Use getLayer() to
          * get a layer that is being actively used.
          */
-        public var layers:Array;
+        public var layers:Array = [];
         
         /**
          * If set, every frame, trackObject's position is read and assigned
@@ -118,7 +118,7 @@ package com.pblabs.rendering2D
                 return null;
             
             // Allocate the layer.
-            _layers[index] = generateLayer(index);
+             _layers[index] = generateLayer(index);
                         
             // Order the layers. This is suboptimal but we are probably not going
             // to be adding a lot of layers all the time.
@@ -186,7 +186,6 @@ package com.pblabs.rendering2D
             outLayer.name = "Layer" + layerIndex;
             
             return outLayer;
-            
         }
         
         public function get sceneView():IUITarget
