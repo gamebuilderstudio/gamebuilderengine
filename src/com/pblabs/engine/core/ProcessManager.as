@@ -32,6 +32,11 @@ package com.pblabs.engine.core
     public class ProcessManager
     {
         /**
+         * If true, disables warnings about losing ticks.
+         */
+        public static var disableSlowWarning:Boolean = false;
+        
+        /**
          * The number of ticks that will happen every second.
          */
         public static const TICKS_PER_SECOND:int = 30;
@@ -440,7 +445,7 @@ package com.pblabs.engine.core
             }
             
             // Safety net - don't do more than a few ticks per frame to avoid death spirals.
-            if (tickCount >= MAX_TICKS_PER_FRAME && !suppressSafety)
+            if (tickCount >= MAX_TICKS_PER_FRAME && !suppressSafety && !disableSlowWarning)
             {
                 Logger.warn(this, "Advance", "Exceeded maximum number of ticks for frame (" + elapsed.toFixed() + "ms dropped) .");
                 elapsed = 0;
