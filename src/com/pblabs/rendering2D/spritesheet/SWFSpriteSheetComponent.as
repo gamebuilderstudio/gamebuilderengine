@@ -67,7 +67,7 @@ package com.pblabs.rendering2D.spritesheet
          */
         public function get bounds():Rectangle
         {
-            return _bounds;
+            return new Rectangle(_bounds.x, _bounds.y, _bounds.width * _scale.x, _bounds.height * _scale.y);
         }
         
         /**
@@ -80,6 +80,22 @@ package com.pblabs.rendering2D.spritesheet
         public function set smoothing(value:Boolean):void 
         {
             _smoothing = value;
+        }
+        
+        /**
+         * X/Y scaling for the SWF as it renders to bitmap.  
+         * 
+         * Value of (1, 1) mean no scaling (default).  
+         * 
+         * (0.5, 0.5) would be half the normal size, and (2, 2) would be double.
+         */
+        public function get scale():Point
+        {
+            return _scale.clone();
+        }
+        public function set scale(value:Point):void
+        {
+            _scale = value.clone();
         }
         
         override public function get isLoaded() : Boolean
@@ -213,12 +229,12 @@ package com.pblabs.rendering2D.spritesheet
             var bounds:Rectangle = display.getBounds(display);
             
             var bd:BitmapData = new BitmapData(
-                Math.max(1, Math.min(2880, bounds.width)),
-                Math.max(1, Math.min(2880, bounds.height)),
+                Math.max(1, Math.min(2880, bounds.width * scale.x)),
+                Math.max(1, Math.min(2880, bounds.height * scale.y)),
                 true,
                 0x00000000);
             
-            bd.draw(display, new Matrix(1, 0, 0, 1, -bounds.x, -bounds.y), null, null, null, _smoothing);
+            bd.draw(display, new Matrix(_scale.x, 0, 0, _scale.y, -bounds.x * _scale.x, -bounds.y * _scale.y), null, null, null, _smoothing);
             
             return bd;
         }
@@ -226,6 +242,7 @@ package com.pblabs.rendering2D.spritesheet
         protected static var _frameCache:Dictionary = new Dictionary(true);
         
         private var _smoothing:Boolean = true;
+        private var _scale:Point = new Point(1, 1);
         private var _frames:Array;
         private var _resource:SWFResource;
         private var _clipName:String;
@@ -233,6 +250,7 @@ package com.pblabs.rendering2D.spritesheet
         private var _bounds:Rectangle;
     }
 }
+import flash.geom.Point;
 
 final class CachedFramesData
 {
