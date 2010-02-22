@@ -81,6 +81,15 @@ package com.pblabs.sound
             
             // Great, so set up the SoundHandle, start it, and return it.
             var sh:SoundHandle = new SoundHandle(this, actualSound, category, pan, loopCount, startDelay);            
+
+            // Look up its category.
+            var categoryRef:SoundCategory = categories[category] as SoundCategory;
+            
+            // Apply the category's transform to avoid transitory sound issues.
+            if(categoryRef)
+                sh.transform = SoundCategory.applyCategoriesToTransform(categoryRef.muted, sh.pan, sh.volume, categoryRef);            
+
+            // Add to the list of playing sounds.
             playingSounds.push(sh);
             
             Profiler.exit("SoundManager.play");
