@@ -343,6 +343,8 @@ package com.pblabs.engine.debug
 
             if (_output)
             {
+                Profiler.enter("LogViewer.addLogMessage");
+                
                 var append:String = "<p><font size=\"" +
                     _input.getTextFormat().size+"\" color=\"" + 
                     color +"\"><b>" + 
@@ -355,6 +357,8 @@ package com.pblabs.engine.debug
                 truncateOutput();
                 
                 _output.scrollV = _output.maxScrollV;
+
+                Profiler.exit("LogViewer.addLogMessage");
             }
         }
         

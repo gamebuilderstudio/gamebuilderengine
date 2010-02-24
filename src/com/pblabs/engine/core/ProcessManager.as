@@ -568,16 +568,16 @@ package com.pblabs.engine.core
         
         protected var deferredMethodQueue:Array = [];
         protected var started:Boolean = false;
-        protected var _virtualTime:Number = 0.0;
+        protected var _virtualTime:int = 0.0;
         protected var _interpolationFactor:Number = 0.0;
         protected var _timeScale:Number = 1.0;
-        protected var lastTime:Number = -1.0;
+        protected var lastTime:int = -1.0;
         protected var elapsed:Number = 0.0;
         protected var animatedObjects:Array = new Array();
         protected var tickedObjects:Array = new Array();
         protected var needPurgeEmpty:Boolean = false;
         
-        protected var _platformTime:Number = 0;
+        protected var _platformTime:int = 0;
         
         protected var duringAdvance:Boolean = false;
         
