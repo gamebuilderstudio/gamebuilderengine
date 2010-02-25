@@ -121,7 +121,8 @@ package com.pblabs.engine.core
         
         /**
          * Current time reported by getTimer(), updated every frame. Use this to avoid
-         * costly calls to getTimer().
+         * costly calls to getTimer(), or if you want a unique number representing the
+         * current frame.
          */
         public function get platformTime():Number
         {

@@ -38,7 +38,7 @@ package com.pblabs.engine
          * Set this to true to get rid of a bunch of development related functionality that isn't
          * needed in a final release build.
          */
-        public static const IS_SHIPPING_BUILD:Boolean = false;
+        public static var IS_SHIPPING_BUILD:Boolean = false;
         
         private static var _main:Sprite = null;	
         private static var _versionDetails:VersionDetails;

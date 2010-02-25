@@ -18,6 +18,12 @@ package com.pblabs.engine.debug
      * messages, give more detailed information about the origin of the message, and
      * listen for log events so they can be displayed in a UI component.
      * 
+     * You can use Logger for localized logging by instantiating an instance and
+     * referencing it. For instance:
+     * 
+     * <code>protected static var logger:Logger = new Logger(MyClass);
+     * logger.print("Output for MyClass.");</code>
+     *  
      * @see LogEntry
      */
     public class Logger
@@ -25,12 +31,19 @@ package com.pblabs.engine.debug
         static protected var listeners:Array = [];
         static protected var started:Boolean = false;
         static protected var pendingEntries:Array = [];
+        static protected var disabled:Boolean = false;
         
+        /**
+         * Register a ILogAppender to be called back whenever log messages occur.
+         */
         public static function registerListener(listener:ILogAppender):void
         {
             listeners.push(listener);
         }
         
+        /**
+         * Initialize the logging system.
+         */
         public static function startup():void
         {
             // Put default listeners into the list.
@@ -49,8 +62,24 @@ package com.pblabs.engine.debug
             pendingEntries = null;
         }
         
+        /**
+         * Call to destructively disable logging. This is useful when going
+         * to production, when you want to remove all logging overhead.
+         */
+        public static function disable():void
+        {
+            pendingEntries = null;
+            started = false;
+            listeners = null;
+            disabled = true;
+        }
+        
         protected static function processEntry(entry:LogEntry):void
         {
+            // Early out if we are disabled.
+            if(disabled)
+                return;
+            
             // If we aren't started yet, just store it up for later processing.
             if(!started)
             {
@@ -72,6 +101,10 @@ package com.pblabs.engine.debug
          */
         public static function print(reporter:*, message:String):void
         {
+            // Early out if we are disabled.
+            if(disabled)
+                return;
+
             var entry:LogEntry = new LogEntry();
             entry.reporter = TypeUtility.getClass(reporter);
             entry.message = message;
@@ -89,7 +122,11 @@ package com.pblabs.engine.debug
 		 */
 		public static function info(reporter:*, method:String, message:String):void
 		{
-			var entry:LogEntry = new LogEntry();
+            // Early out if we are disabled.
+            if(disabled)
+                return;
+
+            var entry:LogEntry = new LogEntry();
 			entry.reporter = TypeUtility.getClass(reporter);
 			entry.method = method;
 			entry.message = method + " - " + message;
@@ -107,7 +144,11 @@ package com.pblabs.engine.debug
 		 */
 		public static function debug(reporter:*, method:String, message:String):void
 		{
-			var entry:LogEntry = new LogEntry();
+            // Early out if we are disabled.
+            if(disabled)
+                return;
+
+            var entry:LogEntry = new LogEntry();
 			entry.reporter = TypeUtility.getClass(reporter);
 			entry.method = method;
 			entry.message = method + " - " + message;
@@ -125,6 +166,10 @@ package com.pblabs.engine.debug
          */
         public static function warn(reporter:*, method:String, message:String):void
         {
+            // Early out if we are disabled.
+            if(disabled)
+                return;
+
             var entry:LogEntry = new LogEntry();
             entry.reporter = TypeUtility.getClass(reporter);
             entry.method = method;
@@ -143,6 +188,10 @@ package com.pblabs.engine.debug
          */
         public static function error(reporter:*, method:String, message:String):void
         {
+            // Early out if we are disabled.
+            if(disabled)
+                return;
+
             var entry:LogEntry = new LogEntry();
             entry.reporter = TypeUtility.getClass(reporter);
             entry.method = method;
@@ -162,6 +211,10 @@ package com.pblabs.engine.debug
          */
         public static function printCustom(reporter:*, method:String, message:String, type:String):void
         {
+            // Early out if we are disabled.
+            if(disabled)
+                return;
+
             var entry:LogEntry = new LogEntry();
             entry.reporter = TypeUtility.getClass(reporter);
             entry.method = method;
@@ -199,6 +252,7 @@ package com.pblabs.engine.debug
         
         public var enabled:Boolean;
         protected var owner:Class;
+        
         public function Logger(_owner:Class, defaultEnabled:Boolean = true)
         {
             owner = _owner;
