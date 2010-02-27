@@ -4,13 +4,11 @@ package com.pblabs.rendering2D
     import com.pblabs.engine.PBUtil;
     import com.pblabs.engine.components.AnimatedComponent;
     import com.pblabs.engine.core.ObjectType;
-    import com.pblabs.engine.core.ObjectTypeManager;
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.rendering2D.ui.IUITarget;
     
     import flash.display.DisplayObject;
     import flash.display.Sprite;
-    import flash.display.StageQuality;
     import flash.events.Event;
     import flash.geom.*;
     import flash.utils.Dictionary;
@@ -59,6 +57,14 @@ package com.pblabs.rendering2D
          * to the scene's position, so that the scene follows the trackObject.
          */
         public var trackObject:DisplayObjectRenderer;
+        
+        /**
+         * An x/y offset for adjusting the camera's focus around the tracked
+         * object.
+         * 
+         * Only applies if trackObject is set.
+         */ 
+        public var trackOffset:Point = new Point(0,0);
         
         protected var _sceneView:IUITarget;
         protected var _sceneViewName:String = null;
@@ -233,8 +239,8 @@ package com.pblabs.rendering2D
             // Make sure we are up to date with latest track.
             if(trackObject)
             {
-                position = new Point(-(trackObject.position.x), 
-                                     -(trackObject.position.y));
+                position = new Point(-(trackObject.position.x + trackOffset.x), 
+                                     -(trackObject.position.y + trackOffset.y));
             }
             
             if(trackLimitRectangle != null)
@@ -432,8 +438,8 @@ package com.pblabs.rendering2D
             // Update our state based on the tracked object, if any.
             if(trackObject)
             {
-                position = new Point(-(trackObject.position.x), 
-                                     -(trackObject.position.y));
+                position = new Point(-(trackObject.position.x + trackOffset.x), 
+                                     -(trackObject.position.y + trackOffset.y));
             }
             
             // Apply limit to camera movement.
