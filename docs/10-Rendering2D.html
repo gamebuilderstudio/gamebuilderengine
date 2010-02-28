@@ -28,65 +28,41 @@
 
    <h2>Rendering2D Basics</h2>
    
-   <p>Rendering2D is built on two separate pieces. The first half is the <b>draw manager</b> and the second half is the <b>spatial manager</b>. The draw manager handles the order and method in which images are drawn to the screen. The spatial manager handles the position of where those images should be drawn.  These two pieces work together to let your code perform spatial queries and render efficiently.</p>
+   <p>Rendering2D is built on two halves. The first half is the <b>scene</b> and the second half is the <b>spatial manager</b>. These halves are independent. You can use either, one, or none in your game.</p>
    
+   <p>The spatial manager provides a way to place objects in space and perform queries on them. The scene lets you place and draw visual objects like sprites. Scenes also support some queries, mostly the ones needed in order to implement picking.</p>
+          
    <h3>Bitmaps vs. DisplayObjects</h3>
    
-   <p>In the fundamental system of Flash graphics, there are two main ways of displaying images.  The first is to create an individual DisplayObject to represent each "sprite", or moving graphic on the screen. The second is to create a single DisplayObject that is a BitmapData canvas that you draw ("blit") all of your other images on to each frame.  There is no clear "right way" to do it, so Rendering2D is flexible enough to support both. You can submit either type of visual data to IDrawManager2D and it will automatically convert it to the right kind of output.</p>
+   <p>At the fundamental level of Flash graphics, there are two ways of displaying graphics to the user. The first is to create an individual DisplayObject to represent each "sprite", or moving graphic, on the screen. The second is to create a single BitmapData canvas that you draw ("blit") all of your other images to each frame.  There is no one "right way" to do this, so Rendering2D is flexible enough to support both. <em>DisplayObjectScene</em> lets you use <em>DisplayObject</em>s, and <em>BitmapDataScene</em> composites to a <em>Bitmap</em>. When you are using a <em>BitmapDataScene</em>, there is a direct <em>copyPixels</em> based path available to objects that implement <em></em> and it will automatically convert it to the right kind of output. See <em>ICopyPixelsRenderer</em>.</p>
    
    <h3>Draw Layers And Sorting</h3>
    
-   <p>An important part of the Rendering2D architecture is the draw layer system. Each renderable component is required to implement a property called LayerIndex, which controls on which draw layer it is shown. This allows manual control of sorting, by grouping drawable items onto overlapping layers. Layers are drawn in ascending order, starting with layer zero. This means that anything on layer 0 will be on the "bottom", and things in higher layers will be drawn on top of lower layers. The BaseSceneComponent only provides for 16 layers by default (though if needed, this number can be tweaked by altering a const on the class).</p>
+   <p>An important part of the Rendering2D architecture is the draw layer system. Each renderable component is required to implement a property called <em>layerIndex</em>, which controls on which draw layer it is shown. This allows manual control of sorting, by grouping drawable items onto overlapping layers. Layers are drawn in ascending order, starting with layer zero. This means that anything on layer 0 will be on the "bottom", and things in higher layers will be drawn on top of lower layers. There can be any number of layers, and they do not have to be contiguous (ie you could have only layers 0, 1, and 10).</p>
    
    <p>For example, in a platformer, you might assign layer zero to distant background elements, layer one to nearer background elements, layer two to platforms in the world, layer three to powerups, layer four to enemies, layer five to the player, and layer six to feedback elements like scores or damage effects. That's just an example; you can use layers however you like.</p>
    
-   <p>The simple draw manager Scene2DComponent implements no intra-layer sorting. The draw order of two items in the same layer is undefined.  This is fine for simple games, but for games with more complex graphical structures (such as an isometric), it would need a scene component that sorted based on depth in the scene. This isometric draw manager could be created by either subclassing Scene2DComponent, BaseSceneComponent, or by creating a new class that implemented the bare IDrawManager2D interface.</p>
+   <p>DisplayObjectScene implements no intra-layer sorting by default. The draw order of two items in the same layer is undefined. You can implement your own sorting by specifying a sort function on the layer's <em>drawOrderFunction</em> field.</p>
    
    <h3>How Rendering Works</h3>
    
-   <p>Every time the draw manager wants to "paint" the screen, the draw manager queries the spatial manager (an object implementing ISpatialManager2D) to get a list of components implementing ISpatialObject2Ds. Each ISpatialObject2D's entity is queried for any IDrawable2D-implementing components. If an entity has both a spatial component (denoting that the entity has scene coordinates) and a drawing component (denoting that the entity can be displayed), then that entity is marked to be drawn to the screen by adding it to a temporary list. Note: IDrawable2Ds may be gotten from other sources, too, for instance the render always list, which contains objects which should always be drawn regardless of their position.</p>
+   <p>The rendering process is very simple. At the start of each frame, the <em>DisplayObjectScene</em> sorts its layers, then each layer has the opportunity to update the draw order of its renderables. The <em>DisplayObjectScene</em> uses <em>DisplayObject</em>s and Flash's renderer to display the scene, so finally any necessary changes are pushed into the <em>DisplayObject</em>s on the stage.</p>
    
-   <p>The draw manager implements IDrawManager2D. Components which can be drawn implement IDrawable2D. Using information gotten via IDrawable2D, the list of drawable components is sorted by layer, position, or whatever other criteria are desired by the draw manager. The OnDraw method on each IDrawable2D is then called in order, and each IDrawable2D submits BitmapDatas or DisplayObjects to be displayed by the draw manager.</p>
-   
-   <p>The draw manager takes all the submitted BitmapDatas and DisplayObjects and composites them to present the final rendered frame to the user.</p>
+   <p>If you are using the <em>BitmapDataScene</em>, then the main difference is that drawing is done manually onto the <em>BitmapData</em> using the <em>BitmapData.draw</em> method. In addition, renderable objects can optionally implement the <em>ICopyPixelsRenderer</em> interface, in which case they will be called every frame to draw themselves onto the <em>BitmapData</em>.
    
    <h3>Implementing a Drawable Component</h3>
    
-   <p>Any component which wants to draw needs to implement IDrawable2D and be on an entity with a spatial component that matches the spatial search the scene manager is performing.</p>
-   
-   <p>The API docs for IDrawable2D describe each method and field you need to implement and how they work.</p>
-   
-   <p>You can submit as many visual elements as you like via the IDrawManager2D in the OnDraw callback. For a complex element of the scene, like a tilemap, it makes sense to make the whole tilemap a single object and let it submit whatever tiles need to be drawn, rather than placing each tile in its own entity.</p>
-   
-   <h3>Implementing a Scene and a Spatial Manager</h3>
-   
-   <p>To draw, two pieces are needed. A scene component which implements IDrawManager2D, gathers IDrawable2Ds from a spatial managers, and performs sorting is needed. And, a spatial manager component implementing ISpatialManager2D is also required.</p>
-   
-   <p>In the default SDK, BaseSceneComponent is provided to manage most of the basic book-keeping related to any scene. Scene2DComponent is a subclass oriented for drawing a 2d scene via adding DisplayObjects to a DisplayObject on the stage.</p>
-   
-   <p>For spatial managers, there is a BasicSpatialManager2D, which does the bare minimum to implement ISpatialManager2D. There is also a Box2D spatial manager (Box2DSpatialComponent) as part of the Box2D component library. Either spatial manager works seamlessly with the Scene2DComponent draw manager.</p>
-   
+   <p>Any component which wants to be drawn should inherit from <em>DisplayObjectRenderer</em> or one of its subclasses.</p>
+      
    <h2>Using The System</h2>
    
-   <p>The best way to understand the Rendering2D system is to look at the PBEngineDemo or the PBFlexlessEngineDemo and see how they set up their entities. Basically, you need a few pieces in order to render:</p>
+   <p>The best way to understand the rendering2D system is to look at the examples (RollyBallGame, PBEngineDemo, or the PBFlexlessEngineDemo) and see how they set up their entities. You can also look at the Lessons, which cover how to display and move shapes and sprites.</p>
    
-   <ul>
-   <li>A scene entity that has a spatial manager and a scene component on it. The scene component needs to have a reference to the spatial manager.</li>
-   <li>Entities that contain both a spatial component and one or more components implementing IDrawable2D. The spatial component has to be hooked to the same spatial manager as the scene component, and have a ObjectMask that matches what the scene component will be querying for.</li>
-   <li>A class implementing com.pblabs.engine.rendering2D.ui.ISceneView should be somewhere on the stage - FlexSceneView if you're writing a Flex-based application, or SceneView if you're working with Flash directly - and the scene component should have a reference to it.</li>
-   </ul>
-   
-   <p>The details may vary slightly depending on the exact set of components you are using, of course.</p>
-   
+   <p>The requirements for rendering are simple. You need a <em>SceneView</em> or <em>FlexSceneView</em>, which is where the scene will be displayed. You need a <em>DisplayObjectScene</em> or related class. And you need some <em>DisplayObjectRenderers</em>. The renderers will have their <em>scene</em> field to set to reference the <em>DisplayObjectScene</em>, and the <em>DisplayObjectScene</em> will have its <em>sceneView</em> field set to indicate to what <em>SceneView</em> or <em>FlexSceneView</em> it should draw.</p>
+      
    <h2>Extending The System</h2>
-   
-   <h3>3d Graphics?</h3>
-   
-   <p>While Rendering2D won't help directly with 3d graphics, if you are using a 3d library, it's a logical place to integrate it - write your 3d components, and have a view component that implements IDrawable2D. Set it up to be rendered as part of the 2d scene, and now you have 3d graphics that you can integrate with any other Rendering2D capabilities.</p> 
-   
-   <h3>Integrating With 3rd Party Libraries</h3>
-   
-   <p>As mentioned above, if your 3rd party library can draw to either a DisplayObject or a BitmapData, it should be trivial to integrate into the Rendering2D framework. Just wrap it in a component that implements IDrawable2D and off you go.</p>
+      
+   <p>If you have a 3rd party library that can draw to either a <em>DisplayObject</em> or a <em>BitmapData</em>, it should be trivial to integrate into the rendering2D framework. Feed the <em>DisplayObject</em> or <em>BitmapData</em> to a DisplayObjectRenderer or a <em>BitmapRenderer</em> and off you'll go.</p>
    
    </div>
 </body>
