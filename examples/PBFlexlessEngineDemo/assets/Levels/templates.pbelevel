@@ -32,7 +32,7 @@
         <_0>Platform</_0>
         <_1>Renderable</_1>
       </collisionType>
-      <manager componentReference="SpatialDB"/>
+      <spatialManager componentReference="SpatialDB"/>
       <size type="">
         <x>256</x>
         <y>64</y>
@@ -42,8 +42,8 @@
       <positionProperty>@Spatial.position</positionProperty>
       <rotationProperty>@Spatial.rotation</rotationProperty>
       <sizeProperty>@Spatial.size</sizeProperty>
-      <spriteSheet entityName="PlatformSpriteSheet"/>
-      <scene entityName="Scene"/>
+      <spriteSheet componentReference="PlatformSpriteSheet"/>
+      <scene componentReference="Scene"/>
     </component>
   </template>
 </things>

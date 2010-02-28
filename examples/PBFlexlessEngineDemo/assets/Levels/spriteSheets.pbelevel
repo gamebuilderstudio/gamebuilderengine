@@ -10,10 +10,6 @@
         <xCount>8</xCount>
         <yCount>8</yCount>
       </divider>
-      <center>
-      	<x>64</x>
-      	<y>90</y>
-      </center>
       <image filename="../Assets/Images/mannequin.png"/>
     </component>
   </entity>

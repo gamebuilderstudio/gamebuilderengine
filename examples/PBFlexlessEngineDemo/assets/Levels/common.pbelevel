@@ -4,20 +4,13 @@
   </entity>
   <entity name="Scene">
     <component type="com.pblabs.rendering2D.DisplayObjectScene" name="Scene">
-      <trackObject entityName="Dude"/>
-      <position>
-         <x>800</x>
-         <y>400</y>
-      </position>
-      <sceneView type="com.pblabs.rendering2D.ui.SceneView">
-         <width>800</width>
-         <height>600</height>
-      </sceneView>
+      <trackObject componentReference="Dude"/>
+      <sceneViewName>MainView</sceneViewName>
     </component>
   </entity>
   <entity name="Box2D">
     <component type="com.pblabs.box2D.Box2DDebugComponent" name="Debug">
-      <manager componentReference="SpatialDB"/>
+      <spatialManager componentReference="SpatialDB"/>
       <scene componentReference="Scene"/>
     </component>
   </entity>
@@ -41,10 +34,6 @@
       <collidesWithTypes childType="String">
         <_0>Platform</_0>
       </collidesWithTypes>
-      <collisionType childType="String">
-        <_0>Dude</_0>
-        <_1>Renderable</_1>
-      </collisionType>
       <collisionShapes childType="com.pblabs.box2D.CollisionShape">
         <_0 type="com.pblabs.box2D.CircleCollisionShape">
           <offset type="">
@@ -53,7 +42,11 @@
           <radius>0.5</radius>
         </_0>
       </collisionShapes>
-      <manager componentReference="SpatialDB"/>
+      <collisionType childType="String">
+        <_0>Dude</_0>
+        <_1>Renderable</_1>
+      </collisionType>
+      <spatialManager componentReference="SpatialDB"/>
       <position type="">
         <x>400</x>
         <y>100</y>
@@ -64,11 +57,11 @@
       </size>
     </component>
     <component type="com.pblabs.rendering2D.SpriteSheetRenderer" name="Render">
+      <scene componentReference="Scene"/>
       <positionProperty>@Spatial.position</positionProperty>
       <rotationProperty>@Spatial.rotation</rotationProperty>
       <sizeProperty>@Spatial.size</sizeProperty>
-      <spriteSheet entityName="DudeSpriteSheet"/>
-      <scene entityName="Scene"/>
+      <spriteSheet componentReference="DudeSpriteSheet"/>
     </component>
     <component type="com.pblabs.stupidSampleGame.DudeController" name="Controller">
       <input childType="com.pblabs.engine.core.InputKey">
