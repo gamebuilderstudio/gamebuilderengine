@@ -3,21 +3,18 @@
     <component type="com.pblabs.box2D.Box2DManagerComponent" name="Manager"/>
   </entity>
   <entity name="Scene">
-    <component type="com.pblabs.rendering2D.Scene2DComponent" name="Scene">
-      <renderMask childType="String">
-        <_0>Renderable</_0>
-      </renderMask>
-      <spatialDatabase componentReference="SpatialDB" componentName="Manager"/>
+    <component type="com.pblabs.rendering2D.DisplayObjectScene" name="Scene">
       <trackObject componentReference="Dude"/>
       <position>
          <x>400</x>
          <y>100</y>
       </position>
+      <sceneViewName>MainView</sceneViewName>
     </component>
   </entity>
   <entity name="Box2D">
     <component type="com.pblabs.box2D.Box2DDebugComponent" name="Debug">
-      <manager componentReference="SpatialDB"/>
+      <spatialManager componentReference="SpatialDB"/>
       <scene componentReference="Scene"/>
     </component>
   </entity>
@@ -53,7 +50,7 @@
         <_0>Dude</_0>
         <_1>Renderable</_1>
       </collisionType>
-      <manager componentReference="SpatialDB"/>
+      <spatialManager componentReference="SpatialDB"/>
       <position type="">
         <x>400</x>
         <y>100</y>
@@ -63,10 +60,11 @@
         <y>74</y>
       </size>
     </component>
-    <component type="com.pblabs.rendering2D.SpriteRenderComponent" name="Render">
-      <positionReference>@Spatial.position</positionReference>
-      <rotationReference>@Spatial.rotation</rotationReference>
-      <sizeReference>@Spatial.size</sizeReference>
+    <component type="com.pblabs.rendering2D.SpriteSheetRenderer" name="Render">
+      <scene componentReference="Scene"/>
+      <positionProperty>@Spatial.position</positionProperty>
+      <rotationProperty>@Spatial.rotation</rotationProperty>
+      <sizeProperty>@Spatial.size</sizeProperty>
       <spriteSheet componentReference="DudeSpriteSheet"/>
     </component>
     <component type="com.pblabs.stupidSampleGame.DudeController" name="Controller">

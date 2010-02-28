@@ -1,45 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 /*******************************************************************************
- * PushButton Engine
- * Copyright (C) 2009 PushButton Labs, LLC
- * For more information see http://www.pushbuttonengine.com
- * 
- * This file is licensed under the terms of the MIT license, which is included
- * in the License.html file at the root directory of this SDK.
- ******************************************************************************/
+* PushButton Engine
+* Copyright (C) 2009 PushButton Labs, LLC
+* For more information see http://www.pushbuttonengine.com
+* 
+* This file is licensed under the terms of the MIT license, which is included
+* in the License.html file at the root directory of this SDK.
+******************************************************************************/
 -->
-<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" frameRate="60" width="800" height="600" applicationComplete="_OnLoaded()">
-   <mx:Script>
-      <![CDATA[
-         import com.pblabs.engine.core.*;
-         import com.pblabs.pbEngineDemo.UI.*;
-         import com.pblabs.engine.debug.log4PBE.*;
-          
-         private function _OnLoaded():void
-         {
-             new Resources();
-             
-            Global.startup(this);
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" frameRate="60" 
+                width="800" height="600" applicationComplete="_OnLoaded()">
+    <mx:Script>
+        <![CDATA[
+            import com.pblabs.animation.AnimatorComponent;
+            import com.pblabs.box2D.Box2DDebugComponent;
+            import com.pblabs.box2D.Box2DManagerComponent;
+            import com.pblabs.box2D.Box2DSpatialComponent;
+            import com.pblabs.box2D.CircleCollisionShape;
+            import com.pblabs.box2D.PolygonCollisionShape;
+            import com.pblabs.engine.*;
+            import com.pblabs.engine.core.*;
+            import com.pblabs.pbEngineDemo.UI.*;
+            import com.pblabs.rendering2D.SpriteRenderer;
+            import com.pblabs.rendering2D.SpriteSheetRenderer;
+            import com.pblabs.rendering2D.spritesheet.CellCountDivider;
+            import com.pblabs.rendering2D.spritesheet.SpriteSheetComponent;
+            import com.pblabs.rendering2D.ui.FlexSceneView;
+            import com.pblabs.stupidSampleGame.DudeController;
             
-            LevelManager.instance.addEventListener(LevelEvent.LEVEL_LOADED_EVENT, _OnLevelLoaded);
-            LevelManager.instance.load("../assets/levelDescriptions.xml");
-            
-            // Load level zero.
-            LevelManager.instance.start(1);
+            /**
+             * Entry point once Flex finishes initializing.
+             * 
+             * Program execution starts here.
+             */  
+            private function _OnLoaded():void
+            {
+                // Register types with the engine, so that XML deserialization
+                // works.
+                PBE.registerType(com.pblabs.box2D.Box2DDebugComponent);
+                PBE.registerType(com.pblabs.box2D.Box2DManagerComponent);
+                PBE.registerType(com.pblabs.box2D.Box2DSpatialComponent);
+                PBE.registerType(com.pblabs.box2D.CircleCollisionShape);
+                PBE.registerType(com.pblabs.box2D.PolygonCollisionShape);
 
-            addChild(_mainMenu);
-         }
-         
-         private function _OnLevelLoaded(event:LevelEvent):void
-         {
-            removeAllChildren();
-            addChild(_gameUI);
-         }
-         
-         private var _mainMenu:MainMenu = new MainMenu();
-         private var _gameUI:GameUI = new GameUI();
-         private var _references:References = new References();
-      ]]>
-   </mx:Script>
+                PBE.registerType(com.pblabs.rendering2D.ui.FlexSceneView);
+                PBE.registerType(com.pblabs.rendering2D.SpriteRenderer);
+                PBE.registerType(com.pblabs.rendering2D.SpriteSheetRenderer);
+                PBE.registerType(com.pblabs.rendering2D.spritesheet.SpriteSheetComponent);
+                PBE.registerType(com.pblabs.rendering2D.spritesheet.CellCountDivider);
+                
+                PBE.registerType(com.pblabs.animation.AnimatorComponent);
+                
+                PBE.registerType(com.pblabs.stupidSampleGame.DudeController);
+                
+                // Start up the engine.
+                PBE.startup(this);
+                
+                // Add our resources.
+                PBE.addResources(new Resources());
+                
+                // Configure the level manager.
+                LevelManager.instance.addEventListener(LevelEvent.LEVEL_LOADED_EVENT, _OnLevelLoaded);
+                LevelManager.instance.load("../assets/levelDescriptions.xml");
+                
+                // Load level zero.
+                LevelManager.instance.start(1);
+                
+                // Show the main menu.
+                addChild(_mainMenu);
+            }
+            
+            private function _OnLevelLoaded(event:LevelEvent):void
+            {
+                removeAllChildren();
+                addChild(_gameUI);
+            }
+            
+            private var _mainMenu:MainMenu = new MainMenu();
+            private var _gameUI:GameUI = new GameUI();
+        ]]>
+    </mx:Script>
 </mx:Application>

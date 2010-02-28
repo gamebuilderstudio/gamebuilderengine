@@ -32,17 +32,18 @@
         <_0>Platform</_0>
         <_1>Renderable</_1>
       </collisionType>
-      <manager componentReference="SpatialDB"/>
+      <spatialManager componentReference="SpatialDB"/>
       <size type="">
         <x>256</x>
         <y>64</y>
       </size>
     </component>
-    <component type="com.pblabs.rendering2D.SpriteRenderComponent" name="Render">
-      <positionReference>@Spatial.position</positionReference>
-      <rotationReference>@Spatial.rotation</rotationReference>
-      <sizeReference>@Spatial.size</sizeReference>
+    <component type="com.pblabs.rendering2D.SpriteSheetRenderer" name="Render">
+      <positionProperty>@Spatial.position</positionProperty>
+      <rotationProperty>@Spatial.rotation</rotationProperty>
+      <sizeProperty>@Spatial.size</sizeProperty>
       <spriteSheet componentReference="PlatformSpriteSheet"/>
+      <scene componentReference="Scene"/>
     </component>
   </template>
 </things>
