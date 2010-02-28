@@ -54,8 +54,11 @@ package com.pblabs.engine.serialization
             // Do a quick sanity check to make sure we are getting metadata.
             var tmd:TestForMetadata = new TestForMetadata();
             if(TypeUtility.getTypeHint(tmd, "someArray") != "Number")
-                throw new Error("Metadata is not included in this build of the engine, so serialization will not work!\n" + 
+            {
+                // Don't error, as it makes it very hard for CS4 people to develop.
+                Logger.print(this, "Metadata is not included in this build of the engine, so serialization will not work!\n" + 
                     "Add --keep-as3-metadata+=TypeHint,EditorData,Embed to your compiler arguments to get around this.");
+            }
         }
         
         /**

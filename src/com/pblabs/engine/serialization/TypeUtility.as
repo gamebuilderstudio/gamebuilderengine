@@ -100,7 +100,7 @@ package com.pblabs.engine.serialization
                 if(!suppressError)
                 {
                     Logger.warn(null, "Instantiate", "Failed to instantiate " + className + " due to " + e.toString());
-                    Logger.warn(null, "Instantiate", "Is " + className + " included in your SWF? You may have to add a reference so the class is linked. (see References.as/References.mxml).");				 
+                    Logger.warn(null, "Instantiate", "Is " + className + " included in your SWF? Make sure you call PBE.registerType(" + className + "); somewhere in your project.");				 
                 }
             }
             

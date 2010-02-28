@@ -170,7 +170,7 @@ package com.pblabs.engine.resource
                 
                 if (!resType)
                 {
-                    Logger.error(this, "ResourceBundle", "The resource type '" + resTypeName + "' specified for the embedded asset '" + resSource + "' could not be found.  Please ensure that the path name is correct, and that the class is explicity referenced somewhere in the project, so that it is available at runtime.  Did you properly reference this class in your References.as / References.mxml?");
+                    Logger.error(this, "ResourceBundle", "The resource type '" + resTypeName + "' specified for the embedded asset '" + resSource + "' could not be found.  Please ensure that the path name is correct, and that the class is explicity referenced somewhere in the project, so that it is available at runtime.  Do you call PBE.registerType(" + resTypeName + "); somewhere?");
                     continue;
                 }
                 
@@ -178,7 +178,7 @@ package com.pblabs.engine.resource
                 var testResource:* = new resType();
                 if (!(testResource is Resource))
                 {
-                    Logger.error(this, "ResourceBundle", "The resource type '" + resTypeName + "' specified for the embedded asset '" + resSource + "' is not a descendant from Resource.  Please ensure that the resource class descends properly from com.pblabs.engine.resource.Resource, and is defined correctly.");
+                    Logger.error(this, "ResourceBundle", "The resource type '" + resTypeName + "' specified for the embedded asset '" + resSource + "' is not a subclass of Resource.  Please ensure that the resource class descends properly from com.pblabs.engine.resource.Resource, and is defined correctly.");
                     continue;
                 }
                 

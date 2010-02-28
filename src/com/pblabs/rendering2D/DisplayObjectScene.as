@@ -407,6 +407,9 @@ package com.pblabs.rendering2D
 
         public function updateTransform():void
         {
+            if(!sceneView)
+                return;
+            
             if(_transformDirty == false)
                 return;
             _transformDirty = false;
