@@ -9,12 +9,18 @@
 package com.pblabs.engine
 {
     import com.pblabs.engine.debug.Logger;
+    
+    import flash.display.DisplayObject;
+    import flash.geom.Matrix;
 
     /**
      * Contains math related utility methods.
      */
     public class PBUtil
     {
+		public static const FLIP_HORIZONTAL:String = "flipHorizontal";
+		public static const FLIP_VERTICAL:String = "flipVertical";
+		
         /**
          * Two times PI. 
          */
@@ -250,6 +256,31 @@ package com.pblabs.engine
             }
         }
         
+		/**
+		 * Method for flipping a DisplayObject 
+		 * @param obj DisplayObject to flip
+		 * @param orientation Which orientation to use: PBUtil.FLIP_HORIZONTAL or PBUtil.FLIP_VERTICAL
+		 * 
+		 */		
+		public static function flipDisplayObject(obj:DisplayObject, orientation:String):void
+		{
+			var m:Matrix = obj.transform.matrix;
+			 
+			switch (orientation) 
+			{
+				case FLIP_HORIZONTAL:
+					m.a = -1;
+					m.tx = obj.width + obj.x;
+					break;
+				case FLIP_VERTICAL:
+					m.d = -1;
+					m.ty = obj.height + obj.y;
+					break;
+			}
+			
+			obj.transform.matrix = m;
+		}
+		
         /**
          * Log an object to the console. Based on http://dev.base86.com/solo/47/actionscript_3_equivalent_of_phps_printr.html 
          * @param thisObject Object to display for logging.
