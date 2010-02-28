@@ -6,133 +6,126 @@
  * This file is licensed under the terms of the MIT license, which is included
  * in the License.html file at the root directory of this SDK.
  ******************************************************************************/
-package PBLabs.StupidSampleGame
+package com.pblabs.stupidSampleGame
 {
-   import com.pblabs.Box2D.CollisionEvent;
-   import com.pblabs.engine.core.ITickedObject;
-   import com.pblabs.engine.core.InputMap;
-   import com.pblabs.engine.core.ObjectTypeManager;
-   import com.pblabs.engine.core.ProcessManager;
-   import com.pblabs.engine.entity.EntityComponent;
-   import com.pblabs.engine.entity.PropertyReference;
-   import com.pblabs.engine.resource.ResourceManager;
-   import com.pblabs.engine.resource.MP3Resource;
-   
-   import flash.geom.Point;
-   import flash.media.Sound;
-
-   public class DudeController extends EntityComponent implements ITickedObject
-   {
-      public var VelocityReference:PropertyReference;
-      
-      public var JumpSound:MP3Resource;
-      
-      public function get Input():InputMap
-      {
-         return _inputMap;
-      }
-      
-      public function set Input(value:InputMap):void
-      {
-         _inputMap = value;
-         
-         if (_inputMap != null)
-         {
-            _inputMap.MapActionToHandler("GoLeft", _OnLeft);
-            _inputMap.MapActionToHandler("GoRight", _OnRight);
-            _inputMap.MapActionToHandler("Jump", _OnJump);
-         }
-      }
-      
-      public function onTick(tickRate:Number):void
-      {
-         var move:Number = _right - _left;
-         var velocity:Point = Owner.GetProperty(VelocityReference);
-         velocity.x = move * 100;
-         
-         if (_jump > 0)
-         {
-            if (JumpSound != null && JumpSound.SoundObject)
-               JumpSound.SoundObject.play();
+    import com.pblabs.box2D.CollisionEvent;
+    import com.pblabs.engine.PBE;
+    import com.pblabs.engine.components.TickedComponent;
+    import com.pblabs.engine.core.InputMap;
+    import com.pblabs.engine.entity.EntityComponent;
+    import com.pblabs.engine.entity.PropertyReference;
+    
+    import flash.geom.Point;
+    
+    /**
+     * Component responsible for translating keyboard input to forces on the
+     * player entity.
+     */
+    public class DudeController extends TickedComponent
+    {
+        [TypeHint(type="flash.geom.Point")]
+        public var velocityReference:PropertyReference;
+        
+        public function get input():InputMap
+        {
+            return _inputMap;
+        }
+        
+        public function set input(value:InputMap):void
+        {
+            _inputMap = value;
             
-            velocity.y -= 200;
-            _jump = 0;
-         }
-         
-         Owner.SetProperty(VelocityReference, velocity);
-      }
-      
-      public function OnInterpolateTick(factor:Number):void
-      {
-      }
-      
-      protected override function _OnAdd():void
-      {
-         ProcessManager.Instance.AddTickedObject(this);
-         
-         Owner.EventDispatcher.addEventListener(CollisionEvent.COLLISION_EVENT, _OnCollision);
-         Owner.EventDispatcher.addEventListener(CollisionEvent.COLLISION_STOPPED_EVENT, _OnCollisionEnd);
-      }
-      
-      protected override function _OnRemove():void
-      {
-         Owner.EventDispatcher.removeEventListener(CollisionEvent.COLLISION_EVENT, _OnCollision);
-         Owner.EventDispatcher.removeEventListener(CollisionEvent.COLLISION_STOPPED_EVENT, _OnCollisionEnd);
-         
-         ResourceManager.Instance.Unload("../Assets/Sounds/testSound.mp3", MP3Resource);
-         ProcessManager.Instance.RemoveTickedObject(this);
-      }
-      
-      private function _OnCollision(event:CollisionEvent):void
-      {
-         if (ObjectTypeManager.Instance.DoesTypeOverlap(event.Collidee.CollisionType, "Platform"))
-         {
-            if (event.Normal.y > 0.7)
-               _onGround++;
-         }
-         
-         if (ObjectTypeManager.Instance.DoesTypeOverlap(event.Collider.CollisionType, "Platform"))
-         {
-            if (event.Normal.y < -0.7)
-               _onGround++;
-         }
-      }
-      
-      private function _OnCollisionEnd(event:CollisionEvent):void
-      {
-         if (ObjectTypeManager.Instance.DoesTypeOverlap(event.Collidee.CollisionType, "Platform"))
-         {
-            if (event.Normal.y > 0.7)
-               _onGround--;
-         }
-         
-         if (ObjectTypeManager.Instance.DoesTypeOverlap(event.Collider.CollisionType, "Platform"))
-         {
-            if (event.Normal.y < -0.7)
-               _onGround--;
-         }
-      }
-      
-      private function _OnLeft(value:Number):void
-      {
-         _left = value;
-      }
-      
-      private function _OnRight(value:Number):void
-      {
-         _right = value;
-      }
-      
-      private function _OnJump(value:Number):void
-      {
-         if (_onGround > 0)
-            _jump = value;
-      }
+            if (_inputMap != null)
+            {
+                _inputMap.mapActionToHandler("GoLeft", _OnLeft);
+                _inputMap.mapActionToHandler("GoRight", _OnRight);
+                _inputMap.mapActionToHandler("Jump", _OnJump);
+            }
+        }
+        
+        public override function onTick(tickRate:Number):void
+        {
+            var move:Number = _right - _left;
+            var velocity:Point = owner.getProperty(velocityReference);
+            velocity.x = move * 100;
+            
+            if (_jump > 0)
+            {
+                PBE.soundManager.play("testSound.mp3");
+                
+                velocity.y -= 200;
+                _jump = 0;
+            }
+            
+            owner.setProperty(velocityReference, velocity);
+        }
+        
+        protected override function onAdd():void
+        {
+            super.onAdd();
 
-      private var _inputMap:InputMap;
-      private var _left:Number = 0;
-      private var _right:Number = 0;
-      private var _jump:Number = 0;
-      private var _onGround:int = 0;
-   }
+            owner.eventDispatcher.addEventListener(CollisionEvent.COLLISION_EVENT, _OnCollision);
+            owner.eventDispatcher.addEventListener(CollisionEvent.COLLISION_STOPPED_EVENT, _OnCollisionEnd);
+        }
+        
+        protected override function onRemove():void
+        {
+            super.onRemove();
+            
+            owner.eventDispatcher.removeEventListener(CollisionEvent.COLLISION_EVENT, _OnCollision);
+            owner.eventDispatcher.removeEventListener(CollisionEvent.COLLISION_STOPPED_EVENT, _OnCollisionEnd);
+        }
+        
+        private function _OnCollision(event:CollisionEvent):void
+        {
+            if (PBE.objectTypeManager.doesTypeOverlap(event.collidee.collisionType, "Platform"))
+            {
+                if (event.normal.y > 0.7)
+                    _onGround++;
+            }
+            
+            if (PBE.objectTypeManager.doesTypeOverlap(event.collider.collisionType, "Platform"))
+            {
+                if (event.normal.y < -0.7)
+                    _onGround++;
+            }
+        }
+        
+        private function _OnCollisionEnd(event:CollisionEvent):void
+        {
+            if (PBE.objectTypeManager.doesTypeOverlap(event.collidee.collisionType, "Platform"))
+            {
+                if (event.normal.y > 0.7)
+                    _onGround--;
+            }
+            
+            if (PBE.objectTypeManager.doesTypeOverlap(event.collider.collisionType, "Platform"))
+            {
+                if (event.normal.y < -0.7)
+                    _onGround--;
+            }
+        }
+        
+        private function _OnLeft(value:Number):void
+        {
+            _left = value;
+        }
+        
+        private function _OnRight(value:Number):void
+        {
+            _right = value;
+        }
+        
+        private function _OnJump(value:Number):void
+        {
+            if (_onGround > 0)
+                _jump = value;
+        }
+
+        private var _inputMap:InputMap;
+        private var _left:Number = 0;
+        private var _right:Number = 0;
+        private var _jump:Number = 0;
+        private var _onGround:int = 0;
+    }
 }

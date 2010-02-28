@@ -1,0 +1,84 @@
+<things version="1">
+  <entity name="SpatialDB">
+    <component type="com.pblabs.box2D.Box2DManagerComponent" name="Manager"/>
+  </entity>
+  <entity name="Scene">
+    <component type="com.pblabs.rendering2D.DisplayObjectScene" name="Scene">
+      <trackObject componentReference="Dude"/>
+      <sceneViewName>MainView</sceneViewName>
+    </component>
+  </entity>
+  <entity name="Box2D">
+    <component type="com.pblabs.box2D.Box2DDebugComponent" name="Debug">
+      <spatialManager componentReference="SpatialDB"/>
+      <scene componentReference="Scene"/>
+    </component>
+  </entity>
+  <entity name="Dude">
+    <component type="com.pblabs.animation.AnimatorComponent" name="FrameAnimation">
+      <animations childType="com.pblabs.animation.Animator">
+        <idle type="">
+          <animationType>PING_PONG_ANIMATION</animationType>
+          <duration>0.6</duration>
+          <repeatCount>-1</repeatCount>
+          <startValue type="int">0</startValue>
+          <targetValue type="int">3</targetValue>
+        </idle>
+      </animations>
+      <defaultAnimation>idle</defaultAnimation>
+      <reference>@Render.spriteIndex</reference>
+    </component>
+    <component type="com.pblabs.box2D.Box2DSpatialComponent" name="Spatial">
+      <canRotate>false</canRotate>
+      <canSleep>false</canSleep>
+      <collidesWithTypes childType="String">
+        <_0>Platform</_0>
+      </collidesWithTypes>
+      <collisionShapes childType="com.pblabs.box2D.CollisionShape">
+        <_0 type="com.pblabs.box2D.CircleCollisionShape">
+          <offset type="">
+            <y>0.5</y>
+          </offset>
+          <radius>0.5</radius>
+        </_0>
+      </collisionShapes>
+      <collisionType childType="String">
+        <_0>Dude</_0>
+        <_1>Renderable</_1>
+      </collisionType>
+      <spatialManager componentReference="SpatialDB"/>
+      <position type="">
+        <x>400</x>
+        <y>100</y>
+      </position>
+      <size type="">
+        <x>64</x>
+        <y>74</y>
+      </size>
+    </component>
+    <component type="com.pblabs.rendering2D.SpriteSheetRenderer" name="Render">
+      <scene componentReference="Scene"/>
+      <positionProperty>@Spatial.position</positionProperty>
+      <rotationProperty>@Spatial.rotation</rotationProperty>
+      <sizeProperty>@Spatial.size</sizeProperty>
+      <spriteSheet componentReference="DudeSpriteSheet"/>
+    </component>
+    <component type="com.pblabs.stupidSampleGame.DudeController" name="Controller">
+      <input childType="com.pblabs.engine.core.InputKey">
+        <GoLeft>LEFT</GoLeft>
+        <GoRight>RIGHT</GoRight>
+        <Jump>UP</Jump>
+        <GoLeft>A</GoLeft>
+        <GoRight>D</GoRight>
+        <Jump>SPACE</Jump>
+      </input>
+      <velocityReference>@Spatial.linearVelocity</velocityReference>
+    </component>
+  </entity>
+  <group name="Common">
+    <objectReference name="SpatialDB"/>
+    <objectReference name="Scene"/>
+    <objectReference name="Box2D"/>
+    <objectReference name="Dude"/>
+  </group>
+</things>

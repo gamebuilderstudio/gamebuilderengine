@@ -1,0 +1,49 @@
+<things version="1">
+  <template name="Platform">
+    <component type="com.pblabs.box2D.Box2DSpatialComponent" name="Spatial">
+      <canMove>false</canMove>
+      <canRotate>false</canRotate>
+      <collidesWithTypes childType="String">
+        <_0>Dude</_0>
+      </collidesWithTypes>
+      <collisionShapes childType="com.pblabs.box2D.CollisionShape">
+        <_0 type="com.pblabs.box2D.PolygonCollisionShape">
+          <vertices childType="flash.geom.Point">
+            <_0 type="">
+              <x>-1</x>
+              <y>-1</y>
+            </_0>
+            <_1 type="">
+              <x>1</x>
+              <y>-1</y>
+            </_1>
+            <_2 type="">
+              <x>1</x>
+              <y>1</y>
+            </_2>
+            <_3 type="">
+              <x>-1</x>
+              <y>1</y>
+            </_3>
+          </vertices>
+        </_0>
+      </collisionShapes>
+      <collisionType childType="String">
+        <_0>Platform</_0>
+        <_1>Renderable</_1>
+      </collisionType>
+      <spatialManager componentReference="SpatialDB"/>
+      <size type="">
+        <x>256</x>
+        <y>64</y>
+      </size>
+    </component>
+    <component type="com.pblabs.rendering2D.SpriteSheetRenderer" name="Render">
+      <positionProperty>@Spatial.position</positionProperty>
+      <rotationProperty>@Spatial.rotation</rotationProperty>
+      <sizeProperty>@Spatial.size</sizeProperty>
+      <spriteSheet componentReference="PlatformSpriteSheet"/>
+      <scene componentReference="Scene"/>
+    </component>
+  </template>
+</things>

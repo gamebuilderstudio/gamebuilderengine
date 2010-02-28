@@ -1,0 +1,20 @@
+<things version="1">
+  <entity name="PlatformSpriteSheet">
+    <component type="com.pblabs.rendering2D.spritesheet.SpriteSheetComponent" name="SpriteSheet">
+      <image filename="platform.png"/>
+    </component>
+  </entity>
+  <entity name="DudeSpriteSheet">
+    <component type="com.pblabs.rendering2D.spritesheet.SpriteSheetComponent" name="SpriteSheet">
+      <divider type="com.pblabs.rendering2D.spritesheet.CellCountDivider">
+        <xCount>8</xCount>
+        <yCount>8</yCount>
+      </divider>
+      <image filename="mannequin.png"/>
+    </component>
+  </entity>
+  <group name="SpriteSheets">
+    <objectReference name="DudeSpriteSheet"/>
+    <objectReference name="PlatformSpriteSheet"/>
+  </group>
+</things>
