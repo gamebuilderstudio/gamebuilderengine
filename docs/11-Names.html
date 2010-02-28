@@ -28,7 +28,7 @@
 
    <h2>Names, Templates, and Entities</h2>
    
-   <p>When you instantiate entities from a level file, they are automatically registered with the NameManager under the name specified in the level data. However, there is a key point to be aware of. No matter what, when you create a new entity, it will be registered under the name specified in the level file.</p>
+   <p>When you instantiate entities from a level file, they are automatically registered with the <em>NameManager</em> under the name specified in the level data. However, there is a key point to be aware of. No matter what, when you create a new entity, it will be registered under the name specified in the level file.</p>
    
    <p>However, the way that the entity was defined controls how closely the engine checks what is going on. If you use an &lt;entity&gt; tag, then the engine assumes you only want one of that entity around at a time. This is what you want for things like the scene, or one-off level elements. If you try to make two of the same &;lt;entity&gt;, then it will report an error.</p>
    
@@ -47,15 +47,15 @@
 
    <pre class="brush: js">
       // How to look it up from code: 
-      var namedEntity:IEntity = NameManager.instance.lookup("NamedEntity");
+      var namedEntity:IEntity = PBE.lookupEntity("NamedEntity");
    </pre>
    
    <pre class="brush: xml">
       <!-- How to reference an entity from XML. -->
       &lt;entity name="ExampleEntity"&gt;
          &lt;component name="NameExampleComponent"&gt;
-            <!-- EntityReference is a field of type IEntity. The nameReference attribute indicates that we want to set it to a reference to the named entity.-->
-            &lt;EntityReference nameReference="NamedEntity"/&gt;
+            <!-- EntityReference is a field of type IEntity. The entityName attribute indicates that we want to set it to a reference to the named entity.-->
+            &lt;EntityReference entityName="NamedEntity"/&gt;
          &lt;/component&gt;
       &lt;/entity&gt;
    </pre>
@@ -76,10 +76,10 @@
 
    <pre class="brush: js">
       // Looking up a component by type and entity name. This returns component "A".
-      var componentA:ExampleComponent = NameManager.instance.lookupComponentByType("NamedEntity", ExampleComponent) as ExampleComponent;
+      var componentA:ExampleComponent = PBE.lookupComponentByType("NamedEntity", ExampleComponent) as ExampleComponent;
       
       // Look up a component by entity name and component name. This returns component "B".
-      var componentB:AnotherComponent = NameManager.instance.lookupComponentByName("NamedEntity", "B") as AnotherComponent;
+      var componentB:AnotherComponent = PBE.lookupComponentByName("NamedEntity", "B") as AnotherComponent;
       
       // You can also look up components on an entity (either your owner as shown
       // here, or a reference gotten via the NameManager or another means). This
