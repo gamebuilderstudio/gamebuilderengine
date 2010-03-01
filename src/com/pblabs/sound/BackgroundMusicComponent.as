@@ -2,9 +2,7 @@ package com.pblabs.sound
 {
     import com.pblabs.engine.PBE;
     import com.pblabs.engine.components.TickedComponent;
-    import com.pblabs.engine.resource.MP3Resource;
-    
-    import flash.media.SoundChannel;
+    import com.pblabs.engine.resource.SoundResource;
     
     /**
      * Simple component to manage background music.
@@ -13,20 +11,42 @@ package com.pblabs.sound
     {
         protected var handle:SoundHandle;
         
-        public var music:MP3Resource;
+        public var music:SoundResource;
+        public var musicUrl:String;
         public var autoStart:Boolean = true;
+        
+        private var _playing:Boolean = false;
+        
+        public function get playing():Boolean { return _playing; }
         
         public function start():void
         {
+            _playing = true;
+            
+            if (!handle && (!music || !music.isLoaded) && !musicUrl)
+                return;
+            
             if(!handle)
-                handle = PBE.soundManager.play(music, SoundManager.MUSIC_MIXER_CATEGORY, 0, int.MAX_VALUE);            
-            else if(!handle.isPlaying);
+            {
+                if (music)
+                    handle = PBE.soundManager.play(music, SoundManager.MUSIC_MIXER_CATEGORY, 0, int.MAX_VALUE);
+                else if (musicUrl)
+                    handle = PBE.soundManager.stream(musicUrl, SoundManager.MUSIC_MIXER_CATEGORY, 0, int.MAX_VALUE);
+            }
+            else if(!handle.isPlaying)
+            {
                 handle.resume();
+            }
         }
         
         public function stop():void
         {
-            handle.stop();
+            _playing = false;
+            if (handle)
+            {
+                handle.stop();
+                handle = null;
+            }
         }
         
         override protected function onAdd() : void
@@ -42,6 +62,24 @@ package com.pblabs.sound
             super.onRemove();
             
             stop();
+        }
+        
+        override public function onTick(tickRate:Number) : void
+        {
+            // Not playing? Nothing to do.
+            if (!_playing)
+                return;
+            
+            // We're already playing and have a handle. don't do anything.
+            if (_playing && handle)
+                return;
+            
+            // Playing and no handle yet. Wait for our resource.
+            if (!music || !music.isLoaded)
+                return;
+            
+            // Resource is loaded. Finally we can play.
+            start();
         }
     }
 }
