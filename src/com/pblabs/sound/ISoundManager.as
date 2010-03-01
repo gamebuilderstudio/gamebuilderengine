@@ -18,7 +18,7 @@ package com.pblabs.sound
          *        one time, 1 to repeat once, int.MAX_VALUE for infinite loop.
          * @param startDelay How far to skip ahead into the sound when we start 
          *        playing it.
-         * @param resourceType The PBE resrouce type for the sound. Defaults to 
+         * @param resourceType The PBE resource type for the sound. Defaults to 
          *        MP3Resource if no value is provided. It must be a subclass of
          *        SoundResource. This parameter is only used if sound is a string 
          *        and a resource needs to be loaded.
