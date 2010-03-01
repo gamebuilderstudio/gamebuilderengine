@@ -1,7 +1,5 @@
 package com.pblabs.sound
 {
-    import flash.media.Sound;
-    import flash.media.SoundChannel;
     import flash.media.SoundTransform;
 
     /**
@@ -20,8 +18,12 @@ package com.pblabs.sound
          *        one time, 1 to repeat once, int.MAX_VALUE for infinite loop.
          * @param startDelay How far to skip ahead into the sound when we start 
          *        playing it.
+         * @param resourceType The PBE resrouce type for the sound. Defaults to 
+         *        MP3Resource if no value is provided. It must be a subclass of
+         *        SoundResource. This parameter is only used if sound is a string 
+         *        and a resource needs to be loaded.
          */
-        function play(sound:*, category:String = "sfx", pan:Number = 0.0, loopCount:int = 1, startDelay:Number = 0.0):SoundHandle;
+        function play(sound:*, category:String = "sfx", pan:Number = 0.0, loopCount:int = 1, startDelay:Number = 0.0, resourceType:Class=null):SoundHandle;
 
         /**
          * Stream an MP3 or other Flash-compatible file from a URL. This is useful

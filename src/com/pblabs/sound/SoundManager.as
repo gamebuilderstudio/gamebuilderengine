@@ -5,7 +5,6 @@ package com.pblabs.sound
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.debug.Profiler;
     import com.pblabs.engine.resource.MP3Resource;
-    import com.pblabs.engine.resource.ResourceManager;
     import com.pblabs.engine.resource.SoundResource;
     
     import flash.events.IOErrorEvent;
@@ -37,7 +36,7 @@ package com.pblabs.sound
             createCategory(SFX_MIXER_CATEGORY);
         }
         
-        public function play(sound:*, category:String="sfx", pan:Number=0.0, loopCount:int=0, startDelay:Number=0.0):SoundHandle
+        public function play(sound:*, category:String="sfx", pan:Number=0.0, loopCount:int=0, startDelay:Number=0.0, resourceType:Class=null):SoundHandle
         {
             Profiler.enter("SoundManager.play");
             
@@ -62,8 +61,12 @@ package com.pblabs.sound
                     actualSound = (cachedSounds[sound] as SoundResource).soundObject;
                 else
                 {
+                    // Make sure we have a ResourceType
+                    if (!resourceType)
+                        resourceType = MP3Resource;
+                    
                     // Otherwise queue the resource and play it when it is loaded.
-                    PBE.resourceManager.load(sound, SoundResource, function(r:*):void
+                    PBE.resourceManager.load(sound, resourceType, function(r:*):void
                     {
                         cachedSounds[sound] = r;
                         play(r as SoundResource, category, pan, loopCount, startDelay);
