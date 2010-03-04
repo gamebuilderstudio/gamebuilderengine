@@ -128,6 +128,12 @@ package com.pblabs.engine
             if(_started)
                 throw new Error("You can only call PBE.startup once.");
             
+            if (!mainClass)
+                throw new Error("A mainClass must be specified");
+            
+            if (!mainClass.stage)
+                throw new Error("Your mainClass must be added to the stage before you can call startup. If you're using MX make sure you call this from the applicationComplete event, not the creationComplete event");
+            
             _main = mainClass;
             _versionDetails = VersionUtil.checkVersion(mainClass);
             
