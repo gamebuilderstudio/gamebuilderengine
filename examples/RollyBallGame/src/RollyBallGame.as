@@ -23,9 +23,6 @@ package
     [SWF(width="640", height="480", frameRate="60", backgroundColor="0x000000")]
     public class RollyBallGame extends Sprite
     {
-        // Instantiating GameResources loads all our embedded resources.
-        public var resources:GameResources = new GameResources();
-        
         public function RollyBallGame()
         {
             // Enable this to ensure all resources are embedded.
@@ -48,6 +45,8 @@ package
             
             // Initialize game.
             PBE.startup(this);
+            
+            PBE.addResources(new GameResources());
             
             // Initialize level.
             LevelManager.instance.addFileReference(0, "../assets/Levels/level.pbelevel");
