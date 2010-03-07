@@ -261,36 +261,6 @@ package com.pblabs.engine.core
       }
       
       /**
-       * NOT IMPLEMENTED! The intention is to have the level manager serialize everything that is
-       * currently loaded to xml.
-       */
-      public function saveState(xml:XML):void
-      {
-         if (!_isLevelLoaded)
-         {
-            Logger.error(this, "SaveState", "Cannot save state. No level is loaded.");
-            return;
-         }
-         
-         throw new Error("Not implemented!");
-      }
-      
-      /**
-       * NOT IMPLEMENTED! The intention is to have the level manager deserialize saved data from an
-       * xml file.
-       */
-      public function loadState(xml:XML):void
-      {
-         if (!_isReady)
-         {
-            Logger.error(this, "LoadState", "Cannot load state. The LevelManager has not been started.");
-            return;
-         }
-         
-         throw new Error("Not implemented!");
-      }
-      
-      /**
        * Loads an entity with the TemplateManager and tracks it. If the current level ends before the
        * entity is destroyed, it will be destroyed automatically.
        * 
