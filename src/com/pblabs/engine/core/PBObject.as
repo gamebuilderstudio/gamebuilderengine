@@ -80,7 +80,11 @@ package com.pblabs.engine.core
             while(_sets && _sets.length)
             {
                 // remove() cuts us from the list.
-                _sets[_sets.length-1].remove(this);
+                // Note - if it returned false, we weren't in the set, so remove
+                // set membership on our end. This is usually an artifact of
+                // the set removing us from itself.
+                if(_sets[_sets.length-1].remove(this) == false)
+                    _sets.pop();
             }
 
             // Remove from our owning group.

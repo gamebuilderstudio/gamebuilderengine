@@ -310,7 +310,7 @@ package com.pblabs.engine.core
           
          if (!hasLevelData(index))
          {
-            Logger.error(this, "LoadLevel", "Level data for level " + index + " does not exist.");
+            Logger.error(this, "loadLevel", "Level data for level " + index + " does not exist.");
             return;
          }
          
@@ -399,7 +399,7 @@ package com.pblabs.engine.core
       
       /**
        * Unloads all the currently loaded data. Do not use this when another level is being loaded. Allow
-       * the Load method to handle unloading old data.
+       * the load() method to handle unloading old data.
        */
       public function unloadCurrentLevel():void
       {

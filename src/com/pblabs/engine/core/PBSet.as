@@ -80,6 +80,16 @@ package com.pblabs.engine.core
             return true;
         }
         
+        /**
+         * Destroy all the objects in this set, but do not delete the set.
+         */
+        public function clear():void
+        {
+            // Delete the items we own.
+            while(items.length)
+                (items.pop() as PBObject).destroy();            
+        }
+
         public override function destroy() : void
         {
             if(items == null)
