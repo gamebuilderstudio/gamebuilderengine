@@ -111,8 +111,6 @@ package com.pblabs.engine.core
 		 }
 		 
 		 return -1;
-		 
-		  
 	  }
       
       /**
@@ -203,6 +201,9 @@ package com.pblabs.engine.core
          }
       }
       
+      /**
+       * Unload the current level.
+       */
       public function clear():void
       {
          unloadCurrentLevel();
@@ -314,7 +315,7 @@ package com.pblabs.engine.core
          var entity:IEntity = PBE.templateManager.instantiateEntity(name);
          if (!entity)
          {
-            Logger.error(this, "LoadEntity", "Failed to instantiate an entity with name " + name + ".");
+            Logger.error(this, "loadEntity", "Failed to instantiate an entity with name " + name + ".");
             return null;
          }
          

@@ -448,7 +448,9 @@ package com.pblabs.engine.core
             // Safety net - don't do more than a few ticks per frame to avoid death spirals.
             if (tickCount >= MAX_TICKS_PER_FRAME && !suppressSafety && !disableSlowWarning)
             {
-                Logger.warn(this, "Advance", "Exceeded maximum number of ticks for frame (" + elapsed.toFixed() + "ms dropped) .");
+                // By default, only show when profiling.
+                if(Profiler.enabled)
+                    Logger.warn(this, "advance", "Exceeded maximum number of ticks for frame (" + elapsed.toFixed() + "ms dropped) .");
                 elapsed = 0;
             }
             
