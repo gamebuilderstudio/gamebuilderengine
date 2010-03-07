@@ -545,12 +545,14 @@ internal class ResourceNote
     
     public function load(filename:String, type:Class):void
     {
-        PBE.resourceManager.load(filename, type, onLoaded, onFailed);
+        var resource:Resource = PBE.resourceManager.load(filename, type, onLoaded, onFailed);
+        
+        if(resource)
+            owner[fieldName] = resource;
     }
     
     public function onLoaded(resource:Resource):void
     {
-        owner[fieldName] = resource;
         Serializer.instance.removeResource(resource.filename);
     }
     

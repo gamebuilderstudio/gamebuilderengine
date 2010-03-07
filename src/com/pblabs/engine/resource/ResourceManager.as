@@ -65,13 +65,13 @@ package com.pblabs.engine.resource
          * 
          * @see Resource
          */
-        public function load(filename:String, resourceType:Class, onLoaded:Function = null, onFailed:Function = null, forceReload:Boolean = false):void
+        public function load(filename:String, resourceType:Class, onLoaded:Function = null, onFailed:Function = null, forceReload:Boolean = false):Resource
         {
             // Sanity!
             if(filename == null || filename == "")
             {
                 Logger.error(this, "load", "Cannot load a " + resourceType + " with empty filename.");
-                return;
+                return null;
             }
             
             // Look up the resource.
@@ -98,7 +98,7 @@ package com.pblabs.engine.resource
                     fail(tmpR, onFailed, "'" + filename + "' was not loaded because it was not embedded in the SWF with type " + resourceType + ".");
                     if(onEmbeddedFail != null)
                         onEmbeddedFail(filename);
-                    return;
+                    return null;
                 }
                 
                 // Hack for MP3 and WAV files. TODO: Generalize this for arbitrary formats.
@@ -127,7 +127,7 @@ package com.pblabs.engine.resource
             else if (!(resource is resourceType))
             {
                 fail(resource, onFailed, "The resource " + filename + " is already loaded, but is of type " + TypeUtility.getObjectClassName(resource) + " rather than the specified " + resourceType + ".");
-                return;
+                return null;
             }
             
             // Deal with it if it already failed, already loaded, or if it is still pending.
@@ -152,6 +152,8 @@ package com.pblabs.engine.resource
             
             // Don't forget to bump its ref count.
             resource.incrementReferenceCount();
+            
+            return resource;
         }
         
         /**
