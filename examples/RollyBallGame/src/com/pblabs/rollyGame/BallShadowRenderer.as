@@ -26,6 +26,8 @@ package com.pblabs.rollyGame
         
         public override function onFrame(dt:Number):void
         {
+			super.onFrame(dt);
+			
             if(!Map)
                 throw new Error("No normalmap specified!");
             
@@ -38,7 +40,7 @@ package com.pblabs.rollyGame
             
             var graphics:Graphics = (displayObject as Sprite).graphics;
             
-            // Get the ball.
+			// Get the ball.
             var ball:BallMover = owner.lookupComponentByType(BallMover) as BallMover;
             
             graphics.clear();
