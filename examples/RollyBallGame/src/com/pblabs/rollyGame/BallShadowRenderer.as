@@ -49,17 +49,17 @@ package com.pblabs.rollyGame
                 var cosVal:Number = Math.cos((i/24) * Math.PI * 2);
                 
                 // Determine point on the circle's silhouette.
-                silhouetteX = sinVal * ball.Radius + ball.position.x; 
-                silhouetteY = cosVal * ball.Radius + ball.position.y;
+                silhouetteX = sinVal * ball.Radius; 
+                silhouetteY = cosVal * ball.Radius;
                 silhouetteZ = ball.Height * 100 + 16;
                 
                 var normalX:Number = sinVal;
                 var normalY:Number = cosVal;
                 
                 // Force light to be directional.
-                deltaX = 0; //silhouetteX - lightPosX;
+                deltaX = 1; //silhouetteX - lightPosX;
                 deltaY = 5; //silhouetteY - lightPosY;
-                deltaZ = -2; //silhouetteZ - lightPosZ;
+                deltaZ = -3; //silhouetteZ - lightPosZ;
                 
                 // If we face towards the light shift silhouette point down in Z
                 if(deltaX * normalX + deltaY * normalY < 0)
@@ -84,7 +84,7 @@ package com.pblabs.rollyGame
                     silhouetteY += deltaY;
                     silhouetteZ += deltaZ;
                     
-                    if(silhouetteZ <= Map.getHeight(silhouetteX, silhouetteY) * 100)
+                    if(silhouetteZ <= Map.getHeight(silhouetteX + ball.position.x, silhouetteY + ball.position.y) * 100)
                         break;
                 }
                 
