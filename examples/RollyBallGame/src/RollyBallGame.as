@@ -21,7 +21,7 @@ package
     import flash.display.*;
     import flash.events.Event;
     
-    [SWF(width="640", height="480", frameRate="30", backgroundColor="0x000000")]
+    [SWF(width="640", height="480", frameRate="60", backgroundColor="0x000000")]
     public class RollyBallGame extends Sprite
     {
         public function RollyBallGame()
@@ -73,20 +73,30 @@ package
             ScreenManager.instance.registerScreen("game", new GameScreen());
             ScreenManager.instance.registerScreen("gameOver", new GameOverScreen());
             ScreenManager.instance.goto("splash");
-            
-            LevelManager.instance.start(1);
         }
         
         // Global game state.
         public static var currentScore:int = 0;
         public static var startTimer:Number = 0;
-        public static var currentTime:Number = 60.0;
+        public static var currentTime:Number = 0.0;
         public static var levelDuration:Number = 45000;
+        
+        public static function resetTimerAndScore():void
+        {
+            startTimer = PBE.processManager.virtualTime;
+            currentScore = 0;
+            currentTime = 0.0;            
+        }
         
         public static function resetLevel():void
         {
             // Reset the level.
             var curLevel:int = LevelManager.instance.currentLevel;
+            
+            // Reset the coins.
+            var cs:PBSet = PBE.lookup("CoinSet") as PBSet;
+            if(cs)
+                cs.clear();
             
             // Hack to properly reset level data - level 0 is always loaded
             // and has special logic in the manager, so we have to do this 
@@ -94,44 +104,38 @@ package
             LevelManager.instance.loadLevel(curLevel == 1 ? 2 : 1);
             LevelManager.instance.loadLevel(curLevel);
             
-            // Reset the coins.
-            var cs:PBSet = PBE.lookup("CoinSet") as PBSet;
-            if(cs)
-                cs.clear();
-            
             // Reset the timer and score.
-            startTimer = PBE.processManager.virtualTime;
-            currentScore = 0;
-            levelDuration = 45000;
-            currentTime = 60.0;
+            resetTimerAndScore();
         }
         
         public static function restartGame():void
         {
-            // Reset the level.
-            LevelManager.instance.loadLevel(1);
-            
             // Reset the coins.
             var cs:PBSet = PBE.lookup("CoinSet") as PBSet;
             if(cs)
                 cs.clear();
 
+            // Reset the level.
+            LevelManager.instance.loadLevel(1);
+
             // Reset the timer and score.
-            startTimer = PBE.processManager.virtualTime;
-            currentScore = 0;
-            levelDuration = 45000;
-            currentTime = 60.0;
+            resetTimerAndScore();
         }
         
         public static function nextLevel():void
         {
+            // Reset the coins.
+            var cs:PBSet = PBE.lookup("CoinSet") as PBSet;
+            if(cs)
+                cs.clear();
+
+            // Advance level as appropriate.
             if(LevelManager.instance.currentLevel < 2)
             {
                 LevelManager.instance.loadNextLevel();               
                 
                 // Reset the timer.
-                startTimer = PBE.processManager.virtualTime;
-                currentScore = 0;
+                resetTimerAndScore();
                 
                 ScreenManager.instance.goto("game");
             }

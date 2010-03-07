@@ -8,13 +8,13 @@
  ******************************************************************************/
 package com.pblabs.engine.core
 {
+   import com.pblabs.engine.PBE;
    import com.pblabs.engine.debug.Logger;
    import com.pblabs.engine.entity.IEntity;
    import com.pblabs.engine.resource.ResourceManager;
    import com.pblabs.engine.resource.XMLResource;
    import com.pblabs.engine.serialization.ISerializable;
    import com.pblabs.engine.serialization.Serializer;
-   import com.pblabs.engine.PBE;
    
    import flash.events.Event;
    import flash.events.EventDispatcher;
@@ -272,13 +272,13 @@ package com.pblabs.engine.core
       {
          if (!_isReady)
          {
-            Logger.error(this, "LoadEntity", "Cannot load entities. The LevelManager has not been started.");
+            Logger.error(this, "loadEntity", "Cannot load entities. The LevelManager has not been started.");
             return null;
          }
          
          if (!_isLevelLoaded)
          {
-            Logger.error(this, "LoadEntity", "Cannot load entities. No level is loaded.");
+            Logger.error(this, "loadEntity", "Cannot load entities. No level is loaded.");
             return null;
          }
          
@@ -301,7 +301,7 @@ package com.pblabs.engine.core
        * 
        * @param index The level number to load.
        */
-      public function loadLevel(index:int):void
+      public function loadLevel(index:int, force:Boolean = false):void
       {
           if(!_isReady)
           {

@@ -42,6 +42,11 @@ package
             lblScore.refresh();
         }
         
+        public override function onShow() : void
+        {
+            LevelManager.instance.start(1);
+        }
+        
         /**
          * Called every frame; used to update time remaining and score. Only display
          * aspects of the game are updated here. You will notice that currentTime
