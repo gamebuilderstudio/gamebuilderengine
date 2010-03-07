@@ -109,12 +109,18 @@ package
         public static function restartGame():void
         {
             // Reset the level.
-            LevelManager.instance.unloadCurrentLevel();
             LevelManager.instance.loadLevel(1);
             
+            // Reset the coins.
+            var cs:PBSet = PBE.lookup("CoinSet") as PBSet;
+            if(cs)
+                cs.clear();
+
             // Reset the timer and score.
             startTimer = PBE.processManager.virtualTime;
             currentScore = 0;
+            levelDuration = 45000;
+            currentTime = 60.0;
         }
         
         public static function nextLevel():void
