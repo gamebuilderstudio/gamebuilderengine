@@ -25,6 +25,9 @@ package com.pblabs.sound
             {
                 var c:SoundCategory = categories[i] as SoundCategory;
                 
+                if(!c)
+                    continue;
+                
                 if(c.muted)
                     muted = true;
                 
