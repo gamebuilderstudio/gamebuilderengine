@@ -21,6 +21,8 @@ package com.pblabs.rollyGame
         
         public function BallShadowRenderer()
         {
+            super();
+            
             displayObject = new Sprite();
         }
         

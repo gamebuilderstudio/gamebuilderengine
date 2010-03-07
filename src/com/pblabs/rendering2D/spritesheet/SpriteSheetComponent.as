@@ -93,7 +93,7 @@ package com.pblabs.rendering2D.spritesheet
             if (!_image)
                 return null;
             
-            return _image.image.bitmapData;
+            return _image.bitmapData;
         }
         
         /**

@@ -25,6 +25,8 @@ package com.pblabs.rollyGame
         
         public function BallSpriteRenderer()
         {
+            super();
+            
             // Generate the ball texture.
             _BallChecker = new BitmapData(64, 64, false);
             _BallChecker.perlinNoise(9, 10, 9, 0x48844, true, true);
@@ -35,7 +37,7 @@ package com.pblabs.rollyGame
         public override function onFrame(dt:Number):void
         {
             super.onFrame(dt);
-
+            
             var pos:Point = renderPosition;
             
             // Figure out scale factor.
