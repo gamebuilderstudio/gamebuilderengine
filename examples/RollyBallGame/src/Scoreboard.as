@@ -6,6 +6,7 @@ package
     import com.pblabs.rendering2D.ui.PBButton;
     import com.pblabs.rendering2D.ui.PBLabel;
     import com.pblabs.screens.ScreenManager;
+    import com.pblabs.sound.SoundManager;
     
     import flash.display.*;
     import flash.events.*;
@@ -13,7 +14,7 @@ package
     import flash.media.*;
     import flash.text.*;
     import flash.utils.*;
-
+    
     public class Scoreboard extends Sprite
     {
         public var lblScore:PBLabel = new PBLabel();
@@ -21,12 +22,9 @@ package
         public var btnRetry:PBButton = new PBButton();
         
         public var CoinsLeft:int, TotalScore:int;
-        public var ScoreIncrementSound:Sound;
-
+        
         public function Scoreboard()
         {
-            PBE.resourceManager.load("../Assets/Sounds/scorechunk.mp3", MP3Resource, _OnSound);
-
             addChild(lblScore);
             lblScore.extents = new Rectangle(50, 80, 490, 50);
             lblScore.fontSize = 48;
@@ -69,8 +67,7 @@ package
                 return;
             
             // Play a pleasing chunk noise when score goes up.
-            if(ScoreIncrementSound)
-                ScoreIncrementSound.play();
+            PBE.soundManager.play("../assets/Sounds/scorechunk.mp3");
             
             // Update our state.
             CoinsLeft--;
@@ -91,10 +88,5 @@ package
             RollyBallGame.nextLevel();
             parent.removeChild(this);
         }
-        
-        private function _OnSound(mp3:MP3Resource):void
-        {
-            ScoreIncrementSound = mp3.soundObject;
-        }        
     }
 }

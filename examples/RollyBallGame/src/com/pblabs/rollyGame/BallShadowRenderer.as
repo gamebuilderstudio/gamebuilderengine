@@ -41,7 +41,7 @@ package com.pblabs.rollyGame
             var graphics:Graphics = (displayObject as Sprite).graphics;
             
 			// Get the ball.
-            var ball:BallMover = owner.lookupComponentByType(BallMover) as BallMover;
+            var ball:BallMover = owner.lookupComponentByName("Spatial") as BallMover;
             
             graphics.clear();
             graphics.beginFill(0x000000, 0.5);
@@ -59,9 +59,9 @@ package com.pblabs.rollyGame
                 var normalY:Number = cosVal;
                 
                 // Force light to be directional.
-                deltaX = 1; //silhouetteX - lightPosX;
-                deltaY = 5; //silhouetteY - lightPosY;
-                deltaZ = -3; //silhouetteZ - lightPosZ;
+                deltaX = 1;
+                deltaY = 5;
+                deltaZ = -3;
                 
                 // If we face towards the light shift silhouette point down in Z
                 if(deltaX * normalX + deltaY * normalY < 0)
@@ -70,6 +70,7 @@ package com.pblabs.rollyGame
                         graphics.moveTo(silhouetteX, silhouetteY);
                     else
                         graphics.lineTo(silhouetteX, silhouetteY);
+
                     continue;
                 }
                 
@@ -96,8 +97,8 @@ package com.pblabs.rollyGame
                 else
                     graphics.lineTo(silhouetteX, silhouetteY);
             }
+            
             graphics.endFill();
-
         }
     }
 }

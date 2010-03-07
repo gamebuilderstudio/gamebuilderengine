@@ -1,9 +1,10 @@
-
 	<!--
 		/*******************************************************************************
-		* PushButton Engine * Copyright (C) 2009 PushButton Labs, LLC * For
-		more information see http://www.pushbuttonengine.com * * This file is
-		property of PushButton Labs, LLC and NOT under the MIT license.
+		* PushButton Engine 
+		* Copyright (C) 2009 PushButton Labs, LLC 
+		* For more information see http://www.pushbuttonengine.com 
+		* 
+		* This file is property of PushButton Labs, LLC and NOT under the MIT license.
 		******************************************************************************/
 	-->
 <things version="1">
@@ -92,7 +93,7 @@
 				<x>320</x>
 				<y>240</y>
 			</position>
-			<PickupSound filename="../assets/Sounds/pickup.mp3" />
+			<PickupSound>../assets/Sounds/pickup.mp3</PickupSound>
 			<PickupType>
 				<_>Coin</_>
 			</PickupType>
@@ -113,7 +114,7 @@
 		</component>
 	</template>
 
-	<template name="Coin">
+	<template name="Coin" sets="CoinSet">
 		<component type="com.pblabs.rendering2D.SimpleSpatialComponent"
 			name="Spatial">
 			<spatialManager componentReference="SpatialDB" />
@@ -221,7 +222,8 @@
 	<group name="Level2">
 		<objectReference name="Level2Map" />
 		<objectReference name="BasePlayer" />
-		<objectReference name="Coin" />
+        <objectReference name="Coin" />
+        <objectReference name="Coin" />
 	</group>
 
 </things>

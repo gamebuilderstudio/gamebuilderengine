@@ -76,7 +76,7 @@ package
             
             LevelManager.instance.start(1);
         }
-
+        
         // Global game state.
         public static var currentScore:int = 0;
         public static var startTimer:Number = 0;
@@ -87,9 +87,17 @@ package
         {
             // Reset the level.
             var curLevel:int = LevelManager.instance.currentLevel;
-            LevelManager.instance.loadLevel(0);
-            Logger.print(RollyBallGame, "Restarting level " + curLevel);
+            
+            // Hack to properly reset level data - level 0 is always loaded
+            // and has special logic in the manager, so we have to do this 
+            // hack for now -- BJG
+            LevelManager.instance.loadLevel(curLevel == 1 ? 2 : 1);
             LevelManager.instance.loadLevel(curLevel);
+            
+            // Reset the coins.
+            var cs:PBSet = PBE.lookup("CoinSet") as PBSet;
+            if(cs)
+                cs.clear();
             
             // Reset the timer and score.
             startTimer = PBE.processManager.virtualTime;
@@ -126,7 +134,5 @@ package
                 ScreenManager.instance.goto("gameOver");
             }
         }
-        
-        
     }    
 }
