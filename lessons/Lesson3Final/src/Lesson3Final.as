@@ -45,7 +45,7 @@ package
             
             var spatial:SimpleSpatialComponent = new SimpleSpatialComponent();// Create our spatial component
             
-            spatial.position = new Point(0,0);                                // Set our hero's spatial position as 0,0
+            spatial.position = new Point(-375,-275);                          // Set our hero's spatial position as -375,-275 -- the upper left corner
             spatial.size = new Point(50,50);                                  // Set our hero's size as 50,50
             spatial.spatialManager = PBE.spatialManager;
 
