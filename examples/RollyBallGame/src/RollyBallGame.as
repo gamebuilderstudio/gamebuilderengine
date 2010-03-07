@@ -10,6 +10,7 @@ package
     import com.pblabs.animation.*;
     import com.pblabs.engine.PBE;
     import com.pblabs.engine.core.*;
+    import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.resource.ResourceManager;
     import com.pblabs.rendering2D.*;
     import com.pblabs.rendering2D.spritesheet.*;
@@ -20,7 +21,7 @@ package
     import flash.display.*;
     import flash.events.Event;
     
-    [SWF(width="640", height="480", frameRate="60", backgroundColor="0x000000")]
+    [SWF(width="640", height="480", frameRate="30", backgroundColor="0x000000")]
     public class RollyBallGame extends Sprite
     {
         public function RollyBallGame()
@@ -68,7 +69,7 @@ package
             stage.addEventListener(Event.ACTIVATE, function():void{ PBE.processManager.timeScale = 1; });
             
             // Set up our screens.
-            ScreenManager.instance.registerScreen("splash", new SplashScreen("../assets/Images/level1_normal.png", "game"));
+            ScreenManager.instance.registerScreen("splash", new SplashScreen("../assets/Images/intro.png", "game"));
             ScreenManager.instance.registerScreen("game", new GameScreen());
             ScreenManager.instance.registerScreen("gameOver", new GameOverScreen());
             ScreenManager.instance.goto("splash");
@@ -86,7 +87,8 @@ package
         {
             // Reset the level.
             var curLevel:int = LevelManager.instance.currentLevel;
-            LevelManager.instance.unloadCurrentLevel();
+            LevelManager.instance.loadLevel(0);
+            Logger.print(RollyBallGame, "Restarting level " + curLevel);
             LevelManager.instance.loadLevel(curLevel);
             
             // Reset the timer and score.

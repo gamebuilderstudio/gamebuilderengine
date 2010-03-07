@@ -15,6 +15,9 @@ package
         public var res1:Class;
         [Embed(source='../assets/Images/welcome.png')]
         public var res2:Class;
+
+        [Embed(source='../assets/Images/intro.png')]
+        public var res2a:Class;
         
         [Embed(source='../assets/Images/level1_height.png')]
         public var res3:Class;
