@@ -40,7 +40,19 @@ package com.pblabs.rendering2D
          * @see SceneAlignment
          * @see position 
          */
-        public var sceneAlignment:SceneAlignment = SceneAlignment.DEFAULT_ALIGNMENT;
+        public function set sceneAlignment(value:SceneAlignment):void
+        {
+            _sceneAlignment = value;
+            _transformDirty = true;
+        }
+
+        /**
+         * @private
+         */ 
+        public function get sceneAlignment():SceneAlignment
+        {
+            return _sceneAlignment;
+        }
         
         /**
          * Holds DisplayObjectSceneLayer instances to use for various layers.
@@ -83,6 +95,8 @@ package com.pblabs.rendering2D
         protected var _tempPoint:Point = new Point();
         
         protected var _trackLimitRectangle:Rectangle = null;
+
+        protected var _sceneAlignment:SceneAlignment = SceneAlignment.DEFAULT_ALIGNMENT;
 
         public function DisplayObjectScene()
         {

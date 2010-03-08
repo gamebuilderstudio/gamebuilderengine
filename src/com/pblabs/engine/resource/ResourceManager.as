@@ -18,7 +18,6 @@ package com.pblabs.engine.resource
     
     import flash.events.Event;
     import flash.utils.Dictionary;
-    import flash.utils.setTimeout;
     
     /**
      * The resource manager handles all tasks related to using asset files (images, xml, etc)
@@ -276,9 +275,9 @@ package com.pblabs.engine.resource
             if(!resource)
                 throw new Error("Tried to fail null resource.");
             
-            Logger.error(this, "Load", message);
+            Logger.error(this, "load", message);
             if (onFailed != null)
-                setTimeout(onFailed, 1, resource);
+                PBE.callLater(onFailed, [resource]);
         }
         
         /**

@@ -78,8 +78,9 @@ package
         // Global game state.
         public static var currentScore:int = 0;
         public static var startTimer:Number = 0;
-        public static var currentTime:Number = 0.0;
+        
         public static var levelDuration:Number = 45000;
+        public static var currentTime:Number = levelDuration;
         
         public static function resetTimerAndScore():void
         {

@@ -7,10 +7,29 @@ package com.pblabs.rendering2D
     import flash.geom.Rectangle;
     
     /**
-     * Base interface for a 2d scene.
+     * Base interface for a 2d scene. A scene contains multiple layers, and has
+     * a camera transform which is applied to pan/rotate/zoom the view. The scene
+     * is responsible for tracking and rendering all the drawable objects in the
+     * world.
+     * 
+     * @see DisplayObjectRenderer
+     * @see DisplayObjectScene
      */
     public interface IScene2D
     {
+        /**
+         * How the scene is aligned relative to its position property.
+         * 
+         * @see SceneAlignment
+         * @see position 
+         */
+        function set sceneAlignment(value:SceneAlignment):void;
+        
+        /**
+         * @private
+         */ 
+        function get sceneAlignment():SceneAlignment;
+        
         /**
          * Layers are assigned positive integers between 0 and N. This tells 
          * you what N is. This can be the same as how many layers there are,
@@ -32,14 +51,16 @@ package com.pblabs.rendering2D
          * @return The requested layer.
          */
         function getLayer(index:int, allocateIfAbsent:Boolean = false):DisplayObjectSceneLayer;
-        
-        function get sceneView():IUITarget;
-        
-        
+                
         /**
          * The SceneView where the contents of this scene will be displayed. 
          */
         function set sceneView(value:IUITarget):void;
+
+        /**
+         * @private 
+         */
+        function get sceneView():IUITarget;
         
         /**
          * Add a DisplayObjectRenderer to the scene; all you normally have to
@@ -91,21 +112,25 @@ package com.pblabs.rendering2D
          */
         function screenPan(deltaX:int, deltaY:int):void;
 
-        function get rotation():Number;
-
         /**
          * Rotation in degrees about the center point of the scene.
          */
         function set rotation(value:Number):void;
-        
-        function get position():Point;
+
+        /**
+         * @private
+         */
+        function get rotation():Number;
         
         /**
          * The location of the view onto the scene. This is affected by sceneAlignment.  
          */
         function set position(value:Point) : void;
-        
-        function get zoom():Number;
+
+        /**
+         * @private
+         */
+        function get position():Point;
         
         /**
          * Zoom/scale factor; 1 = no zoom, less than 1 = zoom out, greater than 1 = zoom in. 
@@ -113,19 +138,24 @@ package com.pblabs.rendering2D
         function set zoom(value:Number):void;
 
         /**
+         * @private
+         */
+        function get zoom():Number;
+        
+        /**
          * The region of the scene we are currently viewing.
          */
         function get sceneViewBounds():Rectangle;
-        
-
-        function get trackLimitRectangle():Rectangle;
 
         /**
          * If set, this clamps the camera to scroll no further than its boundaries
          */
         function set trackLimitRectangle(value:Rectangle):void;
         
-        
+        /**
+         * @private
+         */
+        function get trackLimitRectangle():Rectangle;
         
         function transformWorldToScene(inPos:Point):Point;
         function transformSceneToWorld(inPos:Point):Point;

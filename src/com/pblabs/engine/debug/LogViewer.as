@@ -18,7 +18,6 @@ package com.pblabs.engine.debug
     import flash.text.TextFieldType;
     import flash.text.TextFormat;
     import flash.ui.Keyboard;
-    import flash.utils.setTimeout;
     
     /**
      * Console UI, which shows console log activity in-game, and also accepts input from the user.

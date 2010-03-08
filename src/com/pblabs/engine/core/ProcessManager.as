@@ -34,7 +34,7 @@ package com.pblabs.engine.core
         /**
          * If true, disables warnings about losing ticks.
          */
-        public static var disableSlowWarning:Boolean = false;
+        public static var disableSlowWarning:Boolean = true;
         
         /**
          * The number of ticks that will happen every second.
@@ -44,7 +44,7 @@ package com.pblabs.engine.core
         /**
          * The rate at which ticks are fired, in seconds.
          */
-        public static const TICK_RATE:Number = 1.0 / TICKS_PER_SECOND;
+        public static const TICK_RATE:Number = 1.0 / Number(TICKS_PER_SECOND);
         
         /**
          * The rate at which ticks are fired, in milliseconds.
@@ -62,13 +62,14 @@ package com.pblabs.engine.core
          * <p>To prevent this we have a safety limit. Time is dropped so the
          * system can catch up in extraordinary cases. If your game is just
          * slow, then you will see that the ProcessManager can never catch up
-         * and you will constantly get the "too many ticks per frame" warning.</p>
+         * and you will constantly get the "too many ticks per frame" warning,
+         * if you have disableSlowWarning set to true.</p>
          */
-        public static const MAX_TICKS_PER_FRAME:int = 3;
+        public static const MAX_TICKS_PER_FRAME:int = 5;
         
         /**
          * The scale at which time advances. If this is set to 2, the game
-         * will essentially play twice as fast. A value of 0.5 will run the
+         * will play twice as fast. A value of 0.5 will run the
          * game at half speed. A value of 1 is normal.
          */
         public function get timeScale():Number
@@ -86,7 +87,8 @@ package com.pblabs.engine.core
         
         /**
          * TweenMax uses timeScale as a config property, so by also having a
-         * capitalized version, we can tween TimeScale and get along just fine.
+         * capitalized version, we can tween TimeScale instead and get along 
+         * just fine.
          */
         public function set TimeScale(value:Number):void
         {
@@ -138,7 +140,7 @@ package com.pblabs.engine.core
         {
             if (started)
             {
-                Logger.warn(this, "Start", "The ProcessManager is already started.");
+                Logger.warn(this, "start", "The ProcessManager is already started.");
                 return;
             }
             
@@ -157,7 +159,7 @@ package com.pblabs.engine.core
         {
             if (!started)
             {
-                Logger.warn(this, "Stop", "The ProcessManager isn't started.");
+                Logger.warn(this, "stop", "The ProcessManager isn't started.");
                 return;
             }
             
@@ -301,11 +303,20 @@ package com.pblabs.engine.core
             deferredMethodQueue.push(dm);
         }
         
+        /**
+         * @return How many objects are depending on the ProcessManager right now?
+         */
         private function get listenerCount():int
         {
             return tickedObjects.length + animatedObjects.length;
         }
         
+        /**
+         * Internal function add an object to a list with a given priority.
+         * @param object Object to add.
+         * @param priority Priority; this is used to keep the list ordered.
+         * @param list List to add to.
+         */
         private function addObject(object:*, priority:Number, list:Array):void
         {
             // If we are in a tick, defer the add.
@@ -348,6 +359,11 @@ package com.pblabs.engine.core
                 list.splice(position, 0, processObject);
         }
         
+        /**
+         * Peer to addObject; removes an object from a list. 
+         * @param object Object to remove.
+         * @param list List from which to remove.
+         */
         private function removeObject(object:*, list:Array):void
         {
             if (listenerCount == 1 && thinkHeap.size == 0)
@@ -377,6 +393,9 @@ package com.pblabs.engine.core
             Logger.warn(object, "RemoveProcessObject", "This object has not been added to the process manager.");
         }
         
+        /**
+         * Main callback; this is called every frame and allows game logic to run. 
+         */
         private function onFrame(event:Event):void
         {
             // This is called from a system event, so it had better be at the 
@@ -425,7 +444,7 @@ package com.pblabs.engine.core
                 Profiler.enter("Tick");
                 
                 duringAdvance = true;
-                for(var j:int; j<tickedObjects.length; j++)
+                for(var j:int=0; j<tickedObjects.length; j++)
                 {
                     var object:ProcessObject = tickedObjects[j] as ProcessObject;
                     if(!object)
@@ -449,15 +468,16 @@ package com.pblabs.engine.core
             if (tickCount >= MAX_TICKS_PER_FRAME && !suppressSafety && !disableSlowWarning)
             {
                 // By default, only show when profiling.
-                if(Profiler.enabled)
-                    Logger.warn(this, "advance", "Exceeded maximum number of ticks for frame (" + elapsed.toFixed() + "ms dropped) .");
+                Logger.warn(this, "advance", "Exceeded maximum number of ticks for frame (" + elapsed.toFixed() + "ms dropped) .");
                 elapsed = 0;
             }
             
-            _virtualTime = startTime + deltaTime;
+            // Make sure we don't lose time to accumulation error.
+            // Not sure this gains us anything, so disabling -- BJG
+            //_virtualTime = startTime + deltaTime;
             
             // We process scheduled items again after tick processing to ensure between-tick schedules are hit
-            // Commenting this out because it can cause too-often calling of callLater methods.
+            // Commenting this out because it can cause too-often calling of callLater methods. -- BJG
             // processScheduledObjects();
             
             // Update objects wanting OnFrame callbacks.

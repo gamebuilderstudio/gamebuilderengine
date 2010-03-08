@@ -46,7 +46,7 @@ package
           sceneView.width = 800;
           sceneView.height = 600;
           
-          PBE.initializeScene(sceneView);                                   // This is just a helper function that will set up a basic scene for us
+          PBE.initializeScene(sceneView);                                   // This is just a helper function that will set up a basic scene for us          
       }
 
       private function createHero():void

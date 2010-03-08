@@ -2,6 +2,10 @@ package com.pblabs.sound
 {
     import flash.media.SoundTransform;
 
+    /**
+     * State pertaining to a whole category of sounds. See ISoundManager for more
+     * complete explanation, as this class is mostly used internally.
+     */
     final public class SoundCategory
     {
         public var dirty:Boolean = false;
