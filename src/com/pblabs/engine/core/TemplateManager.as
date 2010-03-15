@@ -8,16 +8,16 @@
  ******************************************************************************/
 package com.pblabs.engine.core
 {
-	import com.pblabs.engine.entity.allocateEntity;
-	import com.pblabs.engine.entity.IEntity;
+	import com.pblabs.engine.PBE;
 	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.debug.Profiler;
+	import com.pblabs.engine.entity.IEntity;
+	import com.pblabs.engine.entity.allocateEntity;
 	import com.pblabs.engine.resource.ResourceManager;
 	import com.pblabs.engine.resource.XMLResource;
 	import com.pblabs.engine.serialization.Serializer;
 	import com.pblabs.engine.serialization.TypeUtility;
-    import com.pblabs.engine.PBE;
-
+	
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.utils.Dictionary;
@@ -335,6 +335,16 @@ package com.pblabs.engine.core
 		}
 
 		/**
+		 * Check if a template method by the provided name has been registered.
+		 * @param name Name of the template registered with the TemplateManager
+		 * @return true if the template exists, false if it does not.
+		 */		
+		public function hasEntityCallback(name:String):Boolean
+		{
+			return _things[name];
+		}
+		
+		/**
 		 * Register a callback-powered entity with the TemplateManager. Instead of
 		 * parsing and returning an entity based on XML, this lets you directly
 		 * create the entity from a function you specify.
@@ -346,7 +356,7 @@ package com.pblabs.engine.core
 		 *
 		 * @param name Name of the entity.
 		 * @param callback A function which takes no arguments and returns an IEntity.
-		 * @see UnregisterEntityCallback, RegisterGroupCallback
+		 * @see UnregisterEntityCallback, RegisterGroupCallback, hasEntityCallback
 		 */
 		public function registerEntityCallback(name:String, callback:Function):void
 		{
