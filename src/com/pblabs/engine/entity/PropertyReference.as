@@ -41,6 +41,9 @@ package com.pblabs.engine.entity
          */
         public function set property(value:String):void
         {
+            if (_property != value) {
+                cachedLookup = null;
+            }
             _property = value;
         }
         
