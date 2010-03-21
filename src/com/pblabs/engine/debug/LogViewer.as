@@ -11,9 +11,11 @@ package com.pblabs.engine.debug
     import com.pblabs.engine.PBE;
     import com.pblabs.engine.PBUtil;
     import com.pblabs.engine.core.InputKey;
+    import com.pblabs.rendering2D.ui.PBScrollBar;
     
     import flash.display.Sprite;
     import flash.events.KeyboardEvent;
+    import flash.geom.Rectangle;
     import flash.text.TextField;
     import flash.text.TextFieldType;
     import flash.text.TextFormat;
@@ -36,6 +38,8 @@ package com.pblabs.engine.debug
         
         protected var _output:TextField;
         protected var _input:TextField;
+		
+		protected var _scrollBar:PBScrollBar;
         
         protected var tabCompletionPrefix:String = "";
         protected var tabCompletionCurrentStart:int = 0;
@@ -55,11 +59,13 @@ package com.pblabs.engine.debug
         {
             if(!_output) createOutputField();
             if(!_input) createInputField();
+			if(!_scrollBar) createScrollBar();
             
             resize();
             
             addChild(_output);
             addChild(_input);
+			addChild(_scrollBar);
             
             graphics.clear();
                         
@@ -99,15 +105,26 @@ package com.pblabs.engine.debug
                 _width = stage.stageWidth-1;
                 _height = (stage.stageHeight / 3) * 2;
             }
+			
+			_scrollBar.extents = new Rectangle(0,0,8,_height-32);
+			_scrollBar.x = _width - _scrollBar.width - 5;
+			_scrollBar.y = 5;
             
             _output.height = _height-30;
-            _output.width = _width-10;
+            _output.width = _width-16;
             
             _input.height = 18;
             _input.width = _width-10;
             
             _input.y = _output.height + 7;
         }
+		
+		protected function createScrollBar():PBScrollBar
+		{
+			_scrollBar = new PBScrollBar();
+			
+			return _scrollBar;
+		}
         
         protected function createOutputField():TextField
         {
