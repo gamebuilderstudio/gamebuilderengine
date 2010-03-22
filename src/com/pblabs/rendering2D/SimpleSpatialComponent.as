@@ -20,10 +20,6 @@ package com.pblabs.rendering2D
      */ 
     public class SimpleSpatialComponent extends TickedComponent implements IMobileSpatialObject2D
     {
-        /**
-         * The spatial manager this object belongs to.
-         */
-        [EditorData(referenceType="componentReference")]
         public function get size():Point
         {
             return _size;

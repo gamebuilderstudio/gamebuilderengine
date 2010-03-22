@@ -92,7 +92,7 @@ package com.pblabs.engine.entity
         {
             for each (var component:IEntityComponent in _components)
             {        	
-                var componentXML:XML = <component type={getQualifiedClassName(component).replace(/::/,".")} name={name} />;
+                var componentXML:XML = <component type={getQualifiedClassName(component).replace(/::/,".")} name={component.name} />;
                 Serializer.instance.serialize(component, componentXML);
                 xml.appendChild(componentXML);
             }

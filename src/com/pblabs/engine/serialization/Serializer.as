@@ -10,6 +10,9 @@ package com.pblabs.engine.serialization
 {
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.entity.IEntity;
+     import com.pblabs.engine.entity.IEntityComponent;
+     import flash.geom.Point;
+     import flash.utils.getQualifiedClassName;
     
     import flash.utils.Dictionary;
     
@@ -50,6 +53,8 @@ package com.pblabs.engine.serialization
             _serializers["::DefaultSimple"] = serializeSimple;
             _serializers["::DefaultComplex"] = serializeComplex;
             _serializers["Boolean"] = serializeBoolean;
+            _serializers["Array"] = serializeDictionary;
+            _serializers["flash.utils::Dictionary"] = serializeDictionary;
             
             // Do a quick sanity check to make sure we are getting metadata.
             var tmd:TestForMetadata = new TestForMetadata();
@@ -319,30 +324,94 @@ package com.pblabs.engine.serialization
         
         private function serializeComplex(object:*, xml:XML):void
         {
-        	if (object==null) return;
+        	if(object==null) return;
         	
             var classDescription:XML = TypeUtility.getTypeDescription(object);
-            for each (var property:XML in classDescription.child("accessor"))
+            for each(var property:XML in classDescription.child("accessor"))
             {
-                if (property.@access == "readwrite")
+                if(property.@access == "readwrite")
                 {
+                    // Get property info
                     var propertyName:String = property.@name;
-                    if (!(object[propertyName] is IEntity))
+                    
+                    // Only serialize properties, that aren't null
+                    if(object[propertyName] != null)
                     {
-                      var propertyXML:XML = <{propertyName}/>
-                      serialize(object[propertyName], propertyXML);
-                      xml.appendChild(propertyXML);
+                        var propertyXML:XML = serializeProperty(object, propertyName);
+                        if(propertyXML != null)
+                        {
+                            xml.appendChild(propertyXML);
+                        }
                     }
                 }
             }
             
-            for each (var field:XML in classDescription.child("variable"))
+            for each(var field:XML in classDescription.child("variable"))
             {
                 var fieldName:String = field.@name;
-                var fieldXML:XML = <{fieldName}/>
-                serialize(object[fieldName], fieldXML);
-                xml.appendChild(fieldXML);
+
+                // Only serialize variables, that aren't null
+                if(object[fieldName] != null)
+                {
+                    var fieldXML:XML = serializeProperty(object, fieldName);
+                    if(fieldXML != null)
+                    {
+                        xml.appendChild(fieldXML);
+                    }                
+                }
             }
+        }
+        
+        private function serializeProperty(object:*, propertyName:String):XML
+        {
+            var propertyXML:XML = <{propertyName}/>;
+            var data:XML = TypeUtility.getEditorData(object, propertyName);
+
+            // Deal with "dynamic" typehints.
+            var typeHint:String = TypeUtility.getTypeHint(object, propertyName);
+            if(typeHint && typeHint == "dynamic")
+            {
+                if (!isNaN(object[propertyName]))
+                {
+                    // Is a number...
+                    propertyXML.@type = getQualifiedClassName(1.0);
+                }
+                else
+                {
+                    propertyXML.@type = getQualifiedClassName(object[propertyName]);
+                }
+            }
+            
+            
+            //Note (giggsy): I don't know why, but this code suddenly didn't compile anymore with FlashDevelop,
+            //so I did the rewrite below :/
+            //var ignore:XMLList = data ? data.arg.(@key == "ignore") : null;
+            //if (ignore && ignore.@value.toString() == "true")
+            //   return null;
+
+            // If this field is set to ignore, then ignore it
+            if(data)
+            {
+                var ignore:XMLList = data.arg.(@key == "ignore");
+                if(ignore && ignore.@value.toString() == "true")
+                    return null;
+            }
+
+
+            // Either make a reference or try to serialize
+            if (!setChildReference(object, object[propertyName], propertyXML))
+            {
+                // OK, we do need to serialize
+                serialize(object[propertyName], propertyXML);
+
+                // If the value is the same as the defaultValue, ignore it
+                // TODO: Handle simple arrays or structures like Points
+                var defaultValue:XMLList = data ? data.arg.(@key == "defaultValue") : null;
+                if (defaultValue && object[propertyName].toString() == defaultValue.@value.toString())
+                    return null;
+            }
+            
+            return propertyXML;
         }
         
         private function deserializeBoolean(object:*, xml:XML, typeHint:String):*
@@ -403,6 +472,50 @@ package com.pblabs.engine.serialization
             return object;
         }
         
+        private function serializeDictionary(object:*, xml:XML):void
+        {
+            if (object == null)
+                return;
+
+            // Decide if they all share the same type
+            var hasType : Boolean = true;
+            var anyChild : * = null;
+            for each (var child : * in object)
+            {
+                if (anyChild == null)
+                    anyChild = child;
+                else if (child != null && TypeUtility.getClass(child) != TypeUtility.getClass(anyChild))
+                    hasType = false;
+            }
+            // If it's empty, we're done
+            if (anyChild == null)
+                return;
+
+            // Assign child type, if any
+            if (hasType)
+                xml.@childType = TypeUtility.getObjectClassName(anyChild).replace(/::/,".");
+
+            // Now write all children
+            for (var element : * in object)
+            {
+                // Get the information
+                var propertyName : String = (object is Dictionary) ? element : "_";
+                var propertyValue : * = object[element];
+                var propertyXML:XML = <{propertyName}/>;
+
+                // Write type
+                if (!hasType)
+                    propertyXML.@type = TypeUtility.getObjectClassName(propertyValue).replace(/::/,".");
+
+                // Write non-entities, or reference entities
+                if (!setChildReference(object, propertyValue, propertyXML))
+                    serialize(propertyValue, propertyXML);
+
+                // Save
+                xml.appendChild(propertyXML);
+            }
+        }
+
         private function deserializeClass(object:*, xml:XML, typeHint:String):*
         {
             return TypeUtility.getClassFromName(xml.toString());
@@ -439,6 +552,28 @@ package com.pblabs.engine.serialization
                 return true;
             }
             
+            return false;
+        }
+
+        /**
+         * A tag can have attributes which encode references of various types. This method
+         * parses them and resolves the references.
+         */ 
+        private function setChildReference(object:*, reference:*, xml:XML):Boolean
+        {
+            // Write entity reference
+            if (reference is IEntity)
+            {
+                xml.@nameReference = (reference as IEntity).name;
+                return true;
+            }
+            // Write component reference
+            if (reference is IEntityComponent)
+            {
+                xml.@entityName = (reference as IEntityComponent).owner.name;
+                xml.@componentName = (reference as IEntityComponent).name;
+                return true;
+            }
             return false;
         }
         
@@ -481,7 +616,14 @@ package com.pblabs.engine.serialization
         private function getResourceObject(object:*, fieldName:String, xml:XML, typeHint:String = null):Boolean
         {
             var filename:String = xml.attribute("filename");
-            if (filename == "")
+            
+            // If attribute is not found, there might be a child tag (depending on what serializer is used.
+            if(filename == "")
+            {
+                filename = xml.child("filename");
+            }
+            
+            if(filename == "")
                 return false;
             
             var type:Class = null;

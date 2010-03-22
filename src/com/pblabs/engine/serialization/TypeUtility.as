@@ -179,11 +179,62 @@ package com.pblabs.engine.serialization
                 // Scan for TypeHint metadata.
                 for each (var metadataXML:XML in variable.*)
                 {
-                    if (metadataXML.@name == "TypeHint")
-                        return metadataXML.arg.@value.toString();
+                    if(metadataXML.@name == "TypeHint")
+                    {
+                        var value:String = metadataXML.arg.@value.toString();
+                        
+                        return value;
+                        /*
+                        if (value == "dynamic")
+                        {
+                            if (!isNaN(object[field]))
+                            {
+                                // Is a number...
+                                return getQualifiedClassName(1.0);
+                            }
+                            else
+                            {
+                                return getQualifiedClassName(object[field]);
+                            }
+                        }
+                        else
+                        {
+                            return value;
+                        }
+                        */
+                    }
                 }
             }
             
+            return null;
+        }
+          
+        /**
+         * Get the xml for the metadata of the field.
+         */
+        public static function getEditorData(object:*, field:String):XML
+        {
+            var description:XML = getTypeDescription(object);
+            if (!description)
+                return null;
+            
+            for each (var variable:XML in description.*)
+            {
+                // Skip if it's not the field we want.
+                if (variable.@name != field)
+                    continue;
+                
+                // Only check variables/accessors.
+                if (variable.name() != "variable" && variable.name() != "accessor")
+                    continue;
+                
+                // Scan for EditorData metadata.
+                for each (var metadataXML:XML in variable.*)
+                {
+                    if (metadataXML.@name == "EditorData")
+                        return metadataXML;
+                }
+            }
             return null;
         }
         

@@ -175,6 +175,8 @@ package com.pblabs.animation
         /**
          * The value the animation should start at.
          */
+        
+        [TypeHint(type="dynamic")]
         public function get startValue():*
         {
             return _start;
@@ -196,6 +198,7 @@ package com.pblabs.animation
         /**
          * The value to animate to.
          */
+        [TypeHint(type="dynamic")]
         public function get targetValue():*
         {
             return _target;
