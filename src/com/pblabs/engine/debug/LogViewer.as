@@ -62,6 +62,8 @@ package com.pblabs.engine.debug
 			if(!_scrollBar) createScrollBar();
             
             resize();
+			
+			_scrollBar.tf = _output;
             
             addChild(_output);
             addChild(_input);
@@ -107,7 +109,7 @@ package com.pblabs.engine.debug
             }
 			
 			_scrollBar.extents = new Rectangle(0,0,8,_height-32);
-			_scrollBar.x = _width - _scrollBar.width - 5;
+			_scrollBar.x = _width - _scrollBar.extents.width - 5;
 			_scrollBar.y = 5;
             
             _output.height = _height-30;
@@ -373,6 +375,7 @@ package com.pblabs.engine.debug
                 truncateOutput();
                 
                 _output.scrollV = _output.maxScrollV;
+				_scrollBar.progress = 1;	// Scroll to the bottom
 
                 Profiler.exit("LogViewer.addLogMessage");
             }
