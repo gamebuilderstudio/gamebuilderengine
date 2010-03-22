@@ -111,7 +111,7 @@ package com.pblabs.engine.debug
 			_scrollBar.y = 5;
             
             _output.height = _height-30;
-            _output.width = _width-16;
+            _output.width = _width-(_scrollBar.width+1);
             
             _input.height = 18;
             _input.width = _width-10;

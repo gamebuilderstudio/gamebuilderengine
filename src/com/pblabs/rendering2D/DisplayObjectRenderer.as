@@ -1,5 +1,6 @@
 package com.pblabs.rendering2D
 {
+    import com.pblabs.engine.PBE;
     import com.pblabs.engine.PBUtil;
     import com.pblabs.engine.components.AnimatedComponent;
     import com.pblabs.engine.core.ObjectType;
@@ -122,6 +123,11 @@ package com.pblabs.rendering2D
         
         protected var _inScene:Boolean = false;
         
+		public function DisplayObjectRenderer()
+		{
+			_scene = PBE.scene;	// Default scene to PBE.scene
+		}
+		
         public function get layerIndex():int
         {
             return _layerIndex;
