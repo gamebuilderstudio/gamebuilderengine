@@ -229,6 +229,8 @@ package com.pblabs.engine.core
             
             for each (var groupName:String in levelDescription.groups)
                levelXML.appendChild(<group name={groupName}/>);
+               
+            xml.appendChild(levelXML);
          }
       }
       
@@ -387,6 +389,7 @@ package com.pblabs.engine.core
          
          _groupsToLoad = null;
          dispatchEvent(new LevelEvent(LevelEvent.LEVEL_LOADED_EVENT, _currentLevel));
+         Logger.print(this, "LEVEL_LOADED_EVENT");
       }
       
       /**

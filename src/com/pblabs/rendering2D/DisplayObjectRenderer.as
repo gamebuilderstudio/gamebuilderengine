@@ -517,6 +517,9 @@ package com.pblabs.rendering2D
             
             _displayObject = value;
             
+            if(name && owner && owner.name)
+                _displayObject.name = owner.name + "." + name;
+            
             // Add new scene.
             addToScene();
         }
@@ -594,6 +597,9 @@ package com.pblabs.rendering2D
         override protected function onAdd() : void
         {
             super.onAdd();
+            
+            if(_displayObject)
+                _displayObject.name = owner.name + "." + name;
             
             // Make sure we start with a correct transform.
             updateTransform(true);
