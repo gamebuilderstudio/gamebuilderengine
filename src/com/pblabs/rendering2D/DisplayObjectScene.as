@@ -395,7 +395,7 @@ package com.pblabs.rendering2D
             return results.length > 0 ? true : false;
         }
         
-        protected function getRendererForDisplayObject(displayObject:DisplayObject):DisplayObjectRenderer
+        public function getRendererForDisplayObject(displayObject:DisplayObject):DisplayObjectRenderer
         {
             var current:DisplayObject = displayObject;
             
