@@ -302,6 +302,7 @@ package com.pblabs.engine.core
        * level share data, it will not be reloaded.
        * 
        * @param index The level number to load.
+	   * @param force Force reload.
        */
       public function loadLevel(index:int, force:Boolean = false):void
       {
@@ -315,7 +316,7 @@ package com.pblabs.engine.core
             Logger.error(this, "loadLevel", "Level data for level " + index + " does not exist.");
             return;
          }
-         
+		 
          // find file differences between the levels
          var filesToLoad:Array = new Array();
          var filesToUnload:Array = new Array();
@@ -343,7 +344,7 @@ package com.pblabs.engine.core
             if (_loadFileCallback != null)
                _loadFileCallback(filename, finishLoad)
             else
-               PBE.templateManager.loadFile(filename);
+               PBE.templateManager.loadFile(filename, force);
          }
          
          finishLoad();
@@ -384,12 +385,13 @@ package com.pblabs.engine.core
             
             _loadedGroups[groupName] = new Array();
             for each (var groupEntity:IEntity in groupEntities)
+			{
                _loadedGroups[groupName].push(groupEntity);
+			}
          }
          
          _groupsToLoad = null;
          dispatchEvent(new LevelEvent(LevelEvent.LEVEL_LOADED_EVENT, _currentLevel));
-         Logger.print(this, "LEVEL_LOADED_EVENT");
       }
       
       /**
@@ -419,10 +421,12 @@ package com.pblabs.engine.core
          getLoadLists(_levelDescriptions[_currentLevel].groups, null, null, groupsToUnload);
          
          unload(filesToUnload, groupsToUnload);
-         dispatchEvent(new LevelEvent(LevelEvent.LEVEL_UNLOADED_EVENT, _currentLevel));
+         //dispatchEvent(new LevelEvent(LevelEvent.LEVEL_UNLOADED_EVENT, _currentLevel));
          
          _currentLevel = -1;
          _isLevelLoaded = false;
+		 
+		 dispatchEvent(new LevelEvent(LevelEvent.LEVEL_UNLOADED_EVENT, _currentLevel));
       }
       
       private function unload(filesToUnload:Array, groupsToUnload:Array):void
@@ -453,6 +457,22 @@ package com.pblabs.engine.core
                }
             }
             
+            //Destroy all created groups, except the root group:
+			if(groupName != PBE.rootGroup.name)
+			{
+				var actualGroup:PBGroup = PBE.nameManager.lookup(groupName) as PBGroup;
+            
+				//Remove group from level descriptions.
+				var levelDescription:LevelDescription = getLevelDescription(currentLevel);
+				var idx:int = levelDescription.groups.indexOf(groupName);
+				levelDescription.groups.splice(idx, 1);
+
+				if(actualGroup != null)
+				{
+					actualGroup.destroy();
+				}
+            }
+			
             _loadedGroups[groupName] = null;
             delete _loadedGroups[groupName];
          }
@@ -606,7 +626,7 @@ package com.pblabs.engine.core
          delete _levelDescriptions[index];
       }
       
-      private function getLevelDescription(index:int):LevelDescription
+      public function getLevelDescription(index:int):LevelDescription
       {
          var levelDescription:LevelDescription = _levelDescriptions[index];
          if (!levelDescription)

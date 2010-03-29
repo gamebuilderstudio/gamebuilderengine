@@ -80,9 +80,9 @@ package com.pblabs.engine.core
 		 *
 		 * @param filename The file to load.
 		 */
-		public function loadFile(filename:String):void
+		public function loadFile(filename:String, forceReload:Boolean = false):void
 		{
-			PBE.resourceManager.load(filename, XMLResource, onLoaded, onFailed);
+			PBE.resourceManager.load(filename, XMLResource, onLoaded, onFailed, forceReload);
 		}
 
 		/**
@@ -269,6 +269,7 @@ package com.pblabs.engine.core
 		public function addXML(xml:XML, identifier:String, version:int):void
 		{
 			var name:String=xml.attribute("name");
+
 			if (name.length == 0)
 			{
 				Logger.warn(this, "AddXML", "XML object description added without a 'name' attribute.");
@@ -480,7 +481,24 @@ package com.pblabs.engine.core
 			var xml:XML=getXML(name, "group");
 			if (!xml)
 				throw new Error("Could not find group '" + name + "'");
+                
+            //Create the group:
+            var actualGroup:PBGroup = new PBGroup();
+            if(name != PBE.rootGroup.name)
+            {
+                actualGroup.initialize(name);
+                actualGroup.owningGroup = PBE.currentGroup;
+                //LevelManager.instance.addGroupReference(LevelManager.instance.currentLevel, name);
+                LevelManager.instance.getLevelDescription(LevelManager.instance.currentLevel).groups.push(name);
+            }
+            else
+            {
+                actualGroup = PBE.rootGroup;
+            }
 
+            var oldGroup:PBGroup = PBE.currentGroup;
+            PBE.currentGroup = actualGroup;    
+            
 			for each (var objectXML:XML in xml.*)
 			{
 				var childName:String=objectXML.attribute("name");
@@ -506,7 +524,7 @@ package com.pblabs.engine.core
 				}
 				else if (objectXML.name() == "objectReference")
 				{
-					_inGroup=true;
+					_inGroup = true;
 					group.push(instantiateEntity(childName));
 					_inGroup=false;
 				}
@@ -515,6 +533,8 @@ package com.pblabs.engine.core
 					Logger.warn(this, "instantiateGroup", "Encountered unknown tag " + objectXML.name() + " in group.");
 				}
 			}
+            
+            PBE.currentGroup = oldGroup;
 
 			Serializer.instance.reportMissingReferences();
 
