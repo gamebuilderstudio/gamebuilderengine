@@ -50,7 +50,7 @@ package com.pblabs.rendering2D
             
             // Update the bitmapData.
             var targetBD:BitmapData = getCurrentFrame();
-            if(bitmapData !== targetBD)
+            if(bitmapData != targetBD)
                 bitmapData = targetBD;
         }
 	}
