@@ -31,13 +31,16 @@ package com.pblabs.sound
         
         public function get transform():SoundTransform
         {
+            if(!channel)
+                return new SoundTransform();
             return channel.soundTransform;
         }
 
         public function set transform(value:SoundTransform):void
         {
             dirty = true;
-            channel.soundTransform = value;
+            if(channel)
+                channel.soundTransform = value;
         }
 
         public function get volume():Number
