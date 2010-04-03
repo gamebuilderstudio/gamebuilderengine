@@ -21,6 +21,7 @@ package com.pblabs.engine.debug
     
     import flash.display.DisplayObject;
     import flash.display.DisplayObjectContainer;
+    import flash.events.Event;
     import flash.system.Security;
     
     /**
@@ -42,6 +43,7 @@ package com.pblabs.engine.debug
         protected static var _stats:Stats;
         
         public static var verbosity:int = 0;
+		public static var showStackTrace:Boolean = false;
         
         
         /**
@@ -106,6 +108,8 @@ package com.pblabs.engine.debug
             
             // Split it by spaces.
             var args:Array = line.split(" ");
+			
+			// FIXME We should be able to allows spaces in arguments by wrapping the argument in quotes
             
             // Look up the command.
             if(args.length == 0)
@@ -125,7 +129,12 @@ package com.pblabs.engine.debug
             }
             catch(e:Error)
             {
-                Logger.error(Console, args[0], "Error: " + e.toString() + " - " + e.getStackTrace());
+				var errorStr:String = "Error: " + e.toString();
+				if(showStackTrace)
+				{
+					errorStr += " - " + e.getStackTrace();
+				}
+                Logger.error(Console, args[0], errorStr);
             }
         }
         
@@ -205,10 +214,16 @@ package com.pblabs.engine.debug
 			dummyEntity.initialize("console");
 			
 			registerCommand("set", _setProperty, 
-				"Sets a property reference. usage: set #Entity.component.property false");
+				"Sets a property reference. usage: set #entity.component.property false");
 			
 			registerCommand("get", _getProperty,
-				"Gets a property reference. usage: get #Entity.component.property");
+				"Gets a property reference. usage: get #entity.component.property");
+			
+			registerCommand("call", _callMethod,
+				"Calls a method on a component. usage: call #entity.component.function param1 param2");
+			
+			registerCommand("dispatch", _dispatchEvent,
+				"Dispatches an event on an entity's event bus. usage: dispatch #entity eventType");
         }
 		
 		protected static function _setProperty(reference:String, value:*):void
@@ -216,7 +231,7 @@ package com.pblabs.engine.debug
 			if(reference.substr(0,1) != "#" && reference.substr(0,1) != "!")
 			{
 				Logger.warn(Console, "set", "set can only be used on named entites or templates. " +
-					"The PropertyReference must start with # or ! ");
+					"The PropertyReference must start with # or !.");
 				return;
 			}
 			
@@ -237,7 +252,7 @@ package com.pblabs.engine.debug
 			if(reference.substr(0,1) != "#" && reference.substr(0,1) != "!")
 			{
 				Logger.warn(Console, "get", "get can only be used on named entites or templates. " +
-					"The PropertyReference must start with # or ! ");
+					"The PropertyReference must start with # or !.");
 				return;
 			}
 			
@@ -245,6 +260,62 @@ package com.pblabs.engine.debug
 			var pr:PropertyReference = new PropertyReference(reference);
 			
 			Logger.print(Console, entity.getProperty(pr));
+		}
+		
+		protected static function _callMethod(reference:String, ... args):void
+		{
+			if(reference.substr(0,1) != "#")
+			{
+				Logger.warn(Console, "call", "call can only be used on named entites. " +
+					"The PropertyReference must start with #.");
+				return;
+			}
+			
+			var entity:IEntity = PBE.lookupEntity("console");
+			var pr:PropertyReference = new PropertyReference(reference);
+			
+			var f:* = entity.getProperty(pr);
+			
+			if(f == null) // check for null here becuase this is a function
+			{
+				Logger.warn(Console, "call", reference + ", function does not exist.");
+				return;
+			}
+				
+			if(f is Function)
+			{
+				f.apply(null, args);	
+			}
+			else
+			{
+				Logger.warn(Console, "call", reference + " is not a function.");
+				return;
+			}
+		}
+		
+		protected static function _dispatchEvent(reference:String, eventType:String):void
+		{
+			if(reference.substr(0,1) != "#")
+			{
+				Logger.warn(Console, "dispatch", "dispatch can only be used on named entites. " +
+					"The PropertyReference must start with #.");
+				return;
+			}
+			
+			// remove the # from the entity and look it up
+			var entity:IEntity = PBE.lookupEntity(reference.substring(1));
+			
+			if(entity)
+			{
+				entity.eventDispatcher.dispatchEvent(new Event(eventType));
+			}
+			else
+			{
+				Logger.warn(Console, "dispatch", "Could not find entity named \""+reference.substring(1)+"\".");
+				return;
+			}
+			
+			
 		}
         
         protected static function ensureCommandsOrdered():void
