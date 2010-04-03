@@ -107,7 +107,7 @@ package com.pblabs.engine.debug
             // Split it by spaces.
             var args:Array = line.split(" ");
             
-            // Look up the comman bd.
+            // Look up the command.
             if(args.length == 0)
                 return;
             var potentialCommand:ConsoleCommand = commands[args[0].toString().toLowerCase()]; 
@@ -204,29 +204,48 @@ package com.pblabs.engine.debug
 			var dummyEntity:IEntity = PBE.allocateEntity();
 			dummyEntity.initialize("console");
 			
-			registerCommand("set", function(reference:String, value:*):void
-			{
-				var entity:IEntity = PBE.lookupEntity("console");
-				var pr:PropertyReference = new PropertyReference(reference);
-
-				var downcase:String = String(value).toLowerCase();
-				if(downcase == "true" || downcase == "false")
-				{
-					value = PBUtil.stringToBoolean(downcase);
-				}
-				
-				entity.setProperty(pr, value);
-			}, "Sets a property reference. usage: set #Entity.component.property false");
+			registerCommand("set", _setProperty, 
+				"Sets a property reference. usage: set #Entity.component.property false");
 			
-			registerCommand("get", function(reference:String):void
-			{
-				var entity:IEntity = PBE.lookupEntity("console");
-				var pr:PropertyReference = new PropertyReference(reference);
-				
-				Logger.print(Console, entity.getProperty(pr));
-				
-			}, "Gets a property reference. usage: get #Entity.component.property");
+			registerCommand("get", _getProperty,
+				"Gets a property reference. usage: get #Entity.component.property");
         }
+		
+		protected static function _setProperty(reference:String, value:*):void
+		{
+			if(reference.substr(0,1) != "#" && reference.substr(0,1) != "!")
+			{
+				Logger.warn(Console, "set", "set can only be used on named entites or templates. " +
+					"The PropertyReference must start with # or ! ");
+				return;
+			}
+			
+			var entity:IEntity = PBE.lookupEntity("console");
+			var pr:PropertyReference = new PropertyReference(reference);
+			
+			var downcase:String = String(value).toLowerCase();
+			if(downcase == "true" || downcase == "false")
+			{
+				value = PBUtil.stringToBoolean(downcase);
+			}
+			
+			entity.setProperty(pr, value);
+		}
+		
+		protected static function _getProperty(reference:String):void
+		{
+			if(reference.substr(0,1) != "#" && reference.substr(0,1) != "!")
+			{
+				Logger.warn(Console, "get", "get can only be used on named entites or templates. " +
+					"The PropertyReference must start with # or ! ");
+				return;
+			}
+			
+			var entity:IEntity = PBE.lookupEntity("console");
+			var pr:PropertyReference = new PropertyReference(reference);
+			
+			Logger.print(Console, entity.getProperty(pr));
+		}
         
         protected static function ensureCommandsOrdered():void
         {
