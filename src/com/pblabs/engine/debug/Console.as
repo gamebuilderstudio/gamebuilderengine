@@ -9,12 +9,14 @@
 package com.pblabs.engine.debug
 {
     import com.pblabs.engine.PBE;
+    import com.pblabs.engine.PBUtil;
     import com.pblabs.engine.core.IPBObject;
     import com.pblabs.engine.core.PBGroup;
     import com.pblabs.engine.core.PBObject;
     import com.pblabs.engine.core.PBSet;
     import com.pblabs.engine.entity.IEntity;
     import com.pblabs.engine.entity.IEntityComponent;
+    import com.pblabs.engine.entity.PropertyReference;
     import com.pblabs.engine.serialization.TypeUtility;
     
     import flash.display.DisplayObject;
@@ -105,7 +107,7 @@ package com.pblabs.engine.debug
             // Split it by spaces.
             var args:Array = line.split(" ");
             
-            // Look up the command.
+            // Look up the comman bd.
             if(args.length == 0)
                 return;
             var potentialCommand:ConsoleCommand = commands[args[0].toString().toLowerCase()]; 
@@ -132,6 +134,7 @@ package com.pblabs.engine.debug
          */
         public static function init():void
         {
+			/*** THESE ARE THE DEFAULT CONSOLE COMMANDS ***/
             registerCommand("help", function(prefix:String = null):void
             {
                 // Get commands in alphabetical order.
@@ -195,6 +198,34 @@ package com.pblabs.engine.debug
                 var sum:int = Console._listPBObjects(PBE.rootGroup, 0);
                 Logger.print(Console, " " + sum + " total PBObjects.");
             }, "List all the PBObjects in the game.");
+			
+			/*** Commands for Property References ***/ 
+			// Create dummy entity to make these propertyReferences work
+			var dummyEntity:IEntity = PBE.allocateEntity();
+			dummyEntity.initialize("console");
+			
+			registerCommand("set", function(reference:String, value:*):void
+			{
+				var entity:IEntity = PBE.lookupEntity("console");
+				var pr:PropertyReference = new PropertyReference(reference);
+
+				var downcase:String = String(value).toLowerCase();
+				if(downcase == "true" || downcase == "false")
+				{
+					value = PBUtil.stringToBoolean(downcase);
+				}
+				
+				entity.setProperty(pr, value);
+			}, "Sets a property reference. usage: set #Entity.component.property false");
+			
+			registerCommand("get", function(reference:String):void
+			{
+				var entity:IEntity = PBE.lookupEntity("console");
+				var pr:PropertyReference = new PropertyReference(reference);
+				
+				Logger.print(Console, entity.getProperty(pr));
+				
+			}, "Gets a property reference. usage: get #Entity.component.property");
         }
         
         protected static function ensureCommandsOrdered():void
