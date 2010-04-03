@@ -238,7 +238,40 @@ package com.pblabs.engine
 			
 			return str;
 		}
+		
+		/**
+		 * Converts a String to a Boolean. This method is case insensitive, and will convert 
+		 * "true", "t" and "1" to true. It converts "false", "f" and "0" to false.
+		 * @param str String to covert into a boolean. 
+		 * @return true or false
+		 */		
+		public static function stringToBoolean(str:String):Boolean
+		{
+			switch(str.substring(1, 0).toUpperCase())
+			{
+				case "F":
+				case "0":
+					return false;
+					break;
+				case "T":
+				case "1":
+					return true;
+					break;
+			}
+			
+			return false;
+		}
         
+		/**
+		 * Capitalize the first letter of a string 
+		 * @param str String to capitalize the first leter of
+		 * @return String with the first letter capitalized.
+		 */		
+		public static function capitalize(str:String):String
+		{
+			return str.substring(1, 0).toUpperCase() + str.substring(1);
+		}
+		
         /**
          * Determine the file extension of a file. 
          * @param file A path to a file.
