@@ -145,7 +145,7 @@ package com.pblabs.engine
             // and scale mode to be different just set these values after you call PBE.startup.
             mainClass.stage.align = StageAlign.TOP_LEFT;
             mainClass.stage.scaleMode = StageScaleMode.NO_SCALE;
-            
+			
             // Welcome message.
             Logger.print(PBE, _versionDetails.toString());
             
@@ -233,6 +233,7 @@ package com.pblabs.engine
             
             _scene = new sceneClass();               // Allocate our renderering component
             _scene.sceneView = view;                 // Point the Renderer's SceneView at the view we just created.
+			_scene.sceneAlignment = SceneAlignment.DEFAULT_ALIGNMENT 			// Set default sceneAlignment
             scene.addComponent( _scene, "Scene" );   // Add our Renderer component to the scene entity with the name "Renderer"
             
             return scene;
