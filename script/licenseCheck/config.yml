@@ -5,10 +5,10 @@ fileTypes:
       regex: "\/\*+.+\*\/"
       license: "/*******************************************************************************\n * PushButton Engine\n * Copyright (C) 2009 PushButton Labs, LLC\n * For more information see http://www.pushbuttonengine.com\n * \n * This file is licensed under the terms of the MIT license, which is included\n * in the License.html file at the root directory of this SDK.\n ******************************************************************************/"
     
-    - type: ".mxml"
-      regex: ""
-      license: "<!-- license here -->"
+#    - type: ".mxml"
+#      regex: ""
+#      license: "<!-- license here -->"
       
-    - type: ".php"
-      regex: ""
-      license: "<? /* license here */ ?>"
+#    - type: ".php"
+#      regex: ""
+#      license: "<? /* license here */ ?>"

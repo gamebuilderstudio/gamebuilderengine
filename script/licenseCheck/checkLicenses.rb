@@ -36,6 +36,7 @@ def processFile(type,file)
     @skipCount += 1
   else
     puts "Adding license"
+    #system("open #{file}")
     @addCount += 1
   end
 end
