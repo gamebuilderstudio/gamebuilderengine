@@ -272,6 +272,55 @@ package com.pblabs.engine
 			return str.substring(1, 0).toUpperCase() + str.substring(1);
 		}
 		
+		/**
+		 * Removes all instances of the specified character from 
+		 * the beginning and end of the specified string.
+		 */
+		public static function trim(str:String, char:String):String {
+			return trimBack(trimFront(str, char), char);
+		}
+		
+		/**
+		 * Recursively removes all characters that match the char parameter, 
+		 * starting from the front of the string and working toward the end, 
+		 * until the first character in the string does not match char and returns 
+		 * the updated string.
+		 */		
+		public static function trimFront(str:String, char:String):String
+		{
+			char = stringToCharacter(char);
+			if (str.charAt(0) == char) {
+				str = trimFront(str.substring(1), char);
+			}
+			return str;
+		}
+		
+		/**
+		 * Recursively removes all characters that match the char parameter, 
+		 * starting from the end of the string and working backward, 
+		 * until the last character in the string does not match char and returns 
+		 * the updated string.
+		 */		
+		public static function trimBack(str:String, char:String):String
+		{
+			char = stringToCharacter(char);
+			if (str.charAt(str.length - 1) == char) {
+				str = trimBack(str.substring(0, str.length - 1), char);
+			}
+			return str;
+		}
+		
+		/**
+		 * Returns the first character of the string passed to it. 
+		 */		
+		public static function stringToCharacter(str:String):String 
+		{
+			if (str.length == 1) {
+				return str;
+			}
+			return str.slice(0, 1);
+		}
+		
         /**
          * Determine the file extension of a file. 
          * @param file A path to a file.

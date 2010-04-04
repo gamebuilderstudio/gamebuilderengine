@@ -105,12 +105,24 @@ package com.pblabs.engine.debug
         {
             // Make sure everything is in order.
             ensureCommandsOrdered();
-            
-            // Split it by spaces.
-            var args:Array = line.split(" ");
 			
-			// FIXME We should be able to allows spaces in arguments by wrapping the argument in quotes
-            
+			// Match Tokens, this allows for text to be split by spaces excluding spaces between quotes.
+			// TODO Allow escaping of quotes
+			var pattern:RegExp = /[^\s"']+|"[^"]*"|'[^']*'/g;
+			var args:Array = [];
+			var test:Object = {};
+			while (test)
+			{
+				test = pattern.exec(line);
+				if(test)
+				{
+					var str:String = test[0];
+					str = PBUtil.trim(str, "'");
+					str = PBUtil.trim(str, "\"");
+					args.push(str);	// If no more matches can be found, test will be null	
+				}
+			}
+			
             // Look up the command.
             if(args.length == 0)
                 return;
@@ -187,6 +199,7 @@ package com.pblabs.engine.debug
                 {
                     PBE.mainStage.removeChild(_stats);
                     _stats = null;
+					Logger.print(Console, "Disabled FPS display.");
                 }
             }, "Toggle an FPS/Memory usage indicator.");
             
