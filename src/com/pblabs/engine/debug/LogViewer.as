@@ -165,7 +165,6 @@ package com.pblabs.engine.debug
             format.color = 0x0;
             _input.setTextFormat(format);
             _input.defaultTextFormat = format;
-            _input.restrict = "^`";		// Tilde's are not allowed in the input since they close the window
 			_input.name = "ConsoleInput";
             
             return _input;
@@ -307,7 +306,7 @@ package com.pblabs.engine.debug
                     stage.stageFocusRect = oldfr;
                 });
             }
-            else if(event.keyCode == InputKey.TILDE.keyCode)
+            else if(event.keyCode == Console.hotKeyCode)
             {
                 // Hide the console window, have to check here due to 
                 // propagation stop at end of function.
@@ -405,5 +404,15 @@ package com.pblabs.engine.debug
             removeListeners();
             PBE.mainStage.focus = null;
         }
+		
+		public function set restrict(value:String):void
+		{
+			_input.restrict = value;
+		}
+		
+		public function get restrict():String
+		{
+			return _input.restrict;
+		}
     }
 }

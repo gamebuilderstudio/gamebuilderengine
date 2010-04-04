@@ -13,6 +13,7 @@ package com.pblabs.engine.debug
 	import com.pblabs.engine.core.InputManager;
 	
 	import flash.events.KeyboardEvent;
+	import flash.ui.Keyboard;
 
 	/**
 	 * LogAppender for displaying log messages in a LogViewer. The LogViewer will be
@@ -21,21 +22,18 @@ package com.pblabs.engine.debug
 	 */	
 	public class UIAppender implements ILogAppender
 	{
-		protected static var _hotKey:uint;
-
 		protected var _logViewer:LogViewer;
 	   
 		public function UIAppender()
 		{
 			PBE.inputManager.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			
-			_hotKey = InputKey.TILDE.keyCode;
 			_logViewer = new LogViewer();
 		}
   
 		private function onKeyDown(event:KeyboardEvent):void
 		{
-			if (event.keyCode != _hotKey)
+			if (event.keyCode != Console.hotKeyCode)
 				return;
 			 
 			if(_logViewer)
@@ -48,6 +46,8 @@ package com.pblabs.engine.debug
 				else
 				{
 					PBE.mainStage.addChild(_logViewer);
+					var char:String = String.fromCharCode(event.charCode);
+					_logViewer.restrict = "^"+char.toUpperCase()+char.toLowerCase();	// disallow hotKey character
 					_logViewer.activate();
 				}
 			}
@@ -57,15 +57,6 @@ package com.pblabs.engine.debug
 		{
 			if(_logViewer)
 			_logViewer.addLogMessage(level, loggerName, message);
-		}
-		
-		/**
-		 * The keycode to toggle the UIAppender interface.
-		 */		
-		public static function set hotKey(value:uint):void
-		{
-			Logger.print(UIAppender, "Setting hotKey to: "+value);
-			_hotKey = value;
 		}
 	}
 }

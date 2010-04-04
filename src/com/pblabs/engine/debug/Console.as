@@ -11,6 +11,7 @@ package com.pblabs.engine.debug
     import com.pblabs.engine.PBE;
     import com.pblabs.engine.PBUtil;
     import com.pblabs.engine.core.IPBObject;
+    import com.pblabs.engine.core.InputKey;
     import com.pblabs.engine.core.PBGroup;
     import com.pblabs.engine.core.PBObject;
     import com.pblabs.engine.core.PBSet;
@@ -39,11 +40,14 @@ package com.pblabs.engine.debug
          */
         protected static var commandList:Array = [];
         protected static var commandListOrdered:Boolean = false;
+
+		protected static var _hotKeyCode:uint = InputKey.TILDE.keyCode;
         
         protected static var _stats:Stats;
         
         public static var verbosity:int = 0;
 		public static var showStackTrace:Boolean = false;
+		
         
         
         /**
@@ -438,6 +442,20 @@ package com.pblabs.engine.debug
             
             return str;
         }
+		
+		/**
+		 * The keycode to toggle the Console interface.
+		 */		
+		public static function set hotKeyCode(value:uint):void
+		{
+			Logger.print(Console, "Setting hotKeyCode to: "+value);
+			_hotKeyCode = value;
+		}
+		
+		public static function get hotKeyCode():uint
+		{
+			return _hotKeyCode;
+		}
     }
 }
 
