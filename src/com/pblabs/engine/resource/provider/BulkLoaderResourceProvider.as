@@ -76,6 +76,13 @@ package com.pblabs.engine.resource.provider
             loader.get(resourceIdentifier).addEventListener(Event.COMPLETE,resourceLoaded)
             loader.get(resourceIdentifier).addEventListener(BulkLoader.ERROR,resourceError)
             
+			//If force reload, delete old resource first:
+            if (resources[resourceIdentifier] && forceReload)
+            {
+                resources[resourceIdentifier] = null;
+                delete resources[resourceIdentifier];
+            }			
+			
             if (resources[resourceIdentifier]==null)
             {
                 // create resource and provide it to the ResourceManager
