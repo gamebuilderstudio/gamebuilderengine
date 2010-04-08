@@ -225,7 +225,7 @@ package com.pblabs.engine.core
             levelXML.@name = levelDescription.name;
             
             for each (var filename:String in levelDescription.files)
-               levelXML.appendChild(<file name={filename}/>);
+               levelXML.appendChild(<file filename={filename}/>);
             
             for each (var groupName:String in levelDescription.groups)
                levelXML.appendChild(<group name={groupName}/>);
