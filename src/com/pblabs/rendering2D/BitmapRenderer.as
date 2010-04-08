@@ -88,6 +88,20 @@ package com.pblabs.rendering2D
             renderTarget.copyPixels(bitmap.bitmapData, bitmap.bitmapData.rect, objectToScreen.transformPoint(zeroPoint), null, null, true);
         }
         
+        /**
+        * @see Sprite.mouseEnabled
+        */
+        [EditorData(ignore="true")]
+        public function set mouseEnabled(value:Boolean):void
+        {
+            (_displayObject as Sprite).mouseEnabled = value;
+        }
+
+        public function get mouseEnabled():Boolean
+        {
+            return (_displayObject as Sprite).mouseEnabled;
+        }        
+        
         override public function pointOccupied(worldPosition:Point, mask:ObjectType):Boolean
         {
             if(!bitmap || !bitmap.bitmapData)

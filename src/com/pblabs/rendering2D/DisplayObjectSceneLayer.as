@@ -45,6 +45,7 @@ package com.pblabs.rendering2D
         public function DisplayObjectSceneLayer()
         {
             drawOrderFunction = defaultSortFunction;
+            mouseEnabled = false;
         }
         
         /**
