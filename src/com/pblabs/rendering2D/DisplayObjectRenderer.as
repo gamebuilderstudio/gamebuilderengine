@@ -672,7 +672,7 @@ package com.pblabs.rendering2D
             // Maybe we were in the right layer, but have the wrong zIndex.
             if (_zIndexDirty && _scene)
             {
-                _scene.getLayer(_layerIndex).markDirty();
+                _scene.getLayer(_layerIndex, true).markDirty();
                 _zIndexDirty = false;
             }
             
