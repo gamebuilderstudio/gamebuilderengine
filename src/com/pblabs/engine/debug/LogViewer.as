@@ -10,12 +10,16 @@ package com.pblabs.engine.debug
 {
     import com.pblabs.engine.PBE;
     import com.pblabs.engine.PBUtil;
+    import com.pblabs.engine.core.IAnimatedObject;
     import com.pblabs.engine.core.InputKey;
-    import com.pblabs.rendering2D.ui.PBScrollBar;
     
+    import flash.desktop.Clipboard;
+    import flash.display.Bitmap;
+    import flash.display.BitmapData;
     import flash.display.Sprite;
     import flash.events.KeyboardEvent;
-    import flash.geom.Rectangle;
+    import flash.events.MouseEvent;
+    import flash.system.System;
     import flash.text.TextField;
     import flash.text.TextFieldType;
     import flash.text.TextFormat;
@@ -24,7 +28,7 @@ package com.pblabs.engine.debug
     /**
      * Console UI, which shows console log activity in-game, and also accepts input from the user.
      */
-    public class LogViewer extends Sprite implements ILogAppender
+    public class LogViewer extends Sprite implements ILogAppender, IAnimatedObject
     {
         protected var _messageQueue:Array = [];
         protected var _maxLength:uint = 200000;
@@ -36,15 +40,19 @@ package com.pblabs.engine.debug
         protected var _consoleHistory:Array = [];
         protected var _historyIndex:uint = 0;
         
-        protected var _output:TextField;
+        protected var _outputBitmap:Bitmap = new Bitmap(new BitmapData(640, 480, false, 0x0));
         protected var _input:TextField;
-		
-		protected var _scrollBar:PBScrollBar;
         
         protected var tabCompletionPrefix:String = "";
         protected var tabCompletionCurrentStart:int = 0;
         protected var tabCompletionCurrentEnd:int = 0;
         protected var tabCompletionCurrentOffset:int = 0;
+		
+        protected var glyphCache:GlyphCache = new GlyphCache();
+
+        protected var bottomLineIndex:int = int.MAX_VALUE;
+        protected var logCache:Array = [];
+        protected var _dirtyConsole:Boolean = true;
         
         public function LogViewer():void
         {
@@ -52,33 +60,35 @@ package com.pblabs.engine.debug
             addListeners();
 			
 			name = "Console";
+            Console.registerCommand("copy", onBitmapDoubleClick, "Copy the console to the clipboard.");
 			Console.registerCommand("clear", onClearCommand, "Clears the console history.");
+            
+            PBE.processManager.addAnimatedObject(this);
         }
         
         protected function layout():void
         {
-            if(!_output) createOutputField();
             if(!_input) createInputField();
-			if(!_scrollBar) createScrollBar();
             
             resize();
-			
-			_scrollBar.tf = _output;
             
-            addChild(_output);
+            _outputBitmap.name = "ConsoleOutput";
+            addEventListener(MouseEvent.CLICK, onBitmapClick);
+            addEventListener(MouseEvent.DOUBLE_CLICK, onBitmapDoubleClick);
+            
+            addChild(_outputBitmap);
             addChild(_input);
-			addChild(_scrollBar);
             
             graphics.clear();
-                        
-            graphics.beginFill(0x666666, .95);
-            graphics.drawRoundRect(0,0,_width,_height,5);
+            graphics.beginFill(0x111111, .95);
+			graphics.drawRect(0, 0, _width+1, _height);
             graphics.endFill();
 
-            graphics.beginFill(0xFFFFFF, 1);
-            graphics.drawRoundRect(4,4,_width-8,_height-30,5);
-            graphics.endFill();
-
+            // Necessary for click listeners.
+            mouseEnabled = true;
+            doubleClickEnabled = true;
+            
+            _dirtyConsole = true;
         }
         
         protected function addListeners():void
@@ -91,15 +101,39 @@ package com.pblabs.engine.debug
             _input.removeEventListener(KeyboardEvent.KEY_DOWN, onInputKeyDown);
         }
 		
+        protected function onBitmapClick(me:MouseEvent):void
+        {
+            // Give focus to input.
+            PBE.mainStage.focus = _input;
+        }
+        
+        protected function onBitmapDoubleClick(me:MouseEvent = null):void
+        {
+            // Put everything into a monster string.
+            var logString:String = "";
+            for(var i:int=0; i<logCache.length; i++)
+                logString += logCache[i].text + "\n";
+            
+            // Copy content.
+            System.setClipboard(logString);
+            
+            Logger.print(this, "Copied console contents to clipboard.");
+        }
+        
+        /**
+         * Wipe the displayed console output.
+         */
 		protected function onClearCommand():void
 		{
-			_output.htmlText = "";
+            logCache = [];
+            bottomLineIndex = -1;
+            _dirtyConsole = true;
 		}
         
         protected function resize():void
         {
-            _output.x = 5;
-            _output.y = 0;
+            _outputBitmap.x = 5;
+            _outputBitmap.y = 0;
             _input.x = 5;
             
             if(stage)		
@@ -107,62 +141,34 @@ package com.pblabs.engine.debug
                 _width = stage.stageWidth-1;
                 _height = (stage.stageHeight / 3) * 2;
             }
-			
-			_scrollBar.extents = new Rectangle(0,0,8,_height-32);
-			_scrollBar.x = _width - _scrollBar.extents.width - 5;
-			_scrollBar.y = 5;
             
-            _output.height = _height-30;
-            _output.width = _width-(_scrollBar.width+1);
+            // Resize display surface.
+            Profiler.enter("LogViewer_resizeBitmap");
+            _outputBitmap.bitmapData.dispose();
+            _outputBitmap.bitmapData = new BitmapData(_width - 10, _height - 30, false, 0x0);
+            Profiler.exit("LogViewer_resizeBitmap");
             
             _input.height = 18;
             _input.width = _width-10;
             
-            _input.y = _output.height + 7;
+            _input.y = _outputBitmap.height + 7;
+
+            _dirtyConsole = true;
         }
-		
-		protected function createScrollBar():PBScrollBar
-		{
-			_scrollBar = new PBScrollBar();
-			
-			return _scrollBar;
-		}
-        
-        protected function createOutputField():TextField
-        {
-            _output = new TextField();
-            _output.type = TextFieldType.DYNAMIC;
-            _output.multiline = true;
-            _output.wordWrap = true;
-            _output.condenseWhite = false;
-            var format:TextFormat = _output.getTextFormat();
-            format.font = "_typewriter";
-            format.size = 11;
-            format.color = 0x0;
-            _output.setTextFormat(format);
-            _output.defaultTextFormat = format;
-            _output.htmlText = "";
-            _output.embedFonts = false;
-			_output.name = "ConsoleOutput";
-            
-            return _output;
-        }
-        
+
         protected function createInputField():TextField
         {
             _input = new TextField();
             _input.type = TextFieldType.INPUT;
             _input.border = true;
-            _input.borderColor = 0xFFFFFF;
+            _input.borderColor = 0xCCCCCC;
             _input.multiline = false;
             _input.wordWrap = false;
             _input.condenseWhite = false;
-            _input.background = true;
-            _input.backgroundColor = 0xFFFFFF;
             var format:TextFormat = _input.getTextFormat();
             format.font = "_typewriter";
             format.size = 11;
-            format.color = 0x0;
+            format.color = 0xFFFFFF;
             _input.setTextFormat(format);
             _input.defaultTextFormat = format;
 			_input.name = "ConsoleInput";
@@ -230,12 +236,24 @@ package com.pblabs.engine.debug
             else if(event.keyCode == Keyboard.PAGE_UP)
             {
                 // Page the console view up.
-                _output.scrollV -= Math.floor(_output.height / _output.getLineMetrics(0).height);
+                if(bottomLineIndex == int.MAX_VALUE)
+                    bottomLineIndex = logCache.length - 1;
+                
+                bottomLineIndex -= getScreenHeightInLines() - 2;
+                
+                if(bottomLineIndex < 0)
+                    bottomLineIndex = 0;
             }
             else if(event.keyCode == Keyboard.PAGE_DOWN)
             {
                 // Page the console view down.
-                _output.scrollV += Math.floor(_output.height / _output.getLineMetrics(0).height);
+                if(bottomLineIndex != int.MAX_VALUE)
+                {
+                    bottomLineIndex += getScreenHeightInLines() - 2;
+                    
+                    if(bottomLineIndex + getScreenHeightInLines() >= logCache.length)
+                        bottomLineIndex = int.MAX_VALUE;                    
+                }
             }
             else if(event.keyCode == Keyboard.TAB)
             {
@@ -314,25 +332,10 @@ package com.pblabs.engine.debug
                 deactivate();
             }
             
+            _dirtyConsole = true;
+            
             // Keep console input from propagating up to the stage and messing up the game.
             event.stopImmediatePropagation();
-        }
-        
-        protected function truncateOutput():void
-        {
-            // Keep us from exceeding too great a size of displayed text.
-            if (_output.text.length > maxLength)
-            {
-                _output.text = _output.text.slice(-maxLength);
-                
-                // Display helpful message that we have capped the log length.
-                if(!_truncating)
-                {
-                    _truncating = true;
-                    Logger.warn(this, "truncateOutput", "You have exceeded "+_maxLength+" characters in LogViewerAS. " +
-                        "It will now only show the latest "+_maxLength+" characters of the log.");
-                }
-            }
         }
         
         protected function processCommand():void
@@ -342,6 +345,53 @@ package com.pblabs.engine.debug
             _consoleHistory.push(_input.text);
             _historyIndex = _consoleHistory.length;
             _input.text = "";
+            
+            _dirtyConsole = true;
+        }
+        
+        public function getScreenHeightInLines():int
+        {
+            var roundedHeight:int = _outputBitmap.bitmapData.height;
+            return Math.floor(roundedHeight / glyphCache.getLineHeight());
+        }
+        
+        public function onFrame(dt:Number):void
+        {
+            // Don't draw if we are clean or invisible.
+            if(_dirtyConsole == false || parent == null)
+                return;
+            _dirtyConsole = false;
+            
+            Profiler.enter("LogViewer.redrawLog");
+            
+            // Figure our visible range.
+            var lineHeight:int = getScreenHeightInLines() - 1;
+            var startLine:int = 0;
+            var endLine:int = 0;
+            if(bottomLineIndex == int.MAX_VALUE)
+                startLine = PBUtil.clamp(logCache.length - lineHeight, 0, int.MAX_VALUE);
+            else
+                startLine = PBUtil.clamp(bottomLineIndex - lineHeight, 0, int.MAX_VALUE);
+            
+            endLine = PBUtil.clamp(startLine + lineHeight, 0, logCache.length - 1);
+            
+            startLine--;
+
+            // Wipe it.
+            var bd:BitmapData = _outputBitmap.bitmapData;
+            bd.fillRect(bd.rect, 0x0);
+            
+            // Draw lines.
+            for(var i:int=endLine; i>=startLine; i--)
+            {
+                // Skip empty.
+                if(!logCache[i])
+                    continue;
+
+                glyphCache.drawLineToBitmap(logCache[i].text, 0, _outputBitmap.height - (endLine+1-i)*glyphCache.getLineHeight(), logCache[i].color, _outputBitmap.bitmapData);
+            }
+            
+            Profiler.exit("LogViewer.redrawLog");
         }
         
         public function addLogMessage(level:String, loggerName:String, message:String):void
@@ -356,39 +406,15 @@ package com.pblabs.engine.debug
                     loggerName = loggerName.substr(dotIdx + 2);
             }
             
-            var text:String = ((Console.verbosity > 0) ? level + ": " : "") + loggerName + " - " + message;
-
-            if (_output)
+            // Split message by newline and add to the list.
+            var messages:Array = message.split("\n");
+            for each (var msg:String in messages)
             {
-                Profiler.enter("LogViewer.addLogMessage");
-                
-                var append:String = "<p><font size=\"" +
-                    _input.getTextFormat().size+"\" color=\"" + 
-                    color +"\"><b>" + 
-                    PBUtil.escapeHTMLText(text) + "</b></font></p>";
-                
-                // We should use appendText but it introduces formatting issues,
-                // so we stick with htmlText for now. appendText should be good
-                // speed up.
-                _output.htmlText += append;
-                truncateOutput();
-                
-                _output.scrollV = _output.maxScrollV;
-				_scrollBar.progress = 1;	// Scroll to the bottom
-
-                Profiler.exit("LogViewer.addLogMessage");
+                var text:String = ((Console.verbosity > 0) ? level + ": " : "") + loggerName + " - " + msg;
+                logCache.push({"color": parseInt(color.substr(1), 16), "text": text});                
             }
-        }
-        
-        public function get maxLength():uint
-        {
-            return _maxLength;
-        }
-        
-        public function set maxLength(value:uint):void
-        {
-            _maxLength = value;
-            truncateOutput();
+            
+            _dirtyConsole = true;
         }
         
         public function activate():void
