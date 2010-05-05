@@ -5,7 +5,6 @@ package com.pblabs.engine.debug
     import flash.text.TextField;
     import flash.text.TextFormat;
     
-    import flashx.textLayout.elements.GlobalSettings;
 
     /**
      * Helper class to cache glyphs as bitmaps and draw them fast, with color.
