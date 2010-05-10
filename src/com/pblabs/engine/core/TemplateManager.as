@@ -488,8 +488,6 @@ package com.pblabs.engine.core
             {
                 actualGroup.initialize(name);
                 actualGroup.owningGroup = PBE.currentGroup;
-                //LevelManager.instance.addGroupReference(LevelManager.instance.currentLevel, name);
-                LevelManager.instance.getLevelDescription(LevelManager.instance.currentLevel).groups.push(name);
             }
             else
             {

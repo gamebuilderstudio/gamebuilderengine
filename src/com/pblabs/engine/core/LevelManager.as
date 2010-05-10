@@ -320,15 +320,30 @@ package com.pblabs.engine.core
          // find file differences between the levels
          var filesToLoad:Array = new Array();
          var filesToUnload:Array = new Array();
-         
-         var doUnload:Boolean = _isLevelLoaded && (_currentLevel != 0);
-         getLoadLists(doUnload ? _levelDescriptions[_currentLevel].files : null, _levelDescriptions[index].files, filesToLoad, filesToUnload);
-         
-         // find group differences between the levels
-         _groupsToLoad = new Array();
          var groupsToUnload:Array = new Array();
-         getLoadLists(doUnload ? _levelDescriptions[_currentLevel].groups : null, _levelDescriptions[index].groups, _groupsToLoad, groupsToUnload);
          
+         if (force)
+         {
+             filesToLoad = _levelDescriptions[index].files;
+             _groupsToLoad = _levelDescriptions[index].groups;
+
+             if (_levelDescriptions[_currentLevel]) {
+                 filesToUnload = _levelDescriptions[_currentLevel].files;
+                 groupsToUnload = _levelDescriptions[_currentLevel].groups;
+             }
+             
+         }
+         else
+         {
+             var doUnload:Boolean = _isLevelLoaded && (_currentLevel != 0);
+             getLoadLists(doUnload ? _levelDescriptions[_currentLevel].files : null, _levelDescriptions[index].files, filesToLoad, filesToUnload);
+             
+             // find group differences between the levels
+             _groupsToLoad = new Array();
+             
+             getLoadLists(doUnload ? _levelDescriptions[_currentLevel].groups : null, _levelDescriptions[index].groups, _groupsToLoad, groupsToUnload);
+         }
+
          // unload previous data
          unload(filesToUnload, groupsToUnload);
          dispatchEvent(new LevelEvent(LevelEvent.LEVEL_UNLOADED_EVENT, _currentLevel));
@@ -462,11 +477,6 @@ package com.pblabs.engine.core
 			{
 				var actualGroup:PBGroup = PBE.nameManager.lookup(groupName) as PBGroup;
             
-				//Remove group from level descriptions.
-				var levelDescription:LevelDescription = getLevelDescription(currentLevel);
-				var idx:int = levelDescription.groups.indexOf(groupName);
-				levelDescription.groups.splice(idx, 1);
-
 				if(actualGroup != null)
 				{
 					actualGroup.destroy();
