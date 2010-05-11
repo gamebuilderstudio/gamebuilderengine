@@ -36,6 +36,8 @@ package com.pblabs.box2D
      */
     public class Box2DSpatialComponent extends EntityComponent implements IMobileSpatialObject2D
     {
+        public var onAddedCallback:Function = null;
+
         public function get spatialManager():Box2DManagerComponent
         {
             return _manager;
@@ -370,6 +372,9 @@ package com.pblabs.box2D
                     angularVelocity = _angularVelocity;
                     
                     buildCollisionShapes();
+					
+                    if (onAddedCallback != null)
+                        onAddedCallback(this);
                 });
         }
         
