@@ -36,6 +36,7 @@ package com.pblabs.box2D
      */
     public class Box2DSpatialComponent extends EntityComponent implements IMobileSpatialObject2D
     {
+		[EditorData(ignore="true")]
         public var onAddedCallback:Function = null;
 
         public function get spatialManager():Box2DManagerComponent
@@ -77,6 +78,7 @@ package com.pblabs.box2D
         /**
          * @inheritDoc
          */
+		[EditorData(ignore="true")]
         public function get objectMask():ObjectType
         {
             return _collidesWithTypes;
