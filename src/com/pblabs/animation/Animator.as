@@ -9,6 +9,7 @@
 package com.pblabs.animation
 {
     import com.pblabs.engine.debug.Logger;
+    
     import flash.events.EventDispatcher;
     /**
      * @eventType com.pblabs.animation.AnimationEvent.ANIMATION_STARTED_EVENT
@@ -39,64 +40,24 @@ package com.pblabs.animation
      */
     public class Animator extends EventDispatcher
     {
-		//--------------------------------------------------------------------------
-		//
-		//  Constructor
-		//
-		//--------------------------------------------------------------------------
 		
 		//--------------------------------------------------------------------------
 		//
-		//  Variables
+		//  public properties (getter/setter functions)
 		//
 		//--------------------------------------------------------------------------
 
-        private var _previousType:AnimatorType = AnimatorType.NO_ANIMATION;
-		
-		//--------------------------------------
-		//  repeatCount
-		//--------------------------------------
-        private var _repeatCount:int = 0;
-		
 		/**
-		 * The remaining number of times the animation will be repeated.
+		 * The current ease function that will be used to animate from start to target value 
 		 */
-		public function get repeatCount():int
+		public function get ease():Function
 		{
-			if (isAnimating)
-				return _repeatCount;
-			
-			return _totalRepeatCount;
+			return _ease;
 		}
-		
-		/**
-		 * @private
-		 */
-		public function set repeatCount(value:int):void
+		public function set ease(value:Function):void
 		{
-			if (isAnimating)
-				_repeatCount = value;
-			else
-				_totalRepeatCount = value;
+			_ease = value;
 		}
-		
-		//--------------------------------------
-		//  currentValue
-		//--------------------------------------
-        private var _current:*;
-		
-		/**
-		 * The current value of the animation.
-		 */
-		public function get currentValue():*
-		{
-			return _current;
-		}
-		
-		//--------------------------------------
-		//  elapsed
-		//--------------------------------------
-        private var _elapsedTime:Number = 0.0;
 		
 		/**
 		 * The amount of time that has passed since the animation started.
@@ -105,12 +66,32 @@ package com.pblabs.animation
 		{
 			return _elapsedTime;
 		}
-		
-		//--------------------------------------
-		//  duration
-		//--------------------------------------
-        private var _duration:Number;
-		
+		/**
+		 * The current number times the animation will be repeated.
+		 */
+		public function get repeatCount():int
+		{
+			if (isAnimating)
+				return _repeatCount;
+			
+			return _totalRepeatCount;
+		}		
+		public function set repeatCount(value:int):void
+		{
+			if (isAnimating)
+				_repeatCount = value;
+			else
+				_totalRepeatCount = value;
+		}
+
+		/**
+		 * The current value of the animation.
+		 */
+		public function get currentValue():*
+		{
+			return _current;
+		}
+
 		/**
 		 * The time it should take to animate from the start value to the target value.
 		 */
@@ -118,21 +99,18 @@ package com.pblabs.animation
 		{
 			return _duration;
 		}
-		
-		/**
-		 * @private
-		 */
 		public function set duration(value:Number):void
 		{
 			_duration = value;
 		}
+		/**
+		 * Whether or not the animation is currently playing.
+		 */
+		public function get isAnimating():Boolean
+		{
+			return _isAnimating;
+		}
 
-		
-		//--------------------------------------
-		//  animationType
-		//--------------------------------------
-		private var _type:AnimatorType = AnimatorType.NO_ANIMATION;
-		
 		/**
 		 * The type of playback to use for the animation.
 		 */
@@ -143,10 +121,6 @@ package com.pblabs.animation
 			
 			return _previousType;
 		}
-		
-		/**
-		 * @private
-		 */
 		public function set animationType(value:AnimatorType):void
 		{
 			if (isAnimating)
@@ -154,80 +128,44 @@ package com.pblabs.animation
 			else
 				_previousType = value;
 		}
+	
+		/**
+		 * The value the animation should start at.
+		 */        
+		[TypeHint(type="dynamic")]
+		public function get startValue():*
+		{
+			return _start;
+		}		
+		public function set startValue(value:*):void
+		{
+			_start = value;
+		}
 
-		//--------------------------------------
-		//  isAnimating
-		//--------------------------------------
-		
-        /**
-         * Whether or not the animation is currently playing.
-         */
-        public function get isAnimating():Boolean
-        {
-            return _type != AnimatorType.NO_ANIMATION;
-        }
+		/**
+		 * The value to animate to.
+		 */
+		[TypeHint(type="dynamic")]
+		public function get targetValue():*
+		{
+			return _target;
+		}		
+		public function set targetValue(value:*):void
+		{
+			_target = value;
+		}
 
-		//--------------------------------------
-		//  startValue
-		//--------------------------------------
-		private var _start:*;
-		
-        /**
-         * The value the animation should start at.
-         */
-        
-        [TypeHint(type="dynamic")]
-        public function get startValue():*
-        {
-            return _start;
-        }
-
-        /**
-         * @private
-         */
-        public function set startValue(value:*):void
-        {
-            _start = value;
-        }
-
-		//--------------------------------------
-		//  targetValue
-		//--------------------------------------
-		private var _target:*;
-		
-        /**
-         * The value to animate to.
-         */
-        [TypeHint(type="dynamic")]
-        public function get targetValue():*
-        {
-            return _target;
-        }
-
-        /**
-         * @private
-         */
-        public function set targetValue(value:*):void
-        {
-            _target = value;
-        }
-		
-		//--------------------------------------
-		//  totalRepeatCount
-		//--------------------------------------
-		private var _totalRepeatCount:int = 0;
-		
-        /**
-         * The total number of times to repeat the animation.
-         */
-        public function get totalRepeatCount():int
-        {
-            return _totalRepeatCount;
-        }
-
+		/**
+		 * The total number of times to repeat the animation.
+		 */
+		public function get totalRepeatCount():int
+		{
+			return _totalRepeatCount;
+		}
+			
 		//--------------------------------------------------------------------------
 		//
-		//  Methods
+		// Methods
 		//
 		//--------------------------------------------------------------------------
 		/**
@@ -237,7 +175,8 @@ package com.pblabs.animation
 		{
 			if (isAnimating)
 				return;
-			
+
+			_isAnimating = true;
 			_type = _previousType;
 			_previousType = AnimatorType.NO_ANIMATION;
 			
@@ -323,7 +262,10 @@ package com.pblabs.animation
 				dispatchEvent(new AnimationEvent(AnimationEvent.ANIMATION_REPEATED_EVENT, this));
 			}
 			
-			_current = interpolate(_start, _target, _elapsedTime / _duration);
+			if (ease!=null)
+				_current = ease(_elapsedTime,_start, _target - _start, _duration);
+			else
+				_current = interpolate(_start, _target, _elapsedTime / _duration);
 		}
 		
 		/**
@@ -341,6 +283,7 @@ package com.pblabs.animation
 			
 			_previousType = _type;
 			_type = AnimatorType.NO_ANIMATION;
+			_isAnimating = false;
 			
 			dispatchEvent(new AnimationEvent(AnimationEvent.ANIMATION_FINISHED_EVENT, this));
 		}
@@ -356,6 +299,7 @@ package com.pblabs.animation
 			
 			_previousType = _type;
 			_type = AnimatorType.NO_ANIMATION;
+			_isAnimating = false;
 			
 			dispatchEvent(new AnimationEvent(AnimationEvent.ANIMATION_STOPPED_EVENT, this));
 		}
@@ -379,14 +323,35 @@ package com.pblabs.animation
             var startN:Number = Number(start);
             var endN:Number = Number(end);
 
-            // Do the interpolation.
-            if ((endN - startN) < 0)
-                return startN - ((startN - endN) * time);
-
-            if(time > 1.0)
-               time = 1.0;
-
-            return startN + ((endN - startN) * time);
+			if(time > 1.0)
+				time = 1.0;
+			
+			// Do the interpolation.
+			if ((endN - startN) < 0)
+				return startN - ((startN - endN) * time);
+						
+			return startN + ((endN - startN) * time);				
+			
         }
+		
+		//--------------------------------------------------------------------------
+		//
+		// private variables
+		//
+		//--------------------------------------------------------------------------
+		
+		private var _previousType:AnimatorType = AnimatorType.NO_ANIMATION;		
+		private var _repeatCount:int = 0;		
+		private var _current:*;		
+		private var _elapsedTime:Number = 0.0;
+		private var _ease:Function = null;				
+		private var _duration:Number;			
+		private var _type:AnimatorType = AnimatorType.NO_ANIMATION;
+		private var _isAnimating:Boolean = false;				
+		private var _start:*;		
+		private var _target:*;				
+		private var _totalRepeatCount:int = 0;
+
+		
     }
 }
