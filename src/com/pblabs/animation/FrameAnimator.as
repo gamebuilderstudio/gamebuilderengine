@@ -9,7 +9,7 @@
 package com.pblabs.animation
 {
 	/**
-     * Class for animating between a (spriteSheet) start frame and end frame.
+     * Class for spritesheet frameIndex animation  ( from start frame number to end frame number )
      */
     public class FrameAnimator extends Animator
     {
@@ -20,19 +20,25 @@ package com.pblabs.animation
 		//
 		//--------------------------------------------------------------------------
 		
+		/**
+		 * The starting frame number (first frame would be 1) 
+		 */
 		public function get startFrame():int
 		{
 			return _startFrame;						
 		}
-		public function get endFrame():int
-		{
-			return _endFrame;			
-		}		
 		public function set startFrame(value:int):void
 		{
 			_startFrame = value;
 			startValue = value-1;
 		}
+		/**
+		 * The ending frame number (maximum would be framecount) 
+		 */
+		public function get endFrame():int
+		{
+			return _endFrame;			
+		}		
 		public function set endFrame(value:int):void
 		{
 			_endFrame = value;
