@@ -8,8 +8,6 @@
  ******************************************************************************/
 package com.pblabs.animation
 {
-    import com.pblabs.engine.debug.Logger;
-    
     import flash.events.EventDispatcher;
     /**
      * @eventType com.pblabs.animation.AnimationEvent.ANIMATION_STARTED_EVENT
