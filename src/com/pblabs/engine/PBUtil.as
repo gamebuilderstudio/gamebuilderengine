@@ -75,18 +75,18 @@ package com.pblabs.engine
 			return newArray;
 		}
 		
-        /**
-         * Take a radian measure and make sure it is between -pi..pi.
-         */
-        public static function unwrapRadian(r:Number):Number
-        {
-            r = r % Math.PI;
-            if (r > Math.PI)
-                r -= TWO_PI;
-            if (r < -Math.PI)
-                r += TWO_PI;
-            return r;
-        }
+		/**
+		 * Take a radian measure and make sure it is between -pi..pi. 
+		 */		
+		public static function unwrapRadian(r:Number):Number 
+		{ 
+			r = r % TWO_PI;
+			if (r > Math.PI) 
+				r -= TWO_PI; 
+			if (r < -Math.PI) 
+				r += TWO_PI; 
+			return r; 
+		} 
         
         /**
          * Take a degree measure and make sure it is between 0..360.
