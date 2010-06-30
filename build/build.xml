@@ -89,6 +89,10 @@
          Copy build/build.template.properties to build/build.properties and
          set the values in it appropriate to your build environment.
       </fail>
+	  <condition property="skipTesting">
+			<!-- We -DskipTests=1 if we are doing an automated build -->
+			<isset property="skipTests"/>
+      </condition>
       <condition property="flexSdkIsValid"> 
          <and> 
            <isset property="flexdir"/> 
@@ -296,7 +300,7 @@
       </exec>
    </target>
 
-   <target name="test" description="Builds and runs the unit tests defined in the test directory." depends="generateSWC">
+   <target name="test" description="Builds and runs the unit tests defined in the test directory." depends="generateSWC" unless="skipTesting">
       <condition property="airVersionIsSet">
          <isset property="airversion"/>
       </condition>
@@ -307,6 +311,7 @@
          
          See the build.template.properties file for more information.
       </fail>
+		
       <!-- 
            TODO: No need to build this every time if it's up to date, 
            and we need to do validity checking to make sure the environment is correct 
