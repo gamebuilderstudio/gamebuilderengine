@@ -26,6 +26,7 @@ package com.pblabs.rendering2D
         public var backbuffer:BitmapData;
         public var bitmap:Bitmap = new Bitmap();
         
+		[EditorData(ignore="true")]
         public override function set sceneView(value:IUITarget):void
         {
             if(_sceneView)

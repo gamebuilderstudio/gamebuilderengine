@@ -228,6 +228,7 @@ package com.pblabs.rendering2D
          * The IUITarget to which we will be displaying the scene. A scene can
          * only draw to on IUITarget at a time.
          */
+        [EditorData(ignore="true")]
         public function set sceneView(value:IUITarget):void
         {
             if(_sceneView)
