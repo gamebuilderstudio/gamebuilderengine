@@ -64,7 +64,7 @@ package com.pblabs.engine.core
          * the name manager.
          * 
          * <p>PBObjects are automatically removed from any groups/sets that they
-         * are members of when they are destroy()'ed.</P>
+         * are members of when they are destroy()'ed.</p>
          * 
          * <p>Currently this will not invalidate any other references to the PBObject
          * so the PBObject will only be cleaned up by the garbage collector if those
