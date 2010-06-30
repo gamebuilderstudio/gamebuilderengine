@@ -177,7 +177,6 @@
          <arg line="-main-title '${maintitle} - r${env.SVN_REVISION} (ZaaBot build #${env.BUILD_NUMBER})'" />
          <arg line="-footer '${footer}'" />
          <arg line="-output '${docsdir}'" />
-         <arg line="-lenient" />
       </exec>
    </target>
 
