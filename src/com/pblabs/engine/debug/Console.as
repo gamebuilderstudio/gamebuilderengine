@@ -301,7 +301,7 @@ package com.pblabs.engine.debug
 				
 			if(f is Function)
 			{
-				f.apply(null, args);	
+				Logger.print(Console, f.apply(null, args));	
 			}
 			else
 			{

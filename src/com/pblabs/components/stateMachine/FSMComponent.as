@@ -20,7 +20,7 @@ package com.pblabs.components.stateMachine
          * user to always specify which FSM they want (since there is only
          * one).
          */ 
-        public var stateMachine:Machine;
+        public var stateMachine:Machine = new Machine();
         
         /**
          * If true, don't advance state machine logic.

@@ -70,11 +70,12 @@ package com.pblabs.rendering2D
 
         /**
          * Name of animation to play when we have nothing better to do.
+		 * Defaults to "Idle"
          */
         public var defaultAnimation:String = "Idle";
 
         /**
-         * Property to set with name of sprite sheet.
+         * Property to set to the current sprite sheet.
          */
         public var spriteSheetReference:PropertyReference;
         
