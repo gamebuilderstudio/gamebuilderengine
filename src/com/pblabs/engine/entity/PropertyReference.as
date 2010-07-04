@@ -24,7 +24,7 @@ package com.pblabs.engine.entity
      * 
      * <p>Property References follow one of three formats, component lookup, global
      * entity lookup, or xml lookup.  For component lookup the property reference
-     * should start with an &64, for global entity lookup the property reference should
+     * should start with an &64;, for global entity lookup the property reference should
      * start with a #, and for xml lookup the property reference should start with a !.
      * Following this starting symbol comes the name of the component, entity or XML 
      * Template respectively.</p>
