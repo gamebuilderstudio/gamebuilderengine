@@ -30,13 +30,19 @@ package com.pblabs.engine.entity
      * Template respectively.</p>
      * 
      * @example The following code gets the x property of the position property of the 
-     * spatial component on the queried Entity: <listing version="3.0"> @spatial.position.x </listing>
+     * spatial component on the queried Entity: <listing version="3.0">
+		 * var myReference:PropertyReference = new PropertyReference("@spatial.position.x");
+		 * </listing>
      * 
      * @example Property references can also access arrays and dictionaries.  The following
-     * property reference is equivalent to ai.targets[0].x: <listing version="3.0"> @ai.targets.0.x </listing>
+     * property reference is equivalent to ai.targets[0].x: <listing version="3.0">
+		 * var myReference:PropertyReference = new PropertyReference("@ai.targets.0.x");
+		 * </listing>
      * 
      * @example Global entities can be accessed with the # symbol.  The following code accesses
-     * the Level entity's timer component and retrieves the timeLeft property: <listing version="3.0"> #Level.timer.timeLeft </listing>
+     * the Level entity's timer component and retrieves the timeLeft property: <listing version="3.0">
+		 * var myReference:PropertyReference = new PropertyReference("#Level.timer.timeLeft");
+		 * </listing>
      * 
      * @see IEntity#DoesPropertyExist()
      * @see IEntity#getProperty()
