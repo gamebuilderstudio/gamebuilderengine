@@ -44,9 +44,9 @@ package com.pblabs.engine.entity
      * #Level.timer.timeLeft
      * </listing>
 		 *
-     * @see IEntity#DoesPropertyExist()
-     * @see IEntity#getProperty()
-     * @see IEntity#setProperty()
+     * @see IPropertyBag#doesPropertyExist()
+     * @see IPropertyBag#getProperty()
+     * @see IPropertyBag#setProperty()
      */
     public class PropertyReference implements ISerializable
     {
