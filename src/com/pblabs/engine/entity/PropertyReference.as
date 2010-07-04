@@ -29,12 +29,6 @@ package com.pblabs.engine.entity
      * Following this starting symbol comes the name of the component, entity or XML 
      * Template respectively.</p>
      * 
-     * @example The following code gets the x property of the position property of the 
-     * spatial component on the queried Entity:
-		 * <listing version="3.0">
-		 * var myReference:PropertyReference = new PropertyReference("@spatial.position.x");
-		 * </listing>
-     * 
      * @see IEntity#DoesPropertyExist()
      * @see IEntity#getProperty()
      * @see IEntity#setProperty()
