@@ -206,6 +206,11 @@ package com.pblabs.animation
 			var swap:* = _target;
 			_target = _start;
 			_start = swap;
+			
+			if (isAnimating)
+			{
+				_elapsedTime = _duration - _elapsedTime;
+			}
 		}
 		
 		/**
