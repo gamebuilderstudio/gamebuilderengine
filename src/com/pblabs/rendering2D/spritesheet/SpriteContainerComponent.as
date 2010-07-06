@@ -209,7 +209,7 @@ package com.pblabs.rendering2D.spritesheet
         }
         
         private var frameNotes:Array;
-        private var frames:Array = null;
+        protected var frames:Array = null;
         private var _center:Point = new Point(0, 0);
         private var _defaultCenter:Boolean = true;
     }

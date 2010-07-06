@@ -10,8 +10,8 @@ package com.pblabs.rendering2D.spritesheet
 {
     import com.pblabs.engine.PBE;
     import com.pblabs.engine.debug.Logger;
-    import com.pblabs.engine.resource.ResourceManager;
     import com.pblabs.engine.resource.ImageResource;
+    import com.pblabs.engine.resource.ResourceManager;
     
     import flash.display.BitmapData;
     import flash.geom.Point;
@@ -115,7 +115,23 @@ package com.pblabs.rendering2D.spritesheet
             _divider.owningSheet = this;
             deleteFrames();
         }
-        
+
+		public function set frameCount(value:int):void
+		{
+			if (!frames)
+			{
+				// frames where not loaded yet so cap them as soon as 
+				// the divider provides the frames
+				frameCountCap = value;
+			}
+			else
+			{
+				// frame where loaded so splice the array
+				if (frames.length>value)
+				frames.splice(value,frames.length-value);
+			}
+		}
+		
         override protected function getSourceFrames() : Array
         {
             // If user provided their own bitmapdatas, return those.
@@ -137,12 +153,20 @@ package com.pblabs.rendering2D.spritesheet
             else
             {
                 frames = new Array(_divider.frameCount);
+				
+				
                 for (var i:int = 0; i < _divider.frameCount; i++)
                 {
-                    var area:Rectangle = _divider.getFrameArea(i);
+                    var area:Rectangle = _divider.getFrameArea(i);										
                     frames[i] = new BitmapData(area.width, area.height, true);
-                    frames[i].copyPixels(imageData, area, new Point(0, 0));
+                    frames[i].copyPixels(imageData, area, new Point(0, 0));									
                 }
+				
+				if (frameCountCap>0)
+				{
+					// this frames array has to be capped because the frameCount was set manually to override	
+					frames.splice(frameCountCap,frames.length-frameCountCap);
+				}
             }
             
             return frames;
@@ -170,5 +194,6 @@ package com.pblabs.rendering2D.spritesheet
         private var _image:ImageResource = null;
         private var _divider:ISpriteSheetDivider = null;
         private var _forcedBitmaps:Array = null;
+		private var frameCountCap:int = 0;
     }
 }
