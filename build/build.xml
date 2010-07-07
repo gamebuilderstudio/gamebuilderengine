@@ -207,20 +207,64 @@ http://bugs.adobe.com/jira/browse/SDK-20449
     </target>
 
     <target name="lessons" depends="compile" description="Compile all the lessons.">
-        <ant dir="${rootDir}/lessons/Lesson2Base"/>
-        <ant dir="${rootDir}/lessons/Lesson2Final"/>
-        <ant dir="${rootDir}/lessons/Lesson3Base"/>
-        <ant dir="${rootDir}/lessons/Lesson3Final"/>
-        <ant dir="${rootDir}/lessons/Lesson4Base"/>
-        <ant dir="${rootDir}/lessons/Lesson4Final"/>
-        <ant dir="${rootDir}/lessons/Lesson5Base"/>
-        <ant dir="${rootDir}/lessons/Lesson5Final"/>
+        <antcall target="buildSWF">
+            <param name="currentProjectRootDir" value="${rootDir}/lessons/Lesson2Base" />
+            <param name="currentProjectName" value="Lesson2Base" />
+            <param name="currentProjectRootFile" value="Lesson2Base.as"/>
+        </antcall>
+        <antcall target="buildSWF">
+            <param name="currentProjectRootDir" value="${rootDir}/lessons/Lesson2Final" />
+            <param name="currentProjectName" value="Lesson2Final" />
+            <param name="currentProjectRootFile" value="Lesson2Final.as"/>
+        </antcall>
+        <antcall target="buildSWF">
+            <param name="currentProjectRootDir" value="${rootDir}/lessons/Lesson3Base" />
+            <param name="currentProjectName" value="Lesson3Base" />
+            <param name="currentProjectRootFile" value="Lesson3Base.as"/>
+        </antcall>
+        <antcall target="buildSWF">
+            <param name="currentProjectRootDir" value="${rootDir}/lessons/Lesson3Final" />
+            <param name="currentProjectName" value="Lesson3Final" />
+            <param name="currentProjectRootFile" value="Lesson3Final.as"/>
+        </antcall>
+        <antcall target="buildSWF">
+            <param name="currentProjectRootDir" value="${rootDir}/lessons/Lesson4Base" />
+            <param name="currentProjectName" value="Lesson4Base" />
+            <param name="currentProjectRootFile" value="Lesson4Base.as"/>
+        </antcall>
+        <antcall target="buildSWF">
+            <param name="currentProjectRootDir" value="${rootDir}/lessons/Lesson4Final" />
+            <param name="currentProjectName" value="Lesson4Final" />
+            <param name="currentProjectRootFile" value="Lesson4Final.as"/>
+        </antcall>
+        <antcall target="buildSWF">
+            <param name="currentProjectRootDir" value="${rootDir}/lessons/Lesson5Base" />
+            <param name="currentProjectName" value="Lesson5Base" />
+            <param name="currentProjectRootFile" value="Lesson5Base.as"/>
+        </antcall>
+        <antcall target="buildSWF">
+            <param name="currentProjectRootDir" value="${rootDir}/lessons/Lesson5Final" />
+            <param name="currentProjectName" value="Lesson5Final" />
+            <param name="currentProjectRootFile" value="Lesson5Final.as"/>
+        </antcall>
     </target>
 
     <target name="examples" depends="compile" description="Compile all the examples.">
-        <ant dir="${rootDir}/examples/PBEngineDemo"/>
-        <ant dir="${rootDir}/examples/PBFlexlessEngineDemo"/>
-        <ant dir="${rootDir}/examples/RollyBallGame"/>
+        <antcall target="buildSWF">
+            <param name="currentProjectRootDir" value="${rootDir}/examples/PBEngineDemo" />
+            <param name="currentProjectName" value="PBEngineDemo" />
+            <param name="currentProjectRootFile" value="PBEngineDemo.mxml"/>
+        </antcall>
+        <antcall target="buildSWF">
+            <param name="currentProjectRootDir" value="${rootDir}/examples/PBFlexlessEngineDemo" />
+            <param name="currentProjectName" value="PBFlexlessEngineDemo" />
+            <param name="currentProjectRootFile" value="PBFlexlessEngineDemo.as"/>
+        </antcall>
+        <antcall target="buildSWF">
+            <param name="currentProjectRootDir" value="${rootDir}/examples/RollyBallGame" />
+            <param name="currentProjectName" value="RollyBallGame" />
+            <param name="currentProjectRootFile" value="RollyBallGame.as"/>
+        </antcall>
     </target>
 
     <target name="doLessonsPackagedBuild" description="Build a packaged ZIP of each lesson, ready for distribution." depends="clean,compile,lessons">
@@ -283,7 +327,7 @@ http://bugs.adobe.com/jira/browse/SDK-20449
         <zip destfile="${rootDir}/PushButtonEngine-r${svn.revision}.zip" basedir="${rootDir}" excludes="*svn*,PushButtonEngine-r*.zip,build.properties,build/testrun*,builds/*,builds"/>
     </target>
 
-    <target name="buildSWF" description="Build a SWF for a project given a few properties. Used by per-project Ant files." depends="generateSWC">
+    <target name="buildSWF" description="Build a SWF for a project given a few properties. Used by per-project Ant files.">
         <!--
         We expect a few properties.
 
