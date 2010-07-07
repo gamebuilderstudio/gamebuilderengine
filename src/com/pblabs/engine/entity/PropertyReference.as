@@ -43,6 +43,11 @@ package com.pblabs.engine.entity
      * the Level entity's timer component and retrieves the timeLeft property: <listing version="3.0">
      * #Level.timer.timeLeft
      * </listing>
+     * 
+     * @example XML Template properties can be accessed using the ! symbol.  The following code accesses
+		 * the XML Template name Enemy and retrieves the health property off of the life component: <listing version="3.0">
+     * !Enemy.life.health
+     * </listing>
 		 *
      * @see IPropertyBag#doesPropertyExist()
      * @see IPropertyBag#getProperty()
