@@ -173,8 +173,8 @@ http://bugs.adobe.com/jira/browse/SDK-20449
         <exec executable="${asdoc}" failonerror="true">
             <arg line="-source-path '${classesdir}'" />
             <arg line="-doc-sources '${classesdir}'" />
-            <arg line="-window-title '${windowtitle} - r${env.SVN_REVISION} (ZaaBot build #${env.BUILD_NUMBER})'" />
-            <arg line="-main-title '${maintitle} - r${env.SVN_REVISION} (ZaaBot build #${env.BUILD_NUMBER})'" />
+            <arg line="-window-title '${windowtitle}'" />
+            <arg line="-main-title '${maintitle}'" />
             <arg line="-footer '${footer}'" />
             <arg line="-output '${docsdir}'" />
             <arg line="-lenient" />
