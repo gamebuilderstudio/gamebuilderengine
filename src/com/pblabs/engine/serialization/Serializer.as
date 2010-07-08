@@ -374,13 +374,16 @@ package com.pblabs.engine.serialization
                 if (!isNaN(object[propertyName]))
                 {
                     // Is a number...
-                    propertyXML.@type = getQualifiedClassName(1.0);
+                    propertyXML.@type = getQualifiedClassName(1.0).replace(/::/,".");
                 }
                 else
                 {
-                    propertyXML.@type = getQualifiedClassName(object[propertyName]);
+					// Replace the "::" with "." for a compatible serialization
+                    propertyXML.@type = getQualifiedClassName(object[propertyName]).replace(/::/,".");
                 }
+				
             }
+			
             
             
             //Note (giggsy): I don't know why, but this code suddenly didn't compile anymore with FlashDevelop,
