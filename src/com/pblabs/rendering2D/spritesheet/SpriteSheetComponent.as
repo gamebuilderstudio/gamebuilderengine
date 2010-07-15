@@ -12,6 +12,7 @@ package com.pblabs.rendering2D.spritesheet
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.resource.ImageResource;
     import com.pblabs.engine.resource.ResourceManager;
+    import com.pblabs.rendering2D.modifier.Modifier;
     
     import flash.display.BitmapData;
     import flash.geom.Point;
@@ -37,6 +38,21 @@ package com.pblabs.rendering2D.spritesheet
      */ 
     public class SpriteSheetComponent extends SpriteContainerComponent
     {
+		
+		/**
+		 * Array with BitmapData modifiers that will be pre-rendered 
+		 */
+		public function get modifiers():Array
+		{
+			return _modifiers;
+		}
+		
+		public function set modifiers(value:Array):void
+		{
+			_modifiers = value;
+			buildFrames();
+		}
+				
         /**
          * True if the image data associated with this sprite sheet has been loaded.
          */
@@ -153,8 +169,7 @@ package com.pblabs.rendering2D.spritesheet
             else
             {
                 frames = new Array(_divider.frameCount);
-				
-				
+								
                 for (var i:int = 0; i < _divider.frameCount; i++)
                 {
                     var area:Rectangle = _divider.getFrameArea(i);										
@@ -168,7 +183,23 @@ package com.pblabs.rendering2D.spritesheet
 					frames.splice(frameCountCap,frames.length-frameCountCap);
 				}
             }
-            
+
+			// BitmapData modification implementation
+			if (frames!=null && modifiers.length>0)
+			{
+				// loop all frames
+				for (var f:int = 0; f<frames.length; f++)
+				{
+					// get frame
+					var frame:BitmapData = (frames[f] as BitmapData).clone();						
+					// apply BitmapData modifiers
+					for (var m:int = 0; m<modifiers.length; m++)
+						frame = (modifiers[m] as Modifier).modify(frame,f);	
+					// assign modified frame
+					frames[f] = frame;
+				}
+			}
+						
             return frames;
         }
         
@@ -195,5 +226,6 @@ package com.pblabs.rendering2D.spritesheet
         private var _divider:ISpriteSheetDivider = null;
         private var _forcedBitmaps:Array = null;
 		private var frameCountCap:int = 0;
+		private var _modifiers:Array = new Array();
     }
 }

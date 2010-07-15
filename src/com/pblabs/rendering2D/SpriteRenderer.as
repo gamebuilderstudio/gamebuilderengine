@@ -105,7 +105,13 @@ package com.pblabs.rendering2D
 			// set the bitmapData of this render object
 			bitmapData = res.image.bitmapData;	
 			// set the registration (alignment) point to the sprite's center
-			registrationPoint = new Point(res.image.width/2,res.image.height/2);				
+			registrationPoint = new Point(bitmapData.width/2,bitmapData.height/2);				
+		}
+		
+		protected override function dataModified():void
+		{
+			// set the registration (alignment) point to the sprite's center
+			registrationPoint = new Point(bitmapData.width/2,bitmapData.height/2);							
 		}
 
    	    /**

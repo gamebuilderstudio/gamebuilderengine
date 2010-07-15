@@ -10,6 +10,7 @@ package com.pblabs.rendering2D
 {
     import com.pblabs.engine.core.ObjectType;
     import com.pblabs.engine.debug.Logger;
+    import com.pblabs.rendering2D.modifier.Modifier;
     
     import flash.display.*;
     import flash.geom.*;
@@ -32,6 +33,34 @@ package com.pblabs.rendering2D
             bitmap.pixelSnapping = PixelSnapping.AUTO;
         }
         
+		/**
+		 * Array with BitmapData modifiers that will be rendered 
+		 */
+		public function get modifiers():Array
+		{
+			return _modifiers;
+		}
+		
+		public function set modifiers(value:Array):void
+		{
+			_modifiers = value;
+			if (bitmap.bitmapData!=null)
+			{
+				// get original BitmapData object as a base for modification
+				var bmpData:BitmapData = originalBitmapData.clone();
+				// apply all bitmapData modifiers
+				for (var m:int = 0; m<modifiers.length; m++)
+					bmpData = (modifiers[m] as Modifier).modify(bmpData);
+				// assign modified BitmapData
+				bitmap.bitmapData = bmpData;
+				dataModified();
+			}				
+		}
+		
+		protected function dataModified():void
+		{			
+		}
+		
         /**
          * @see Bitmap.smoothing 
          */
@@ -46,7 +75,7 @@ package com.pblabs.rendering2D
         {
             return _smoothing;
         }
-        
+		
         /**
          * @see Bitmap.bitmapData 
          * @return 
@@ -62,9 +91,28 @@ package com.pblabs.rendering2D
         {
             if (value === bitmap.bitmapData)
                 return;
-            
-            bitmap.bitmapData = value;
-            
+
+			// store orginal BitmapData so that modifiers can be re-implemented 
+			// when assigned modifiers attribute later on.
+			originalBitmapData = value;
+			
+			if (modifiers.length>0)
+			{
+				// get original BitmapData object as a base for modification
+				var bmpData:BitmapData = originalBitmapData.clone();
+				// apply all bitmapData modifiers
+				for (var m:int = 0; m<modifiers.length; m++)
+					bmpData = (modifiers[m] as Modifier).modify(bmpData);
+				// assign modified BitmapData
+				bitmap.bitmapData = bmpData;            
+				dataModified();
+			}	
+			else						
+              bitmap.bitmapData = value;
+
+			// set the registration (alignment) point to the sprite's center
+			registrationPoint = new Point(bitmapData.width/2,bitmapData.height/2);				
+			
             // Due to a bug, this has to be reset after setting bitmapData.
             smoothing = _smoothing;
             _transformDirty = true;
@@ -113,5 +161,7 @@ package com.pblabs.rendering2D
         }
         
         static protected const zeroPoint:Point = new Point();
+		private var _modifiers:Array = new Array();
+		private var originalBitmapData:BitmapData;
     }
 }
