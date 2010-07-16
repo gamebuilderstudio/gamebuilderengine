@@ -9,10 +9,10 @@
 package com.pblabs.components.basic
 {
     import com.pblabs.engine.PBE;
-	import com.pblabs.engine.core.ProcessManager;
-	import com.pblabs.engine.entity.EntityComponent;
-	import com.pblabs.engine.entity.IEntity;
-	import com.pblabs.engine.PBUtil;
+    import com.pblabs.engine.PBUtil;
+    import com.pblabs.engine.core.ProcessManager;
+    import com.pblabs.engine.entity.EntityComponent;
+    import com.pblabs.engine.entity.IEntity;
 
     /**
      * General purpose component for tracking health.
@@ -24,11 +24,6 @@ package com.pblabs.components.basic
         public var destroyOnDeath:Boolean = true;
         public var damageModifier:Array = new Array();
         public var damageMagnitude:Number = 1.0;
-        
-        public static var DIED:String = "HealthDead";
-        public static var RESURRECTED:String = "HealthResurrected";
-        public static var DAMAGED:String = "HealthDamaged";
-        public static var HEALED:String = "HealthHealed";
         
         override protected function onAdd():void
         {
@@ -81,25 +76,25 @@ package com.pblabs.components.basic
             
             if(value < _health)
             {
-                he = new HealthEvent(DAMAGED, value - _health, value, _lastDamageOriginator);
+                he = new HealthEvent(HealthEvent.DAMAGED, value - _health, value, _lastDamageOriginator);
                 owner.eventDispatcher.dispatchEvent(he);
             }
             
             if(_health > 0 && value == 0)
             {
-                he = new HealthEvent(DIED, value - _health, value, _lastDamageOriginator);
+                he = new HealthEvent(HealthEvent.DIED, value - _health, value, _lastDamageOriginator);
                 owner.eventDispatcher.dispatchEvent(he);
             }
             
             if(_health == 0 && value > 0)
             {
-                he = new HealthEvent(RESURRECTED, value - _health, value, _lastDamageOriginator);
+                he = new HealthEvent(HealthEvent.RESURRECTED, value - _health, value, _lastDamageOriginator);
                 owner.eventDispatcher.dispatchEvent(he);
             }
             
             if(_health > 0 && value > _health)
             {
-                he = new HealthEvent(HEALED, value - _health, value, _lastDamageOriginator);
+                he = new HealthEvent(HealthEvent.HEALED, value - _health, value, _lastDamageOriginator);
                 if(owner && owner.eventDispatcher)
                     owner.eventDispatcher.dispatchEvent(he);
             }

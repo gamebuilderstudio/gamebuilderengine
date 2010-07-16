@@ -12,12 +12,16 @@ package com.pblabs.components.basic
     
     import flash.events.Event;
     
-    
     /**
      * Event fired by the HealthComponent on the entity when health changes.
      */
     public class HealthEvent extends Event
     {
+		public static var DIED:String = "HealthDead";
+		public static var RESURRECTED:String = "HealthResurrected";
+		public static var DAMAGED:String = "HealthDamaged";
+		public static var HEALED:String = "HealthHealed";
+	
         /**
          * Change in health.
          */
