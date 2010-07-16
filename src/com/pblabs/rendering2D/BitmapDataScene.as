@@ -10,6 +10,7 @@ package com.pblabs.rendering2D
 {
     import com.pblabs.engine.PBE;
     import com.pblabs.engine.debug.Logger;
+    import com.pblabs.rendering2D.modifier.Modifier;
     import com.pblabs.rendering2D.ui.IUITarget;
     
     import flash.display.Bitmap;
@@ -26,6 +27,19 @@ package com.pblabs.rendering2D
         public var backbuffer:BitmapData;
         public var bitmap:Bitmap = new Bitmap();
         
+		/**
+		 * Array with BitmapData modifiers that will be rendered 
+		 */
+		public function get modifiers():Array
+		{
+			return _modifiers;
+		}
+		
+		public function set modifiers(value:Array):void
+		{
+			_modifiers = value;
+		}
+		
 		[EditorData(ignore="true")]
         public override function set sceneView(value:IUITarget):void
         {
@@ -115,7 +129,16 @@ package com.pblabs.rendering2D
             }
             
             backbuffer.unlock();
+			
+			if (modifiers.length>0)
+			{
+				for (var mo:int = 0; mo<modifiers.length; mo++)
+					backbuffer = (modifiers[mo] as Modifier).modify(backbuffer);				
+			}
+			
             bitmap.bitmapData = backbuffer;
         }
+		
+		private var _modifiers:Array = new Array();
 	}
 }
