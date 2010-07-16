@@ -351,11 +351,11 @@ package com.pblabs.engine
 			switch (orientation) 
 			{
 				case FLIP_HORIZONTAL:
-					m.a = -1;
+					m.a = -1 * m.a;
 					m.tx = obj.width + obj.x;
 					break;
 				case FLIP_VERTICAL:
-					m.d = -1;
+					m.d = -1 * m.d;
 					m.ty = obj.height + obj.y;
 					break;
 			}
