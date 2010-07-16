@@ -127,15 +127,14 @@ package com.pblabs.rendering2D
 						backbuffer.draw(d.displayObject, m, d.displayObject.transform.colorTransform, d.displayObject.blendMode );
                 }
             }
-            
-            backbuffer.unlock();
-			
+
 			if (modifiers.length>0)
 			{
 				for (var mo:int = 0; mo<modifiers.length; mo++)
 					backbuffer = (modifiers[mo] as Modifier).modify(backbuffer);				
 			}
 			
+            backbuffer.unlock();						
             bitmap.bitmapData = backbuffer;
         }
 		
