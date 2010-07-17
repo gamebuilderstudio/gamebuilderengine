@@ -1,4 +1,4 @@
-<project name="Lesson4Base" default="compileSwf" basedir=".">
+<project name="Lesson5Base" default="compileSwf" basedir=".">
    <import file="../../build/build.xml"/>
    <target name="compileSwf">
       <antcall target="buildSWF">
