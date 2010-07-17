@@ -46,11 +46,11 @@ package com.pblabs.rendering2D
         
         override public function onFrame(elapsed:Number) : void
         {
-            super.onFrame(elapsed);
-            
             // Update the bitmapData.
             var targetBD:BitmapData = getCurrentFrame();
-            if(bitmapData != targetBD)
+            super.onFrame(elapsed);
+
+			if(bitmapData != targetBD)
                 bitmapData = targetBD;
         }
 	}
