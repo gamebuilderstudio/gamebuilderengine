@@ -50,8 +50,12 @@ package com.pblabs.rendering2D
          */
         public function set sceneAlignment(value:SceneAlignment):void
         {
-            _sceneAlignment = value;
-            _transformDirty = true;
+			if (value != _sceneAlignment)
+			{
+            	_sceneAlignment = value;
+            	_transformDirty = true;
+				updateTransform();
+			}
         }
 
         /**
@@ -520,8 +524,11 @@ package com.pblabs.rendering2D
         }
         public function set rotation(value:Number):void
         {
-            _rootRotation = value;
-            _transformDirty = true;
+			if (_rootRotation != value)
+			{
+            	_rootRotation = value;
+            	_transformDirty = true;
+			}
         }
         
         public function get position():Point
