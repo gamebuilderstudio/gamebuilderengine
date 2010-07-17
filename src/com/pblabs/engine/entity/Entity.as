@@ -75,6 +75,13 @@ package com.pblabs.engine.entity
             deferring = false;
         }
         
+        
+        /**
+         * Destroys the Entity by removing all components and unregistering it from
+         * the name manager.
+         *
+         * @see IPBObject.destroy
+         */
         public override function destroy():void
         {
             // Give listeners a chance to act before we start destroying stuff.
