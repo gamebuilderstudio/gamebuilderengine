@@ -57,6 +57,15 @@
    
    <p><strong>File: /Lesson5Base/src/Lesson5Base.as</strong></p>
    <pre class="brush: js">
+                  
+       // Add our spatial component to the Hero entity ...
+       createSpatial( hero,
+           // with location of 0,150...
+           new Point(0, 150),
+           // and with size of 60,53...
+           new Point(60, 53)
+       );
+
        // Create a simple render component to display our object
 
        // Here we've removed the reference to our simple shape renderer, and added a sprite render component.
