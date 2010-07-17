@@ -43,11 +43,13 @@ http://bugs.adobe.com/jira/browse/SDK-20449
     <property name="footer" value="http://pushbuttonengine.com/" />
 
     <!-- Paths for the PBEngine SDK. -->
-    <property name="bindir" value="${rootDir}/bin" />
-    <property name="classesdir" value="${rootDir}/src" />
-    <property name="docsdir" value="${rootDir}/docs/api" />
-    <property name="testsdir" value="${rootDir}/test" />
+    <property name="binDir" value="${rootDir}/bin" />
+    <property name="classesDir" value="${rootDir}/src" />
+    <property name="docsDir" value="${rootDir}/docs/api" />
+    <property name="downloadsDir" value="${rootDir}/docs/downloads" />
+    <property name="testsDir" value="${rootDir}/test" />
     <property name="testRunDir" value="${buildFilesDir}/testrun"></property>
+    <property name="lessonsDir" value="${rootDir}/lessons/" />
 
     <!-- Infer the binary extensions. -->
     <condition property="binaryExtension" value=".exe" else="">
@@ -122,10 +124,10 @@ http://bugs.adobe.com/jira/browse/SDK-20449
         <echo>Revision Number: ${env.SVN_REVISION}</echo>
         <echo>Build Number: ${env.BUILD_NUMBER}</echo>
 
-        <copy file="${classesdir}/com/pblabs/engine/version/BuildVersion.as.templ"
-            tofile="${classesdir}/com/pblabs/engine/version/BuildVersion.as" overwrite="true" />
+        <copy file="${classesDir}/com/pblabs/engine/version/BuildVersion.as.templ"
+            tofile="${classesDir}/com/pblabs/engine/version/BuildVersion.as" overwrite="true" />
 
-        <replace file="${classesdir}/com/pblabs/engine/version/BuildVersion.as"
+        <replace file="${classesDir}/com/pblabs/engine/version/BuildVersion.as"
             token="@buildNumber@" value="r${env.SVN_REVISION} (ZaaBot build #${env.BUILD_NUMBER})" />
     </target>
 
@@ -134,17 +136,27 @@ http://bugs.adobe.com/jira/browse/SDK-20449
         <antcall target="generateDocs" />
     </target>
 
-    <target name="clean" description="Delete build artifacts." depends="cleanDocs">
-        <delete file="${bindir}/PBEngine.swc"/>
+    <target name="clean" description="Delete build artifacts." depends="cleanDocs,cleanLessons">
+        <delete file="${binDir}/PBEngine.swc"/>
+        <delete includeemptydirs="false" quiet="true">
+          <fileset dir="${rootDir}" includes="PushButtonEngine-r*.zip"></fileset>
+        </delete>
+    </target>
+
+    <target name="cleanLessons" description="Clean the documentation directory.">
+        <echo>Cleaning out lessons...</echo>
+        <delete includeemptydirs="true" quiet="true">
+          <fileset dir="${lessonsDir}" includes="*/bin/*"></fileset>
+        </delete>
     </target>
 
     <target name="identifyClasses" description="Generates list of classes that will be compiled." depends="ensureValidEnvironment">
         <path id="path.source">
-            <fileset dir="${classesdir}" includes="**/*.as,**/*.mxml"/>
+            <fileset dir="${classesDir}" includes="**/*.as,**/*.mxml"/>
         </path>
         <pathconvert property="path.classes" refid="path.source" pathsep=" ">
             <chainedmapper>
-                <globmapper from="${classesdir}/*" to="*" casesensitive="false" handledirsep="true"/>
+                <globmapper from="${classesDir}/*" to="*" casesensitive="false" handledirsep="true"/>
                 <mapper type="regexp" from="^com[/\\]pblabs(.*)\.((mxml)|(as))" to="com\\pblabs\1"/>
                 <mapper type="package" from="*" to="*"/>
             </chainedmapper>
@@ -152,9 +164,12 @@ http://bugs.adobe.com/jira/browse/SDK-20449
     </target>
 
     <target name="cleanDocs" description="Clean the documentation directory.">
-        <echo>Cleaning out docs from '${docsdir}'...</echo>
-        <delete includeemptydirs="true" quiet="true">
-            <fileset dir="${docsdir}" includes="**/*"></fileset>
+        <echo>Cleaning out docs from '${docsDir}'...</echo>
+        <delete includeemptydirs="true" quiet="false">
+            <fileset dir="${docsDir}" includes="**/*"></fileset>
+        </delete>
+        <delete includeemptydirs="true" quiet="false">
+          <fileset dir="${downloadsDir}" includes="*"></fileset>
         </delete>
     </target>
 
@@ -165,25 +180,25 @@ http://bugs.adobe.com/jira/browse/SDK-20449
             <status path="." revisionProperty="svn.revision"/>
         </svn>
 
-        <echo>Generating documentation for '${docsdir}'...</echo>
+        <echo>Generating documentation for '${docsDir}'...</echo>
 
-        <echo>-source-path: ${classesdir}</echo>
-        <echo>-output: ${docsdir}</echo>
+        <echo>-source-path: ${classesDir}</echo>
+        <echo>-output: ${docsDir}</echo>
 
         <exec executable="${asdoc}" failonerror="true">
-            <arg line="-source-path '${classesdir}'" />
-            <arg line="-doc-sources '${classesdir}'" />
+            <arg line="-source-path '${classesDir}'" />
+            <arg line="-doc-sources '${classesDir}'" />
             <arg line="-window-title '${windowtitle}'" />
             <arg line="-main-title '${maintitle}'" />
             <arg line="-footer '${footer}'" />
-            <arg line="-output '${docsdir}'" />
+            <arg line="-output '${docsDir}'" />
             <arg line="-lenient" />
         </exec>
     </target>
 
     <target name="checkSWCUpToDate" depends="ensureValidEnvironment">
-        <uptodate property="isUpToDate" targetfile="${bindir}/PBEngine.swc">
-            <srcfiles dir="${classesdir}">
+        <uptodate property="isUpToDate" targetfile="${binDir}/PBEngine.swc">
+            <srcfiles dir="${classesDir}">
                 <include name="**/*.as"/>
                 <include name="**/*.mxml"/>
             </srcfiles>
@@ -195,10 +210,10 @@ http://bugs.adobe.com/jira/browse/SDK-20449
     </target>
 
     <target name="generateSWC" description="Generates PBEngine SWC." unless="isUpToDate" depends="populateBuildVersion,printUpToDate,identifyClasses">
-        <echo>Generating PBEngine.SWC using '${classesdir}'</echo>
+        <echo>Generating PBEngine.SWC using '${classesDir}'</echo>
         <exec executable="${compc}" failonerror="true">
-            <arg line="-source-path &quot;${classesdir}&quot;" />
-            <arg line="-output &quot;${bindir}/PBEngine.swc&quot;" />
+            <arg line="-source-path &quot;${classesDir}&quot;" />
+            <arg line="-output &quot;${binDir}/PBEngine.swc&quot;" />
             <arg line="-include-classes ${path.classes}" />
             <arg line="--keep-as3-metadata+=TypeHint,EditorData,Embed,ResourceType" />
             <arg line="-target-player=10.0" />
@@ -367,14 +382,14 @@ http://bugs.adobe.com/jira/browse/SDK-20449
         <!-- Build the tests as an AIR app. -->
         <mkdir dir="${testRunDir}"></mkdir>
         <exec executable="${mxmlc}" failonerror="true">
-            <arg line="-source-path+=&quot;${testsdir}/src&quot; " />
+            <arg line="-source-path+=&quot;${testsDir}/src&quot; " />
             <arg line="-library-path+=&quot;${buildFilesDir}/../bin&quot;" />
-            <arg line="-library-path+=&quot;${testsdir}/libs&quot;" />
+            <arg line="-library-path+=&quot;${testsDir}/libs&quot;" />
             <arg line="+configname=air" />
             <arg line="--keep-as3-metadata+=TypeHint,EditorData,Embed,ResourceType" />
             <arg line="-compiler.optimize=true -use-network=false" />
             <arg line="-output &quot;${testRunDir}/pbetests.swf&quot;" />
-            <arg line="&quot;${testsdir}/src/TestRunner.mxml&quot;" />
+            <arg line="&quot;${testsDir}/src/TestRunner.mxml&quot;" />
             <arg line="-debug=${DEBUG}"/>
         </exec>
 
