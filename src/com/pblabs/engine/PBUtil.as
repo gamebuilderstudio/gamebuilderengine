@@ -89,7 +89,7 @@ package com.pblabs.engine
 		} 
         
         /**
-         * Take a degree measure and make sure it is between 0..360.
+         * Take a degree measure and make sure it is between -180..180.
          */
         public static function unwrapDegrees(r:Number):Number
         {
@@ -115,9 +115,9 @@ package com.pblabs.engine
             
             // Make sure delta is shortest path around circle.
             if(delta > Math.PI)
-                delta -= Math.PI * 2;            
+                delta -= TWO_PI;            
             if(delta < -Math.PI)
-                delta += Math.PI * 2;            
+                delta += TWO_PI;            
             
             // Done
             return delta;
