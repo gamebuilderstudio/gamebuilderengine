@@ -8,6 +8,7 @@
  ******************************************************************************/
 package com.pblabs.engine.tests
 {
+    import com.pblabs.engine.PBE;
     import com.pblabs.engine.core.ProcessManager;
     import com.pblabs.engine.debug.Logger;
     
@@ -24,17 +25,17 @@ package com.pblabs.engine.tests
         public function testAnimatedProcess():void
         {
             var animatedObject:AnimateTest = new AnimateTest();
-            ProcessManager.instance.addAnimatedObject(animatedObject);
+            PBE.processManager.addAnimatedObject(animatedObject);
 
-            ProcessManager.instance.testAdvance(200);
+            PBE.processManager.testAdvance(200);
             Assert.assertEquals(200 / 1000, animatedObject.elapsed);
 
-            ProcessManager.instance.timeScale = 0.5;
-            ProcessManager.instance.testAdvance(200);
+            PBE.processManager.timeScale = 0.5;
+            PBE.processManager.testAdvance(200);
             Assert.assertEquals(100 / 1000, animatedObject.elapsed);
-            ProcessManager.instance.timeScale = 1.0;
+            PBE.processManager.timeScale = 1.0;
 
-            ProcessManager.instance.removeAnimatedObject(animatedObject);
+            PBE.processManager.removeAnimatedObject(animatedObject);
         }
 
         [Test]
@@ -48,21 +49,21 @@ package com.pblabs.engine.tests
             var tickObject3:TickTest = new TickTest(3);
             var tickObject4:TickTest = new TickTest(4);
             var tickObject5:TickTest = new TickTest(5);
-            ProcessManager.instance.addTickedObject(tickObject4, 4.0);
-            ProcessManager.instance.addTickedObject(tickObject3, 3.0);
-            ProcessManager.instance.addTickedObject(tickObject5, 5.0);
-            ProcessManager.instance.addTickedObject(tickObject1, 1.0);
-            ProcessManager.instance.addTickedObject(tickObject2, 2.0);
-            ProcessManager.instance.addTickedObject(tickObject0, 0.0);
+            PBE.processManager.addTickedObject(tickObject4, 4.0);
+            PBE.processManager.addTickedObject(tickObject3, 3.0);
+            PBE.processManager.addTickedObject(tickObject5, 5.0);
+            PBE.processManager.addTickedObject(tickObject1, 1.0);
+            PBE.processManager.addTickedObject(tickObject2, 2.0);
+            PBE.processManager.addTickedObject(tickObject0, 0.0);
 
-            ProcessManager.instance.testAdvance(ProcessManager.TICK_RATE_MS);
+            PBE.processManager.testAdvance(ProcessManager.TICK_RATE_MS);
 
-            ProcessManager.instance.removeTickedObject(tickObject4);
-            ProcessManager.instance.removeTickedObject(tickObject3);
-            ProcessManager.instance.removeTickedObject(tickObject5);
-            ProcessManager.instance.removeTickedObject(tickObject1);
-            ProcessManager.instance.removeTickedObject(tickObject2);
-            ProcessManager.instance.removeTickedObject(tickObject0);
+            PBE.processManager.removeTickedObject(tickObject4);
+            PBE.processManager.removeTickedObject(tickObject3);
+            PBE.processManager.removeTickedObject(tickObject5);
+            PBE.processManager.removeTickedObject(tickObject1);
+            PBE.processManager.removeTickedObject(tickObject2);
+            PBE.processManager.removeTickedObject(tickObject0);
 
             Logger.printFooter(null, "");
         }
@@ -75,19 +76,19 @@ package com.pblabs.engine.tests
             var tickObject:TickTest = new TickTest(0);
             tickObject.testPriority = false;
             tickObject.testCount = true;
-            ProcessManager.instance.addTickedObject(tickObject);
+            PBE.processManager.addTickedObject(tickObject);
 
-            ProcessManager.instance.testAdvance((ProcessManager.TICK_RATE_MS * 4) + 8);
+            PBE.processManager.testAdvance((ProcessManager.TICK_RATE_MS * 4) + 8);
             Assert.assertEquals(4, tickObject.tickCount);
             //Assert.assertTrue(Math.abs(tickObject.interpolationFactor - 8.0 / ProcessManager.TICK_RATE_MS) < 0.001);
 
-            ProcessManager.instance.timeScale = 0.5;
-            ProcessManager.instance.testAdvance((ProcessManager.TICK_RATE_MS * 4) + 8);
+            PBE.processManager.timeScale = 0.5;
+            PBE.processManager.testAdvance((ProcessManager.TICK_RATE_MS * 4) + 8);
             Assert.assertEquals(6, tickObject.tickCount);
             //Assert.assertTrue(Math.abs(tickObject.interpolationFactor - 12.0 / ProcessManager.TICK_RATE_MS) < 0.001);
-            ProcessManager.instance.timeScale = 1.0;
+            PBE.processManager.timeScale = 1.0;
 
-            ProcessManager.instance.removeTickedObject(tickObject);
+            PBE.processManager.removeTickedObject(tickObject);
 
             Logger.printFooter(null, "");
         }
@@ -95,23 +96,23 @@ package com.pblabs.engine.tests
         [Test]
         public function testSchedule():void
         {
-            ProcessManager.instance.schedule(1000, this, onSchedule, 2, 7, 4, 3);
-            ProcessManager.instance.testAdvance(999);
+            PBE.processManager.schedule(1000, this, onSchedule, 2, 7, 4, 3);
+            PBE.processManager.testAdvance(999);
             Assert.assertEquals(0, _scheduleCount);
-            ProcessManager.instance.testAdvance(1);
+            PBE.processManager.testAdvance(1);
             Assert.assertEquals(1, _scheduleCount);
-            ProcessManager.instance.testAdvance(1000);
+            PBE.processManager.testAdvance(1000);
             Assert.assertEquals(1, _scheduleCount);
 
-            ProcessManager.instance.timeScale = 0.5;
-            ProcessManager.instance.schedule(500, this, onSchedule, 2, 7, 4, 3);
-            ProcessManager.instance.testAdvance(900);
+            PBE.processManager.timeScale = 0.5;
+            PBE.processManager.schedule(500, this, onSchedule, 2, 7, 4, 3);
+            PBE.processManager.testAdvance(900);
             Assert.assertEquals(1, _scheduleCount);
-            ProcessManager.instance.testAdvance(100);
+            PBE.processManager.testAdvance(100);
             Assert.assertEquals(2, _scheduleCount);
-            ProcessManager.instance.testAdvance(1000);
+            PBE.processManager.testAdvance(1000);
             Assert.assertEquals(2, _scheduleCount);
-            ProcessManager.instance.timeScale = 1.0;
+            PBE.processManager.timeScale = 1.0;
         }
         
         [Test]
@@ -121,25 +122,25 @@ package com.pblabs.engine.tests
             var wrongOrder:Boolean = false;
             var wrongTime:Boolean = false;
             
-            var dueTime:Number = ProcessManager.instance.virtualTime + 1000;
-            ProcessManager.instance.schedule(1000, this, 
+            var dueTime:Number = PBE.processManager.virtualTime + 1000;
+            PBE.processManager.schedule(1000, this, 
                     function():void{
                     	if (hits == 0) wrongOrder = true;
                     	hits++;
-                    	wrongTime = wrongTime || ProcessManager.instance.virtualTime < dueTime;
+                    	wrongTime = wrongTime || PBE.processManager.virtualTime < dueTime;
                     });
 
-            ProcessManager.instance.testAdvance(100);
+            PBE.processManager.testAdvance(100);
 
-            var dueTime2:Number = ProcessManager.instance.virtualTime + 20;
-            ProcessManager.instance.schedule(20, this, 
+            var dueTime2:Number = PBE.processManager.virtualTime + 20;
+            PBE.processManager.schedule(20, this, 
                     function():void{
                         if (hits > 0) wrongOrder = true;
                         hits++;
-                        wrongTime = wrongTime || ProcessManager.instance.virtualTime < dueTime2;
+                        wrongTime = wrongTime || PBE.processManager.virtualTime < dueTime2;
                     });
                     
-            ProcessManager.instance.testAdvance(2000);
+            PBE.processManager.testAdvance(2000);
             Assert.assertEquals(2, hits);
             Assert.assertFalse(wrongTime);
             Assert.assertFalse(wrongOrder);
