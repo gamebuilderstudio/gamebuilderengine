@@ -16,6 +16,7 @@ package com.pblabs
 	import com.pblabs.engine.tests.ProcessTests;
 	import com.pblabs.engine.tests.ResourceTests;
 	import com.pblabs.engine.tests.SanityTests;
+	import com.pblabs.engine.tests.UtilTests;
 	import com.pblabs.rendering2D.tests.Rendering2DTests;
 
 	/**
@@ -28,6 +29,7 @@ package com.pblabs
 		public static var testLevel:String="";
 
 		//to specify a test suite to run, just put it here as a public variable
+		public var utilTests:UtilTests;
 		public var sanityTests:SanityTests;
 		public var componentTests:ComponentTests;
 		public var levelTests:LevelTests;
