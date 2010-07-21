@@ -109,9 +109,6 @@ package com.pblabs.rendering2D
 			}	
 			else						
               bitmap.bitmapData = value;
-
-			// set the registration (alignment) point to the sprite's center
-			registrationPoint = new Point(bitmapData.width/2,bitmapData.height/2);				
 			
             // Due to a bug, this has to be reset after setting bitmapData.
             smoothing = _smoothing;
