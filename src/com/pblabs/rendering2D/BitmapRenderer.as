@@ -130,7 +130,8 @@ package com.pblabs.rendering2D
         public function drawPixels(objectToScreen:Matrix, renderTarget:BitmapData):void
         {
             // Draw to the target.
-            renderTarget.copyPixels(bitmap.bitmapData, bitmap.bitmapData.rect, objectToScreen.transformPoint(zeroPoint), null, null, true);
+			if (bitmap.bitmapData!=null)
+              renderTarget.copyPixels(bitmap.bitmapData, bitmap.bitmapData.rect, objectToScreen.transformPoint(zeroPoint), null, null, true);
         }
         
         /**
