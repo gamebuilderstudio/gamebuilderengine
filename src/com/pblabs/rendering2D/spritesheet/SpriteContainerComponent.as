@@ -71,13 +71,21 @@ package com.pblabs.rendering2D.spritesheet
             
             return _center;
         }
-        
+		
         public function set center(v:Point):void
         {
             _center = v;
             _defaultCenter = false;
         }
-        
+
+		/**
+		 * Indicates that the spriteSheet has a centered alignment.
+		 */
+		public function get centered():Boolean
+		{
+			return _defaultCenter;
+		}
+		
         /**
          * The number of directions per frame.
          */
