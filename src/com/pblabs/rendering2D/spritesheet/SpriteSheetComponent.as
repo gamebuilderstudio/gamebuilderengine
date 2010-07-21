@@ -12,7 +12,6 @@ package com.pblabs.rendering2D.spritesheet
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.resource.ImageResource;
     import com.pblabs.engine.resource.ResourceManager;
-    import com.pblabs.rendering2D.modifier.Modifier;
     
     import flash.display.BitmapData;
     import flash.geom.Point;
@@ -38,21 +37,7 @@ package com.pblabs.rendering2D.spritesheet
      */ 
     public class SpriteSheetComponent extends SpriteContainerComponent
     {
-		
-		/**
-		 * Array with BitmapData modifiers that will be pre-rendered 
-		 */
-		public function get modifiers():Array
-		{
-			return _modifiers;
-		}
-		
-		public function set modifiers(value:Array):void
-		{
-			_modifiers = value;
-			buildFrames();
-		}
-				
+						
         /**
          * True if the image data associated with this sprite sheet has been loaded.
          */
@@ -131,24 +116,8 @@ package com.pblabs.rendering2D.spritesheet
             _divider.owningSheet = this;
             deleteFrames();
         }
-
-		public function set frameCount(value:int):void
-		{
-			if (!frames)
-			{
-				// frames where not loaded yet so cap them as soon as 
-				// the divider provides the frames
-				frameCountCap = value;
-			}
-			else
-			{
-				// frame where loaded so splice the array
-				if (frames.length>value)
-				frames.splice(value,frames.length-value);
-			}
-		}
 		
-        override protected function getSourceFrames() : Array
+        protected override function getSourceFrames() : Array
         {
             // If user provided their own bitmapdatas, return those.
             if(_forcedBitmaps)
@@ -175,31 +144,9 @@ package com.pblabs.rendering2D.spritesheet
                     var area:Rectangle = _divider.getFrameArea(i);										
                     frames[i] = new BitmapData(area.width, area.height, true);
                     frames[i].copyPixels(imageData, area, new Point(0, 0));									
-                }
-				
-				if (frameCountCap>0)
-				{
-					// this frames array has to be capped because the frameCount was set manually to override	
-					frames.splice(frameCountCap,frames.length-frameCountCap);
-				}
-            }
-
-			// BitmapData modification implementation
-			if (frames!=null && modifiers.length>0)
-			{
-				// loop all frames
-				for (var f:int = 0; f<frames.length; f++)
-				{
-					// get frame
-					var frame:BitmapData = (frames[f] as BitmapData).clone();						
-					// apply BitmapData modifiers
-					for (var m:int = 0; m<modifiers.length; m++)
-						frame = (modifiers[m] as Modifier).modify(frame,f);	
-					// assign modified frame
-					frames[f] = frame;
-				}
-			}
-						
+                }				
+            }		
+			
             return frames;
         }
         
@@ -225,7 +172,5 @@ package com.pblabs.rendering2D.spritesheet
         private var _image:ImageResource = null;
         private var _divider:ISpriteSheetDivider = null;
         private var _forcedBitmaps:Array = null;
-		private var frameCountCap:int = 0;
-		private var _modifiers:Array = new Array();
     }
 }

@@ -9,6 +9,7 @@
 package com.pblabs.rendering2D.spritesheet
 {
     import com.pblabs.engine.entity.EntityComponent;
+    import com.pblabs.rendering2D.modifier.Modifier;
     
     import flash.display.BitmapData;
     import flash.geom.Point;
@@ -21,7 +22,20 @@ package com.pblabs.rendering2D.spritesheet
      */
     public class SpriteContainerComponent extends EntityComponent
     {
-        /**
+		/**
+		 * Array with BitmapData modifiers that will be pre-rendered 
+		 */
+		public function get modifiers():Array
+		{
+			return _modifiers;
+		}
+		
+		public function set modifiers(value:Array):void
+		{
+			_modifiers = value;
+			buildFrames();
+		}
+       /**
          * Subclasses must override this method and return an
          * array of BitmapData objects.
          */
@@ -98,7 +112,23 @@ package com.pblabs.rendering2D.spritesheet
         {
             return rawFrameCount / directionsPerFrame;
         }
-        
+
+		public function set frameCount(value:int):void
+		{
+			if (!frames)
+			{
+				// frames where not loaded yet so cap them as soon as 
+				// the divider provides the frames
+				frameCountCap = value;
+			}
+			else
+			{
+				// frame where loaded so splice the array
+				if (frames.length>value)
+					frames.splice(value,frames.length-value);
+			}
+		}
+		
         /**
          * Gets the bitmap data for a frame at the specified index.
          * 
@@ -165,9 +195,33 @@ package com.pblabs.rendering2D.spritesheet
             
             if (frames.length == 0)
                 throw new Error("No frames loaded");
-            
-            if (_defaultCenter)
-                _center = new Point(BitmapData(frames[0]).width * 0.5, BitmapData(frames[0]).height * 0.5);
+            					
+			// BitmapData modification implementation
+			if (frames!=null && modifiers.length>0)
+			{
+				// loop all frames
+				for (var f:int = 0; f<frames.length; f++)
+				{
+					// get frame
+					var frame:BitmapData = (frames[f] as BitmapData).clone();						
+					// apply BitmapData modifiers
+					for (var m:int = 0; m<modifiers.length; m++)
+						frame = (modifiers[m] as Modifier).modify(frame,f);	
+					// assign modified frame
+					frames[f] = frame;
+				}
+								
+			}
+
+			if (frameCountCap>0)
+			{
+				// this frames array has to be capped because the frameCount was set manually to override	
+				frames.splice(frameCountCap,frames.length-frameCountCap);
+			}
+			
+			if (_defaultCenter)
+				_center = new Point(BitmapData(frames[0]).width * 0.5, BitmapData(frames[0]).height * 0.5);
+			
         }
         
         /**
@@ -210,8 +264,10 @@ package com.pblabs.rendering2D.spritesheet
         
         private var frameNotes:Array;
         protected var frames:Array = null;
+		private var _modifiers:Array = new Array();
         private var _center:Point = new Point(0, 0);
         private var _defaultCenter:Boolean = true;
+		private var frameCountCap:int = 0;
     }
 }
 
