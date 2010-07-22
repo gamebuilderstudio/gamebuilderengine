@@ -93,5 +93,53 @@ package com.pblabs.engine.tests
 			Assert.assertEquals(90, PBUtil.unwrapDegrees(810));
 			Assert.assertEquals(90, PBUtil.unwrapDegrees(-270));
 		}
+		
+		[Test]
+		public function testRadianShortDelta():void
+		{
+			Assert.assertEquals(0, PBUtil.getRadianShortDelta(Math.PI, Math.PI * 3));
+			Assert.assertEquals(0, PBUtil.getRadianShortDelta(Math.PI/2, Math.PI/2));
+			Assert.assertEquals(-1 * Math.PI, PBUtil.getRadianShortDelta(Math.PI, Math.PI * 2));
+			Assert.assertEquals(0, PBUtil.getRadianShortDelta(-1 * Math.PI, Math.PI * 3));
+			Assert.assertEquals(-1 * Math.PI/2, PBUtil.getRadianShortDelta(-3 * Math.PI, Math.PI/2));
+		}
+		
+		[Test]
+		public function testDegreesShortDelta():void
+		{
+			Assert.assertEquals(0, PBUtil.getDegreesShortDelta(90, 450));
+			Assert.assertEquals(180, PBUtil.getDegreesShortDelta(-90, 810));
+			Assert.assertEquals(1, PBUtil.getDegreesShortDelta(90, 91));
+			Assert.assertEquals(135, PBUtil.getDegreesShortDelta(45, -180));
+			Assert.assertEquals(-90, PBUtil.getDegreesShortDelta(0, 990));
+			Assert.assertEquals(-180, PBUtil.getDegreesShortDelta(1080, -180));
+			Assert.assertEquals(0, PBUtil.getDegreesShortDelta(-180, 180));
+		}
+		
+		[Test]
+		public function testBitCountRange():void
+		{
+			Assert.assertEquals(0, PBUtil.getBitCountForRange(0));
+			Assert.assertEquals(1, PBUtil.getBitCountForRange(1));
+			Assert.assertEquals(1, PBUtil.getBitCountForRange(2));
+			Assert.assertEquals(4, PBUtil.getBitCountForRange(15));
+			Assert.assertEquals(8, PBUtil.getBitCountForRange(200));
+			Assert.assertEquals(10, PBUtil.getBitCountForRange(1023));
+			Assert.assertEquals(10, PBUtil.getBitCountForRange(1024));
+			Assert.assertEquals(11, PBUtil.getBitCountForRange(1025));
+		}
+		
+		// Not sure how much more testing that this I can do...  The bias part is hard to test
+		[Test]
+		public function testBiasedPick():void
+		{
+			Assert.assertEquals(5, PBUtil.pickWithBias(5, 100, -1));
+			Assert.assertEquals(100, PBUtil.pickWithBias(5, 100, 1));
+			Assert.assertEquals(-50, PBUtil.pickWithBias(-50, 100, -1));
+			Assert.assertEquals(-100, PBUtil.pickWithBias(-500, -100, 1));
+			var val:int = PBUtil.pickWithBias(5, 100, .6);
+			Assert.assertTrue(val >= 5);
+			Assert.assertTrue(val <= 100);
+		}
 	}
 }
