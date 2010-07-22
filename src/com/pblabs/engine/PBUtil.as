@@ -64,7 +64,7 @@ package com.pblabs.engine
 		 * Clones an array.
 		 * @param array Array to clone.
 		 * @return a cloned array.
-		 */		
+		 */
 		public static function cloneArray(array:Array):Array
 		{
 			var newArray:Array = [];
@@ -77,7 +77,7 @@ package com.pblabs.engine
 		
 		/**
 		 * Take a radian measure and make sure it is between -pi..pi. 
-		 */		
+		 */
 		public static function unwrapRadian(r:Number):Number 
 		{ 
 			r = r % TWO_PI;
@@ -153,8 +153,15 @@ package com.pblabs.engine
          */
         public static function getBitCountForRange(max:int):int
         {
-            // TODO: Make this use bits and be fast.
-            return Math.ceil(Math.log(max) / Math.log(2.0));
+			var count:int = 0;
+
+			// Unfortunately this is a bug with this method... and requires this special
+			// case (same issue with the old method log calculation)
+			if (max == 1) return 1;
+
+			max--;
+			while (max >> count > 0) count++;
+			return count;
         }
         
         /**
