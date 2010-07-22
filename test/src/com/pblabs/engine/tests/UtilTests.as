@@ -11,6 +11,7 @@ package com.pblabs.engine.tests
 	import com.pblabs.engine.PBUtil;
 	
 	import org.flexunit.Assert;
+	import org.hamcrest.object.nullValue;
 	
 	/**
 	 * @private
@@ -141,5 +142,67 @@ package com.pblabs.engine.tests
 			Assert.assertTrue(val >= 5);
 			Assert.assertTrue(val <= 100);
 		}
+		
+		[Test]
+		public function testDuckAssign():void
+		{
+			var dest:DuckTypeTestClass = new DuckTypeTestClass();
+			var testObj:Object = {'foo':'bar'};
+			
+			PBUtil.duckAssign({'string':'Some String', 'number':5, 'integer':10, 'unsigned':11}, dest, false);
+			Assert.assertEquals('Some String', dest.string);
+			Assert.assertEquals(5, dest.number);
+			Assert.assertEquals(10, dest.integer);
+			Assert.assertEquals(11, dest.unsigned);
+			
+			PBUtil.duckAssign({'string':'Some String', 'number':5, 'integer':10, 'unsigned':11}, dest, true);
+			Assert.assertEquals('Some String', dest.string);
+			Assert.assertEquals(5, dest.number);
+			Assert.assertEquals(10, dest.integer);
+			Assert.assertEquals(11, dest.unsigned);
+			
+			PBUtil.duckAssign({'string':'Some String', 'number':5, 'integer':10, 'unsigned':11, 'object':testObj}, dest, false);
+			Assert.assertEquals('Some String', dest.string);
+			Assert.assertEquals(5, dest.number);
+			Assert.assertEquals(10, dest.integer);
+			Assert.assertEquals(11, dest.unsigned);
+			Assert.assertEquals(dest.object, testObj);
+			
+			PBUtil.duckAssign({'string':'Some String', 'number':5, 'integer':10, 'unsigned':11, 'object':testObj}, dest, true);
+			Assert.assertEquals('Some String', dest.string);
+			Assert.assertEquals(5, dest.number);
+			Assert.assertEquals(10, dest.integer);
+			Assert.assertEquals(11, dest.unsigned);
+			Assert.assertEquals(dest.object, testObj);
+
+			PBUtil.duckAssign({'string':'Some String', 'number':5, 'integer':10, 'unsigned':11, 'object':testObj, 'undefined':'something'}, dest, false);
+			Assert.assertEquals('Some String', dest.string);
+			Assert.assertEquals(5, dest.number);
+			Assert.assertEquals(10, dest.integer);
+			Assert.assertEquals(11, dest.unsigned);
+
+			var errorThrown:Boolean = false;
+			try {
+				PBUtil.duckAssign({'string':'Some String', 'number':5, 'integer':10, 'unsigned':11, 'object':testObj, 'undefined':'something'}, dest, true);
+			} catch (e:Error) {
+				errorThrown = true;
+			}
+			Assert.assertTrue(errorThrown);
+			
+			PBUtil.duckAssign({'string':5, 'number':'Twenty', 'integer':10, 'unsigned':11}, dest, true);
+			Assert.assertEquals('5', dest.string);
+			Assert.assertTrue(isNaN(dest.number));
+			Assert.assertEquals(10, dest.integer);
+			Assert.assertEquals(11, dest.unsigned);
+		}
 	}
+}
+
+class DuckTypeTestClass
+{
+	public var string:String;
+	public var number:Number;
+	public var integer:int;
+	public var unsigned:uint;
+	public var object:Object;
 }
