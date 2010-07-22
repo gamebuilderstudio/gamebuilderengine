@@ -15,6 +15,17 @@ package com.pblabs.rendering2D.modifier
 	public class GlowModifier extends Modifier
 	{
 		// --------------------------------------------------------------
+		// public getter/setter functions
+		// --------------------------------------------------------------
+		public var color:uint = 0xff0000;
+		public var alpha:Number = 1;
+		public var blurX:Number = 6;
+		public var blurY:Number = 6;
+		public var strength:Number = 2;
+		public var quality:int = 1;
+		
+		
+		// --------------------------------------------------------------
 		// public methods
 		// --------------------------------------------------------------
 		
@@ -30,7 +41,7 @@ package com.pblabs.rendering2D.modifier
 			super();
 		}
 		
-		public override function modify(data:BitmapData, index:int = 0 ):BitmapData
+		public override function modify(data:BitmapData, index:int = 0 , count:int=1):BitmapData
 		{
 			data.lock();
 			data.applyFilter(data,data.rect, new Point(0,0),new GlowFilter(color,alpha,blurX,blurY,strength,quality));
@@ -41,13 +52,6 @@ package com.pblabs.rendering2D.modifier
 		// --------------------------------------------------------------
 		// private and protected properties
 		// --------------------------------------------------------------
-		
-		private var color:uint = 0xff0000;
-		private var alpha:Number = 1;
-		private var blurX:Number = 6;
-		private var blurY:Number = 6;
-		private var strength:Number = 2;
-		private var quality:int = 1;
-		
+				
 	}
 }

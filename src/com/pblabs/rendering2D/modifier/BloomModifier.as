@@ -15,6 +15,10 @@ package com.pblabs.rendering2D.modifier
 
 	public class BloomModifier extends Modifier
 	{
+		public var strength:Number = 4;
+		public var quality:int = 2;
+		public var depth:int = 3;
+		
 		public function BloomModifier(strength:Number=4, quality:int=2, depth:int=3)
 		{
 			this.strength = strength;
@@ -23,7 +27,7 @@ package com.pblabs.rendering2D.modifier
 			super();
 		}
 		
-		public override function modify(data:BitmapData, index:int = 0):BitmapData
+		public override function modify(data:BitmapData, index:int = 0 , count:int=1):BitmapData
 		{
 			var buffer:BitmapData = new BitmapData(data.width,data.height,data.transparent);
 			var bloom:BlurFilter = new BlurFilter(strength,strength,quality); 
@@ -47,10 +51,6 @@ package com.pblabs.rendering2D.modifier
 			
 			return data;			
 		}
-		
-		private var strength:Number = 4;
-		private var quality:int = 2;
-		private var depth:int = 3;
-		
+				
 	}
 }

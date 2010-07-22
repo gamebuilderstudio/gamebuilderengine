@@ -14,6 +14,10 @@ package com.pblabs.rendering2D.modifier
 	
 	public class BlurModifier extends Modifier
 	{
+		public var blurX:Number = 6;
+		public var blurY:Number = 6;
+		public var quality:int = 1;
+		
 		public function BlurModifier(blurX:Number=6, blurY:Number=6,  quality:int=1)
 		{
 			this.blurX = blurX;
@@ -22,16 +26,12 @@ package com.pblabs.rendering2D.modifier
 			super();
 		}
 		
-		public override function modify(data:BitmapData, index:int=0):BitmapData
+		public override function modify(data:BitmapData, index:int=0, count:int=1):BitmapData
 		{			
 			data.lock();
 			data.applyFilter(data,data.rect, new Point(0,0),  new BlurFilter(blurX,blurY,quality));
 			data.unlock();						
 			return data;			
 		}
-		
-		private var blurX:Number = 6;
-		private var blurY:Number = 6;
-		private var quality:int = 1;
 	}
 }

@@ -9,6 +9,7 @@
 package com.pblabs.rendering2D
 {
     import com.pblabs.engine.entity.PropertyReference;
+    import com.pblabs.rendering2D.modifier.Modifier;
     import com.pblabs.rendering2D.spritesheet.SpriteContainerComponent;
     
     import flash.display.Bitmap;
@@ -44,6 +45,15 @@ package com.pblabs.rendering2D
 			// set the registration (alignment) point to the sprite's center
 			if (spriteSheet.centered)
 			  registrationPoint = new Point(bitmapData.width/2,bitmapData.height/2);
+		}
+		
+		protected override function modify(data:BitmapData):BitmapData
+		{
+			// this function is overridden so spriteIndex can be passed to 
+			// the applied modifiers
+			for (var m:int = 0; m<modifiers.length; m++)
+				data = (modifiers[m] as Modifier).modify(data, spriteIndex, spriteSheet.frameCount);
+			return data;            
 		}
 				
         override public function onFrame(elapsed:Number) : void

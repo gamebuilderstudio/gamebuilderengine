@@ -34,8 +34,9 @@ package com.pblabs.rendering2D
         }
         
 		/**
-		 * Array with BitmapData modifiers that will be rendered 
+		 * Array with BitmapData modifiers that will be applied
 		 */
+		[EditorData(ignore="true")]
 		public function get modifiers():Array
 		{
 			return _modifiers;
@@ -46,21 +47,12 @@ package com.pblabs.rendering2D
 			_modifiers = value;
 			if (bitmap.bitmapData!=null)
 			{
-				// get original BitmapData object as a base for modification
-				var bmpData:BitmapData = originalBitmapData.clone();
-				// apply all bitmapData modifiers
-				for (var m:int = 0; m<modifiers.length; m++)
-					bmpData = (modifiers[m] as Modifier).modify(bmpData);
-				// assign modified BitmapData
-				bitmap.bitmapData = bmpData;
-				dataModified();
+				// apply all bitmapData modifiers to original bitmapData
+				bitmap.bitmapData = modify(originalBitmapData.clone());
+				dataModified();			
 			}				
 		}
-		
-		protected function dataModified():void
-		{			
-		}
-		
+				
         /**
          * @see Bitmap.smoothing 
          */
@@ -95,17 +87,13 @@ package com.pblabs.rendering2D
 			// store orginal BitmapData so that modifiers can be re-implemented 
 			// when assigned modifiers attribute later on.
 			originalBitmapData = value;
-			
+
+			// check if we should do modification
 			if (modifiers.length>0)
 			{
-				// get original BitmapData object as a base for modification
-				var bmpData:BitmapData = originalBitmapData.clone();
 				// apply all bitmapData modifiers
-				for (var m:int = 0; m<modifiers.length; m++)
-					bmpData = (modifiers[m] as Modifier).modify(bmpData);
-				// assign modified BitmapData
-				bitmap.bitmapData = bmpData;            
-				dataModified();
+				bitmap.bitmapData = modify(originalBitmapData.clone());
+				dataModified();			
 			}	
 			else						
               bitmap.bitmapData = value;
@@ -120,6 +108,19 @@ package com.pblabs.rendering2D
         {
             throw new Error("Cannot set displayObject in BitmapRenderer; it is always a Sprite containing a Bitmap.");
         }
+		
+		
+		protected function dataModified():void
+		{			
+		}
+		
+		protected function modify(data:BitmapData):BitmapData
+		{
+			// loop and apply modifiers
+			for (var m:int = 0; m<modifiers.length; m++)
+				data = (modifiers[m] as Modifier).modify(data);
+			return data;            
+		}
         
         public function isPixelPathActive(objectToScreen:Matrix):Boolean
         {

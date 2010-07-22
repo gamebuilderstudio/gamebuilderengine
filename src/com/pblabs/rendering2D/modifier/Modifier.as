@@ -26,9 +26,10 @@ package com.pblabs.rendering2D.modifier
 		}
 
 		/****************************************************************
-		 * This method needs to be overriden
+		 * This method needs to be overriden to apply modification
+		 * to a BitmapData object
 		 */		
-		public function modify(data:BitmapData, index:int=0):BitmapData
+		public function modify(data:BitmapData, index:int=0, count:int=1):BitmapData
 		{
 			return null;
 		}

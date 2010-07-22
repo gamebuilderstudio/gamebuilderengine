@@ -1,16 +1,26 @@
+/*******************************************************************************
+ * PushButton Engine
+ * Copyright (C) 2009 PushButton Labs, LLC
+ * For more information see http://www.pushbuttonengine.com
+ * 
+ * This file is licensed under the terms of the MIT license, which is included
+ * in the License.html file at the root directory of this SDK.
+ ******************************************************************************/
 package com.pblabs.rendering2D.modifier
 {
 	import flash.display.BitmapData;
 
 	public class BorderModifier extends Modifier
 	{
+		public var color:uint = 0xff000000;
+		
 		public function BorderModifier(color:uint=0xff000000)
 		{
 			this.color = color;
 			super();
 		}
 		
-		public override function modify(data:BitmapData, index:int=0):BitmapData
+		public override function modify(data:BitmapData, index:int=0, count:int=1):BitmapData
 		{	
 			data.lock();
 						
@@ -32,7 +42,6 @@ package com.pblabs.rendering2D.modifier
 			return data;			
 		}
 		
-		private var color:uint = 0xff000000;
 
 	}
 }

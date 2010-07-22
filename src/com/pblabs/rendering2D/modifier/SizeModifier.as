@@ -15,6 +15,11 @@ package com.pblabs.rendering2D.modifier
 
 	public class SizeModifier extends Modifier
 	{
+		public var newWidth:int;
+		public var newHeight:int;
+		public var scaleMode:int=0;
+		public var fillColor:uint=0x000000;
+		
 		//------------------------------------------------------------------
 		// public constants
 		//------------------------------------------------------------------
@@ -39,7 +44,7 @@ package com.pblabs.rendering2D.modifier
 			super();
 		}
 
-		public override function modify(data:BitmapData, index:int = 0):BitmapData
+		public override function modify(data:BitmapData, index:int = 0, count:int=1):BitmapData
 		{
 			if (newWidth > 0 && newHeight > 0)
 			{
@@ -126,9 +131,5 @@ package com.pblabs.rendering2D.modifier
 		// private variable declarations
 		//------------------------------------------------------------------		
 		
-		private var newWidth:int;
-		private var newHeight:int;
-		private var scaleMode:int=0;
-		private var fillColor:uint=0x000000;
 	}
 }

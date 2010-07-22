@@ -14,6 +14,11 @@ package com.pblabs.rendering2D.modifier
 
 	public class ColorizeModifier extends Modifier
 	{
+		public var red:Array = null;
+		public var green:Array = null;
+		public var blue:Array = null;
+		public var alpha:Array = null;
+		
 		// --------------------------------------------------------------
 		// public methods
 		// --------------------------------------------------------------
@@ -28,7 +33,7 @@ package com.pblabs.rendering2D.modifier
 			super();
 		}
 				
-		public override function modify(data:BitmapData, index:int=0):BitmapData
+		public override function modify(data:BitmapData, index:int=0, count:int=1):BitmapData
 		{			
 			// colorize this specific frame bitmap
 			var matrix:Array = new Array();
@@ -51,10 +56,6 @@ package com.pblabs.rendering2D.modifier
 		// private and protected properties
 		// --------------------------------------------------------------
 		
-		private var red:Array = null;
-		private var green:Array = null;
-		private var blue:Array = null;
-		private var alpha:Array = null;		
 		
 	}
 }

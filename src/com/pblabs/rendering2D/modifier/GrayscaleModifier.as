@@ -19,7 +19,7 @@ package com.pblabs.rendering2D.modifier
 			super();
 		}
 		
-		public override function modify(data:BitmapData, index:int = 0):BitmapData
+		public override function modify(data:BitmapData, index:int = 0 , count:int=1):BitmapData
 		{
 			// colorize this specific frame bitmap
 			var matrix:Array = new Array();

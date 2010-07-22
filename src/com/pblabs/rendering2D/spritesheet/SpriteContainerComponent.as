@@ -214,7 +214,7 @@ package com.pblabs.rendering2D.spritesheet
 					var frame:BitmapData = (frames[f] as BitmapData).clone();						
 					// apply BitmapData modifiers
 					for (var m:int = 0; m<modifiers.length; m++)
-						frame = (modifiers[m] as Modifier).modify(frame,f);	
+						frame = (modifiers[m] as Modifier).modify(frame,f, frames.length);	
 					// assign modified frame
 					frames[f] = frame;
 				}
