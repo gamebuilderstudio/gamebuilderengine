@@ -29,7 +29,9 @@ package com.pblabs.engine
     import flash.display.StageAlign;
     import flash.display.StageScaleMode;
     import flash.geom.*;
+    import flash.net.registerClassAlias;
     import flash.system.Security;
+    import flash.utils.Dictionary;
     import flash.utils.getQualifiedClassName;
     
     /**
@@ -76,10 +78,22 @@ package com.pblabs.engine
         {
             // Do nothing else - the compiler will include the class by virtue of it
             // having been used.
-            
+            registerClassAlias(getQualifiedClassName(type).replace("::", "."),type);
+			
             // Note this type in the schema generator.
             SchemaGenerator.instance.addClass(getQualifiedClassName(type), type);
         }
+		
+		/**
+		 * 
+		 * @return A dictionary of Registered types. With keys as
+		 * class names and values as class definitions
+		 * 
+		 */	  
+		public static function getRegisteredTypes():Dictionary
+		{
+			return SchemaGenerator.instance.getRegisteredTypes();
+		}
         
         /**
          * Allocates an instance of the hidden Entity class. This should be
@@ -137,6 +151,8 @@ package com.pblabs.engine
             _main = mainClass;
             _versionDetails = VersionUtil.checkVersion(mainClass);
             
+			registerClassAlias("com.pblabs.engine.entity",PropertyReference);
+			
             // Set up some managers.
             initializeManagers();
             
