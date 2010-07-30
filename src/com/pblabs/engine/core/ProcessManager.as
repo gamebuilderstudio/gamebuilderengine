@@ -63,7 +63,7 @@ package com.pblabs.engine.core
          * system can catch up in extraordinary cases. If your game is just
          * slow, then you will see that the ProcessManager can never catch up
          * and you will constantly get the "too many ticks per frame" warning,
-         * if you have disableSlowWarning set to true.</p>
+         * if you have disableSlowWarning set to false.</p>
          */
         public static const MAX_TICKS_PER_FRAME:int = 5;
         

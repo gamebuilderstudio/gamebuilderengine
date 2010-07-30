@@ -187,7 +187,7 @@ package com.pblabs.engine
          * easier internal processing and validation.</p>
          * 
          * @param source Object to read fields from.
-         * @param dest Object to assign fields to.
+         * @param destination Object to assign fields to.
          * @param abortOnMismatch If true, throw an error if a field in source is absent in destination.
          * 
          */
