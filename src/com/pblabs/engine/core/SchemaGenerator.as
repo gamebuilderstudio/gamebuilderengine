@@ -8,8 +8,8 @@
  ******************************************************************************/
 package com.pblabs.engine.core
 {
-   import com.pblabs.engine.debug.Logger;
    import com.pblabs.engine.PBE;
+   import com.pblabs.engine.debug.Logger;
    
    import flash.events.StatusEvent;
    import flash.net.LocalConnection;
@@ -68,6 +68,17 @@ package com.pblabs.engine.core
       {
          addClass(className, getDefinitionByName(className) as Class);
       }
+	  
+	  /**
+	   * 
+	   * @return A dictionary of Registered types. With keys as
+	   * class names and values as class definitions
+	   * 
+	   */	  
+	  public function getRegisteredTypes():Dictionary
+	  {
+		  return _classes;
+	  }
       
       /**
        * Generates the actual schema data by passing the describeType output over a
