@@ -55,12 +55,14 @@ package com.pblabs.box2D
             _manager = value;
         }
         
+		[EditorData(ignore="true")]
         public function get manager():Box2DManagerComponent
         {
             Logger.warn(this, "get manager", "manager is deprecated; switch to spatialManager.");
             return spatialManager;
         }
         
+		[EditorData(ignore="true")]
         public function set manager(value:Box2DManagerComponent):void
         {
             spatialManager = value;
