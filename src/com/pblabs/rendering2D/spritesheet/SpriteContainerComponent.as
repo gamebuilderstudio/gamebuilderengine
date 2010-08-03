@@ -178,10 +178,11 @@ package com.pblabs.rendering2D.spritesheet
                 if (note.Frame != index)
                     continue;
                 
-                if (Math.abs(note.Direction - direction) < bestMatchDirectionDistance)
+					 var distance:Number = Math.min(Math.abs(note.Direction - direction), note.Direction + 360 - direction);
+                if (distance < bestMatchDirectionDistance)
                 {
                     // This one is better on both frame and heading.
-                    bestMatchDirectionDistance = Math.abs(note.Direction - direction);
+                    bestMatchDirectionDistance = distance;
                     bestMatchIndex = note.RawFrame;
                 }
             }
