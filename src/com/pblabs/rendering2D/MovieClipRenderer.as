@@ -1,16 +1,10 @@
-/*******************************************************************************
- * PushButton Engine
- * Copyright (C) 2009 PushButton Labs, LLC
- * For more information see http://www.pushbuttonengine.com
- *
- * This file is licensed under the terms of the MIT license, which is included
- * in the License.html file at the root directory of this SDK.
- ******************************************************************************/
 package com.pblabs.rendering2D
 {
     import com.pblabs.engine.PBE;
+	import com.pblabs.engine.resource.SWFResource;
     
     import flash.display.MovieClip;
+	import flash.geom.Point;
 
     /**
      * Renderer which is for displaying MovieClips/SWFs and playing their
@@ -43,6 +37,25 @@ package com.pblabs.rendering2D
         protected var _clipDirty:Boolean = true;
         protected var _maxFrames:int;
 		
+		/**
+		 * Resource (file)name of the SWFResource 
+		 */ 	
+		public function get fileName():String
+		{
+			return _fileName;
+		}
+		
+		public function set fileName(value:String):void
+		{
+			if (fileName!=value)
+			{
+				_fileName = value;
+				_loading = true;
+				// Tell the ResourceManager to load the SWFResource
+				PBE.resourceManager.load(fileName,SWFResource,swfLoadCompleted,swfLoadFailed,false);				
+			}	
+		}
+		
 		public function set clip(value:MovieClip):void
 		{
 		    if (value === displayObject)
@@ -55,6 +68,42 @@ package com.pblabs.rendering2D
 		public function get clip():MovieClip
 		{
 		    return displayObject as MovieClip;
+		}
+		
+		/**
+		 * Indicates if the resource is beeing loaded 
+		 */ 
+		[EditorData(ignore="true")]
+		public function get loading():Boolean
+		{
+			return _loading;
+		}
+		
+		/**
+		 * Indicates if the SWFResource has been loaded 
+		 */ 
+		[EditorData(ignore="true")]
+		public function get loaded():Boolean
+		{
+			return _loaded;
+		}
+		
+		/**
+		 * Indicates if the SWFResource has failed loading 
+		 */
+		[EditorData(ignore="true")]
+		public function get failed():Boolean
+		{
+			return _failed;
+		}
+		
+		/**
+		 * Loaded SWFResource 
+		 */ 
+		[EditorData(ignore="true")]
+		public function get resource():SWFResource
+		{
+			return _resource;
 		}
 		
 		protected function getClipInstance():MovieClip
@@ -151,5 +200,41 @@ package com.pblabs.rendering2D
                 updateChildClips(mc, currentFrame);
             }
         }
+		
+		//----------------------------------------------------------
+		// private methods 
+		//----------------------------------------------------------
+		
+		/**
+		 * This function will be called if the SWFResource has been loaded correctly 
+		 */ 
+		private function swfLoadCompleted(res:SWFResource):void
+		{
+			_loading = false;
+			_loaded = true;
+			_resource = res;
+			// set the bitmapData of this render object
+			clip = res.clip;
+			// set the registration (alignment) point to the sprite's center
+			registrationPoint = new Point(res.clip.width/2,res.clip.height/2);				
+		}
+		
+		/**
+		 * This function will be called if the SWFResource has failed loading 
+		 */ 
+		private function swfLoadFailed(res:SWFResource):void
+		{
+			_loading = false;
+			_failed = true;					
+		}
+		
+		//----------------------------------------------------------
+		// private and protected variables
+		//----------------------------------------------------------
+		private var _fileName:String;
+		private var _loading:Boolean = false;
+		private var _loaded:Boolean = false;
+		private var _failed:Boolean = false;
+		private var _resource:SWFResource = null;
 	}
 }
