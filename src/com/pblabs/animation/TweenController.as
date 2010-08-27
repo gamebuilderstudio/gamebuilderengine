@@ -12,6 +12,8 @@ package com.pblabs.animation
 	import com.pblabs.engine.components.TickedComponent;
 	import com.pblabs.engine.core.IAnimatedObject;
 	import com.pblabs.engine.core.ITickedObject;
+	import com.pblabs.engine.debug.Console;
+	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.entity.EntityComponent;
 	import com.pblabs.engine.entity.IEntity;
 	
@@ -24,7 +26,17 @@ package com.pblabs.animation
 		// -----------------------------------------------------------------
 		// getter/setter functions
 		// -----------------------------------------------------------------
-				
+		
+		public static function tweenCount(processInterface:Class = null):int
+		{
+			switch (processInterface)
+			{
+				case ITickedObject: return instance.tickTweens.length;
+				case IAnimatedObject: return instance.frameTweens.length;				
+			}
+			return instance.frameTweens.length+instance.tickTweens.length;
+		}
+							
 		private static function get instance():TweenController
 		{
 			if (_instance==null)
@@ -39,8 +51,8 @@ package com.pblabs.animation
 				// register this class with the processmanager
 				// for onTick and onFrame callbacks
 				PBE.processManager.addAnimatedObject(_instance);
-				PBE.processManager.addTickedObject(_instance);
-			}
+				PBE.processManager.addTickedObject(_instance);							
+			}			
 			return _instance;
 		}
 
@@ -71,14 +83,14 @@ package com.pblabs.animation
 		}	
 		
 		public static function removeTween(tween:Tween):void
-		{
+		{			
 			switch(tween.processInterface)
 			{
 				case ITickedObject:
 					instance.tickTweens.splice(instance.tickTweens.indexOf(tween),1);
 					break;
 				case IAnimatedObject:
-					instance.tickTweens.splice(instance.frameTweens.indexOf(tween),1);
+					instance.frameTweens.splice(instance.frameTweens.indexOf(tween),1);
 					break;
 			}						
 		}	

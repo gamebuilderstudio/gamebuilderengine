@@ -203,7 +203,8 @@ package com.pblabs.animation
 					  secs = duration;
 					else
 					{
-						secs = secs-duration;
+						while (secs > duration)
+							secs = secs-duration;
 						if (pingpong)
 						{
 							var tmpVars:* = fromVars;
@@ -216,7 +217,7 @@ package com.pblabs.animation
 				}
 			}
 									
-			if (secs<duration)
+			if (secs<=duration)
 			{
 				if (object is PropertyReference)
 				{
