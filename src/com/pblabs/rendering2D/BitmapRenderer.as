@@ -26,9 +26,7 @@ package com.pblabs.rendering2D
         public function BitmapRenderer()
         {
             super();
-            
-            _displayObject = new Sprite();
-            (_displayObject as Sprite).addChild(bitmap);
+
             smoothing = true;
             bitmap.pixelSnapping = PixelSnapping.AUTO;
         }
@@ -97,6 +95,13 @@ package com.pblabs.rendering2D
 			}	
 			else						
               bitmap.bitmapData = value;
+
+			if (displayObject==null)
+			{
+				_displayObject = new Sprite();
+				(_displayObject as Sprite).addChild(bitmap);				
+				_displayObject.visible = false;
+			}
 			
             // Due to a bug, this has to be reset after setting bitmapData.
             smoothing = _smoothing;
@@ -108,8 +113,7 @@ package com.pblabs.rendering2D
         {
             throw new Error("Cannot set displayObject in BitmapRenderer; it is always a Sprite containing a Bitmap.");
         }
-		
-		
+				
 		protected function dataModified():void
 		{			
 		}

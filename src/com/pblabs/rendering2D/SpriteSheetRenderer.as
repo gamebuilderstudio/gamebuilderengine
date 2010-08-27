@@ -28,16 +28,21 @@ package com.pblabs.rendering2D
             if (!spriteSheet || !spriteSheet.isLoaded)
                 return null;
             
+			
+			var curFrame:BitmapData;
+			if(directionReference)
+				curFrame = spriteSheet.getFrame(spriteIndex, owner.getProperty(directionReference) as Number);
+			else
+				curFrame = spriteSheet.getFrame(spriteIndex);
+			
             // Our registration point is the center of a frame as specified by the spritesheet
 	        if(spriteSheet && spriteSheet.isLoaded && spriteSheet.center)
 			{
 	            registrationPoint = spriteSheet.center.clone();					
 			}
+			
+			return curFrame;
             
-			if(directionReference)
-				return spriteSheet.getFrame(spriteIndex, owner.getProperty(directionReference) as Number);
-			else
-            	return spriteSheet.getFrame(spriteIndex);
         }
 						
 		protected override function dataModified():void
@@ -60,11 +65,11 @@ package com.pblabs.rendering2D
         {
             // Update the bitmapData.
             var targetBD:BitmapData = getCurrentFrame();
-			if(bitmapData != targetBD)
+			if(bitmapData != targetBD && targetBD!=null)
+			{
 				bitmapData = targetBD;
-			
-            super.onFrame(elapsed);
-															
+            	super.onFrame(elapsed);
+			}															
         }
 	}
 }
