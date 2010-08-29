@@ -66,10 +66,10 @@ package com.pblabs.rendering2D
             // Update the bitmapData.
             var targetBD:BitmapData = getCurrentFrame();
 			if(bitmapData != targetBD && targetBD!=null)
-			{
 				bitmapData = targetBD;
-            	super.onFrame(elapsed);
-			}															
+			
+			if (targetBD!=null)
+			  super.onFrame(elapsed);
         }
 	}
 }
