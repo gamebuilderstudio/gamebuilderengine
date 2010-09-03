@@ -8,12 +8,13 @@
  ******************************************************************************/
 package com.pblabs.engine.core
 {
-    import com.pblabs.engine.PBE;
     import com.pblabs.engine.debug.*;
+    import com.pblabs.engine.PBE;
+    import com.pblabs.engine.PBUtil;
     import com.pblabs.engine.serialization.TypeUtility;
-    
     import flash.events.Event;
     import flash.utils.getTimer;
+    
     
     /**
      * The process manager manages all time related functionality in the engine.
@@ -471,6 +472,11 @@ package com.pblabs.engine.core
                 Logger.warn(this, "advance", "Exceeded maximum number of ticks for frame (" + elapsed.toFixed() + "ms dropped) .");
                 elapsed = 0;
             }
+            
+            // Make sure that we don't fall behind too far. This helps correct
+            // for short-term drops in framerate as well as the scenario where
+            // we are consistently running behind.
+            elapsed = PBUtil.clamp(elapsed, 0, 300);            
             
             // Make sure we don't lose time to accumulation error.
             // Not sure this gains us anything, so disabling -- BJG
