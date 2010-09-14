@@ -266,7 +266,19 @@ package com.pblabs.engine.resource
             var r:Resource = _resources[resourceIdentifier];
             return r.isLoaded;                
         }
-        
+
+		/**
+		 * Provides a resource if it is known. could be that it is not loaded yet.  
+		 * @param filename Same as request to load()
+		 * @param type Same as request to load().
+		 * @return resource
+		 */
+		public function getResource(filename:String, resourceType:Class):Resource
+		{
+			var resourceIdentifier:String = filename.toLowerCase() + resourceType;
+			return _resources[resourceIdentifier];
+		}
+		
         /**
          * Properly mark a resource as failed-to-load.
          */

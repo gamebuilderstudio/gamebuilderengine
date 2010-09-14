@@ -245,6 +245,7 @@ package com.pblabs.engine.resource.provider
                 for (var r:int=0; r<bulkResources.length; r++)
                 {
                     var resourceIdentifier:String = bulkResources[r].url.toLowerCase() + bulkResources[r].type;
+					if (bulkResources[r].id!=null) resourceIdentifier = bulkResources[r].id;					
                     if (bulkResources[r].url != "" && bulkResources[r].url != null &&
                         bulkResources[r].type )
                     {
