@@ -13,6 +13,7 @@ package com.pblabs.engine
     import com.pblabs.engine.entity.*;
     import com.pblabs.engine.resource.ResourceBundle;
     import com.pblabs.engine.resource.ResourceManager;
+    import com.pblabs.engine.serialization.TypeUtility;
     import com.pblabs.engine.version.VersionDetails;
     import com.pblabs.engine.version.VersionUtil;
     import com.pblabs.rendering2D.*;
@@ -79,6 +80,9 @@ package com.pblabs.engine
             // Do nothing else - the compiler will include the class by virtue of it
             // having been used.
             registerClassAlias(getQualifiedClassName(type).replace("::", "."),type);
+
+			// Add this class to the TypeUtility
+			TypeUtility.addClass(getQualifiedClassName(type).replace("::", "."),type);
 			
             // Note this type in the schema generator.
             SchemaGenerator.instance.addClass(getQualifiedClassName(type), type);

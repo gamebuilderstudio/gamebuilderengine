@@ -8,6 +8,7 @@
  ******************************************************************************/
 package com.pblabs.engine.serialization
 {
+    import com.pblabs.engine.core.SchemaGenerator;
     import com.pblabs.engine.debug.Logger;
     
     import flash.utils.Dictionary;
@@ -93,12 +94,19 @@ package com.pblabs.engine.serialization
             // Give it a shot!
             try
             {
+				
                 return new (getDefinitionByName(className));
             }
             catch (e:Error)
-            {
+            {												
                 if(!suppressError)
                 {
+					// if we can not get the definition, it might reside in another swf
+					// so lets see if we can get the class from the _classes dictionary.
+					var thisClass:Class = _classes[className];
+					if (thisClass!=null) 
+						return new thisClass();
+					
                     Logger.warn(null, "Instantiate", "Failed to instantiate " + className + " due to " + e.toString());
                     Logger.warn(null, "Instantiate", "Is " + className + " included in your SWF? Make sure you call PBE.registerType(" + className + "); somewhere in your project.");				 
                 }
@@ -281,7 +289,13 @@ package com.pblabs.engine.serialization
             
             return _typeDescriptions[className];
         }
+		
+		public static function addClass(className:String , classObject:Class):void
+		{
+			_classes[className] = classObject;			
+		}
         
+		private static var _classes:Dictionary = new Dictionary();
         private static var _typeDescriptions:Dictionary = new Dictionary();
         private static var _instantiators:Dictionary = new Dictionary();
     }
