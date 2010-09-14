@@ -32,12 +32,12 @@ package com.pblabs.engine.core
         {
             PBE.mainStage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
             PBE.mainStage.addEventListener(KeyboardEvent.KEY_UP,   onKeyUp);
-            PBE.mainStage.addEventListener(MouseEvent.MOUSE_DOWN,  onMouseDown);
-            PBE.mainStage.addEventListener(MouseEvent.MOUSE_UP,    onMouseUp);
-            PBE.mainStage.addEventListener(MouseEvent.MOUSE_MOVE,  onMouseMove);
-            PBE.mainStage.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel);
-            PBE.mainStage.addEventListener(MouseEvent.MOUSE_OVER,  onMouseOver);
-            PBE.mainStage.addEventListener(MouseEvent.MOUSE_OUT,   onMouseOut);
+            PBE.mainClass.parent.addEventListener(MouseEvent.MOUSE_DOWN,  onMouseDown);
+            PBE.mainClass.parent.addEventListener(MouseEvent.MOUSE_UP,    onMouseUp);
+            PBE.mainClass.parent.addEventListener(MouseEvent.MOUSE_MOVE,  onMouseMove);
+            PBE.mainClass.parent.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel);
+            PBE.mainClass.parent.addEventListener(MouseEvent.MOUSE_OVER,  onMouseOver);
+            PBE.mainClass.parent.addEventListener(MouseEvent.MOUSE_OUT,   onMouseOut);
             
             // Add ourselves with the highest priority, so that our update happens at the beginning of the next tick.
             // This will keep objects processing afterwards as up-to-date as possible when using keyJustPressed() or keyJustReleased()
