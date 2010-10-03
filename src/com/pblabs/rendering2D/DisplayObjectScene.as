@@ -540,7 +540,7 @@ package com.pblabs.rendering2D
         {
             if (!value)
                 return;
-            
+            						
             var newX:int = int(value.x);
             var newY:int = int(value.y);
             
@@ -549,6 +549,17 @@ package com.pblabs.rendering2D
                 
             _rootPosition.x = newX;
             _rootPosition.y = newY;
+									
+			// Apply limit to camera movement.
+			if(trackLimitRectangle != null)
+			{
+				var centeredLimitBounds:Rectangle = new Rectangle( trackLimitRectangle.x     + (sceneView.width * 0.5) / zoom, trackLimitRectangle.y      + (sceneView.height * 0.5) / zoom,
+					trackLimitRectangle.width - (sceneView.width / zoom)      , trackLimitRectangle.height - (sceneView.height/zoom) );
+				
+				_rootPosition.x = PBUtil.clamp(_rootPosition.x, -centeredLimitBounds.right, -centeredLimitBounds.left );
+				_rootPosition.y = PBUtil.clamp(_rootPosition.y, -centeredLimitBounds.bottom, -centeredLimitBounds.top);
+			}
+						
             _transformDirty = true;
         }
         

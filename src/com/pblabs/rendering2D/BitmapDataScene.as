@@ -17,6 +17,7 @@ package com.pblabs.rendering2D
     import flash.display.BitmapData;
     import flash.display.Sprite;
     import flash.geom.Matrix;
+    import flash.geom.Point;
 
     /**
      * A scene which draws to a BitmapData. Useful when you want to do
@@ -53,10 +54,15 @@ package com.pblabs.rendering2D
                 _sceneView.removeDisplayObject(_rootSprite);
                 var realRoot:Sprite = new Sprite();
                 realRoot.addChild(_rootSprite);
+				if (PBE.mainClass.parent!=PBE.mainStage)
+				{
+					realRoot.x = PBE.mainClass.parent.x;
+					realRoot.y = PBE.mainClass.parent.y;
+				}
                 _sceneView.addDisplayObject(bitmap);
             }
         }
-        
+							
         public override function onFrame(elapsed:Number) : void
         {
             // Let things update.
@@ -137,7 +143,7 @@ package com.pblabs.rendering2D
             backbuffer.unlock();						
             bitmap.bitmapData = backbuffer;
         }
-		
+						
 		private var _modifiers:Array = new Array();
 	}
 }
