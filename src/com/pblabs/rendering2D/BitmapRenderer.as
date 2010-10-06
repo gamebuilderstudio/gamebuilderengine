@@ -22,6 +22,7 @@ package com.pblabs.rendering2D
     {
         protected var bitmap:Bitmap = new Bitmap();
         protected var _smoothing:Boolean = false;
+		protected var _mouseEnabled:Boolean = false;
         
         public function BitmapRenderer()
         {
@@ -65,6 +66,22 @@ package com.pblabs.rendering2D
         {
             return _smoothing;
         }
+				
+        
+        /**
+        * @see Sprite.mouseEnabled
+        */
+        public function set mouseEnabled(value:Boolean):void
+        {
+            _mouseEnabled = value;
+            if (displayObject != null)
+				(_displayObject as Sprite).mouseEnabled = value;
+        }
+        
+        public function get mouseEnabled():Boolean
+        {
+            return _mouseEnabled;
+        }
 		
         /**
          * @see Bitmap.bitmapData 
@@ -101,6 +118,7 @@ package com.pblabs.rendering2D
 				_displayObject = new Sprite();
 				(_displayObject as Sprite).addChild(bitmap);				
 				_displayObject.visible = false;
+				(_displayObject as Sprite).mouseEnabled = _mouseEnabled;
 			}
 			
             // Due to a bug, this has to be reset after setting bitmapData.
@@ -138,20 +156,6 @@ package com.pblabs.rendering2D
 			if (bitmap.bitmapData!=null)
               renderTarget.copyPixels(bitmap.bitmapData, bitmap.bitmapData.rect, objectToScreen.transformPoint(zeroPoint), null, null, true);
         }
-        
-        /**
-        * @see Sprite.mouseEnabled
-        */
-        [EditorData(ignore="true")]
-        public function set mouseEnabled(value:Boolean):void
-        {
-            (_displayObject as Sprite).mouseEnabled = value;
-        }
-
-        public function get mouseEnabled():Boolean
-        {
-            return (_displayObject as Sprite).mouseEnabled;
-        }        
         
         override public function pointOccupied(worldPosition:Point, mask:ObjectType):Boolean
         {
