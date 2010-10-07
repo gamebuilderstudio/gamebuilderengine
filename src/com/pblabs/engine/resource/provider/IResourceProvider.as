@@ -28,5 +28,11 @@ package com.pblabs.engine.resource.provider
          * resource from a ResourceProvider
          */
         function getResource(uri:String, type:Class, forceReload:Boolean = false):Resource;
+		
+		/**
+		 * This method is called when the ResourceManager has no references to a specific resource
+		 * and wants to unload the resource.
+		 */
+		function unloadResource(uri:String, type:Class):void;
     }
 }

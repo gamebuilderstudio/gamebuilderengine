@@ -165,7 +165,14 @@ package com.pblabs.engine.resource
         {
             _referenceCount++;
         }
-        
+
+		/**
+		 * Disposes resource and cleans data
+		 */
+		public function dispose():void
+		{
+		}
+				
         /**
          * Decrements the number of references to the resource. This should only ever be
          * called by the ResourceManager.

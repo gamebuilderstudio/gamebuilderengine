@@ -8,11 +8,13 @@
  ******************************************************************************/
 package com.pblabs.engine.resource.provider
 {
+    import com.pblabs.engine.PBE;
     import com.pblabs.engine.resource.Resource;
     import com.pblabs.engine.resource.ResourceManager;
-    import com.pblabs.engine.PBE;
-
+    
     import flash.utils.Dictionary;
+    
+    import mx.controls.Image;
     
     /**
      * The ResourceProviderBase class can be extended to create a ResourceProvider 
@@ -53,7 +55,20 @@ package com.pblabs.engine.resource.provider
             var resourceIdentifier:String = uri.toLowerCase() + type;
             return resources[resourceIdentifier];
         }
-        
+
+		/**
+		 * This method will unload a resource from the resources Dictionary
+		 */
+		public function unloadResource(uri:String, type:Class):void
+		{
+			var resourceIdentifier:String = uri.toLowerCase() + type;			
+			if (resources[resourceIdentifier]!=null)
+			{
+				resources[resourceIdentifier].dispose();
+				resources[resourceIdentifier] = null;
+			}
+		}
+				
         /**
          * This method will add a resource to the resources Dictionary
          */
@@ -62,7 +77,7 @@ package com.pblabs.engine.resource.provider
             var resourceIdentifier:String = uri.toLowerCase() + type;
             resources[resourceIdentifier] = resource;        	
         }
-        
+		
         // ------------------------------------------------------------
         // private and protected variables
         // ------------------------------------------------------------

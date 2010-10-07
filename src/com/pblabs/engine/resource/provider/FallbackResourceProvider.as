@@ -11,6 +11,8 @@ package com.pblabs.engine.resource.provider
 	import br.com.stimuli.loading.BulkLoader;
 	import br.com.stimuli.loading.loadingtypes.LoadingItem;
 	
+	import com.pblabs.components.stateMachine.IMachine;
+	import com.pblabs.engine.resource.ImageResource;
 	import com.pblabs.engine.resource.Resource;
 	
 	import flash.events.ErrorEvent;
@@ -64,7 +66,20 @@ package com.pblabs.engine.resource.provider
 			// resource on the fly, using BulkLoader when it is requested.
 			return true;
 		}
-				
+		
+		public override function unloadResource(uri:String, type:Class):void
+		{
+			// because this resource was dynamicly loaded 'On The Fly'
+			// we have to unload it and clean memory
+			var resourceIdentifier:String = uri.toLowerCase() + type;			
+			if (resources[resourceIdentifier]!=null)
+			{
+				if (resources[resourceIdentifier] is ImageResource)							
+					(resources[resourceIdentifier] as ImageResource).dispose();
+				resources[resourceIdentifier] = null;
+			}
+		}
+		
 		// ------------------------------------------------------------
 		// private and protected variables
 		// ------------------------------------------------------------		

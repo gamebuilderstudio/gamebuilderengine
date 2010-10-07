@@ -86,6 +86,12 @@ package com.pblabs.engine.resource.provider
             }
         }
 		
+		public override function unloadResource(uri:String, type:Class):void
+		{
+			// no unloading of embedded resource
+		}
+		
+		
 		// ------------------------------------------------------------
 		// private and protected variables
 		// ------------------------------------------------------------		

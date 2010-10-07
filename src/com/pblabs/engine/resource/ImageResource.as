@@ -37,7 +37,7 @@ package com.pblabs.engine.resource
                 return new Bitmap(_bitmapData);
             return null;
         }
-        
+		
         /**
          * Get the raw BitmapData that was loaded.
          */
@@ -46,7 +46,16 @@ package com.pblabs.engine.resource
             return _bitmapData;
         }
         
-        override public function initialize(data:*):void
+
+		/**
+		 * Disposes the bitmapData object of this ImageResource
+		 */
+		public override function dispose():void
+		{
+			if (bitmapData!=null) bitmapData.dispose();	
+		}
+		
+		override public function initialize(data:*):void
         {        	
             if (data is Bitmap)
             {
