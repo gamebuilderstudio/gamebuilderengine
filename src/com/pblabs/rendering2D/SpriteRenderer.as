@@ -9,9 +9,9 @@
 package com.pblabs.rendering2D
 {
     import com.pblabs.engine.PBE;
-	import com.pblabs.engine.resource.ImageResource;
-	
-	import flash.geom.Point;
+    import com.pblabs.engine.resource.ImageResource;
+    
+    import flash.geom.Point;
 	
    /**
     * Render Component that will load and render a ImageResource as a Sprite
@@ -35,13 +35,18 @@ package com.pblabs.rendering2D
 		{
 			if (fileName!=value)
 			{
+				if (_resource)
+				{
+					PBE.resourceManager.unload(_resource.filename, ImageResource);
+					_resource = null;
+				}            
 				_fileName = value;
 				_loading = true;
 				// Tell the ResourceManager to load the IMageResource
 				PBE.resourceManager.load(fileName,ImageResource,imageLoadCompleted,imageLoadFailed,false);				
 			}	
 		}
-		
+						
    	    /**
         * Indicates if the resource is beeing loaded 
         */ 
