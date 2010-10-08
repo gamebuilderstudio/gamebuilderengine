@@ -165,18 +165,19 @@ package com.pblabs.engine.resource
          * @param resourceType The type of the resource to unload.
          */
         public function unload(filename:String, resourceType:Class):void
-        {                        
-            if (!_resources[filename + resourceType])
+        {        
+			var resourceIdentifier:String = filename.toLowerCase() + resourceType;			
+            if (!_resources[resourceIdentifier])
             {
                 Logger.warn(this, "Unload", "The resource from file " + filename + " of type " + resourceType + " is not loaded.");
                 return;
             }																			
-            _resources[filename + resourceType].decrementReferenceCount();
+            _resources[resourceIdentifier].decrementReferenceCount();
 			
-            if (_resources[filename + resourceType].referenceCount < 1)
+            if (_resources[resourceIdentifier].referenceCount < 1)
             {
-				_resources[filename + resourceType] = null;
-				delete _resources[filename + resourceType];
+				_resources[resourceIdentifier] = null;
+				delete _resources[resourceIdentifier];
 				
 				// unload with resourceProvider
 				for (var rp:int = 0; rp < resourceProviders.length; rp++)
