@@ -211,6 +211,7 @@ package com.pblabs.rendering2D.spritesheet
 		
 		protected override function onAdd():void
 		{
+			super.onAdd();
 			if (!_image && imageFilename!=null && imageFilename!="" && !loading)
 			{
 				_loading = true;
@@ -225,7 +226,8 @@ package com.pblabs.rendering2D.spritesheet
 				PBE.resourceManager.unload(_image.filename, ImageResource);
 				_image = null;
 				_loaded = false;
-			}            			
+			}  
+			super.onRemove();         			
 		}
 		
         

@@ -131,6 +131,7 @@ package com.pblabs.rendering2D
 		
 		protected override function onAdd():void
 		{
+			super.onAdd();
 			if (!_resource && fileName!=null && fileName!="" && !loading)
 			{
 				_loading = true;
