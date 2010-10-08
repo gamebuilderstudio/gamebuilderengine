@@ -52,7 +52,11 @@ package com.pblabs.engine.resource
 		 */
 		public override function dispose():void
 		{
-			if (bitmapData!=null) bitmapData.dispose();	
+			if (bitmapData!=null) 
+			{
+				bitmapData.dispose();
+				_bitmapData = null;
+			}	
 		}
 		
 		override public function initialize(data:*):void
