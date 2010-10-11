@@ -14,8 +14,6 @@ package com.pblabs.engine.resource.provider
     
     import flash.utils.Dictionary;
     
-    import mx.controls.Image;
-    
     /**
      * The ResourceProviderBase class can be extended to create a ResourceProvider 
      * that will auto register with the ResourceManager
