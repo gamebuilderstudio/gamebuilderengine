@@ -13,20 +13,17 @@ package com.pblabs.engine.debug
     import com.pblabs.engine.core.IPBObject;
     import com.pblabs.engine.core.InputKey;
     import com.pblabs.engine.core.PBGroup;
-    import com.pblabs.engine.core.PBObject;
     import com.pblabs.engine.core.PBSet;
     import com.pblabs.engine.entity.IEntity;
     import com.pblabs.engine.entity.IEntityComponent;
     import com.pblabs.engine.entity.PropertyReference;
     import com.pblabs.engine.serialization.TypeUtility;
-    import com.pblabs.engine.version.VersionType;
     
     import flash.display.DisplayObject;
     import flash.display.DisplayObjectContainer;
     import flash.events.Event;
     import flash.external.ExternalInterface;
     import flash.geom.Point;
-    import flash.system.Security;
     
     /**
      * Process simple text commands from the user. Useful for debugging.
@@ -47,6 +44,8 @@ package com.pblabs.engine.debug
         protected static var _hotKeyCode:uint = InputKey.TILDE.keyCode;
         
         protected static var _stats:Stats;
+        
+        protected static var _prevTimescale:Number;
         
         public static var verbosity:int = 0;
         public static var showStackTrace:Boolean = false;
@@ -246,6 +245,15 @@ package com.pblabs.engine.debug
             
             registerCommand("dispatch", _dispatchEvent,
                 "Dispatches an event on an entity's event bus. usage: dispatch #entity eventType");
+            
+            registerCommand("pause", _pause, 
+                "Pauses the PBE ProcessManager."); 
+            
+            registerCommand("resume", _resume, 
+                "Resumes the PBE ProcessManager.");    
+            
+            registerCommand("timeScale", _setTimescale, 
+                "Sets the timeScale for the PBE ProcessManager.");    
             
             if(ExternalInterface.available)
             {
@@ -475,6 +483,22 @@ package com.pblabs.engine.debug
             }
             
             return sum;
+        }
+        
+        protected static function _setTimescale(value:Number):void
+        {
+            PBE.processManager.timeScale = value;
+        }
+        
+        protected static function _pause():void
+        {
+            _prevTimescale = PBE.processManager.timeScale;
+            PBE.processManager.timeScale = 0;
+        }
+        
+        protected static function _resume():void
+        {
+            PBE.processManager.timeScale = _prevTimescale;
         }
         
         protected static function generateIndent(indent:int):String
