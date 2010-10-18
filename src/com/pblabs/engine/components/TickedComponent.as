@@ -27,6 +27,7 @@ package com.pblabs.engine.components
         
         private var _registerForUpdates:Boolean = true;
         private var _isRegisteredForUpdates:Boolean = false;
+		private var initialRegisterForUpdates:Boolean = true;
         
         /**
          * Set to register/unregister for tick updates.
@@ -66,7 +67,11 @@ package com.pblabs.engine.components
         
         override protected function onAdd():void
         {
-            // This causes the component to be registerd if it isn't already.
+			// keep initial _registerFoUpdates value so we can reset this if the component to its 
+			// initial state after it is removed and before it is added again to an entity.
+			initialRegisterForUpdates = _registerForUpdates;
+			// registerForTicks could be set to a specific value(false) using XML
+			// so by setting it so its own value we will actually register if we weren't already.
             registerForTicks = registerForTicks;
         }
         
@@ -74,6 +79,9 @@ package com.pblabs.engine.components
         {
             // Make sure we are unregistered.
             registerForTicks = false;
-        }
+			// reset _registerForUpdates value so we got a healthy initial condition when we  
+			// add this component to an entity again.
+			_registerForUpdates = initialRegisterForUpdates; 
+        }		
     }
 }

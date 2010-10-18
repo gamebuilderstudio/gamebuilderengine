@@ -20,7 +20,6 @@ package com.pblabs.rendering2D
     import flash.geom.Matrix;
     import flash.geom.Point;
     import flash.geom.Rectangle;
-    
     /**
      * Base renderer for Rendering2D. It wraps a DisplayObject, allows it
      * to be controlled by PropertyReferences, and hooks it into a scene.
@@ -605,10 +604,12 @@ package com.pblabs.rendering2D
         override protected function onAdd() : void
         {
             super.onAdd();
-            
+			            
             if(_displayObject)
                 _displayObject.name = owner.name + "." + name;
             
+			addToScene();
+			
             // Make sure we start with a correct transform.
             updateTransform(true);
         }
