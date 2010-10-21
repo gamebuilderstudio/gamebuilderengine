@@ -183,9 +183,16 @@ package com.pblabs.animation
 			if (delay<=0)
 			{
 				if (!advanceDelta(deltaSecs))
-				{					
+				{			
 					if (onComplete!=null)
-						onComplete(this);
+					{
+						try
+						{
+							onComplete(this);
+						}
+						catch(e:Error)
+						{};
+					}
 					dispose();
 					
 					elapsed = getTimer() - start;
