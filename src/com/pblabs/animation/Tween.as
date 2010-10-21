@@ -18,21 +18,40 @@ package com.pblabs.animation
 	import flash.utils.describeType;
 	import flash.utils.getTimer;
 
+	/*****************************************************
+	 * The Tween Class can be used to tween values of an object
+	 * or to tween a value of a PropertyReference
+	 * 
+	 * It support things like; looping tweens, pingpong tweens, 
+	 * play count , play time and starting delay. 
+	 */
 	public class Tween extends Object
 	{
 		// --------------------------------------------------------------
 		// public constants
 		// --------------------------------------------------------------
+		
+		/*****************************************************
+		 * Use ProcessManager onTick processMode
+		 */
 		public static const PROCESS_ONTICK:int = 0;
+		/*****************************************************
+		 * Use ProcessManager onFrame processMode
+		 */
 		public static const PROCESS_ONFRAME:int = 1;
 		
 		// --------------------------------------------------------------
 		// public getter/setter functions
 		// --------------------------------------------------------------		
+
+		/*****************************************************
+		 * Indicates that the tween is running
+		 */
 		public function get running():Boolean
 		{
 			return _running;
-		}		
+		}
+		
 		public function get processInterface():Class
 		{
 			return _processInterface;
@@ -41,6 +60,23 @@ package com.pblabs.animation
 		// --------------------------------------------------------------
 		// public methods		
 		// --------------------------------------------------------------
+		
+		/*****************************************************
+		 * Create a tween 
+		 * 
+		 * @param entity Pass an entity if you would want to use entity specific PropertyReference tweening.
+		 * @param object The tween object. A String value will be converted to a PropertyReference. 
+		 * @param duration Duration of the tween in seconds. 
+		 * @param fromVars Object with attribute starting values, a single value when tweening a PropertyReference. 
+		 * @param toVars Object with attribute ending values, a single value when tweening a PropertyReference. 
+		 * @param ease Easy function , null defaults to linear. 
+		 * @param onComplete This function(tween:Tween):void {}; will be called when the tween completes.
+		 * @param delay The tween will start after this time (in seconds).
+		 * @param pingpong Tween will reverse when end value is reached.
+		 * @param playCount Number of times the tween is run, -1 is repeating
+		 * @param playTime Total amount of time the tween will run.
+		 * @param processMode How the tween will advance , onTick or onFrame
+		 */
 		public function Tween( entity:IEntity, object:*, duration:Number, fromVars:* , toVars:*, ease:Function=null, onComplete:Function= null, delay:Number = 0, pingpong:Boolean = false, playCount:int=1, playTime:Number=0, processMode:int = 1)
 		{				
 			// initialize tweenController
@@ -89,6 +125,9 @@ package com.pblabs.animation
 			TweenController.addTween(this);
 		}
 		
+		/*****************************************************
+		 * (Re)start the tween.
+		 */
 		public function start():void
 		{
 			pause = false;
@@ -99,12 +138,18 @@ package com.pblabs.animation
 			}
 		} 
 		
+		/*****************************************************
+		 * Stops/pauzes the tween.
+		 */
 		public function stop():void
 		{
 			pause = true;			
 			_running = false;
 		} 
 		
+		/*****************************************************
+		 * Disposes the tween
+		 */
 		public function dispose():void
 		{
 			// remove this tween from Tweencontroller
@@ -112,9 +157,11 @@ package com.pblabs.animation
 			TweenController.removeTween(this);			
 		} 
 		
+		/*****************************************************
+		 * Advances the tween a number of seconds 
+		 */
 		public function advance(deltaSecs:Number):Number
-		{
-			
+		{									
 			var start:int = getTimer();
 			var elapsed:int
 			
@@ -136,7 +183,7 @@ package com.pblabs.animation
 			if (delay<=0)
 			{
 				if (!advanceDelta(deltaSecs))
-				{
+				{					
 					if (onComplete!=null)
 						onComplete(this);
 					dispose();
@@ -147,7 +194,6 @@ package com.pblabs.animation
 			}				
 			else
 				_running = false;
-
 								
 			elapsed = getTimer() - start;
 			return elapsed/1000;
@@ -190,85 +236,99 @@ package com.pblabs.animation
 		
 		private function advanceDelta(deltaSecs:Number):Boolean
 		{
-			var v:String;
-			secs += deltaSecs;
-			if (secs>duration) 
+			// check if the tween object and entity are still alive, if not dispose this tween
+			if (object==null || entity==null)
 			{
-				if (playCount!=0)
+				this.dispose();
+				return false;
+			}
+		
+			try
+			{
+				var v:String;
+				secs += deltaSecs;
+				if (secs>duration) 
 				{
-					if (!pingpong || (pingpong && !ping)) 
-						if (playCount>0) playCount-=1;
-					
-					if ((!pingpong && playCount==0) || (pingpong && !ping && playCount==0))
-					  secs = duration;
-					else
+					if (playCount!=0)
 					{
-						while (secs > duration)
-							secs = secs-duration;
-						if (pingpong)
+						if (!pingpong || (pingpong && !ping)) 
+							if (playCount>0) playCount-=1;
+						
+						if ((!pingpong && playCount==0) || (pingpong && !ping && playCount==0))
+						  secs = duration;
+						else
 						{
-							var tmpVars:* = fromVars;
-							fromVars = toVars;
-							toVars = tmpVars;
-							calculateDelta();
-							ping = !ping;
+							while (secs > duration)
+								secs = secs-duration;
+							if (pingpong)
+							{
+								var tmpVars:* = fromVars;
+								fromVars = toVars;
+								toVars = tmpVars;
+								calculateDelta();
+								ping = !ping;
+							}
 						}
 					}
 				}
-			}
-									
-			if (secs<=duration)
-			{
-				if (object is PropertyReference)
+										
+				if (secs<=duration)
 				{
-					var vv:*;
-					if (fromVars is Point && deltaVars is Point)
+					if (object is PropertyReference)
 					{
-						vv = (fromVars as Point).clone();
-						vv.x = ease(secs, fromVars.x , deltaVars.x, duration);
-						vv.y = ease(secs, fromVars.y , deltaVars.y, duration);				
-						setVar(object,vv);
+						var vv:*;
+						if (fromVars is Point && deltaVars is Point)
+						{
+							vv = (fromVars as Point).clone();
+							vv.x = ease(secs, fromVars.x , deltaVars.x, duration);
+							vv.y = ease(secs, fromVars.y , deltaVars.y, duration);				
+							setVar(object,vv);
+						}
+						else
+						{
+							vv = ease(secs, fromVars , deltaVars, duration);
+							setVar(object,vv);
+						}
 					}
 					else
-					{
-						vv = ease(secs, fromVars , deltaVars, duration);
-						setVar(object,vv);
-					}
+						if (toVars is Object)
+						{
+							for (v in toVars)
+							{
+								if (object.hasOwnProperty(v))
+									easeVar(v);
+							}				
+						}
+					
+					totalTimePlayed += deltaSecs;
+					if (playTime>0  && totalTimePlayed >= playTime)
+						return false;
+									
+					return true;
 				}
 				else
+				{
+					if (object is PropertyReference)
+					{
+						setVar(object,toVars);
+					}
+					else
 					if (toVars is Object)
 					{
 						for (v in toVars)
-						{
 							if (object.hasOwnProperty(v))
-								easeVar(v);
-						}				
+							{
+								var vt:* = toVars[v];
+								setVar(v,vt);
+							}
 					}
-				
-				totalTimePlayed += deltaSecs;
-				if (playTime>0  && totalTimePlayed >= playTime)
-					return false;
-								
-				return true;
+				}
 			}
-			else
+			catch(e:Error)
 			{
-				if (object is PropertyReference)
-				{
-					setVar(object,toVars);
-				}
-				else
-				if (toVars is Object)
-				{
-					for (v in toVars)
-						if (object.hasOwnProperty(v))
-						{
-							var vt:* = toVars[v];
-							setVar(v,vt);
-						}
-				}
-				return false;  
-			}   
+				this.dispose();
+			}
+			return false;
 		} 
 		
 		private function calculateDelta():void
