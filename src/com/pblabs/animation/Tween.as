@@ -183,7 +183,8 @@ package com.pblabs.animation
 			if (delay<=0)
 			{
 				if (!advanceDelta(deltaSecs))
-				{			
+				{	
+					stop();
 					if (onComplete!=null)
 					{
 						try
