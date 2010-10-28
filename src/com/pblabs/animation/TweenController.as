@@ -83,14 +83,19 @@ package com.pblabs.animation
 		}	
 		
 		public static function removeTween(tween:Tween):void
-		{			
+		{	
+			var tweenIndex:int; 
 			switch(tween.processInterface)
 			{
 				case ITickedObject:
-					instance.tickTweens.splice(instance.tickTweens.indexOf(tween),1);
+					tweenIndex = instance.tickTweens.indexOf(tween);
+					if (tweenIndex>=0)
+						instance.tickTweens.splice(tweenIndex,1);
 					break;
 				case IAnimatedObject:
-					instance.frameTweens.splice(instance.frameTweens.indexOf(tween),1);
+					tweenIndex = instance.frameTweens.indexOf(tween);
+					if (tweenIndex>=0)
+						instance.frameTweens.splice(tweenIndex,1);
 					break;
 			}						
 		}	
