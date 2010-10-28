@@ -266,7 +266,7 @@ package com.pblabs.animation
 			}
 			
 			if (ease!=null)
-				_current = ease(_elapsedTime,_start, _target - _start, _duration);
+				_current = doEase(_elapsedTime,_start, _target - _start, _duration);
 			else
 				_current = interpolate(_start, _target, _elapsedTime / _duration);
 		}
@@ -305,6 +305,15 @@ package com.pblabs.animation
 			_isAnimating = false;
 			
 			dispatchEvent(new AnimationEvent(AnimationEvent.ANIMATION_STOPPED_EVENT, this));
+		}
+				
+		/**
+		 * Applies an ease function
+		 * Can be overridden to support easing objects  
+		 */
+		protected function doEase(start:*, end:*, elapsed:Number, duration:Number):*
+		{
+			return ease(elapsed, start, end - start, duration);
 		}
 		
         /**
