@@ -25,17 +25,17 @@ the PushButton Engine Manual (http://www.pushbuttonengine.com/docs/).
 === PushButton On The Web ===
 
 The official PushButton Engine site is http://www.pushbuttonengine.com. You can
- learn more about the engine, browse the component store, and post your 
- feedback and questions on the PushButton Engine Forums. The engine developers
-  are active and will be there to help you out.
+learn more about the engine, browse the component store, and post your 
+feedback and questions on the PushButton Engine Forums. The engine developers
+are active and will be there to help you out.
 
 === Where Do I Start? ===
 
 You should read the Getting Started chapter of the manual. It tells you where
- everything is and how to build the SDK.
+everything is and how to build the SDK.
 
 Lastly, the PushButton Engine is covered under the MIT license in its entirety,
- not including 3rd party components. Please read our license for more 
- information on the MIT license.
+not including 3rd party components. Please read our license for more 
+information on the MIT license.
 
 Copyright 2009 PushButton Labs, LLC. All rights reserved.
