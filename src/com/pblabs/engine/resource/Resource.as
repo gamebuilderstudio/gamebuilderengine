@@ -171,6 +171,8 @@ package com.pblabs.engine.resource
 		 */
 		public function dispose():void
 		{
+			_urlLoader = null;
+			_loader = null;
 		}
 				
         /**
@@ -191,7 +193,7 @@ package com.pblabs.engine.resource
             onFailed(message);        	
         }
         
-        /**
+		/**
          * This is called when the resource data has been fully loaded and conditioned.
          * Returning true from this method means the load was successful. False indicates
          * failure. Subclasses must implement this method.
