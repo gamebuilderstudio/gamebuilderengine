@@ -404,7 +404,7 @@ package com.pblabs.engine.entity
                 if(!cachedWalk)
                 {
                     if(!suppressErrors)
-                        Logger.warn(this, "findProperty", "Could not resolve component named '" + cl[0] + "' for property '" + reference.property + "' with cached reference. " + Logger.getCallStack());
+                        Logger.warn(this, "findProperty", "[#"+this.name+"] Could not resolve component named '" + cl[0] + "' for property '" + reference.property + "' with cached reference. " + Logger.getCallStack());
                     Profiler.exit("Entity.findProperty");
                     return null;
                 }
@@ -416,7 +416,7 @@ package com.pblabs.engine.entity
                     if(cachedWalk == null)
                     {
                         if(!suppressErrors)
-                            Logger.warn(this, "findProperty", "Could not resolve property '" + cl[i] + "' for property reference '" + reference.property + "' with cached reference"  + Logger.getCallStack());
+                            Logger.warn(this, "findProperty", "[#"+this.name+"] Could not resolve property '" + cl[i] + "' for property reference '" + reference.property + "' with cached reference"  + Logger.getCallStack());
                         Profiler.exit("Entity.findProperty");
                         return null;
                     }
@@ -447,7 +447,8 @@ package com.pblabs.engine.entity
                 parentElem = lookupComponentByName(curLookup);
                 if(!parentElem)
                 {
-                    Logger.warn(this, "findProperty", "Could not resolve component named '" + curLookup + "' for property '" + reference.property + "'");
+					if(!suppressErrors)
+	                    Logger.warn(this, "findProperty", "[#"+this.name+"] Could not resolve component named '" + curLookup + "' for property '" + reference.property + "'");
                     Profiler.exit("Entity.findProperty");
                     return null;
                 }
@@ -462,7 +463,8 @@ package com.pblabs.engine.entity
                 parentElem = PBE.nameManager.lookup(curLookup);
                 if(!parentElem)
                 {
-                    Logger.warn(this, "findProperty", "Could not resolve named object named '" + curLookup + "' for property '" + reference.property + "'");
+					if(!suppressErrors)
+                    	Logger.warn(this, "findProperty", "[#"+this.name+"] Could not resolve named object named '" + curLookup + "' for property '" + reference.property + "'");
                     Profiler.exit("Entity.findProperty");
                     return null;
                 }
@@ -473,7 +475,8 @@ package com.pblabs.engine.entity
                 var comLookup:IEntityComponent = (parentElem as IEntity).lookupComponentByName(curLookup);
                 if(!comLookup)
                 {
-                    Logger.warn(this, "findProperty", "Could not find component '" + curLookup + "' on named entity '" + (parentElem as IEntity).name + "' for property '" + reference.property + "'");
+					if(!suppressErrors)
+                    	Logger.warn(this, "findProperty", "[#"+this.name+"] Could not find component '" + curLookup + "' on named entity '" + (parentElem as IEntity).name + "' for property '" + reference.property + "'");
                     Profiler.exit("Entity.findProperty");
                     return null;
                 }
@@ -486,7 +489,8 @@ package com.pblabs.engine.entity
                 parentElem = PBE.templateManager.getXML(curLookup, "template", "entity");
                 if(!parentElem)
                 {
-                    Logger.warn(this, "findProperty", "Could not find XML named '" + curLookup + "' for property '" + reference.property + "'");
+					if(!suppressErrors)
+	                    Logger.warn(this, "findProperty", "[#"+this.name+"] Could not find XML named '" + curLookup + "' for property '" + reference.property + "'");
                     Profiler.exit("Entity.findProperty");
                     return null;
                 }
@@ -523,7 +527,8 @@ package com.pblabs.engine.entity
                 // Error if we don't have it!
                 if(!nextElem)
                 {
-                    Logger.warn(this, "findProperty", "Could not find component '" + path[1] + "' in XML template '" + path[0].slice(1) + "' for property '" + reference.property + "'");
+					if(!suppressErrors)
+	                    Logger.warn(this, "findProperty", "[#"+this.name+"] Could not find component '" + path[1] + "' in XML template '" + path[0].slice(1) + "' for property '" + reference.property + "'");
                     Profiler.exit("Entity.findProperty");
                     return null;
                 }
@@ -536,7 +541,8 @@ package com.pblabs.engine.entity
             }
             else
             {
-                Logger.warn(this, "findProperty", "Got a property path that doesn't start with !, #, or @. Started with '" + startChar + "' for property '" + reference.property + "'");
+				if(!suppressErrors)
+                	Logger.warn(this, "findProperty", "[#"+this.name+"] Got a property path that doesn't start with !, #, or @. Started with '" + startChar + "' for property '" + reference.property + "'");
                 Profiler.exit("Entity.findProperty");
                 return null;
             }
@@ -580,7 +586,8 @@ package com.pblabs.engine.entity
                 
                 if(gotEmpty)
                 {
-                    Logger.warn(this, "findProperty", "Could not resolve property '" + curLookup + "' for property reference '" + reference.property + "'");
+					if(!suppressErrors)
+                    	Logger.warn(this, "findProperty", "[#"+this.name+"] Could not resolve property '" + curLookup + "' for property reference '" + reference.property + "'");
                     Profiler.exit("Entity.findProperty");
                     return null;
                 }
