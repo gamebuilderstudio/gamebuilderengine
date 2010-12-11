@@ -102,5 +102,19 @@ package com.pblabs.engine.core
                 _owningGroup = null;                
             }
         }
+		
+		public function changeName(name : String):void
+		{
+			if(name){
+				// Remove from the name manager.
+				PBE.nameManager.remove(this);
+				
+				// Change the name.
+				_name = name;
+				
+				// Register with the name manager.
+				PBE.nameManager.add(this);
+			}
+		}
     }
 }

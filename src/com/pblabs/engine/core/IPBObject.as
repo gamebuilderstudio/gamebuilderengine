@@ -71,5 +71,13 @@ package com.pblabs.engine.core
          * are set to null manually.</p>
          */
         function destroy():void;
-    }
+
+		/**
+		 * Changes the entities name. This will unregister the old name and register the new name with 
+		 * the NameManager as well.
+		 * 
+		 * @param entityName The new name of the current entity.
+		 */ 
+		function changeName(name:String):void;
+	}
 }
