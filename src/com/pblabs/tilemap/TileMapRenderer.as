@@ -10,7 +10,6 @@ package com.pblabs.tilemap
 {
 	import com.pblabs.engine.core.*;
 	import com.pblabs.engine.debug.*;
-	import com.pblabs.engine.util.OrderedArray;
 	import com.pblabs.rendering2D.BitmapRenderer;
 	import com.pblabs.rendering2D.spritesheet.*;
 	
