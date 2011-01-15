@@ -8,6 +8,7 @@
  ******************************************************************************/
 package com.pblabs.engine.core
 {
+    import com.pblabs.engine.PBUtil;
     import com.pblabs.engine.debug.Logger;
     
     import flash.utils.Dictionary;
@@ -29,6 +30,15 @@ package com.pblabs.engine.core
             return _typeCount;
         }
         
+		/**
+		 * A complete list of all typeNames currently registered in this manager. 
+		 * @return a clone of the internal list
+		 **/
+		public function get allTypeNames():Array
+		{
+			return PBUtil.cloneArray(_bitList);
+		}
+		
         /**
          * Gets the number associated with a specified object type, registering it if
          * necessary.
