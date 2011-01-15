@@ -64,6 +64,9 @@ package com.pblabs.animation
          */
         public function play(animation:String, startValue:* = null):void
         {
+			//Added this check because component fails onReset when no animation information exists
+			if(!_currentAnimation) return;
+			
         	if (_currentAnimation && _currentAnimation.isAnimating)
         		   _currentAnimation.stop();
         	
