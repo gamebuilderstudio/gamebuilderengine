@@ -369,7 +369,7 @@ package com.pblabs.engine.serialization
 
             // Deal with "dynamic" typehints.
             var typeHint:String = TypeUtility.getTypeHint(object, propertyName);
-            if(typeHint && typeHint == "dynamic")
+            if(typeHint || typeHint == "dynamic")
             {
                 if (!isNaN(object[propertyName]))
                 {
