@@ -571,7 +571,7 @@ package com.pblabs.engine.serialization
                 return true;
             }
             // Write component reference
-            if (reference is IEntityComponent)
+            if (reference is IEntityComponent && reference.isRegistered)
             {
                 xml.@entityName = (reference as IEntityComponent).owner.name;
                 xml.@componentName = (reference as IEntityComponent).name;
