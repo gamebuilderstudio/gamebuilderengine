@@ -12,6 +12,7 @@ package com.pblabs.rendering2D.spritesheet
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.resource.ImageResource;
     import com.pblabs.engine.resource.ResourceManager;
+    import com.pblabs.rendering2D.spritesheet.ISpriteSheet;
     
     import flash.display.BitmapData;
     import flash.geom.Point;
@@ -35,7 +36,7 @@ package com.pblabs.rendering2D.spritesheet
      * <p>Be aware that Flash implements an upper limit on image size - going over
      * 2048 pixels in any dimension will lead to problems.</p>
      */ 
-    public class SpriteSheetComponent extends SpriteContainerComponent
+    public class SpriteSheetComponent extends SpriteContainerComponent implements ISpriteSheet
     {
 						
         /**
@@ -131,6 +132,9 @@ package com.pblabs.rendering2D.spritesheet
             
             return _image.bitmapData;
         }
+		public function set imageData(val : BitmapData):void{
+			Logger.warn(this, 'set imageData', 'You can not set the imageData on the SpriteSheetComponent, pass a fileName to be loaded.');
+		}
         
         /**
          * The divider to use to chop up the sprite sheet into frames. If the divider

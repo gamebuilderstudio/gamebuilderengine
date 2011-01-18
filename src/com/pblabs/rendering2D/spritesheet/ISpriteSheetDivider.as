@@ -8,6 +8,8 @@
  ******************************************************************************/
 package com.pblabs.rendering2D.spritesheet
 {
+    import com.pblabs.rendering2D.spritesheet.ISpriteSheet;
+    
     import flash.geom.Rectangle;
     
     /**
@@ -26,7 +28,7 @@ package com.pblabs.rendering2D.spritesheet
          * the sprite sheet passes itself to OwningSheet so you can store it and
          * get information from it.
          */
-        function set owningSheet(value:SpriteSheetComponent):void;
+        function set owningSheet(value:ISpriteSheet):void;
         
         /**
          * Return the size of a frame, given the desired index and the source

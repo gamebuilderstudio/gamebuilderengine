@@ -8,8 +8,10 @@
  ******************************************************************************/
 package com.pblabs.rendering2D.spritesheet
 {
-    import flash.geom.Rectangle;
     import com.pblabs.engine.debug.Logger;
+    import com.pblabs.rendering2D.spritesheet.ISpriteSheet;
+    
+    import flash.geom.Rectangle;
     
     /**
      * Divide a spritesheet into cells based on count - ie, 4 cells by 3 cells.
@@ -32,9 +34,9 @@ package com.pblabs.rendering2D.spritesheet
          * @inheritDoc
          */
         [EditorData(ignore="true")]
-        public function set owningSheet(value:SpriteSheetComponent):void
+        public function set owningSheet(value:ISpriteSheet):void
         {
-            if(_owningSheet)
+            if(_owningSheet && value)
                 Logger.warn(this, "set OwningSheet", "Already assigned to a sheet, reassigning may result in unexpected behavior.");
             _owningSheet = value;
         }
@@ -81,6 +83,6 @@ package com.pblabs.rendering2D.spritesheet
             return c;
         }
         
-        private var _owningSheet:SpriteSheetComponent;
+        private var _owningSheet:ISpriteSheet;
     }
 }
