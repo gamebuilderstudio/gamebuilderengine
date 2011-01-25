@@ -18,6 +18,7 @@ package com.pblabs.engine.resource
     import flash.net.URLLoader;
     import flash.net.URLLoaderDataFormat;
     import flash.net.URLRequest;
+    import flash.system.LoaderContext;
     import flash.utils.ByteArray;
     
     /**
@@ -147,11 +148,15 @@ package com.pblabs.engine.resource
             if(!(data is ByteArray))
                 throw new Error("Default Resource can only process ByteArrays!");
             
+			var context : LoaderContext = new LoaderContext();
+			if(COMPILE_TARGET::AIR)
+				context.allowCodeImport = true;
+			
             var loader:Loader = new Loader();
             loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onLoadComplete);
             loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onDownloadError);
             loader.contentLoaderInfo.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onDownloadSecurityError);
-            loader.loadBytes(data);
+            loader.loadBytes(data, context);
             
             // Keep reference so the Loader isn't GC'ed.
             _loader = loader;
