@@ -51,7 +51,9 @@ package com.pblabs.animation
             {
                 _currentAnimation.animate(elapsed);                               
                 owner.setProperty(reference, _currentAnimation.currentValue);
-            }
+            }else{
+				play(defaultAnimation);
+			}
         }
 
         /**
