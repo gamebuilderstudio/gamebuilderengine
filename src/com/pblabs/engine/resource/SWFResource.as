@@ -78,9 +78,7 @@ package com.pblabs.engine.resource
                 if(!mc)
                     continue;
 
-                currentMax = Math.max(currentMax, mc.totalFrames);            
-
-                findMaxFrames(mc, currentMax);
+                currentMax = findMaxFrames(mc, Math.max(currentMax, mc.totalFrames));         
             }
 
             return currentMax;
@@ -102,7 +100,7 @@ package com.pblabs.engine.resource
                 if (mc.totalFrames >= frame)
                     mc.gotoAndStop(frame);
                 else
-                    mc.gotoAndStop(mc.totalFrames);
+                    mc.gotoAndStop(frame % mc.totalFrames);
 
                 advanceChildClips(mc, frame);
             }
