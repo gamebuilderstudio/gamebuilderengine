@@ -149,8 +149,10 @@ package com.pblabs.engine.resource
                 throw new Error("Default Resource can only process ByteArrays!");
             
 			var context : LoaderContext = new LoaderContext();
-			if(COMPILE_TARGET::AIR)
-				context.allowCodeImport = true;
+			//This property is only available when you are compiling using the AIR framework
+			//So I am checking first here
+			if(context.hasOwnProperty('allowCodeImport'))
+				context['allowCodeImport'] = true;
 			
             var loader:Loader = new Loader();
             loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onLoadComplete);
