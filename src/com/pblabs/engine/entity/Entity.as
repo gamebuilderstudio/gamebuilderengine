@@ -400,7 +400,7 @@ package com.pblabs.engine.entity
             if(reference.cachedLookup && reference.cachedLookup.length > 0)
             {
                 var cl:Array = reference.cachedLookup;
-                var cachedWalk:* = lookupComponentByName(cl[0]);
+                var cachedWalk:Object = lookupComponentByName(cl[0]);
                 if(!cachedWalk)
                 {
                     if(!suppressErrors)
@@ -409,11 +409,9 @@ package com.pblabs.engine.entity
                     return null;
                 }
                 
-                for(var i:int = 1; i<cl.length - 1; i++)
+                for(var i:int = 1; i<=cl.length - 1; i++)
                 {
-                    cachedWalk = cachedWalk[cl[i]];
-                    
-                    if(cachedWalk == null)
+                    if(!cachedWalk.hasOwnProperty(cl[i]))
                     {
                         if(!suppressErrors)
                             Logger.warn(this, "findProperty", "[#"+this.name+"] Could not resolve property '" + cl[i] + "' for property reference '" + reference.property + "' with cached reference"  + Logger.getCallStack());

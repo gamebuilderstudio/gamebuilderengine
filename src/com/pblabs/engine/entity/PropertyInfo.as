@@ -8,6 +8,8 @@
  ******************************************************************************/
 package com.pblabs.engine.entity
 {
+	import com.pblabs.engine.debug.Logger;
+
     /**
      * Internal class used by Entity to service property lookups.
      */
@@ -33,6 +35,10 @@ package com.pblabs.engine.entity
         
         final public function setValue(value:*):void
         {
+			if(!propertyParent.hasOwnProperty(propertyName)) {
+				Logger.warn(this, 'setValue', 'Setting property on parent object failed. Property ['+propertyName+'] not found on ['+propertyParent+']!');
+				return;
+			}
             propertyParent[propertyName] = value;
         }
         
