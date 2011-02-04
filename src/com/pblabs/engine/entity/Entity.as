@@ -595,7 +595,7 @@ package com.pblabs.engine.entity
             }
             
             // Did we end up with a match?
-            if(parentElem)
+            if(parentElem && (curLookup == null || parentElem.hasOwnProperty(curLookup)) )
             {
                 var pi:PropertyInfo = providedPi;
                 pi.propertyParent = parentElem;
