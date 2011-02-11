@@ -276,7 +276,7 @@ package com.pblabs.engine.resource
         }
         
         protected var _filename:String = null;
-        private var _isLoaded:Boolean = false;
+        protected var _isLoaded:Boolean = false;
         private var _didFail:Boolean = false;
         private var _urlLoader:URLLoader;
         private var _loader:Loader;

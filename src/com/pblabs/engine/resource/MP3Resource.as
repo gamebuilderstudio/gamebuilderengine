@@ -13,6 +13,8 @@ package com.pblabs.engine.resource
     import flash.media.Sound;
     import flash.net.URLRequest;
     
+    import org.audiofx.mp3.MP3SoundEvent;
+    
     [EditorData(extensions="mp3")]
     
     /**
@@ -30,17 +32,12 @@ package com.pblabs.engine.resource
             return _soundObject;
         }
         
-        override public function initialize(d:*):void
-        {
-            _soundObject = d;
-            onLoadComplete();
-        }
-        
-        /**
+		/**
          * @inheritDoc
          */
         override protected function onContentReady(content:*):Boolean 
         {
+			_soundObject = content;
             return soundObject != null;
         }
     }
