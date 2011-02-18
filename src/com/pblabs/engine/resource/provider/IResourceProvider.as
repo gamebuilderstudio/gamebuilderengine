@@ -33,6 +33,6 @@ package com.pblabs.engine.resource.provider
 		 * This method is called when the ResourceManager has no references to a specific resource
 		 * and wants to unload the resource.
 		 */
-		function unloadResource(uri:String, type:Class):void;
+		function unloadResource(uri:String, type:Class, force : Boolean = false):void;
     }
 }

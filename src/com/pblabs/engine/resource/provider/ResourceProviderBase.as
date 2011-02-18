@@ -57,7 +57,7 @@ package com.pblabs.engine.resource.provider
 		/**
 		 * This method will unload a resource from the resources Dictionary
 		 */
-		public function unloadResource(uri:String, type:Class):void
+		public function unloadResource(uri:String, type:Class, force : Boolean = false):void
 		{
 			var resourceIdentifier:String = uri.toLowerCase() + type;			
 			if (resources[resourceIdentifier]!=null)

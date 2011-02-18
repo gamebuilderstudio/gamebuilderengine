@@ -67,15 +67,14 @@ package com.pblabs.engine.resource.provider
 			return true;
 		}
 		
-		public override function unloadResource(uri:String, type:Class):void
+		public override function unloadResource(uri:String, type:Class, force : Boolean = false):void
 		{
 			// because this resource was dynamicly loaded 'On The Fly'
 			// we have to unload it and clean memory
 			var resourceIdentifier:String = uri.toLowerCase() + type;			
 			if (resources[resourceIdentifier]!=null)
 			{
-				if (resources[resourceIdentifier] is ImageResource)							
-					(resources[resourceIdentifier] as ImageResource).dispose();
+				resources[resourceIdentifier].dispose();
 				resources[resourceIdentifier] = null;
 			}
 		}

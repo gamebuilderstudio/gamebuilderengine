@@ -96,7 +96,7 @@ package com.pblabs.engine.resource.provider
             return resource;
         }
 		
-		public override function unloadResource(uri:String, type:Class):void
+		public override function unloadResource(uri:String, type:Class, force : Boolean = false):void
 		{
 			// no bulk loaded resources will be automaticly unloaded
 			// because we preloaded the resources and want to keep them available 

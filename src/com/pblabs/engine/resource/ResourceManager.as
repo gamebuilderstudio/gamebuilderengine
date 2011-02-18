@@ -163,8 +163,9 @@ package com.pblabs.engine.resource
          * 
          * @param filename The url of the resource to unload.
          * @param resourceType The type of the resource to unload.
+         * @param forceUnload will force an unload on a resource in a provider such as the EmbbedeResourceProvider
          */
-        public function unload(filename:String, resourceType:Class):void
+        public function unload(filename:String, resourceType:Class, forceUnload : Boolean = false):void
         {        
 			var resourceIdentifier:String = filename.toLowerCase() + resourceType;			
             if (!_resources[resourceIdentifier])
@@ -174,7 +175,7 @@ package com.pblabs.engine.resource
             }																			
             _resources[resourceIdentifier].decrementReferenceCount();
 			
-            if (_resources[resourceIdentifier].referenceCount < 1)
+            if (_resources[resourceIdentifier].referenceCount < 1 || forceUnload)
             {
 				_resources[resourceIdentifier] = null;
 				delete _resources[resourceIdentifier];
@@ -184,7 +185,7 @@ package com.pblabs.engine.resource
 				{
 					if ((resourceProviders[rp] as IResourceProvider).isResourceKnown(filename, resourceType))
 					{
-						(resourceProviders[rp] as IResourceProvider).unloadResource(filename, resourceType);
+						(resourceProviders[rp] as IResourceProvider).unloadResource(filename, resourceType, forceUnload);
 						return;
 					}
 				};
