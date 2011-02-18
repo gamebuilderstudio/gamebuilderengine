@@ -13,6 +13,13 @@ package com.pblabs.rendering2D.spritesheet
 
 	public interface ISpriteSheet
 	{
+
+		/**
+		 * destroy is the manual distruction of the spritesheet for the cases when
+		 * the spritesheet is used outside of an entity and needs to be cleaned up
+		 **/
+		function destroy():void;
+		
 		/**
 		 * Gets the bitmap data for a frame at the specified index.
 		 * 

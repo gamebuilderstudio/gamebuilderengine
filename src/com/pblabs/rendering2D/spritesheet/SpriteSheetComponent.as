@@ -36,17 +36,9 @@ package com.pblabs.rendering2D.spritesheet
      * <p>Be aware that Flash implements an upper limit on image size - going over
      * 2048 pixels in any dimension will lead to problems.</p>
      */ 
-    public class SpriteSheetComponent extends SpriteContainerComponent implements ISpriteSheet
+    public class SpriteSheetComponent extends BasicSpriteSheetComponent
     {
 						
-        /**
-         * True if the image data associated with this sprite sheet has been loaded.
-         */
-        public override function get isLoaded():Boolean
-        {
-            return (imageData != null || _forcedBitmaps)
-        }
-        
         [EditorData(ignore="true")]
         /**
          * The filename of the image to use for this sprite sheet.
@@ -117,92 +109,32 @@ package com.pblabs.rendering2D.spritesheet
          */
         public function set image(value:ImageResource):void
         {
-            _image = value;
+			_loaded = true;
+			_failed = false;
+
+			_image = value;
 			_imageFilename = _image.filename;
             deleteFrames();
         }
         
+		[EditorData(ignore="true")]
         /**
          * The bitmap data of the loaded image.
          */
-        public function get imageData():BitmapData
+		override public function get imageData():BitmapData
         {
             if (!_image)
                 return null;
             
             return _image.bitmapData;
         }
-		public function set imageData(val : BitmapData):void{
+		override public function set imageData(val : BitmapData):void{
 			Logger.warn(this, 'set imageData', 'You can not set the imageData on the SpriteSheetComponent, pass a fileName to be loaded.');
 		}
-        
-        /**
-         * The divider to use to chop up the sprite sheet into frames. If the divider
-         * isn't set, the image will be treated as one whole frame.
-         */
-        [TypeHint(type="dynamic")]
-        public function get divider():ISpriteSheetDivider
-        {
-            return _divider;
-        }
-        
-        /**
-         * @private
-         */
-        public function set divider(value:ISpriteSheetDivider):void
-        {
-            _divider = value;
-            _divider.owningSheet = this;
-            deleteFrames();
-        }
-		
-        protected override function getSourceFrames() : Array
-        {
-            // If user provided their own bitmapdatas, return those.
-            if(_forcedBitmaps)
-                return _forcedBitmaps;
-            
-            var frames:Array;
-            
-            // image isn't loaded, can't do anything yet
-            if (!imageData)
-                return null;
-            
-            // no divider means treat the image as a single frame
-            if (!_divider)
-            {
-                frames = new Array(1);
-                frames[0] = imageData;
-            }
-            else
-            {
-                frames = new Array(_divider.frameCount);
-								
-                for (var i:int = 0; i < _divider.frameCount; i++)
-                {
-                    var area:Rectangle = _divider.getFrameArea(i);										
-                    frames[i] = new BitmapData(area.width, area.height, true);
-                    frames[i].copyPixels(imageData, area, new Point(0, 0));									
-                }				
-            }		
-			
-            return frames;
-        }
-        
-        /**
-         * From an array of BitmapDatas, initialize the sprite sheet, ignoring
-         * divider + filename.
-         */
-        public function initializeFromBitmapDataArray(bitmaps:Array):void
-        {
-            _forcedBitmaps = bitmaps;
-        }
         
         protected function onImageLoaded(resource:ImageResource):void
         {
 			_loading = false;
-			_loaded = true;
-			_failed = false;
             image = resource;
         }
         		
@@ -213,7 +145,7 @@ package com.pblabs.rendering2D.spritesheet
             Logger.error(this, "onImageFailed", "Failed to load '" + (resource ? resource.filename : "(unknown)") + "'");
         }
 		
-		protected override function onAdd():void
+		override protected function onAdd():void
 		{
 			super.onAdd();
 			if (!_image && imageFilename!=null && imageFilename!="" && !loading)
@@ -223,7 +155,7 @@ package com.pblabs.rendering2D.spritesheet
 			}
 		}
 		
-		protected override function onRemove():void
+		override protected function onRemove():void
 		{
 			if (_image)
 			{
@@ -240,7 +172,5 @@ package com.pblabs.rendering2D.spritesheet
 		private var _loading:Boolean = false;
 		private var _loaded:Boolean = false;
 		private var _failed:Boolean = false;
-        private var _divider:ISpriteSheetDivider = null;
-        private var _forcedBitmaps:Array = null;
     }
 }

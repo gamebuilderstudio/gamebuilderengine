@@ -50,6 +50,7 @@ package com.pblabs.rendering2D.spritesheet
         protected function deleteFrames():void
         {
             frames = null;
+			frameNotes = null;
         }
         
         /**

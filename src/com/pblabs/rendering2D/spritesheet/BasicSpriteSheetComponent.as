@@ -58,6 +58,7 @@ package com.pblabs.rendering2D.spritesheet
 		public function set imageData(data : BitmapData):void
 		{
 			_imageData = data;
+			deleteFrames();
 		}
         
         /**
