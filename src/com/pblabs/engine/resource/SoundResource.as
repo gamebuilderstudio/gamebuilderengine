@@ -42,8 +42,10 @@ package com.pblabs.engine.resource
 				if (onContentReady(event ? (event as MP3SoundEvent).sound : null))
 				{
 					_isLoaded = true;
-					_soundLoader.removeEventListener(MP3SoundEvent.COMPLETE, onLoadComplete);
-					_soundLoader = null;
+					if(_soundLoader){
+						_soundLoader.removeEventListener(MP3SoundEvent.COMPLETE, onLoadComplete);
+						_soundLoader = null;
+					}
 					dispatchEvent(new ResourceEvent(ResourceEvent.LOADED_EVENT, this));
 					return;
 				}
