@@ -77,6 +77,18 @@ package com.pblabs.engine.core
         {
             return _bitList[number];
         }
+		
+		/**
+		 * Checks to see if a given type is registered with the manager
+		 * 
+		 * @param name : String - the name of the type being checked
+		 **/
+		public function doesTypeExists(name : String):Boolean
+		{
+			if (!_typeList.hasOwnProperty(name))
+				return false;
+			return true;
+		}
         
         /**
          * Determines whether an object type is of the specified type.
@@ -150,7 +162,7 @@ package com.pblabs.engine.core
         public function registerFlag(bitIndex:int, name:String):void
         {
             // Sanity.
-            if(getTypeName(bitIndex) != null) 
+            if(getTypeName(1 << bitIndex) != null) 
                 throw new Error("Bit already in use!");
             if(_typeList[name])
                 throw new Error("Name already assigned to another bit!");
@@ -162,10 +174,23 @@ package com.pblabs.engine.core
             
             // And stuff into our arrays.
             _typeList[name] = bitIndex;
-            _bitList[bitIndex] = name;
+            _bitList[1 << bitIndex] = name;
         }
         
-        private var _typeCount:uint = 0;
+		/**
+		 * Forcibly unRegister a specific flag.
+		 */
+		public function unRegisterFlag(name:String):void
+		{
+			if(!_typeList.hasOwnProperty(name))
+				return;
+			
+			// And stuff into our arrays.
+			delete _bitList[1 << _typeList[name]];
+			delete _typeList[name];
+		}
+
+		private var _typeCount:uint = 0;
         private var _typeList:Dictionary = new Dictionary();
         private var _bitList:Array = new Array();
     }
