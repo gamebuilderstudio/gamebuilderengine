@@ -161,8 +161,10 @@ package com.pblabs.engine.debug
        */
       public static function ensureAtRoot():void
       {
-         if(_stackDepth)
-            throw new Error("Not at root!");
+         if(_stackDepth){
+            Logger.error(Profiler, 'ensureAtRoot', 'Not at root!');
+			_stackDepth = 0;
+		 }
       }
       
       private static function doReport():void
