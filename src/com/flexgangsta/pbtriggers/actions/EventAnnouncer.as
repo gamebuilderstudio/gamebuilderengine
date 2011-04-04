@@ -60,6 +60,14 @@ package com.flexgangsta.pbtriggers.actions
 			return event;
 		}
 		
+		public function destroy():void
+		{
+			for (var key:String in properties)
+			{
+				delete properties[key];
+			}
+			_owner = null;
+		}
 		//______________________________________ 
 		//	Private Properties
 		//______________________________________

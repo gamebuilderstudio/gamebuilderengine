@@ -68,6 +68,16 @@ package com.flexgangsta.pbtriggers.actions
 			}
 		}
 		
+		public function destroy():void
+		{
+			var len : int = args.length;
+			for(var i : int = 0; i < len; i++)
+			{
+				args.pop();
+			}
+			methodReference = null;
+			_owner = null;
+		}
 		//______________________________________ 
 		//	Private Properties
 		//______________________________________

@@ -22,12 +22,16 @@ package com.flexgangsta.pbtriggers.actions
 		function execute():*;
 		
 		/**
+		 * Destorys the current action and performs any cleanup
+		 */		
+		function destroy():void;
+
+		/**
 		 * 
 		 * @param value A reference to the trigger that is hosting
 		 * the action. 
 		 * 
 		 */		
 		function set owner(value:ITriggerComponent):void;
-		
 	}
 }

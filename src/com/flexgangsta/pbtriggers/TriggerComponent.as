@@ -30,6 +30,13 @@ package com.flexgangsta.pbtriggers
 			
 			//Remove Event Handlers
 			this.owner.eventDispatcher.addEventListener(eventType,targetEventHandler);
+
+			var len : int = actions.length;
+			for(var i : int = 0; i < len; i++)
+			{
+				actions[i].destroy();
+			}
+			_lastReturn = null;
 		}
 		
 		//______________________________________ 
@@ -75,7 +82,6 @@ package com.flexgangsta.pbtriggers
 					_exit=false;
 					return;
 				}
-				
 				_lastReturn = action.execute();
 			}
 		}

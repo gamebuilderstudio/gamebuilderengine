@@ -23,7 +23,7 @@ package com.flexgangsta.pbtriggers.actions
 		{
 			_owner=value;
 		}
-		
+
 		//______________________________________ 
 		//	Public Methods
 		//______________________________________
@@ -56,6 +56,12 @@ package com.flexgangsta.pbtriggers.actions
 			return _owner.owner.getProperty(property);
 		}
 		
+		public function destroy():void
+		{
+			source = null;
+			property = null;
+			_owner = null;
+		}
 		//______________________________________ 
 		//	Private Properties
 		//______________________________________
