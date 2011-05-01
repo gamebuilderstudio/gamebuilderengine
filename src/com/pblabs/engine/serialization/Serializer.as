@@ -599,6 +599,12 @@ package com.pblabs.engine.serialization
             catch(e:Error)
             {
             }
+			
+			//If typeName is a wildcard we need to handle this special case
+			if(typeName == '*')
+			{
+				typeName = getQualifiedClassName(childObject);
+			}
             
             // If requested type isn't the same as what we found, reset the object.
             var desiredType:Class = TypeUtility.getClassFromName(typeName);
