@@ -178,7 +178,18 @@ package com.pblabs.engine.core
             mapActionToHandler(action, handler);
         }      
 
-
+		/**
+		 * Removes a specific key Input mapping
+         * 
+		 * @param key The key that will trigger the handler. This should be one
+         * of the constants defined in the InputKey class.
+		 **/
+		public function removeKeyHandler(key:InputKey):void
+		{
+			delete _bindings[_keymap[key.keyCode]];
+			delete _keymap[key.keyCode];
+		}
+		
         public function destroy():void
         {
             PBE.inputManager.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
