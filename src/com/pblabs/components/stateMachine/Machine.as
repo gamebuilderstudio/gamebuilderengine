@@ -113,6 +113,18 @@ package com.pblabs.components.stateMachine
             states[name] = state;
         }
         
+		public function removeState(name:String):void
+		{
+			if(defaultState == name) {
+				defaultState = null;
+			}else{
+				currentStateName = defaultState;
+			}
+			states[name].exit(this);
+			
+			delete states[name];
+		}
+		
         public function getState(name:String):IState
         {
             return states[name] as IState;
