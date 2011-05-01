@@ -13,6 +13,7 @@ package com.flexgangsta.pbtriggers.actions
 		/**
 		 * A PropertyReference of the method to call.
 		 */		
+		[TypeHint(type="com.pblabs.engine.entity.PropertyReference")]
 		public var methodReference:PropertyReference;
 		
 		/**

@@ -10,6 +10,8 @@ package com.flexgangsta.pbtriggers.actions
 		//	Public Properties
 		//______________________________________
 		public var source:*;
+
+		[TypeHint(type="com.pblabs.engine.entity.PropertyReference")]
 		public var property:PropertyReference;
 		/**
 		 * This is should be set to <code>false</code> if you wish to pass 
