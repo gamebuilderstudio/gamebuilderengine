@@ -8,13 +8,14 @@
  ******************************************************************************/
 package com.pblabs.engine.serialization
 {
+    import com.pblabs.engine.core.OrderedArray;
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.entity.IEntity;
-     import com.pblabs.engine.entity.IEntityComponent;
-     import flash.geom.Point;
-     import flash.utils.getQualifiedClassName;
+    import com.pblabs.engine.entity.IEntityComponent;
     
+    import flash.geom.Point;
     import flash.utils.Dictionary;
+    import flash.utils.getQualifiedClassName;
     
     /**
      * Singleton class for serializing and deserializing objects. This class 
@@ -49,12 +50,14 @@ package com.pblabs.engine.serialization
             _deserializers["Array"] = deserializeDictionary;
             _deserializers["flash.utils::Dictionary"] = deserializeDictionary;
             _deserializers["Class"] = deserializeClass;
+			_deserializers["com.pblabs.engine.core::OrderedArray"] = deserializeDictionary;
             
             _serializers["::DefaultSimple"] = serializeSimple;
             _serializers["::DefaultComplex"] = serializeComplex;
             _serializers["Boolean"] = serializeBoolean;
             _serializers["Array"] = serializeDictionary;
             _serializers["flash.utils::Dictionary"] = serializeDictionary;
+			_serializers["com.pblabs.engine.core::OrderedArray"] = serializeDictionary;
             
             // Do a quick sanity check to make sure we are getting metadata.
             var tmd:TestForMetadata = new TestForMetadata();
@@ -435,14 +438,14 @@ package com.pblabs.engine.serialization
             for each (var childXML:XML in xml.*)
             {
                 // Where are we assigning this item?
-                var key:String = childXML.name().toString();
-                
+               var key:String = childXML.name().toString();
+
                 // Deal with escaping numbers and the "add to end" behavior.
                 if (key.charAt(0) == "_")
                     key = key.slice(1);
                 
                 // Might be invalid...
-                if ((key.length < 1) && !(object is Array))
+                if ((key.length < 1) && !(object is Array) && !(object is OrderedArray))
                 {
                     var xmlPath:String = reportXMLPath(childXML);
                     Logger.error(object, "deserialize", "Cannot add a value to a dictionary without a key. " + xmlPath);
@@ -468,7 +471,7 @@ package com.pblabs.engine.serialization
                     if (key.length > 0)
                         object[key] = value;
                     else
-                        (object as Array).push(value);
+                        object.push(value);
                 }
             }
             
