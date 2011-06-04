@@ -46,7 +46,7 @@ package com.pblabs.components.stateMachine
             for each(var t:ITransition in transitions)
             {
                 //Logger.print(this, "Evaluating transition '" + t); 
-                if(t.evaluate(fsm) && fsm.setCurrentState(t.getTargetState()))
+                if(t.evaluate(fsm) && fsm.setCurrentState(t.targetState))
                     return;
             }
         }

@@ -18,7 +18,8 @@ package com.pblabs.components.stateMachine
       /**
        * What state will we be transitioning to?
        */
-      function getTargetState():String;
+      function get targetState():String;
+	  function set targetState(val : String):void;
       
       /**
        * evaluate the conditions for this state; if true then we go to

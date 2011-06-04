@@ -25,11 +25,10 @@ package com.pblabs.components.stateMachine
          return true;
       }
       
-      public function getTargetState():String
-      {
-         return _targetState;
-      }
-      
+	  public function get targetState():String
+	  {
+		  return _targetState;
+	  }
       public function set targetState(value:String):void
       {
          _targetState = value;
