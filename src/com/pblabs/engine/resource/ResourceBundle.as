@@ -116,17 +116,19 @@ package com.pblabs.engine.resource
                     }
                     else if (meta.@name == "ResourceType")
                     {
+						resIsEmbedded = true;
+						
                         for each (arg in meta.children())
                         {
 							if (arg.@key == "name") 
 							{
 								resSource = arg.@value;
-								resIsEmbedded = true;
 							} 
+							//Override to allow you to specify the resource type that should be used.
                             if (arg.@key == "className") 
                             {
                                 resTypeName = arg.@value;
-                            } 
+							}
                         }                  
 					}
                 }
