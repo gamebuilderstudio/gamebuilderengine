@@ -20,6 +20,7 @@ package com.pblabs.box2D
     import com.pblabs.engine.entity.EntityComponent;
     import com.pblabs.rendering2D.IMobileSpatialObject2D;
     import com.pblabs.rendering2D.IScene2D;
+    import com.pblabs.rendering2D.ISpatialManager2D;
     import com.pblabs.rendering2D.ISpatialObject2D;
     import com.pblabs.rendering2D.RayHitInfo;
     
@@ -39,12 +40,12 @@ package com.pblabs.box2D
 		[EditorData(ignore="true")]
         public var onAddedCallback:Function = null;
 
-        public function get spatialManager():Box2DManagerComponent
+        public function get spatialManager():ISpatialManager2D
         {
             return _manager;
         }
         
-        public function set spatialManager(value:Box2DManagerComponent):void
+        public function set spatialManager(value:ISpatialManager2D):void
         {
             if (_body)
             {
@@ -52,14 +53,14 @@ package com.pblabs.box2D
                 return; 
             }
             
-            _manager = value;
+            _manager = (value as Box2DManagerComponent);
         }
         
 		[EditorData(ignore="true")]
         public function get manager():Box2DManagerComponent
         {
             Logger.warn(this, "get manager", "manager is deprecated; switch to spatialManager.");
-            return spatialManager;
+            return (spatialManager  as Box2DManagerComponent);
         }
         
 		[EditorData(ignore="true")]

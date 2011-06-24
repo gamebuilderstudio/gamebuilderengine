@@ -32,7 +32,7 @@ package com.pblabs.box2D
       override protected function doCreateShape():b2ShapeDef
       {
          var halfSize:Point = new Point(_parent.size.x * 0.5, _parent.size.y * 0.5);
-         var scale:Number = _parent.spatialManager.inverseScale;
+         var scale:Number = (_parent.spatialManager as Box2DManagerComponent).inverseScale;
          
          var shape:b2PolygonDef = new b2PolygonDef();
          

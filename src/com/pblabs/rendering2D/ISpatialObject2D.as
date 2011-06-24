@@ -45,5 +45,12 @@ package com.pblabs.rendering2D
          *              need access to the scene we're doing the check from.
          */
         function pointOccupied(pos:Point, mask:ObjectType, scene:IScene2D):Boolean;
-    }
+
+		
+		/**
+		 * The spatial manager this object belongs to.
+		 */
+		function get spatialManager():ISpatialManager2D;
+		function set spatialManager(value:ISpatialManager2D):void;
+	}
 }
