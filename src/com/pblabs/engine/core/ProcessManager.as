@@ -8,10 +8,12 @@
  ******************************************************************************/
 package com.pblabs.engine.core
 {
-    import com.pblabs.engine.debug.*;
     import com.pblabs.engine.PBE;
     import com.pblabs.engine.PBUtil;
+    import com.pblabs.engine.debug.*;
+    import com.pblabs.engine.entity.IEntityComponent;
     import com.pblabs.engine.serialization.TypeUtility;
+    
     import flash.events.Event;
     import flash.utils.getTimer;
     
@@ -496,9 +498,14 @@ package com.pblabs.engine.core
                 if(!animatedObject)
                     continue;
                 
-                Profiler.enter(animatedObject.profilerKey);
-                (animatedObject.listener as IAnimatedObject).onFrame(deltaTime / 1000);
-                Profiler.exit(animatedObject.profilerKey);
+				if(PBE.processManager.timeScale == 0 && (animatedObject.listener is IEntityComponent))
+				{
+					continue;
+				}else{
+	                Profiler.enter(animatedObject.profilerKey);
+					(animatedObject.listener as IAnimatedObject).onFrame(deltaTime / 1000);
+	                Profiler.exit(animatedObject.profilerKey);
+				}
             }
             duringAdvance = false;
             Profiler.exit("frame");
