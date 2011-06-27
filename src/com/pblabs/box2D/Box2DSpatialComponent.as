@@ -349,7 +349,7 @@ package com.pblabs.box2D
             if (_collisionShapes)
             {
                 for each (var newShape:CollisionShape in _collisionShapes)
-                _body.CreateFixture(newShape.createShape(this));
+                	_body.CreateFixture(newShape.createShape(this));
             }
             
             updateMass();

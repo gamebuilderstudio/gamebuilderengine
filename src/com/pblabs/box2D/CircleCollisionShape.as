@@ -50,7 +50,7 @@ package com.pblabs.box2D
          var scale:Number = (_parent.spatialManager as Box2DManagerComponent).inverseScale;
          
          var shape:b2CircleDef = new b2CircleDef();
-		 shape.shape = new b2CircleShape(shape._ptr+32);
+		 shape.shape = new b2CircleShape();
          shape.radius = _radius * scale * (halfSize.x > halfSize.y ? halfSize.x : halfSize.y);
          shape.localPosition.v2 = new V2(_offset.x, _offset.y);
          

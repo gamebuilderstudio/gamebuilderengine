@@ -26,13 +26,6 @@
 			col2.v2 = v.c2;
 		}
 		
-		//Added: @lavonw
-		public function SetM(m:b2Mat22) : void
-		{
-			col1.SetV(m.col1.v2);
-			col2.SetV(m.col2.v2);
-		}
-		
 		public function AddM(m:b2Mat22) : void
 		{
 			col1.x += m.col1.x;

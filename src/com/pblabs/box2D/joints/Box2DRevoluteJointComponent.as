@@ -467,9 +467,9 @@ package com.pblabs.box2D.joints
 			}
 		
 		private function updateAnchors():void {
-				var worldPoint:b2Vec2 = b2Vec2.Make(_worldAnchor.x, _worldAnchor.y);
-				var point1:V2 = spatial1.body.GetLocalPoint(worldPoint.v2);
-				var point2:V2 = spatial2.body.GetLocalPoint(worldPoint.v2);
+				var worldPoint:V2 = V2.fromP(_worldAnchor);
+				var point1:V2 = spatial1.body.GetLocalPoint(worldPoint);
+				var point2:V2 = spatial2.body.GetLocalPoint(worldPoint);
 				
 				anchor1 = new Point(point1.x, point1.y);
 				anchor2 = new Point(point2.x, point2.y);

@@ -8,6 +8,7 @@
  ******************************************************************************/
 package com.pblabs.box2D
 {
+    import Box2DAS.Collision.AABB;
     import Box2DAS.Collision.Shapes.b2Shape;
     import Box2DAS.Collision.b2AABB;
     import Box2DAS.Common.*;
@@ -29,6 +30,7 @@ package com.pblabs.box2D
     import com.pblabs.rendering2D.ISpatialObject2D;
     import com.pblabs.rendering2D.RayHitInfo;
     
+    import flash.display.Shape;
     import flash.geom.Point;
     import flash.geom.Rectangle;
     
@@ -81,10 +83,17 @@ package com.pblabs.box2D
 		public function set visualDebugging(value:Boolean):void
 		{
 			_visualDebugging = value;
+			if(!_debugDrawer) return;
+			
 			if(_visualDebugging)
 				_debugDrawer.Draw();
 			else
 				_debugDrawer.ClearAll();
+		}
+		
+		public function get debugDisplay():Shape
+		{
+			return _debugDrawer;
 		}
 
 		[EditorData(defaultValue="9.81")]
@@ -161,7 +170,7 @@ package com.pblabs.box2D
             //defer until we know it should not be locked anymore.
             if (_world.IsLocked())
             {
-				PBE.processManager.schedule(0, thisArg, addBody, bodyDef, thisArg, completedCallback);
+				PBE.processManager.schedule(0, thisArg, addBody, bodyDef, thisArg, completedCallback );
             }
             else
             {
@@ -187,6 +196,7 @@ package com.pblabs.box2D
         public function onTick(tickRate:Number):void
         {
             _world.Step(tickRate, 10, 1);
+			_world.ClearForces();
         }
 		
 		public function onFrame(deltaTime:Number):void {
@@ -268,48 +278,48 @@ package com.pblabs.box2D
         
         public function queryRectangle(box:Rectangle, mask:ObjectType, results:Array):Boolean
         {
-			/*
-            // Query Box2D.
-            var aabb:b2AABB = new b2AABB();
-            aabb.lowerBound = b2Vec2.Make(box.topLeft.x / scale, box.topLeft.y / scale);
-            aabb.upperBound = b2Vec2.Make(box.bottomRight.x / scale, box.bottomRight.y / scale);
-            
-            var resultShapes:Array = new Array(1024);
-			var numFoundShapes:int = _world.Query(aabb, resultShapes, 1024);
-            
+			//Query Box2D.
+			var aabb:AABB = new AABB(new V2(box.topLeft.x / scale, box.topLeft.y / scale), new V2(box.bottomRight.x / scale, box.bottomRight.y / scale));
+
+			var resultFixtures:Array = new Array(1024);
+			var numFoundShapes:int;
+			
+			function callback(fixture:b2Fixture):Boolean {
+					resultFixtures.push(fixture);
+					return true;
+			}
+			_world.QueryAABB(callback, aabb);
+			numFoundShapes = resultFixtures.length;
+			
 			var i:int = 0;
 			if(numFoundShapes > 0)
 			{
 				// Now get the owning components back from the results and give to user.
 				for(i=0; i<1024; i++)
 				{
-					if(!resultShapes[i])
+					if(!resultFixtures[i])
 						break;
-					
-					var curShape:b2Shape = resultShapes[i] as b2Shape;
-					var curComponent:Box2DSpatialComponent = curShape.GetBody().GetUserData() as Box2DSpatialComponent;
+					var curFixture:b2Fixture = resultFixtures[i] as b2Fixture;
+					var curComponent:Box2DSpatialComponent = curFixture.GetBody().GetUserData() as Box2DSpatialComponent;
 					if(PBE.objectTypeManager.doTypesOverlap(curComponent.collisionType, mask) || mask == null)
 						results.push(curComponent);
 				}
 			}
-            
-            // Let the other items have a turn.
-            i += _otherItems.queryRectangle(box, mask, results) ? 1 : 0;
-            
-            // If we made it anywhere with i, then we got a result.
-            return (i != 0);
-			*/
-			Logger.warn(this, "queryRectangle", "queryRectangle is not implemented for the new Box2D implementation");
+			
+			// Let the other items have a turn.
+			i += _otherItems.queryRectangle(box, mask, results) ? 1 : 0;
+			
+			// If we made it anywhere with i, then we got a result.
+			return (i != 0);
+			
 			return false;
         }
         
         public function queryCircle(center:Point, radius:Number, mask:ObjectType, results:Array):Boolean
         {
-			/*
 			//Let's make life easy. We'll just use queryRectangle.
 			//queryRectangle(box:Rectangle, mask:ObjectType, results:Array):Boolean
-			var box:Rectangle = new Rectangle(center.x - radius / 2, center.y - radius / 2,
-				radius, radius );
+			var box:Rectangle = new Rectangle(center.x - radius / 2, center.y - radius / 2, radius, radius );
 			
 			//Query the Box2D objects:
 			var foundObject:Boolean = queryRectangle(box, mask, results);
@@ -332,9 +342,6 @@ package com.pblabs.box2D
 			
 			//return wheter we found object(s) or not:
 			return foundObject; //|| foundOtherObjects;
-			*/
-			Logger.warn(this, "queryCircle", "queryCircle is not implemented for the new Box2D implementation");
-			return false;
         }
         
         public function castRay(start:Point, end:Point, mask:ObjectType, result:RayHitInfo):Boolean
@@ -374,7 +381,7 @@ package com.pblabs.box2D
             bounds.upperBound.SetV( new V2( (_worldBounds.x + _worldBounds.width) / _scale, (_worldBounds.y + _worldBounds.height) / _scale) );*/
 			//ADDED: TODO: Fix to use the bounds property 
 			//_world = new b2World(bounds, b2Vec2.Make(_gravity.x, _gravity.y), _allowSleep);
-            _world = new b2World(b2Vec2.Make(_gravity.x, _gravity.y), _allowSleep);
+            _world = new b2World(V2.fromP(_gravity), _allowSleep);
             _world.SetContactFilter(new ContactFilter());
             _world.SetContactListener(new ContactListener());
 			

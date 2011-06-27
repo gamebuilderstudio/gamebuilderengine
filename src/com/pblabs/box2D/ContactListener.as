@@ -9,18 +9,19 @@
 package com.pblabs.box2D
 {
    import Box2DAS.Collision.b2ContactPoint;
+   import Box2DAS.Collision.b2Manifold;
+   import Box2DAS.Dynamics.*;
    import Box2DAS.Dynamics.Contacts.*;
-   import Box2DAS.Dynamics.b2ContactListener;
    
    import flash.utils.Dictionary;
 
    public class ContactListener extends b2ContactListener
    {
-      override public function Add(point:b2ContactPoint):void
+	  override public function BeginContact(contact:b2Contact):void
       {
-         var spatial1:Box2DSpatialComponent = point.shape1.m_userData as Box2DSpatialComponent;
-         var spatial2:Box2DSpatialComponent = point.shape2.m_userData as Box2DSpatialComponent;
-         
+		 var spatial1:Box2DSpatialComponent = contact.GetFixtureA().GetUserData() as Box2DSpatialComponent;
+		 var spatial2:Box2DSpatialComponent = contact.GetFixtureB().GetUserData() as Box2DSpatialComponent;
+        
          if (!shape1Dictionary[spatial1])
             shape1Dictionary[spatial1] = 0;
          
@@ -29,38 +30,43 @@ package com.pblabs.box2D
 
          //check for existence of both owners because one might be destroyed during the event.
          if (spatial1.owner) 
-            spatial1.owner.eventDispatcher.dispatchEvent(new CollisionEvent(CollisionEvent.COLLISION_EVENT, point));
+			spatial1.owner.eventDispatcher.dispatchEvent(new CollisionEvent(CollisionEvent.COLLISION_EVENT, contact));
          
          if (spatial2.owner)
-            spatial2.owner.eventDispatcher.dispatchEvent(new CollisionEvent(CollisionEvent.COLLISION_EVENT, point));
+			spatial2.owner.eventDispatcher.dispatchEvent(new CollisionEvent(CollisionEvent.COLLISION_EVENT, contact));
          
          shape1Dictionary[spatial1]++;
          shape1Dictionary[spatial2]++;
       }
+	  
+	  override public function PreSolve(contact:b2Contact, oldManifold:b2Manifold):void 
+	  {
+  			super.PreSolve(contact, oldManifold);
+  			var spatial1:Box2DSpatialComponent = contact.GetFixtureA().GetUserData() as Box2DSpatialComponent;
+  			var spatial2:Box2DSpatialComponent = contact.GetFixtureB().GetUserData() as Box2DSpatialComponent;
+  			//check for existence of both owners because one might be destroyed during the event.
+  			if (spatial1.owner) 
+	  			spatial1.owner.eventDispatcher.dispatchEvent(new CollisionEvent(CollisionEvent.PRE_COLLISION_EVENT, contact));
+  
+  			if (spatial2.owner)
+	  			spatial2.owner.eventDispatcher.dispatchEvent(new CollisionEvent(CollisionEvent.PRE_COLLISION_EVENT, contact));
+	  }
       
-      override public function Persist(point:b2ContactPoint):void
+	  override public function EndContact(contact:b2Contact):void
       {
-      }
-      
-      override public function Remove(point:b2ContactPoint):void
-      {
-         var spatial1:Box2DSpatialComponent = point.shape1.m_userData as Box2DSpatialComponent;
-         var spatial2:Box2DSpatialComponent = point.shape2.m_userData as Box2DSpatialComponent;
+		  var spatial1:Box2DSpatialComponent = contact.GetFixtureA().GetUserData() as Box2DSpatialComponent;
+		  var spatial2:Box2DSpatialComponent = contact.GetFixtureB().GetUserData() as Box2DSpatialComponent;
          
          shape1Dictionary[spatial1]--;
          shape1Dictionary[spatial2]--;
 
-         //check for existence of both owners because one might be destroyed during the event.
-         if (spatial1.owner) 
-            spatial1.owner.eventDispatcher.dispatchEvent(new CollisionEvent(CollisionEvent.COLLISION_STOPPED_EVENT, point));
-         
-         if (spatial2.owner)
-            spatial2.owner.eventDispatcher.dispatchEvent(new CollisionEvent(CollisionEvent.COLLISION_STOPPED_EVENT, point));
+		 //check for existence of both owners because one might be destroyed during the event.
+		 if (spatial1.owner) 
+			 spatial1.owner.eventDispatcher.dispatchEvent(new CollisionEvent(CollisionEvent.COLLISION_STOPPED_EVENT, contact));
+		 
+		 if (spatial2.owner)
+			 spatial2.owner.eventDispatcher.dispatchEvent(new CollisionEvent(CollisionEvent.COLLISION_STOPPED_EVENT, contact));
       }
-      
-      /*override public function Result(point:b2ContactResult):void
-      {
-      }*/
       
       private var shape1Dictionary:Dictionary = new Dictionary();
    }
