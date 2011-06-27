@@ -49,12 +49,12 @@ package com.pblabs.box2D
          var halfSize:Point = new Point(_parent.size.x * 0.5, _parent.size.y * 0.5);
          var scale:Number = (_parent.spatialManager as Box2DManagerComponent).inverseScale;
          
-         var shape:b2CircleDef = new b2CircleDef();
-		 shape.shape = new b2CircleShape();
-         shape.radius = _radius * scale * (halfSize.x > halfSize.y ? halfSize.x : halfSize.y);
-         shape.localPosition.v2 = new V2(_offset.x, _offset.y);
+		 var fixture: b2FixtureDef = super.doCreateShape();
+		 var shape:b2CircleShape = new b2CircleShape();
+		 shape.m_radius = _radius * scale;
+		 fixture.shape = shape;
          
-         return shape;
+         return fixture;
       }
       
       private var _radius:Number = 1.0;
