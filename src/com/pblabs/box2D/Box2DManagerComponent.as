@@ -376,19 +376,12 @@ package com.pblabs.box2D
         
         private function createWorld():void
         {
-           /* var bounds:b2AABB = new b2AABB();
-            bounds.lowerBound.SetV( new V2(_worldBounds.x / _scale, _worldBounds.y / _scale) );
-            bounds.upperBound.SetV( new V2( (_worldBounds.x + _worldBounds.width) / _scale, (_worldBounds.y + _worldBounds.height) / _scale) );*/
-			//ADDED: TODO: Fix to use the bounds property 
-			//_world = new b2World(bounds, b2Vec2.Make(_gravity.x, _gravity.y), _allowSleep);
             _world = new b2World(V2.fromP(_gravity), _allowSleep);
-            _world.SetContactFilter(new ContactFilter());
             _world.SetContactListener(new ContactListener());
 			
 			_debugDrawer = new b2DebugDraw();
 			_debugDrawer.world = _world;
 			_debugDrawer.scale = _scale;
-
         }
         
         // Used to store other world objects that aren't implemented by Box2D.

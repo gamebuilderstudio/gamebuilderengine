@@ -12,9 +12,11 @@ package com.pblabs.box2D
     import Box2DAS.Collision.Shapes.b2Shape;
     import Box2DAS.Common.V2;
     import Box2DAS.Common.b2Vec2;
+    import Box2DAS.Dynamics.ContactEvent;
     import Box2DAS.Dynamics.b2Body;
     import Box2DAS.Dynamics.b2BodyDef;
     import Box2DAS.Dynamics.b2Fixture;
+    import Box2DAS.Dynamics.b2FixtureDef;
     
     import com.pblabs.engine.PBUtil;
     import com.pblabs.engine.core.ObjectType;
@@ -172,8 +174,7 @@ package com.pblabs.box2D
         
         public function set position(value:Point):void
         {
-            var position:V2 = new V2(value.x, value.y);
-            _bodyDef.position.v2 = position;
+            var position:V2 = _bodyDef.position.v2.xy(value.x, value.y);
             
             if (_body)
             {
@@ -348,15 +349,22 @@ package com.pblabs.box2D
             
             if (_collisionShapes)
             {
-                for each (var newShape:CollisionShape in _collisionShapes)
-                	_body.CreateFixture(newShape.createShape(this));
+                for each (var newShape:CollisionShape in _collisionShapes){
+                	createFixtureInstance(_body, newShape.createShape(this))
+				}
             }
             
             updateMass();
         }
-        
+		
 		public function addCollisionShape(collisionShape:CollisionShape):void {
-			_body.CreateFixture(collisionShape.createShape(this));
+			if (!_body)
+			{
+				Logger.warn(this, "buildCollisionShapes", "Cannot build collision shapes prior to registration.");
+				return;
+			}
+			
+			createFixtureInstance(_body, collisionShape.createShape(this))
 			updateMass();
 		}
 				
@@ -401,7 +409,6 @@ package com.pblabs.box2D
                     _body = body;
                     _body.SetUserData(this);
                     _bodyDef.position.v2.multiplyN(_manager.scale);
-                    
                     linearVelocity = _linearVelocity;
                     angularVelocity = _angularVelocity;
                     
@@ -417,6 +424,16 @@ package com.pblabs.box2D
             _manager.removeBody(_body);
             _body = null;
         }
+		
+		private function createFixtureInstance(body : b2Body, fixtureDef : b2FixtureDef):b2Fixture
+		{
+			var fixture : b2Fixture = body.CreateFixture(fixtureDef);
+			fixture.m_reportBeginContact = true;
+			fixture.m_reportEndContact = true;
+			fixture.m_reportPostSolve = true;
+			fixture.m_reportPreSolve = true;
+			return fixture;
+		}
         
         private var _manager:Box2DManagerComponent = null;
         private var _collisionType:ObjectType = null;

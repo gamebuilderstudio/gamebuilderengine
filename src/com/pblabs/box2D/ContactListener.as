@@ -41,7 +41,6 @@ package com.pblabs.box2D
 	  
 	  override public function PreSolve(contact:b2Contact, oldManifold:b2Manifold):void 
 	  {
-  			super.PreSolve(contact, oldManifold);
   			var spatial1:Box2DSpatialComponent = contact.GetFixtureA().GetUserData() as Box2DSpatialComponent;
   			var spatial2:Box2DSpatialComponent = contact.GetFixtureB().GetUserData() as Box2DSpatialComponent;
   			//check for existence of both owners because one might be destroyed during the event.
