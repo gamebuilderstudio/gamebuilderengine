@@ -8,8 +8,8 @@
  ******************************************************************************/
 package com.pblabs.box2D
 {
-   import Box2D.Collision.Shapes.b2Shape;
-   import Box2D.Dynamics.b2ContactFilter;
+   import Box2DAS.Collision.Shapes.b2Shape;
+   import Box2DAS.Dynamics.b2ContactFilter;
 
    public class ContactFilter extends b2ContactFilter
    {

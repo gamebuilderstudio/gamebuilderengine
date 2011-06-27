@@ -8,11 +8,13 @@
  ******************************************************************************/
 package com.pblabs.box2D
 {
-    import Box2D.Collision.Shapes.b2MassData;
-    import Box2D.Collision.Shapes.b2Shape;
-    import Box2D.Common.Math.b2Vec2;
-    import Box2D.Dynamics.b2Body;
-    import Box2D.Dynamics.b2BodyDef;
+    import Box2DAS.Collision.Shapes.b2MassData;
+    import Box2DAS.Collision.Shapes.b2Shape;
+    import Box2DAS.Common.V2;
+    import Box2DAS.Common.b2Vec2;
+    import Box2DAS.Dynamics.b2Body;
+    import Box2DAS.Dynamics.b2BodyDef;
+    import Box2DAS.Dynamics.b2Fixture;
     
     import com.pblabs.engine.PBUtil;
     import com.pblabs.engine.core.ObjectType;
@@ -77,6 +79,20 @@ package com.pblabs.box2D
         {
             return _body;
         }
+		
+		public function get bodyType():uint 
+		{
+			if (_body)
+				return _body.GetType();
+			return _bodyDef.type;
+		}
+				
+		public function set bodyType(value:uint):void {
+			_bodyDef.type = value;
+				
+			if (_body)
+				_body.SetType(value);
+		}
         
         /**
          * @inheritDoc
@@ -139,11 +155,15 @@ package com.pblabs.box2D
                 buildCollisionShapes();
         }
         
+		public function getWorldPosition(localPosition:Point):Point {
+			return new Point(position.x + localPosition.x, position.y + localPosition.y);
+		}
+		
         public function get position():Point
         {
             if (_body)
             {
-                var pos:b2Vec2 = _body.GetPosition();
+                var pos:V2 = _body.GetPosition();
                 return new Point(pos.x * _manager.scale, pos.y * _manager.scale);
             }
             
@@ -152,13 +172,13 @@ package com.pblabs.box2D
         
         public function set position(value:Point):void
         {
-            var position:b2Vec2 = new b2Vec2(value.x, value.y);
-            _bodyDef.position = position;
+            var position:V2 = new V2(value.x, value.y);
+            _bodyDef.position.v2 = position;
             
             if (_body)
             {
-                position.Multiply(_manager.inverseScale);
-                _body.SetXForm(position, _body.GetAngle());
+                position.multiplyN(_manager.inverseScale);
+                _body.SetTransform(position, _body.GetAngle());
             }
         }
         
@@ -178,7 +198,7 @@ package com.pblabs.box2D
             _bodyDef.angle = rotation;
             
             if (_body)
-                _body.SetXForm(_body.GetPosition(), rotation);
+                _body.SetTransform(_body.GetPosition(), rotation);
         }
         
         [EditorData(defaultValue="100|100")]
@@ -199,7 +219,7 @@ package com.pblabs.box2D
         {
             if (_body)
             {
-                var velocity:b2Vec2 = _body.GetLinearVelocity();
+                var velocity:V2 = _body.GetLinearVelocity();
                 _linearVelocity.x = velocity.x * _manager.scale;
                 _linearVelocity.y = velocity.y * _manager.scale;
             }
@@ -213,7 +233,7 @@ package com.pblabs.box2D
             
             if (_body)
             {
-                var velocity:b2Vec2 = new b2Vec2(value.x * _manager.inverseScale, value.y * _manager.inverseScale);
+                var velocity:V2 = new V2(value.x * _manager.inverseScale, value.y * _manager.inverseScale);
                 _body.SetLinearVelocity(velocity);
             }
         }
@@ -279,7 +299,7 @@ package com.pblabs.box2D
             _canSleep = value;
             _bodyDef.allowSleep = value;
             if (_body)
-                _body.AllowSleeping(value);
+                _body.SetSleepingAllowed(value);
         }
         
         public function get collidesContinuously():Boolean
@@ -287,12 +307,12 @@ package com.pblabs.box2D
             if (_body)
                 return _body.IsBullet();
             
-            return _bodyDef.isBullet
+            return _bodyDef.bullet;
         }
         
         public function set collidesContinuously(value:Boolean):void
         {
-            _bodyDef.isBullet = value;
+            _bodyDef.bullet = value;
             if (_body)
                 _body.SetBullet(value);
         }
@@ -318,30 +338,39 @@ package com.pblabs.box2D
                 return;
             }
             
-            var shape:b2Shape = _body.GetShapeList();
+            var shape:b2Fixture = _body.GetFixtureList();
             while (shape)
             {
-                var nextShape:b2Shape = shape.m_next;
-                _body.DestroyShape(shape);
+                var nextShape:b2Fixture = shape.m_next;
+                _body.DestroyFixture(shape);
                 shape = nextShape;
             }
             
             if (_collisionShapes)
             {
                 for each (var newShape:CollisionShape in _collisionShapes)
-                _body.CreateShape(newShape.createShape(this));
+                _body.CreateFixture(newShape.createShape(this));
             }
             
             updateMass();
         }
         
+		public function addCollisionShape(collisionShape:CollisionShape):void {
+			_body.CreateFixture(collisionShape.createShape(this));
+			updateMass();
+		}
+				
+		public function removeCollisionShape(collisionShape:CollisionShape):void {
+			//_body.DestroyFixture();
+		}
+		
         public function updateMass():void
         {
-            _body.SetMassFromShapes();
+            _body.ResetMassData();
             if (!_canMove || !_canRotate)
             {
                 var mass:b2MassData = new b2MassData();
-                mass.center = _body.GetLocalCenter();
+                mass.center.SetV(_body.GetLocalCenter());
                 if (_canMove)
                     mass.mass = _body.GetMass();
                 else
@@ -352,7 +381,7 @@ package com.pblabs.box2D
                 else
                     mass.I = 0;
                 
-                _body.SetMass(mass);
+                _body.SetMassData(mass);
             }
         }
         
@@ -364,14 +393,14 @@ package com.pblabs.box2D
                 return;
             }
             
-            _bodyDef.position.Multiply(_manager.inverseScale);
+            _bodyDef.position.v2.multiplyN(_manager.inverseScale);
             
-            _manager.add(_bodyDef, this, 
+            _manager.addBody(_bodyDef, this, 
                 function(body:b2Body):void
                 {
                     _body = body;
                     _body.SetUserData(this);
-                    _bodyDef.position.Multiply(_manager.scale);
+                    _bodyDef.position.v2.multiplyN(_manager.scale);
                     
                     linearVelocity = _linearVelocity;
                     angularVelocity = _angularVelocity;
@@ -385,7 +414,7 @@ package com.pblabs.box2D
         
         override protected function onRemove():void 
         {
-            _manager.remove(_body);
+            _manager.removeBody(_body);
             _body = null;
         }
         

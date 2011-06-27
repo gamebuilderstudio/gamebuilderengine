@@ -8,7 +8,7 @@
  ******************************************************************************/
 package com.pblabs.box2D
 {
-   import Box2D.Collision.b2ContactPoint;
+   import Box2DAS.Collision.b2ContactPoint;
    
    import flash.events.Event;
    import flash.geom.Point;

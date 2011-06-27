@@ -8,8 +8,9 @@
  ******************************************************************************/
 package com.pblabs.box2D
 {
-   import Box2D.Collision.Shapes.b2PolygonDef;
-   import Box2D.Collision.Shapes.b2ShapeDef;
+   import Box2DAS.Collision.Shapes.*;
+   import Box2DAS.Common.V2;
+   import Box2DAS.Dynamics.b2FixtureDef;
    
    import flash.geom.Point;
    
@@ -29,19 +30,31 @@ package com.pblabs.box2D
             _parent.buildCollisionShapes();
       }
       
-      override protected function doCreateShape():b2ShapeDef
-      {
-         var halfSize:Point = new Point(_parent.size.x * 0.5, _parent.size.y * 0.5);
-         var scale:Number = (_parent.spatialManager as Box2DManagerComponent).inverseScale;
-         
-         var shape:b2PolygonDef = new b2PolygonDef();
-         
-         shape.vertexCount = _vertices.length;
-         for (var i:int = 0; i < shape.vertexCount; i++)
-            shape.vertices[i].Set(_vertices[i].x * halfSize.x * scale, _vertices[i].y * halfSize.y * scale);
-         
-         return shape;
-      }
+	  override protected function doCreateShape():b2FixtureDef 
+	  {
+  			var halfSize:Point = new Point(_parent.size.x * 0.5, _parent.size.y * 0.5);
+  			var scale:Number = (_parent.spatialManager as Box2DManagerComponent).inverseScale;
+  			
+  			var verticies:Array = new Array();
+  			for (var i:int = 0; i < _vertices.length; i++)
+	  				verticies.push(new V2(_vertices[i].x * halfSize.x * scale, _vertices[i].y * halfSize.y * scale));
+  			
+  			var shape:b2PolygonShape = new b2PolygonShape();
+  			shape.SetAsArray(verticies);
+  			
+  			var fixtureDef:b2FixtureDef = new b2FixtureDef();
+  			fixtureDef.shape = shape;
+  			
+  			return fixtureDef;
+  	   }
+	  		
+	  	public function generateBox(halfWidth:Number, halfHeight:Number):void {
+	  		_vertices = new Array();
+		  	_vertices.push(new Point( -halfWidth, -halfHeight));
+	  		_vertices.push(new Point( halfWidth, -halfHeight));
+	 		_vertices.push(new Point( halfWidth, halfHeight));
+			_vertices.push(new Point( -halfWidth, halfHeight));
+	  }
       
       private var _vertices:Array = null;
    }

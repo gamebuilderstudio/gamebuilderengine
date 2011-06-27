@@ -8,8 +8,8 @@
  ******************************************************************************/
 package com.pblabs.box2D
 {
-   import Box2D.Collision.Shapes.b2ShapeDef;
-   
+	import Box2DAS.Dynamics.b2FixtureDef;
+
    [EditorData(ignore="true")]
    public class CollisionShape
    {
@@ -66,11 +66,11 @@ package com.pblabs.box2D
             _parent.buildCollisionShapes();
       }
       
-      public function createShape(parent:Box2DSpatialComponent):b2ShapeDef
+      public function createShape(parent:Box2DSpatialComponent):b2FixtureDef
       {
          _parent = parent;
          
-         var shape:b2ShapeDef = doCreateShape();
+         var shape:b2FixtureDef = doCreateShape();
          shape.friction = _friction;
          shape.density = _density;
          shape.restitution = _restitution;
@@ -86,9 +86,9 @@ package com.pblabs.box2D
          return shape;
       }
       
-      protected function doCreateShape():b2ShapeDef
+      protected function doCreateShape():b2FixtureDef
       {
-         return new b2ShapeDef();
+         return new b2FixtureDef();
       }
       
       protected var _parent:Box2DSpatialComponent = null;

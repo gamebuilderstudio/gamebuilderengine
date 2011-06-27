@@ -8,9 +8,9 @@
  ******************************************************************************/
 package com.pblabs.box2D
 {
-   import Box2D.Collision.b2ContactPoint;
-   import Box2D.Dynamics.Contacts.b2ContactResult;
-   import Box2D.Dynamics.b2ContactListener;
+   import Box2DAS.Collision.b2ContactPoint;
+   import Box2DAS.Dynamics.Contacts.*;
+   import Box2DAS.Dynamics.b2ContactListener;
    
    import flash.utils.Dictionary;
 
@@ -58,9 +58,9 @@ package com.pblabs.box2D
             spatial2.owner.eventDispatcher.dispatchEvent(new CollisionEvent(CollisionEvent.COLLISION_STOPPED_EVENT, point));
       }
       
-      override public function Result(point:b2ContactResult):void
+      /*override public function Result(point:b2ContactResult):void
       {
-      }
+      }*/
       
       private var shape1Dictionary:Dictionary = new Dictionary();
    }

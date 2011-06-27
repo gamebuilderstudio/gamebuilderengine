@@ -8,9 +8,10 @@
  ******************************************************************************/
 package com.pblabs.box2D
 {
-   import Box2D.Collision.Shapes.b2CircleDef;
-   import Box2D.Collision.Shapes.b2ShapeDef;
-   import Box2D.Common.Math.b2Vec2;
+   import Box2DAS.Collision.Shapes.*;
+   import Box2DAS.Common.V2;
+   import Box2DAS.Common.b2Vec2;
+   import Box2DAS.Dynamics.b2FixtureDef;
    
    import flash.geom.Point;
    
@@ -43,15 +44,15 @@ package com.pblabs.box2D
             _parent.buildCollisionShapes();
       }
       
-      override protected function doCreateShape():b2ShapeDef
+      override protected function doCreateShape():b2FixtureDef
       {
          var halfSize:Point = new Point(_parent.size.x * 0.5, _parent.size.y * 0.5);
          var scale:Number = (_parent.spatialManager as Box2DManagerComponent).inverseScale;
          
          var shape:b2CircleDef = new b2CircleDef();
-         
+		 shape.shape = new b2CircleShape(shape._ptr+32);
          shape.radius = _radius * scale * (halfSize.x > halfSize.y ? halfSize.x : halfSize.y);
-         shape.localPosition = new b2Vec2(_offset.x, _offset.y);
+         shape.localPosition.v2 = new V2(_offset.x, _offset.y);
          
          return shape;
       }

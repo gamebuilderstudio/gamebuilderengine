@@ -8,15 +8,15 @@
  ******************************************************************************/
 package com.pblabs.box2D
 {
-    import Box2D.Collision.Shapes.b2Shape;
-    import Box2D.Collision.b2AABB;
-    import Box2D.Common.Math.b2Vec2;
-    import Box2D.Dynamics.b2Body;
-    import Box2D.Dynamics.b2BodyDef;
-    import Box2D.Dynamics.b2DebugDraw;
-    import Box2D.Dynamics.b2World;
+    import Box2DAS.Collision.Shapes.b2Shape;
+    import Box2DAS.Collision.b2AABB;
+    import Box2DAS.Common.*;
+    import Box2DAS.Controllers.b2Controller;
+    import Box2DAS.Dynamics.*;
+    import Box2DAS.Dynamics.Joints.*;
     
-	import com.pblabs.engine.PBE;
+    import com.pblabs.engine.PBE;
+    import com.pblabs.engine.core.IAnimatedObject;
     import com.pblabs.engine.core.ITickedObject;
     import com.pblabs.engine.core.ObjectType;
     import com.pblabs.engine.core.ObjectTypeManager;
@@ -32,7 +32,7 @@ package com.pblabs.box2D
     import flash.geom.Point;
     import flash.geom.Rectangle;
     
-    public class Box2DManagerComponent extends EntityComponent implements ITickedObject, ISpatialManager2D
+    public class Box2DManagerComponent extends EntityComponent implements ITickedObject, IAnimatedObject, ISpatialManager2D
     {
         [EditorData(defaultValue="30")]
         public function get scale():Number
@@ -54,7 +54,8 @@ package com.pblabs.box2D
         {
             return _world;
         }
-        [EditorData(defaultValue="true")]
+
+		[EditorData(defaultValue="true")]
         public function get allowSleep():Boolean
         {
             return _allowSleep;
@@ -71,7 +72,22 @@ package com.pblabs.box2D
             _allowSleep = value;
         }
         
-        [EditorData(defaultValue="9.81")]
+		[EditorData(defaultValue="false")]
+		public function get visualDebugging():Boolean
+		{
+			return _visualDebugging;
+		}
+		
+		public function set visualDebugging(value:Boolean):void
+		{
+			_visualDebugging = value;
+			if(_visualDebugging)
+				_debugDrawer.Draw();
+			else
+				_debugDrawer.ClearAll();
+		}
+
+		[EditorData(defaultValue="9.81")]
         public function get gravity():Point
         {
             return _gravity;
@@ -82,7 +98,7 @@ package com.pblabs.box2D
             _gravity = value;
             
             if (_world)
-                _world.SetGravity(new b2Vec2(value.x, value.y));
+                _world.SetGravity( V2.fromP(_gravity) );
         }
         
         [EditorData(defaultValue="-10000|-10000|20000|20000")]
@@ -105,6 +121,7 @@ package com.pblabs.box2D
         override protected function onAdd():void
         {
             PBE.processManager.addTickedObject(this);
+			PBE.processManager.addAnimatedObject(this);
             createWorld();
         }
         
@@ -113,7 +130,7 @@ package com.pblabs.box2D
             var body:b2Body = _world.GetBodyList();
             //the world is locked. this was called from a collision or other event.
             //defer until we know it should not be locked anymore.
-            if (_world.m_lock)
+            if (_world.IsLocked())
             {
                 PBE.processManager.schedule(0, this, onRemove);
             }
@@ -127,21 +144,24 @@ package com.pblabs.box2D
                 }
                 
                 _world = null;
+				_debugDrawer.world = null;
+				_debugDrawer = null;
                 
                 PBE.processManager.removeTickedObject(this);
+				PBE.processManager.removeAnimatedObject(this);
             }
         }
         
-        public function add(bodyDef:b2BodyDef, thisArg:* = null, completedCallback:Function = null):void
+		public function addBody(bodyDef:b2BodyDef, thisArg:* = null, completedCallback:Function = null):void
         {
             if (!_world)
                 throw new Error("World not initialized.");
             
             //the world is locked. this was called from a collision or other event.
             //defer until we know it should not be locked anymore.
-            if (_world.m_lock)
+            if (_world.IsLocked())
             {
-                PBE.processManager.schedule(0, thisArg, add, bodyDef, thisArg, completedCallback);
+				PBE.processManager.schedule(0, thisArg, addBody, bodyDef, thisArg, completedCallback);
             }
             else
             {
@@ -151,33 +171,90 @@ package com.pblabs.box2D
             }
         }
         
-        public function remove(body:b2Body):void
+		public function removeBody(body:b2Body):void
         {
             if (_world)
             {
                 //the world is locked. this was called from a collision or other event.
                 //defer until we know it should not be locked anymore.
-                if (_world.m_lock)
-                    PBE.processManager.schedule(0, this, remove, body);
+                if (_world.IsLocked())
+                    PBE.processManager.schedule(0, this, removeBody, body);
                 else
                     _world.DestroyBody(body);
             }
         }
         
-        public function setDebugDrawer(drawer:b2DebugDraw):void
-        {
-            drawer.m_drawScale = _scale;
-            _world.SetDebugDraw(drawer);
-        }
-        
         public function onTick(tickRate:Number):void
         {
-            _world.Step(tickRate, 10);
+            _world.Step(tickRate, 10, 1);
         }
+		
+		public function onFrame(deltaTime:Number):void {
+			if(_visualDebugging)
+				_debugDrawer.Draw();
+		}
         
         public function onInterpolateTick(factor:Number):void
         {
         }
+		
+		public function addJoint(jointDef:b2JointDef, thisArg:* = null, completedCallback:Function = null):void
+        {
+        	if (!_world)
+                throw new Error("World not initialized.");
+            
+            //the world is locked. this was called from a collision or other event.
+            //defer until we know it should not be locked anymore.
+            if (_world.IsLocked())
+            {
+            	PBE.processManager.schedule(0, thisArg, addJoint, jointDef, thisArg, completedCallback);
+            }else{
+				var joint:b2Joint = _world.CreateJoint(jointDef);
+                if (completedCallback != null)
+                    completedCallback.apply(thisArg, [joint]);
+           	}
+		}
+		
+		public function removeJoint(joint:b2Joint):void
+		{
+			if (_world)
+			{
+				//the world is locked. this was called from a collision or other event.
+                //defer until we know it should not be locked anymore.
+                if (_world.IsLocked())
+                    PBE.processManager.schedule(0, this, removeJoint, joint);
+                else
+                    _world.DestroyJoint(joint);
+			}
+		}
+		
+		public function addController(controller:b2Controller, thisArg:* = null, completedCallback:Function = null):void 
+		{
+			if (!_world)
+				throw new Error("World not initialized.");
+					
+			if (_world.IsLocked())
+			{
+				PBE.processManager.schedule(0, thisArg, addController, controller, thisArg, completedCallback);
+			}
+			else
+			{
+				_world.AddController(controller);
+				if (completedCallback != null)
+					completedCallback.apply(thisArg, [controller]);
+			}
+		}
+			
+		public function removeController(controller:b2Controller):void 
+		{
+			if (_world)
+			{
+				if (_world.IsLocked())
+					PBE.processManager.schedule(0, this, removeController, controller);
+				else
+					_world.RemoveController(controller);
+			}
+		}
         
         public function addSpatialObject(object:ISpatialObject2D):void
         {
@@ -191,6 +268,7 @@ package com.pblabs.box2D
         
         public function queryRectangle(box:Rectangle, mask:ObjectType, results:Array):Boolean
         {
+			/*
             // Query Box2D.
             var aabb:b2AABB = new b2AABB();
             aabb.lowerBound = b2Vec2.Make(box.topLeft.x / scale, box.topLeft.y / scale);
@@ -220,10 +298,14 @@ package com.pblabs.box2D
             
             // If we made it anywhere with i, then we got a result.
             return (i != 0);
+			*/
+			Logger.warn(this, "queryRectangle", "queryRectangle is not implemented for the new Box2D implementation");
+			return false;
         }
         
         public function queryCircle(center:Point, radius:Number, mask:ObjectType, results:Array):Boolean
         {
+			/*
 			//Let's make life easy. We'll just use queryRectangle.
 			//queryRectangle(box:Rectangle, mask:ObjectType, results:Array):Boolean
 			var box:Rectangle = new Rectangle(center.x - radius / 2, center.y - radius / 2,
@@ -250,6 +332,9 @@ package com.pblabs.box2D
 			
 			//return wheter we found object(s) or not:
 			return foundObject; //|| foundOtherObjects;
+			*/
+			Logger.warn(this, "queryCircle", "queryCircle is not implemented for the new Box2D implementation");
+			return false;
         }
         
         public function castRay(start:Point, end:Point, mask:ObjectType, result:RayHitInfo):Boolean
@@ -284,19 +369,28 @@ package com.pblabs.box2D
         
         private function createWorld():void
         {
-            var bounds:b2AABB = new b2AABB();
-            bounds.lowerBound.Set(_worldBounds.x / _scale, _worldBounds.y / _scale);
-            bounds.upperBound.Set((_worldBounds.x + _worldBounds.width) / _scale, (_worldBounds.y + _worldBounds.height) / _scale);
-            _world = new b2World(bounds, new b2Vec2(_gravity.x, _gravity.y), _allowSleep);
+           /* var bounds:b2AABB = new b2AABB();
+            bounds.lowerBound.SetV( new V2(_worldBounds.x / _scale, _worldBounds.y / _scale) );
+            bounds.upperBound.SetV( new V2( (_worldBounds.x + _worldBounds.width) / _scale, (_worldBounds.y + _worldBounds.height) / _scale) );*/
+			//ADDED: TODO: Fix to use the bounds property 
+			//_world = new b2World(bounds, b2Vec2.Make(_gravity.x, _gravity.y), _allowSleep);
+            _world = new b2World(b2Vec2.Make(_gravity.x, _gravity.y), _allowSleep);
             _world.SetContactFilter(new ContactFilter());
             _world.SetContactListener(new ContactListener());
+			
+			_debugDrawer = new b2DebugDraw();
+			_debugDrawer.world = _world;
+			_debugDrawer.scale = _scale;
+
         }
         
         // Used to store other world objects that aren't implemented by Box2D.
         protected var _otherItems:BasicSpatialManager2D = new BasicSpatialManager2D();      
         protected var _scale:Number = 30;
         protected var _world:b2World = null;
+		protected var _debugDrawer:b2DebugDraw = null;
         protected var _allowSleep:Boolean = true;
+		protected var _visualDebugging:Boolean = false;
         protected var _worldBounds:Rectangle = new Rectangle(-5000, -5000, 10000, 10000);
         protected var _gravity:Point = new Point(0, 9.81);
     }
