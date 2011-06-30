@@ -212,7 +212,7 @@ package com.pblabs.engine.serialization
         
         private function dserializeComplex(object:*, xml:XML, typeHint:String):*
         {
-            var isDynamic:Boolean = (object is Array) || (object is Dictionary) || (TypeUtility.isDynamic(object));
+            var isDynamic:Boolean = (object is Array) || (object is Dictionary) || (object is OrderedArray) || (TypeUtility.isDynamic(object));
             var xmlPath:String = '';			
 			
             for each (var fieldXML:XML in xml.*)
@@ -505,7 +505,7 @@ package com.pblabs.engine.serialization
             for (var element : * in object)
             {
                 // Get the information
-                var propertyName : String = (object is Dictionary) ? element : "_";
+                var propertyName : String = (object is Dictionary) || (object is OrderedArray) ? element : "_";
                 var propertyValue : * = object[element];
                 var propertyXML:XML = <{propertyName}/>;
 
