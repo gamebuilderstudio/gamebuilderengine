@@ -280,11 +280,9 @@ package com.pblabs.box2D.controllers
 				buoyancyEffect.density = density;
 				buoyancyEffect.linearDrag = linearDrag;
 				buoyancyEffect.angularDrag = angularDrag;
+				buoyancyEffect.gravity.xy(gravity.x, gravity.y);
 
 				buoyancyController = new b2Controller(null, buoyancyEffect);
-				
-				/*if (_gravity)
-						gravity = gravity;*/
 				
 				_spatialManager.addController(buoyancyController);
 				
