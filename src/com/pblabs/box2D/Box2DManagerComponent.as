@@ -91,7 +91,7 @@ package com.pblabs.box2D
 				_debugDrawer.ClearAll();
 		}
 		
-		public function get debugDisplay():Shape
+		public function get debugDrawer() : b2DebugDraw
 		{
 			return _debugDrawer;
 		}
