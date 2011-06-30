@@ -165,25 +165,32 @@ package com.pblabs.box2D.controllers
 		//  gravity
 		//-------------------------------------
 		
-		/*private var _gravity:Point;
+		private var _gravity:Point = new Point(0, 9.8);
 		
 		public function get gravity():Point {
-				if (buoyancyController) {
-					if (!buoyancyController.useWorldGravity)
-						return new Point(buoyancyEffect.gravity.x, buoyancyEffect.gravity.y);
-				}
-				
-				return _gravity;
+				return buoyancyEffect.gravity.toP();
 		}
 		
 		public function set gravity(value:Point):void {
 				_gravity = value;
 				
-				if (buoyancyController) {
-					//buoyancyEffect.useWorldGravity = false;
-					buoyancyEffect.gravity = new V2(value.x, value.y);
+				if (buoyancyEffect) {
+					useWorldGravity = false;
+					buoyancyEffect.gravity.xy(value.x, value.y);
 				}
-		}*/
+		}
+		
+		private var _useWorldGravity:Boolean;
+		public function set useWorldGravity(val : Boolean):void
+		{
+			_useWorldGravity = val;
+			
+			if(_useWorldGravity && buoyancyEffect){
+				buoyancyEffect.gravity = buoyancyController.world.m_gravity.v2;
+			}else{
+				buoyancyEffect.gravity.xy(_gravity.x, _gravity.y);
+			}
+		}
 		
 		
 		//-----------------------------------------------------------------------------
