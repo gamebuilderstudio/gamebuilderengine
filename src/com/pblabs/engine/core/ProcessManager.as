@@ -453,9 +453,14 @@ package com.pblabs.engine.core
                     if(!object)
                         continue;
                     
-                    Profiler.enter(object.profilerKey);
-                    (object.listener as ITickedObject).onTick(TICK_RATE);
-                    Profiler.exit(object.profilerKey);
+					if(PBE.processManager.timeScale <= 0 && ( (object.listener is IEntityComponent) || (object.listener is ITickedObject) ))
+					{
+						continue;
+					}else{
+						Profiler.enter(object.profilerKey);
+						(object.listener as ITickedObject).onTick(TICK_RATE);
+						Profiler.exit(object.profilerKey);
+					}
                 }
                 duringAdvance = false;
                 
@@ -498,7 +503,7 @@ package com.pblabs.engine.core
                 if(!animatedObject)
                     continue;
                 
-				if(PBE.processManager.timeScale == 0 && (animatedObject.listener is IEntityComponent))
+				if(PBE.processManager.timeScale <= 0 && ( (animatedObject.listener is IEntityComponent) || ((animatedObject.listener is IAnimatedObject) && !(animatedObject.listener is ILogAppender)) ))
 				{
 					continue;
 				}else{
