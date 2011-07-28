@@ -50,6 +50,11 @@ package com.pblabs.engine
          * needed in a final release build.
          */
         public static var IS_SHIPPING_BUILD:Boolean = false;
+		/**
+		 * Primarily used with Expression References so that global values can be 
+		 * accessed when expressions are run in the game
+		 **/
+		public static const GLOBAL_DYNAMIC_OBJECT : Object = new Object();
         
         private static var _main:Sprite = null;	
         private static var _versionDetails:VersionDetails;

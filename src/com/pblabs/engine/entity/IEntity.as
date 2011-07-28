@@ -30,7 +30,12 @@ package com.pblabs.engine.entity
     */
    public interface IEntity extends IPropertyBag, IPBObject
    {
-      /**
+	   /**
+		* Used primarily with Expression References to pass this object as a reference to the scripting environment
+		**/
+	   function get Self():Object
+	   
+	   /**
        * When true, onAdd/onRemove callbacks are deferred. When set to false, any
        * pending callbacks are processed.
        */

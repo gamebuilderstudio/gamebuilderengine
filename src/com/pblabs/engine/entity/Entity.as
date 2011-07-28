@@ -17,6 +17,7 @@ package com.pblabs.engine.entity
     import com.pblabs.engine.debug.Profiler;
     import com.pblabs.engine.serialization.Serializer;
     import com.pblabs.engine.serialization.TypeUtility;
+    import com.pblabs.engine.util.DynamicObjectUtil;
     
     import flash.events.Event;
     import flash.events.EventDispatcher;
@@ -33,7 +34,18 @@ package com.pblabs.engine.entity
      */
     internal class Entity extends PBObject implements IEntity
     {        
-        public function get deferring():Boolean
+		private const _selfObject : Object = new Object;
+		/**
+		 * Used primarily with Expression References to pass this object as a reference to the scripting environment
+		 **/
+		public function get Self():Object
+		{
+			DynamicObjectUtil.clearDynamicObject(_selfObject);
+			DynamicObjectUtil.copyDynamicObject(_components, _selfObject);
+			return _selfObject;
+		}
+
+		public function get deferring():Boolean
         {
             return _deferring;
         }
@@ -98,6 +110,9 @@ package com.pblabs.engine.entity
             // And remove their references from the dictionary.
             for (var name:String in _components)
                 delete _components[name];
+			
+			//Clear Dynamic Object Container
+			DynamicObjectUtil.clearDynamicObject( _selfObject );
 
             // Get out of the NameManager and other general cleanup stuff.
             super.destroy();
