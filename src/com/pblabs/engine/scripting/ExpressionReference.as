@@ -1,6 +1,7 @@
 package com.pblabs.engine.scripting
 {
 	import com.pblabs.engine.PBE;
+	import com.pblabs.engine.entity.IEntity;
 	import com.pblabs.engine.entity.PropertyReference;
 	import com.pblabs.engine.serialization.ISerializable;
 	import com.pblabs.engine.util.DynamicObjectUtil;
@@ -62,7 +63,12 @@ package com.pblabs.engine.scripting
 		 */
 		public function serialize(xml:XML):void
 		{
-			xml.appendChild(new XML(_expression));
+			var expressionXML : XML = new XML(_expression);
+			if(_dynamicThisObject && _dynamicThisObject.Self && _dynamicThisObject.Self["name"])
+			{
+				xml.@thisObjectName = _dynamicThisObject.Self.name;
+			}
+			xml.appendChild(expressionXML);
 		}
 		
 		/**
@@ -73,6 +79,14 @@ package com.pblabs.engine.scripting
 			/*if(_expression && _expression !== xml.toString())
 				Logger.warn(this, "deserialize", "Overwriting property; was '" + _property + "', new value is '" + xml.toString() + "'");*/
 			_expression = xml.toString();
+			if(_dynamicThisObject && xml.@thisObjectName)
+			{
+				var entity : IEntity = PBE.lookupEntity(xml.@thisObjectName);
+				if(!entity)
+					PBE.callLater(deserialize, [xml]);
+				
+				_dynamicThisObject.selfContext = entity.Self;
+			}
 			return this;
 		}
 		
@@ -147,6 +161,6 @@ package com.pblabs.engine.scripting
 			_dynamicThisObject.Self = obj;
 		}
 		
-		//public function get dynamicThisObject():Object{ return _dynamicThisObject; }
+		public function get dynamicThisObject():Object{ return _dynamicThisObject; }
 	}
 }
