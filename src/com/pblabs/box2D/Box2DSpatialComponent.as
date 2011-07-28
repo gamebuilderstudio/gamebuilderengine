@@ -56,20 +56,6 @@ package com.pblabs.box2D
 			setupBody();
         }
         
-		[EditorData(ignore="true")]
-        public function get manager():Box2DManagerComponent
-        {
-            Logger.warn(this, "get manager", "manager is deprecated; switch to spatialManager.");
-            return (spatialManager  as Box2DManagerComponent);
-        }
-        
-		[EditorData(ignore="true")]
-        public function set manager(value:Box2DManagerComponent):void
-        {
-            spatialManager = value;
-            Logger.warn(this, "set manager", "manager is deprecated; switch to spatialManager.");
-        }
-        
         /**
          * The Box2D b2Body wrapped by this component.
          */
@@ -170,7 +156,7 @@ package com.pblabs.box2D
         
         public function set position(value:Point):void
         {
-            var position:V2 = _bodyDef.position.v2.xy(value.x, value.y);
+            var position:V2 = _bodyDef.position.v2.xy(value.x+positionOffset.x, value.y+positionOffset.y);
             
             if (_body)
             {
@@ -179,7 +165,14 @@ package com.pblabs.box2D
             }
         }
         
-        public function get rotation():Number
+		[EditorData(defaultValue="0|0")]
+		public function get positionOffset():Point { return _positionOffset; }
+		public function set positionOffset(value:Point):void
+		{
+			_positionOffset = value;
+		}
+
+		public function get rotation():Number
         {
             var rotation:Number = _bodyDef.angle;
             
@@ -441,11 +434,8 @@ package com.pblabs.box2D
 				});
 		}
         
-        private var _manager:Box2DManagerComponent = null;
         private var _collisionType:ObjectType = null;
         private var _collidesWithTypes:ObjectType = null;
-        
-        private var _size:Point = new Point(10, 10);
         
         private var _canMove:Boolean = true;
         private var _canRotate:Boolean = true;
@@ -457,7 +447,11 @@ package com.pblabs.box2D
         private var _collisionShapes:Array = null;
         private var _collidesContinuously:Boolean = false;
         
-        private var _body:b2Body = null;
-        private var _bodyDef:b2BodyDef = new b2BodyDef();
+		protected var _manager:Box2DManagerComponent = null;
+        protected var _body:b2Body = null;
+		protected var _bodyDef:b2BodyDef = new b2BodyDef();
+		
+		protected var _size:Point = new Point(10, 10);
+		protected var _positionOffset:Point = new Point(0, 0);
     }
 }
