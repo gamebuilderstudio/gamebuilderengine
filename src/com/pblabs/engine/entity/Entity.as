@@ -40,11 +40,12 @@ package com.pblabs.engine.entity
 		 **/
 		public function get Self():Object
 		{
+			_selfObject.name = this.name;
 			DynamicObjectUtil.clearDynamicObject(_selfObject);
 			DynamicObjectUtil.copyDynamicObject(_components, _selfObject);
 			return _selfObject;
 		}
-
+		
 		public function get deferring():Boolean
         {
             return _deferring;
@@ -78,7 +79,13 @@ package com.pblabs.engine.entity
             return _eventDispatcher;
         }
         
-        public override function initialize(name:String = null, alias:String = null):void
+		override public function changeName(name : String):void
+		{
+			super.changeName(name);
+			_selfObject.name = name;
+		}
+
+		public override function initialize(name:String = null, alias:String = null):void
         {            
             // Pass control up.
             super.initialize(name, alias);
