@@ -32,6 +32,10 @@ package com.pblabs.engine.resource
             return _appDomain; 
         }
 
+		public function set appDomain(domain : ApplicationDomain) : void
+		{
+			_appDomain = domain; 
+		}
         /**
          * Gets a new instance of the specified exported class contained in the SWF.
          * Returns a null reference if the exported name is not found in the loaded ApplicationDomain.
