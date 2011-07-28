@@ -84,6 +84,7 @@ package com.flexgangsta.pbtriggers.actions
 			var len : int = args.length;
 			for(var i : int = 0; i < len; i++)
 			{
+				if(args[i] is ExpressionReference) (args[i] as ExpressionReference).destroy();
 				args.pop();
 			}
 			methodReference = null;

@@ -72,6 +72,7 @@ package com.flexgangsta.pbtriggers.actions
 		
 		public function destroy():void
 		{
+			if(source is ExpressionReference) (source as ExpressionReference).destroy();
 			source = null;
 			property = null;
 			_owner = null;
