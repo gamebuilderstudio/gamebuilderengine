@@ -40,9 +40,9 @@ package com.pblabs.engine.entity
 		 **/
 		public function get Self():Object
 		{
-			_selfObject.name = this.name;
 			DynamicObjectUtil.clearDynamicObject(_selfObject);
 			DynamicObjectUtil.copyDynamicObject(_components, _selfObject);
+			_selfObject.name = this.name;
 			return _selfObject;
 		}
 		
