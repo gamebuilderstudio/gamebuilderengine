@@ -3,6 +3,7 @@ package com.flexgangsta.pbtriggers.actions
 	import com.flexgangsta.pbtriggers.ITriggerComponent;
 	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.entity.PropertyReference;
+	import com.pblabs.engine.scripting.ExpressionReference;
 
 	public class MethodInvoker implements IAction
 	{
@@ -56,6 +57,8 @@ package com.flexgangsta.pbtriggers.actions
 				// If we get a property reference and it's okay to convert them to objects
 				if(arg is PropertyReference && passReferences)
 					processedArguments.push(_owner.owner.getProperty(arg as PropertyReference));
+				else if(arg is ExpressionReference)
+					processedArguments.push((arg as ExpressionReference).value);
 				else
 					processedArguments.push(arg);
 			}
