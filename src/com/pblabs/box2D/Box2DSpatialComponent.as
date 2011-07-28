@@ -19,6 +19,7 @@ package com.pblabs.box2D
     import Box2DAS.Dynamics.b2FixtureDef;
     
     import com.pblabs.engine.PBUtil;
+    import com.pblabs.engine.components.TickedComponent;
     import com.pblabs.engine.core.ObjectType;
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.entity.EntityComponent;
@@ -39,7 +40,7 @@ package com.pblabs.box2D
      * your questions about this component will really be Box2D questions in
      * disguise.</p> 
      */
-    public class Box2DSpatialComponent extends EntityComponent implements IMobileSpatialObject2D
+    public class Box2DSpatialComponent extends TickedComponent implements IMobileSpatialObject2D
     {
 		[EditorData(ignore="true")]
         public var onAddedCallback:Function = null;
@@ -51,13 +52,8 @@ package com.pblabs.box2D
         
         public function set spatialManager(value:ISpatialManager2D):void
         {
-            if (_body)
-            {
-                Logger.warn(this, "set Manager", "The manager can only be set before the component is registered.");
-                return; 
-            }
-            
             _manager = (value as Box2DManagerComponent);
+			setupBody();
         }
         
 		[EditorData(ignore="true")]
@@ -393,30 +389,18 @@ package com.pblabs.box2D
             }
         }
         
-        override protected function onAdd():void
+		/**
+		 * @inheritDoc
+		 */
+		override public function onTick(tickRate:Number):void
+		{
+			position += new Point(position.x+(linearVelocity.x * tickRate), position.y+(linearVelocity.y * tickRate));
+			rotation += angularVelocity * tickRate;
+		}
+
+		override protected function onAdd():void
         {
-            if (!_manager)
-            {
-                Logger.warn(this, "onAdd", "A Box2DSpatialComponent cannot be registered without a manager.");
-                return;
-            }
-            
-            _bodyDef.position.v2.multiplyN(_manager.inverseScale);
-            
-            _manager.addBody(_bodyDef, this, 
-                function(body:b2Body):void
-                {
-                    _body = body;
-                    _body.SetUserData(this);
-                    _bodyDef.position.v2.multiplyN(_manager.scale);
-                    linearVelocity = _linearVelocity;
-                    angularVelocity = _angularVelocity;
-                    
-                    buildCollisionShapes();
-					
-                    if (onAddedCallback != null)
-                        onAddedCallback(this);
-                });
+			setupBody();
         }
         
         override protected function onRemove():void 
@@ -433,6 +417,28 @@ package com.pblabs.box2D
 			fixture.m_reportPostSolve = true;
 			fixture.m_reportPreSolve = true;
 			return fixture;
+		}
+		
+		private function setupBody():void
+		{
+			if((_manager == null) || (_manager != null && _body != null)) return;
+			
+			_bodyDef.position.v2.multiplyN(_manager.inverseScale);
+			
+			_manager.addBody(_bodyDef, this, 
+				function(body:b2Body):void
+				{
+					_body = body;
+					_body.SetUserData(this);
+					_bodyDef.position.v2.multiplyN(_manager.scale);
+					linearVelocity = _linearVelocity;
+					angularVelocity = _angularVelocity;
+					
+					buildCollisionShapes();
+					
+					if (onAddedCallback != null)
+						onAddedCallback(this);
+				});
 		}
         
         private var _manager:Box2DManagerComponent = null;
