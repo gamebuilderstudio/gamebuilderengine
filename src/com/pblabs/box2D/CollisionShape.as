@@ -8,11 +8,19 @@
  ******************************************************************************/
 package com.pblabs.box2D
 {
+	import Box2DAS.Dynamics.b2Fixture;
 	import Box2DAS.Dynamics.b2FixtureDef;
 
    [EditorData(ignore="true")]
    public class CollisionShape
    {
+	  private var _b2FixtureRef : b2Fixture
+	  [EditorData(ignore="true")]
+	  public function get b2FixtureRef():b2Fixture { return _b2FixtureRef; }
+	  public function set b2FixtureRef(obj : b2Fixture):void { 
+		  _b2FixtureRef = obj; 
+	  }
+	  
       [EditorData(defaultValue="1")]
       public function get density():Number
       {

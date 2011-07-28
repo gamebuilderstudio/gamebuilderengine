@@ -339,7 +339,7 @@ package com.pblabs.box2D
             if (_collisionShapes)
             {
                 for each (var newShape:CollisionShape in _collisionShapes){
-                	createFixtureInstance(_body, newShape.createShape(this))
+					newShape.b2FixtureRef = createFixtureInstance(_body, newShape.createShape(this))
 				}
             }
             
@@ -352,13 +352,21 @@ package com.pblabs.box2D
 				Logger.warn(this, "buildCollisionShapes", "Cannot build collision shapes prior to registration.");
 				return;
 			}
-			
-			createFixtureInstance(_body, collisionShape.createShape(this))
+			if(!_collisionShapes) _collisionShapes = new Array();
+			_collisionShapes.push(collisionShape);
+			collisionShape.b2FixtureRef = createFixtureInstance(_body, collisionShape.createShape(this))
 			updateMass();
 		}
 				
 		public function removeCollisionShape(collisionShape:CollisionShape):void {
-			//_body.DestroyFixture();
+			var i : int = 0;
+			for each (var shape:CollisionShape in _collisionShapes){
+				if(shape == collisionShape){
+					_collisionShapes.splice(i, 1);
+				}
+				i++;
+			}
+			_body.DestroyFixture(collisionShape.b2FixtureRef);
 		}
 		
         public function updateMass():void
@@ -393,6 +401,8 @@ package com.pblabs.box2D
 
 		override protected function onAdd():void
         {
+			if(! _collisionShapes)
+				addCollisionShape( new CircleCollisionShape() );
 			setupBody();
         }
         
