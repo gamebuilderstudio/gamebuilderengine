@@ -33,6 +33,7 @@ package com.flexgangsta.pbtriggers.actions
 		 * 
 		 */		
 		function set owner(value:ITriggerComponent):void;
+		function get owner():ITriggerComponent;
 
 		/**
 		 * 

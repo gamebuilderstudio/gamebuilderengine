@@ -30,6 +30,7 @@ package com.flexgangsta.pbtriggers.actions
 			}
 		}
 		
+		public function get owner():ITriggerComponent { return _owner; }
 		public function set owner(value:ITriggerComponent):void
 		{
 			_owner = value;
