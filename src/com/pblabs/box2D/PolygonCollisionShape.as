@@ -35,6 +35,7 @@ package com.pblabs.box2D
   			var halfSize:Point = new Point(_parent.size.x * 0.5, _parent.size.y * 0.5);
   			var scale:Number = (_parent.spatialManager as Box2DManagerComponent).inverseScale;
   			
+			if(!_vertices) generateBox(10, 10);
   			var verticies:Array = new Array();
   			for (var i:int = 0; i < _vertices.length; i++)
 	  				verticies.push(new V2(_vertices[i].x * halfSize.x * scale, _vertices[i].y * halfSize.y * scale));
