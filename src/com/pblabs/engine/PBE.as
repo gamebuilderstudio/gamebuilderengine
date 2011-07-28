@@ -343,7 +343,7 @@ package com.pblabs.engine
         public static function makeEntity(entityName:String, params:Object = null):IEntity
         {
             // Create the entity.
-            var entity:IEntity = PBE.templateManager.instantiateEntity(entityName);
+            var entity:IEntity = PBE.templateManager.instantiateEntity(entityName, true);
             if(!entity)
                 return null;
             

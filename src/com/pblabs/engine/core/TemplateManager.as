@@ -107,7 +107,7 @@ package com.pblabs.engine.core
 		 *
 		 * @return The created entity, or null if it wasn't found.
 		 */
-		public function instantiateEntity(name:String):IEntity
+		public function instantiateEntity(name:String, keepDeferred : Boolean = false):IEntity
 		{
 			Profiler.enter("instantiateEntity");
 
@@ -135,7 +135,7 @@ package com.pblabs.engine.core
 					return null;
 				}
 
-				var entity:IEntity=instantiateEntityFromXML(xml);
+				var entity:IEntity=instantiateEntityFromXML(xml, keepDeferred);
 				Profiler.exit("instantiateEntity");
 			}
 			catch (e:Error)
@@ -151,7 +151,7 @@ package com.pblabs.engine.core
 		/**
 		 * Given an XML literal, construct a valid entity from it.
 		 */
-		public function instantiateEntityFromXML(xml:XML):IEntity
+		public function instantiateEntityFromXML(xml:XML, keepDeferred : Boolean = false):IEntity
 		{
 			Profiler.enter("instantiateEntityFromXML");
 
@@ -190,7 +190,8 @@ package com.pblabs.engine.core
 				Serializer.instance.clearCurrentEntity();
 
                 // Don't forget to disable deferring.
-                entity.deferring = false;
+				if(!keepDeferred)
+                	entity.deferring = false;
 
 				if (!_inGroup)
 					Serializer.instance.reportMissingReferences();
