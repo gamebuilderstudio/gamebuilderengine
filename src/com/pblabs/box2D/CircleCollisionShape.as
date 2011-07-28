@@ -31,14 +31,14 @@ package com.pblabs.box2D
             _parent.buildCollisionShapes();
       }
       
-      public function get offset():Point
+      public function get position():Point
       {
-         return _offset;
+         return _position;
       }
       
-      public function set offset(value:Point):void
+      public function set position(value:Point):void
       {
-         _offset = value;
+		  _position = value;
          
          if (_parent)
             _parent.buildCollisionShapes();
@@ -52,12 +52,14 @@ package com.pblabs.box2D
 		 var fixture: b2FixtureDef = super.doCreateShape();
 		 var shape:b2CircleShape = new b2CircleShape();
 		 shape.m_radius = _radius * scale;
+		 shape.m_p.x = _position.x * halfSize.x * scale;
+		 shape.m_p.y = _position.y * halfSize.y * scale;
 		 fixture.shape = shape;
          
          return fixture;
       }
       
-      private var _radius:Number = 1.0;
-      private var _offset:Point = new Point(0, 0);
+      private var _radius:Number = 20.0;
+      private var _position:Point = new Point(0, 0);
    }
 }
