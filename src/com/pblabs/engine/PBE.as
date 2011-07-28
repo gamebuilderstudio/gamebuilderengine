@@ -222,6 +222,8 @@ package com.pblabs.engine
             
             if(!_inputManager)
                 _inputManager = new InputManager();
+			
+			processManager.addTickedObject(GlobalExpressionManager.instance, 1000);                
         }
         
         
