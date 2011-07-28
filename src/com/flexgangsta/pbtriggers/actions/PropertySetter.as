@@ -3,6 +3,7 @@ package com.flexgangsta.pbtriggers.actions
 	import com.flexgangsta.pbtriggers.ITriggerComponent;
 	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.entity.PropertyReference;
+	import com.pblabs.engine.scripting.ExpressionReference;
 	
 	public class PropertySetter implements IAction
 	{
@@ -40,8 +41,12 @@ package com.flexgangsta.pbtriggers.actions
 			var newPropValue:*;
 			
 			// If our source is a properyreference
-			if(source is PropertyReference && passReferences)
+			if(source is ExpressionReference)
 			{
+				newPropValue = (source as ExpressionReference).value;
+				
+			}else if(source is PropertyReference && passReferences) {
+				
 				newPropValue = _owner.owner.getProperty(source);
 			}
 			// If our source is just a plain object
