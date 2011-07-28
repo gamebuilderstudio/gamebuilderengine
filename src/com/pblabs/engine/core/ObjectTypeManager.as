@@ -163,7 +163,7 @@ package com.pblabs.engine.core
         {
             // Sanity.
             if(getTypeName(1 << bitIndex) != null) 
-                throw new Error("Bit already in use!");
+                return; //throw new Error("Bit already in use!");
             if(_typeList[name])
                 throw new Error("Name already assigned to another bit!");
             
