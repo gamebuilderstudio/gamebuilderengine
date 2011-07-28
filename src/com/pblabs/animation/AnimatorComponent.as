@@ -10,6 +10,7 @@ package com.pblabs.animation
 {
     import com.pblabs.engine.components.AnimatedComponent;
     import com.pblabs.engine.entity.PropertyReference;
+    
     import flash.utils.Dictionary;
 	
     /**
@@ -93,5 +94,10 @@ package com.pblabs.animation
 
             play(defaultAnimation);
         }
+		
+		public function set currentAnimation(animationName : String):void
+		{
+			play(animationName);
+		}
     }
 }
