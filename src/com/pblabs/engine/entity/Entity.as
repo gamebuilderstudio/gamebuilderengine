@@ -382,231 +382,233 @@ package com.pblabs.engine.entity
             deferring = false;
         }
         
-        private function findProperty(reference:PropertyReference, willSet:Boolean = false, providedPi:PropertyInfo = null, suppressErrors:Boolean = false):PropertyInfo
-        {
-            // TODO: we use appendChild but relookup the results, can we just use return value?
-            
-            // Early out if we got a null property reference.
-            if (!reference || reference.property == null || reference.property == "")
-                return null;
-            
-            Profiler.enter("Entity.findProperty");
-            
-            // Must have a propertyInfo to operate with.
-            if(!providedPi)
-                providedPi = new PropertyInfo();
-            
-            // Cached lookups apply only to components.
-            if(reference.cachedLookup && reference.cachedLookup.length > 0)
-            {
-                var cl:Array = reference.cachedLookup;
-                var cachedWalk:Object = lookupComponentByName(cl[0]);
-                if(!cachedWalk)
-                {
-                    if(!suppressErrors)
-                        Logger.warn(this, "findProperty", "[#"+this.name+"] Could not resolve component named '" + cl[0] + "' for property '" + reference.property + "' with cached reference. " + Logger.getCallStack());
-                    Profiler.exit("Entity.findProperty");
-                    return null;
-                }
-                
-                for(var i:int = 1; i<=cl.length - 1; i++)
-                {
-                    if(!cachedWalk.hasOwnProperty(cl[i]))
-                    {
-                        if(!suppressErrors)
-                            Logger.warn(this, "findProperty", "[#"+this.name+"] Could not resolve property '" + cl[i] + "' for property reference '" + reference.property + "' with cached reference"  + Logger.getCallStack());
-                        Profiler.exit("Entity.findProperty");
-                        return null;
-                    }
-                }
-                
-                var cachedPi:PropertyInfo = providedPi;
-                cachedPi.propertyParent = cachedWalk;
-                cachedPi.propertyName = (cl.length > 1) ? cl[cl.length-1] : null;
-                Profiler.exit("Entity.findProperty");
-                return cachedPi;
-            }
-            
-            // Split up the property reference.      
-            var propertyName:String = reference.property;
-            var path:Array = propertyName.split(".");
-            
-            // Distinguish if it is a component reference (@), named object ref (#), or
-            // an XML reference (!), and look up the first element in the path.
-            var isTemplateXML:Boolean = false;
-            var itemName:String = path[0];
-            var curIdx:int = 1;
-            var startChar:String = itemName.charAt(0);
-            var curLookup:String = itemName.slice(1);
-            var parentElem:*;
-            if(startChar == "@")
-            {
-                // Component reference, look up the component by name.
-                parentElem = lookupComponentByName(curLookup);
-                if(!parentElem)
-                {
+		private function findProperty(reference:PropertyReference, willSet:Boolean = false, providedPi:PropertyInfo = null, suppressErrors:Boolean = false):PropertyInfo
+		{
+			// TODO: we use appendChild but relookup the results, can we just use return value?
+			
+			// Early out if we got a null property reference.
+			if (!reference || reference.property == null || reference.property == "")
+				return null;
+			
+			Profiler.enter("Entity.findProperty");
+			
+			// Must have a propertyInfo to operate with.
+			if(!providedPi)
+				providedPi = new PropertyInfo();
+			
+			// Cached lookups apply only to components.
+			if(reference.cachedLookup && reference.cachedLookup.length > 0)
+			{
+				var cl:Array = reference.cachedLookup;
+				var cachedWalk:* = lookupComponentByName(cl[0]);
+				if(!cachedWalk)
+				{
 					if(!suppressErrors)
-	                    Logger.warn(this, "findProperty", "[#"+this.name+"] Could not resolve component named '" + curLookup + "' for property '" + reference.property + "'");
-                    Profiler.exit("Entity.findProperty");
-                    return null;
-                }
-                
-                // Cache the split out string.
-                path[0] = curLookup;
-                reference.cachedLookup = path;
-            }
-            else if(startChar == "#")
-            {
-                // Named object reference. Look up the entity in the NameManager.
-                parentElem = PBE.nameManager.lookup(curLookup);
-                if(!parentElem)
-                {
+						Logger.warn(this, "findProperty", "[#"+this.name+"] Could not resolve component named '" + cl[0] + "' for property '" + reference.property + "' with cached reference. " + Logger.getCallStack());
+					Profiler.exit("Entity.findProperty");
+					return null;
+				}
+				
+				for(var i:int = 1; i<cl.length - 1; i++)
+				{
+					cachedWalk = cachedWalk[cl[i]];
+					
+					if(cachedWalk == null)
+					{
+						if(!suppressErrors)
+							Logger.warn(this, "findProperty", "[#"+this.name+"] Could not resolve property '" + cl[i] + "' for property reference '" + reference.property + "' with cached reference"  + Logger.getCallStack());
+						Profiler.exit("Entity.findProperty");
+						return null;
+					}
+				}
+				
+				var cachedPi:PropertyInfo = providedPi;
+				cachedPi.propertyParent = cachedWalk;
+				cachedPi.propertyName = (cl.length > 1) ? cl[cl.length-1] : null;
+				Profiler.exit("Entity.findProperty");
+				return cachedPi;
+			}
+			
+			// Split up the property reference.      
+			var propertyName:String = reference.property;
+			var path:Array = propertyName.split(".");
+			
+			// Distinguish if it is a component reference (@), named object ref (#), or
+			// an XML reference (!), and look up the first element in the path.
+			var isTemplateXML:Boolean = false;
+			var itemName:String = path[0];
+			var curIdx:int = 1;
+			var startChar:String = itemName.charAt(0);
+			var curLookup:String = itemName.slice(1);
+			var parentElem:*;
+			if(startChar == "@")
+			{
+				// Component reference, look up the component by name.
+				parentElem = lookupComponentByName(curLookup);
+				if(!parentElem)
+				{
 					if(!suppressErrors)
-                    	Logger.warn(this, "findProperty", "[#"+this.name+"] Could not resolve named object named '" + curLookup + "' for property '" + reference.property + "'");
-                    Profiler.exit("Entity.findProperty");
-                    return null;
-                }
-                
-                // Get the component on it.
-                curIdx++;
-                curLookup = path[1];
-                var comLookup:IEntityComponent = (parentElem as IEntity).lookupComponentByName(curLookup);
-                if(!comLookup)
-                {
+						Logger.warn(this, "findProperty", "[#"+this.name+"] Could not resolve component named '" + curLookup + "' for property '" + reference.property + "'");
+					Profiler.exit("Entity.findProperty");
+					return null;
+				}
+				
+				// Cache the split out string.
+				path[0] = curLookup;
+				reference.cachedLookup = path;
+			}
+			else if(startChar == "#")
+			{
+				// Named object reference. Look up the entity in the NameManager.
+				parentElem = PBE.nameManager.lookup(curLookup);
+				if(!parentElem)
+				{
 					if(!suppressErrors)
-                    	Logger.warn(this, "findProperty", "[#"+this.name+"] Could not find component '" + curLookup + "' on named entity '" + (parentElem as IEntity).name + "' for property '" + reference.property + "'");
-                    Profiler.exit("Entity.findProperty");
-                    return null;
-                }
-                parentElem = comLookup;
-            }
-            else if(startChar == "!")
-            {
-                // XML reference. Look it up inside the TemplateManager. We only support
-                // templates and entities - no groups.
-                parentElem = PBE.templateManager.getXML(curLookup, "template", "entity");
-                if(!parentElem)
-                {
+						Logger.warn(this, "findProperty", "[#"+this.name+"] Could not resolve named object named '" + curLookup + "' for property '" + reference.property + "'");
+					Profiler.exit("Entity.findProperty");
+					return null;
+				}
+				
+				// Get the component on it.
+				curIdx++;
+				curLookup = path[1];
+				var comLookup:IEntityComponent = (parentElem as IEntity).lookupComponentByName(curLookup);
+				if(!comLookup)
+				{
 					if(!suppressErrors)
-	                    Logger.warn(this, "findProperty", "[#"+this.name+"] Could not find XML named '" + curLookup + "' for property '" + reference.property + "'");
-                    Profiler.exit("Entity.findProperty");
-                    return null;
-                }
-                
-                // Try to find the specified component.
-                curIdx++;
-                var nextElem:* = null;
-                for each(var cTag:* in parentElem.*)
-                {
-                    if(cTag.@name == path[1])
-                    {
-                        nextElem = cTag;
-                        break;
-                    }
-                }
-                
-                // Create it if appropriate.
-                if(!nextElem && willSet)
-                {
-                    // Create component tag.
-                    (parentElem as XML).appendChild(<component name={path[1]}/>);
-                    
-                    // Look it up again.
-                    for each(cTag in parentElem.*)
-                    {
-                        if(cTag.@name == path[1])
-                        {
-                            nextElem = cTag;
-                            break;
-                        }
-                    }
-                }
-                
-                // Error if we don't have it!
-                if(!nextElem)
-                {
+						Logger.warn(this, "findProperty", "[#"+this.name+"] Could not find component '" + curLookup + "' on named entity '" + (parentElem as IEntity).name + "' for property '" + reference.property + "'");
+					Profiler.exit("Entity.findProperty");
+					return null;
+				}
+				parentElem = comLookup;
+			}
+			else if(startChar == "!")
+			{
+				// XML reference. Look it up inside the TemplateManager. We only support
+				// templates and entities - no groups.
+				parentElem = PBE.templateManager.getXML(curLookup, "template", "entity");
+				if(!parentElem)
+				{
 					if(!suppressErrors)
-	                    Logger.warn(this, "findProperty", "[#"+this.name+"] Could not find component '" + path[1] + "' in XML template '" + path[0].slice(1) + "' for property '" + reference.property + "'");
-                    Profiler.exit("Entity.findProperty");
-                    return null;
-                }
-                
-                // Get ready to search the rest.
-                parentElem = nextElem;
-                
-                // Indicate we are dealing with xml.
-                isTemplateXML = true;
-            }
-            else
-            {
+						Logger.warn(this, "findProperty", "[#"+this.name+"] Could not find XML named '" + curLookup + "' for property '" + reference.property + "'");
+					Profiler.exit("Entity.findProperty");
+					return null;
+				}
+				
+				// Try to find the specified component.
+				curIdx++;
+				var nextElem:* = null;
+				for each(var cTag:* in parentElem.*)
+				{
+					if(cTag.@name == path[1])
+					{
+						nextElem = cTag;
+						break;
+					}
+				}
+				
+				// Create it if appropriate.
+				if(!nextElem && willSet)
+				{
+					// Create component tag.
+					(parentElem as XML).appendChild(<component name={path[1]}/>);
+					
+					// Look it up again.
+					for each(cTag in parentElem.*)
+					{
+						if(cTag.@name == path[1])
+						{
+							nextElem = cTag;
+							break;
+						}
+					}
+				}
+				
+				// Error if we don't have it!
+				if(!nextElem)
+				{
+					if(!suppressErrors)
+						Logger.warn(this, "findProperty", "[#"+this.name+"] Could not find component '" + path[1] + "' in XML template '" + path[0].slice(1) + "' for property '" + reference.property + "'");
+					Profiler.exit("Entity.findProperty");
+					return null;
+				}
+				
+				// Get ready to search the rest.
+				parentElem = nextElem;
+				
+				// Indicate we are dealing with xml.
+				isTemplateXML = true;
+			}
+			else
+			{
 				if(!suppressErrors)
-                	Logger.warn(this, "findProperty", "[#"+this.name+"] Got a property path that doesn't start with !, #, or @. Started with '" + startChar + "' for property '" + reference.property + "'");
-                Profiler.exit("Entity.findProperty");
-                return null;
-            }
-            
-            // Make sure we have a field to look up.
-            if(curIdx < path.length)
-                curLookup = path[curIdx++] as String;
-            else
-                curLookup = null;
-            
-            // Do the remainder of the look up.
-            while(curIdx < path.length && parentElem)
-            {
-                // Try the next element in the path.
-                var oldParentElem:* = parentElem;
-                try
-                {
-                    if(parentElem is XML || parentElem is XMLList)
-                        parentElem = parentElem.child(curLookup);
-                    else
-                        parentElem = parentElem[curLookup];
-                }
-                catch(e:Error)
-                {
-                    parentElem = null;
-                }
-                
-                // Several different possibilities that indicate we failed to advance.
-                var gotEmpty:Boolean = false;
-                if(parentElem == undefined) gotEmpty = true;
-                if(parentElem == null) gotEmpty = true;
-                if(parentElem is XMLList && parentElem.length() == 0) gotEmpty = true;
-                
-                // If we're going to set and it's XML, create the field.
-                if(willSet && isTemplateXML && gotEmpty && oldParentElem)
-                {
-                    oldParentElem.appendChild(<{curLookup}/>);
-                    parentElem = oldParentElem.child(curLookup);
-                    gotEmpty = false;
-                }
-                
-                if(gotEmpty)
-                {
+					Logger.warn(this, "findProperty", "[#"+this.name+"] Got a property path that doesn't start with !, #, or @. Started with '" + startChar + "' for property '" + reference.property + "'");
+				Profiler.exit("Entity.findProperty");
+				return null;
+			}
+			
+			// Make sure we have a field to look up.
+			if(curIdx < path.length)
+				curLookup = path[curIdx++] as String;
+			else
+				curLookup = null;
+			
+			// Do the remainder of the look up.
+			while(curIdx < path.length && parentElem)
+			{
+				// Try the next element in the path.
+				var oldParentElem:* = parentElem;
+				try
+				{
+					if(parentElem is XML || parentElem is XMLList)
+						parentElem = parentElem.child(curLookup);
+					else
+						parentElem = parentElem[curLookup];
+				}
+				catch(e:Error)
+				{
+					parentElem = null;
+				}
+				
+				// Several different possibilities that indicate we failed to advance.
+				var gotEmpty:Boolean = false;
+				if(parentElem == undefined) gotEmpty = true;
+				if(parentElem == null) gotEmpty = true;
+				if(parentElem is XMLList && parentElem.length() == 0) gotEmpty = true;
+				
+				// If we're going to set and it's XML, create the field.
+				if(willSet && isTemplateXML && gotEmpty && oldParentElem)
+				{
+					oldParentElem.appendChild(<{curLookup}/>);
+					parentElem = oldParentElem.child(curLookup);
+					gotEmpty = false;
+				}
+				
+				if(gotEmpty)
+				{
 					if(!suppressErrors)
-                    	Logger.warn(this, "findProperty", "[#"+this.name+"] Could not resolve property '" + curLookup + "' for property reference '" + reference.property + "'");
-                    Profiler.exit("Entity.findProperty");
-                    return null;
-                }
-                
-                // Advance to next element in the path.
-                curLookup = path[curIdx++] as String;
-            }
-            
-            // Did we end up with a match?
-            if(parentElem && (curLookup == null || parentElem.hasOwnProperty(curLookup)) )
-            {
-                var pi:PropertyInfo = providedPi;
-                pi.propertyParent = parentElem;
-                pi.propertyName = curLookup;
-                Profiler.exit("Entity.findProperty");
-                return pi;
-            }
-            
-            Profiler.exit("Entity.findProperty");
-            return null;
-        }
+						Logger.warn(this, "findProperty", "[#"+this.name+"] Could not resolve property '" + curLookup + "' for property reference '" + reference.property + "'");
+					Profiler.exit("Entity.findProperty");
+					return null;
+				}
+				
+				// Advance to next element in the path.
+				curLookup = path[curIdx++] as String;
+			}
+			
+			// Did we end up with a match?
+			if(parentElem)
+			{
+				var pi:PropertyInfo = providedPi;
+				pi.propertyParent = parentElem;
+				pi.propertyName = curLookup;
+				Profiler.exit("Entity.findProperty");
+				return pi;
+			}
+			
+			Profiler.exit("Entity.findProperty");
+			return null;
+		}
         
         private var _deferring:Boolean = true;
         
