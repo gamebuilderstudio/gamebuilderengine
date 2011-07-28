@@ -18,6 +18,7 @@ package com.pblabs.engine.resource
     
     import flash.events.Event;
     import flash.utils.Dictionary;
+    import flash.utils.getQualifiedClassName;
     
     /**
      * The resource manager handles all tasks related to using asset files (images, xml, etc)
@@ -264,5 +265,19 @@ package com.pblabs.engine.resource
          * List of resource providers used to get resources. 
          */        
         private var resourceProviders:Array = new Array();
-    }
+
+		/**
+		 * resourceList is an arrayCollection of all resources. This can be displayed in a dropDown list
+		 **/
+		private var _resourceList : Array;
+		public function get resourceList():Array
+		{
+			if(_resourceList) _resourceList = [];
+			_resourceList = new Array();
+			for each(var res : Resource in this._resources){
+				_resourceList.push({label: res.filename, data: res.filename, resourceType: getQualifiedClassName(res)})
+			}
+			return _resourceList;
+		}
+	}
 }
