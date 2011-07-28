@@ -26,6 +26,12 @@ package com.flexgangsta.pbtriggers.actions
 			_owner=value;
 		}
 
+		private var _label : String
+		public function get label():String { return _label; }
+		public function set label(value:String):void
+		{
+			_label=value;
+		}
 		//______________________________________ 
 		//	Public Methods
 		//______________________________________

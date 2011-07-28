@@ -33,5 +33,13 @@ package com.flexgangsta.pbtriggers.actions
 		 * 
 		 */		
 		function set owner(value:ITriggerComponent):void;
+
+		/**
+		 * 
+		 * @param the custom label for this action, used in the editor 
+		 * 
+		 */		
+		function get label():String;
+		function set label(value:String):void;
 	}
 }
