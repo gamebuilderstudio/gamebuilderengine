@@ -23,13 +23,19 @@ package com.pblabs.engine.core
 
 		public function onTick(deltaTime:Number):void
 		{
+			var pbeClass : * = PBE;
+			var objectContext : Object = PBE.GLOBAL_DYNAMIC_OBJECT;
 			//Update mouse position for globally for expressions
-			PBE.GLOBAL_DYNAMIC_OBJECT.Game.Mouse.x = PBE.mainStage.mouseX;
-			PBE.GLOBAL_DYNAMIC_OBJECT.Game.Mouse.y = PBE.mainStage.mouseY;
+			if(!objectContext.Game) objectContext.Game = new Object();
+			
+			if(!objectContext.Game.Mouse) objectContext.Game.Mouse = new Object();
+			objectContext.Game.Mouse.x = PBE.mainStage.mouseX;
+			objectContext.Game.Mouse.y = PBE.mainStage.mouseY;
 
 			//Screen Size
-			PBE.GLOBAL_DYNAMIC_OBJECT.Game.Screen.width = PBE.mainStage.stageWidth;
-			PBE.GLOBAL_DYNAMIC_OBJECT.Game.Screen.height = PBE.mainStage.stageHeight;
+			if(!objectContext.Game.Screen) objectContext.Game.Screen = new Object();
+			objectContext.Game.Screen.width = PBE.mainStage.stageWidth;
+			objectContext.Game.Screen.height = PBE.mainStage.stageHeight;
 		}
 
 		private function initialize():void
