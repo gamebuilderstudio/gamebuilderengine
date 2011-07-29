@@ -214,6 +214,9 @@ package com.pblabs.engine.serialization
                 }
             }
             
+			//If property not found then mark the type as dynamic so the field can be checked
+			
+			if(description.@isDynamic == true) return "dynamic";
             return null;
         }
           

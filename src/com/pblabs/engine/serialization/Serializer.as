@@ -15,6 +15,7 @@ package com.pblabs.engine.serialization
     
     import flash.geom.Point;
     import flash.utils.Dictionary;
+    import flash.utils.getDefinitionByName;
     import flash.utils.getQualifiedClassName;
     
     /**
@@ -199,8 +200,12 @@ package com.pblabs.engine.serialization
         {
             // If the tag is empty and we're not a string where """ is a valid value,
             // just return that value.
-            if (xml.toString() == "" && !(object is String))
+            if (xml.toString() == "" && !(object is String)){
                 return object;
+			}else if(!(object is String) && typeHint == "dynamic"){
+				var clazz : Class = getDefinitionByName( getQualifiedClassName(object) ) as Class;
+				return clazz(xml.children()[0]);
+			}
             
             return xml.toString();
         }
@@ -254,6 +259,8 @@ package com.pblabs.engine.serialization
                     }
                 }
                 
+				if(fieldName == "musProp")
+					trace("FoundProp");
                 // Determine the type.
                 var typeName:String = fieldXML.attribute("type");
                 if (typeName.length < 1)
@@ -363,7 +370,26 @@ package com.pblabs.engine.serialization
                     }                
                 }
             }
-        }
+
+			//Process Dynamic Class
+			if(classDescription.@isDynamic != null && classDescription.@isDynamic == true && classDescription.@isFinal == false && classDescription.@isStatic == false)
+			{
+				for (fieldName in object)
+				{
+					fieldXML = null;
+					
+					// Only serialize variables, that aren't null
+					if(object[fieldName] != null)
+					{
+						fieldXML = serializeProperty(object, fieldName);
+						if(fieldXML != null)
+						{
+							xml.appendChild(fieldXML);
+						}                
+					}
+				}
+			}
+		}
         
         private function serializeProperty(object:*, propertyName:String):XML
         {
@@ -377,7 +403,7 @@ package com.pblabs.engine.serialization
                 if (!isNaN(object[propertyName]))
                 {
                     // Is a number...
-                    propertyXML.@type = getQualifiedClassName(1.0).replace(/::/,".");
+                    propertyXML.@type = getQualifiedClassName(object[propertyName]).replace(/::/,".");
                 }
                 else
                 {
