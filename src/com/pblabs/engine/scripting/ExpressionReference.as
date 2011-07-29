@@ -1,6 +1,7 @@
 package com.pblabs.engine.scripting
 {
 	import com.pblabs.engine.PBE;
+	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.entity.IEntity;
 	import com.pblabs.engine.entity.PropertyReference;
 	import com.pblabs.engine.serialization.ISerializable;
@@ -79,13 +80,16 @@ package com.pblabs.engine.scripting
 			/*if(_expression && _expression !== xml.toString())
 				Logger.warn(this, "deserialize", "Overwriting property; was '" + _property + "', new value is '" + xml.toString() + "'");*/
 			_expression = xml.toString();
-			if(_dynamicThisObject && xml.@thisObjectName)
+			if(_dynamicThisObject && (xml.contains("thisObjectName") || xml.toString().indexOf("thisObjectName")))
 			{
 				var entity : IEntity = PBE.lookupEntity(xml.@thisObjectName);
-				if(!entity)
+				if(!entity){
 					PBE.callLater(deserialize, [xml]);
-				
+					return this;
+				}
 				_dynamicThisObject.selfContext = entity.Self;
+			}else{
+				Logger.error(this, "deserialize", "Fatal Error deserializing Expression Reference. The @thisObjectName property is missing from the xml node tag");
 			}
 			return this;
 		}
