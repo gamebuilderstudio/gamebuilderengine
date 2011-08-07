@@ -259,8 +259,6 @@ package com.pblabs.engine.serialization
                     }
                 }
                 
-				if(fieldName == "musProp")
-					trace("FoundProp");
                 // Determine the type.
                 var typeName:String = fieldXML.attribute("type");
                 if (typeName.length < 1)
@@ -282,7 +280,7 @@ package com.pblabs.engine.serialization
                     // Assign the new value.
                     try
                     {
-                        object[fieldName] = child;
+						object[fieldName] = child;
                     }
                     catch(e:Error)
                     {
@@ -632,6 +630,12 @@ package com.pblabs.engine.serialization
 			//If typeName is a wildcard we need to handle this special case
 			if(typeName == '*')
 			{
+				// Note we want to check for null here because the child may not be an object
+				//So just return the object itself
+				if (childObject == null)
+				{
+					return object;
+				}
 				typeName = getQualifiedClassName(childObject);
 			}
             
