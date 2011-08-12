@@ -32,8 +32,8 @@ package com.pblabs.engine.core
         {
             PBE.mainStage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
             PBE.mainStage.addEventListener(KeyboardEvent.KEY_UP,   onKeyUp);
-            PBE.mainClass.parent.addEventListener(MouseEvent.MOUSE_DOWN,  onMouseDown);
-            PBE.mainClass.parent.addEventListener(MouseEvent.MOUSE_UP,    onMouseUp);
+            PBE.mainClass.parent.addEventListener(MouseEvent.MOUSE_DOWN,  onMouseDown, true);
+            PBE.mainClass.parent.addEventListener(MouseEvent.MOUSE_UP,    onMouseUp, true);
             PBE.mainClass.parent.addEventListener(MouseEvent.MOUSE_MOVE,  onMouseMove);
             PBE.mainClass.parent.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel);
             PBE.mainClass.parent.addEventListener(MouseEvent.MOUSE_OVER,  onMouseOver);
@@ -192,11 +192,13 @@ package com.pblabs.engine.core
 
         private function onMouseDown(event:MouseEvent):void
         {
+			_keyState[InputKey.MOUSE_BUTTON.keyCode] = true;
             dispatchEvent(event);
         }
 
         private function onMouseUp(event:MouseEvent):void
         {
+			_keyState[InputKey.MOUSE_BUTTON.keyCode] = false;
             dispatchEvent(event);
         }
 
