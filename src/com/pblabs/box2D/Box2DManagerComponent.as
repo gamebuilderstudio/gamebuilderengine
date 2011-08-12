@@ -281,7 +281,7 @@ package com.pblabs.box2D
 			//Query Box2D.
 			var aabb:AABB = new AABB(new V2(box.topLeft.x / scale, box.topLeft.y / scale), new V2(box.bottomRight.x / scale, box.bottomRight.y / scale));
 
-			var resultFixtures:Array = new Array(1024);
+			var resultFixtures:Array = new Array();
 			var numFoundShapes:int;
 			
 			function callback(fixture:b2Fixture):Boolean {
