@@ -22,7 +22,7 @@ package com.flexgangsta.pbtriggers.actions
 		function execute():*;
 		
 		/**
-		 * Destorys the current action and performs any cleanup
+		 * Destroys the current action and performs any cleanup
 		 */		
 		function destroy():void;
 
@@ -42,5 +42,10 @@ package com.flexgangsta.pbtriggers.actions
 		 */		
 		function get label():String;
 		function set label(value:String):void;
+
+		/**
+		 * Defines whether this action can be run continuously every tick.
+		 **/
+		function get type():ActionType;
 	}
 }

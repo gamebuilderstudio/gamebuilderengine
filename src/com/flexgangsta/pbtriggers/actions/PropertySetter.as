@@ -28,12 +28,16 @@ package com.flexgangsta.pbtriggers.actions
 			_owner=value;
 		}
 
-		private var _label : String
+		protected var _label : String
 		public function get label():String { return _label; }
 		public function set label(value:String):void
 		{
 			_label=value;
 		}
+		
+		protected var _type : ActionType = ActionType.ONETIME;
+		public function get type():ActionType{ return _type; }
+
 		//______________________________________ 
 		//	Public Methods
 		//______________________________________

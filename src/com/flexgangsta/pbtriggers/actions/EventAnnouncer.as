@@ -42,6 +42,10 @@ package com.flexgangsta.pbtriggers.actions
 		{
 			_label=value;
 		}
+		
+		private var _type : ActionType = ActionType.ONETIME;
+		public function get type():ActionType{ return _type; }
+		
 		//______________________________________ 
 		//	Public Methods
 		//______________________________________
