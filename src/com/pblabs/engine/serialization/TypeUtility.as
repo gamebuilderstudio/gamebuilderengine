@@ -213,11 +213,18 @@ package com.pblabs.engine.serialization
                     }
                 }
             }
-            
-			//If property not found then mark the type as dynamic so the field can be checked
 			
+			//If property not found then mark the type as dynamic so the field can be checked
 			if(description.@isDynamic == true) return "dynamic";
-            return null;
+			
+			//try getting the class name from the object
+			if(object && field && object[field] != null && !(object[field] is String) && !(object[field] is int) )
+			{
+				var classHint : String = getQualifiedClassName( object[field] );
+				return classHint;
+			}
+            
+			return null;
         }
           
         /**
