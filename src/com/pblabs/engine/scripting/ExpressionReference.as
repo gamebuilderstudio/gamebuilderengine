@@ -88,8 +88,8 @@ package com.pblabs.engine.scripting
 					return this;
 				}
 				_dynamicThisObject.selfContext = entity.Self;
-			}else{
-				Logger.error(this, "deserialize", "Fatal Error deserializing Expression Reference. The @thisObjectName property is missing from the xml node tag");
+			//}else{
+				//Logger.error(this, "deserialize", "Fatal Error deserializing Expression Reference. The @thisObjectName property is missing from the xml node tag");
 			}
 			return this;
 		}
