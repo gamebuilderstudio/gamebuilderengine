@@ -18,11 +18,6 @@
 
 package Box2DAS.Collision.Shapes{
 
-
-
-import Box2DAS.Common.Math.*;
-
-
 /// This holds contact filtering data.
 public class b2FilterData
 {

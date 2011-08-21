@@ -24,7 +24,6 @@ import Box2DAS.Collision.*;
 import Box2DAS.Collision.Shapes.*;
 import Box2DAS.Dynamics.Contacts.*;
 import Box2DAS.Dynamics.*;
-import Box2DAS.Common.Math.*;
 import Box2DAS.Common.*;
 
 
