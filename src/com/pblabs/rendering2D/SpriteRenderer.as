@@ -37,13 +37,15 @@ package com.pblabs.rendering2D
 			{
 				if (_resource)
 				{
-					PBE.resourceManager.unload(_resource.filename, ImageResource);
+					//PBE.resourceManager.unload(_resource.filename, ImageResource);
 					_resource = null;
 				}            
 				_fileName = value;
 				_loading = true;
 				// Tell the ResourceManager to load the ImageResource
-				PBE.resourceManager.load(fileName,ImageResource,imageLoadCompleted,imageLoadFailed,false);				
+				var resource : ImageResource = PBE.resourceManager.load(fileName,ImageResource,imageLoadCompleted,imageLoadFailed,false) as ImageResource;	
+				if(resource && resource.bitmapData)
+					imageLoadCompleted(resource);
 			}	
 		}
 						
@@ -104,6 +106,8 @@ package com.pblabs.rendering2D
         */ 
 		private function imageLoadCompleted(res:ImageResource):void
 		{
+			if(_resource) return;
+				
 			_loading = false;
 			_loaded = true;
 			_failed = false;
@@ -144,7 +148,7 @@ package com.pblabs.rendering2D
 		{
 			if (_resource)
 			{
-				PBE.resourceManager.unload(_resource.filename, ImageResource);
+				//PBE.resourceManager.unload(_resource.filename, ImageResource);
 				_resource = null;
 				_loaded = false;
 			}   
