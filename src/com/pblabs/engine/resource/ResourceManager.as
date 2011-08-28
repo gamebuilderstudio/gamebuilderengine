@@ -243,7 +243,17 @@ package com.pblabs.engine.resource
 			return _resources[resourceIdentifier];
 		}
 		
-        /**
+		/**
+		 * Provides a resource if it is known. could be that it is not loaded yet.  
+		 * @param uri - the hash key that the resource was indexed by. Usually filename + resourceClassName
+		 * @return resource
+		 */
+		public function getResourceById(uri : String):Resource
+		{
+			return _resources[uri];
+		}
+
+		/**
          * Properly mark a resource as failed-to-load.
          */
         private function fail(resource:Resource, onFailed:Function, message:String):void
