@@ -18,11 +18,13 @@ package com.pblabs.box2D
     import Box2DAS.Dynamics.b2Fixture;
     import Box2DAS.Dynamics.b2FixtureDef;
     
+    import com.pblabs.engine.PBE;
     import com.pblabs.engine.PBUtil;
     import com.pblabs.engine.components.TickedComponent;
     import com.pblabs.engine.core.ObjectType;
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.entity.EntityComponent;
+    import com.pblabs.rendering2D.DisplayObjectRenderer;
     import com.pblabs.rendering2D.IMobileSpatialObject2D;
     import com.pblabs.rendering2D.IScene2D;
     import com.pblabs.rendering2D.ISpatialManager2D;
@@ -42,6 +44,12 @@ package com.pblabs.box2D
      */
     public class Box2DSpatialComponent extends TickedComponent implements IMobileSpatialObject2D
     {
+		/**
+		 * If set, a SpriteRenderComponent we can use to fulfill point occupied
+		 * tests.
+		 */
+		public var spriteForPointChecks:DisplayObjectRenderer;
+
 		[EditorData(ignore="true")]
         public var onAddedCallback:Function = null;
 
@@ -92,7 +100,10 @@ package com.pblabs.box2D
          */
         public function get worldExtents():Rectangle
         {
-            //TODO: how far should a spatial component actually have a size?
+			if(spriteForPointChecks)
+				return spriteForPointChecks.displayObject.getBounds(PBE.mainClass);
+            
+			//TODO: how far should a spatial component actually have a size?
             return new Rectangle(position.x - (size.x * 0.5), position.y - (size.y * 0.5), size.x, size.y);         
         }
         
@@ -104,14 +115,21 @@ package com.pblabs.box2D
         {
             return false;
         }
-        /**
-         * All points in our bounding box are occupied.
-         * @inheritDoc
-         */
-        public function pointOccupied(pos:Point, mask:ObjectType, scene:IScene2D):Boolean
-        {
-            return worldExtents.containsPoint(pos);
-        }	  
+
+		/**
+		 * All points in our bounding box are occupied.
+		 * @inheritDoc
+		 */
+		public function pointOccupied(pos:Point, mask:ObjectType, scene : IScene2D):Boolean
+		{
+			// If no sprite then we just test our bounds.
+			if(!spriteForPointChecks){
+				return worldExtents.containsPoint(pos);
+			}
+			
+			// OK, so pass it over to the sprite.
+			return spriteForPointChecks.pointOccupied(pos, mask);
+		}
         
         public function get collisionType():ObjectType
         {
@@ -148,7 +166,7 @@ package com.pblabs.box2D
             if (_body)
             {
                 var pos:V2 = _body.GetPosition();
-                return new Point(pos.x * _manager.scale, pos.y * _manager.scale);
+                return new Point(int(Math.round(pos.x * _manager.scale)), int(Math.round(pos.y * _manager.scale)));
             }
             
             return new Point(_bodyDef.position.x, _bodyDef.position.y);
@@ -156,28 +174,23 @@ package com.pblabs.box2D
         
         public function set position(value:Point):void
         {
-            var position:V2 = _bodyDef.position.v2.xy(value.x+positionOffset.x, value.y+positionOffset.y);
-            
+            var position:V2 = _bodyDef.position.v2.xy(value.x, value.y);
             if (_body)
             {
                 position.multiplyN(_manager.inverseScale);
                 _body.SetTransform(position, _body.GetAngle());
-            }
+            }else{
+				_bodyDef.position.v2 = new V2(value.x, value.y);
+				//_bodyDef.position.v2.multiplyN(_manager.inverseScale);
+			}
         }
         
-		[EditorData(defaultValue="0|0")]
-		public function get positionOffset():Point { return _positionOffset; }
-		public function set positionOffset(value:Point):void
-		{
-			_positionOffset = value;
-		}
-
 		public function get rotation():Number
         {
             var rotation:Number = _bodyDef.angle;
             
             if (_body)
-                rotation = _body.GetAngle();
+                rotation = int(Math.round(_body.GetAngle()));
             
             return PBUtil.getDegreesFromRadians(rotation);
         }
@@ -199,6 +212,10 @@ package com.pblabs.box2D
         
         public function set size(value:Point):void
         {
+			if(value.x < 1)
+				value.x = 1;
+			if(value.y < 1)
+				value.y = 1;
             _size = value;
             
             if (_body)
@@ -395,7 +412,7 @@ package com.pblabs.box2D
 		 */
 		override public function onTick(tickRate:Number):void
 		{
-			position += new Point(position.x+(linearVelocity.x * tickRate), position.y+(linearVelocity.y * tickRate));
+			position = new Point(position.x+(linearVelocity.x * tickRate), position.y+(linearVelocity.y * tickRate));
 			rotation += angularVelocity * tickRate;
 		}
 
@@ -403,8 +420,12 @@ package com.pblabs.box2D
         {
 			if(! _collisionShapes)
 				addCollisionShape( new CircleCollisionShape() );
+			
 			setupBody();
-        }
+
+			if(!spriteForPointChecks)
+				spriteForPointChecks = owner.lookupComponentByType( DisplayObjectRenderer ) as DisplayObjectRenderer;
+		}
         
         override protected function onRemove():void 
         {
@@ -412,6 +433,19 @@ package com.pblabs.box2D
             _body = null;
         }
 		
+		override protected function onReset():void
+		{
+			super.onReset();
+			
+			if(spriteForPointChecks && (spriteForPointChecks.owner == null || spriteForPointChecks.owner != this.owner))
+				spriteForPointChecks = null;
+			
+			
+			if(!spriteForPointChecks)
+				spriteForPointChecks = owner.lookupComponentByType( DisplayObjectRenderer) as DisplayObjectRenderer;
+			
+		}
+
 		private function createFixtureInstance(body : b2Body, fixtureDef : b2FixtureDef):b2Fixture
 		{
 			var fixture : b2Fixture = body.CreateFixture(fixtureDef);
@@ -426,14 +460,14 @@ package com.pblabs.box2D
 		{
 			if((_manager == null) || (_manager != null && _body != null)) return;
 			
-			_bodyDef.position.v2.multiplyN(_manager.inverseScale);
-			
+			_bodyDef.position.v2 = _bodyDef.position.v2.multiplyN(_manager.inverseScale);
 			_manager.addBody(_bodyDef, this, 
 				function(body:b2Body):void
 				{
 					_body = body;
 					_body.SetUserData(this);
-					_bodyDef.position.v2.multiplyN(_manager.scale);
+					_body.SetTransform(_bodyDef.position.v2, rotation);
+					//_bodyDef.position.v2.multiplyN(_manager.scale);
 					linearVelocity = _linearVelocity;
 					angularVelocity = _angularVelocity;
 					
@@ -462,6 +496,5 @@ package com.pblabs.box2D
 		protected var _bodyDef:b2BodyDef = new b2BodyDef();
 		
 		protected var _size:Point = new Point(10, 10);
-		protected var _positionOffset:Point = new Point(0, 0);
     }
 }
