@@ -11,6 +11,7 @@ package com.pblabs.rendering2D
     import com.pblabs.engine.core.ObjectType;
     import com.pblabs.rendering2D.ui.IUITarget;
     
+    import flash.display.DisplayObjectContainer;
     import flash.geom.Point;
     import flash.geom.Rectangle;
     
@@ -165,7 +166,12 @@ package com.pblabs.rendering2D
          */
         function get trackLimitRectangle():Rectangle;
         
-        function transformWorldToScene(inPos:Point):Point;
+		/**
+		 * @private
+		 */
+		function get sceneContainer():DisplayObjectContainer;
+
+		function transformWorldToScene(inPos:Point):Point;
         function transformSceneToWorld(inPos:Point):Point;
 
         function transformSceneToScreen(inPos:Point):Point;

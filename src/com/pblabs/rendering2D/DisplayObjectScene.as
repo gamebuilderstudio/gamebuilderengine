@@ -16,6 +16,7 @@ package com.pblabs.rendering2D
     import com.pblabs.rendering2D.ui.IUITarget;
     
     import flash.display.DisplayObject;
+    import flash.display.DisplayObjectContainer;
     import flash.display.Sprite;
     import flash.events.Event;
     import flash.geom.*;
@@ -579,6 +580,11 @@ package com.pblabs.rendering2D
             _zoom = value;
             _transformDirty = true;
         }
+		
+		public function get sceneContainer():DisplayObjectContainer
+		{
+			return _rootSprite;
+		}
         
         public function sortSpatials(array:Array):void
         {
