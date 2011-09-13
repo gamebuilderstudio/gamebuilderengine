@@ -84,8 +84,10 @@ package com.pblabs.rendering2D
 					continue;
             }
 			
-            if(!boxVsBox(object.worldExtents, box))
-               continue;
+			if(!object.pointOccupied(new Point(box.x, box.y), null, null))
+				continue;
+            /*if(!boxVsBox(object.worldExtents, box))
+               continue;*/
             
             results.push(object);
             foundAny = true;

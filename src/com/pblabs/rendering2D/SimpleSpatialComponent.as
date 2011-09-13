@@ -8,6 +8,7 @@
  ******************************************************************************/
 package com.pblabs.rendering2D
 {
+    import com.pblabs.engine.PBE;
     import com.pblabs.engine.components.TickedComponent;
     import com.pblabs.engine.core.ObjectType;
     
@@ -72,8 +73,23 @@ package com.pblabs.rendering2D
         {
             _rotation = value;
         }	  
-        
-        /**
+		
+		private var _spriteForPointChecks : DisplayObjectRenderer;
+		/**
+		 * If set, a SpriteRenderComponent we can use to fulfill point occupied
+		 * tests.
+		 */
+		[EditorData(referenceType="componentReference")]
+		public function get spriteForPointChecks():DisplayObjectRenderer { return _spriteForPointChecks; }
+		public function set spriteForPointChecks(value:DisplayObjectRenderer):void
+		{
+			if(!value || !value.displayObject) return;
+			_spriteForPointChecks = value;
+			var localDimensions:Rectangle = _spriteForPointChecks.displayObject.getBounds(_spriteForPointChecks.displayObject);
+			size = new Point( localDimensions.width, localDimensions.height );
+		}
+
+		/**
          * The spatial manager this object belongs to.
          */
         [EditorData(referenceType="componentReference")]
@@ -98,12 +114,6 @@ package com.pblabs.rendering2D
             if (_spatialManager)
                 _spatialManager.addSpatialObject(this);
         }
-        
-        /**
-         * If set, a SpriteRenderComponent we can use to fulfill point occupied
-         * tests.
-         */
-        public var spriteForPointChecks:DisplayObjectRenderer;
         
         /**
          * The position of the object.
@@ -152,7 +162,10 @@ package com.pblabs.rendering2D
             
             if (_spatialManager)
                 _spatialManager.addSpatialObject(this);
-        }
+
+			if(!spriteForPointChecks)
+				spriteForPointChecks = owner.lookupComponentByType( DisplayObjectRenderer ) as DisplayObjectRenderer;
+		}
         
         /**
          * @inheritDoc
@@ -164,6 +177,18 @@ package com.pblabs.rendering2D
             if (_spatialManager)
                 _spatialManager.removeSpatialObject(this);
         }
+		
+		override protected function onReset():void
+		{
+			super.onReset();
+			
+			if(spriteForPointChecks && (spriteForPointChecks.owner == null || spriteForPointChecks.owner != this.owner))
+				spriteForPointChecks = null;
+			
+			
+			if(!spriteForPointChecks)
+				spriteForPointChecks = owner.lookupComponentByType( DisplayObjectRenderer) as DisplayObjectRenderer;
+		}
         
         /**
          * @inheritDoc
@@ -186,7 +211,10 @@ package com.pblabs.rendering2D
          */
         public function get worldExtents():Rectangle
         {
-            return new Rectangle(position.x - (size.x * 0.5), position.y - (size.y * 0.5), size.x, size.y);         
+			if(spriteForPointChecks)
+				return spriteForPointChecks.displayObject.getBounds(PBE.mainClass);
+			
+			return new Rectangle(position.x - (size.x * 0.5), position.y - (size.y * 0.5), size.x, size.y);         
         }
         
         /**

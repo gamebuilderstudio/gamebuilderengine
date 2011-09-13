@@ -44,11 +44,20 @@ package com.pblabs.box2D
      */
     public class Box2DSpatialComponent extends TickedComponent implements IMobileSpatialObject2D
     {
+		private var _spriteForPointChecks : DisplayObjectRenderer;
 		/**
 		 * If set, a SpriteRenderComponent we can use to fulfill point occupied
 		 * tests.
 		 */
-		public var spriteForPointChecks:DisplayObjectRenderer;
+		[EditorData(referenceType="componentReference")]
+		public function get spriteForPointChecks():DisplayObjectRenderer { return _spriteForPointChecks; }
+		public function set spriteForPointChecks(value:DisplayObjectRenderer):void
+		{
+			if(!value || !value.displayObject) return;
+			_spriteForPointChecks = value;
+			var localDimensions:Rectangle = _spriteForPointChecks.displayObject.getBounds(_spriteForPointChecks.displayObject);
+			size = new Point( localDimensions.width, localDimensions.height );
+		}
 
 		[EditorData(ignore="true")]
         public var onAddedCallback:Function = null;
@@ -187,12 +196,14 @@ package com.pblabs.box2D
         
 		public function get rotation():Number
         {
-            var rotation:Number = _bodyDef.angle;
+            var rot:Number;
             
             if (_body)
-                rotation = int(Math.round(_body.GetAngle()));
+				rot = _body.GetAngle();
+			else
+				rot = _bodyDef.angle;
             
-            return PBUtil.getDegreesFromRadians(rotation);
+            return Math.round( PBUtil.getDegreesFromRadians(rot) );
         }
         
         public function set rotation(value:Number):void
@@ -429,7 +440,7 @@ package com.pblabs.box2D
         
         override protected function onRemove():void 
         {
-            _manager.removeBody(_body);
+            _manager.removeBody(_body, this);
             _body = null;
         }
 		

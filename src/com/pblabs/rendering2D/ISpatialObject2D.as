@@ -52,5 +52,12 @@ package com.pblabs.rendering2D
 		 */
 		function get spatialManager():ISpatialManager2D;
 		function set spatialManager(value:ISpatialManager2D):void;
+		
+		/**
+		 * The spatial manager this object belongs to.
+		 */
+		function get spriteForPointChecks():DisplayObjectRenderer;
+		function set spriteForPointChecks(value:DisplayObjectRenderer):void;
+
 	}
 }

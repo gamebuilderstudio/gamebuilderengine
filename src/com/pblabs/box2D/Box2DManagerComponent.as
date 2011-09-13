@@ -45,6 +45,8 @@ package com.pblabs.box2D
         public function set scale(value:Number):void
         {
             _scale = value;
+			if(_debugDrawer) 
+				_debugDrawer.scale = _scale;
         }
         
         public function get inverseScale():Number
@@ -178,19 +180,24 @@ package com.pblabs.box2D
                 if (completedCallback != null)
                     completedCallback.apply(thisArg, [body]);
             }
+			
+			this.addSpatialObject( thisArg );
         }
         
-		public function removeBody(body:b2Body):void
+		public function removeBody(body:b2Body, spatial : ISpatialObject2D):void
         {
             if (_world)
             {
                 //the world is locked. this was called from a collision or other event.
                 //defer until we know it should not be locked anymore.
                 if (_world.IsLocked())
-                    PBE.processManager.schedule(0, this, removeBody, body);
+                    PBE.processManager.schedule(0, this, removeBody, body, spatial);
                 else
                     _world.DestroyBody(body);
             }
+			
+			//TODO: Need To Remove Spatials.
+			this.removeSpatialObject( spatial );
         }
         
         public function onTick(tickRate:Number):void
