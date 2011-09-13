@@ -32,13 +32,12 @@ package com.pblabs.box2D
       
 	  override protected function doCreateShape():b2FixtureDef 
 	  {
-  			var halfSize:Point = new Point(_parent.size.x * 0.5, _parent.size.y * 0.5);
   			var scale:Number = (_parent.spatialManager as Box2DManagerComponent).inverseScale;
   			
-			if(!_vertices) generateBox(10, 10);
+			if(!_vertices) generateBox(_parent.size.x/2, _parent.size.y/2);
   			var verticies:Array = new Array();
   			for (var i:int = 0; i < _vertices.length; i++)
-	  				verticies.push(new V2(_vertices[i].x * halfSize.x * scale, _vertices[i].y * halfSize.y * scale));
+	  				verticies.push(new V2(_vertices[i].x * scale, _vertices[i].y * scale));
   			
   			var shape:b2PolygonShape = new b2PolygonShape();
   			shape.SetAsArray(verticies);

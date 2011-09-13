@@ -46,14 +46,13 @@ package com.pblabs.box2D
       
       override protected function doCreateShape():b2FixtureDef
       {
-         var halfSize:Point = new Point(_parent.size.x * 0.5, _parent.size.y * 0.5);
          var scale:Number = (_parent.spatialManager as Box2DManagerComponent).inverseScale;
          
 		 var fixture: b2FixtureDef = super.doCreateShape();
 		 var shape:b2CircleShape = new b2CircleShape();
 		 shape.m_radius = _radius * scale;
-		 shape.m_p.x = _position.x * halfSize.x * scale;
-		 shape.m_p.y = _position.y * halfSize.y * scale;
+		 shape.m_p.x = _position.x * scale;
+		 shape.m_p.y = _position.y * scale;
 		 fixture.shape = shape;
          
          return fixture;
