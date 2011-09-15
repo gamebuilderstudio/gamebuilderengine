@@ -119,7 +119,7 @@ package com.pblabs.rendering2D
 		protected var _blendMode:String = BlendMode.NORMAL;
         protected var _position:Point = new Point();
 		protected var _positionOffset:Point = new Point();
-        protected var _size:Point;
+        protected var _size:Point = new Point();
         
         protected var _transformMatrix:Matrix = new Matrix();
         
