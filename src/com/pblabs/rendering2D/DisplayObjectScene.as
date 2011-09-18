@@ -245,6 +245,7 @@ package com.pblabs.rendering2D
             
             if(_sceneView)
             {
+				_sceneViewName = _sceneView["name"];
                 _sceneView.addDisplayObject(_rootSprite);
             }
         }
@@ -462,7 +463,7 @@ package com.pblabs.rendering2D
         {
             if(!sceneView)
             {
-                Logger.warn(this, "updateTransform", "sceneView is null, so we aren't rendering."); 
+                Logger.warn(this, "onFrame", "sceneView is null, so we aren't rendering."); 
                 return;
             }
             

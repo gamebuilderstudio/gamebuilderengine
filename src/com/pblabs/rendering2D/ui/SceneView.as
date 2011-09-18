@@ -28,7 +28,8 @@ package com.pblabs.rendering2D.ui
 		{
 			if(PBE.mainClass)
 			{
-				PBE.mainClass.addChild(this);
+				if(!PBE.mainClass.contains(this))
+					PBE.mainClass.addChildAt(this, 0);
 				
 				// Intelligent default size.
 				width = PBE.mainStage.stage.stageWidth;

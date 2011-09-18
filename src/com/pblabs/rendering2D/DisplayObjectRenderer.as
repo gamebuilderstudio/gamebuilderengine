@@ -486,7 +486,7 @@ package com.pblabs.rendering2D
             return displayObject.getBounds(displayObject);
         }
         
-        [EditorData(ignore="true")]
+		[EditorData(referenceType="componentReference")]
         public function get scene():IScene2D
         {
             return _scene;

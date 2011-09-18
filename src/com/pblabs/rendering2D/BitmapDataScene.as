@@ -26,7 +26,9 @@ package com.pblabs.rendering2D
      */
 	public class BitmapDataScene extends DisplayObjectScene
 	{
+		[EditorData(ignore="true")]
         public var backbuffer:BitmapData;
+		[EditorData(ignore="true")]
         public var bitmap:Bitmap = new Bitmap();
         
 		/**
@@ -84,8 +86,6 @@ package com.pblabs.rendering2D
                 
                 sceneView.width = PBE.mainStage.stageWidth;
                 sceneView.height = PBE.mainStage.stageHeight;
-                
-                return;
             }
             
             // Make sure back buffer is good.
