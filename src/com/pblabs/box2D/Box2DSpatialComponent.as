@@ -175,7 +175,7 @@ package com.pblabs.box2D
             if (_body)
             {
                 var pos:V2 = _body.GetPosition();
-                return new Point(int(Math.round(pos.x * _manager.scale)), int(Math.round(pos.y * _manager.scale)));
+                return new Point(pos.x * _manager.scale, pos.y * _manager.scale);
             }
             
             return new Point(_bodyDef.position.x, _bodyDef.position.y);
@@ -203,7 +203,7 @@ package com.pblabs.box2D
 			else
 				rot = _bodyDef.angle;
             
-            return Math.round( PBUtil.getDegreesFromRadians(rot) );
+            return PBUtil.getDegreesFromRadians(rot);
         }
         
         public function set rotation(value:Number):void
@@ -418,15 +418,6 @@ package com.pblabs.box2D
             }
         }
         
-		/**
-		 * @inheritDoc
-		 */
-		override public function onTick(tickRate:Number):void
-		{
-			position = new Point(position.x+(linearVelocity.x * tickRate), position.y+(linearVelocity.y * tickRate));
-			rotation += angularVelocity * tickRate;
-		}
-
 		override protected function onAdd():void
         {
 			if(! _collisionShapes)
@@ -477,10 +468,10 @@ package com.pblabs.box2D
 				{
 					_body = body;
 					_body.SetUserData(this);
-					_body.SetTransform(_bodyDef.position.v2, rotation);
+					//_body.SetTransform(_bodyDef.position.v2, rotation);
 					//_bodyDef.position.v2.multiplyN(_manager.scale);
-					linearVelocity = _linearVelocity;
-					angularVelocity = _angularVelocity;
+					//linearVelocity = _linearVelocity;
+					//angularVelocity = _angularVelocity;
 					
 					buildCollisionShapes();
 					
