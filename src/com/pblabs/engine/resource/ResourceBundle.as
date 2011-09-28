@@ -27,7 +27,9 @@ package com.pblabs.engine.resource
     public class ResourceBundle
     {
         
-        /**
+		private var _json : JSONResource;
+
+		/**
          * ExtensionTypes associates filename extensions with the resource type that they are to be loaded as.
          *  Each entry should be in the form of 'xml:"com.pblabs.engine.resource.XMLResource"'
          *  Where xml is the filename extension that should be associated with this type, and  
@@ -37,7 +39,6 @@ package com.pblabs.engine.resource
          * This array can be extended at runtime, such as:
          *  ResourceBundle.ExtensionTypes.mycustomext = "com.mydomain.customresource"
          */
-        
         public static var ExtensionTypes:Object = {
             png:"com.pblabs.engine.resource.ImageResource",
             jpg:"com.pblabs.engine.resource.ImageResource",
@@ -46,7 +47,8 @@ package com.pblabs.engine.resource
             xml:"com.pblabs.engine.resource.XMLResource",
             pbelevel:"com.pblabs.engine.resource.XMLResource",
             swf:"com.pblabs.engine.resource.SWFResource",
-            mp3:"com.pblabs.engine.resource.MP3Resource"
+            mp3:"com.pblabs.engine.resource.MP3Resource",
+			json:"com.pblabs.engine.resource.JSONResource"
         };
         
         /**

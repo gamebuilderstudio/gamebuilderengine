@@ -32,7 +32,8 @@ package com.pblabs.engine.resource
          xml:"com.pblabs.engine.resource.XMLResource",
          pbelevel:"com.pblabs.engine.resource.XMLResource",
          swf:"com.pblabs.engine.resource.SWFResource",
-         mp3:"com.pblabs.engine.resource.MP3Resource"
+         mp3:"com.pblabs.engine.resource.MP3Resource",
+		 json:"com.pblabs.engine.resource.JSONResource"
       };
       
       /**
