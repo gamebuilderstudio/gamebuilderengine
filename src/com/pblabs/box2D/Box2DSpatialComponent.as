@@ -252,6 +252,7 @@ package com.pblabs.box2D
             if (_body)
             {
                 var velocity:V2 = new V2(value.x * _manager.inverseScale, value.y * _manager.inverseScale);
+				_body.SetAwake(true);
                 _body.SetLinearVelocity(velocity);
             }
         }
