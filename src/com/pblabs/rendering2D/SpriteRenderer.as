@@ -122,7 +122,8 @@ package com.pblabs.rendering2D
 		protected override function dataModified():void
 		{
 			// set the registration (alignment) point to the sprite's center
-			registrationPoint = new Point(bitmapData.width/2,bitmapData.height/2);							
+			if(registrationPoint.x == 0 && registrationPoint.y == 0)
+				registrationPoint = new Point(bitmapData.width/2,bitmapData.height/2);							
 		}
 
    	    /**
