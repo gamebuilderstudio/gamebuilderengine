@@ -27,6 +27,7 @@ package com.pblabs.engine.resource
             return _clip;
         }
 
+		[EditorData(ignore="true")]
         public function get appDomain():ApplicationDomain 
         {
             return _appDomain; 
