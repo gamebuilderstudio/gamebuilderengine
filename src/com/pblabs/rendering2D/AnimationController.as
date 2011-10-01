@@ -42,7 +42,7 @@ package com.pblabs.rendering2D
          * @see AnimationControllerInfo
          */
         [TypeHint(type="com.pblabs.rendering2D.AnimationControllerInfo")]
-        public var animations:Array = new Array();
+        public var animations:Dictionary = new Dictionary();
 
         /**
          * Property indicating the duration of the current animation in ticks.
@@ -140,7 +140,16 @@ package com.pblabs.rendering2D
             // Expire current animation if it has finished playing and it's what we
             // want to keep playing.
             if (_currentAnimation !== nextAnim && PBE.processManager.virtualTime > (_currentAnimationStartTime + _currentAnimationDuration))
-                _currentAnimation = null;
+			{
+				if (_currentAnimation && _currentAnimation.completeEvent)
+				{
+					var event:String = _currentAnimation.completeEvent;
+					_currentAnimation = null;
+					owner.eventDispatcher.dispatchEvent(new Event(event));
+				} else {
+					_currentAnimation = null;
+				}
+			}
 
             // If we do not have a current animation, start playing the next.
             if (!_currentAnimation || nextAnim.priority > _currentAnimation.priority)
@@ -156,10 +165,12 @@ package com.pblabs.rendering2D
             // Ok, we have a current, valid animation at this point. So let's set
             // the sprite sheet and frame properties.
             
-            // Fast path for single frame "animations".
-            if (_currentAnimation.spriteSheet.frameCount == 1)
+			var targetCurFrame:int;
+
+			// Fast path for single frame "animations".
+            if (_currentAnimation.frameCount == 1)
             {
-                curFrame = 0;
+				targetCurFrame = _currentAnimation.getFrameByIndex(0);
             }
             else
             {
@@ -168,24 +179,34 @@ package com.pblabs.rendering2D
                     updateAnimationDuration();
                 
                 // Figure out what frame we are on.
-                var frameTime:Number = _currentAnimationDuration / _currentAnimation.spriteSheet.frameCount;
+                var frameTime:Number = _currentAnimationDuration / _currentAnimation.frameCount;
                 if (frameTime > _currentAnimation.maxFrameDelay)
                     frameTime = _currentAnimation.maxFrameDelay;
     
                 var animationAge:Number = PBE.processManager.virtualTime - _currentAnimationStartTime;
                 var curFrame:int = Math.floor(animationAge / frameTime);
-    
-                // Deal with clamping/looping.
+    			
+				// Deal with clamping/looping.
                 if (_currentAnimation.loop)
                 {
-                    var wasFrame:int = curFrame;
-                    curFrame = curFrame % _currentAnimation.spriteSheet.frameCount;
+					if(curFrame == _currentAnimation.frameCount){
+						if (currentAnimationStartTimeReference)
+							_currentAnimationStartTime = owner.getProperty(currentAnimationStartTimeReference);
+						else
+							_currentAnimationStartTime = PBE.processManager.virtualTime;
+						curFrame = 0;
+					}
+
+					var wasFrame:int = curFrame;
+					curFrame = curFrame % _currentAnimation.frameCount;
                 }
                 else
                 {
-                    if (curFrame >= _currentAnimation.spriteSheet.frameCount)
-                        curFrame = _currentAnimation.spriteSheet.frameCount - 1;
+                    if (curFrame >= _currentAnimation.frameCount)
+                        curFrame = _currentAnimation.frameCount - 1;
                 }
+				
+				targetCurFrame = _currentAnimation.getFrameByIndex(curFrame);
             }
 
 
@@ -194,7 +215,7 @@ package com.pblabs.rendering2D
             if (curFrame != _lastFrameIndex)
             {
                 _lastFrameIndex = curFrame;
-                owner.setProperty(currentFrameReference, curFrame);
+                owner.setProperty(currentFrameReference, targetCurFrame);
             }
             
             if (_currentAnimation.spriteSheet !== _lastSpriteSheet)
@@ -244,7 +265,7 @@ package com.pblabs.rendering2D
             if (currentAnimationDurationReference)
                 _currentAnimationDuration = owner.getProperty(currentAnimationDurationReference) * ProcessManager.TICK_RATE_MS;
             else
-                _currentAnimationDuration = _currentAnimation.spriteSheet.frameCount * (1000/_currentAnimation.frameRate);
+                _currentAnimationDuration = ((10*_currentAnimation.frameRate)*_currentAnimation.frameCount)+3;
         }
 
         protected function getNextAnimation():AnimationControllerInfo
