@@ -14,6 +14,7 @@ package com.pblabs.rendering2D
     
     import flash.display.Bitmap;
     import flash.display.BitmapData;
+    import flash.display.DisplayObject;
     import flash.display.Sprite;
     import flash.geom.Point;
     
@@ -23,6 +24,20 @@ package com.pblabs.rendering2D
         public var spriteIndex:int = 0;
 		public var directionReference:PropertyReference;
 
+		override public function get displayObject():DisplayObject
+		{
+			if(!_displayObject)
+			{
+				bitmapData = getCurrentFrame();
+			}
+			return super.displayObject;
+		}
+		override protected function onAdd() : void
+		{
+			super.onAdd();
+			bitmapData = getCurrentFrame();
+		}
+		
         protected function getCurrentFrame():BitmapData
         {
             if (!spriteSheet || !spriteSheet.isLoaded)
