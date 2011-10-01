@@ -57,7 +57,7 @@ package com.pblabs.rendering2D.spritesheet
 			{
 	            if (_image)
 	            {
-	                PBE.resourceManager.unload(_image.filename, ImageResource);
+	                //PBE.resourceManager.unload(_image.filename, ImageResource);
 	                image = null;
 	            }
 				_imageFilename = value;
@@ -159,7 +159,7 @@ package com.pblabs.rendering2D.spritesheet
 		{
 			if (_image)
 			{
-				PBE.resourceManager.unload(_image.filename, ImageResource);
+				//PBE.resourceManager.unload(_image.filename, ImageResource);
 				_image = null;
 				_loaded = false;
 			}  
