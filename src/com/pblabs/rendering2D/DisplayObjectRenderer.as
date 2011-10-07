@@ -213,7 +213,23 @@ package com.pblabs.rendering2D
             _transformDirty = true;
         }
         
-        /**
+		/**
+		 * The combined scale that takes into account the size and scale property when calculating scale
+		 */
+		public function get combinedScale():Point
+		{
+			var tmpScaleX:Number = _scale.x;
+			var tmpScaleY:Number = _scale.y;
+			if(_size && (_size.x > 0 || _size.y > 0))
+			{
+				var localDimensions:Rectangle = displayObject.getBounds(displayObject);
+				tmpScaleX = _scale.x * (_size.x / localDimensions.width);
+				tmpScaleY = _scale.y * (_size.y / localDimensions.height);
+			}
+			return new Point(tmpScaleX, tmpScaleY);
+		}
+		
+		/**
          * Explicitly set the size. This overrides scale if it is set.
          */
         public function set size(value:Point):void
