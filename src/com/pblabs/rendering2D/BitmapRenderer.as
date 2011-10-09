@@ -159,12 +159,13 @@ package com.pblabs.rendering2D
         
         override public function pointOccupied(worldPosition:Point, mask:ObjectType):Boolean
         {
-            if(!bitmap || !bitmap.bitmapData)
+            if(!bitmap || !bitmap.bitmapData || !scene)
                 return false;
             
+			worldPosition = worldPosition.subtract( scene.position );
             // Figure local position.
             var localPos:Point = transformWorldToObject(worldPosition);
-            return bitmap.bitmapData.hitTest(zeroPoint, 0x01, localPos);
+			return bitmap.bitmapData.hitTest(zeroPoint, 0x01, localPos);
         }
         
         static protected const zeroPoint:Point = new Point();
