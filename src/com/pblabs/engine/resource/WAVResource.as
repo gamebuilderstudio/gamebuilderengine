@@ -69,6 +69,12 @@ package com.pblabs.engine.resource
 			return;
 		}
 
+		override public function dispose():void
+		{
+			_soundObject = null;
+			super.dispose();
+		}
+
 		/**
 		 * the accessor for getting at the raw sound object of this resource. This resource could not user the super soundObject
 		 * accessor because Wav sounds do not extend the Sound class do to some flash framework issues.

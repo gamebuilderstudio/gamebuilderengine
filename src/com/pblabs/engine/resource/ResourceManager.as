@@ -74,7 +74,14 @@ package com.pblabs.engine.resource
                 return null;
             }
             
-            // Look up the resource.
+			// Hack for MP3 and WAV files. TODO: Generalize this for arbitrary formats.
+			var fileExtension:String = PBUtil.getFileExtension(filename).toLocaleLowerCase();
+			if(resourceType == SoundResource && (fileExtension == "mp3"))
+				resourceType = MP3Resource;
+			else if(resourceType == SoundResource && (fileExtension == "wav"))
+				resourceType = WAVResource;
+
+			// Look up the resource.
             var resourceIdentifier:String = filename.toLowerCase() + resourceType;
             var resource:Resource = _resources[resourceIdentifier];
             
@@ -100,13 +107,6 @@ package com.pblabs.engine.resource
                         onEmbeddedFail(filename);
                     return null;
                 }
-                
-                // Hack for MP3 and WAV files. TODO: Generalize this for arbitrary formats.
-                var fileExtension:String = PBUtil.getFileExtension(filename).toLocaleLowerCase();
-                if(resourceType == SoundResource && (fileExtension == "mp3"))
-                    resourceType = MP3Resource;
-				else if(resourceType == SoundResource && (fileExtension == "wav"))
-					resourceType = WAVResource;
                 
                 // check available resource providers and request the resource if it is known
                 for (var rp:int = 0; rp < resourceProviders.length; rp++)
