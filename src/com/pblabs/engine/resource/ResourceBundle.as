@@ -28,6 +28,7 @@ package com.pblabs.engine.resource
     {
         
 		private var _json : JSONResource;
+		private var _wav : WAVResource;
 
 		/**
          * ExtensionTypes associates filename extensions with the resource type that they are to be loaded as.
@@ -48,6 +49,7 @@ package com.pblabs.engine.resource
             pbelevel:"com.pblabs.engine.resource.XMLResource",
             swf:"com.pblabs.engine.resource.SWFResource",
             mp3:"com.pblabs.engine.resource.MP3Resource",
+			wav:"com.pblabs.engine.resource.WAVResource",
 			json:"com.pblabs.engine.resource.JSONResource"
         };
         

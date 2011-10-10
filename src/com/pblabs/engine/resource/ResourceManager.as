@@ -103,8 +103,10 @@ package com.pblabs.engine.resource
                 
                 // Hack for MP3 and WAV files. TODO: Generalize this for arbitrary formats.
                 var fileExtension:String = PBUtil.getFileExtension(filename).toLocaleLowerCase();
-                if(resourceType == SoundResource && (fileExtension == "mp3" || fileExtension == "wav"))
+                if(resourceType == SoundResource && (fileExtension == "mp3"))
                     resourceType = MP3Resource;
+				else if(resourceType == SoundResource && (fileExtension == "wav"))
+					resourceType = WAVResource;
                 
                 // check available resource providers and request the resource if it is known
                 for (var rp:int = 0; rp < resourceProviders.length; rp++)

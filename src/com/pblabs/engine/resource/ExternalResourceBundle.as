@@ -33,6 +33,7 @@ package com.pblabs.engine.resource
          pbelevel:"com.pblabs.engine.resource.XMLResource",
          swf:"com.pblabs.engine.resource.SWFResource",
          mp3:"com.pblabs.engine.resource.MP3Resource",
+		 wav:"com.pblabs.engine.resource.WAVResource",
 		 json:"com.pblabs.engine.resource.JSONResource"
       };
       
