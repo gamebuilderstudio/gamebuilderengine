@@ -116,6 +116,7 @@ package com.pblabs.rendering2D
                 
                 for each(var d:DisplayObjectRenderer in l.rendererList)
                 {
+					d.updateTransform(false);
                     var localMat:Matrix = d.displayObject.transform.matrix;
                     m.a = localMat.a;
                     m.b = localMat.b;
