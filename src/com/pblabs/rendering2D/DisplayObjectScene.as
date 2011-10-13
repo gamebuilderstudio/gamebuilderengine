@@ -515,8 +515,8 @@ package com.pblabs.rendering2D
             // TODO: Take into account rotation so it's correct even when
             //       rotating.
             
-            _rootPosition.x -= int(deltaX / _zoom);
-            _rootPosition.y -= int(deltaY / _zoom);        
+            _rootPosition.x -= deltaX / _zoom;
+            _rootPosition.y -= deltaY / _zoom;        
             _transformDirty = true;
         }
         
