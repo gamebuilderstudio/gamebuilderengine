@@ -7,6 +7,8 @@ package com.pblabs.engine.scripting
 	import com.pblabs.engine.serialization.ISerializable;
 	import com.pblabs.engine.util.DynamicObjectUtil;
 	
+	import flash.geom.Point;
+	
 	import r1.deval.D;
 	
 	/**
@@ -57,6 +59,7 @@ package com.pblabs.engine.scripting
 			evaluateExpression(context, thisObject);
 			return this;
 		}
+		
 		
 		/*--Serialization-----------------------------------------------------------------------------------------------*/
 		/**
@@ -128,6 +131,9 @@ package com.pblabs.engine.scripting
 			if(_initialized) return;
 			
 			D.importStaticMethods( Math );
+			D.importClass( Point );
+			D.importStaticMethods(ExpressionUtils);
+			D.importFunction("setPoint", ExpressionUtils.setPoint);
 			_initialized = true;
 		}
 		/*-----------------------------------------------------------------------------------------------------------
@@ -167,4 +173,13 @@ package com.pblabs.engine.scripting
 		
 		public function get dynamicThisObject():Object{ return _dynamicThisObject; }
 	}
+}
+import flash.geom.Point;
+
+class ExpressionUtils{
+	public static function setPoint(x : Number, y : Number):Point
+	{
+		return new Point(x,y);
+	}
+
 }

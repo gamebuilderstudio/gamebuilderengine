@@ -48,6 +48,7 @@ package com.flexgangsta.pbtriggers.actions
 			// If our source is a properyreference
 			if(source is ExpressionReference)
 			{
+				(source as ExpressionReference).selfContext = _owner.owner.Self;
 				newPropValue = (source as ExpressionReference).value;
 				
 			}else if(source is PropertyReference && passReferences) {

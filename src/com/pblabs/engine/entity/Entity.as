@@ -35,14 +35,20 @@ package com.pblabs.engine.entity
     internal class Entity extends PBObject implements IEntity
     {        
 		private const _selfObject : Object = new Object;
+		private var _entityDirty : Boolean = true;
 		/**
 		 * Used primarily with Expression References to pass this object as a reference to the scripting environment
 		 **/
 		public function get Self():Object
 		{
+			if(!_entityDirty)
+			{
+				return _selfObject;
+			}
 			DynamicObjectUtil.clearDynamicObject(_selfObject);
 			DynamicObjectUtil.copyDynamicObject(_components, _selfObject);
 			_selfObject.name = this.name;
+			_entityDirty = false;
 			return _selfObject;
 		}
 		
@@ -364,6 +370,7 @@ package com.pblabs.engine.entity
             
             component.owner = this;
             _components[componentName] = component;
+			_entityDirty = true;
             return true;
         }
         
@@ -382,6 +389,7 @@ package com.pblabs.engine.entity
             }
             
             delete _components[component.name];
+			_entityDirty = true;
             return true;
         }
         
@@ -401,6 +409,7 @@ package com.pblabs.engine.entity
                 // Reset it!
                 component.reset();                
             }
+			_entityDirty = true;
             deferring = false;
         }
         

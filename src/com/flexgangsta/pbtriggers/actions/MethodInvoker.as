@@ -59,12 +59,14 @@ package com.flexgangsta.pbtriggers.actions
 			{
 				var arg:* = args[i];
 				// If we get a property reference and it's okay to convert them to objects
-				if(arg is PropertyReference && passReferences)
+				if(arg is PropertyReference && passReferences){
 					processedArguments.push(_owner.owner.getProperty(arg as PropertyReference));
-				else if(arg is ExpressionReference)
+				}else if(arg is ExpressionReference){
+					(arg as ExpressionReference).selfContext = _owner.owner.Self;
 					processedArguments.push((arg as ExpressionReference).value);
-				else
+				}else{
 					processedArguments.push(arg);
+				}
 			}
 			
 			// Create the method and execute
