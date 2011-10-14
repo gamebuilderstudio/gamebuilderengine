@@ -186,6 +186,7 @@ package com.pblabs.box2D
             var position:V2 = _bodyDef.position.v2.xy(value.x, value.y);
             if (_body)
             {
+				_body.SetAwake(true);
                 position.multiplyN(_manager.inverseScale);
                 _body.SetTransform(position, _body.GetAngle());
             }else{
