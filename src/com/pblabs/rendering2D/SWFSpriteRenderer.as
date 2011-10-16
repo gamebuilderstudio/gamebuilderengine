@@ -193,6 +193,9 @@ package com.pblabs.rendering2D
 		public function get swfResource():SWFResource { return _resource; }
 		public function set swfResource(resource : SWFResource):void
 		{
+			if(resource){
+				this.fileName = resource.filename;
+			}
 			if(!resource.isLoaded)
 			{
 				//This is possibly a memory leak
