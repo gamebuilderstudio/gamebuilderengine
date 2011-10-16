@@ -56,6 +56,10 @@ package com.pblabs.rendering2D
 	            registrationPoint = spriteSheet.center.clone();					
 			}
 			
+			if(this.size.x != curFrame.width || this.size.y != curFrame.height && this.sizeProperty)
+			{
+				this.owner.setProperty( this.sizeProperty, new Point(curFrame.width, curFrame.height));
+			}
 			return curFrame;
             
         }
