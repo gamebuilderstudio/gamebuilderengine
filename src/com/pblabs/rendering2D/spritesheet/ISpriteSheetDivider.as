@@ -41,5 +41,10 @@ package com.pblabs.rendering2D.spritesheet
          * have a Clone method.
          */
         function clone():ISpriteSheetDivider;
+		
+		/**
+		 * Used to clean up any resources the divider may have
+		 **/
+		function destroy():void;
     }
 }

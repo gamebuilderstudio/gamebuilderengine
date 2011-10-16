@@ -99,7 +99,7 @@ package com.pblabs.rendering2D.spritesheet
 		public function set resource(obj : JSONResource):void { 
 			_resource = obj; 
 			buildFrames();
-			if(_owningSheet) _owningSheet.divider = this;
+			//if(_owningSheet) _owningSheet.divider = this;
 		}
 
 		/**
@@ -111,6 +111,17 @@ package com.pblabs.rendering2D.spritesheet
             c.resource = resource;
             return c;
         }
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function destroy():void
+		{
+			_owningSheet = null;
+			_resource = null;
+			_frames = null;
+		}
+
         
         private var _owningSheet:ISpriteSheet;
     }

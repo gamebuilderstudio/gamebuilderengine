@@ -88,6 +88,14 @@ package com.pblabs.rendering2D.spritesheet
             c.height = height;
             return c;
         }
+
+		/**
+		 * @inheritDoc
+		 */
+		public function destroy():void
+		{
+			_owningSheet = null;
+		}
         
         private var _owningSheet:ISpriteSheet;
     }

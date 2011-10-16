@@ -82,6 +82,11 @@ package com.pblabs.rendering2D.spritesheet
             c.yCount = yCount;
             return c;
         }
+		
+		public function destroy():void
+		{
+			_owningSheet = null;
+		}
         
         private var _owningSheet:ISpriteSheet;
     }

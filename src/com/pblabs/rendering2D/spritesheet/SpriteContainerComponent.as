@@ -8,6 +8,7 @@
  ******************************************************************************/
 package com.pblabs.rendering2D.spritesheet
 {
+    import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.entity.EntityComponent;
     import com.pblabs.rendering2D.modifier.Modifier;
     
@@ -75,6 +76,7 @@ package com.pblabs.rendering2D.spritesheet
 		
         public function set center(v:Point):void
         {
+			if(!v) _defaultCenter = true;
             _center = v;
             _defaultCenter = false;
         }
@@ -204,7 +206,7 @@ package com.pblabs.rendering2D.spritesheet
                 return;
             
             if (frames.length == 0)
-                throw new Error("No frames loaded");
+				Logger.error(this, "buildFrames", "Error - No frames loaded");
             					
 			// BitmapData modification implementation
 			if (frames!=null && modifiers.length>0)
@@ -247,7 +249,7 @@ package com.pblabs.rendering2D.spritesheet
                 return null;
             
             if ((index < 0) || (index >= rawFrameCount))
-                return null;
+                return frames[0];
             
             return frames[index];  
         }
