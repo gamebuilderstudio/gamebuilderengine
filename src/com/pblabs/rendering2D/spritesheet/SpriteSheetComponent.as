@@ -11,6 +11,7 @@ package com.pblabs.rendering2D.spritesheet
     import com.pblabs.engine.PBE;
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.resource.ImageResource;
+    import com.pblabs.engine.resource.Resource;
     import com.pblabs.engine.resource.ResourceManager;
     import com.pblabs.rendering2D.spritesheet.ISpriteSheet;
     
@@ -36,37 +37,38 @@ package com.pblabs.rendering2D.spritesheet
      * <p>Be aware that Flash implements an upper limit on image size - going over
      * 2048 pixels in any dimension will lead to problems.</p>
      */ 
-    public class SpriteSheetComponent extends BasicSpriteSheetComponent
+    public class SpriteSheetComponent extends SpriteContainerComponent implements ISpriteSheet
     {
 						
-        [EditorData(ignore="true")]
-        /**
-         * The filename of the image to use for this sprite sheet.
-         */
-        public function get imageFilename():String
-        {
-            return _imageFilename;
-        }
-        
-        /**
-         * @private
-         */
-        public function set imageFilename(value:String):void
-        {
+		[EditorData(ignore="true")]
+		/**
+		 * The filename of the image to use for this sprite sheet.
+		 */
+		public function get imageFilename():String
+		{
+			return _imageFilename;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set imageFilename(value:String):void
+		{
 			if (imageFilename!=value)
 			{
-	            if (_image)
-	            {
-	                //PBE.resourceManager.unload(_image.filename, ImageResource);
-	                image = null;
-	            }
+				if (_image)
+				{
+					//PBE.resourceManager.unload(_image.filename, ImageResource);
+					image = null;
+				}
 				_imageFilename = value;
-	            _loading = true;
+				_loading = true;
 				// Tell the ResourceManager to load the ImageResource
-	            PBE.resourceManager.load(value, ImageResource, onImageLoaded, onImageFailed);
+				var resource : Resource = PBE.resourceManager.load(value, ImageResource, onImageLoaded, onImageFailed);
+				if(resource && resource.isLoaded)
+					image = resource as ImageResource;
 			}
-        }
-		
+		}
 		
 		/**
 		 * Indicates if the ImageResource loading is in progress 
@@ -95,55 +97,148 @@ package com.pblabs.rendering2D.spritesheet
 			return _failed;
 		}
 		
+		
+		/**
+		 * The image resource to use for this sprite sheet.
+		 */
+		public function get image():ImageResource
+		{
+			return _image;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set image(value:ImageResource):void
+		{
+			_loaded = value ? true : false;
+			_failed = false;
+			
+			_image = value;
+			_imageFilename = _image ? _image.filename : "";
+			deleteFrames();
+		}
+		
+		/**
+         * True if the image data associated with this sprite sheet has been loaded.
+         */
+        public override function get isLoaded():Boolean
+        {
+            return (imageData != null || _forcedBitmaps)
+        }
         
         /**
-         * The image resource to use for this sprite sheet.
+         * The bitmap data of the loaded image.
          */
-        public function get image():ImageResource
+		[EditorData(ignore="true")]
+        public function get imageData():BitmapData
         {
-            return _image;
+			if (!_image)
+				return _imageData;
+			
+			return _image.bitmapData;
+        }
+		public function set imageData(data : BitmapData):void
+		{
+			_imageData = data;
+			deleteFrames();
+		}
+        
+        /**
+         * The divider to use to chop up the sprite sheet into frames. If the divider
+         * isn't set, the image will be treated as one whole frame.
+         */
+        [TypeHint(type="dynamic")]
+        public function get divider():ISpriteSheetDivider
+        {
+            return _divider;
         }
         
         /**
          * @private
          */
-        public function set image(value:ImageResource):void
+        public function set divider(value:ISpriteSheetDivider):void
         {
-			_loaded = true;
-			_failed = false;
-
-			_image = value;
-			_imageFilename = _image.filename;
+            _divider = value;
+            _divider.owningSheet = this;
             deleteFrames();
         }
-        
-		[EditorData(ignore="true")]
-        /**
-         * The bitmap data of the loaded image.
-         */
-		override public function get imageData():BitmapData
+		
+        protected override function getSourceFrames() : Array
         {
-            if (!_image)
+            // If user provided their own bitmapdatas, return those.
+            if(_forcedBitmaps)
+                return _forcedBitmaps;
+            
+            var frames:Array;
+            
+            // image isn't loaded, can't do anything yet
+            if (!imageData)
                 return null;
             
-            return _image.bitmapData;
+            // no divider means treat the image as a single frame
+            if (!_divider)
+            {
+                frames = new Array(1);
+                frames[0] = imageData;
+            }
+            else
+            {
+                frames = new Array(_divider.frameCount);
+								
+                for (var i:int = 0; i < _divider.frameCount; i++)
+                {
+                    var area:Rectangle = _divider.getFrameArea(i);										
+                    frames[i] = new BitmapData(area.width, area.height, true);
+                    frames[i].copyPixels(imageData, area, new Point(0, 0));									
+                }				
+            }		
+			
+            return frames;
         }
-		override public function set imageData(val : BitmapData):void{
-			Logger.warn(this, 'set imageData', 'You can not set the imageData on the SpriteSheetComponent, pass a fileName to be loaded.');
+        
+        /**
+         * From an array of BitmapDatas, initialize the sprite sheet, ignoring
+         * divider + filename.
+         */
+        public function initializeFromBitmapDataArray(bitmaps:Array):void
+        {
+            _forcedBitmaps = bitmaps;
+        }
+		
+		/**
+		 * destory provides a mechanism to cleans up this component externally if not added to an 
+		 * entity or internally when the onRemove method is called.
+		 **/
+		public function destroy():void
+		{
+			_imageData = null;
+			if(_forcedBitmaps){
+				var len : int = _forcedBitmaps.length;
+				for(var i : int = 0; i < len; i++){
+					_forcedBitmaps.pop();
+				}
+				_forcedBitmaps = null;
+			}
+			this.deleteFrames();
+			if(_divider){
+				_divider.owningSheet = null;
+				_divider = null;
+			}
 		}
         
-        protected function onImageLoaded(resource:ImageResource):void
-        {
+		protected function onImageLoaded(resource:ImageResource):void
+		{
 			_loading = false;
-            image = resource;
-        }
-        		
-        protected function onImageFailed(resource:ImageResource):void
-        {
+			image = resource;
+		}
+		
+		protected function onImageFailed(resource:ImageResource):void
+		{
 			_loading = false;
 			_failed = true;
-            Logger.error(this, "onImageFailed", "Failed to load '" + (resource ? resource.filename : "(unknown)") + "'");
-        }
+			Logger.error(this, "onImageFailed", "Failed to load '" + (resource ? resource.filename : "(unknown)") + "'");
+		}
 		
 		override protected function onAdd():void
 		{
@@ -163,14 +258,17 @@ package com.pblabs.rendering2D.spritesheet
 				_image = null;
 				_loaded = false;
 			}  
+			destroy();
 			super.onRemove();         			
 		}
-		
-        
+
 		private var _imageFilename:String = null;
-        private var _image:ImageResource = null;
+		private var _image:ImageResource = null;
 		private var _loading:Boolean = false;
 		private var _loaded:Boolean = false;
 		private var _failed:Boolean = false;
+		private var _imageData:BitmapData = null;
+        private var _divider:ISpriteSheetDivider = null;
+        private var _forcedBitmaps:Array = null;
     }
 }
