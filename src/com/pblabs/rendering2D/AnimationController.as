@@ -315,6 +315,19 @@ package com.pblabs.rendering2D
             
             if (owner.eventDispatcher && changeAnimationEvent)
                 owner.eventDispatcher.removeEventListener(changeAnimationEvent, animationChangedHandler);
+			
+			var animationKeys : Array = [];
+			for(var key : * in animations)
+			{
+				animationKeys.push( key );
+			}
+			
+			for(var i : int=0; i < animationKeys.length; i++)
+			{
+				var animContrl : AnimationControllerInfo = animations[ animationKeys[i] ] as AnimationControllerInfo;
+				animContrl.spriteSheet = null;
+				delete animations[ animationKeys[i] ];
+			}
         }
         
         private function animationChangedHandler(event:Event):void
