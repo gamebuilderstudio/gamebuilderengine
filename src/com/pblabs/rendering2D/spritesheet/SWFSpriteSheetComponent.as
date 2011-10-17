@@ -8,8 +8,9 @@
  ******************************************************************************/
 package com.pblabs.rendering2D.spritesheet
 {
+    import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.resource.SWFResource;
-
+    
     import flash.display.*;
     import flash.geom.*;
     import flash.utils.Dictionary;
@@ -19,7 +20,7 @@ package com.pblabs.rendering2D.spritesheet
      * are loaded by rasterizing frames from a MovieClip rather than splitting
      * a single image.
      */
-    public class SWFSpriteSheetComponent extends SpriteContainerComponent
+    public class SWFSpriteSheetComponent extends SpriteContainerComponent implements ISpriteSheet
     {
         /**
          * When cached is set to true (the default) the rasterized frames
@@ -109,7 +110,49 @@ package com.pblabs.rendering2D.spritesheet
             return _frames != null;
         }
 
-        /**
+		/**
+		 * The bitmap data of the loaded image.
+		 */
+		[EditorData(ignore="true")]
+		public function get imageData():BitmapData
+		{
+			Logger.warn(this, "imageData", "Image data is not available on a swf spritesheet");
+			return null;
+		}
+		public function set imageData(data : BitmapData):void
+		{
+			Logger.warn(this, "imageData", "You can not set raw image data on a swf spritesheet");
+		}
+
+		/**
+		 * The divider to use to chop up the sprite sheet into frames. If the divider
+		 * isn't set, the image will be treated as one whole frame.
+		 */
+		[TypeHint(type="dynamic")]
+		public function get divider():ISpriteSheetDivider
+		{
+			Logger.warn(this, "divider", "There is no divider on a swf spritesheet");
+			return null;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set divider(value:ISpriteSheetDivider):void
+		{
+			Logger.warn(this, "divider", "You can not set a divider on a swf spritesheet");
+		}
+
+		/**
+		 * destroy provides a mechanism to cleans up this component externally if not added to an 
+		 * entity or internally when the onRemove method is called.
+		 **/
+		public function destroy():void
+		{
+			this.deleteFrames();
+		}
+
+		/**
          * Rasterizes the associated MovieClip and returns a list of frames.
          */
         override protected function getSourceFrames() : Array
