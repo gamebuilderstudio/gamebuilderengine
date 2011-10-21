@@ -71,6 +71,8 @@ package com.flexgangsta.pbtriggers.actions
 			return event;
 		}
 		
+		public function stop():void { }
+
 		public function destroy():void
 		{
 			for (var key:String in properties)

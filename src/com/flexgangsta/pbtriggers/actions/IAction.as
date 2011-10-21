@@ -22,6 +22,11 @@ package com.flexgangsta.pbtriggers.actions
 		function execute():*;
 		
 		/**
+		 * Stop the current action. Mostly persistent actions use this to be notified if it needs to stop running.
+		 */		
+		function stop():void;
+
+		/**
 		 * Destroys the current action and performs any cleanup
 		 */		
 		function destroy():void;

@@ -75,6 +75,8 @@ package com.flexgangsta.pbtriggers.actions
 			return _owner.owner.getProperty(property);
 		}
 		
+		public function stop():void { }
+
 		public function destroy():void
 		{
 			if(source is ExpressionReference) (source as ExpressionReference).destroy();

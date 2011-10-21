@@ -85,6 +85,8 @@ package com.flexgangsta.pbtriggers.actions
 			}
 		}
 		
+		public function stop():void { }
+
 		public function destroy():void
 		{
 			var len : int = args.length;
