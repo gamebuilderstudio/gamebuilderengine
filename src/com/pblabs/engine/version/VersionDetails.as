@@ -20,7 +20,7 @@ package com.pblabs.engine.version
 		
 		public function toString():String
 		{
-			return "PushButton Engine - " + BuildVersion.BUILD_NUMBER +" - "
+			return "GameBuilder Studio (PBE Fork) - " + BuildVersion.BUILD_NUMBER +" - "
 				+ type + (flexVersion ? " ("+flexVersion+")" : "") 
 				+ " - " + Security.sandboxType;	
 		}
