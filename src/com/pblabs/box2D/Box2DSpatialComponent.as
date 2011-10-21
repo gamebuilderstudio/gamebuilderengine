@@ -442,7 +442,7 @@ package com.pblabs.box2D
 			super.onReset();
 			
 			if(spriteForPointChecks && (spriteForPointChecks.owner == null || spriteForPointChecks.owner != this.owner))
-				spriteForPointChecks = null;
+				_spriteForPointChecks = null;
 			
 			
 			if(!spriteForPointChecks)
