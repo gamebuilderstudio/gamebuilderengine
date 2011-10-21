@@ -39,9 +39,6 @@ package com.pblabs.rendering2D
      */
     public class DisplayObjectRenderer extends AnimatedComponent
     {
-		[Inspectable(name="Parallax Factor", type="flash.geom.Point", defaultValue="1,1")]
-		public var parallaxFactor:Point = new Point(1,1);
-
 		/**
          * Reference value used for sorting in some scenes.
          */
@@ -797,14 +794,7 @@ package com.pblabs.rendering2D
             _transformMatrix.scale(tmpScaleX, tmpScaleY);
             _transformMatrix.translate(-_registrationPoint.x * tmpScaleX, -_registrationPoint.y * tmpScaleY);
 			_transformMatrix.rotate(PBUtil.getRadiansFromDegrees(_rotation) + _rotationOffset);
-			
-			var scrollMultiplierX : Number = 1;
-			var scrollMultiplierY : Number = 1;
-			if(scene){
-				scrollMultiplierX = (scene.sceneViewBounds.left * (1 - parallaxFactor.x)) != 0 ? (scene.sceneViewBounds.left * (1 - parallaxFactor.x)) : 1;
-				scrollMultiplierY = (scene.sceneViewBounds.top * (1 - parallaxFactor.y)) != 0 ? (scene.sceneViewBounds.top * (1 - parallaxFactor.y)) : 1;
-			}
-            _transformMatrix.translate((_position.x + _positionOffset.x) * scrollMultiplierX, (_position.y + _positionOffset.y) * scrollMultiplierY);
+            _transformMatrix.translate((_position.x + _positionOffset.x), (_position.y + _positionOffset.y));
             
             displayObject.transform.matrix = _transformMatrix;
             displayObject.alpha = _alpha;
