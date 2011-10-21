@@ -54,9 +54,10 @@ package com.pblabs.box2D
 		public function set spriteForPointChecks(value:DisplayObjectRenderer):void
 		{
 			if(!value || !value.displayObject) return;
+			if(_spriteForPointChecks){
+				size = value.size;
+			}
 			_spriteForPointChecks = value;
-			var localDimensions:Rectangle = _spriteForPointChecks.displayObject.getBounds(_spriteForPointChecks.displayObject);
-			size = new Point( localDimensions.width, localDimensions.height );
 		}
 
 		[EditorData(ignore="true")]
@@ -499,6 +500,6 @@ package com.pblabs.box2D
         protected var _body:b2Body = null;
 		protected var _bodyDef:b2BodyDef = new b2BodyDef();
 		
-		protected var _size:Point = new Point(10, 10);
+		protected var _size:Point = new Point(10,10);
     }
 }

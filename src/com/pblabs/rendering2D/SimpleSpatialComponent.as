@@ -84,9 +84,10 @@ package com.pblabs.rendering2D
 		public function set spriteForPointChecks(value:DisplayObjectRenderer):void
 		{
 			if(!value || !value.displayObject) return;
+			if(_spriteForPointChecks){
+				size = value.size;
+			}
 			_spriteForPointChecks = value;
-			var localDimensions:Rectangle = _spriteForPointChecks.displayObject.getBounds(_spriteForPointChecks.displayObject);
-			size = new Point( localDimensions.width, localDimensions.height );
 		}
 
 		/**
