@@ -121,7 +121,7 @@ package com.pblabs.rendering2D
 		
 		protected function paintRenderer():void
 		{
-			if(!scene || !bitmapData) return;
+			if(!scene || !scene.sceneView || !bitmapData) return;
 			
 			if(bindScrollPositionToScene)
 			{
@@ -143,7 +143,8 @@ package com.pblabs.rendering2D
 				_repeatPosition.y = scrollPosition.y * ((1 - parallaxFactor.y) == 0 ? 1 : (1 - parallaxFactor.y) );
 			}
 			
-
+			if(!size || size.x == 0 || size.y == 0) return;
+				
 			if(!canvasBitmapData || canvasBitmapData.width != size.x || canvasBitmapData.height != size.y)
 			{
 				canvasBitmapData = new BitmapData(size.x, size.y, true, backgroundFill);
