@@ -133,12 +133,12 @@ package com.pblabs.rendering2D
         private var _size:Point = new Point(100, 100);
         
         /**
-         * The linear velocity of the object in world units per second.
+         * The linear linearVelocity of the object in world units per second.
          */
-        public var velocity:Point = new Point(0, 0);
+        public var linearVelocity:Point = new Point(0, 0);
         
         /**
-         * The angular velocity of the object in degrees per second.
+         * The angular linearVelocity of the object in degrees per second.
          */
         public var angularVelocity:Number = 0;
         
@@ -149,8 +149,8 @@ package com.pblabs.rendering2D
         {
             // Note we set directly, as position (the accessor) clones the point,
             // which would result in a nop.
-            _position.x += velocity.x * tickRate;
-            _position.y += velocity.y * tickRate;
+            _position.x += linearVelocity.x * tickRate;
+            _position.y += linearVelocity.y * tickRate;
             rotation   += angularVelocity * tickRate;
         }
         
