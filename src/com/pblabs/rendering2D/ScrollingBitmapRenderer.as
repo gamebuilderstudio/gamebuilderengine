@@ -22,6 +22,11 @@ package com.pblabs.rendering2D
 		public var scrollSpeed:Point = new Point(0,0);
 		
 		//-------------------------------------------------------------------------
+		// protected variable declarations
+		//-------------------------------------------------------------------------		
+		protected var canvasBitmapData : BitmapData;
+
+		//-------------------------------------------------------------------------
 		// public methods
 		//-------------------------------------------------------------------------				
 		/**
@@ -51,26 +56,29 @@ package com.pblabs.rendering2D
 			
 			// store orginal BitmapData so that modifiers can be re-implemented 
 			// when assigned modifiers attribute later on.
-			originalBitmapData = value;
+			if(value != canvasBitmapData){ 
+				originalBitmapData = value;
+				drawOriginalScrollingBitmap();
 			
-			// check if we should do modification
-			if (modifiers.length>0)
-			{
-				// apply all bitmapData modifiers
-				bitmap.bitmapData = modify(originalBitmapData.clone());
-				dataModified();			
-			} else {				
-				bitmap.bitmapData = value.clone();
-			}
-			
-			drawOriginalScrollingBitmap();
-			
-			if (displayObject==null)
-			{
-				_displayObject = new Sprite();
-				(_displayObject as Sprite).addChild(bitmap);				
-				_displayObject.visible = false;
-				(_displayObject as Sprite).mouseEnabled = _mouseEnabled;
+				// check if we should do modification
+				if (modifiers.length>0)
+				{
+					// apply all bitmapData modifiers
+					bitmap.bitmapData = modify(originalBitmapData.clone());
+					dataModified();			
+				} else {				
+					bitmap.bitmapData = value.clone();
+				}
+				
+				if (displayObject==null)
+				{
+					_displayObject = new Sprite();
+					(_displayObject as Sprite).addChild(bitmap);				
+					_displayObject.visible = false;
+					(_displayObject as Sprite).mouseEnabled = _mouseEnabled;
+				}
+			}else{
+				bitmap.bitmapData = value;
 			}
 			
 			// Due to a bug, this has to be reset after setting bitmapData.
@@ -106,15 +114,23 @@ package com.pblabs.rendering2D
 			var dy:int = (_scratchPosition.y) - (Math.floor((_scratchPosition.y)/originalBitmapData.height)*originalBitmapData.height);
 			scrollRect.y = dy;			
 			
-			// clear the bitmapData using blank rect
-			bitmapData.fillRect(bitmapData.rect, 0);
-			// lock the bitmapData object so no changes will be displayed until it is unlocked 
-			bitmapData.lock();
-			// draw the right area of the bitmapData object with all display info onto the scrolling bitmap 
-			bitmapData.copyPixels(scrollBitmapData, scrollRect, _zeroPoint, null, null, true);
-			// unlock the bitmapData object so it can be displayed 
-			bitmapData.unlock();			
+			if(!size || size.x == 0 || size.y == 0) return;
 			
+			if(!canvasBitmapData || canvasBitmapData.width != size.x || canvasBitmapData.height != size.y)
+			{
+				canvasBitmapData = new BitmapData(size.x, size.y, true, 0xFFFFFF);
+			}
+			// clear the bitmapData using blank rect
+			canvasBitmapData.fillRect(canvasBitmapData.rect, 0);
+			// lock the bitmapData object so no changes will be displayed until it is unlocked 
+			canvasBitmapData.lock();
+
+			// draw the right area of the bitmapData object with all display info onto the scrolling bitmap 
+			canvasBitmapData.copyPixels(scrollBitmapData, scrollRect, _zeroPoint, null, null, true);
+			// unlock the bitmapData object so it can be displayed 
+			canvasBitmapData.unlock();			
+			
+			this.bitmapData = canvasBitmapData;
 		}
 		
 		protected function drawOriginalScrollingBitmap():void
