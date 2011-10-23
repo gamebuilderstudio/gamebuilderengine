@@ -37,6 +37,15 @@ package com.pblabs.engine.core
 			//Screen Size
 			objectContext.Game.Screen.width = PBE.mainStage.stageWidth;
 			objectContext.Game.Screen.height = PBE.mainStage.stageHeight;
+
+			if(objectContext.Game.Level.currentLevel != -1 && objectContext.Game.Level.currentLevel != PBE.levelManager.currentLevel)
+			{
+				PBE.levelManager.loadLevel(objectContext.Game.Level.currentLevel,true);
+			}else{
+				objectContext.Game.Level.currentLevel = PBE.levelManager.currentLevel;
+			}
+				
+			objectContext.Game.Level.levelCount = PBE.levelManager.levelCount;
 		}
 
 		private function initialize():void
@@ -46,8 +55,9 @@ package com.pblabs.engine.core
 			if(!objectContext.Game.Mouse) objectContext.Game.Mouse = new Object();
 			if(!objectContext.Game.Time) objectContext.Game.Time = new Object();
 			if(!objectContext.Game.Screen) objectContext.Game.Screen = new Object();
+			if(!objectContext.Game.Level) objectContext.Game.Level = new Object();
+			objectContext.Game.Level.currentLevel = PBE.levelManager.currentLevel;
 		}
-		
 	}
 }
 class Privatizer{}
