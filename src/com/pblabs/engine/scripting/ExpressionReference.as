@@ -132,7 +132,6 @@ package com.pblabs.engine.scripting
 			
 			D.importStaticMethods( Math );
 			D.importClass( Point );
-			D.importStaticMethods(ExpressionUtils);
 			D.importFunction("setPoint", ExpressionUtils.setPoint);
 			_initialized = true;
 		}
@@ -167,6 +166,7 @@ package com.pblabs.engine.scripting
 		
 		public function set selfContext(obj : Object):void
 		{
+			if(!obj) return;
 			//Copy Data to internal Object
 			_dynamicThisObject.Self = obj;
 		}
