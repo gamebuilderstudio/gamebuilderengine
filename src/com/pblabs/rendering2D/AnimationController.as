@@ -218,7 +218,7 @@ package com.pblabs.rendering2D
                 owner.setProperty(currentFrameReference, targetCurFrame);
             }
             
-            if (_currentAnimation.spriteSheet !== _lastSpriteSheet)
+            if (_currentAnimation.spriteSheet && _currentAnimation.spriteSheet !== _lastSpriteSheet)
             {
                 _lastSpriteSheet = _currentAnimation.spriteSheet;        
                 owner.setProperty(spriteSheetReference, _currentAnimation.spriteSheet);
@@ -242,8 +242,9 @@ package com.pblabs.rendering2D
             if (_currentAnimation.startEvent)
                 owner.eventDispatcher.dispatchEvent(new Event(_currentAnimation.startEvent));
 
-            if (!ai.spriteSheet)
-                throw new Error("Animation had no sprite sheet!");
+            if (!ai.spriteSheet){
+				Logger.warn(this, "setAnimation", "The animation has no sprite sheet, if this is intended ignore!");
+			}
 
             // Note when we started.
             if (currentAnimationStartTimeReference)
