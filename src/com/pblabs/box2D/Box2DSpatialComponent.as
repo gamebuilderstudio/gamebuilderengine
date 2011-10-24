@@ -427,9 +427,7 @@ package com.pblabs.box2D
 				addCollisionShape( new CircleCollisionShape() );
 			
 			setupBody();
-
-			if(!spriteForPointChecks)
-				spriteForPointChecks = owner.lookupComponentByType( DisplayObjectRenderer ) as DisplayObjectRenderer;
+			attachRenderer();
 		}
         
         override protected function onRemove():void 
@@ -445,10 +443,7 @@ package com.pblabs.box2D
 			if(spriteForPointChecks && (spriteForPointChecks.owner == null || spriteForPointChecks.owner != this.owner))
 				_spriteForPointChecks = null;
 			
-			
-			if(!spriteForPointChecks)
-				spriteForPointChecks = owner.lookupComponentByType( DisplayObjectRenderer) as DisplayObjectRenderer;
-			
+			attachRenderer();
 		}
 
 		private function createFixtureInstance(body : b2Body, fixtureDef : b2FixtureDef):b2Fixture
@@ -482,6 +477,16 @@ package com.pblabs.box2D
 						onAddedCallback(this);
 				});
 		}
+		
+		private function attachRenderer():void
+		{
+			if(!spriteForPointChecks){
+				var renderer : DisplayObjectRenderer = owner.lookupComponentByType( DisplayObjectRenderer) as DisplayObjectRenderer;
+				if(!renderer.positionProperty || (renderer.positionProperty && renderer.positionProperty.property.split(".")[0].indexOf("@"+this.name+".") != -1))
+					spriteForPointChecks = renderer;
+			}
+		}
+
         
         private var _collisionType:ObjectType = null;
         private var _collidesWithTypes:ObjectType = null;

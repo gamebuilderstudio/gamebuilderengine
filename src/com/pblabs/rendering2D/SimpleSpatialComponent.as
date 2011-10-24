@@ -164,8 +164,7 @@ package com.pblabs.rendering2D
             if (_spatialManager)
                 _spatialManager.addSpatialObject(this);
 
-			if(!spriteForPointChecks)
-				spriteForPointChecks = owner.lookupComponentByType( DisplayObjectRenderer ) as DisplayObjectRenderer;
+			attachRenderer();
 		}
         
         /**
@@ -186,9 +185,16 @@ package com.pblabs.rendering2D
 			if(spriteForPointChecks && (spriteForPointChecks.owner == null || spriteForPointChecks.owner != this.owner))
 				_spriteForPointChecks = null;
 			
-			
-			if(!spriteForPointChecks)
-				spriteForPointChecks = owner.lookupComponentByType( DisplayObjectRenderer) as DisplayObjectRenderer;
+			attachRenderer();
+		}
+		
+		private function attachRenderer():void
+		{
+			if(!spriteForPointChecks){
+				var renderer : DisplayObjectRenderer = owner.lookupComponentByType( DisplayObjectRenderer) as DisplayObjectRenderer;
+				if(!renderer.positionProperty || (renderer.positionProperty && renderer.positionProperty.property.split(".")[0].indexOf("@"+this.name+".") != -1))
+					spriteForPointChecks = renderer;
+			}
 		}
         
         /**
