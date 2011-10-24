@@ -40,7 +40,7 @@ package com.pblabs.engine.core
 
 			if(objectContext.Game.Level.currentLevel != -1 && objectContext.Game.Level.currentLevel != PBE.levelManager.currentLevel)
 			{
-				PBE.levelManager.loadLevel(objectContext.Game.Level.currentLevel,true);
+				PBE.levelManager.loadLevel(objectContext.Game.Level.currentLevel, true);
 			}else{
 				objectContext.Game.Level.currentLevel = PBE.levelManager.currentLevel;
 			}

@@ -132,7 +132,7 @@ package com.pblabs.rendering2D
             super.onRemove();
             
             // Make sure we don't leave any lingering content.
-            if(_sceneView)
+            if(_sceneView && (_sceneView as Sprite).contains(_rootSprite))
                 _sceneView.removeDisplayObject(_rootSprite);
         }
         

@@ -154,6 +154,7 @@ package com.pblabs.box2D
                     body = next;
                 }
                 
+				_world.destroy();
                 _world = null;
 				_debugDrawer.world = null;
 				_debugDrawer = null;

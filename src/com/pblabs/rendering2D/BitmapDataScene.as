@@ -55,12 +55,12 @@ package com.pblabs.rendering2D
             if(_sceneView)
             {
                 _sceneView.removeDisplayObject(_rootSprite);
-                var realRoot:Sprite = new Sprite();
-                realRoot.addChild(_rootSprite);
+				_realRoot = new Sprite();
+				_realRoot.addChild(_rootSprite);
 				if (PBE.mainClass.parent!=PBE.mainStage)
 				{
-					realRoot.x = PBE.mainClass.parent.x;
-					realRoot.y = PBE.mainClass.parent.y;
+					_realRoot.x = PBE.mainClass.parent.x;
+					_realRoot.y = PBE.mainClass.parent.y;
 				}
                 _sceneView.addDisplayObject(bitmap);
             }
@@ -182,6 +182,21 @@ package com.pblabs.rendering2D
 				return _rootSprite.globalToLocal(inPos);						
 		}
 						
+		override protected function onRemove() : void
+		{
+			super.onRemove();
+			
+			// Make sure we don't leave any lingering content.
+			if(_sceneView && (_sceneView as Sprite).contains(bitmap))
+				_sceneView.removeDisplayObject(bitmap);
+			bitmap.bitmapData.dispose();
+			bitmap = null;
+			backbuffer = null;
+			_realRoot.removeChildAt(0);
+			_realRoot = null;
+		}
+		
 		private var _modifiers:Array = new Array();
+		private var _realRoot:Sprite;
 	}
 }
