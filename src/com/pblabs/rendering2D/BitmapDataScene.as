@@ -189,11 +189,14 @@ package com.pblabs.rendering2D
 			// Make sure we don't leave any lingering content.
 			if(_sceneView && (_sceneView as Sprite).contains(bitmap))
 				_sceneView.removeDisplayObject(bitmap);
-			bitmap.bitmapData.dispose();
+			if(backbuffer) backbuffer.dispose();
 			bitmap = null;
 			backbuffer = null;
-			_realRoot.removeChildAt(0);
-			_realRoot = null;
+			if(_realRoot && _realRoot.contains( _rootSprite ))
+			{
+				_realRoot.removeChild(_rootSprite);
+				_realRoot = null;
+			}
 		}
 		
 		private var _modifiers:Array = new Array();
