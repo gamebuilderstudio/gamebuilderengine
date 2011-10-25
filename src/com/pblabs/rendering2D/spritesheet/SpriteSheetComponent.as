@@ -164,6 +164,21 @@ package com.pblabs.rendering2D.spritesheet
             deleteFrames();
         }
 		
+		protected override function deleteFrames():void
+		{
+			if(frames){
+				while(frames.length > 0)
+				{
+					if(imageData != frames[0]){
+						(frames[0] as BitmapData).dispose();
+					}
+					frames.splice(0,1);
+				}
+			}
+
+			super.deleteFrames();	
+		}
+		
         protected override function getSourceFrames() : Array
         {
             // If user provided their own bitmapdatas, return those.

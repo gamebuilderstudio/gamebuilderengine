@@ -50,13 +50,6 @@ package com.pblabs.rendering2D.spritesheet
          */
         protected function deleteFrames():void
         {
-			if(frames){
-				while(frames.length > 0)
-				{
-					(frames[0] as BitmapData).dispose();
-					frames.splice(0,1);
-				}
-			}
             frames = null;
 			frameNotes = null;
         }
