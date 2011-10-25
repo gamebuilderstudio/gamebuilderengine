@@ -482,7 +482,7 @@ package com.pblabs.box2D
 		{
 			if(!spriteForPointChecks){
 				var renderer : DisplayObjectRenderer = owner.lookupComponentByType( DisplayObjectRenderer) as DisplayObjectRenderer;
-				if(!renderer.positionProperty || (renderer.positionProperty && renderer.positionProperty.property.split(".")[0].indexOf("@"+this.name+".") != -1))
+				if(renderer && (!renderer.positionProperty || renderer.positionProperty.property == "" || (renderer.positionProperty && renderer.positionProperty.property.split(".")[0].indexOf("@"+this.name) != -1)))
 					spriteForPointChecks = renderer;
 			}
 		}
