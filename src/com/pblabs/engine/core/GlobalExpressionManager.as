@@ -38,13 +38,7 @@ package com.pblabs.engine.core
 			objectContext.Game.Screen.width = PBE.mainStage.stageWidth;
 			objectContext.Game.Screen.height = PBE.mainStage.stageHeight;
 
-			if(objectContext.Game.Level.currentLevel != -1 && objectContext.Game.Level.currentLevel != PBE.levelManager.currentLevel)
-			{
-				PBE.levelManager.loadLevel(objectContext.Game.Level.currentLevel, true);
-			}else{
-				objectContext.Game.Level.currentLevel = PBE.levelManager.currentLevel;
-			}
-				
+			objectContext.Game.Level.currentLevel = PBE.levelManager.currentLevel;
 			objectContext.Game.Level.levelCount = PBE.levelManager.levelCount;
 		}
 
