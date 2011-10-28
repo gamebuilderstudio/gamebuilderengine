@@ -134,8 +134,9 @@ package com.pblabs.rendering2D
             else
                 nextAnim = _currentAnimation;
 
-            if (!nextAnim)
-                throw new Error("Unable to find default animation '" + defaultAnimation + "'!");
+            if (!nextAnim){
+                Logger.error(this, "playAnimation", "Unable to find default animation '" + defaultAnimation + "'!");
+			}
 
             // Expire current animation if it has finished playing and it's what we
             // want to keep playing.
