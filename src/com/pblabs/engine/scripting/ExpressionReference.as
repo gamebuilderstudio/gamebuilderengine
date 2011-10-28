@@ -67,7 +67,7 @@ package com.pblabs.engine.scripting
 		 */
 		public function serialize(xml:XML):void
 		{
-			var expressionXML : XML = new XML(_expression);
+			var expressionXML : XML = new XML("<![CDATA["+ _expression +"]]>");
 			if(_dynamicThisObject && _dynamicThisObject.Self && _dynamicThisObject.Self["name"])
 			{
 				xml.@thisObjectName = _dynamicThisObject.Self.name;
