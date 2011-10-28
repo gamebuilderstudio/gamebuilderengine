@@ -89,7 +89,7 @@ package com.pblabs.rendering2D
 			_classInstance = instance;
 			MCUtil.stopMovieClips( _classInstance as MovieClip);
 			// set the registration (alignment) point to the sprite's center
-			if(!_registrationPoint || _registrationPoint.x == 0 && _registrationPoint.y == 0){
+			if(!_registrationPoint){
 				_registrationPoint = MCUtil.getRegistrationPoint( _classInstance );
 				if(_registrationPoint.x < 0) _registrationPoint.x *= -1;
 				if(_registrationPoint.y < 0) _registrationPoint.y *= -1;

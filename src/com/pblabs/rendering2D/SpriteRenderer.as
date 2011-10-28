@@ -113,8 +113,8 @@ package com.pblabs.rendering2D
 			_failed = false;
 			_resource = res;
 			// set the registration (alignment) point to the sprite's center
-			if(registrationPoint.x == 0 && registrationPoint.y == 0)
-				registrationPoint = new Point(res.image.bitmapData.width/2,res.image.bitmapData.height/2);				
+			//if(registrationPoint.x == 0 && registrationPoint.y == 0)
+				//registrationPoint = new Point(res.image.bitmapData.width/2,res.image.bitmapData.height/2);				
 			// set the bitmapData of this render object
 			bitmapData = res.image.bitmapData;	
 		}
@@ -122,8 +122,8 @@ package com.pblabs.rendering2D
 		protected override function dataModified():void
 		{
 			// set the registration (alignment) point to the sprite's center
-			if(registrationPoint.x == 0 && registrationPoint.y == 0)
-				registrationPoint = new Point(bitmapData.width/2,bitmapData.height/2);							
+			//if(registrationPoint.x == 0 && registrationPoint.y == 0)
+				//registrationPoint = new Point(bitmapData.width/2,bitmapData.height/2);							
 		}
 
    	    /**
