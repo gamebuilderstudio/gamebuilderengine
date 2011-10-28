@@ -132,7 +132,9 @@ package com.pblabs.engine.scripting
 			
 			D.importStaticMethods( Math );
 			D.importClass( Point );
+			D.importClass( PBE );
 			D.importFunction("setPoint", ExpressionUtils.setPoint);
+			D.importFunction("getEntity", ExpressionUtils.getEntity);
 			_initialized = true;
 		}
 		/*-----------------------------------------------------------------------------------------------------------
@@ -174,6 +176,9 @@ package com.pblabs.engine.scripting
 		public function get dynamicThisObject():Object{ return _dynamicThisObject; }
 	}
 }
+import com.pblabs.engine.PBE;
+import com.pblabs.engine.entity.IEntity;
+
 import flash.geom.Point;
 
 class ExpressionUtils{
@@ -182,4 +187,9 @@ class ExpressionUtils{
 		return new Point(x,y);
 	}
 
+	public static function getEntity(name : String):Object
+	{
+		var entity : Object = PBE.lookupEntity(name);
+		return entity ? entity.Self : null;
+	}
 }
