@@ -123,7 +123,7 @@ package com.pblabs.rendering2D.spritesheet
 			_failed = false;
 			
 			_image = value;
-			_imageFilename = _image ? _image.filename : "";
+			if(_image) _imageFilename = _image.filename;
 			deleteFrames();
 		}
 		
@@ -174,14 +174,6 @@ package com.pblabs.rendering2D.spritesheet
 		
 		protected override function deleteFrames():void
 		{
-			if(getCachedFrames()){
-				getCachedFrames().referenceCount--;
-				if(getCachedFrames().referenceCount < 0){
-					/*_frameCache[getFramesCacheKey()].destroy();
-					delete _frameCache[getFramesCacheKey()];*/
-					getCachedFrames().referenceCount = 0;
-				}
-			}
 			super.deleteFrames();	
 		}
 		
@@ -198,10 +190,10 @@ package com.pblabs.rendering2D.spritesheet
                 return null;
             
 			var cachedFrames : CachedFramesData = getCachedFrames();
-			if (cachedFrames)
+			if (cached && cachedFrames)
 			{
-				cachedFrames.referenceCount++;
-				_divider = cachedFrames.divider;
+				cachedFrames.referenceCount += 1;
+				_divider = cachedFrames.divider ? cachedFrames.divider : _divider;
 				return cachedFrames.frames;
 			}
 
@@ -223,9 +215,11 @@ package com.pblabs.rendering2D.spritesheet
                 }				
             }		
 			
-			var frameCache : CachedFramesData = new CachedFramesData(_frames, image.filename, _divider);
-			frameCache.referenceCount++;
-			setCachedFrames(frameCache);
+			if(cached){
+				var frameCache : CachedFramesData = new CachedFramesData(_frames, imageFilename, _divider);
+				frameCache.referenceCount += 1;
+				setCachedFrames(frameCache);
+			}
             return _frames;
         }
         
@@ -255,13 +249,26 @@ package com.pblabs.rendering2D.spritesheet
 			}
 			this.deleteFrames();
 			
-			//TODO Add reference count check here to decide if we want to delete cache
-			delete _frameCache[getFramesCacheKey()];
-
-			if(_divider){
-				_divider.owningSheet = null;
-				_divider = null;
+			if(getCachedFrames() && getCachedFrames().referenceCount != 0){
+				getCachedFrames().referenceCount -= 1;
 			}
+
+			if(cached && getCachedFrames() && getCachedFrames().referenceCount <= 0){
+				getCachedFrames().destroy();
+				delete _frameCache[getFramesCacheKey()];
+				//Divider is cleaned up in the CachedFramesData.destroy()
+			}else{
+				if(_divider){
+					_divider.destroy();
+					_divider.owningSheet = null;
+					_divider = null;
+				}
+			}
+			//TODO Add reference count check here to decide if we want to delete cache
+			/*if(getCachedFrames() && getCachedFrames().referenceCount <= 0){
+				Logger.print(this, "Deleting SpriteSheet With Key ["+getFramesCacheKey()+"]");
+			}*/
+
 			if(_imageData) _imageData = null;
 			image = null;
 			
@@ -328,7 +335,7 @@ package com.pblabs.rendering2D.spritesheet
 		
 		protected function getFramesCacheKey():String
 		{
-			return _image ? _image.filename : "";
+			return imageFilename;
 		}
 
 
