@@ -9,8 +9,6 @@ package br.com.stimuli.loading.loadingtypes {
     import flash.events.*;
     import flash.utils.*;
 	
-    import com.adobe.serialization.json.JSON;
-    
 	/** @private */
 	public class JSONItem extends LoadingItem {
         public var loader : URLLoader;
@@ -51,7 +49,7 @@ package br.com.stimuli.loading.loadingtypes {
         
         override public function onCompleteHandler(evt : Event) : void {
             try{
-                _content = JSON.decode(loader.data);
+                _content = JSON.parse(loader.data);
             }catch(e  : Error){
                 _content = null;
                 status = STATUS_ERROR;  

@@ -8,7 +8,6 @@
  ******************************************************************************/
 package com.pblabs.engine.resource
 {
-   import com.adobe.serialization.json.JSON;
    import com.pblabs.engine.debug.Logger;
    
    import flash.utils.ByteArray;
@@ -43,7 +42,7 @@ package com.pblabs.engine.resource
             
          try
          {
-			_jsonObject = JSON.decode(data);
+			_jsonObject = JSON.parse(data);
 
          }
          catch (e:TypeError)
