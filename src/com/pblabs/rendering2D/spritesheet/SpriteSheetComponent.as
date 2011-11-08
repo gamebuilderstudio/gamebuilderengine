@@ -18,6 +18,7 @@ package com.pblabs.rendering2D.spritesheet
     import flash.display.BitmapData;
     import flash.geom.Point;
     import flash.geom.Rectangle;
+    import flash.utils.Dictionary;
     
     /**
      * Handles loading and retrieving data about a sprite sheet to use for rendering.
@@ -40,6 +41,13 @@ package com.pblabs.rendering2D.spritesheet
     public class SpriteSheetComponent extends SpriteContainerComponent implements ISpriteSheet
     {
 						
+		/**
+		 * When cached is set to true (the default) the rasterized frames
+		 * are re-used by all instances of the SpriteSheetComponent
+		 * with the same filename.
+		 */
+		public var cached:Boolean = true;
+
 		[EditorData(ignore="true")]
 		/**
 		 * The filename of the image to use for this sprite sheet.
@@ -166,16 +174,14 @@ package com.pblabs.rendering2D.spritesheet
 		
 		protected override function deleteFrames():void
 		{
-			if(frames){
-				while(frames.length > 0)
-				{
-					if(imageData != frames[0]){
-						(frames[0] as BitmapData).dispose();
-					}
-					frames.splice(0,1);
+			if(getCachedFrames()){
+				getCachedFrames().referenceCount--;
+				if(getCachedFrames().referenceCount < 0){
+					/*_frameCache[getFramesCacheKey()].destroy();
+					delete _frameCache[getFramesCacheKey()];*/
+					getCachedFrames().referenceCount = 0;
 				}
 			}
-
 			super.deleteFrames();	
 		}
 		
@@ -185,31 +191,42 @@ package com.pblabs.rendering2D.spritesheet
             if(_forcedBitmaps)
                 return _forcedBitmaps;
             
-            var frames:Array;
+            var _frames:Array;
             
             // image isn't loaded, can't do anything yet
             if (!imageData)
                 return null;
             
-            // no divider means treat the image as a single frame
+			var cachedFrames : CachedFramesData = getCachedFrames();
+			if (cachedFrames)
+			{
+				cachedFrames.referenceCount++;
+				_divider = cachedFrames.divider;
+				return cachedFrames.frames;
+			}
+
+			// no divider means treat the image as a single frame
             if (!_divider)
             {
-                frames = new Array(1);
-                frames[0] = imageData;
+				_frames = new Array(1);
+				_frames[0] = imageData.clone();
             }
             else
             {
-                frames = new Array(_divider.frameCount);
+				_frames = new Array(_divider.frameCount);
 								
                 for (var i:int = 0; i < _divider.frameCount; i++)
                 {
                     var area:Rectangle = _divider.getFrameArea(i);										
-                    frames[i] = new BitmapData(area.width, area.height, true);
-                    frames[i].copyPixels(imageData, area, new Point(0, 0));									
+					_frames[i] = new BitmapData(area.width, area.height, true);
+					_frames[i].copyPixels(imageData, area, new Point(0, 0));									
                 }				
             }		
 			
-            return frames;
+			var frameCache : CachedFramesData = new CachedFramesData(_frames, image.filename, _divider);
+			frameCache.referenceCount++;
+			setCachedFrames(frameCache);
+            return _frames;
         }
         
         /**
@@ -218,6 +235,7 @@ package com.pblabs.rendering2D.spritesheet
          */
         public function initializeFromBitmapDataArray(bitmaps:Array):void
         {
+			//TODO: Add Caching Handling Herer
             _forcedBitmaps = bitmaps;
         }
 		
@@ -227,7 +245,7 @@ package com.pblabs.rendering2D.spritesheet
 		 **/
 		public function destroy():void
 		{
-			_imageData = null;
+			//TODO: Add clearing cache handling here
 			if(_forcedBitmaps){
 				var len : int = _forcedBitmaps.length;
 				for(var i : int = 0; i < len; i++){
@@ -236,10 +254,17 @@ package com.pblabs.rendering2D.spritesheet
 				_forcedBitmaps = null;
 			}
 			this.deleteFrames();
+			
+			//TODO Add reference count check here to decide if we want to delete cache
+			delete _frameCache[getFramesCacheKey()];
+
 			if(_divider){
 				_divider.owningSheet = null;
 				_divider = null;
 			}
+			if(_imageData) _imageData = null;
+			image = null;
+			
 		}
         
 		protected function onImageLoaded(resource:ImageResource):void
@@ -276,6 +301,38 @@ package com.pblabs.rendering2D.spritesheet
 			destroy();
 			super.onRemove();         			
 		}
+		
+		/*--------------------------------------------------------------------------------------------*/
+		//* Caching Functionality
+		/*--------------------------------------------------------------------------------------------*/
+		/**
+		 * Reads the frames from the cache. Returns a null reference if they are not cached.
+		 */
+		protected function getCachedFrames():CachedFramesData
+		{
+			if (!cached) 
+				return null;
+			
+			return _frameCache[getFramesCacheKey()] as CachedFramesData;
+		}
+		
+		/**
+		 * Caches the frames based on the current values.
+		 */
+		protected function setCachedFrames(frames:CachedFramesData):void 
+		{
+			if (!cached) 
+				return;
+			_frameCache[getFramesCacheKey()] = frames;
+		}
+		
+		protected function getFramesCacheKey():String
+		{
+			return _image ? _image.filename : "";
+		}
+
+
+		protected static var _frameCache:Dictionary = new Dictionary(true);
 
 		private var _imageFilename:String = null;
 		private var _image:ImageResource = null;
@@ -286,4 +343,33 @@ package com.pblabs.rendering2D.spritesheet
         private var _divider:ISpriteSheetDivider = null;
         private var _forcedBitmaps:Array = null;
     }
+}
+import com.pblabs.rendering2D.spritesheet.ISpriteSheetDivider;
+
+final class CachedFramesData
+{
+	public function CachedFramesData(frames:Array, fileName : String, divider : ISpriteSheetDivider )
+	{
+		this.frames = frames;
+		this.fileName = fileName;
+		this.divider = divider;
+	}
+	public var frames:Array;
+	public var fileName:String;
+	public var divider:ISpriteSheetDivider;
+	public var referenceCount : int = 0;
+	
+	public function destroy():void
+	{
+		if(frames){
+			while(frames.length > 0)
+			{
+				frames[0].dispose();
+				frames.splice(0,1);
+			}
+		}
+		frames = null;
+		divider.destroy();
+		divider = null;
+	}
 }
