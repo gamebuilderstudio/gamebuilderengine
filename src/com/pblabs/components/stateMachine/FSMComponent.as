@@ -51,5 +51,16 @@ package com.pblabs.components.stateMachine
             if(stateMachine)
                 stateMachine.tick();
         }
+		
+		public function get currentState():String
+		{
+			return stateMachine.currentStateName;
+		}
+		
+		public function set currentState(value:String):void
+		{
+			stateMachine.setCurrentState(value);
+		}
+
     }
 }
