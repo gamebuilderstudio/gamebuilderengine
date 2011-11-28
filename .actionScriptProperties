@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<actionScriptProperties analytics="false" mainApplicationPath="PBEngine_GitFork.as" projectUUID="f72f49aa-24f1-4eec-a2b2-3ee19d4f8c42" version="10">
-  <compiler additionalCompilerArguments="-locale en_US --keep-as3-metadata+=TypeHint,EditorData,Embed,ResourceType -define=COMPILE_TARGET::AIR,false" autoRSLOrdering="true" copyDependentFiles="false" fteInMXComponents="false" generateAccessible="false" htmlExpressInstall="true" htmlGenerate="false" htmlHistoryManagement="false" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderPath="bin" removeUnusedRSL="true" sourceFolderPath="src" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="true" useDebugRSLSwfs="true" verifyDigests="true" warn="true">
+<actionScriptProperties mainApplicationPath="PBEngine_GitFork.as" projectUUID="f72f49aa-24f1-4eec-a2b2-3ee19d4f8c42" version="6">
+  <compiler additionalCompilerArguments="-locale en_US -define=COMPILE_TARGET::AIR,false -swf-version=13 --keep-as3-metadata+=TypeHint,EditorData,Embed,ResourceType" autoRSLOrdering="true" copyDependentFiles="false" fteInMXComponents="false" generateAccessible="false" htmlExpressInstall="true" htmlGenerate="false" htmlHistoryManagement="false" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderPath="bin" sourceFolderPath="src" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="true" useDebugRSLSwfs="true" verifyDigests="true" warn="true">
     <compilerSourcePath/>
     <libraryPath defaultLinkType="0">
       <libraryPathEntry kind="4" path="">
@@ -17,5 +17,4 @@
   </applications>
   <modules/>
   <buildCSSFiles/>
-  <flashCatalyst validateFlashCatalystCompatibility="false"/>
 </actionScriptProperties>

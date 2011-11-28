@@ -9,6 +9,7 @@
 package com.pblabs.engine.resource
 {
    import com.pblabs.engine.debug.Logger;
+   import com.pblabs.json.JSONAS3;
    
    import flash.utils.ByteArray;
    
@@ -42,7 +43,11 @@ package com.pblabs.engine.resource
             
          try
          {
-			_jsonObject = JSON.parse(data);
+			 if(COMPILE_TARGET::AIR){
+				_jsonObject = JSON.parse(data);
+			 }else{
+				_jsonObject = JSONAS3.decode(data);
+			 }
 
          }
          catch (e:TypeError)
