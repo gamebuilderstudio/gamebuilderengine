@@ -16,6 +16,7 @@ package com.pblabs.rendering2D
     
     import flash.display.Bitmap;
     import flash.display.BitmapData;
+    import flash.display.PixelSnapping;
     import flash.display.Sprite;
     import flash.geom.Matrix;
     import flash.geom.Point;
@@ -62,6 +63,7 @@ package com.pblabs.rendering2D
 					_realRoot.x = PBE.mainClass.parent.x;
 					_realRoot.y = PBE.mainClass.parent.y;
 				}
+				bitmap.pixelSnapping = PixelSnapping.NEVER;
                 _sceneView.addDisplayObject(bitmap);
             }
         }
