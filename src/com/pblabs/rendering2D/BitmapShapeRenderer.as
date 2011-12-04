@@ -21,6 +21,7 @@ package com.pblabs.rendering2D
 		protected var bitmap:Bitmap = new Bitmap();
 		protected var _smoothing:Boolean = false;
 		protected var _shape:Sprite = new Sprite();
+		protected var _initialDraw : Boolean = false;
 		
 		public function BitmapShapeRenderer()
 		{
@@ -90,11 +91,19 @@ package com.pblabs.rendering2D
 			
 			_transformDirty = false;
 		}
+		
+		override protected function onAdd():void
+		{
+			super.onAdd();
+			_initialDraw = true;
+			redraw();
+			_initialDraw = false;
+		}
 
 		
 		override public function redraw():void
 		{
-			if(!this.isRegistered) return;
+			if(!this.isRegistered && !_initialDraw) return;
 			
 			// Get references.
 			var s:Sprite = _shape;
@@ -112,7 +121,7 @@ package com.pblabs.rendering2D
 			// Sanity check.
 			if(!isCircle && !isSquare)
 			{
-				isSquare = true;
+				_isSquare = true;
 			}               
 
 			// Draw one or both shapes.
@@ -145,15 +154,25 @@ package com.pblabs.rendering2D
 		
 		override public function set scale(value:Point):void
 		{
+			var callRedraw : Boolean = false;
+			if(this._scale.x != value.x || this._scale.y != value.y){
+				callRedraw = true;
+			}
 			super.scale = value;
-			redraw();
+			if(callRedraw) redraw();
 		}
 
 		override public function set size(value:Point):void
 		{
+			var callRedraw : Boolean = false;
+			if(this._size.x != value.x || this._size.y != value.y){
+				callRedraw = true;
+			}
 			super.size = value;
-			radius = Math.sqrt( value.x*value.y );
-			redraw();
+			if(callRedraw){
+				_radius = Math.sqrt( value.x*value.y );
+				redraw();
+			}
 		}
 		/**
 		 * @see Bitmap.smoothing 

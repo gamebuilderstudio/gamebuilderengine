@@ -30,14 +30,14 @@ package com.pblabs.rendering2D
             redraw();
         }
 
-        private var _radius:Number = 50;
-        private var _isSquare:Boolean = false;
-        private var _isCircle:Boolean = true;
-        private var _fillColor:uint = 0xFF00FF;
-        private var _fillAlpha:Number = 0.5;
-        private var _lineColor:uint = 0x00FF00;
-        private var _lineSize:Number = 0.5;
-        private var _lineAlpha:Number = 1;
+		protected var _isSquare:Boolean = false;
+		protected var _isCircle:Boolean = true;
+		protected var _radius:Number = 50;
+		protected var _fillColor:uint = 0xFF00FF;
+		protected var _fillAlpha:Number = 0.5;
+		protected var _lineColor:uint = 0x00FF00;
+		protected var _lineSize:Number = 0.5;
+		protected var _lineAlpha:Number = 1;
 
         public function get lineAlpha():Number
         {
