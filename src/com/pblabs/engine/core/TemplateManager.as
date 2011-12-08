@@ -149,6 +149,46 @@ package com.pblabs.engine.core
 		}
 
 		/**
+		 * Creates an instance of an entity with the specified name or alias. The name must
+		 * refer to a template or entity. To instantiate groups, use instantiateGroup
+		 * instead.
+		 *
+		 * @param name The name of the entity or template to instantiate. This
+		 * corresponds to the name attribute on the template or entity tag in the XML.
+		 * @param alias An alias to use for creating the entity or template. This will supress the duplicate name warnings.
+		 * Set this to null if you want to use the entity name as the new entities name instead of an alias.
+		 *
+		 * @return The created entity, or null if it wasn't found.
+		 */
+		public function instantiateEntityFromCallBack(name:String, alias:String, initialize : Boolean = true):IEntity
+		{
+			Profiler.enter("instantiateEntityFromCallBack");
+			try
+			{
+				// Check for a callback.
+				if (_things["CB_"+name])
+				{
+					if (_things["CB_"+name].groupCallback)
+						throw new Error("Thing '" + name + "' is a group callback!");
+					
+					if (_things["CB_"+name].entityCallback)
+					{
+						var instantiated:IEntity=_things["CB_"+name].entityCallback( !alias ? name : null, alias, initialize);
+						Profiler.exit("instantiateEntityFromCallBack");
+						return instantiated;
+					}
+				}
+			}
+			catch (e:Error)
+			{
+				Logger.error(this, "instantiateEntityFromCallBack", "Failed instantiating '" + name + "' due to: " + e.toString() + "\n" + e.getStackTrace());
+				Profiler.exit("instantiateEntityFromCallBack");
+			}
+			
+			return null;
+		}
+		
+		/**
 		 * Given an XML literal, construct a valid entity from it.
 		 */
 		public function instantiateEntityFromXML(xml:XML, keepDeferred : Boolean = false):IEntity
