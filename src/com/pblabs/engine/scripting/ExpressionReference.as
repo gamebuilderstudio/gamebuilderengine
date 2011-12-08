@@ -43,9 +43,9 @@ package com.pblabs.engine.scripting
 		
 		private static var _initialized : Boolean = false;
 
-		public function ExpressionReference(expression:String=null, selfContext : Object = null)
+		public function ExpressionReference(expression:Object=null, selfContext : Object = null)
 		{
-			this.expression = expression;
+			this.expression = String(expression);
 
 			DynamicObjectUtil.copyDynamicObject(PBE.GLOBAL_DYNAMIC_OBJECT, _dynamicThisObject);
 			
