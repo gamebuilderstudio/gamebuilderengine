@@ -82,7 +82,7 @@ package com.pblabs.rendering2D
 		public function getFrameByIndex(index : int):int
 		{
 			if(!customFrames) return index;
-			if(!spriteSheet || !customFrameList || customFrameList.length < 0) return 0;
+			if(!spriteSheet || !customFrameList || customFrameList.length < 1) return 0;
 			return customFrameList[index];
 		}
 		

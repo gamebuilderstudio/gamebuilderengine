@@ -106,6 +106,7 @@ package com.pblabs.rendering2D
 
         private var _lastSpriteSheet:SpriteContainerComponent;
         private var _lastFrameIndex:int;
+		private var _newAnimationSet : Boolean = false;
         
         public function set currentAnimationName(value:String):void
         {
@@ -115,7 +116,7 @@ package com.pblabs.rendering2D
                 Logger.warn(this, "set currentAnimationName", "Couldn't find animation '" + value + "' to set.");
                 return;
             }
-            
+			_newAnimationSet = true;
             setAnimation(potentialAnim);
         }
         
@@ -129,7 +130,7 @@ package com.pblabs.rendering2D
             // The hash lookup and findProperty each frame gets expensive with a lot of 
             // animation components running.
             var nextAnim:AnimationControllerInfo = null;
-            if (!changeAnimationEvent || !_currentAnimation)
+            if ((!changeAnimationEvent || !_currentAnimation) && !_newAnimationSet)
                 nextAnim = getNextAnimation();
             else
                 nextAnim = _currentAnimation;
@@ -190,7 +191,7 @@ package com.pblabs.rendering2D
 				// Deal with clamping/looping.
                 if (_currentAnimation.loop)
                 {
-					if(curFrame == _currentAnimation.frameCount){
+					if(curFrame == _currentAnimation.frameCount-1){
 						if (currentAnimationStartTimeReference)
 							_currentAnimationStartTime = owner.getProperty(currentAnimationStartTimeReference);
 						else
@@ -203,7 +204,7 @@ package com.pblabs.rendering2D
                 }
                 else
                 {
-                    if (curFrame >= _currentAnimation.frameCount)
+                    if (curFrame >= _currentAnimation.frameCount-1)
                         curFrame = _currentAnimation.frameCount - 1;
                 }
 				
@@ -213,9 +214,9 @@ package com.pblabs.rendering2D
 
             // Assign properties.
             // For performance, we only set the properties if they have changed since the last frame.
-            if (curFrame != _lastFrameIndex)
+            if (targetCurFrame != _lastFrameIndex)
             {
-                _lastFrameIndex = curFrame;
+                _lastFrameIndex = targetCurFrame;
                 owner.setProperty(currentFrameReference, targetCurFrame);
             }
             
@@ -224,6 +225,8 @@ package com.pblabs.rendering2D
                 _lastSpriteSheet = _currentAnimation.spriteSheet;        
                 owner.setProperty(spriteSheetReference, _currentAnimation.spriteSheet);
             }
+			
+			_newAnimationSet = false
         }
         
         /**
