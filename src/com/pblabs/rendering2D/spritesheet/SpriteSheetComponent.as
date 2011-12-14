@@ -376,7 +376,9 @@ final class CachedFramesData
 			}
 		}
 		frames = null;
-		divider.destroy();
-		divider = null;
+		if(divider){
+			divider.destroy();
+			divider = null;
+		}
 	}
 }
