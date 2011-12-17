@@ -239,6 +239,8 @@ package com.pblabs.rendering2D.spritesheet
 		 **/
 		public function destroy():void
 		{
+			if(_destroyed) return;
+			
 			//TODO: Add clearing cache handling here
 			if(_forcedBitmaps){
 				var len : int = _forcedBitmaps.length;
@@ -249,20 +251,20 @@ package com.pblabs.rendering2D.spritesheet
 			}
 			this.deleteFrames();
 			
-			if(getCachedFrames() && getCachedFrames().referenceCount != 0){
-				getCachedFrames().referenceCount -= 1;
+			var frameCache : CachedFramesData = getCachedFrames();
+			
+			if(frameCache && frameCache.referenceCount != 0){
+				frameCache.referenceCount -= 1;
 			}
 
-			if(cached && getCachedFrames() && getCachedFrames().referenceCount <= 0){
-				getCachedFrames().destroy();
+			if(cached && frameCache && frameCache.referenceCount <= 0){
+				frameCache.destroy();
 				delete _frameCache[getFramesCacheKey()];
 				//Divider is cleaned up in the CachedFramesData.destroy()
-			}else{
-				if(_divider){
-					_divider.destroy();
-					_divider.owningSheet = null;
-					_divider = null;
-				}
+			}else if(cached && _divider && frameCache.divider != _divider){
+				_divider.destroy();
+				_divider.owningSheet = null;
+				_divider = null;
 			}
 			//TODO Add reference count check here to decide if we want to delete cache
 			/*if(getCachedFrames() && getCachedFrames().referenceCount <= 0){
@@ -272,6 +274,7 @@ package com.pblabs.rendering2D.spritesheet
 			if(_imageData) _imageData = null;
 			image = null;
 			
+			_destroyed = true;
 		}
         
 		protected function onImageLoaded(resource:ImageResource):void
@@ -356,6 +359,7 @@ package com.pblabs.rendering2D.spritesheet
 		private var _imageData:BitmapData = null;
         private var _divider:ISpriteSheetDivider = null;
         private var _forcedBitmaps:Array = null;
+		private var _destroyed:Boolean = false;
     }
 }
 import com.pblabs.rendering2D.spritesheet.ISpriteSheetDivider;
