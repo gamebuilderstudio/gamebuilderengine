@@ -309,6 +309,13 @@ package com.pblabs.rendering2D.spritesheet
 			super.onRemove();         			
 		}
 		
+		override protected function buildFrames():void
+		{
+			if(!_divider) return;
+			
+			super.buildFrames();
+		}
+		
 		/*--------------------------------------------------------------------------------------------*/
 		//* Caching Functionality
 		/*--------------------------------------------------------------------------------------------*/
