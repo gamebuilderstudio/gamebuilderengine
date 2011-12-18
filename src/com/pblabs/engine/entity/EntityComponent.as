@@ -61,8 +61,8 @@ package com.pblabs.engine.entity
             
          _name = name;
          _owner = owner;
+		 _isRegistered = true;
          onAdd();
-         _isRegistered = true;
       }
       
       /**
