@@ -28,6 +28,7 @@ package com.pblabs.rendering2D
 		
 		private var bmFontObject : BMFont;
 		private var textDisplay : TextField = new TextField();
+		private var _textDirty : Boolean = false;
 		
 		public function UITextRendererComponent()
 		{
@@ -38,6 +39,11 @@ package com.pblabs.rendering2D
 		override public function onFrame(elapsed:Number):void
 		{
 			buildFontOBject();
+			
+			if(_textDirty == true){
+				paintTextToBitmap();
+			}
+			
 			super.onFrame(elapsed);
 		}
 		
@@ -49,7 +55,8 @@ package com.pblabs.rendering2D
 			
 			/*if(_displayObject == textDisplay && useBitmapFont && fontImage && fontData)
 				_displayObject = null;*/
-
+			paintTextToBitmap();
+			
 			super.onAdd();
 		}
 		
@@ -62,7 +69,6 @@ package com.pblabs.rendering2D
 				bmFontObject.parseFont(fontData);
 				
 				bmFontObject.addSheet(0, fontImage.bitmapData);
-				
 				paintTextToBitmap();
 			}
 		}
@@ -77,7 +83,8 @@ package com.pblabs.rendering2D
 				buildFontOBject();
 			//var bounds : Rectangle = textDisplay.getBounds(textDisplay);
 			var textBitmapData:BitmapData = this.originalBitmapData;
-			textBitmapData.fillRect(textBitmapData.rect, 0);
+			if(textBitmapData) 
+				textBitmapData.fillRect(textBitmapData.rect, 0);
 			if(!this.bitmapData || this.bitmapData.width != size.x || this.bitmapData.height != size.y)
 			{
 				textBitmapData = new BitmapData(size.x, size.y, true, 0x0);
@@ -92,6 +99,8 @@ package com.pblabs.rendering2D
 			}
 			textBitmapData.unlock();
 			this.bitmapData = textBitmapData;
+			
+			_textDirty = false;
 		}
 
 		public function get fontColor():uint{ return uint(textFormatter.color); }
@@ -99,7 +108,7 @@ package com.pblabs.rendering2D
 			textFormatter.color = val;
 			textDisplay.setTextFormat(textFormatter);
 			textDisplay.autoSize = TextFieldAutoSize.LEFT;
-			paintTextToBitmap();
+			_textDirty = true;
 		}
 		
 		public function get fontSize():int{ return int(textFormatter.size); }
@@ -107,7 +116,7 @@ package com.pblabs.rendering2D
 			textFormatter.size = val;
 			textDisplay.setTextFormat(textFormatter);
 			textDisplay.autoSize = TextFieldAutoSize.LEFT;
-			paintTextToBitmap();
+			_textDirty = true;
 		}
 
 		public function get text():String{ return textDisplay.text; }
@@ -115,16 +124,18 @@ package com.pblabs.rendering2D
 			textDisplay.text = val;
 			textDisplay.setTextFormat(textFormatter);
 			textDisplay.autoSize = TextFieldAutoSize.LEFT;
-			paintTextToBitmap();
+			_textDirty = true;
 		}
 
 		override public function set size(val : Point):void{
+			if(val.x != this._size.x || val.y != this._size.y)
+				_textDirty = true;
 			super.size = val;
-			paintTextToBitmap();
 		}
 		override public function set scale(val : Point):void{
+			if(val.x != this._scale.x || val.y != this._scale.y)
+				_textDirty = true;
 			super.scale = val;
-			paintTextToBitmap();
 		}
 	}
 }
