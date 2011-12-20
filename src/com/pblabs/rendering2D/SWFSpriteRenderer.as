@@ -46,6 +46,11 @@ package com.pblabs.rendering2D
 		{
 			if(_resource) return;
 			
+			if(resource.hasEventListener(ResourceEvent.LOADED_EVENT))
+				resource.removeEventListener(ResourceEvent.LOADED_EVENT, resourceLoadedHandler );
+			if(resource.hasEventListener(ResourceEvent.FAILED_EVENT))
+				resource.removeEventListener(ResourceEvent.FAILED_EVENT, resourceFailedLoadingHandler );
+
 			if(!containingObjectName) {
 				var swfClass : Class;
 				if(resource.appDomain)
@@ -114,15 +119,13 @@ package com.pblabs.rendering2D
 			}
 		}
 
-		/*protected override function onRemove():void
+		protected override function onRemove():void
 		{
-			if (_resource)
-			{
-				_resource.removeEventListener(ResourceEvent.LOADED_EVENT,
-			}   
+			_resource = null;
+			_classInstance = null
 			
 			super.onRemove();
-		}*/
+		}
 		
 		override public function updateTransform(updateProps:Boolean = false):void
 		{
@@ -144,6 +147,16 @@ package com.pblabs.rendering2D
 			displayObject.visible = (alpha > 0);
 			
 			_transformDirty = false;
+		}
+		
+		private function resourceLoadedHandler(event : ResourceEvent):void
+		{
+			onResourceLoaded(event.resourceObject as SWFResource);
+		}
+
+		private function resourceFailedLoadingHandler(event : ResourceEvent):void
+		{
+			onResourceLoaded(event.resourceObject as SWFResource);
 		}
 
 		private var _tmpScale : Point = new Point();
@@ -199,8 +212,8 @@ package com.pblabs.rendering2D
 			if(!resource.isLoaded)
 			{
 				//This is possibly a memory leak
-				resource.addEventListener(ResourceEvent.LOADED_EVENT, function (event:Event):void { onResourceLoaded(resource); } );
-				resource.addEventListener(ResourceEvent.FAILED_EVENT, function (event:Event):void { onResourceLoadFailed(resource); } );
+				resource.addEventListener(ResourceEvent.LOADED_EVENT, resourceLoadedHandler );
+				resource.addEventListener(ResourceEvent.FAILED_EVENT, resourceFailedLoadingHandler );
 				return;
 			}
 			
