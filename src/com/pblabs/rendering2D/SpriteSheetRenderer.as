@@ -23,6 +23,7 @@ package com.pblabs.rendering2D
 	    public var spriteSheet:SpriteContainerComponent;
         public var spriteIndex:int = 0;
 		public var directionReference:PropertyReference;
+		public var overrideSizePerFrame : Boolean = true;
 
 		override public function get displayObject():DisplayObject
 		{
@@ -54,6 +55,14 @@ package com.pblabs.rendering2D
 	        if(spriteSheet && spriteSheet.isLoaded && spriteSheet.center)
 			{
 	            registrationPoint = spriteSheet.center.clone();					
+			}
+			if(curFrame && this.size && this.sizeProperty && overrideSizePerFrame && (this.size.x != curFrame.width || this.size.y != curFrame.height))
+			{
+				var newSize : Point = new Point(curFrame.width, curFrame.height);
+				this.size = newSize;
+				this.owner.setProperty( this.sizeProperty, newSize);
+			}else if(overrideSizePerFrame){
+				this.size =  new Point(curFrame.width, curFrame.height);
 			}
 			
 			return curFrame;
