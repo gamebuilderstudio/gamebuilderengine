@@ -274,12 +274,12 @@ package com.pblabs.rendering2D.spritesheet
             }
         }
         
-        private var frameNotes:Array;
+		protected var frameNotes:Array;
         protected var frames:Array = null;
-		private var _modifiers:Array = new Array();
-        private var _center:Point = new Point(0, 0);
-        private var _defaultCenter:Boolean = true;
-		private var frameCountCap:int = 0;
+		protected var _modifiers:Array = new Array();
+		protected var _center:Point = new Point(0, 0);
+		protected var _defaultCenter:Boolean = true;
+		protected var frameCountCap:int = 0;
     }
 }
 

@@ -9,6 +9,7 @@
 package com.pblabs.rendering2D.spritesheet
 {
     import com.pblabs.engine.PBE;
+    import com.pblabs.engine.PBUtil;
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.resource.ImageResource;
     import com.pblabs.engine.resource.Resource;
@@ -162,7 +163,15 @@ package com.pblabs.rendering2D.spritesheet
             return _divider;
         }
         
-        /**
+		/**
+		 * The bounds of the largest frame in the spritesheet
+		 */
+		public function get bounds():Rectangle
+		{
+			return new Rectangle(_bounds.x, _bounds.y, _bounds.width, _bounds.height);
+		}
+
+		/**
          * @private
          */
         public function set divider(value:ISpriteSheetDivider):void
@@ -194,6 +203,7 @@ package com.pblabs.rendering2D.spritesheet
 			{
 				cachedFrames.referenceCount += 1;
 				_divider = cachedFrames.divider ? cachedFrames.divider : _divider;
+				_bounds = cachedFrames.bounds ? cachedFrames.bounds : _bounds;
 				return cachedFrames.frames;
 			}
 
@@ -206,17 +216,26 @@ package com.pblabs.rendering2D.spritesheet
             else
             {
 				_frames = new Array(_divider.frameCount);
-								
+				var tmpBounds : Rectangle;
                 for (var i:int = 0; i < _divider.frameCount; i++)
                 {
                     var area:Rectangle = _divider.getFrameArea(i);										
 					_frames[i] = new BitmapData(area.width, area.height, true);
-					_frames[i].copyPixels(imageData, area, new Point(0, 0));									
+					_frames[i].copyPixels(imageData, area, new Point(0, 0));
+					tmpBounds = new Rectangle(0,0,_frames[i].width, _frames[i].height);
+					if(!_bounds){
+						_bounds = tmpBounds;
+					}else{
+						var difX : Number = PBUtil.clamp( tmpBounds.width - _bounds.width, 0, 99999999);
+						var difY : Number = PBUtil.clamp( tmpBounds.height - _bounds.height, 0, 99999999);
+						_bounds.inflate(difX, difY);
+					}
+
                 }				
             }		
 			
 			if(cached){
-				var frameCache : CachedFramesData = new CachedFramesData(_frames, imageFilename, _divider);
+				var frameCache : CachedFramesData = new CachedFramesData(_frames, imageFilename, _divider, _bounds);
 				frameCache.referenceCount += 1;
 				setCachedFrames(frameCache);
 			}
@@ -261,11 +280,12 @@ package com.pblabs.rendering2D.spritesheet
 				frameCache.destroy();
 				delete _frameCache[getFramesCacheKey()];
 				//Divider is cleaned up in the CachedFramesData.destroy()
-			}else if(cached && _divider && frameCache.divider != _divider){
+			}else if(_divider && ((frameCache && frameCache.divider !== _divider) || !frameCache)){
 				_divider.destroy();
 				_divider.owningSheet = null;
-				_divider = null;
 			}
+			_divider = null;
+			_bounds = null;
 			//TODO Add reference count check here to decide if we want to delete cache
 			/*if(getCachedFrames() && getCachedFrames().referenceCount <= 0){
 				Logger.print(this, "Deleting SpriteSheet With Key ["+getFramesCacheKey()+"]");
@@ -358,24 +378,29 @@ package com.pblabs.rendering2D.spritesheet
 		private var _failed:Boolean = false;
 		private var _imageData:BitmapData = null;
         private var _divider:ISpriteSheetDivider = null;
+		private var _bounds:Rectangle;
         private var _forcedBitmaps:Array = null;
 		private var _destroyed:Boolean = false;
     }
 }
 import com.pblabs.rendering2D.spritesheet.ISpriteSheetDivider;
 
+import flash.geom.Rectangle;
+
 final class CachedFramesData
 {
-	public function CachedFramesData(frames:Array, fileName : String, divider : ISpriteSheetDivider )
+	public function CachedFramesData(frames:Array, fileName : String, divider : ISpriteSheetDivider, bounds : Rectangle )
 	{
 		this.frames = frames;
 		this.fileName = fileName;
 		this.divider = divider;
+		this.bounds = bounds;
 	}
 	public var frames:Array;
 	public var fileName:String;
 	public var divider:ISpriteSheetDivider;
 	public var referenceCount : int = 0;
+	public var bounds:Rectangle;
 	
 	public function destroy():void
 	{
@@ -391,5 +416,6 @@ final class CachedFramesData
 			divider.destroy();
 			divider = null;
 		}
+		bounds = null;
 	}
 }

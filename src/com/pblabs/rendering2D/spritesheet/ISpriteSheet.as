@@ -10,6 +10,7 @@ package com.pblabs.rendering2D.spritesheet
 {
 	import flash.display.BitmapData;
 	import flash.geom.Point;
+	import flash.geom.Rectangle;
 
 	public interface ISpriteSheet
 	{
@@ -43,6 +44,12 @@ package com.pblabs.rendering2D.spritesheet
 		 */
 		function get divider():ISpriteSheetDivider;
 		function set divider(value:ISpriteSheetDivider):void;
+
+		/**
+		 * The maximum bounds of all the frames in the spritesheet. So this will be the largest boundary 
+		 * found in the sheet.
+		 */
+		function get bounds():Rectangle;
 
 		function get isLoaded():Boolean;
 

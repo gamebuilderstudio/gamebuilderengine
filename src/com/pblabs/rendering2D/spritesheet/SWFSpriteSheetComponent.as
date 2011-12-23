@@ -8,6 +8,7 @@
  ******************************************************************************/
 package com.pblabs.rendering2D.spritesheet
 {
+    import com.pblabs.engine.PBUtil;
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.resource.SWFResource;
     
@@ -150,6 +151,16 @@ package com.pblabs.rendering2D.spritesheet
 		public function destroy():void
 		{
 			this.deleteFrames();
+			_resource = null;
+			_bounds = null;
+			_clip = null;
+		}
+		
+		override public function getFrame(index:int, direction:Number=0.0):BitmapData
+		{
+			var frame : BitmapData = super.getFrame(index, direction);
+			_center = _frameCenters[index];
+			return frame;
 		}
 
 		/**
@@ -219,11 +230,14 @@ package com.pblabs.rendering2D.spritesheet
             var frames:CachedFramesData = getCachedFrames();
             if (frames)
             {
-                _frames = frames.frames;
+				_frames = frames.frames;
+                _frameCenters = frames.frameCenters;
                 _bounds = frames.bounds;
                 _clip = frames.clip;
                 return;
-            }
+            } else {
+				_bounds = null;
+			}
 
             if (_clipName)
             {
@@ -237,9 +251,8 @@ package com.pblabs.rendering2D.spritesheet
             }
 
             _frames = onRasterize(_clip);
-            _bounds = _clip.getBounds(_clip);
-            center = new Point(-_bounds.x, -_bounds.y);
-            setCachedFrames(new CachedFramesData(_frames, _bounds, _clip));
+			_center = new Point(-_bounds.x, -_bounds.y);
+            setCachedFrames(new CachedFramesData(_frames, _bounds, _clip, _frameCenters));
         }
 
         /**
@@ -249,10 +262,26 @@ package com.pblabs.rendering2D.spritesheet
         {
             var maxFrames:int = swf.findMaxFrames(mc, mc.totalFrames);
             var rasterized:Array = new Array(maxFrames);
+			_frameCenters = new Array(maxFrames);
 
-            if (maxFrames > 0)
-                rasterized[0] = rasterizeFrame(mc, 1);
-
+			var tmpBounds : Rectangle;
+            if (maxFrames > 0){
+				for(var i : int = 1; i <= maxFrames; i++)
+				{
+					rasterized[i-1] = rasterizeFrame(mc, i);
+					tmpBounds = mc.getBounds(mc);
+					_frameCenters[i-1] = new Point(-tmpBounds.x, -tmpBounds.y);
+					if(!_bounds){
+						_bounds = tmpBounds;
+					}else{
+						var difX : Number = PBUtil.clamp( tmpBounds.width - _bounds.width, 0, 99999999);
+						var difY : Number = PBUtil.clamp( tmpBounds.height - _bounds.height, 0, 99999999);
+						_bounds.inflate(difX, difY);
+					}
+				}
+			}
+			
+			//_bounds.inflate(
             return rasterized;
         }
 
@@ -261,9 +290,9 @@ package com.pblabs.rendering2D.spritesheet
             if (mc.totalFrames >= frameIndex)
                 mc.gotoAndStop(frameIndex);
 
-            swf.advanceChildClips(mc, frameIndex);
-            var bd:BitmapData = getBitmapDataByDisplay(mc);
+			swf.advanceChildClips(mc, 1);
 
+			var bd:BitmapData = getBitmapDataByDisplay(mc);
             return bd;
         }
 
@@ -272,24 +301,31 @@ package com.pblabs.rendering2D.spritesheet
          */
         protected function getBitmapDataByDisplay(display:DisplayObject):BitmapData 
         {
-            var bounds:Rectangle = display.getBounds(display);
+            var frameBounds:Rectangle = display.getBounds(display);
 
             var bd:BitmapData = new BitmapData(
-                Math.max(1, Math.min(2880, bounds.width * scale.x)),
-                Math.max(1, Math.min(2880, bounds.height * scale.y)),
+                Math.max(1, Math.min(2880, frameBounds.width * _scale.x)),
+                Math.max(1, Math.min(2880, frameBounds.height * _scale.y)),
                 true,
                 0x00000000);
 
-            bd.draw(display, new Matrix(_scale.x, 0, 0, _scale.y, -bounds.x * _scale.x, -bounds.y * _scale.y), null, null, null, _smoothing);
+            bd.draw(display, new Matrix(_scale.x, 0, 0, _scale.y, -frameBounds.x * _scale.x, -frameBounds.y * _scale.y), null, null, null, _smoothing);
 
             return bd;
         }
 
-        protected static var _frameCache:Dictionary = new Dictionary(true);
+		override protected function onRemove():void
+		{
+			destroy();
+			super.onRemove();         			
+		}
+
+		protected static var _frameCache:Dictionary = new Dictionary(true);
 
         private var _smoothing:Boolean = true;
         private var _scale:Point = new Point(1, 1);
         private var _frames:Array;
+		private var _frameCenters:Array;
         private var _resource:SWFResource;
         private var _clipName:String;
         private var _clip:MovieClip;
@@ -299,13 +335,15 @@ package com.pblabs.rendering2D.spritesheet
 
 final class CachedFramesData
 {
-    public function CachedFramesData(frames:Array, bounds:flash.geom.Rectangle, clip:flash.display.MovieClip)
+    public function CachedFramesData(frames:Array, bounds:flash.geom.Rectangle, clip:flash.display.MovieClip, frameCenters : Array)
     {
         this.frames = frames;
+		this.frameCenters = frameCenters;
         this.bounds = bounds;
         this.clip = clip;
     }
     public var frames:Array;
+	public var frameCenters:Array;
     public var bounds:flash.geom.Rectangle;
     public var clip:flash.display.MovieClip;
 }
