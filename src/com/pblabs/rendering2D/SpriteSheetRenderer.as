@@ -25,6 +25,9 @@ package com.pblabs.rendering2D
 		public var directionReference:PropertyReference;
 		public var overrideSizePerFrame : Boolean = true;
 
+		protected var currentSpatialName : String;
+		protected var currentSpatialRef : PropertyReference;
+
 		override public function get displayObject():DisplayObject
 		{
 			if(!_displayObject)
@@ -60,8 +63,23 @@ package com.pblabs.rendering2D
 			{
 				var newSize : Point = new Point(curFrame.width, curFrame.height);
 				this.size = newSize;
-				this.owner.setProperty( this.sizeProperty, newSize);
-			}else if(overrideSizePerFrame){
+
+				if(!currentSpatialName || this.sizeProperty.property.indexOf( currentSpatialName ) == -1){
+					var spatialParts : Array = this.sizeProperty.property.split(".");
+					spatialParts.pop();
+					var tmpSpatialName : String = spatialParts.join(".");
+					if(currentSpatialName != tmpSpatialName)
+					{
+						currentSpatialName = tmpSpatialName;
+						currentSpatialRef = new PropertyReference(currentSpatialName);
+					}
+				}
+				
+				var spatial : ISpatialObject2D = this.owner.getProperty( currentSpatialRef ) as ISpatialObject2D;
+				if(spatial && spatial.spriteForPointChecks == this){
+					this.owner.setProperty( this.sizeProperty, newSize);
+				}
+			}else if(overrideSizePerFrame && (this.size.x != curFrame.width || this.size.y != curFrame.height)){
 				this.size =  new Point(curFrame.width, curFrame.height);
 			}
 			
