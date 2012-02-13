@@ -48,12 +48,6 @@ package com.pblabs.rendering2D
 			super();
 		}
 		
-		override public function set size(value:Point):void
-		{
-			if(size.x == value.x && size.y == value.y) return;
-			super.size = value;
-		}
-		
 		override public function set bitmapData(value:BitmapData):void
 		{
 			if (value === bitmap.bitmapData)
@@ -76,7 +70,6 @@ package com.pblabs.rendering2D
 			if (displayObject==null)
 			{
 				_displayObject = new Sprite();
-				//(_displayObject as Sprite).addChild(bitmap);				
 				_displayObject.visible = true;
 				(_displayObject as Sprite).mouseEnabled = _mouseEnabled;
 			}
@@ -104,12 +97,15 @@ package com.pblabs.rendering2D
 			super.onAdd();
 		}
 		
+		private var _painted : Boolean = false;
 		protected function paintRenderer(deltaTime:Number):void
 		{
-			if(!scene || !scene.sceneView || !bitmapData) return;
-
-			if(scrollSpeed.x == 0 && scrollSpeed.y == 0)
+			if(!bitmapData) 
 				return;
+
+			if(_painted && scrollSpeed.x == 0 && scrollSpeed.y == 0)
+				return;
+			
 			if(!size || size.x == 0 || size.y == 0) 
 				return;
 			
