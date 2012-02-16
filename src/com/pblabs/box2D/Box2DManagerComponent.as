@@ -382,7 +382,21 @@ package com.pblabs.box2D
             return hitAny;
         }
         
-        private function createWorld():void
+		/**
+		 * Grab all spatials within a rectangular region
+		 */
+		public function getObjectsInRec(worldRec:Rectangle, results:Array):Boolean
+		{
+			var tmpResults:Array = new Array();
+			
+			// First use the normal spatial query...
+			queryRectangle(worldRec, null, tmpResults);
+			
+			// Ok, now pass control to the objects and see what they think.
+			return _otherItems.getObjectsInRec(worldRec, results);
+		}
+
+		private function createWorld():void
         {
             _world = new b2World(V2.fromP(_gravity), _allowSleep);
             _world.SetContactListener(new ContactListener());

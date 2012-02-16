@@ -167,7 +167,33 @@ package com.pblabs.rendering2D
          return hitAny;
       }
       
-      /**
+	  /**
+	   * @inheritDoc
+	   */
+	  public function getObjectsInRec(worldRec:Rectangle, results:Array):Boolean
+	  {
+		  var tmpResults:Array = new Array();
+		  
+		  // First use the normal spatial query...
+		  queryRectangle(worldRec, null, tmpResults)
+		  
+		  // Ok, now check the renderer on all spatials with one as a last resort to check their bounds.
+		  var hitAny:Boolean = false;
+		  for each(var tmp:ISpatialObject2D in this._objectList)
+		  {
+			  if(results.indexOf( tmp ) != -1)
+				  continue;
+			  var rendererRec : Rectangle = tmp.worldExtents;
+			  if (rendererRec && !rendererRec.intersects( worldRec ))
+				  continue;
+			  results.push(tmp);
+			  hitAny = true;
+		  }
+		  
+		  return hitAny;
+	  }
+
+	  /**
        * @inheritDoc
        */
       public function castRay(start:Point, end:Point, mask:ObjectType, result:RayHitInfo):Boolean

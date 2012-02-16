@@ -73,5 +73,15 @@ package com.pblabs.rendering2D
   	   * @return Found something under point or not.
        */
       function getObjectsUnderPoint(worldPosition:Point, results:Array, mask:ObjectType = null):Boolean;
+	  
+	  /**
+	   * Return all the spatial objects within a given rectangluar area. Objects can optionally implement
+	   * pixel-level collision checking.
+	   *
+	   * @param worldRec Rectangle in worldspace to check.
+	   * @param results An array into which ISpatialObject2Ds are added based on what is under point.
+	   * @return Found something within rectangluar area or not.
+	   */
+	  function getObjectsInRec(worldRec:Rectangle, results:Array):Boolean
    }
 }
