@@ -10,6 +10,8 @@ package com.pblabs.box2D
 {
 	import Box2DAS.Dynamics.b2Fixture;
 	import Box2DAS.Dynamics.b2FixtureDef;
+	
+	import flash.geom.Point;
 
    [EditorData(ignore="true")]
    public class CollisionShape
@@ -74,7 +76,28 @@ package com.pblabs.box2D
             _parent.buildCollisionShapes();
       }
       
-      public function createShape(parent:Box2DSpatialComponent):b2FixtureDef
+	  /**
+	  * Used to scale the vertices or radius of a CollisionShape during shape creation
+	  * without affecting the original values
+	  **/
+	  public function get shapeScale():Point
+	  {
+		  //TODO: Remove, Its temporary until underlying Box2D engine is switched to AS3 version. 
+		  //Alchemy version blows up with values of 0
+		  if(_shapeScale.x <= 0) _shapeScale.x = .2;
+		  if(_shapeScale.y <= 0) _shapeScale.y = .2;
+		  return _shapeScale;
+	  }
+	  
+	  public function set shapeScale(value:Point):void
+	  {
+		  _shapeScale = value;
+		  
+		  if (_parent)
+			  _parent.buildCollisionShapes();
+	  }
+
+	  public function createShape(parent:Box2DSpatialComponent):b2FixtureDef
       {
          _parent = parent;
          
@@ -105,5 +128,6 @@ package com.pblabs.box2D
       private var _density:Number = 1.0;
       private var _friction:Number = 0.0;
       private var _restitution:Number = 0.0;
+	  private var _shapeScale : Point = new Point(1,1);
    }
 }

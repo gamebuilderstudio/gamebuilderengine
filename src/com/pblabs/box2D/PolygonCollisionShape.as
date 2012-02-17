@@ -37,7 +37,7 @@ package com.pblabs.box2D
 			if(!_vertices) generateBox(_parent.size.x/2, _parent.size.y/2);
   			var verticies:Array = new Array();
   			for (var i:int = 0; i < _vertices.length; i++)
-	  				verticies.push(new V2(_vertices[i].x * scale, _vertices[i].y * scale));
+	  				verticies.push(new V2((_vertices[i].x * shapeScale.x) * scale, (_vertices[i].y * shapeScale.y) * scale));
   			
   			var shape:b2PolygonShape = new b2PolygonShape();
   			shape.SetAsArray(verticies);
