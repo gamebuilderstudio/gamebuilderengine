@@ -135,6 +135,8 @@ package com.pblabs.engine.scripting
 			D.importClass( PBE );
 			D.importFunction("setPoint", ExpressionUtils.setPoint);
 			D.importFunction("getEntity", ExpressionUtils.getEntity);
+			D.importFunction("magnitudeOfPoints", ExpressionUtils.magnitudeOfPoints);
+			D.importFunction("magnitude", ExpressionUtils.magnitude);
 			_initialized = true;
 		}
 		/*-----------------------------------------------------------------------------------------------------------
@@ -182,6 +184,19 @@ import com.pblabs.engine.entity.IEntity;
 import flash.geom.Point;
 
 class ExpressionUtils{
+	public static function magnitudeOfPoints(pointA : Point, pointB : Point):Number
+	{
+		return Math.sqrt( Math.abs( ((pointA.x-pointB.x) * (pointA.x-pointB.x)) + ((pointA.y-pointB.y) * (pointA.y-pointB.y)) ) );
+	}
+
+	/**
+	 * Returns the distance/magnitude between two values
+	 **/
+	public static function magnitude(valA : Number, valB : Number):Number
+	{
+		return Math.sqrt( Math.abs( ((valA) * (valA)) + ((valB) * (valB)) ) );
+	}
+
 	public static function setPoint(x : Number, y : Number):Point
 	{
 		return new Point(x,y);
