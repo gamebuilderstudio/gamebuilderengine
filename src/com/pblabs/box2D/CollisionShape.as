@@ -82,10 +82,6 @@ package com.pblabs.box2D
 	  **/
 	  public function get shapeScale():Point
 	  {
-		  //TODO: Remove, Its temporary until underlying Box2D engine is switched to AS3 version. 
-		  //Alchemy version blows up with values of 0
-		  if(_shapeScale.x <= 0) _shapeScale.x = .2;
-		  if(_shapeScale.y <= 0) _shapeScale.y = .2;
 		  return _shapeScale;
 	  }
 	  
