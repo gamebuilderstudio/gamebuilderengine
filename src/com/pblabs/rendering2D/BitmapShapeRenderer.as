@@ -126,7 +126,7 @@ package com.pblabs.rendering2D
 
 			// Draw one or both shapes.
 			if(isSquare)
-				g.drawRect(0, 0, (radius*2), (radius*2));
+				g.drawRect(0, 0, size.x, size.y);
 
 			if(isCircle){
 				var radiansX : Number = 180 * (Math.PI/180);
@@ -148,7 +148,7 @@ package com.pblabs.rendering2D
 			var bounds : Rectangle = s.getBounds( s );
 			var m : Matrix = new Matrix();
 			//_registrationPoint = new Point(-bounds.topLeft.x, -bounds.topLeft.y);
-			bitmap.bitmapData = new BitmapData(bounds.width,bounds.height, true, 0x000000);
+			bitmap.bitmapData = new BitmapData(bounds.width, bounds.height, true, 0x000000);
 			bitmap.bitmapData.draw(s,m, s.transform.colorTransform, s.blendMode );
 		}
 		
@@ -170,7 +170,7 @@ package com.pblabs.rendering2D
 			}
 			super.size = value;
 			if(callRedraw){
-				_radius = Math.sqrt( value.x*value.y );
+				_radius = 0.5 * Math.sqrt(_size.x * _size.y);
 				redraw();
 			}
 		}
@@ -188,5 +188,7 @@ package com.pblabs.rendering2D
 		{
 			return _smoothing;
 		}
+		
+		public function get bitmapShape():Bitmap{ return bitmap; }
 	}
 }
