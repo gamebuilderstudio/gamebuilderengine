@@ -50,7 +50,7 @@ package com.pblabs.box2D
          
 		 var fixture: b2FixtureDef = super.doCreateShape();
 		 var shape:b2CircleShape = new b2CircleShape();
-		 shape.m_radius = (_radius * (shapeScale.x*shapeScale.y))* scale;
+		 shape.m_radius = (_radius * Math.sqrt(shapeScale.x * shapeScale.y)) * scale;
 		 shape.m_p.x = _position.x * scale;
 		 shape.m_p.y = _position.y * scale;
 		 fixture.shape = shape;
