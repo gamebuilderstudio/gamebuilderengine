@@ -118,7 +118,11 @@ package com.pblabs.engine.scripting
 				}
 			}
 			_cachedExpression = true;
-			_value = D.eval(_expression, context, thisObject);
+			try{
+				_value = D.eval(_expression, context, thisObject);
+			}catch(e : Error){
+				Logger.error(this, 'evaluateExpression', 'Failed expression ['+_expression+'] Msg = '+e.message);
+			}
 		}
 		
 		private function parseExpression():void
@@ -135,7 +139,7 @@ package com.pblabs.engine.scripting
 			D.importClass( PBE );
 			D.importFunction("setPoint", ExpressionUtils.setPoint);
 			D.importFunction("getEntity", ExpressionUtils.getEntity);
-			D.importFunction("magnitudeOfPoints", ExpressionUtils.magnitudeOfPoints);
+			D.importFunction("magnitudeOfPoint", ExpressionUtils.magnitudeOfPoint);
 			D.importFunction("magnitude", ExpressionUtils.magnitude);
 			_initialized = true;
 		}
@@ -184,7 +188,7 @@ import com.pblabs.engine.entity.IEntity;
 import flash.geom.Point;
 
 class ExpressionUtils{
-	public static function magnitudeOfPoints(pointA : Point, pointB : Point):Number
+	public static function magnitudeOfPoint(pointA : Point, pointB : Point):Number
 	{
 		return Math.sqrt( Math.abs( ((pointA.x-pointB.x) * (pointA.x-pointB.x)) + ((pointA.y-pointB.y) * (pointA.y-pointB.y)) ) );
 	}
