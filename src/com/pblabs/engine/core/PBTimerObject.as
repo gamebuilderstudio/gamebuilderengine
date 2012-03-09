@@ -13,6 +13,7 @@ package com.pblabs.engine.core
 		public var repeatCount : int = 0;
 		public var limit : Number = 0;
 		
+		private var _initialStart : Boolean = true;
 		private var _startTime : Number = 0;
 		private var _running : Boolean = false;
 		private var _activeCount : int = 0;
@@ -56,6 +57,10 @@ package com.pblabs.engine.core
 		}
 		public function start():void
 		{
+			if(_initialStart){
+				PBE.processManager.addTickedObject( this );
+				_initialStart = false;
+			}
 			_startTime = PBE.processManager.virtualTime;
 			_running = true;
 			_activeCount = 0;
@@ -70,6 +75,15 @@ package com.pblabs.engine.core
 		public function get running():Boolean
 		{
 			return _running;
+		}
+		
+		public function destroy():void
+		{
+			stop();
+			if(!_initialStart)
+				PBE.processManager.removeTickedObject( this );
+			onTickSignal.removeAll();
+			onTickSignal = null;
 		}
 	}
 }
