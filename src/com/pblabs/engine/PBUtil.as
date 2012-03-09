@@ -12,6 +12,9 @@ package com.pblabs.engine
     
     import flash.display.DisplayObject;
     import flash.geom.Matrix;
+    import flash.geom.Point;
+    import flash.geom.Rectangle;
+    import flash.utils.Dictionary;
 
     /**
      * Contains math related utility methods.
@@ -397,5 +400,143 @@ package com.pblabs.engine
             
             return output;
         }
+		
+		/**
+		 * Return a sorted list of the keys in a dictionary
+		 */
+		public static function getSortedDictionaryKeys(dict:Object):Array
+		{
+			var keylist:Array = new Array();
+			for (var key:String in dict) {
+				keylist.push(key);
+			}
+			keylist.sort();
+			
+			return keylist;
+		}
+		
+		/**
+		 * Return a sorted list of the values in a dictionary
+		 */
+		public static function getSortedDictionaryValues(dict:Dictionary):Array
+		{
+			var valuelist:Array = new Array();
+			for each (var value:Object in dict) {
+				valuelist.push(value);
+			}
+			valuelist.sort();
+			
+			return valuelist;
+		}
+		
+		/**
+		 * Given an array of items and an array of weights,
+		 * select a random item. Items with higher weights
+		 * are more likely to be selected.
+		 *
+		 */
+		public static function selectRandomWeightedItem(items:Array, weights:Array):Object
+		{
+			var total:int = 0;
+			var ranges:Array = [];
+			for (var i:int = 0; i < items.length; i++) {
+				ranges[i] = { start: total, end: total + weights[i] };
+				total += weights[i];
+			}
+			
+			var rand:int = Math.random() * total;
+			
+			var item:Object = items[0];
+			
+			for (i = 0; i < ranges.length; i++) {
+				if (rand >= ranges[i].start && rand <= ranges[i].end) {
+					item = items[i];
+					break;
+				}
+			}
+			
+			return item;
+		}
+		
+		/**
+		 * A Regular expression to match special Regular expression characters
+		 */
+		public static const MATCH_SPECIAL_REGEXP:RegExp = new RegExp("([{}\(\)\^$&.\/\+\|\[\\\\]|\]|\-)", "g");
+		
+		/**
+		 * A Regular Expression for matching * and ? wildcard characters
+		 */
+		public static const MATCH_WILDCARDS_REGEXP:RegExp = new RegExp("([\*\?])", "g");
+		
+		/**
+		 * Match a wildcard pattern (*,?) with a given source string.
+		 *
+		 * @return True if the pattern matches the source string
+		 */
+		public static function matchWildcard(source:String, wildcard:String):Boolean
+		{
+			var regexp:String = wildcard.replace(MATCH_SPECIAL_REGEXP, "\\$1");
+			regexp = "^" + regexp.replace(MATCH_WILDCARDS_REGEXP, ".$1") + "$";
+			return Boolean(source.search(regexp) != -1);
+		}
+		
+		/**
+		 * Convert milliseconds to seconds
+		 **/
+		public static function convertMillisecondsToSeconds(mil:int):Number
+		{
+			return mil / 1000;
+		}
+		
+		/**
+		 * Convert seconds to milliseconds
+		 **/
+		public static function convertSecondsToMilliseconds(seconds:int):Number
+		{
+			return seconds * 1000;
+		}
+		
+		/**
+		 * Return a new string that replaces the given search string with
+		 * the replace string.
+		 * @param str String to search in
+		 * @param oldSubStr String to search for
+		 * @param newSubStr String to replace.
+		 */
+		public static function replaceString(str:String, oldSubStr:String, newSubStr:String):String
+		{
+			return str.split(oldSubStr).join(newSubStr);
+		}
+		
+		/**
+		 * Applies the given transformation matrix to the rectangle and returns
+		 * a new bounding box to the transformed rectangle.
+		 */
+		public static function getBoundsAfterTransformation(bounds:Rectangle, m:Matrix):Rectangle
+		{
+			if (m == null) return bounds;
+			
+			var topLeft:Point = m.transformPoint(bounds.topLeft);
+			var topRight:Point = m.transformPoint(new Point(bounds.right, bounds.top));
+			var bottomRight:Point = m.transformPoint(bounds.bottomRight);
+			var bottomLeft:Point = m.transformPoint(new Point(bounds.left, bounds.bottom));
+			
+			var left:Number = Math.min(topLeft.x, topRight.x, bottomRight.x, bottomLeft.x);
+			var top:Number = Math.min(topLeft.y, topRight.y, bottomRight.y, bottomLeft.y);
+			var right:Number = Math.max(topLeft.x, topRight.x, bottomRight.x, bottomLeft.x);
+			var bottom:Number = Math.max(topLeft.y, topRight.y, bottomRight.y, bottomLeft.y);
+			return new Rectangle(left, top, right - left, bottom - top);
+		}
+		
+		/**
+		 * Returns a random int within a set range.
+		 * @param min
+		 * @param max
+		 * @return
+		 */
+		public static function randomRange(min:int, max:int):int
+		{
+			return int(Math.random() * max) + min;
+		}
     }
 }
