@@ -84,7 +84,7 @@ package com.pblabs.engine.entity
          */
         public function serialize(xml:XML):void
         {
-            xml.appendChild(new XML(_property));
+            xml.appendChild(new XML('<![CDATA['+_property+']]>'));
         }
         
         /**
