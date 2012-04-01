@@ -103,24 +103,28 @@ package com.pblabs.rendering2D
 			if(!bitmapData) 
 				return;
 
-			if(_painted && scrollSpeed.x == 0 && scrollSpeed.y == 0)
+			if(scrollSpeed.x == 0 && scrollSpeed.y == 0 && scrollPosition.x == 0 && scrollPosition.y == 0)
 				return;
 			
 			if(!size || size.x == 0 || size.y == 0) 
 				return;
 			
 			// adjust scroll offset using the scrollSpeed
-			_scratchPosition.x += scrollPosition.x + (scrollSpeed.x * deltaTime); 
-			_scratchPosition.y += scrollPosition.y + (scrollSpeed.y * deltaTime);			
+			_scratchPosition.x += (scrollSpeed.x * deltaTime); 
+			_scratchPosition.y += (scrollSpeed.y * deltaTime);	
 			// determine the right drawing rectangle area of the bitmapData object with all display info 
 			// for the copyPixel command
 			// determine x offset of rectangle draw area 
 			var dx:Number = _scratchPosition.x - (Math.floor(_scratchPosition.x/originalBitmapData.width)*originalBitmapData.width);
+			if(!_painted)
+				dx += scrollPosition.x;
 			scrollRect.x = dx;
 			if((int(dx) % originalBitmapData.width) == 0)
 				scrollRect.x = 0;
 			// determine y offset of rectangle draw area 
-			var dy:Number = (_scratchPosition.y) - (Math.floor((_scratchPosition.y)/originalBitmapData.height)*originalBitmapData.height);
+			var dy:Number = _scratchPosition.y - (Math.floor((_scratchPosition.y)/originalBitmapData.height)*originalBitmapData.height);
+			if(!_painted)
+				dy += scrollPosition.y;
 			scrollRect.y = dy;			
 			if((int(dy) % originalBitmapData.height) == 0)
 				scrollRect.y = 0;
@@ -132,6 +136,11 @@ package com.pblabs.rendering2D
 			(_displayObject as Sprite).graphics.beginBitmapFill(originalBitmapData, _m, true, true); 
 			(_displayObject as Sprite).graphics.drawRect(0,0, size.x, size.y);
 			(_displayObject as Sprite).graphics.endFill();
+			
+			if(!_painted)
+			{
+				_painted = true;
+			}
 		}
 		
 	}
