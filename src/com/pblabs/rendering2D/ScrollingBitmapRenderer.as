@@ -103,11 +103,10 @@ package com.pblabs.rendering2D
 			if(!bitmapData) 
 				return;
 
-			if(scrollSpeed.x == 0 && scrollSpeed.y == 0 && scrollPosition.x == 0 && scrollPosition.y == 0)
-				return;
-			
 			if(!size || size.x == 0 || size.y == 0) 
 				return;
+			
+			updateProperties();
 			
 			// adjust scroll offset using the scrollSpeed
 			_scratchPosition.x += (scrollSpeed.x * deltaTime); 
