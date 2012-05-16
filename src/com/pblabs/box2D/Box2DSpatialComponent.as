@@ -70,9 +70,30 @@ package com.pblabs.box2D
         
         public function set spatialManager(value:ISpatialManager2D):void
         {
-            _manager = (value as Box2DManagerComponent);
+			if (!isRegistered)
+			{
+				_manager = value as Box2DManagerComponent;
+				return;
+			}
+			
+			if (_manager){
+				var shape:b2Fixture = _body.GetFixtureList();
+				while (shape)
+				{
+					var nextShape:b2Fixture = shape.m_next;
+					_body.DestroyFixture(shape);
+					shape = nextShape;
+				}
+				_manager.removeBody(_body, this);
+				var pos:V2 = _body.GetPosition();
+				_bodyDef.position.v2 = pos.multiplyN(_manager.scale).clone();
+				_body = null;
+			}
+			
+			_manager = value as Box2DManagerComponent;
+			
 			setupBody();
-        }
+		}
         
         /**
          * The Box2D b2Body wrapped by this component.
@@ -176,7 +197,8 @@ package com.pblabs.box2D
             if (_body)
             {
                 var pos:V2 = _body.GetPosition();
-                return new Point(pos.x * _manager.scale, pos.y * _manager.scale);
+				_bodyDef.position.v2 = pos.multiplyN(_manager.scale).clone();
+                return _bodyDef.position.v2.toP();
             }
             
             return new Point(_bodyDef.position.x, _bodyDef.position.y);
@@ -184,7 +206,7 @@ package com.pblabs.box2D
         
         public function set position(value:Point):void
         {
-            var position:V2 = _bodyDef.position.v2.xy(value.x, value.y);
+            var position:V2 = _bodyDef.position.v2.xy(value.x, value.y).clone();
             if (_body)
             {
 				_body.SetAwake(true);
@@ -432,7 +454,8 @@ package com.pblabs.box2D
         
         override protected function onRemove():void 
         {
-            _manager.removeBody(_body, this);
+			if(_manager)
+            	_manager.removeBody(_body, this);
             _body = null;
         }
 		
@@ -466,8 +489,8 @@ package com.pblabs.box2D
 				{
 					_body = body;
 					_body.SetUserData(this);
-					//_body.SetTransform(_bodyDef.position.v2, rotation);
-					//_bodyDef.position.v2.multiplyN(_manager.scale);
+					_body.SetTransform(_bodyDef.position.v2, rotation);
+					_bodyDef.position.v2.multiplyN(_manager.scale);
 					//linearVelocity = _linearVelocity;
 					//angularVelocity = _angularVelocity;
 					
