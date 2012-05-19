@@ -1,6 +1,7 @@
 package com.pblabs.rendering2D
 {
 	import com.pblabs.engine.PBE;
+	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.resource.DataResource;
 	import com.pblabs.engine.resource.ImageResource;
 	import com.pblabs.rendering2D.BitmapRenderer;
@@ -102,6 +103,20 @@ package com.pblabs.rendering2D
 			
 			_textDirty = false;
 		}
+		
+		private function updateFontSize():void
+		{
+			if(!owner || !textDisplay ) return;
+			
+			var newSize : Point = new Point(textDisplay.textWidth, textDisplay.textHeight)
+			if(sizeProperty && sizeProperty.property != "")
+			{
+				size = newSize;
+				this.owner.setProperty( sizeProperty, newSize )
+			}else{
+				size = newSize;
+			}
+		}
 
 		public function get fontColor():uint{ return uint(textFormatter.color); }
 		public function set fontColor(val : uint):void{
@@ -116,14 +131,20 @@ package com.pblabs.rendering2D
 			textFormatter.size = val;
 			textDisplay.setTextFormat(textFormatter);
 			textDisplay.autoSize = TextFieldAutoSize.LEFT;
+			
+			updateFontSize();
+			//Logger.print(this, "Text Size = W - "+textDisplay.textWidth + ", H - "+textDisplay.textHeight);
 			_textDirty = true;
 		}
 
 		public function get text():String{ return textDisplay.text; }
 		public function set text(val : String):void{
+			if(val == "") 
+				val = "[Empty]";
 			textDisplay.text = val;
 			textDisplay.setTextFormat(textFormatter);
 			textDisplay.autoSize = TextFieldAutoSize.LEFT;
+			updateFontSize();
 			_textDirty = true;
 		}
 
