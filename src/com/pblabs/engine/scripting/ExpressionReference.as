@@ -8,6 +8,7 @@ package com.pblabs.engine.scripting
 	import com.pblabs.engine.util.DynamicObjectUtil;
 	
 	import flash.geom.Point;
+	import flash.ui.Mouse;
 	
 	import r1.deval.D;
 	
@@ -141,6 +142,8 @@ package com.pblabs.engine.scripting
 			D.importFunction("getEntity", ExpressionUtils.getEntity);
 			D.importFunction("magnitudeOfPoint", ExpressionUtils.magnitudeOfPoint);
 			D.importFunction("magnitude", ExpressionUtils.magnitude);
+			D.importFunction("rotationOfAngle", ExpressionUtils.rotationOfAngle);
+			
 			_initialized = true;
 		}
 		/*-----------------------------------------------------------------------------------------------------------
@@ -199,6 +202,14 @@ class ExpressionUtils{
 	public static function magnitude(valA : Number, valB : Number):Number
 	{
 		return Math.sqrt( Math.abs( ((valA) * (valA)) + ((valB) * (valB)) ) );
+	}
+
+	/**
+	 * Returns the rotation angle of two points in degress
+	 **/
+	public static function rotationOfAngle(ptA : Point, ptB : Point):Number
+	{
+		return Math.atan2((ptA.y - ptB.y), (ptA.x - ptB.x)) / Math.PI * 180;
 	}
 
 	public static function setPoint(x : Number, y : Number):Point
