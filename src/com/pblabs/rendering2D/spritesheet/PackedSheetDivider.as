@@ -10,6 +10,7 @@ package com.pblabs.rendering2D.spritesheet
 {
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.resource.JSONResource;
+    import com.pblabs.engine.resource.ResourceEvent;
     import com.pblabs.rendering2D.spritesheet.ISpriteSheet;
     
     import flash.geom.Point;
@@ -47,7 +48,10 @@ package com.pblabs.rendering2D.spritesheet
 		
 		protected function buildFrames():void
 		{
-			if(!resource || !resource.isLoaded) return;
+			if(!resource || !resource.isLoaded){
+				resource.addEventListener(ResourceEvent.LOADED_EVENT, onResourceReady);
+				return;
+			}
 			
 			if(!_frames) _frames = new Vector.<CoordinateDataVO>();
 
@@ -69,6 +73,13 @@ package com.pblabs.rendering2D.spritesheet
 					i
 				) );
 			}
+		}
+		
+		protected function onResourceReady(resoure : ResourceEvent):void
+		{
+			buildFrames();
+			_owningSheet.divider = this;
+			resource.removeEventListener(ResourceEvent.LOADED_EVENT, onResourceReady);
 		}
 
 		/**
