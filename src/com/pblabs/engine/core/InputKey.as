@@ -41,6 +41,10 @@ package com.pblabs.engine.core
         public static const UP:InputKey = new InputKey(38);
         public static const RIGHT:InputKey = new InputKey(39);
         public static const DOWN:InputKey = new InputKey(40);
+		public static const LEFT_ARROW:InputKey = LEFT;
+		public static const UP_ARROW:InputKey = UP;
+		public static const RIGHT_ARROW:InputKey = RIGHT;
+		public static const DOWN_ARROW:InputKey = DOWN;
 
         public static const INSERT:InputKey = new InputKey(45);
         public static const DELETE:InputKey = new InputKey(46);
