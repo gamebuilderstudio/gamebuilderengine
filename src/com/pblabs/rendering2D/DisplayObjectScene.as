@@ -110,6 +110,8 @@ package com.pblabs.rendering2D
         protected var _trackLimitRectangle:Rectangle = null;
 
         protected var _sceneAlignment:SceneAlignment = SceneAlignment.DEFAULT_ALIGNMENT;
+		protected var _lastPos : Point;
+		protected var _trackDifPoint : Point = new Point();
 
         public function DisplayObjectScene()
         {
@@ -266,21 +268,7 @@ package com.pblabs.rendering2D
                 return null;
 
             // Make sure we are up to date with latest track.
-            if(trackObject)
-            {
-                position = new Point(-(trackObject.position.x + trackOffset.x), 
-                                     -(trackObject.position.y + trackOffset.y));
-            }
-            
-            if(trackLimitRectangle != null)
-            {
-            	var centeredLimitBounds:Rectangle = new Rectangle( trackLimitRectangle.x     + (sceneView.width * 0.5) / zoom, trackLimitRectangle.y      + (sceneView.height * 0.5) / zoom,
-            	                                                   trackLimitRectangle.width - (sceneView.width / zoom)      , trackLimitRectangle.height - (sceneView.height/zoom) );
-                
-				
-                position = new Point(PBUtil.clamp(position.x, -centeredLimitBounds.right, -centeredLimitBounds.left ), 
-                                     PBUtil.clamp(position.y, -centeredLimitBounds.bottom, -centeredLimitBounds.top) );
-            }
+			evaluateTrackedObject();
 
             updateTransform();
 
@@ -468,21 +456,7 @@ package com.pblabs.rendering2D
             }
             
             // Update our state based on the tracked object, if any.
-            if(trackObject)
-            {
-                position = new Point(-(trackObject.position.x + trackOffset.x), 
-                                     -(trackObject.position.y + trackOffset.y));
-            }
-            
-            // Apply limit to camera movement.
-            if(trackLimitRectangle != null)
-            {
-            	var centeredLimitBounds:Rectangle = new Rectangle( trackLimitRectangle.x     + sceneView.width * 0.5, trackLimitRectangle.y      + sceneView.height * 0.5,
-            	                                                   trackLimitRectangle.width - sceneView.width      , trackLimitRectangle.height - sceneView.height );
-                
-                position = new Point(PBUtil.clamp(position.x, -centeredLimitBounds.right, -centeredLimitBounds.left ), 
-                                     PBUtil.clamp(position.y, -centeredLimitBounds.bottom, -centeredLimitBounds.top) );
-            }
+			evaluateTrackedObject();
 
             // Make sure transforms are up to date.
             updateTransform();
@@ -498,6 +472,45 @@ package com.pblabs.rendering2D
 
             //PBE.pushStageQuality(StageQuality.HIGH);
         }
+		
+		protected function evaluateTrackedObject():void
+		{
+			var tmpPosition : Point;
+			// Make sure we are up to date with latest track.
+			if(trackObject)
+			{
+				tmpPosition = new Point(-(trackObject.position.x + trackOffset.x), 
+					-(trackObject.position.y + trackOffset.y));
+				if(!_lastPos) _lastPos = tmpPosition;
+			}
+			
+			if(trackLimitRectangle != null)
+			{
+				var centeredLimitBounds:Rectangle = new Rectangle( trackLimitRectangle.x     + (sceneView.width * 0.5) / zoom, trackLimitRectangle.y      + (sceneView.height * 0.5) / zoom,
+					trackLimitRectangle.width - (sceneView.width / zoom)      , trackLimitRectangle.height - (sceneView.height/zoom) );
+				
+				
+				tmpPosition = new Point(PBUtil.clamp(tmpPosition.x, -centeredLimitBounds.right, -centeredLimitBounds.left ), 
+					PBUtil.clamp(tmpPosition.y, -centeredLimitBounds.bottom, -centeredLimitBounds.top) );
+			}
+			
+			if(trackObject && tmpPosition)
+			{
+				var difX : Number = _lastPos.x - tmpPosition.x;
+				var difY : Number = _lastPos.y - tmpPosition.y;
+				var direction:Number = Math.atan2(difY, difX);
+				var length:Number = PBUtil.xyLength(difX,difY);
+				_trackDifPoint.x = difX = Math.cos(direction)*length;
+				_trackDifPoint.y = difY = Math.sin(direction)*length;
+				
+				_lastPos = tmpPosition;
+				
+				position = position.subtract( _trackDifPoint );
+			}else{
+				_lastPos = null;
+			}
+
+		}
                 
         public function setWorldCenter(pos:Point):void
         {
