@@ -290,7 +290,7 @@ package com.pblabs.rendering2D.spritesheet
             if (mc.totalFrames >= frameIndex)
                 mc.gotoAndStop(frameIndex);
 
-			swf.advanceChildClips(mc, 1);
+			swf.advanceChildClips(mc, frameIndex);
 
 			var bd:BitmapData = getBitmapDataByDisplay(mc);
             return bd;
