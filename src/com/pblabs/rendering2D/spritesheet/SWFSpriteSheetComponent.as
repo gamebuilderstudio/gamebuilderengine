@@ -368,13 +368,13 @@ package com.pblabs.rendering2D.spritesheet
 
 			swf.advanceChildClips(mc, frameIndex);
 
-			var frameData : ImageFrameData = getBitmapDataByDisplay(mc, mc.transform.colorTransform, _bounds);
+			var frameData : ImageFrameData = getBitmapDataByDisplay(mc, _scale, mc.transform.colorTransform, _bounds);
 			_frameCenters[frameIndex-1] = new Point(-(frameData.bounds.x*_scale.x), -(frameData.bounds.y*_scale.y));
 			var bd:BitmapData = frameData.bitmapData;
             return bd;
         }
 
-		protected function getRealBounds(clip:DisplayObject):Rectangle {
+		public static function getRealBounds(clip:DisplayObject):Rectangle {
 			var bounds:Rectangle = clip.getBounds(clip.parent);
 			bounds.x = Math.floor(bounds.x);
 			bounds.y = Math.floor(bounds.y);
@@ -415,14 +415,16 @@ package com.pblabs.rendering2D.spritesheet
 			return realBounds;
 		}
 		
-		protected function getBitmapDataByDisplay(clip:DisplayObject, clipColorTransform:ColorTransform = null, frameBounds:Rectangle=null):ImageFrameData
+		public static function getBitmapDataByDisplay(clip:DisplayObject, scaleFactor : Point, clipColorTransform:ColorTransform = null, frameBounds:Rectangle=null):ImageFrameData
 		{
+			if(!scaleFactor)
+				scaleFactor = new Point(1,1);
 			var realBounds:Rectangle = getRealBounds(clip);
 			
-			var bdData : BitmapData = new BitmapData((realBounds.width*_scale.x), (realBounds.height*_scale.y), true, 0);
+			var bdData : BitmapData = new BitmapData((realBounds.width*scaleFactor.x), (realBounds.height*scaleFactor.y), true, 0);
 			var _mat : Matrix = clip.transform.matrix;
 			_mat.translate(-realBounds.x, -realBounds.y);
-			_mat.scale(_scale.x, _scale.y);
+			_mat.scale(scaleFactor.x, scaleFactor.y);
 			
 			bdData.draw(clip, _mat, clipColorTransform);
 			
