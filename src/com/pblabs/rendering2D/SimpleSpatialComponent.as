@@ -21,7 +21,17 @@ package com.pblabs.rendering2D
      */ 
     public class SimpleSpatialComponent extends TickedComponent implements IMobileSpatialObject2D
     {
-        public function get size():Point
+		public function get linearVelocity():Point
+		{
+			return _linearVelocity;
+		}
+		
+		public function set linearVelocity(value:Point):void
+		{
+			_linearVelocity = value;
+		}
+
+		public function get size():Point
         {
             return _size;
         }
@@ -135,7 +145,7 @@ package com.pblabs.rendering2D
         /**
          * The linear linearVelocity of the object in world units per second.
          */
-        public var linearVelocity:Point = new Point(0, 0);
+        private var _linearVelocity:Point = new Point(0, 0);
         
         /**
          * The angular linearVelocity of the object in degrees per second.

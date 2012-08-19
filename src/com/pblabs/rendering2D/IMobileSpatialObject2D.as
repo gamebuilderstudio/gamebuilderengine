@@ -44,5 +44,15 @@ package com.pblabs.rendering2D
 	   * Size setter.
 	   */
 	  function set size(value:Point):void;
+
+	  /**
+	   * linearVelocity getter.
+	   */
+	  function get linearVelocity():Point;
+	  
+	  /**
+	   * linearVelocity setter.
+	   */
+	  function set linearVelocity(value:Point):void;
    }
 }
