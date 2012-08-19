@@ -11,6 +11,7 @@ package com.pblabs.rendering2D
     import com.pblabs.engine.core.ObjectType;
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.rendering2D.modifier.Modifier;
+    import com.pblabs.starling2D.DisplayObjectRendererG2D;
     
     import flash.display.*;
     import flash.geom.*;
@@ -18,11 +19,10 @@ package com.pblabs.rendering2D
     /**
      * Simple way to render a bitmap to a scene.
      */
-    public class BitmapRenderer extends DisplayObjectRenderer implements ICopyPixelsRenderer
+    public class BitmapRenderer extends DisplayObjectRendererG2D implements ICopyPixelsRenderer
     {
         protected var bitmap:Bitmap = new Bitmap();
         protected var _smoothing:Boolean = false;
-		protected var _mouseEnabled:Boolean = false;
         
         public function BitmapRenderer()
         {
@@ -71,18 +71,13 @@ package com.pblabs.rendering2D
         /**
         * @see Sprite.mouseEnabled
         */
-        public function set mouseEnabled(value:Boolean):void
+        override public function set mouseEnabled(value:Boolean):void
         {
             _mouseEnabled = value;
             if (displayObject != null)
 				(_displayObject as Sprite).mouseEnabled = value;
         }
         
-        public function get mouseEnabled():Boolean
-        {
-            return _mouseEnabled;
-        }
-		
         /**
          * @see Bitmap.bitmapData 
          * @return 

@@ -10,6 +10,7 @@ package com.pblabs.rendering2D
 {
     import com.pblabs.engine.entity.PropertyReference;
     import com.pblabs.rendering2D.modifier.Modifier;
+    import com.pblabs.rendering2D.spritesheet.ISpriteSheet;
     import com.pblabs.rendering2D.spritesheet.SpriteContainerComponent;
     
     import flash.display.Bitmap;
@@ -20,7 +21,7 @@ package com.pblabs.rendering2D
     
 	public class SpriteSheetRenderer extends BitmapRenderer
 	{		
-	    public var spriteSheet:SpriteContainerComponent;
+	    public var spriteSheet:ISpriteSheet;
         public var spriteIndex:int = 0;
 		public var directionReference:PropertyReference;
 		public var overrideSizePerFrame : Boolean = true;

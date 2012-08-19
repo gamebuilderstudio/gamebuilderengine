@@ -1,8 +1,8 @@
 /*******************************************************************************
- * PushButton Engine
- * Copyright (C) 2009 PushButton Labs, LLC
- * For more information see http://www.pushbuttonengine.com
- * 
+ * GameBuilder Studio
+ * Copyright (C) 2012 GameBuilder Inc.
+ * For more information see http://www.gamebuilderstudio.com
+ *
  * This file is licensed under the terms of the MIT license, which is included
  * in the License.html file at the root directory of this SDK.
  ******************************************************************************/
@@ -57,5 +57,12 @@ package com.pblabs.rendering2D.spritesheet
 		function set center(value:Point):void;
 		
 		function get centered():Boolean;
+		
+		/**
+		 * The total count of frames in the spritesheet
+		 */
+		function get frameCount():int;
+		function set frameCount(val : int):void;
+
 	}
 }

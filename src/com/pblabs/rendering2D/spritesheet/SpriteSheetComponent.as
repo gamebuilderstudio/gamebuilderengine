@@ -13,8 +13,10 @@ package com.pblabs.rendering2D.spritesheet
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.resource.ImageResource;
     import com.pblabs.engine.resource.Resource;
+    import com.pblabs.engine.resource.ResourceEvent;
     import com.pblabs.engine.resource.ResourceManager;
     import com.pblabs.rendering2D.spritesheet.ISpriteSheet;
+    import com.pblabs.starling2D.spritesheet.SpriteContainerComponentG2D;
     
     import flash.display.BitmapData;
     import flash.geom.Point;
@@ -39,7 +41,7 @@ package com.pblabs.rendering2D.spritesheet
      * <p>Be aware that Flash implements an upper limit on image size - going over
      * 2048 pixels in any dimension will lead to problems.</p>
      */ 
-    public class SpriteSheetComponent extends SpriteContainerComponent implements ISpriteSheet
+    public class SpriteSheetComponent extends SpriteContainerComponentG2D implements ISpriteSheet
     {
 						
 		/**
@@ -120,7 +122,14 @@ package com.pblabs.rendering2D.spritesheet
 		 */
 		public function set image(value:ImageResource):void
 		{
-			_loaded = value ? true : false;
+			if(!value)
+				return;
+			
+			_loaded = value.isLoaded;
+			if(!_loaded){
+				value.addEventListener(ResourceEvent.LOADED_EVENT, onResourceLoaded);
+				_loading = true;
+			}
 			_failed = false;
 			
 			_image = value;
@@ -339,6 +348,14 @@ package com.pblabs.rendering2D.spritesheet
 			super.buildFrames();
 		}
 		
+		protected function onResourceLoaded(event : ResourceEvent):void
+		{
+			onImageLoaded(event.resourceObject as ImageResource);
+		}
+		protected function onResourceLoadFailed(event : ResourceEvent):void
+		{
+			onImageFailed(event.resourceObject as ImageResource);
+		}
 		/*--------------------------------------------------------------------------------------------*/
 		//* Caching Functionality
 		/*--------------------------------------------------------------------------------------------*/
@@ -371,51 +388,15 @@ package com.pblabs.rendering2D.spritesheet
 
 		protected static var _frameCache:Dictionary = new Dictionary(true);
 
-		private var _imageFilename:String = null;
-		private var _image:ImageResource = null;
-		private var _loading:Boolean = false;
-		private var _loaded:Boolean = false;
-		private var _failed:Boolean = false;
-		private var _imageData:BitmapData = null;
-        private var _divider:ISpriteSheetDivider = null;
-		private var _bounds:Rectangle;
-        private var _forcedBitmaps:Array = null;
-		private var _destroyed:Boolean = false;
+		protected var _imageFilename:String = null;
+		protected var _image:ImageResource = null;
+		protected var _loading:Boolean = false;
+		protected var _loaded:Boolean = false;
+		protected var _failed:Boolean = false;
+		protected var _imageData:BitmapData = null;
+		protected var _divider:ISpriteSheetDivider = null;
+		protected var _bounds:Rectangle;
+		protected var _forcedBitmaps:Array = null;
+		protected var _destroyed:Boolean = false;
     }
-}
-import com.pblabs.rendering2D.spritesheet.ISpriteSheetDivider;
-
-import flash.geom.Rectangle;
-
-final class CachedFramesData
-{
-	public function CachedFramesData(frames:Array, fileName : String, divider : ISpriteSheetDivider, bounds : Rectangle )
-	{
-		this.frames = frames;
-		this.fileName = fileName;
-		this.divider = divider;
-		this.bounds = bounds;
-	}
-	public var frames:Array;
-	public var fileName:String;
-	public var divider:ISpriteSheetDivider;
-	public var referenceCount : int = 0;
-	public var bounds:Rectangle;
-	
-	public function destroy():void
-	{
-		if(frames){
-			while(frames.length > 0)
-			{
-				frames[0].dispose();
-				frames.splice(0,1);
-			}
-		}
-		frames = null;
-		if(divider){
-			divider.destroy();
-			divider = null;
-		}
-		bounds = null;
-	}
 }

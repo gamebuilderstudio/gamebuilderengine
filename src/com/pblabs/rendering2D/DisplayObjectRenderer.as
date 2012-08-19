@@ -213,20 +213,21 @@ package com.pblabs.rendering2D
             _transformDirty = true;
         }
         
+		protected var _tmpCombinedScale : Point = new Point(1,1);
 		/**
 		 * The combined scale that takes into account the size and scale property when calculating scale
 		 */
 		public function get combinedScale():Point
 		{
-			var tmpScaleX:Number = _scale.x;
-			var tmpScaleY:Number = _scale.y;
+			_tmpCombinedScale.x = _scale.x;
+			_tmpCombinedScale.y = _scale.y;
 			if(_size && (_size.x > 0 || _size.y > 0))
 			{
 				var localDimensions:Rectangle = displayObject.getBounds(displayObject);
-				tmpScaleX = _scale.x * (_size.x / localDimensions.width);
-				tmpScaleY = _scale.y * (_size.y / localDimensions.height);
+				_tmpCombinedScale.x = _scale.x * (_size.x / localDimensions.width);
+				_tmpCombinedScale.y = _scale.y * (_size.y / localDimensions.height);
 			}
-			return new Point(tmpScaleX, tmpScaleY);
+			return _tmpCombinedScale;
 		}
 		
 		/**
@@ -322,6 +323,7 @@ package com.pblabs.rendering2D
 				(value != BlendMode.OVERLAY) &&
 				(value != BlendMode.SCREEN) &&
 				(value != "shader") && // Only supported in Flex 4.0 and higher
+				(value != "none") && // Only supported in Flex 4.0 and higher
 				(value != BlendMode.SUBTRACT))
 			{
 				Logger.warn(this, "set blendMode", "Could not set the blend mode to '" + value + "', because it is not a valid BlendMode");
@@ -779,20 +781,9 @@ package com.pblabs.rendering2D
             if(updateProps)
                 updateProperties();
             
-            // If size is active, it always takes precedence over scale.
-            var tmpScaleX:Number = _scale.x;
-            var tmpScaleY:Number = _scale.y;
-            if(_size && (_size.x > 0 || _size.y > 0))
-            {
-                var localDimensions:Rectangle = displayObject.getBounds(displayObject);
-                tmpScaleX = _scale.x * (_size.x / localDimensions.width);
-                tmpScaleY = _scale.y * (_size.y / localDimensions.height);
-            }
-            
-            
             _transformMatrix.identity();
-            _transformMatrix.scale(tmpScaleX, tmpScaleY);
-            _transformMatrix.translate(-_registrationPoint.x * tmpScaleX, -_registrationPoint.y * tmpScaleY);
+            _transformMatrix.scale(combinedScale.x, combinedScale.y);
+            _transformMatrix.translate(-_registrationPoint.x * combinedScale.x, -_registrationPoint.y * combinedScale.y);
 			_transformMatrix.rotate(PBUtil.getRadiansFromDegrees(_rotation) + _rotationOffset);
             _transformMatrix.translate((_position.x + _positionOffset.x), (_position.y + _positionOffset.y));
             

@@ -1,0 +1,444 @@
+{"frames": [
+
+{
+	"filename": "green_bomber_pig_01.png",
+	"frame": {"x":0,"y":0,"w":101,"h":83},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":1,"w":101,"h":83},
+	"sourceSize": {"w":101,"h":83}
+},
+{
+	"filename": "green_bomber_pig_02.png",
+	"frame": {"x":101,"y":0,"w":101,"h":83},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":2,"y":1,"w":101,"h":83},
+	"sourceSize": {"w":101,"h":83}
+},
+{
+	"filename": "green_bomber_pig_03.png",
+	"frame": {"x":202,"y":0,"w":100,"h":83},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":3,"y":1,"w":100,"h":83},
+	"sourceSize": {"w":100,"h":83}
+},
+{
+	"filename": "green_bomber_pig_damage_01.png",
+	"frame": {"x":302,"y":0,"w":100,"h":83},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":2,"y":1,"w":100,"h":83},
+	"sourceSize": {"w":100,"h":83}
+},
+{
+	"filename": "green_bomber_pig_damage_02.png",
+	"frame": {"x":402,"y":0,"w":101,"h":83},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":2,"y":2,"w":101,"h":83},
+	"sourceSize": {"w":101,"h":83}
+},
+{
+	"filename": "green_bomber_pig_damage_03.png",
+	"frame": {"x":503,"y":0,"w":101,"h":83},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":2,"y":3,"w":101,"h":83},
+	"sourceSize": {"w":101,"h":83}
+},
+{
+	"filename": "green_bomber_pig_dead_01.png",
+	"frame": {"x":604,"y":0,"w":101,"h":82},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":2,"y":3,"w":101,"h":82},
+	"sourceSize": {"w":101,"h":82}
+},
+{
+	"filename": "green_bomber_pig_dead_02.png",
+	"frame": {"x":705,"y":0,"w":101,"h":83},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":2,"y":2,"w":101,"h":83},
+	"sourceSize": {"w":101,"h":83}
+},
+{
+	"filename": "green_bomber_pig_dead_03.png",
+	"frame": {"x":806,"y":0,"w":100,"h":83},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":3,"y":2,"w":100,"h":83},
+	"sourceSize": {"w":100,"h":83}
+},
+{
+	"filename": "green_grampa_pig_01.png",
+	"frame": {"x":906,"y":0,"w":115,"h":99},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":3,"y":4,"w":115,"h":99},
+	"sourceSize": {"w":115,"h":99}
+},
+{
+	"filename": "green_grampa_pig_02.png",
+	"frame": {"x":0,"y":99,"w":115,"h":98},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":3,"y":2,"w":115,"h":98},
+	"sourceSize": {"w":115,"h":98}
+},
+{
+	"filename": "green_grampa_pig_03.png",
+	"frame": {"x":115,"y":99,"w":116,"h":98},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":2,"y":2,"w":116,"h":98},
+	"sourceSize": {"w":116,"h":98}
+},
+{
+	"filename": "green_grampa_pig_damage_01.png",
+	"frame": {"x":231,"y":99,"w":116,"h":100},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":1,"y":2,"w":116,"h":100},
+	"sourceSize": {"w":116,"h":100}
+},
+{
+	"filename": "green_grampa_pig_damage_02.png",
+	"frame": {"x":347,"y":99,"w":116,"h":100},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":2,"y":2,"w":116,"h":100},
+	"sourceSize": {"w":116,"h":100}
+},
+{
+	"filename": "green_grampa_pig_damage_03.png",
+	"frame": {"x":463,"y":99,"w":119,"h":98},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":2,"y":2,"w":119,"h":98},
+	"sourceSize": {"w":119,"h":98}
+},
+{
+	"filename": "green_grampa_pig_dead_01.png",
+	"frame": {"x":582,"y":99,"w":117,"h":100},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":1,"w":117,"h":100},
+	"sourceSize": {"w":117,"h":100}
+},
+{
+	"filename": "green_grampa_pig_dead_02.png",
+	"frame": {"x":699,"y":99,"w":119,"h":100},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":1,"w":119,"h":100},
+	"sourceSize": {"w":119,"h":100}
+},
+{
+	"filename": "green_grampa_pig_dead_03.png",
+	"frame": {"x":818,"y":99,"w":115,"h":106},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":3,"y":1,"w":115,"h":106},
+	"sourceSize": {"w":115,"h":106}
+},
+{
+	"filename": "green_king_pig_01.png",
+	"frame": {"x":0,"y":205,"w":129,"h":142},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":1,"y":0,"w":129,"h":142},
+	"sourceSize": {"w":129,"h":142}
+},
+{
+	"filename": "green_king_pig_02.png",
+	"frame": {"x":129,"y":205,"w":130,"h":142},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":130,"h":142},
+	"sourceSize": {"w":130,"h":142}
+},
+{
+	"filename": "green_king_pig_03.png",
+	"frame": {"x":259,"y":205,"w":128,"h":142},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":1,"y":0,"w":128,"h":142},
+	"sourceSize": {"w":128,"h":142}
+},
+{
+	"filename": "green_king_pig_damage_01.png",
+	"frame": {"x":387,"y":205,"w":131,"h":140},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":2,"w":131,"h":140},
+	"sourceSize": {"w":131,"h":140}
+},
+{
+	"filename": "green_king_pig_damage_02.png",
+	"frame": {"x":518,"y":205,"w":134,"h":140},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":2,"w":134,"h":140},
+	"sourceSize": {"w":134,"h":140}
+},
+{
+	"filename": "green_king_pig_damage_03.png",
+	"frame": {"x":652,"y":205,"w":129,"h":141},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":2,"w":129,"h":141},
+	"sourceSize": {"w":129,"h":141}
+},
+{
+	"filename": "green_king_pig_dead_01.png",
+	"frame": {"x":781,"y":205,"w":130,"h":132},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":1,"y":3,"w":130,"h":132},
+	"sourceSize": {"w":130,"h":132}
+},
+{
+	"filename": "green_king_pig_dead_02.png",
+	"frame": {"x":0,"y":347,"w":130,"h":132},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":1,"y":10,"w":130,"h":132},
+	"sourceSize": {"w":130,"h":132}
+},
+{
+	"filename": "green_king_pig_dead_03.png",
+	"frame": {"x":130,"y":347,"w":131,"h":133},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":8,"w":131,"h":133},
+	"sourceSize": {"w":131,"h":133}
+},
+{
+	"filename": "green_pig_01.png",
+	"frame": {"x":261,"y":347,"w":95,"h":96},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":3,"y":1,"w":95,"h":96},
+	"sourceSize": {"w":95,"h":96}
+},
+{
+	"filename": "green_pig_02.png",
+	"frame": {"x":356,"y":347,"w":95,"h":96},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":3,"y":1,"w":95,"h":96},
+	"sourceSize": {"w":95,"h":96}
+},
+{
+	"filename": "green_pig_03.png",
+	"frame": {"x":451,"y":347,"w":95,"h":96},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":3,"y":1,"w":95,"h":96},
+	"sourceSize": {"w":95,"h":96}
+},
+{
+	"filename": "green_pig_damage_01.png",
+	"frame": {"x":546,"y":347,"w":96,"h":95},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":21,"y":2,"w":96,"h":95},
+	"sourceSize": {"w":96,"h":95}
+},
+{
+	"filename": "green_pig_damage_02.png",
+	"frame": {"x":642,"y":347,"w":96,"h":96},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":21,"y":0,"w":96,"h":96},
+	"sourceSize": {"w":96,"h":96}
+},
+{
+	"filename": "green_pig_damage_03.png",
+	"frame": {"x":738,"y":347,"w":96,"h":96},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":21,"y":2,"w":96,"h":96},
+	"sourceSize": {"w":96,"h":96}
+},
+{
+	"filename": "green_pig_dead_01.png",
+	"frame": {"x":834,"y":347,"w":96,"h":95},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":21,"y":3,"w":96,"h":95},
+	"sourceSize": {"w":96,"h":95}
+},
+{
+	"filename": "green_pig_dead_02.png",
+	"frame": {"x":0,"y":480,"w":96,"h":96},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":3,"y":1,"w":96,"h":96},
+	"sourceSize": {"w":96,"h":96}
+},
+{
+	"filename": "green_pig_dead_03.png",
+	"frame": {"x":96,"y":480,"w":96,"h":95},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":2,"y":2,"w":96,"h":95},
+	"sourceSize": {"w":96,"h":95}
+},
+{
+	"filename": "medium_green_pig_01.png",
+	"frame": {"x":192,"y":480,"w":77,"h":75},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":5,"w":77,"h":75},
+	"sourceSize": {"w":77,"h":75}
+},
+{
+	"filename": "medium_green_pig_02.png",
+	"frame": {"x":269,"y":480,"w":76,"h":75},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":1,"y":1,"w":76,"h":75},
+	"sourceSize": {"w":76,"h":75}
+},
+{
+	"filename": "medium_green_pig_03.png",
+	"frame": {"x":345,"y":480,"w":77,"h":75},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":1,"y":2,"w":77,"h":75},
+	"sourceSize": {"w":77,"h":75}
+},
+{
+	"filename": "medium_green_pig_damage_01.png",
+	"frame": {"x":422,"y":480,"w":77,"h":76},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":1,"y":0,"w":77,"h":76},
+	"sourceSize": {"w":77,"h":76}
+},
+{
+	"filename": "medium_green_pig_damage_02.png",
+	"frame": {"x":499,"y":480,"w":77,"h":75},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":1,"y":1,"w":77,"h":75},
+	"sourceSize": {"w":77,"h":75}
+},
+{
+	"filename": "medium_green_pig_damage_03.png",
+	"frame": {"x":576,"y":480,"w":77,"h":75},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":2,"w":77,"h":75},
+	"sourceSize": {"w":77,"h":75}
+},
+{
+	"filename": "medium_green_pig_dead_01.png",
+	"frame": {"x":653,"y":480,"w":77,"h":76},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":77,"h":76},
+	"sourceSize": {"w":77,"h":76}
+},
+{
+	"filename": "medium_green_pig_dead_02.png",
+	"frame": {"x":730,"y":480,"w":77,"h":75},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":1,"w":77,"h":75},
+	"sourceSize": {"w":77,"h":75}
+},
+{
+	"filename": "medium_green_pig_dead_03.png",
+	"frame": {"x":807,"y":480,"w":77,"h":75},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":1,"y":2,"w":77,"h":75},
+	"sourceSize": {"w":77,"h":75}
+},
+{
+	"filename": "small_green_pig_01.png",
+	"frame": {"x":884,"y":480,"w":47,"h":46},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":1,"y":0,"w":47,"h":46},
+	"sourceSize": {"w":47,"h":46}
+},
+{
+	"filename": "small_green_pig_02.png",
+	"frame": {"x":931,"y":480,"w":48,"h":46},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":48,"h":46},
+	"sourceSize": {"w":48,"h":46}
+},
+{
+	"filename": "small_green_pig_03.png",
+	"frame": {"x":0,"y":576,"w":47,"h":46},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":1,"y":0,"w":47,"h":46},
+	"sourceSize": {"w":47,"h":46}
+},
+{
+	"filename": "small_green_pig_damage_01.png",
+	"frame": {"x":47,"y":576,"w":47,"h":45},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":1,"y":1,"w":47,"h":45},
+	"sourceSize": {"w":47,"h":45}
+},
+{
+	"filename": "small_green_pig_damage_02.png",
+	"frame": {"x":94,"y":576,"w":47,"h":45},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":1,"y":1,"w":47,"h":45},
+	"sourceSize": {"w":47,"h":45}
+},
+{
+	"filename": "small_green_pig_damage_03.png",
+	"frame": {"x":141,"y":576,"w":47,"h":45},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":1,"y":0,"w":47,"h":45},
+	"sourceSize": {"w":47,"h":45}
+},
+{
+	"filename": "small_green_pig_dead_01.png",
+	"frame": {"x":188,"y":576,"w":47,"h":46},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":1,"y":0,"w":47,"h":46},
+	"sourceSize": {"w":47,"h":46}
+},
+{
+	"filename": "small_green_pig_dead_02.png",
+	"frame": {"x":235,"y":576,"w":47,"h":45},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":1,"y":0,"w":47,"h":45},
+	"sourceSize": {"w":47,"h":45}
+},
+{
+	"filename": "small_green_pig_dead_03.png",
+	"frame": {"x":282,"y":576,"w":47,"h":46},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":1,"y":0,"w":47,"h":46},
+	"sourceSize": {"w":47,"h":46}
+}],
+"meta": {
+	"app": "http://www.texturepacker.com",
+	"version": "1.0",
+	"image": "PigsSheet.png",
+	"format": "RGBA8888",
+	"size": {"w":1021,"h":622},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:ddd0ff68eb280be6d3e94fc46e0bb8a6$"
+}
+}

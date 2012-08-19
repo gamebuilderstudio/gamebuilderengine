@@ -15,6 +15,7 @@ package com.pblabs.rendering2D.spritesheet
     
     import flash.geom.Point;
     import flash.geom.Rectangle;
+    import flash.utils.describeType;
     
     import mx.utils.ObjectUtil;
     
@@ -48,8 +49,12 @@ package com.pblabs.rendering2D.spritesheet
 		
 		protected function buildFrames():void
 		{
-			if(!resource || !resource.isLoaded){
-				resource.addEventListener(ResourceEvent.LOADED_EVENT, onResourceReady);
+			if(!resource){
+				return;
+			}
+			if(resource && !resource.isLoaded){
+				if(!resource.hasEventListener(ResourceEvent.LOADED_EVENT))
+					resource.addEventListener(ResourceEvent.LOADED_EVENT, onResourceReady);
 				return;
 			}
 			
@@ -59,19 +64,17 @@ package com.pblabs.rendering2D.spritesheet
 				_frames.splice(0,1);
 			
 			//Building list of rectangles that point to frames
-			var objectDataObject : * = ObjectUtil.getClassInfo( resource.jsonData.frames );
-			
-			for(var i : int = 0; i < objectDataObject.properties.length; i++)
+			//var objectDataObject : * = .getClassInfo( resource.jsonData.frames );
+			var objectData : Array = resource.jsonData.frames;
+			var i : int = 0;
+			for each(var frameData : Object in objectData)
 			{
-				var frameData : Object = resource.jsonData.frames[objectDataObject.properties[i]];
-				_frames.push( new CoordinateDataVO( 
-					new Rectangle(frameData.frame.x, frameData.frame.y, frameData.frame.w, frameData.frame.h),
+				_frames.push( new CoordinateDataVO( new Rectangle(frameData.frame.x, frameData.frame.y, frameData.frame.w, frameData.frame.h),
 					new Point(frameData.sourceSize.w, frameData.sourceSize.h),
 					new Rectangle(frameData.spriteSourceSize.x, frameData.spriteSourceSize.y, frameData.spriteSourceSize.w, frameData.spriteSourceSize.h),
 					frameData.rotated,
-					frameData.trimmed,
-					i
-				) );
+					frameData.trimmed, i) );
+				i++;
 			}
 		}
 		

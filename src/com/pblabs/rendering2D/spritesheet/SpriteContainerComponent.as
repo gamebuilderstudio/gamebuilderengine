@@ -254,7 +254,7 @@ package com.pblabs.rendering2D.spritesheet
             return frames[index];  
         }
         
-        private function generateFrameNotes():void
+        protected function generateFrameNotes():void
         {
             frameNotes = new Array();
             
@@ -281,11 +281,4 @@ package com.pblabs.rendering2D.spritesheet
 		protected var _defaultCenter:Boolean = true;
 		protected var frameCountCap:int = 0;
     }
-}
-
-final class FrameNote
-{
-    public var Frame:int;
-    public var Direction:Number;
-    public var RawFrame:int;
 }

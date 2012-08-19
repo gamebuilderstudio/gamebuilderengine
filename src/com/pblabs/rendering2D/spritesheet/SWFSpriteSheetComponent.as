@@ -11,6 +11,7 @@ package com.pblabs.rendering2D.spritesheet
     import com.pblabs.engine.PBUtil;
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.resource.SWFResource;
+	import com.pblabs.starling2D.spritesheet.SpriteContainerComponentG2D;
     
     import flash.display.*;
     import flash.geom.*;
@@ -21,7 +22,7 @@ package com.pblabs.rendering2D.spritesheet
      * are loaded by rasterizing frames from a MovieClip rather than splitting
      * a single image.
      */
-    public class SWFSpriteSheetComponent extends SpriteContainerComponent implements ISpriteSheet
+    public class SWFSpriteSheetComponent extends SpriteContainerComponentG2D implements ISpriteSheet
     {
 		
 		public function SWFSpriteSheetComponent():void
@@ -237,21 +238,6 @@ package com.pblabs.rendering2D.spritesheet
             return _resource.filename + ":" + (clipName ? clipName : "") + (_smoothing ? ":1" : ":0");
         }
 
-        override protected function getRawFrame(index:int) : BitmapData
-        {
-            var frame:BitmapData = super.getRawFrame(index);
-            if (frame)
-                return frame;
-
-            if (!frames || !_clip)
-                return null;
-
-            frame = rasterizeFrame(_clip, index + 1);
-            frames[index] = frame;
-            
-            return frame;
-        }
-
         /**
          * Rasterizes the clip into an Array of BitmapData objects.
          * This array can then be used just like a sprite sheet.
@@ -260,7 +246,7 @@ package com.pblabs.rendering2D.spritesheet
         {
             if (!_resource.isLoaded) return;
 
-            var cache:CachedFramesData = getCachedFrames();
+            var cache:CachedFramesDataMC = getCachedFrames() as CachedFramesDataMC;
             if (cache)
             {
 				cache.referenceCount += 1;
@@ -288,7 +274,7 @@ package com.pblabs.rendering2D.spritesheet
 			_center = new Point(-_bounds.x, -_bounds.y);
 			
 			if(cached){
-				var frameCache : CachedFramesData = new CachedFramesData(frames, _bounds, _clip, _frameCenters);
+				var frameCache : CachedFramesDataMC = new CachedFramesDataMC(frames, _bounds, _clip, _frameCenters);
 				frameCache.referenceCount += 1;
 				setCachedFrames(frameCache);
 			}
@@ -443,47 +429,16 @@ package com.pblabs.rendering2D.spritesheet
 
 		protected static var _frameCache:Dictionary = new Dictionary(true);
 
-        private var _smoothing:Boolean = true;
-        private var _scale:Point = new Point(1, 1);
-		private var _frameCenters:Array;
-        private var _resource:SWFResource;
-        private var _clipName:String;
-        private var _clip:MovieClip;
-        private var _bounds:Rectangle;
+		protected var _smoothing:Boolean = true;
+		protected var _scale:Point = new Point(1, 1);
+		protected var _frameCenters:Array;
+		protected var _resource:SWFResource;
+		protected var _clipName:String;
+		protected var _clip:MovieClip;
+		protected var _bounds:Rectangle;
     }
 }
 import flash.display.BitmapData;
-
-final class CachedFramesData
-{
-    public function CachedFramesData(frames:Array, bounds:flash.geom.Rectangle, clip:flash.display.MovieClip, frameCenters : Array)
-    {
-        this.frames = frames;
-		this.frameCenters = frameCenters;
-        this.bounds = bounds;
-        this.clip = clip;
-    }
-	public var referenceCount : int = 0;
-    public var frames:Array;
-	public var frameCenters:Array;
-    public var bounds:flash.geom.Rectangle;
-    public var clip:flash.display.MovieClip;
-
-	public function destroy():void
-	{
-		if(frames){
-			while(frames.length > 0)
-			{
-				frames[0].dispose();
-				frames.splice(0,1);
-			}
-		}
-		frames = null;
-		frameCenters = null;
-		bounds = null;
-		clip = null;
-	}
-}
 
 final class ImageFrameData
 {

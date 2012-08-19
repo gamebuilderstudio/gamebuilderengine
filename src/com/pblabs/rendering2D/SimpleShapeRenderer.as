@@ -9,6 +9,7 @@
 package com.pblabs.rendering2D
 {
     import com.pblabs.engine.debug.Logger;
+    import com.pblabs.starling2D.DisplayObjectRendererG2D;
     
     import flash.display.Graphics;
     import flash.display.Sprite;
@@ -17,7 +18,7 @@ package com.pblabs.rendering2D
     /**
      * Draw a simple shape, a box or a circle, with color. 
      */
-    public class SimpleShapeRenderer extends DisplayObjectRenderer
+    public class SimpleShapeRenderer extends DisplayObjectRendererG2D
     {
         public function SimpleShapeRenderer()
         {

@@ -4,10 +4,10 @@
       <![CDATA[
         private var _displayList:Array = new Array();
         
-   		public function addDisplayObject(dobj:DisplayObject):void
+   		public function addDisplayObject(dobj:Object):void
    		{
-   		   _displayList.push(dobj);
-   		   rawChildren.addChild(dobj);	
+   		   _displayList.push(dobj as DisplayObject);
+   		   rawChildren.addChild(dobj as DisplayObject);	
    		}
    		
    		public function clearDisplayObjects():void
@@ -26,14 +26,14 @@
    		   scrollRect = new Rectangle(0, 0, width, height);
    		}
 
-        public function removeDisplayObject(dObj:DisplayObject):void
+        public function removeDisplayObject(dObj:Object):void
         {
-            rawChildren.removeChild(dObj);
+            rawChildren.removeChild(dObj as DisplayObject);
         }
         
-        public function setDisplayObjectIndex(dObj:DisplayObject, index:int):void
+        public function setDisplayObjectIndex(dObj:Object, index:int):void
         {
-            rawChildren.setChildIndex(dObj, index);
+            rawChildren.setChildIndex(dObj as DisplayObject, index);
         }
       ]]>
    </mx:Script>

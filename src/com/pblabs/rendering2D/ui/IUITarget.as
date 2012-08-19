@@ -22,7 +22,7 @@ package com.pblabs.rendering2D.ui
         /**
          * Add a DisplayObject as a child of this control.
          */ 
-        function addDisplayObject(dobj:DisplayObject):void;
+        function addDisplayObject(dobj:Object):void;
         
         /**
          * Remove all the DisplayObjects that were added by AddDisplayObject.
@@ -33,14 +33,14 @@ package com.pblabs.rendering2D.ui
          * Remove a display object as a child of this control. 
          * @param dobj Display object to remove.
          */
-        function removeDisplayObject(dobj:DisplayObject):void;
+        function removeDisplayObject(dobj:Object):void;
         
         /**
          * Set the index of a display object which is added to this control.
          * @param dobj Object to position in order.
          * @param index Draw order to assign.
          */
-        function setDisplayObjectIndex(dobj:DisplayObject, index:int):void;
+        function setDisplayObjectIndex(dobj:Object, index:int):void;
         
         function get width():Number;
         function set width(value:Number):void;

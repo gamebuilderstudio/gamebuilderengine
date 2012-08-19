@@ -30,9 +30,10 @@ package com.pblabs.rendering2D
 	 */ 
 	public class SWFSpriteRenderer extends BitmapRenderer
 	{
-		private var _resource:SWFResource = null;
-		private var _classInstance:DisplayObject = null;
-		private var _origSize : Point;
+		
+		protected var _resource:SWFResource = null;
+		protected var _classInstance:DisplayObject = null;
+		protected var _origSize : Point;
 
 		public function SWFSpriteRenderer()
 		{
@@ -101,9 +102,9 @@ package com.pblabs.rendering2D
 			}
 			
 			var m : Matrix = new Matrix();
-			m.scale(tmpScale.x, tmpScale.y);
-			m.translate(-localDimensions.topLeft.x * tmpScale.x, -localDimensions.topLeft.y * tmpScale.y);
-			var swfBitmapData : BitmapData = new BitmapData(Math.max(1, Math.min(2880, (_origSize.x*tmpScale.x))), Math.max(1, Math.min(2880,(_origSize.y*tmpScale.y))), true, 0x000000);
+			m.scale(combinedScale.x, combinedScale.y);
+			m.translate(-localDimensions.topLeft.x * combinedScale.x, -localDimensions.topLeft.y * combinedScale.y);
+			var swfBitmapData : BitmapData = new BitmapData(Math.max(1, Math.min(2880, (_origSize.x*combinedScale.x))), Math.max(1, Math.min(2880,(_origSize.y*combinedScale.y))), true, 0x000000);
 			swfBitmapData.draw(_classInstance, m, _classInstance.transform.colorTransform, _classInstance.blendMode );
 			// set the bitmapData of this render object
 			bitmapData = swfBitmapData;	
@@ -136,8 +137,8 @@ package com.pblabs.rendering2D
 				updateProperties();
 			
 			_transformMatrix.identity();
-			//_transformMatrix.scale(tmpScale.x, tmpScale.y);
-			_transformMatrix.translate(-_registrationPoint.x * tmpScale.x, -_registrationPoint.y * tmpScale.y);
+			//_transformMatrix.scale(combinedScale.x, combinedScale.y);
+			_transformMatrix.translate(-_registrationPoint.x * combinedScale.x, -_registrationPoint.y * combinedScale.y);
 			_transformMatrix.rotate(PBUtil.getRadiansFromDegrees(_rotation) + _rotationOffset);
 			_transformMatrix.translate(_position.x + _positionOffset.x, _position.y + _positionOffset.y);
 			
@@ -159,8 +160,7 @@ package com.pblabs.rendering2D
 			onResourceLoaded(event.resourceObject as SWFResource);
 		}
 
-		private var _tmpScale : Point = new Point();
-		public function get tmpScale():Point{ 
+		override public function get combinedScale():Point{ 
 			var tmpScaleX:Number = _scale.x;
 			var tmpScaleY:Number = _scale.y;
 			if(_size && (_size.x > 0 || _size.y > 0))
@@ -168,22 +168,28 @@ package com.pblabs.rendering2D
 				tmpScaleX = _scale.x * (_size.x / _origSize.x);
 				tmpScaleY = _scale.y * (_size.y / _origSize.y);
 			}
-			_tmpScale.x = tmpScaleX;
-			_tmpScale.y = tmpScaleY;
-			return _tmpScale;
+			_tmpCombinedScale.x = tmpScaleX;
+			_tmpCombinedScale.y = tmpScaleY;
+			return _tmpCombinedScale;
 		}
 
 		override public function set size(value:Point):void
 		{
+			var rePaint : Boolean = false;
+			if(!_size.equals( value ))
+				rePaint = true;
 			super.size = value;
-			if(_classInstance)
+			if(_classInstance && rePaint)
 				paintDisplayObjectToBitmap(_classInstance);
 		}
 
 		override public function set scale(value:Point):void
 		{
+			var rePaint : Boolean = false;
+			if(!_scale.equals( value ))
+				rePaint = true;
 			super.scale = value;
-			if(_classInstance)
+			if(_classInstance && rePaint)
 				paintDisplayObjectToBitmap(_classInstance);
 		}
 

@@ -20,10 +20,10 @@ package com.pblabs.rendering2D
 	
 	import spark.primitives.Rect;
 	
-	public class UITextRendererComponent extends BitmapRenderer
+	public class UITextRendererComponent extends BitmapRenderer implements ITextRenderer
 	{
-		public var fontImage : ImageResource;
-		public var fontData : DataResource;
+		private var _fontImage : ImageResource;
+		private var _fontData : DataResource;
 		
 		public var textFormatter : TextFormat = new TextFormat("Arial", 30, 0xFFFFFF, true);
 		
@@ -118,6 +118,16 @@ package com.pblabs.rendering2D
 			}
 		}
 
+		public function get fontImage():ImageResource{ return _fontImage; }
+		public function set fontImage(img : ImageResource):void{
+			_fontImage = img;
+		}
+
+		public function get fontData():DataResource{ return _fontData; }
+		public function set fontData(data : DataResource):void{
+			_fontData = data;
+		}
+
 		public function get fontColor():uint{ return uint(textFormatter.color); }
 		public function set fontColor(val : uint):void{
 			textFormatter.color = val;
@@ -126,8 +136,8 @@ package com.pblabs.rendering2D
 			_textDirty = true;
 		}
 		
-		public function get fontSize():int{ return int(textFormatter.size); }
-		public function set fontSize(val : int):void{
+		public function get fontSize():Number{ return int(textFormatter.size); }
+		public function set fontSize(val : Number):void{
 			textFormatter.size = val;
 			textDisplay.setTextFormat(textFormatter);
 			textDisplay.autoSize = TextFieldAutoSize.LEFT;
@@ -149,12 +159,12 @@ package com.pblabs.rendering2D
 		}
 
 		override public function set size(val : Point):void{
-			if(val.x != this._size.x || val.y != this._size.y)
+			if(!val.equals(this._size))
 				_textDirty = true;
 			super.size = val;
 		}
 		override public function set scale(val : Point):void{
-			if(val.x != this._scale.x || val.y != this._scale.y)
+			if(!val.equals(this._scale))
 				_textDirty = true;
 			super.scale = val;
 		}

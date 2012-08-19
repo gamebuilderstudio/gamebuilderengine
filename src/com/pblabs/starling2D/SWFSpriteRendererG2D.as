@@ -1,0 +1,125 @@
+/*******************************************************************************
+ * GameBuilder Studio
+ * Copyright (C) 2012 GameBuilder Inc.
+ * For more information see http://www.gamebuilderstudio.com
+ *
+ * This file is licensed under the terms of the MIT license, which is included
+ * in the License.html file at the root directory of this SDK.
+ ******************************************************************************/
+package com.pblabs.starling2D
+{
+	import com.pblabs.engine.PBUtil;
+	import com.pblabs.engine.core.ObjectType;
+	import com.pblabs.rendering2D.SWFSpriteRenderer;
+	
+	import flash.display.BitmapData;
+	import flash.geom.Point;
+	
+	import starling.core.Starling;
+	import starling.display.Image;
+	import starling.textures.Texture;
+	
+	public class SWFSpriteRendererG2D extends SWFSpriteRenderer
+	{
+		public function SWFSpriteRendererG2D()
+		{
+			super();
+		}
+		
+		override public function pointOccupied(worldPosition:Point, mask:ObjectType):Boolean
+		{
+			if (!gpuObject || !scene)
+				return false;
+			
+			// This is the generic version, which uses hitTestPoint. hitTestPoint
+			// takes a coordinate in screen space, so do that.
+			worldPosition = scene.transformWorldToScreen(worldPosition);
+			return gpuObject.hitTest(worldPosition) ? true : false;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		override public function updateTransform(updateProps:Boolean = false):void
+		{
+			if(!gpuObject){
+				return;
+			}
+			
+			if(updateProps)
+				updateProperties();
+			
+			gpuObject.pivotX = _registrationPoint.x;
+			gpuObject.pivotY = _registrationPoint.y;
+			gpuObject.x = this._position.x + _positionOffset.x;
+			gpuObject.y = this._position.y + _positionOffset.y;
+			gpuObject.rotation = PBUtil.getRadiansFromDegrees(_rotation) + _rotationOffset;
+			gpuObject.scaleX = this.combinedScale.x;
+			gpuObject.scaleY = this.combinedScale.y;
+			gpuObject.alpha = this._alpha;
+			gpuObject.blendMode = this._blendMode;
+			gpuObject.visible = (alpha > 0);
+			gpuObject.touchable = _mouseEnabled;
+
+			_transformDirty = false;
+		}
+
+		override protected function buildG2DObject():void
+		{
+			if(!Starling.context){
+				InitializationUtilG2D.initializeRenderers.add(buildG2DObject);
+				return;
+			}
+			if(!gpuObject){
+				gpuObject = new Image(Texture.fromBitmap(this.bitmap));
+			}else{
+				if(( gpuObject as Image).texture)
+					( gpuObject as Image).texture.dispose();
+				(gpuObject as Image).texture = Texture.fromBitmap(this.bitmap);
+			}
+			super.buildG2DObject();
+		}
+		
+		protected function modifyTexture(data:Texture):Texture
+		{
+			return data;            
+		}
+
+		override public function set mouseEnabled(value:Boolean):void
+		{
+			_mouseEnabled = value;
+			
+			if(!gpuObject) return;
+			gpuObject.touchable = _mouseEnabled;
+		}
+
+		override public function set bitmapData(value:BitmapData):void
+		{
+			if (value === bitmap.bitmapData)
+				return;
+			
+			// store orginal BitmapData so that modifiers can be re-implemented 
+			// when assigned modifiers attribute later on.
+			originalBitmapData = value;
+			
+			// check if we should do modification
+			/*
+			if (modifiers.length>0)
+			{
+				// apply all bitmapData modifiers
+				bitmap.bitmapData = modify(originalBitmapData.clone());
+				dataModified();			
+			}	
+			else						
+			*/
+				bitmap.bitmapData = value;
+			
+			// Due to a bug, this has to be reset after setting bitmapData.
+			smoothing = _smoothing;
+			
+			buildG2DObject();
+			
+			_transformDirty = true;
+		}
+	}
+}

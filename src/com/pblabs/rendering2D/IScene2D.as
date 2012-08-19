@@ -59,7 +59,7 @@ package com.pblabs.rendering2D
          *                         new layer if none is present.
          * @return The requested layer.
          */
-        function getLayer(index:int, allocateIfAbsent:Boolean = false):DisplayObjectSceneLayer;
+        function getLayer(index:int, allocateIfAbsent:Boolean = false):IDisplayObjectSceneLayer;
                 
         /**
          * The SceneView where the contents of this scene will be displayed. 
@@ -169,7 +169,7 @@ package com.pblabs.rendering2D
 		/**
 		 * @private
 		 */
-		function get sceneContainer():DisplayObjectContainer;
+		function get sceneContainer():Object;
 
 		function transformWorldToScene(inPos:Point):Point;
         function transformSceneToWorld(inPos:Point):Point;

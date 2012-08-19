@@ -143,7 +143,7 @@ package com.pblabs.rendering2D
             return _layers.length;
         }
         
-        public function getLayer(index:int, allocateIfAbsent:Boolean = false):DisplayObjectSceneLayer
+        public function getLayer(index:int, allocateIfAbsent:Boolean = false):IDisplayObjectSceneLayer
         {
             // Maybe it already exists.
             if(_layers[index])
@@ -166,12 +166,12 @@ package com.pblabs.rendering2D
             }
             
             // Return new layer.
-            return _layers[index];
+            return _layers[index] as IDisplayObjectSceneLayer;
         }
         
         public function invalidate(dirtyRenderer:DisplayObjectRenderer):void
         {
-            var layerToDirty:DisplayObjectSceneLayer = getLayer(dirtyRenderer.layerIndex);
+            var layerToDirty:IDisplayObjectSceneLayer = getLayer(dirtyRenderer.layerIndex);
             if(!layerToDirty)
                 return;
             
@@ -308,7 +308,7 @@ package com.pblabs.rendering2D
         public function add(dor:DisplayObjectRenderer):void
         {
             // Add to the appropriate layer.
-            var layer:DisplayObjectSceneLayer = getLayer(dor.layerIndex, true);
+            var layer:IDisplayObjectSceneLayer = getLayer(dor.layerIndex, true);
             layer.add(dor);
             if (dor.displayObject)
                 _renderers[dor.displayObject] = dor;
@@ -316,7 +316,7 @@ package com.pblabs.rendering2D
         
         public function remove(dor:DisplayObjectRenderer):void
         {
-            var layer:DisplayObjectSceneLayer = getLayer(dor.layerIndex, false);
+            var layer:IDisplayObjectSceneLayer = getLayer(dor.layerIndex, false);
             if(!layer)
                 return;
 
@@ -595,7 +595,7 @@ package com.pblabs.rendering2D
             _transformDirty = true;
         }
 		
-		public function get sceneContainer():DisplayObjectContainer
+		public function get sceneContainer():Object
 		{
 			return _rootSprite;
 		}

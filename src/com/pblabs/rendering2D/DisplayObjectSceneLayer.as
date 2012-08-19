@@ -8,8 +8,8 @@
  ******************************************************************************/
 package com.pblabs.rendering2D
 {
-    import flash.display.Sprite;
     import flash.display.DisplayObject;
+    import flash.display.Sprite;
     
     /**
      * Layer within a DisplayObjectScene which manages a list of 
@@ -17,12 +17,12 @@ package com.pblabs.rendering2D
      * itself sorted. This is also a good site for custom render
      * effects, parallaxing, etc.
      */
-    public class DisplayObjectSceneLayer extends Sprite
+    public class DisplayObjectSceneLayer extends Sprite implements IDisplayObjectSceneLayer
     {
         /**
          * Array.sort() compatible function used to determine draw order. 
          */
-        public var drawOrderFunction:Function;
+        private var _drawOrderFunction:Function;
         
         /**
          * All the renderers in this layer. 
@@ -107,5 +107,18 @@ package com.pblabs.rendering2D
             rendererList.splice(idx, 1);
             removeChild(dor.displayObject);
         }
-    }
+
+		public function get drawOrderFunction():Function
+		{
+			return _drawOrderFunction;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set drawOrderFunction(value:Function):void
+		{
+			_drawOrderFunction = value;
+		}
+	}
 }

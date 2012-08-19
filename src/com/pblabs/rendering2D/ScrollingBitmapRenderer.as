@@ -1,3 +1,11 @@
+/*******************************************************************************
+ * GameBuilder Studio
+ * Copyright (C) 2012 GameBuilder Inc.
+ * For more information see http://www.gamebuilderstudio.com
+ *
+ * This file is licensed under the terms of the MIT license, which is included
+ * in the License.html file at the root directory of this SDK.
+ ******************************************************************************/
 package com.pblabs.rendering2D
 {
 	import com.pblabs.engine.PBE;
@@ -29,7 +37,6 @@ package com.pblabs.rendering2D
 		
 		private var scrollRect:Rectangle = new Rectangle();	// will hold the drawing area
 		private var _scratchPosition : Point = new Point();
-		private var _zeroPoint : Point = new Point();
 		private var _m : Matrix = new Matrix();
 
 		//-------------------------------------------------------------------------
@@ -86,9 +93,9 @@ package com.pblabs.rendering2D
 		
 		public override function onFrame(deltaTime:Number):void
 		{
-			paintRenderer(deltaTime);
 			// call onFrame of the extended BitmapRenderer
 			super.onFrame(deltaTime);
+			paintRenderer(deltaTime);
 		}
 		
 		override protected function onAdd():void
@@ -105,8 +112,6 @@ package com.pblabs.rendering2D
 
 			if(!size || size.x == 0 || size.y == 0) 
 				return;
-			
-			updateProperties();
 			
 			// adjust scroll offset using the scrollSpeed
 			_scratchPosition.x += (scrollSpeed.x * deltaTime); 

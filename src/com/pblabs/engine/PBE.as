@@ -45,6 +45,9 @@ package com.pblabs.engine
      */
     public class PBE
     {
+		public static const RENDER_GPU : String = "GPU";
+		public static const RENDER_CPU : String = "CPU";
+		
         /**
          * Set this to true to get rid of a bunch of development related functionality that isn't
          * needed in a final release build.
@@ -75,7 +78,6 @@ package com.pblabs.engine
         
         protected static var _rootGroup:PBGroup = null;
         protected static var _currentGroup:PBGroup = null;
-        
         /**
          * Register a type with PushButton Engine so that it can be deserialized,
          * even if no code directly uses it.
@@ -581,7 +583,23 @@ package com.pblabs.engine
             _currentGroup = value;
         }
         
-        /**
+		/**
+		 * The rendering mode the current game is running in
+		 */
+		public static function get renderingMode():String
+		{
+			if(!PBE.mainStage)
+				return null;
+			
+			for each(var entry : * in PBE.mainStage.stage3Ds)
+			{
+				if(entry.visible == true)
+					return RENDER_GPU;
+			}
+			return RENDER_CPU;
+		}
+		
+		/**
          * Loads a resource from a file. If the resource has already been loaded or is embedded, a
          * reference to the existing resource will be given. The resource is not returned directly
          * since loading is asynchronous. Instead, it will be passed to the function specified in

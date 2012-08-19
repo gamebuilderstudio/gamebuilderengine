@@ -28,7 +28,8 @@ package com.pblabs.rendering2D
 			super();
 			smoothing = true;
 			bitmap.pixelSnapping = PixelSnapping.AUTO;
-			(_displayObject as Sprite).addChild(bitmap);	
+			if(_displayObject)
+				(_displayObject as Sprite).addChild(bitmap);	
 			
 			lineSize = 0;
 			lineAlpha = 0;
@@ -57,39 +58,6 @@ package com.pblabs.rendering2D
 			// Figure local position.
 			var localPos:Point = transformWorldToObject(worldPosition);
 			return bitmap.bitmapData.hitTest(zeroPoint, 0x01, localPos);
-		}
-		
-		override public function updateTransform(updateProps:Boolean = false):void
-		{
-			if(!displayObject)
-				return;
-			
-			if(updateProps)
-				updateProperties();
-			
-			// If size is active, it always takes precedence over scale.
-			var tmpScaleX:Number = _scale.x;
-			var tmpScaleY:Number = _scale.y;
-			if(_size && (_size.x > 0 || _size.y > 0))
-			{
-				var localDimensions:Rectangle = displayObject.getBounds(displayObject);
-				tmpScaleX = _scale.x * (_size.x / localDimensions.width);
-				tmpScaleY = _scale.y * (_size.y / localDimensions.height);
-			}
-			
-			
-			_transformMatrix.identity();
-			_transformMatrix.scale(tmpScaleX, tmpScaleY);
-			_transformMatrix.translate(-_registrationPoint.x * tmpScaleX, -_registrationPoint.y * tmpScaleY);
-			_transformMatrix.rotate(PBUtil.getRadiansFromDegrees(_rotation) + _rotationOffset);
-			_transformMatrix.translate(_position.x + _positionOffset.x, _position.y + _positionOffset.y);
-			
-			displayObject.transform.matrix = _transformMatrix;
-			displayObject.alpha = _alpha;
-			displayObject.blendMode = _blendMode;
-			displayObject.visible = (alpha > 0);
-			
-			_transformDirty = false;
 		}
 		
 		override protected function onAdd():void

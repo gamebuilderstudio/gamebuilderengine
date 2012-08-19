@@ -58,9 +58,9 @@ package com.pblabs.rendering2D.ui
             _height = value;
         }
         
-        public function addDisplayObject(dobj:DisplayObject):void
+        public function addDisplayObject(dobj:Object):void
         {
-            addChild(dobj);
+            addChild(dobj as DisplayObject);
         }
         
         public function clearDisplayObjects():void
@@ -69,14 +69,14 @@ package com.pblabs.rendering2D.ui
                 removeChildAt(0);
         }
         
-        public function removeDisplayObject(dObj:DisplayObject):void
+        public function removeDisplayObject(dObj:Object):void
         {
-            removeChild(dObj);
+            removeChild(dObj as DisplayObject);
         }
         
-        public function setDisplayObjectIndex(dObj:DisplayObject, index:int):void
+        public function setDisplayObjectIndex(dObj:Object, index:int):void
         {
-            setChildIndex(dObj, index);
+            setChildIndex(dObj as DisplayObject, index);
         }
         
         private var _width:Number = 0;

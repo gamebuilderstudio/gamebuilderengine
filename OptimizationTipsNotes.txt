@@ -1,0 +1,5 @@
+Engine Optimization Tips:
+
+-Set blendmode to "none" whenever using assets with no transperancy
+-Put as many image in a large sprite sheet map as possible and render via spritesheets
+-
