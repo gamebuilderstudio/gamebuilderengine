@@ -14,6 +14,7 @@ package com.pblabs.starling2D
 	
 	import starling.core.Starling;
 	import starling.text.TextField;
+	import starling.utils.HAlign;
 
 	public class UITextRendererComponentG2D extends DisplayObjectRendererG2D implements ITextRenderer
 	{
@@ -43,7 +44,8 @@ package com.pblabs.starling2D
 
 			if(!gpuObject){
 				//Create GPU Renderer Object
-				gpuObject = new TextField(_size.x, _size.y, _text, "Arial", _fontSize, _fontColor);
+				gpuObject = new TextField(_size.x, _size.y, _text, "Arial", _fontSize, _fontColor, true);
+				(gpuObject as TextField).hAlign = HAlign.LEFT;
 			}
 			super.buildG2DObject();
 		}

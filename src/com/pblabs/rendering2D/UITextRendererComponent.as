@@ -25,6 +25,7 @@ package com.pblabs.rendering2D
 		private var _fontImage : ImageResource;
 		private var _fontData : DataResource;
 		
+		[EditorData(ignore="true")]
 		public var textFormatter : TextFormat = new TextFormat("Arial", 30, 0xFFFFFF, true);
 		
 		private var bmFontObject : BMFont;
