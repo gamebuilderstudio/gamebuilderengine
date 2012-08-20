@@ -11,7 +11,6 @@ package com.pblabs.rendering2D
     import com.pblabs.engine.PBE;
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.rendering2D.modifier.Modifier;
-    import com.pblabs.rendering2D.ui.FlexSceneView;
     import com.pblabs.rendering2D.ui.IUITarget;
     
     import flash.display.Bitmap;
@@ -152,13 +151,7 @@ package com.pblabs.rendering2D
 		public override function transformWorldToScreen(inPos:Point):Point
 		{
 			updateTransform();
-			if (sceneView is FlexSceneView)
-			{
-				var p:Point = (sceneView as FlexSceneView).localToGlobal(inPos);
-				return p.add(new Point(_rootSprite.x,_rootSprite.y));				
-			}
-			else
-			  return _rootSprite.localToGlobal(inPos);            
+			return _rootSprite.localToGlobal(inPos);            
 		}
 		
 
@@ -175,13 +168,7 @@ package com.pblabs.rendering2D
 		public override function transformScreenToWorld(inPos:Point):Point
 		{
 			updateTransform();			
-			if (sceneView is FlexSceneView)
-			{
-				var p:Point = (sceneView as FlexSceneView).globalToLocal(inPos);
-				return p.subtract(new Point(_rootSprite.x,_rootSprite.y));
-			}
-			else			
-				return _rootSprite.globalToLocal(inPos);						
+			return _rootSprite.globalToLocal(inPos);						
 		}
 						
 		override protected function onRemove() : void
