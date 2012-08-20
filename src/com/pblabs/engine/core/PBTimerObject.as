@@ -19,6 +19,8 @@ package com.pblabs.engine.core
 		private var _activeCount : int = 0;
 		private var _activePastTime : Number = 0;
 		private var _overallPastTime : Number = 0;
+		private var _addedToProcessManager : Boolean = false;
+		private var _destroyed : Boolean = false;
 		
 		public function onTick(deltaTime:Number):void{
 			
@@ -59,6 +61,7 @@ package com.pblabs.engine.core
 		{
 			if(_initialStart){
 				PBE.processManager.addTickedObject( this );
+				_addedToProcessManager = true;
 				_initialStart = false;
 			}
 			_startTime = PBE.processManager.virtualTime;
@@ -79,9 +82,15 @@ package com.pblabs.engine.core
 		
 		public function destroy():void
 		{
+			if(_destroyed)
+				return;
+			
+			_destroyed = true;
 			stop();
-			if(!_initialStart)
+			if(_addedToProcessManager){
 				PBE.processManager.removeTickedObject( this );
+				_addedToProcessManager = false;
+			}
 			onTickSignal.removeAll();
 			onTickSignal = null;
 		}

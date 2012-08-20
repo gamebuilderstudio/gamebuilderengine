@@ -393,7 +393,8 @@ package com.pblabs.engine.core
                 }
             }
             
-            Logger.warn(object, "RemoveProcessObject", "This object has not been added to the process manager.");
+            //Logger.warn(object, "RemoveProcessObject", "This object has not been added to the process manager.");
+			return;
         }
         
         /**
