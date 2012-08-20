@@ -482,11 +482,11 @@ package com.pblabs.rendering2D
             if(!displayObject)
                 return null;
             
-            var bounds:Rectangle = displayObject.getBounds(displayObject);
-            
-            // Just translation for now.
-            bounds.x += displayObject.x;
-            bounds.y += displayObject.y;
+            var bounds:Rectangle;
+			if(scene && scene.sceneContainer)
+				bounds = displayObject.getBounds(scene.sceneContainer as DisplayObject);
+			else
+				bounds = displayObject.getBounds(PBE.mainClass);
             
             // And hand it back.
             return bounds;

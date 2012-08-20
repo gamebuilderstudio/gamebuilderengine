@@ -53,7 +53,7 @@ package com.pblabs.box2D
 		public function get spriteForPointChecks():DisplayObjectRenderer { return _spriteForPointChecks; }
 		public function set spriteForPointChecks(value:DisplayObjectRenderer):void
 		{
-			if(!value || !value.displayObject) return;
+			if(!value) return;
 			if(_spriteForPointChecks){
 				size = value.size;
 			}
@@ -132,7 +132,7 @@ package com.pblabs.box2D
         public function get worldExtents():Rectangle
         {
 			if(spriteForPointChecks)
-				return spriteForPointChecks.displayObject.getBounds(PBE.mainClass);
+				return spriteForPointChecks.sceneBounds;
             
 			//TODO: how far should a spatial component actually have a size?
             return new Rectangle(position.x - (size.x * 0.5), position.y - (size.y * 0.5), size.x, size.y);         
