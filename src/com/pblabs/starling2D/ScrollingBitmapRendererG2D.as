@@ -41,8 +41,8 @@ package com.pblabs.starling2D
 			// call onFrame of the extended BitmapRenderer
 			super.onFrame(deltaTime);
 			
-			_scratchPosition.x += Math.ceil(((scrollSpeed.x) * deltaTime)); 
-			_scratchPosition.y += Math.ceil(((scrollSpeed.y) * deltaTime));	
+			_scratchPosition.x -= Math.ceil(((scrollSpeed.x) * deltaTime)); 
+			_scratchPosition.y -= Math.ceil(((scrollSpeed.y) * deltaTime));	
 			if(_initialDraw)
 				_scratchPosition = scrollPosition;
 			
@@ -78,14 +78,10 @@ package com.pblabs.starling2D
 			//#See http://forum.starling-framework.org/topic/best-way-to-do-a-scroll-background
 			yy = ((yy/(gpuObject as Image).height % 1)+1) ;
 			xx = ((xx/(gpuObject as Image).width % 1)+1) ;
-			_tmpPoint.setTo(xx, yy);
-			(gpuObject as Image).setTexCoords(0, _tmpPoint);
-			_tmpPoint.setTo(xx+hRatio, yy );
-			(gpuObject as Image).setTexCoords(1, _tmpPoint);
-			_tmpPoint.setTo(xx, yy + vRatio);
-			(gpuObject as Image).setTexCoords(2, _tmpPoint);
-			_tmpPoint.setTo(xx + hRatio, yy + vRatio);
-			(gpuObject as Image).setTexCoords(3, _tmpPoint);
+			(gpuObject as Image).setTexCoords(0, new Point(xx, yy));
+			(gpuObject as Image).setTexCoords(1, new Point(xx+hRatio, yy ));
+			(gpuObject as Image).setTexCoords(2, new Point(xx, yy + vRatio));
+			(gpuObject as Image).setTexCoords(3, new Point(xx + hRatio, yy + vRatio));
 			
 			if(_initialDraw)
 				_initialDraw = false;
