@@ -121,11 +121,11 @@ package com.pblabs.starling2D
 			super.onRemove();
 			
 			if(gpuObject) {
+				gpuObject.dispose();
 				if(gpuObject.hasOwnProperty("texture"))
 				{
 					gpuObject['texture'].dispose();
 				}
-				gpuObject.dispose();
 				gpuObject = null;
 			}
 		}
@@ -302,6 +302,22 @@ package com.pblabs.starling2D
 			gpuObject.rotation = this._rotation + this._rotationOffset;
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
+		[EditorData(ignore="true")]
+		override public function get sceneBounds():Rectangle
+		{
+			// NOP if no DO.
+			if(!gpuObject)
+				return super.sceneBounds;
+			
+			var bounds:Rectangle = gpuObject.getBounds(scene.sceneContainer as DisplayObject);
+			
+			// And hand it back.
+			return bounds;
+		}
+
 		/**
 		 * @inheritDoc
 		 */

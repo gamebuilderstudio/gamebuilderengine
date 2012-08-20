@@ -47,11 +47,11 @@ package com.pblabs.starling2D
 			
 			if(!gpuObject){
 				//Create GPU Renderer Object
-				gpuObject = Image.fromBitmap( this.bitmap );
+				gpuObject = new Image( ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmap.bitmapData ) );
 			}else{
 				if(( gpuObject as Image).texture)
 					( gpuObject as Image).texture.dispose();
-				( gpuObject as Image).texture = Texture.fromBitmap( this.bitmap );
+				( gpuObject as Image).texture = ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmap.bitmapData );
 			}
 			super.buildG2DObject();
 		}

@@ -141,9 +141,9 @@ package com.pblabs.starling2D
 			super.onRemove();
 			
 			// Make sure we don't leave any lingering content.
-			_rootSprite.dispose();
 			if(_sceneView && _rootSprite)
 				_sceneView.removeDisplayObject(_rootSprite);
+			_rootSprite.dispose();
 		}
 		
 		public function get layerCount():int
@@ -232,8 +232,7 @@ package com.pblabs.starling2D
 		public function get sceneView():IUITarget
 		{
 			if(!_sceneView && _sceneViewName)
-				sceneView = PBE.findChild(_sceneViewName) as IUITarget;
-			
+				sceneView = SceneViewG2D.findStarlingView(_sceneViewName) as IUITarget;
 			return _sceneView;
 		}
 		

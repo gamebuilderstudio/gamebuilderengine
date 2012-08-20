@@ -12,6 +12,8 @@ package starling.textures
 {
     import flash.geom.Rectangle;
     import flash.utils.Dictionary;
+    
+    import org.osflash.signals.Signal;
 
     /** A texture atlas is a collection of many smaller textures in one big image. This class
      *  is used to access textures from such an atlas.
@@ -58,6 +60,7 @@ package starling.textures
         private var mAtlasTexture:Texture;
         private var mTextureRegions:Dictionary;
         private var mTextureFrames:Dictionary;
+		private var _disposed : Signal = new Signal(TextureAtlas);
         
         /** Create a texture atlas from a texture by parsing the regions from an XML file. */
         public function TextureAtlas(texture:Texture, atlasXml:XML=null)
@@ -74,6 +77,7 @@ package starling.textures
         public function dispose():void
         {
             mAtlasTexture.dispose();
+			_disposed.dispatch(this);
         }
         
         /** This function is called by the constructor and will parse an XML in Starling's 
@@ -159,5 +163,7 @@ package starling.textures
             delete mTextureRegions[name];
             delete mTextureFrames[name];
         }
+		
+		public function get disposed():Signal{ return _disposed; }
     }
 }

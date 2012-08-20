@@ -56,15 +56,20 @@ package com.pblabs.starling2D
 				if(texture){
 					gpuObject = new Image(texture);
 				}else{
-					gpuObject = Image.fromBitmap( this.bitmap );
-					ResourceTextureManagerG2D.mapTextureToResource((gpuObject as Image).texture, resource);
+					texture = Texture.fromBitmap(this.bitmap);
+					ResourceTextureManagerG2D.mapTextureToResource(texture, resource);
+					gpuObject = new Image( ResourceTextureManagerG2D.getTextureForResource(resource) );
 				}
 			}else{
+				if((gpuObject as Image).texture)
+					(gpuObject as Image).texture.dispose();
+				
 				if(texture){
 					(gpuObject as Image).texture = texture;
 				}else{
-					(gpuObject as Image).texture = Texture.fromBitmap( this.bitmap );
-					ResourceTextureManagerG2D.mapTextureToResource((gpuObject as Image).texture, resource);
+					texture = Texture.fromBitmap(this.bitmap);
+					ResourceTextureManagerG2D.mapTextureToResource(texture, resource);
+					(gpuObject as Image).texture = ResourceTextureManagerG2D.getTextureForResource(resource);
 				}
 			}
 			

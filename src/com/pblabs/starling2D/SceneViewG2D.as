@@ -12,8 +12,11 @@ package com.pblabs.starling2D
     import com.pblabs.engine.core.IAnimatedObject;
     import com.pblabs.rendering2D.ui.IUITarget;
     
+    import flash.display.StageAlign;
+    import flash.display.StageScaleMode;
     import flash.events.Event;
     import flash.geom.Rectangle;
+    import flash.utils.Dictionary;
     
     import starling.core.Starling;
     import starling.display.DisplayObject;
@@ -35,6 +38,8 @@ package com.pblabs.starling2D
 		
 		private var _delayedCalls : Vector.<Object> = new Vector.<Object>();
 		
+		private static var _starlingViewMap : Dictionary = new Dictionary();
+		
 		public function SceneViewG2D()
 		{
 			if(PBE.mainStage)
@@ -47,7 +52,12 @@ package com.pblabs.starling2D
 				_height = PBE.mainStage.stage.stageHeight;
 				name = "SceneView";
 
-				Starling.handleLostContext = true;
+				PBE.mainStage.scaleMode = StageScaleMode.NO_SCALE;
+				PBE.mainStage.align = StageAlign.TOP_LEFT;
+				
+				Starling.multitouchEnabled = true; // useful on mobile devices
+				Starling.handleLostContext = true; // deactivate on mobile devices (to save memory)
+				
 				_starlingInstance = new Starling(Sprite, PBE.mainStage.stage, new Rectangle(0,0, width, height));
 				_starlingInstance.simulateMultitouch = true;
 				_starlingInstance.enableErrorChecking = false;
@@ -61,6 +71,13 @@ package com.pblabs.starling2D
 			
 			this.addEventListener("removedFromStage", onRemoved);
 			PBE.mainStage.stage.addEventListener(Event.DEACTIVATE, stage_deactivateHandler, false, 0, true);
+		}
+		
+		public static function findStarlingView(name : String):SceneViewG2D
+		{
+			if(_starlingViewMap.hasOwnProperty(name))
+				return _starlingViewMap[name];
+			return null;
 		}
 		
 		public function onFrame(deltaTime:Number):void
@@ -127,6 +144,10 @@ package com.pblabs.starling2D
 		}
 		
 		private function onContextCreated(event : *):void{
+			// set framerate to 32 in software mode
+			if (Starling.context.driverInfo.toLowerCase().indexOf("software") != -1) {
+				Starling.current.nativeStage.frameRate = 32;
+			}
 			InitializationUtilG2D.initializeRenderers.dispatch();
 		}
 		
@@ -173,6 +194,16 @@ package com.pblabs.starling2D
 		public function get canvasContainerG2D():DisplayObjectContainer{ return _gpuCanvasContainer; }
 		public function get starlingInstance():Starling { return _starlingInstance; }
         
+		override public function set name(value:String):void
+		{
+			if(_starlingViewMap.hasOwnProperty(value))
+				delete _starlingViewMap[value];
+			
+			super.name = value;
+			
+			_starlingViewMap[value] = this
+		}
+		
         private var _width:Number = 0;
         private var _height:Number = 0;
     }

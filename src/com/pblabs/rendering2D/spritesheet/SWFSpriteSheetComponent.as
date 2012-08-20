@@ -11,7 +11,7 @@ package com.pblabs.rendering2D.spritesheet
     import com.pblabs.engine.PBUtil;
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.resource.SWFResource;
-	import com.pblabs.starling2D.spritesheet.SpriteContainerComponentG2D;
+    import com.pblabs.starling2D.spritesheet.SpriteContainerComponentG2D;
     
     import flash.display.*;
     import flash.geom.*;
@@ -168,17 +168,24 @@ package com.pblabs.rendering2D.spritesheet
 		 **/
 		public function destroy():void
 		{
-			this.deleteFrames();
 			if(cached){
 				var frameCache : CachedFramesData = getCachedFrames();
 				
-				if(frameCache && frameCache.referenceCount != 0){
+				if(frameCache && frameCache.referenceCount > 0){
 					frameCache.referenceCount -= 1;
-				}else if(frameCache && frameCache.referenceCount <= 0){
+				}
+				if(frameCache && frameCache.referenceCount <= 0){
 					frameCache.destroy();
 					delete _frameCache[getFramesCacheKey()];
 				}
+			}else{
+				var len : int = frames.length;
+				for(var i : int = 0; i < len; i++)
+				{
+					frames[i].dispose();
+				}
 			}
+			this.deleteFrames();
 
 			_resource = null;
 			_bounds = null;

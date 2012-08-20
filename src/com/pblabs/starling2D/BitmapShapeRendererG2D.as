@@ -68,17 +68,15 @@ package com.pblabs.starling2D
 			if(!gpuObject){
 				if(texture)
 				{
-					gpuObject = new Image(Texture.fromTexture(texture));
+					gpuObject = new Image(texture);
 				}else{
 					//Create GPU Renderer Object
-					gpuObject = Image.fromBitmap( this.bitmap );
-					ResourceTextureManagerG2D.mapTextureWithKey( (gpuObject as Image).texture, getTextureCacheKey());
+					gpuObject = new Image(ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmap.bitmapData, getTextureCacheKey() ));
 				}
 			}else{
 				if(( gpuObject as Image).texture)
 					( gpuObject as Image).texture.dispose();
-				texture = (gpuObject as Image).texture = Texture.fromBitmap( this.bitmap );
-				ResourceTextureManagerG2D.mapTextureWithKey( texture, getTextureCacheKey());
+				texture = (gpuObject as Image).texture = ResourceTextureManagerG2D.getTextureForBitmapData(this.bitmap.bitmapData, getTextureCacheKey());
 			}
 			super.buildG2DObject();
 		}

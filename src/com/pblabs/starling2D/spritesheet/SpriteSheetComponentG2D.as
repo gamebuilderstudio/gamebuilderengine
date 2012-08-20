@@ -13,12 +13,14 @@ package com.pblabs.starling2D.spritesheet
 	import com.pblabs.rendering2D.spritesheet.CachedFramesData;
 	import com.pblabs.rendering2D.spritesheet.FrameNote;
 	import com.pblabs.rendering2D.spritesheet.SpriteSheetComponent;
+	import com.pblabs.starling2D.InitializationUtilG2D;
 	import com.pblabs.starling2D.ResourceTextureManagerG2D;
 	
 	import flash.display.BitmapData;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
+	import starling.core.Starling;
 	import starling.textures.Texture;
 	import starling.textures.TextureAtlas;
 	
@@ -35,6 +37,10 @@ package com.pblabs.starling2D.spritesheet
 
 		override protected function getSourceFrames() : Array
 		{
+			if(!Starling.context){
+				return null;
+			}
+
 			// If user provided their own bitmapdatas, return those.
 			/*if(_forcedBitmaps)
 				return _forcedBitmaps;*/
@@ -59,15 +65,14 @@ package com.pblabs.starling2D.spritesheet
 			if(!atlas){
 				atlasTexture = Texture.fromBitmapData(_image.bitmapData);
 				atlas = new TextureAtlas(atlasTexture);
-				ResourceTextureManagerG2D.mapTextureToResource(atlasTexture, _image);
+				//ResourceTextureManagerG2D.mapTextureToResource(atlasTexture, _image);
 				ResourceTextureManagerG2D.mapTextureAtlasToResource(atlas, _image);
 			}
 			// no divider means treat the image as a single frame
 			if (!_divider)
 			{
 				_frames = new Array(1);
-				atlas.addRegion("i_0", new Rectangle(0,0, atlasTexture.width, atlasTexture.height));
-				_frames[0] = atlas.getTexture( "i_0" );
+				_frames[0] = ResourceTextureManagerG2D.getTextureForAtlasRegion(atlas, "i_0", new Rectangle(0,0, atlasTexture.width, atlasTexture.height));
 			}
 			else
 			{
@@ -76,8 +81,7 @@ package com.pblabs.starling2D.spritesheet
 				for (var i:int = 0; i < _divider.frameCount; i++)
 				{
 					var area:Rectangle = _divider.getFrameArea(i);
-					atlas.addRegion("i_"+i, area);
-					var regionSubTexture : Texture = atlas.getTexture( "i_"+i );
+					var regionSubTexture : Texture = ResourceTextureManagerG2D.getTextureForAtlasRegion(atlas, "i_"+i, area);
 					_frames[i] = regionSubTexture;
 					
 					tmpBounds = area;

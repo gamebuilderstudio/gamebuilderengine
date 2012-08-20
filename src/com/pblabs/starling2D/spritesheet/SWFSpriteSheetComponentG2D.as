@@ -9,6 +9,7 @@ package com.pblabs.starling2D.spritesheet
 	import flash.display.MovieClip;
 	import flash.geom.Point;
 	
+	import starling.core.Starling;
 	import starling.textures.Texture;
 	import starling.textures.TextureAtlas;
 	
@@ -33,7 +34,7 @@ package com.pblabs.starling2D.spritesheet
 		 */
 		override protected function rasterize():void
 		{
-			if (!_resource.isLoaded) return;
+			if (!_resource.isLoaded || !Starling.context) return;
 			
 			var cache:CachedFramesDataMC = getCachedFrames() as CachedFramesDataMC;
 			if (cache)
@@ -67,7 +68,7 @@ package com.pblabs.starling2D.spritesheet
 				//Convert all Bitmaps into textures and upload to GPU
 				for(var i : int = 0; i < len; i++)
 				{
-					textureList.push(Texture.fromBitmapData(frames[i] as BitmapData, false));
+					textureList.push( ResourceTextureManagerG2D.getTextureForBitmapData(frames[i] as BitmapData, getFramesCacheKey()) );
 				}
 				for(i = 0; i < len; i++)
 				{
@@ -78,7 +79,7 @@ package com.pblabs.starling2D.spritesheet
 			_center = new Point(-_bounds.x, -_bounds.y);
 			
 			if(cached && frames){
-				var frameCache : CachedFramesDataMC = new CachedFramesDataMC(textureList, _bounds, _clip, _frameCenters);
+				var frameCache : CachedFramesDataMC = new CachedFramesDataMCG2D(textureList, _bounds, _clip, _frameCenters);
 				frameCache.referenceCount += 1;
 				setCachedFrames(frameCache);
 			}

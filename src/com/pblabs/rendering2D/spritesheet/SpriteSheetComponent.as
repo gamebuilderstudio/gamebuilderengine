@@ -269,30 +269,42 @@ package com.pblabs.rendering2D.spritesheet
 		{
 			if(_destroyed) return;
 			
-			//TODO: Add clearing cache handling here
-			if(_forcedBitmaps){
-				var len : int = _forcedBitmaps.length;
-				for(var i : int = 0; i < len; i++){
-					_forcedBitmaps.pop();
+			if(cached){
+				var frameCache : CachedFramesData = getCachedFrames();
+				
+				if(frameCache && frameCache.referenceCount > 0){
+					frameCache.referenceCount -= 1;
 				}
-				_forcedBitmaps = null;
+				if(frameCache && frameCache.referenceCount <= 0){
+					frameCache.destroy();
+					delete _frameCache[getFramesCacheKey()];
+					//Divider is cleaned up in the CachedFramesData.destroy()
+				}
+				
+			}else{
+				var len : int = frames.length;
+				for(var i : int = 0; i < len; i++)
+				{
+					frames[i].dispose();
+				}
+				//TODO: Add clearing cache handling here
+				if(_forcedBitmaps){
+					len = _forcedBitmaps.length;
+					for(i = 0; i < len; i++){
+						//We don't clean up the bitmaps in the forced bitmaps array 
+						//because the bitmaps were created elsewhere
+						_forcedBitmaps.pop();
+					}
+					_forcedBitmaps = null;
+				}
+				if(_divider && ((frameCache && frameCache.divider !== _divider) || !frameCache)){
+					_divider.destroy();
+					_divider.owningSheet = null;
+				}
 			}
+		
 			this.deleteFrames();
 			
-			var frameCache : CachedFramesData = getCachedFrames();
-			
-			if(frameCache && frameCache.referenceCount != 0){
-				frameCache.referenceCount -= 1;
-			}
-
-			if(cached && frameCache && frameCache.referenceCount <= 0){
-				frameCache.destroy();
-				delete _frameCache[getFramesCacheKey()];
-				//Divider is cleaned up in the CachedFramesData.destroy()
-			}else if(_divider && ((frameCache && frameCache.divider !== _divider) || !frameCache)){
-				_divider.destroy();
-				_divider.owningSheet = null;
-			}
 			_divider = null;
 			_bounds = null;
 			//TODO Add reference count check here to decide if we want to delete cache
