@@ -17,6 +17,7 @@ package com.pblabs.starling2D
 	import starling.core.Starling;
 	import starling.text.TextField;
 	import starling.utils.HAlign;
+	import starling.utils.VAlign;
 
 	public class UITextRendererComponentG2D extends DisplayObjectRendererG2D implements ITextRenderer
 	{
@@ -48,22 +49,11 @@ package com.pblabs.starling2D
 				//Create GPU Renderer Object
 				gpuObject = new TextField(_size.x, _size.y, _text, "Arial", _fontSize, _fontColor, true);
 				(gpuObject as TextField).hAlign = HAlign.LEFT;
+				(gpuObject as TextField).vAlign = VAlign.TOP;
+				(gpuObject as TextField).autoReSize = true;
+				
 			}
 			super.buildG2DObject();
-		}
-
-		private function updateFontSize():void
-		{
-			if(!owner || !gpuObject ) return;
-			
-			var newSize : Point = new Point((gpuObject as TextField).textBounds.width+2, (gpuObject as TextField).textBounds.height+2)
-			if(sizeProperty && sizeProperty.property != "")
-			{
-				size = newSize;
-				this.owner.setProperty( sizeProperty, newSize )
-			}else{
-				size = newSize;
-			}
 		}
 
 		public function get fontImage():ImageResource{ return _fontImage; }
@@ -88,7 +78,6 @@ package com.pblabs.starling2D
 			_fontSize = val;
 			if(!gpuObject) return;
 			gpuTextObject.fontSize = _fontSize;
-			updateFontSize();
 		}
 		
 		public function get text():String{ return _text; }
@@ -98,7 +87,6 @@ package com.pblabs.starling2D
 			_text = val;
 			if(!gpuObject) return;
 			gpuTextObject.text = _text;
-			updateFontSize();
 			//gpuTextObject.autoScale = true;
 		}
 		
@@ -107,11 +95,25 @@ package com.pblabs.starling2D
 		/**
 		 * @inheritDoc
 		 */
+		override public function get size():Point
+		{
+			if(!gpuObject || (gpuObject && !(gpuObject as TextField).autoReSize)){
+				return super.size;
+			}
+			if(!_size)
+				return _size;
+			_size.setTo( (gpuObject as TextField).width, (gpuObject as TextField).height);
+			return _size.clone();
+		}
+		/**
+		 * @inheritDoc
+		 */
 		override public function set size(value:Point):void
 		{
+			
 			super.size = value;
 			
-			if(!gpuObject) return;
+			if(!gpuObject || !value) return;
 			gpuObject.width = _size.x;
 			gpuObject.height = _size.y;
 		}

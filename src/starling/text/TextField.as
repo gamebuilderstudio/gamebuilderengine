@@ -73,6 +73,7 @@ package starling.text
         private var mItalic:Boolean;
         private var mUnderline:Boolean;
         private var mAutoScale:Boolean;
+		private var mAutoResize:Boolean;
         private var mKerning:Boolean;
         private var mNativeFilters:Array;
         private var mRequiresRedraw:Boolean;
@@ -172,8 +173,11 @@ package starling.text
             if (sNativeTextField.textWidth == 0.0 || sNativeTextField.textHeight == 0.0)
                 sNativeTextField.embedFonts = false;
             
-            if (mAutoScale)
+            if (mAutoScale && !mAutoResize)
                 autoScaleNativeTextField(sNativeTextField);
+			
+			if(mAutoResize && !mAutoScale)
+				autoResizeNativeTextField(sNativeTextField);
             
             var textWidth:Number  = sNativeTextField.textWidth;
             var textHeight:Number = sNativeTextField.textHeight;
@@ -228,6 +232,12 @@ package starling.text
                 textField.setTextFormat(format);
             }
         }
+		
+		private function autoResizeNativeTextField(textField:flash.text.TextField):void
+		{
+			width = textField.width;
+			height = textField.height;
+		}
         
         private function createComposedContents():void
         {
@@ -465,11 +475,24 @@ package starling.text
             if (mAutoScale != value)
             {
                 mAutoScale = value;
+				mAutoResize = false;
                 mRequiresRedraw = true;
             }
         }
 
-        /** The native Flash BitmapFilters to apply to this TextField. 
+		/** Indicates whether the adjust the texture size when the font size changes to shall all text. @default false */
+		public function get autoReSize():Boolean { return mAutoResize; }
+		public function set autoReSize(value:Boolean):void
+		{
+			if (mAutoResize != value)
+			{
+				mAutoResize = value;
+				mAutoScale = false;
+				mRequiresRedraw = true;
+			}
+		}
+
+		/** The native Flash BitmapFilters to apply to this TextField. 
          *  Only available when using standard (TrueType) fonts! */
         public function get nativeFilters():Array { return mNativeFilters; }
         public function set nativeFilters(value:Array) : void
