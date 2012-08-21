@@ -55,6 +55,9 @@ package com.pblabs.rendering2D
 			else
 				curFrame = spriteSheet.getFrame(spriteIndex);
 			
+			if(!curFrame)
+				return null;
+			
             // Our registration point is the center of a frame as specified by the spritesheet
 	        if(spriteSheet && spriteSheet.isLoaded && spriteSheet.center)
 			{

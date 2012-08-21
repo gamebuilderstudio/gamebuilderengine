@@ -64,17 +64,20 @@ package com.pblabs.rendering2D.spritesheet
 				_frames.splice(0,1);
 			
 			//Building list of rectangles that point to frames
-			//var objectDataObject : * = .getClassInfo( resource.jsonData.frames );
-			var objectData : Array = resource.jsonData.frames;
-			var i : int = 0;
-			for each(var frameData : Object in objectData)
-			{
-				_frames.push( new CoordinateDataVO( new Rectangle(frameData.frame.x, frameData.frame.y, frameData.frame.w, frameData.frame.h),
-					new Point(frameData.sourceSize.w, frameData.sourceSize.h),
-					new Rectangle(frameData.spriteSourceSize.x, frameData.spriteSourceSize.y, frameData.spriteSourceSize.w, frameData.spriteSourceSize.h),
-					frameData.rotated,
-					frameData.trimmed, i) );
-				i++;
+			try{
+				var objectData : Array = resource.jsonData.frames;
+				var i : int = 0;
+				for each(var frameData : Object in objectData)
+				{
+					_frames.push( new CoordinateDataVO( new Rectangle(frameData.frame.x, frameData.frame.y, frameData.frame.w, frameData.frame.h),
+						new Point(frameData.sourceSize.w, frameData.sourceSize.h),
+						new Rectangle(frameData.spriteSourceSize.x, frameData.spriteSourceSize.y, frameData.spriteSourceSize.w, frameData.spriteSourceSize.h),
+						frameData.rotated,
+						frameData.trimmed, i) );
+					i++;
+				}
+			}catch(e : Error){
+				Logger.error(this, "buildFrames", "Error trying to build spritesheet frames from ["+resource.filename+"] JSON data. Expecting JSON-ARRAY format.");
 			}
 		}
 		
