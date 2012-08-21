@@ -42,10 +42,11 @@ package com.pblabs.starling2D
 		override public function onFrame(elapsed:Number) : void
 		{
 			// Update the Starling object
+			buildG2DObject();
+
 			if (currentTexture!=null)
 				super.onFrame(elapsed);
 			
-			buildG2DObject();
 		}
 
 		protected function getCurrentTexture():Texture
@@ -59,11 +60,16 @@ package com.pblabs.starling2D
 			else
 				currentTexture = modifyTexture(spriteSheet.getTexture(spriteIndex));
 			
+			if(!currentTexture)
+				return null;
+			
 			// Our registration point is the center of a frame as specified by the spritesheet
 			if(spriteSheet && spriteSheet.isLoaded && spriteSheet.center)
 			{
 				registrationPoint = spriteSheet.center.clone();					
 			}
+			if (spriteSheet.centered)
+				registrationPoint = new Point(currentTexture.width/2,currentTexture.height/2);
 			if(currentTexture && this.size && this.sizeProperty && overrideSizePerFrame && (this.size.x != currentTexture.width || this.size.y != currentTexture.height))
 			{
 				var newSize : Point = new Point(currentTexture.width, currentTexture.height);

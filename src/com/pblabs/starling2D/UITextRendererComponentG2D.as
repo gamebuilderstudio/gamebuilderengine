@@ -12,6 +12,8 @@ package com.pblabs.starling2D
 	import com.pblabs.engine.resource.ImageResource;
 	import com.pblabs.rendering2D.ITextRenderer;
 	
+	import flash.geom.Point;
+	
 	import starling.core.Starling;
 	import starling.text.TextField;
 	import starling.utils.HAlign;
@@ -50,6 +52,20 @@ package com.pblabs.starling2D
 			super.buildG2DObject();
 		}
 
+		private function updateFontSize():void
+		{
+			if(!owner || !gpuObject ) return;
+			
+			var newSize : Point = new Point((gpuObject as TextField).textBounds.width+2, (gpuObject as TextField).textBounds.height+2)
+			if(sizeProperty && sizeProperty.property != "")
+			{
+				size = newSize;
+				this.owner.setProperty( sizeProperty, newSize )
+			}else{
+				size = newSize;
+			}
+		}
+
 		public function get fontImage():ImageResource{ return _fontImage; }
 		public function set fontImage(img : ImageResource):void{
 			_fontImage = img;
@@ -71,7 +87,8 @@ package com.pblabs.starling2D
 		public function set fontSize(val : Number):void{
 			_fontSize = val;
 			if(!gpuObject) return;
-			gpuTextObject.fontSize = _fontSize;			
+			gpuTextObject.fontSize = _fontSize;
+			updateFontSize();
 		}
 		
 		public function get text():String{ return _text; }
@@ -81,9 +98,22 @@ package com.pblabs.starling2D
 			_text = val;
 			if(!gpuObject) return;
 			gpuTextObject.text = _text;
-			gpuTextObject.autoScale = true;
+			updateFontSize();
+			//gpuTextObject.autoScale = true;
 		}
 		
 		private function get gpuTextObject():TextField{ return gpuObject ? gpuObject as TextField : null; }
+
+		/**
+		 * @inheritDoc
+		 */
+		override public function set size(value:Point):void
+		{
+			super.size = value;
+			
+			if(!gpuObject) return;
+			gpuObject.width = _size.x;
+			gpuObject.height = _size.y;
+		}
 	}
 }

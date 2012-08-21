@@ -210,8 +210,8 @@ package com.pblabs.starling2D
 			super.size = value;
 			
 			if(!gpuObject) return;
-			gpuObject.width = _size.x;
-			gpuObject.height = _size.y;
+			//gpuObject.width = _size.x;
+			//gpuObject.height = _size.y;
 		}
 		
 		/**
