@@ -345,6 +345,7 @@ package com.pblabs.engine.core
          }
 
          // unload previous data
+		 dispatchEvent(new LevelEvent(LevelEvent.LEVEL_PRE_UNLOAD_EVENT, _currentLevel));
          unload(filesToUnload, groupsToUnload);
          dispatchEvent(new LevelEvent(LevelEvent.LEVEL_UNLOADED_EVENT, _currentLevel));
          
@@ -435,6 +436,7 @@ package com.pblabs.engine.core
          var groupsToUnload:Array = new Array();
          getLoadLists(_levelDescriptions[_currentLevel].groups, null, null, groupsToUnload);
          
+		 dispatchEvent(new LevelEvent(LevelEvent.LEVEL_PRE_UNLOAD_EVENT, _currentLevel));
          unload(filesToUnload, groupsToUnload);
          //dispatchEvent(new LevelEvent(LevelEvent.LEVEL_UNLOADED_EVENT, _currentLevel));
          

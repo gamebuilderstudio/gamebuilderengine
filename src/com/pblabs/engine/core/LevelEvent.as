@@ -33,13 +33,20 @@ package com.pblabs.engine.core
         public static const LEVEL_LOADED_EVENT:String = "levelLoaded";
 
         /**
-         * This event is dispatched by the LevelManager when a level's data has been unloaded.
+         * This event is dispatched right before the LevelManager unloads a level.
          *
-         * @eventType LEVEL_UNLOADED_EVENT
+         * @eventType LEVEL_PRE_UNLOADED_EVENT
          */
-        public static const LEVEL_UNLOADED_EVENT:String = "levelUnloaded";
+        public static const LEVEL_PRE_UNLOAD_EVENT:String = "levelPreUnload";
 
-        /**
+		/**
+		 * This event is dispatched by the LevelManager when a level's data has been unloaded.
+		 *
+		 * @eventType LEVEL_UNLOADED_EVENT
+		 */
+		public static const LEVEL_UNLOADED_EVENT:String = "levelUnloaded";
+
+		/**
          * The level associated with this event.
          */
         public var level:int = -1;
