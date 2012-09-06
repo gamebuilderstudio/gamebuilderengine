@@ -25,6 +25,8 @@ package com.pblabs.engine.entity
     import flash.utils.Dictionary;
     import flash.utils.getQualifiedClassName;
     
+    import org.osflash.signals.Signal;
+    
     /**
      * Default implementation of IEntity.
      * 
@@ -84,7 +86,12 @@ package com.pblabs.engine.entity
         {
             return _eventDispatcher;
         }
-        
+		
+		public function get signalBus():Signal
+		{
+			return _signalBus;
+		}
+		
 		override public function changeName(name : String):void
 		{
 			super.changeName(name);
@@ -647,6 +654,7 @@ package com.pblabs.engine.entity
         protected var _tempPropertyInfo:PropertyInfo = new PropertyInfo();
         protected var _deferredComponents:Array = new Array();
         protected var _eventDispatcher:EventDispatcher = new EventDispatcher();
+		protected var _signalBus : Signal = new Signal();
     }
 }
 

@@ -8,7 +8,9 @@
  ******************************************************************************/
 package com.pblabs.engine.entity
 {
-   import flash.events.IEventDispatcher;   
+   import flash.events.IEventDispatcher;
+   
+   import org.osflash.signals.Signal;
 
    /**
     * Minimal interface for accessing properties on some object.
@@ -21,7 +23,13 @@ package com.pblabs.engine.entity
        */
       function get eventDispatcher():IEventDispatcher;
 
-      /**
+	  /**
+	   * The event dispatcher that controls events for this entity. Components should
+	   * use this to dispatch and listen for events.
+	   */
+	  function get signalBus():Signal;
+
+	  /**
        * Checks whether a property exists on this entity.
        * 
        * @param property The property reference describing the property to look for on

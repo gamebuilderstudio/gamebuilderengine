@@ -142,7 +142,7 @@ package com.pblabs.components.stateMachine
         public function setCurrentState(name:String):Boolean
         {
             var newState:IState = getState(name);
-            if(!newState)
+            if(!newState || newState == oldState)
                 return false;
             
             var oldState:IState = _currentState;
@@ -170,7 +170,7 @@ package com.pblabs.components.stateMachine
                 te.newState = newState;
                 te.newStateName = getStateName(newState);
                 
-                _propertyBag.eventDispatcher.dispatchEvent(te);
+                _propertyBag.signalBus.dispatch(te);
             }
             
             return true;
