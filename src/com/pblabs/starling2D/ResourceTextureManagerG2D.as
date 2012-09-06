@@ -90,7 +90,7 @@ package com.pblabs.starling2D
 				_subTexturesMap[subtexture] = texture;
 				return subtexture;
 			}else{
-				texture = Texture.fromBitmapData(data);
+				texture = Texture.fromBitmapData(data, false);
 				texture.disposed.addOnce(releaseTexture);
 				_originTexturesMap[key] = new Vector.<Texture>();
 				_originTexturesMap[key].push( texture );
