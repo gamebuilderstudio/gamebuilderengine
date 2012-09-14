@@ -26,6 +26,11 @@ package com.pblabs.engine.core
    [Event(name="READY_EVENT", type="com.pblabs.engine.core.LevelEvent")]
    
    /**
+	* @eventType com.pblabs.engine.core.LevelEvent.LEVEL_PRE_LOAD_EVENT
+	*/
+   [Event(name="LEVEL_PRE_LOAD_EVENT", type="com.pblabs.engine.core.LevelEvent")]
+
+   /**
     * @eventType com.pblabs.engine.core.LevelEvent.LEVEL_LOADED_EVENT
     */
    [Event(name="LEVEL_LOADED_EVENT", type="com.pblabs.engine.core.LevelEvent")]
@@ -327,7 +332,7 @@ package com.pblabs.engine.core
              filesToLoad = _levelDescriptions[index].files;
              _groupsToLoad = _levelDescriptions[index].groups;
 
-             if (_levelDescriptions[_currentLevel]) {
+             if (_currentLevel > -1 && _levelDescriptions[_currentLevel]) {
                  filesToUnload = _levelDescriptions[_currentLevel].files;
                  groupsToUnload = _levelDescriptions[_currentLevel].groups;
              }
@@ -344,10 +349,12 @@ package com.pblabs.engine.core
              getLoadLists(doUnload ? _levelDescriptions[_currentLevel].groups : null, _levelDescriptions[index].groups, _groupsToLoad, groupsToUnload);
          }
 
-         // unload previous data
-		 dispatchEvent(new LevelEvent(LevelEvent.LEVEL_PRE_UNLOAD_EVENT, _currentLevel));
-         unload(filesToUnload, groupsToUnload);
-         dispatchEvent(new LevelEvent(LevelEvent.LEVEL_UNLOADED_EVENT, _currentLevel));
+		 if(_currentLevel > -1){
+	         // unload previous data
+			 dispatchEvent(new LevelEvent(LevelEvent.LEVEL_PRE_UNLOAD_EVENT, _currentLevel));
+	         unload(filesToUnload, groupsToUnload);
+	         dispatchEvent(new LevelEvent(LevelEvent.LEVEL_UNLOADED_EVENT, _currentLevel));
+		  }
          
          _currentLevel = index;
          _isLevelLoaded = true;
@@ -383,6 +390,8 @@ package com.pblabs.engine.core
          if (_pendingFiles > 0)
             return;
          
+		 dispatchEvent(new LevelEvent(LevelEvent.LEVEL_PRE_LOAD_EVENT, _currentLevel));
+		
          // load groups
          for each (var groupName:String in _groupsToLoad)
          {
@@ -659,7 +668,7 @@ package com.pblabs.engine.core
       private var _initialLevel:int = -1;
       private var _isReady:Boolean = false;
       private var _isLevelLoaded:Boolean = false;
-      private var _currentLevel:int = 0;
+      private var _currentLevel:int = -1;
       private var _levelDescriptions:Array = new Array();
       
       private var _pendingFiles:int = 0;

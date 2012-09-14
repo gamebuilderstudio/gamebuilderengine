@@ -25,7 +25,14 @@ package com.pblabs.engine.core
          */
         public static const READY_EVENT:String = "ready";
 
-        /**
+		/**
+		 * This event is dispatched by the LevelManager right before a level's data is about to be de-serialized.
+		 *
+		 * @eventType LEVEL_PRE_LOAD_EVENT
+		 */
+		public static const LEVEL_PRE_LOAD_EVENT:String = "levelPreLoad";
+
+		/**
          * This event is dispatched by the LevelManager when a level's data has been loaded.
          *
          * @eventType LEVEL_LOADED_EVENT
