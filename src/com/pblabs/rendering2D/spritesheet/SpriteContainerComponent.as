@@ -205,8 +205,10 @@ package com.pblabs.rendering2D.spritesheet
             if (frames == null)
                 return;
             
-            if (frames.length == 0)
+            if (frames.length == 0){
 				Logger.error(this, "buildFrames", "Error - No frames loaded");
+				return;
+			}
             					
 			// BitmapData modification implementation
 			if (frames!=null && modifiers.length>0)

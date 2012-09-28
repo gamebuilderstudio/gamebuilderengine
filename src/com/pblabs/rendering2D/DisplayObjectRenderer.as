@@ -219,6 +219,9 @@ package com.pblabs.rendering2D
 		 */
 		public function get combinedScale():Point
 		{
+			if(!displayObject)
+				return _scale.clone();
+			
 			_tmpCombinedScale.x = _scale.x;
 			_tmpCombinedScale.y = _scale.y;
 			if(_size && (_size.x > 0 || _size.y > 0))
