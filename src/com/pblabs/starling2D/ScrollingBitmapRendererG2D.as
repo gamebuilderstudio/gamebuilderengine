@@ -15,6 +15,7 @@ package com.pblabs.starling2D
 	import flash.geom.Rectangle;
 	
 	import starling.display.Image;
+	import starling.utils.getNextPowerOfTwo;
 
 	public class ScrollingBitmapRendererG2D extends SpriteRendererG2D
 	{
@@ -41,8 +42,8 @@ package com.pblabs.starling2D
 			// call onFrame of the extended BitmapRenderer
 			super.onFrame(deltaTime);
 			
-			_scratchPosition.x -= Math.ceil(((scrollSpeed.x) * deltaTime)); 
-			_scratchPosition.y -= Math.ceil(((scrollSpeed.y) * deltaTime));	
+			_scratchPosition.x = ((scrollSpeed.x) * deltaTime); 
+			_scratchPosition.y = ((scrollSpeed.y) * deltaTime);	
 			if(_initialDraw)
 				_scratchPosition = scrollPosition;
 			
@@ -51,12 +52,24 @@ package com.pblabs.starling2D
 		
 		override protected function buildG2DObject():void
 		{
+			var legalWidth:int  = getNextPowerOfTwo(bitmapData.width);
+			var legalHeight:int = getNextPowerOfTwo(bitmapData.height);
+			if (legalWidth > bitmapData.width || legalHeight > bitmapData.height)
+			{
+				//TODO: Alter original image to equal power of two.
+			}
+
 			super.buildG2DObject();
 			
 			if(gpuObject)
 			{
-				hRatio = PBE.mainStage.stageWidth / gpuObject.width;
-				vRatio = PBE.mainStage.stageHeight / gpuObject.height;
+				var tileH : Number = _size.x / (gpuObject as Image).texture.width;
+				var tileV : Number = _size.y / (gpuObject as Image).texture.height;
+				(gpuObject as Image).texture.repeat = true;
+				//(gpuObject as Image).setTexCoords(0, new Point(0, 0 ));
+				(gpuObject as Image).setTexCoords(1, new Point(tileH, 0 ));
+				(gpuObject as Image).setTexCoords(2, new Point(0, tileV));
+				(gpuObject as Image).setTexCoords(3, new Point(tileH, tileV));
 			}
 		}
 		
@@ -74,17 +87,30 @@ package com.pblabs.starling2D
 			if(!(gpuObject as Image).texture.repeat)
 				(gpuObject as Image).texture.repeat = true;
 
-			//Got this scrolling code from the Starling forums thanks to @QuadWord
-			//#See http://forum.starling-framework.org/topic/best-way-to-do-a-scroll-background
-			yy = ((yy/(gpuObject as Image).height % 1)+1) ;
-			xx = ((xx/(gpuObject as Image).width % 1)+1) ;
-			(gpuObject as Image).setTexCoords(0, new Point(xx, yy));
-			(gpuObject as Image).setTexCoords(1, new Point(xx+hRatio, yy ));
-			(gpuObject as Image).setTexCoords(2, new Point(xx, yy + vRatio));
-			(gpuObject as Image).setTexCoords(3, new Point(xx + hRatio, yy + vRatio));
-			
+			for (var i:int = 0; i < 4; i++) 			
+			{ 				
+				var textrPoint : Point = (gpuObject as Image).getTexCoords(i); 				
+				textrPoint.x -= xx * .002; 				
+				textrPoint.y -= yy * .002; 				
+				(gpuObject as Image).setTexCoords(i, textrPoint); 	
+			}
+
 			if(_initialDraw)
 				_initialDraw = false;
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function updateTransform(updateProps:Boolean = false):void
+		{
+			super.updateTransform(updateProps);
+
+			if(!gpuObject){
+				return;
+			}
+			gpuObject.width = _size.x;
+			gpuObject.height = _size.y;
 		}
 	}
 }
