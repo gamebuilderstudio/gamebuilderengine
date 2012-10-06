@@ -79,7 +79,13 @@ package com.pblabs.rendering2D.ui
             setChildIndex(dObj as DisplayObject, index);
         }
         
-        private var _width:Number = 0;
+		public function setSize(width : Number, height : Number):void
+		{
+			_width = width;
+			_height = height;
+		}
+
+		private var _width:Number = 0;
         private var _height:Number = 0;
     }
 }

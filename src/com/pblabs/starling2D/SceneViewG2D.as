@@ -52,7 +52,7 @@ package com.pblabs.starling2D
 				_height = PBE.mainStage.stage.stageHeight;
 				name = "SceneView";
 
-				PBE.mainStage.scaleMode = StageScaleMode.NO_SCALE;
+				PBE.mainStage.scaleMode = StageScaleMode.SHOW_ALL;
 				PBE.mainStage.align = StageAlign.TOP_LEFT;
 				
 				Starling.multitouchEnabled = true; // useful on mobile devices
@@ -60,7 +60,6 @@ package com.pblabs.starling2D
 				
 				_starlingInstance = new Starling(Sprite, PBE.mainStage.stage, new Rectangle(0,0, width, height));
 				_starlingInstance.simulateMultitouch = true;
-				_starlingInstance.enableErrorChecking = false;
 				_starlingInstance.addEventListener("context3DCreate", onContextCreated);
 				_starlingInstance.addEventListener("rootCreated", onRootInitialized);
 				if(!PBE.IS_SHIPPING_BUILD)
@@ -127,6 +126,16 @@ package com.pblabs.starling2D
 			}
 			_gpuCanvasContainer.addChildAt( dObj as DisplayObject, index);
 		}
+		
+		public function setSize(width : Number, height : Number):void
+		{
+			_width = width;
+			_height = height;
+			var newViewPort : Rectangle = _starlingInstance.viewPort;
+			newViewPort.width = _width;
+			newViewPort.height = _height;
+			_starlingInstance.viewPort = newViewPort;
+		}
 
 		private function onRemoved(event : *):void
 		{
@@ -175,6 +184,7 @@ package com.pblabs.starling2D
             _width = value;
 			var newViewPort : Rectangle = _starlingInstance.viewPort;
 			newViewPort.width = _width;
+			newViewPort.height = _height;
 			_starlingInstance.viewPort = newViewPort;
         }
         
@@ -187,6 +197,7 @@ package com.pblabs.starling2D
         {
             _height = value;
 			var newViewPort : Rectangle = _starlingInstance.viewPort;
+			newViewPort.width = _width;
 			newViewPort.height = _height;
 			_starlingInstance.viewPort = newViewPort;
         }
