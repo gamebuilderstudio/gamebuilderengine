@@ -17,6 +17,7 @@ package com.pblabs.starling2D
 	import starling.core.Starling;
 	import starling.display.Image;
 	import starling.textures.Texture;
+	import starling.textures.TextureSmoothing;
 	
 	public class BitmapRendererG2D extends BitmapRenderer
 	{
@@ -52,7 +53,9 @@ package com.pblabs.starling2D
 				if(( gpuObject as Image).texture)
 					( gpuObject as Image).texture.dispose();
 				( gpuObject as Image).texture = ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmap.bitmapData );
+				( gpuObject as Image).readjustSize();
 			}
+			smoothing = _smoothing;
 			super.buildG2DObject();
 		}
 		
@@ -96,6 +99,22 @@ package com.pblabs.starling2D
 			buildG2DObject();
 			
 			_transformDirty = true;
+		}
+		
+		/**
+		 * @see Bitmap.smoothing 
+		 */
+		[EditorData(ignore="true")]
+		override public function set smoothing(value:Boolean):void
+		{
+			super.smoothing = value;
+			if(gpuObject)
+			{
+				if(!_smoothing)
+					(gpuObject as Image).smoothing = TextureSmoothing.NONE;
+				else
+					(gpuObject as Image).smoothing = TextureSmoothing.TRILINEAR;
+			}
 		}
 	}
 }

@@ -18,6 +18,7 @@ package com.pblabs.starling2D
 	import starling.core.Starling;
 	import starling.display.Image;
 	import starling.textures.Texture;
+	import starling.textures.TextureSmoothing;
 	
 	public class SWFSpriteRendererG2D extends SWFSpriteRenderer
 	{
@@ -76,7 +77,9 @@ package com.pblabs.starling2D
 				if(( gpuObject as Image).texture)
 					( gpuObject as Image).texture.dispose();
 				(gpuObject as Image).texture = Texture.fromBitmap(this.bitmap);
+				( gpuObject as Image).readjustSize();
 			}
+			smoothing = _smoothing;
 			super.buildG2DObject();
 		}
 		
@@ -121,5 +124,22 @@ package com.pblabs.starling2D
 			
 			_transformDirty = true;
 		}
+		
+		/**
+		 * @see Bitmap.smoothing 
+		 */
+		[EditorData(ignore="true")]
+		override public function set smoothing(value:Boolean):void
+		{
+			super.smoothing = value;
+			if(gpuObject)
+			{
+				if(!_smoothing)
+					(gpuObject as Image).smoothing = TextureSmoothing.NONE;
+				else
+					(gpuObject as Image).smoothing = TextureSmoothing.TRILINEAR;
+			}
+		}
+		
 	}
 }

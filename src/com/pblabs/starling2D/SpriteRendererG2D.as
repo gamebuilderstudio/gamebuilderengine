@@ -39,6 +39,7 @@ package com.pblabs.starling2D
 		public function SpriteRendererG2D()
 		{
 			super();
+			_smoothing = false;
 		}
 
 		override protected function buildG2DObject():void
@@ -71,8 +72,10 @@ package com.pblabs.starling2D
 					ResourceTextureManagerG2D.mapTextureToResource(texture, resource);
 					(gpuObject as Image).texture = ResourceTextureManagerG2D.getTextureForResource(resource);
 				}
+				( gpuObject as Image).readjustSize();
 			}
 			
+			smoothing = _smoothing;
 			if(gpuObject){
 				updateTransform(true);
 				

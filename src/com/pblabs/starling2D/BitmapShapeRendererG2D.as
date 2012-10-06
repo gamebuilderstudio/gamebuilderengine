@@ -20,6 +20,7 @@ package com.pblabs.starling2D
 	import starling.core.Starling;
 	import starling.display.Image;
 	import starling.textures.Texture;
+	import starling.textures.TextureSmoothing;
 	
 	public class BitmapShapeRendererG2D extends BitmapShapeRenderer
 	{
@@ -27,7 +28,7 @@ package com.pblabs.starling2D
 		{
 			_displayObject = null;
 
-			smoothing = true;
+			smoothing = false;
 			bitmap.pixelSnapping = PixelSnapping.AUTO;
 			
 			lineSize = 0;
@@ -77,7 +78,9 @@ package com.pblabs.starling2D
 				if(( gpuObject as Image).texture)
 					( gpuObject as Image).texture.dispose();
 				texture = (gpuObject as Image).texture = ResourceTextureManagerG2D.getTextureForBitmapData(this.bitmap.bitmapData, getTextureCacheKey());
+				( gpuObject as Image).readjustSize();
 			}
+			smoothing = _smoothing;
 			super.buildG2DObject();
 		}
 		
@@ -93,6 +96,22 @@ package com.pblabs.starling2D
 		
 		protected function getTextureCacheKey():String{
 			return _isSquare + ":" + _isCircle + ":" + _radius + ":" + _fillColor + ":" + _fillAlpha + ":" + _lineColor + ":" + _lineSize + ":" + _lineAlpha + ":"
+		}
+		
+		/**
+		 * @see Bitmap.smoothing 
+		 */
+		[EditorData(ignore="true")]
+		override public function set smoothing(value:Boolean):void
+		{
+			super.smoothing = value;
+			if(gpuObject)
+			{
+				if(!_smoothing)
+					(gpuObject as Image).smoothing = TextureSmoothing.NONE;
+				else
+					(gpuObject as Image).smoothing = TextureSmoothing.TRILINEAR;
+			}
 		}
 	}
 }

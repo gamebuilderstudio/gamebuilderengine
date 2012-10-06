@@ -47,7 +47,7 @@ package com.pblabs.starling2D
 
 			if(!gpuObject){
 				//Create GPU Renderer Object
-				gpuObject = new TextField(_size.x, _size.y, _text, "Arial", _fontSize, _fontColor, true);
+				gpuObject = new TextField(_size.x+tmpPadding.x, _size.y+tmpPadding.y, _text, "Arial", _fontSize, _fontColor, true);
 				(gpuObject as TextField).hAlign = HAlign.LEFT;
 				(gpuObject as TextField).vAlign = VAlign.TOP;
 				(gpuObject as TextField).autoReSize = true;
@@ -105,6 +105,8 @@ package com.pblabs.starling2D
 			_size.setTo( (gpuObject as TextField).width, (gpuObject as TextField).height);
 			return _size.clone();
 		}
+		
+		private var tmpPadding : Point = new Point(2,2);
 		/**
 		 * @inheritDoc
 		 */
@@ -114,8 +116,8 @@ package com.pblabs.starling2D
 			super.size = value;
 			
 			if(!gpuObject || !value) return;
-			gpuObject.width = _size.x;
-			gpuObject.height = _size.y;
+			gpuObject.width = _size.x+tmpPadding.x;
+			gpuObject.height = _size.y+tmpPadding.y;
 		}
 	}
 }
