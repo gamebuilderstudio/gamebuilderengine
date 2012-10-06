@@ -125,7 +125,7 @@ package starling.textures
             var name:String;
             
             for (name in mTextureRegions)
-                if (name.indexOf(prefix) == 0)                
+                if (name.indexOf(prefix) == 0 || prefix == "*")                
                     names.push(name);                
             
             names.sort(Array.CASEINSENSITIVE);
@@ -165,5 +165,6 @@ package starling.textures
         }
 		
 		public function get disposed():Signal{ return _disposed; }
+		public function get sourceTexture():Texture{ return mAtlasTexture; }
     }
 }

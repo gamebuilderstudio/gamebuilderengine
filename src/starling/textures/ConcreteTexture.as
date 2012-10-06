@@ -72,27 +72,38 @@ package starling.textures
         
         private function onContextCreated(event:Event):void
         {
-            var context:Context3D = Starling.context;
             var bitmapData:BitmapData = mData as BitmapData;
             var atfData:AtfData = mData as AtfData;
-            var nativeTexture:flash.display3D.textures.Texture;
             
             if (bitmapData)
             {
-                nativeTexture = context.createTexture(mWidth, mHeight, 
-                    Context3DTextureFormat.BGRA, mOptimizedForRenderTexture);
-                Texture.uploadBitmapData(nativeTexture, bitmapData, mMipMapping);
+				restoreTextureFromBitmapDataOnLostContext(bitmapData);
             }
             else if (atfData)
             {
-                nativeTexture = context.createTexture(atfData.width, atfData.height, atfData.format,
-                                                      mOptimizedForRenderTexture);
-                Texture.uploadAtfData(nativeTexture, atfData.data);
+				restoreTextureFromATFDataOnLostContext(atfData);
             }
-            
-            mBase = nativeTexture;
         }
-        
+		
+		public function restoreTextureFromBitmapDataOnLostContext(data : BitmapData):void
+		{
+			var context:Context3D = Starling.context;
+			var nativeTexture:flash.display3D.textures.Texture;
+			nativeTexture = context.createTexture(mWidth, mHeight, 
+				Context3DTextureFormat.BGRA, mOptimizedForRenderTexture);
+			Texture.uploadBitmapData(nativeTexture, data, mMipMapping);
+			mBase = nativeTexture;
+		}
+		
+		public function restoreTextureFromATFDataOnLostContext(atfData : AtfData):void
+		{
+			var context:Context3D = Starling.context;
+			var nativeTexture:flash.display3D.textures.Texture;
+			nativeTexture = context.createTexture(atfData.width, atfData.height, atfData.format,
+				mOptimizedForRenderTexture);
+			Texture.uploadAtfData(nativeTexture, atfData.data);
+			mBase = nativeTexture;
+		}
         // properties
         
         /** Indicates if the base texture was optimized for being used in a render texture. */
