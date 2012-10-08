@@ -28,7 +28,7 @@ package com.pblabs.starling2D
 		{
 			_displayObject = null;
 
-			smoothing = false;
+			_smoothing = false;
 			bitmap.pixelSnapping = PixelSnapping.AUTO;
 			
 			lineSize = 0;
@@ -41,11 +41,13 @@ package com.pblabs.starling2D
 			if (!gpuObject || !scene)
 				return false;
 			
-			// This is the generic version, which uses hitTestPoint. hitTestPoint
-			// takes a coordinate in screen space, so do that.
-			worldPosition = scene.transformWorldToScreen(worldPosition);
-			
-			return gpuObject.hitTest(worldPosition) ? true : false;
+			//worldPosition = scene.transformWorldToScreen(worldPosition);
+			worldPosition = worldPosition.subtract( scene.position );
+			// Figure local position.
+			//var localPos:Point = transformWorldToObject(worldPosition);
+			//Convert global point to local gpuPoint
+			var localPos:Point = gpuObject.globalToLocal(worldPosition);
+			return gpuObject.hitTest(localPos) ? true : false;
 		}
 
 		override protected function buildG2DObject():void
@@ -56,12 +58,11 @@ package com.pblabs.starling2D
 			}
 
 			try{
-				if(!bitmap || !bitmap.bitmapData || !bitmap.bitmapData.width)
+				if(!this.isRegistered || !bitmap || !bitmap.bitmapData)
 				{
-					redraw();
+					return;
 				}
 			}catch(e : Error){
-				redraw();
 				return;
 			}
 			
@@ -89,9 +90,6 @@ package com.pblabs.starling2D
 			super.redraw();
 			
 			buildG2DObject();
-
-			if(bitmap && bitmap.bitmapData)
-				bitmap.bitmapData.dispose();
 		}
 		
 		protected function getTextureCacheKey():String{

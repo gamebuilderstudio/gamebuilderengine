@@ -21,18 +21,18 @@ package com.pblabs.rendering2D
 		protected var bitmap:Bitmap = new Bitmap();
 		protected var _smoothing:Boolean = false;
 		protected var _shape:Sprite = new Sprite();
-		protected var _initialDraw : Boolean = false;
+		protected var _initialDraw : Boolean = true;
 		
 		public function BitmapShapeRenderer()
 		{
 			super();
-			smoothing = true;
+			_smoothing = true;
 			bitmap.pixelSnapping = PixelSnapping.AUTO;
 			if(_displayObject)
 				(_displayObject as Sprite).addChild(bitmap);	
 			
-			lineSize = 0;
-			lineAlpha = 0;
+			_lineSize = 0;
+			_lineAlpha = 0;
 		}
 		
 		public function isPixelPathActive(objectToScreen:Matrix):Boolean
@@ -71,8 +71,12 @@ package com.pblabs.rendering2D
 		
 		override public function redraw():void
 		{
-			if(!this.isRegistered && !_initialDraw) return;
+			if(!this.isRegistered && !_initialDraw) 
+				return;
 			
+			if(!_size || _size.x == 0 || _size.y == 0) 
+				return;
+
 			// Get references.
 			var s:Sprite = _shape;
 			if(!s)
@@ -118,6 +122,9 @@ package com.pblabs.rendering2D
 			//_registrationPoint = new Point(-bounds.topLeft.x, -bounds.topLeft.y);
 			bitmap.bitmapData = new BitmapData(bounds.width, bounds.height, true, 0x000000);
 			bitmap.bitmapData.draw(s,m, s.transform.colorTransform, s.blendMode );
+			
+			if(_initialDraw)
+				_initialDraw = false
 		}
 		
 		override public function set scale(value:Point):void

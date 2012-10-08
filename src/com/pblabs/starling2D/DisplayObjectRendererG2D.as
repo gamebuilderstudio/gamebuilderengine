@@ -76,13 +76,13 @@ package com.pblabs.starling2D
 		 */
 		override public function updateTransform(updateProps:Boolean = false):void
 		{
-			if(!gpuObject){
-				super.updateTransform(updateProps);
-				return;
-			}
-			
 			if(updateProps)
 				updateProperties();
+			
+			if(!gpuObject){
+				super.updateTransform(false);
+				return;
+			}
 			
 			gpuObject.pivotX = _registrationPoint.x;
 			gpuObject.pivotY = _registrationPoint.y;
@@ -145,6 +145,7 @@ package com.pblabs.starling2D
 		{
 			if(_scene && !_inScene && gpuObject)
 			{                
+				updateTransform();
 				_scene.add(this);
 				_inScene = true;
 				
@@ -166,7 +167,7 @@ package com.pblabs.starling2D
 			if(gpuObject)
 			{
 				if(!_initialized){
-					addToScene()
+					addToScene();
 					_initialized = true;
 				}
 			}

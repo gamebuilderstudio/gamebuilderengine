@@ -146,7 +146,7 @@ package com.pblabs.starling2D
 			
 			if(gpuObject){
 				if(!_initialized){
-					addToScene()
+					addToScene();
 					_initialized = true;
 				}
 			}
