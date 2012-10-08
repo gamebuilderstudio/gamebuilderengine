@@ -11,6 +11,7 @@ package com.pblabs.starling2D
 	import com.pblabs.engine.PBE;
 	import com.pblabs.engine.debug.Logger;
 	
+	import flash.display.BitmapData;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
@@ -26,7 +27,7 @@ package com.pblabs.starling2D
 		public var scrollSpeed:Point = new Point(0,0);
 
 		private var scrollRect:Rectangle = new Rectangle();	// will hold the drawing area
-		private var _scratchPosition : Point = new Point();
+		private var _scratchPoint : Point = new Point();
 		private var _tmpPoint : Point = new Point();
 		private var _initialDraw : Boolean = true;
 		protected var hRatio : Number;
@@ -42,43 +43,14 @@ package com.pblabs.starling2D
 			// call onFrame of the extended BitmapRenderer
 			super.onFrame(deltaTime);
 			
-			_scratchPosition.x = ((scrollSpeed.x) * deltaTime); 
-			_scratchPosition.y = ((scrollSpeed.y) * deltaTime);	
+			_scratchPoint.x = ((scrollSpeed.x) * deltaTime); 
+			_scratchPoint.y = ((scrollSpeed.y) * deltaTime);	
 			if(_initialDraw)
-				_scratchPosition = scrollPosition;
+				_scratchPoint = scrollPosition;
 			
-			setOffset(_scratchPosition.x, _scratchPosition.y);
+			setOffset(_scratchPoint.x, _scratchPoint.y);
 		}
 		
-		override protected function buildG2DObject():void
-		{
-			var legalWidth:int  = getNextPowerOfTwo(bitmapData.width);
-			var legalHeight:int = getNextPowerOfTwo(bitmapData.height);
-			if (legalWidth > bitmapData.width || legalHeight > bitmapData.height)
-			{
-				//TODO: Alter original image to equal power of two.
-			}
-
-			super.buildG2DObject();
-			
-			if(gpuObject)
-			{
-				var tileH : Number = _size.x / (gpuObject as Image).texture.width;
-				var tileV : Number = _size.y / (gpuObject as Image).texture.height;
-				(gpuObject as Image).texture.repeat = true;
-				//(gpuObject as Image).setTexCoords(0, new Point(0, 0 ));
-				(gpuObject as Image).setTexCoords(1, new Point(tileH, 0 ));
-				(gpuObject as Image).setTexCoords(2, new Point(0, tileV));
-				(gpuObject as Image).setTexCoords(3, new Point(tileH, tileV));
-			}
-		}
-		
-		override protected function onAdd():void
-		{
-			super.onAdd();
-			buildG2DObject();
-		}
-
 		public function setOffset(xx:Number, yy:Number):void
 		{
 			if(!gpuObject)
@@ -89,9 +61,11 @@ package com.pblabs.starling2D
 
 			for (var i:int = 0; i < 4; i++) 			
 			{ 				
-				var textrPoint : Point = (gpuObject as Image).getTexCoords(i); 				
-				textrPoint.x -= xx * .002; 				
-				textrPoint.y -= yy * .002; 				
+				//Logger.print(this, "Vertex ["+i+"] - X="+ xx + ", Y="+yy);
+				var textrPoint : Point = (gpuObject as Image).getTexCoords(i, _scratchPoint); 				
+				textrPoint.x -= xx * .0014; 				
+				textrPoint.y -= yy * .0014; 
+				//Logger.print(this, textrPoint.toString());
 				(gpuObject as Image).setTexCoords(i, textrPoint); 	
 			}
 
@@ -112,5 +86,59 @@ package com.pblabs.starling2D
 			gpuObject.width = _size.x;
 			gpuObject.height = _size.y;
 		}
+		
+		
+		override protected function buildG2DObject():void
+		{
+			var legalWidth:int  = getNextPowerOfTwo(bitmapData.width);
+			var legalHeight:int = getNextPowerOfTwo(bitmapData.height);
+			if (legalWidth > bitmapData.width || legalHeight > bitmapData.height)
+			{
+				bitmapData = increaseBitmapByPowerOfTwo(bitmapData, legalWidth, legalHeight);
+				return;
+			}
+			
+			super.buildG2DObject();
+			
+			if(gpuObject)
+			{
+				var tileH : Number = _size.x / (gpuObject as Image).texture.width;
+				var tileV : Number = _size.y / (gpuObject as Image).texture.height;
+				(gpuObject as Image).texture.repeat = true;
+				//(gpuObject as Image).setTexCoords(0, new Point(0, 0 ));
+				(gpuObject as Image).setTexCoords(1, new Point(tileH, 0 ));
+				(gpuObject as Image).setTexCoords(2, new Point(0, tileV));
+				(gpuObject as Image).setTexCoords(3, new Point(tileH, tileV));
+			}
+		}
+		
+		override protected function onAdd():void
+		{
+			super.onAdd();
+			buildG2DObject();
+		}
+		
+		protected function increaseBitmapByPowerOfTwo(data : BitmapData, targetW : Number, targetH : Number):BitmapData
+		{
+			if(!data) 
+				return null;
+			
+			// determine how many times the bitmap has to be drawn horizontal and vertical
+			// to fill the scrolling bitmap.
+			// We add an aditional so that we have enough display to scroll in any direction			
+			var cx:int = Math.ceil(targetW/data.width);
+			var cy:int = Math.ceil(targetH/data.height);
+			
+			var newBitmapData : BitmapData = new BitmapData(targetW, targetH, true, 0x00000000);
+			// fill the bitmapData object with all display info with the provided bitmap 
+			for (var ix:int = 0; ix<cx; ix++){
+				for (var iy:int = 0; iy<cy; iy++)
+				{
+					newBitmapData.copyPixels(data,data.rect, new Point(ix*data.width,iy*data.height));
+				}
+			}
+			return newBitmapData;
+		}		
+		
 	}
 }
