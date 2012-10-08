@@ -28,6 +28,7 @@ package starling.text
     import starling.display.Sprite;
     import starling.events.Event;
     import starling.textures.Texture;
+    import starling.textures.TextureSmoothing;
     import starling.utils.HAlign;
     import starling.utils.VAlign;
 
@@ -164,7 +165,7 @@ package starling.text
             sNativeTextField.antiAliasType = AntiAliasType.ADVANCED;
             sNativeTextField.selectable = false;            
             sNativeTextField.multiline = true;            
-            sNativeTextField.wordWrap = true;            
+            //sNativeTextField.wordWrap = true;            
             sNativeTextField.text = mText;
             sNativeTextField.embedFonts = true;
             sNativeTextField.filters = mNativeFilters;
@@ -207,6 +208,7 @@ package starling.text
             {
                 mImage = new Image(texture);
                 mImage.touchable = false;
+				mImage.smoothing = _smoothing;
                 addChild(mImage);
             }
             else 
@@ -235,8 +237,8 @@ package starling.text
 		
 		private function autoResizeNativeTextField(textField:flash.text.TextField):void
 		{
-			width = textField.width;
-			height = textField.height;
+			mHitArea.width = textField.width;
+			mHitArea.height = textField.height;
 		}
         
         private function createComposedContents():void
@@ -290,7 +292,8 @@ package starling.text
         /** Returns the bounds of the text within the text field. */
         public function get textBounds():Rectangle
         {
-            if (mRequiresRedraw) redrawContents();
+            if (mRequiresRedraw) 
+				redrawContents();
             if (mTextBounds == null) mTextBounds = mQuadBatch.getBounds(mQuadBatch);
             return mTextBounds.clone();
         }
@@ -492,6 +495,20 @@ package starling.text
 			}
 		}
 
+		/** The smoothing filter that is used for the texture. 
+		 *   @default bilinear
+		 *   @see starling.textures.TextureSmoothing */ 
+		private var _smoothing : String = TextureSmoothing.BILINEAR;
+		public function get smoothing():String { return _smoothing; }
+		public function set smoothing(value:String):void
+		{
+			if (_smoothing != value)
+			{
+				_smoothing = value;
+				mRequiresRedraw = true;
+			}
+		}
+
 		/** The native Flash BitmapFilters to apply to this TextField. 
          *  Only available when using standard (TrueType) fonts! */
         public function get nativeFilters():Array { return mNativeFilters; }
@@ -503,8 +520,18 @@ package starling.text
             mNativeFilters = value.concat();
             mRequiresRedraw = true;
         }
+		
+		public function get nativeTextField():flash.text.TextField
+		{
+			return sNativeTextField;
+		}
         
-        /** Makes a bitmap font available at any text field, identified by its <code>name</code>.
+		public function get gpuImage():Image
+		{
+			return mImage;
+		}
+
+		/** Makes a bitmap font available at any text field, identified by its <code>name</code>.
          *  Per default, the <code>name</code> property of the bitmap font will be used, but you 
          *  can pass a custom name, as well. @returns the name of the font. */
         public static function registerBitmapFont(bitmapFont:BitmapFont, name:String=null):String

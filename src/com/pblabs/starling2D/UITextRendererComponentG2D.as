@@ -8,14 +8,17 @@
  ******************************************************************************/
 package com.pblabs.starling2D
 {
+	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.resource.DataResource;
 	import com.pblabs.engine.resource.ImageResource;
 	import com.pblabs.rendering2D.ITextRenderer;
 	
 	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	
 	import starling.core.Starling;
 	import starling.text.TextField;
+	import starling.textures.TextureSmoothing;
 	import starling.utils.HAlign;
 	import starling.utils.VAlign;
 
@@ -51,9 +54,27 @@ package com.pblabs.starling2D
 				(gpuObject as TextField).hAlign = HAlign.LEFT;
 				(gpuObject as TextField).vAlign = VAlign.TOP;
 				(gpuObject as TextField).autoReSize = true;
+				(gpuObject as TextField).nativeTextField.wordWrap = false;
+				(gpuObject as TextField).smoothing = TextureSmoothing.NONE;
 				
 			}
 			super.buildG2DObject();
+		}
+
+		private function updateFontSize():void
+		{
+			if(!owner || !gpuObject) return;
+			
+			var bounds : Rectangle = (gpuObject as TextField).textBounds;
+			
+			var newSize : Point = new Point(bounds.width, bounds.height)
+			if(sizeProperty && sizeProperty.property != "")
+			{
+				size = newSize;
+				this.owner.setProperty( sizeProperty, newSize )
+			}else{
+				size = newSize;
+			}
 		}
 
 		public function get fontImage():ImageResource{ return _fontImage; }
@@ -75,18 +96,25 @@ package com.pblabs.starling2D
 		
 		public function get fontSize():Number{ return _fontSize; }
 		public function set fontSize(val : Number):void{
+			if(_fontSize == val)
+				return;
 			_fontSize = val;
 			if(!gpuObject) return;
 			gpuTextObject.fontSize = _fontSize;
+			updateFontSize();
 		}
 		
+		private var _textBounds : Rectangle = new Rectangle();
 		public function get text():String{ return _text; }
 		public function set text(val : String):void{
+			if(_text == val)
+				return;
 			if(val == "") 
 				val = "[Empty]";
 			_text = val;
 			if(!gpuObject) return;
 			gpuTextObject.text = _text;
+			updateFontSize();
 			//gpuTextObject.autoScale = true;
 		}
 		
