@@ -23,7 +23,6 @@ package com.pblabs.starling2D
 		//-------------------------------------------------------------------------
 		// public variable declarations
 		//-------------------------------------------------------------------------		
-		public var scrollPosition:Point = new Point(0,0);
 		public var scrollSpeed:Point = new Point(0,0);
 
 		private var scrollRect:Rectangle = new Rectangle();	// will hold the drawing area
@@ -45,15 +44,13 @@ package com.pblabs.starling2D
 			
 			_scratchPoint.x = ((scrollSpeed.x) * deltaTime); 
 			_scratchPoint.y = ((scrollSpeed.y) * deltaTime);	
-			if(_initialDraw)
-				_scratchPoint = scrollPosition;
 			
 			setOffset(_scratchPoint.x, _scratchPoint.y);
 		}
 		
 		public function setOffset(xx:Number, yy:Number):void
 		{
-			if(!gpuObject)
+			if(!gpuObject || (!_initialDraw && PBE.processManager.timeScale == 0))
 				return;
 			
 			if(!(gpuObject as Image).texture.repeat)
@@ -104,6 +101,8 @@ package com.pblabs.starling2D
 			{
 				var tileH : Number = _size.x / (gpuObject as Image).texture.width;
 				var tileV : Number = _size.y / (gpuObject as Image).texture.height;
+				//var intialPosX : Number = scrollPosition.x / _size.x;
+				//var intialPosY : Number = scrollPosition.y / _size.y;
 				(gpuObject as Image).texture.repeat = true;
 				//(gpuObject as Image).setTexCoords(0, new Point(0, 0 ));
 				(gpuObject as Image).setTexCoords(1, new Point(tileH, 0 ));

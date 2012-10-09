@@ -28,7 +28,6 @@ package com.pblabs.rendering2D
 		//-------------------------------------------------------------------------
 		// public variable declarations
 		//-------------------------------------------------------------------------		
-		public var scrollPosition:Point = new Point(0,0);
 		public var scrollSpeed:Point = new Point(0,0);
 		
 		//-------------------------------------------------------------------------
@@ -107,7 +106,7 @@ package com.pblabs.rendering2D
 		private var _painted : Boolean = false;
 		protected function paintRenderer(deltaTime:Number):void
 		{
-			if(!bitmapData) 
+			if(!bitmapData || (_painted && PBE.processManager.timeScale == 0)) 
 				return;
 
 			if(!size || size.x == 0 || size.y == 0) 
@@ -120,15 +119,15 @@ package com.pblabs.rendering2D
 			// for the copyPixel command
 			// determine x offset of rectangle draw area 
 			var dx:Number = _scratchPosition.x - (Math.floor(_scratchPosition.x/originalBitmapData.width)*originalBitmapData.width);
-			if(!_painted)
-				dx += scrollPosition.x;
+			//if(!_painted)
+				//dx += scrollPosition.x;
 			scrollRect.x = dx;
 			if((int(dx) % originalBitmapData.width) == 0)
 				scrollRect.x = 0;
 			// determine y offset of rectangle draw area 
 			var dy:Number = _scratchPosition.y - (Math.floor((_scratchPosition.y)/originalBitmapData.height)*originalBitmapData.height);
-			if(!_painted)
-				dy += scrollPosition.y;
+			//if(!_painted)
+				//dy += scrollPosition.y;
 			scrollRect.y = dy;			
 			if((int(dy) % originalBitmapData.height) == 0)
 				scrollRect.y = 0;
