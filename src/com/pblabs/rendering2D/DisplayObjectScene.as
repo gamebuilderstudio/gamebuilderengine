@@ -556,8 +556,8 @@ package com.pblabs.rendering2D
             if (!value)
                 return;
             						
-            var newX:int = int(value.x);
-            var newY:int = int(value.y);
+            var newX:int = value.x;
+            var newY:int = value.y;
             
             if (_rootPosition.x == newX && _rootPosition.y == newY)
                 return;

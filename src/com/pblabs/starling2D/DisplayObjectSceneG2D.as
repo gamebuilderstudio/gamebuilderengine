@@ -436,7 +436,6 @@ package com.pblabs.starling2D
 			
 			if(_transformDirty == false)
 				return;
-			_transformDirty = false;
 
 			// Update our transform, if required
 			_rootSprite.x = _rootPosition.x;
@@ -446,8 +445,10 @@ package com.pblabs.starling2D
 			_rootSprite.rotation = _rootRotation;
 			// Center it appropriately.
 			SceneAlignment.calculate(_tempPoint, sceneAlignment, sceneView.width, sceneView.height);
-			_rootSprite.x = _tempPoint.x;
-			_rootSprite.y = _tempPoint.y;
+			_rootSprite.x += _tempPoint.x;
+			_rootSprite.y += _tempPoint.y;
+			Logger.print(this, "Scene Position = " + _rootPosition.toString());
+			_transformDirty = false;
 		}
 		
 		public override function onFrame(elapsed:Number) : void
@@ -463,7 +464,6 @@ package com.pblabs.starling2D
 			
 			// Make sure transforms are up to date.
 			updateTransform();
-			
 			// This is disabled, because it causes everything in the screen
 			// to invalidate and redraw.
 			
@@ -508,7 +508,7 @@ package com.pblabs.starling2D
 				
 				_lastPos = tmpPosition;
 				
-				position = position.subtract( _trackDifPoint );
+				position = _rootPosition.subtract( _trackDifPoint );
 			}else{
 				_lastPos = null;
 			}
@@ -559,8 +559,8 @@ package com.pblabs.starling2D
 			if (!value)
 				return;
 			
-			var newX:int = int(value.x);
-			var newY:int = int(value.y);
+			var newX:int = value.x;
+			var newY:int = value.y;
 			
 			if (_rootPosition.x == newX && _rootPosition.y == newY)
 				return;
