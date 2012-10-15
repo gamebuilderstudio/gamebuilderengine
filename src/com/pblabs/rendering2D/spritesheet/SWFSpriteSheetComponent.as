@@ -135,7 +135,7 @@ package com.pblabs.rendering2D.spritesheet
 		[EditorData(ignore="true")]
 		public function get imageData():BitmapData
 		{
-			Logger.warn(this, "imageData", "Image data is not available on a swf spritesheet");
+			//Logger.warn(this, "imageData", "Image data is not available on a swf spritesheet");
 			return null;
 		}
 		public function set imageData(data : BitmapData):void
@@ -147,6 +147,7 @@ package com.pblabs.rendering2D.spritesheet
 		 * The divider to use to chop up the sprite sheet into frames. If the divider
 		 * isn't set, the image will be treated as one whole frame.
 		 */
+		[EditorData(ignore="true")]
 		[TypeHint(type="dynamic")]
 		public function get divider():ISpriteSheetDivider
 		{
