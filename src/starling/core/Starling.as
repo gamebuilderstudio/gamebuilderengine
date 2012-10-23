@@ -207,7 +207,7 @@ package starling.core
             mNativeStage = stage;
             mNativeStage.addChild(mNativeOverlay);
             mTouchProcessor = new TouchProcessor(mStage);
-            mJuggler = new Juggler();
+            //mJuggler = new Juggler();
             mAntiAliasing = 0;
             mSimulateMultitouch = false;
             mEnableErrorChecking = false;
@@ -336,7 +336,7 @@ package starling.core
             makeCurrent();
             
             mStage.advanceTime(passedTime);
-            mJuggler.advanceTime(passedTime);
+            //mJuggler.advanceTime(passedTime);
             mTouchProcessor.advanceTime(passedTime);
         }
         

@@ -39,6 +39,7 @@ package com.pblabs.starling2D
 		private var _delayedCalls : Vector.<Object> = new Vector.<Object>();
 		
 		private static var _starlingViewMap : Dictionary = new Dictionary();
+		private static var _stage3DIndex : int = 0;
 		
 		public function SceneViewG2D()
 		{
@@ -52,13 +53,14 @@ package com.pblabs.starling2D
 				_height = PBE.mainStage.stage.stageHeight;
 				name = "SceneView";
 
-				PBE.mainStage.scaleMode = StageScaleMode.SHOW_ALL;
+				PBE.mainStage.scaleMode = StageScaleMode.NO_SCALE;
 				PBE.mainStage.align = StageAlign.TOP_LEFT;
 				
 				Starling.multitouchEnabled = true; // useful on mobile devices
 				Starling.handleLostContext = true; // deactivate on mobile devices (to save memory)
 				
-				_starlingInstance = new Starling(Sprite, PBE.mainStage.stage, new Rectangle(0,0, width, height));
+				_starlingInstance = new Starling(Sprite, PBE.mainStage.stage, new Rectangle(0,0, width, height), PBE.mainStage.stage3Ds[_stage3DIndex]);
+				_stage3DIndex = _stage3DIndex + 1;
 				_starlingInstance.simulateMultitouch = true;
 				_starlingInstance.addEventListener("context3DCreate", onContextCreated);
 				_starlingInstance.addEventListener("rootCreated", onRootInitialized);
@@ -134,11 +136,14 @@ package com.pblabs.starling2D
 			var newViewPort : Rectangle = _starlingInstance.viewPort;
 			newViewPort.width = _width;
 			newViewPort.height = _height;
+			_starlingInstance.stage.stageWidth = _width;
+			_starlingInstance.stage.stageHeight = _height;
 			_starlingInstance.viewPort = newViewPort;
 		}
 
 		private function onRemoved(event : *):void
 		{
+			_stage3DIndex = _stage3DIndex - 1;
 			_starlingInstance.dispose();
 			_starlingInstance = null;
 			_gpuCanvasContainer = null;
@@ -185,6 +190,8 @@ package com.pblabs.starling2D
 			var newViewPort : Rectangle = _starlingInstance.viewPort;
 			newViewPort.width = _width;
 			newViewPort.height = _height;
+			_starlingInstance.stage.stageWidth = _width;
+			_starlingInstance.stage.stageHeight = _height;
 			_starlingInstance.viewPort = newViewPort;
         }
         
@@ -199,6 +206,8 @@ package com.pblabs.starling2D
 			var newViewPort : Rectangle = _starlingInstance.viewPort;
 			newViewPort.width = _width;
 			newViewPort.height = _height;
+			_starlingInstance.stage.stageWidth = _width;
+			_starlingInstance.stage.stageHeight = _height;
 			_starlingInstance.viewPort = newViewPort;
         }
         
@@ -215,7 +224,7 @@ package com.pblabs.starling2D
 			_starlingViewMap[value] = this
 		}
 		
-        private var _width:Number = 0;
-        private var _height:Number = 0;
+        private var _width:Number = 500;
+        private var _height:Number = 500;
     }
 }
