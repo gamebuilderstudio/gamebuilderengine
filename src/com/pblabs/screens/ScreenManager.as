@@ -117,7 +117,7 @@ package com.pblabs.screens
          * Switch to the specified screen, altering the top of the stack.
          * @param screenName Name of the screen to switch to.
          */
-        public function goto(screenName:String):void
+        public function moveto(screenName:String):void
         {
             pop();
             push(screenName);

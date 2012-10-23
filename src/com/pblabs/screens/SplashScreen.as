@@ -38,7 +38,7 @@ package com.pblabs.screens
             addEventListener(MouseEvent.CLICK, 
                 function(e:MouseEvent):void 
                 {
-                    ScreenManager.instance.goto(next);
+                    ScreenManager.instance.moveto(next);
                 }
             );
  		}

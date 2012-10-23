@@ -10,6 +10,9 @@
 
 package starling.text
 {
+    import assets.MiniTextureAsset;
+    import assets.MiniTextureFontAsset;
+    
     import flash.geom.Rectangle;
     import flash.utils.Dictionary;
     
@@ -53,13 +56,6 @@ package starling.text
      */ 
     public class BitmapFont
     {
-        // embed minimal font
-        [Embed(source="../../assets/mini.fnt", mimeType="application/octet-stream")]
-        private static var MiniXml:Class;
-        
-        [Embed(source = "../../assets/mini.png")]
-        private static var MiniTexture:Class;
-        
         /** Use this constant for the <code>fontSize</code> property of the TextField class to 
          *  render the bitmap font in exactly the size it was created. */ 
         public static const NATIVE_SIZE:int = -1;
@@ -87,8 +83,8 @@ package starling.text
             // if no texture is passed in, we create the minimal, embedded font
             if (texture == null && fontXml == null)
             {
-                texture = Texture.fromBitmap(new MiniTexture());
-                fontXml = XML(new MiniXml());
+                texture = Texture.fromBitmap(new MiniTextureAsset());
+                fontXml = XML(new MiniTextureFontAsset());
             }
             
             mName = "unknown";
