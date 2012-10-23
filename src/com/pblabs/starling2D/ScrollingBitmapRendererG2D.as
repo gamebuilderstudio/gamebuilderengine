@@ -29,8 +29,11 @@ package com.pblabs.starling2D
 		private var _scratchPoint : Point = new Point();
 		private var _tmpPoint : Point = new Point();
 		private var _initialDraw : Boolean = true;
-		protected var hRatio : Number;
-		protected var vRatio : Number;
+		protected var hRatio : Number = 1;
+		protected var vRatio : Number = 1;
+		protected var customBitmapCreated : Boolean = false;
+		protected var textureWidth : Number = 0;
+		protected var textureHeight : Number = 0;
 
 		public function ScrollingBitmapRendererG2D()
 		{
@@ -42,8 +45,8 @@ package com.pblabs.starling2D
 			// call onFrame of the extended BitmapRenderer
 			super.onFrame(deltaTime);
 			
-			_scratchPoint.x = ((scrollSpeed.x) * deltaTime); 
-			_scratchPoint.y = ((scrollSpeed.y) * deltaTime);	
+			_scratchPoint.x -= (scrollSpeed.x * deltaTime); 
+			_scratchPoint.y -= (scrollSpeed.y * deltaTime);	
 			
 			setOffset(_scratchPoint.x, _scratchPoint.y);
 		}
@@ -55,16 +58,14 @@ package com.pblabs.starling2D
 			
 			if(!(gpuObject as Image).texture.repeat)
 				(gpuObject as Image).texture.repeat = true;
-
-			for (var i:int = 0; i < 4; i++) 			
-			{ 				
-				//Logger.print(this, "Vertex ["+i+"] - X="+ xx + ", Y="+yy);
-				var textrPoint : Point = (gpuObject as Image).getTexCoords(i, _scratchPoint); 				
-				textrPoint.x -= xx * .0014; 				
-				textrPoint.y -= yy * .0014; 
-				//Logger.print(this, textrPoint.toString());
-				(gpuObject as Image).setTexCoords(i, textrPoint); 	
-			}
+			
+			var imageText : Image = (gpuObject as Image);
+			xx = ((xx/textureWidth % 1)+1);
+			yy = ((yy/textureHeight % 1)+1);
+			imageText.setTexCoords(0, new Point(xx, yy));
+			imageText.setTexCoords(1, new Point(xx+hRatio, yy ));
+			imageText.setTexCoords(2, new Point(xx, yy + vRatio));
+			imageText.setTexCoords(3, new Point(xx + hRatio, yy + vRatio));
 
 			if(_initialDraw)
 				_initialDraw = false;
@@ -87,27 +88,35 @@ package com.pblabs.starling2D
 		
 		override protected function buildG2DObject():void
 		{
+			if(!this.bitmap || !this.bitmap.bitmapData)
+				return;
+
 			var legalWidth:int  = getNextPowerOfTwo(bitmapData.width);
 			var legalHeight:int = getNextPowerOfTwo(bitmapData.height);
 			if (legalWidth > bitmapData.width || legalHeight > bitmapData.height)
 			{
+				customBitmapCreated = true;
 				bitmapData = increaseBitmapByPowerOfTwo(bitmapData, legalWidth, legalHeight);
 				return;
+			}else{
+				customBitmapCreated = false;
 			}
 			
 			super.buildG2DObject();
 			
 			if(gpuObject)
 			{
-				var tileH : Number = _size.x / (gpuObject as Image).texture.width;
-				var tileV : Number = _size.y / (gpuObject as Image).texture.height;
+				textureWidth = (gpuObject as Image).texture.width;
+				textureHeight = (gpuObject as Image).texture.height;
+				hRatio = _size.x / textureWidth;
+				vRatio = _size.y / textureHeight;
 				//var intialPosX : Number = scrollPosition.x / _size.x;
 				//var intialPosY : Number = scrollPosition.y / _size.y;
 				(gpuObject as Image).texture.repeat = true;
 				//(gpuObject as Image).setTexCoords(0, new Point(0, 0 ));
-				(gpuObject as Image).setTexCoords(1, new Point(tileH, 0 ));
-				(gpuObject as Image).setTexCoords(2, new Point(0, tileV));
-				(gpuObject as Image).setTexCoords(3, new Point(tileH, tileV));
+				(gpuObject as Image).setTexCoords(1, new Point(hRatio, 0 ));
+				(gpuObject as Image).setTexCoords(2, new Point(0, vRatio));
+				(gpuObject as Image).setTexCoords(3, new Point(hRatio, vRatio));
 			}
 		}
 		
@@ -115,6 +124,15 @@ package com.pblabs.starling2D
 		{
 			super.onAdd();
 			buildG2DObject();
+		}
+		
+		override protected function onRemove():void
+		{
+			super.onRemove();
+			if(customBitmapCreated){
+				originalBitmapData.dispose();
+				customBitmapCreated = false;
+			}
 		}
 		
 		protected function increaseBitmapByPowerOfTwo(data : BitmapData, targetW : Number, targetH : Number):BitmapData

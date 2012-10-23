@@ -37,6 +37,7 @@ package com.pblabs.rendering2D
 		private var scrollRect:Rectangle = new Rectangle();	// will hold the drawing area
 		private var _scratchPosition : Point = new Point();
 		private var _m : Matrix = new Matrix();
+		private var _painted : Boolean = false;
 
 		//-------------------------------------------------------------------------
 		// public methods
@@ -83,6 +84,7 @@ package com.pblabs.rendering2D
 			// Due to a bug, this has to be reset after setting bitmapData.
 			smoothing = _smoothing;
 			_transformDirty = true;
+			_painted = false;
 		}
 
 		public override function isPixelPathActive(objectToScreen:Matrix):Boolean
@@ -103,7 +105,6 @@ package com.pblabs.rendering2D
 			super.onAdd();
 		}
 		
-		private var _painted : Boolean = false;
 		protected function paintRenderer(deltaTime:Number):void
 		{
 			if(!bitmapData || (_painted && PBE.processManager.timeScale == 0)) 
