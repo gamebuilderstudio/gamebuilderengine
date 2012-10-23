@@ -41,6 +41,7 @@ package com.pblabs.engine.scripting
 		private var _cachedExpression:Boolean = false;
 		private var _value:*;
 		private var _dynamicThisObject : Object = new Object();
+		private var _thisObjectName : String;
 		
 		private static var _initialized : Boolean = false;
 
@@ -84,9 +85,10 @@ package com.pblabs.engine.scripting
 			/*if(_expression && _expression !== xml.toString())
 				Logger.warn(this, "deserialize", "Overwriting property; was '" + _property + "', new value is '" + xml.toString() + "'");*/
 			_expression = xml.toString();
-			if(_dynamicThisObject && (xml.contains("thisObjectName") || xml.toString().indexOf("thisObjectName")))
+			_thisObjectName = String(xml.@thisObjectName);
+			if(_dynamicThisObject && _expression.indexOf(_thisObjectName) != -1)
 			{
-				var entity : IEntity = PBE.lookupEntity(xml.@thisObjectName);
+				var entity : IEntity = PBE.lookupEntity(_thisObjectName);
 				if(!entity){
 					PBE.callLater(deserialize, [xml]);
 					return this;
