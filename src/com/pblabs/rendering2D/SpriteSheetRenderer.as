@@ -19,15 +19,21 @@ package com.pblabs.rendering2D
     import flash.display.Sprite;
     import flash.geom.Point;
     
-	public class SpriteSheetRenderer extends BitmapRenderer
+	public class SpriteSheetRenderer extends BitmapRenderer implements ISpriteSheetRenderer
 	{		
-	    public var spriteSheet:ISpriteSheet;
-        public var spriteIndex:int = 0;
 		public var directionReference:PropertyReference;
 		public var overrideSizePerFrame : Boolean = true;
 
 		protected var currentSpatialName : String;
 		protected var currentSpatialRef : PropertyReference;
+		protected var _spriteSheet:ISpriteSheet;
+		protected var _spriteIndex:int = 0;
+
+		public function get spriteSheet():ISpriteSheet { return _spriteSheet; }
+		public function set spriteSheet(val : ISpriteSheet):void { _spriteSheet = val; }
+
+		public function get spriteIndex():int { return _spriteIndex; }
+		public function set spriteIndex(val : int):void { _spriteIndex = val; }
 
 		override public function get displayObject():DisplayObject
 		{
@@ -45,23 +51,23 @@ package com.pblabs.rendering2D
 		
         protected function getCurrentFrame():BitmapData
         {
-            if (!spriteSheet || !spriteSheet.isLoaded)
+            if (!_spriteSheet || !_spriteSheet.isLoaded)
                 return null;
             
 			
 			var curFrame:BitmapData;
 			if(directionReference)
-				curFrame = spriteSheet.getFrame(spriteIndex, owner.getProperty(directionReference) as Number);
+				curFrame = _spriteSheet.getFrame(_spriteIndex, owner.getProperty(directionReference) as Number);
 			else
-				curFrame = spriteSheet.getFrame(spriteIndex);
+				curFrame = _spriteSheet.getFrame(_spriteIndex);
 			
 			if(!curFrame)
 				return null;
 			
             // Our registration point is the center of a frame as specified by the spritesheet
-	        if(spriteSheet && spriteSheet.isLoaded && spriteSheet.center)
+	        if(_spriteSheet && _spriteSheet.isLoaded && _spriteSheet.center)
 			{
-	            registrationPoint = spriteSheet.center.clone();					
+	            registrationPoint = _spriteSheet.center.clone();					
 			}
 			if(curFrame && this.size && this.sizeProperty && overrideSizePerFrame && (this.size.x != curFrame.width || this.size.y != curFrame.height))
 			{
@@ -94,7 +100,7 @@ package com.pblabs.rendering2D
 		protected override function dataModified():void
 		{
 			// set the registration (alignment) point to the sprite's center
-			if (spriteSheet.centered)
+			if (_spriteSheet.centered)
 			  registrationPoint = new Point(bitmapData.width/2,bitmapData.height/2);
 		}
 		
@@ -103,7 +109,7 @@ package com.pblabs.rendering2D
 			// this function is overridden so spriteIndex can be passed to 
 			// the applied modifiers
 			for (var m:int = 0; m<modifiers.length; m++)
-				data = (modifiers[m] as Modifier).modify(data, spriteIndex, spriteSheet.frameCount);
+				data = (modifiers[m] as Modifier).modify(data, _spriteIndex, _spriteSheet.frameCount);
 			return data;            
 		}
 				

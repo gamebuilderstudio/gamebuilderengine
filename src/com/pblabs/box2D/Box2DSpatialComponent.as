@@ -42,7 +42,7 @@ package com.pblabs.box2D
      * your questions about this component will really be Box2D questions in
      * disguise.</p> 
      */
-    public class Box2DSpatialComponent extends TickedComponent implements IMobileSpatialObject2D
+    public class Box2DSpatialComponent extends TickedComponent implements IBox2DSpatial
     {
 		private var _spriteForPointChecks : DisplayObjectRenderer;
 		/**

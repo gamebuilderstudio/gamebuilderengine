@@ -10,7 +10,9 @@ package com.pblabs.starling2D
 {
 	import com.pblabs.engine.entity.PropertyReference;
 	import com.pblabs.rendering2D.ISpatialObject2D;
+	import com.pblabs.rendering2D.ISpriteSheetRenderer;
 	import com.pblabs.rendering2D.modifier.Modifier;
+	import com.pblabs.rendering2D.spritesheet.ISpriteSheet;
 	import com.pblabs.starling2D.spritesheet.ISpriteSheetG2D;
 	
 	import flash.display.BitmapData;
@@ -23,21 +25,29 @@ package com.pblabs.starling2D
 	/**
 	 * SpriteSheet Render Component that will load textures from a Starling ISpriteSheetG2D class onto the GPU object.
 	 */ 
-	public class SpriteSheetRendererG2D extends BitmapRendererG2D
+	public class SpriteSheetRendererG2D extends BitmapRendererG2D implements ISpriteSheetRenderer
 	{
-		public var spriteSheet:ISpriteSheetG2D;
-		public var spriteIndex:int = 0;
 		public var directionReference:PropertyReference;
 		public var overrideSizePerFrame : Boolean = true;
 		
 		protected var currentSpatialName : String;
 		protected var currentSpatialRef : PropertyReference;
 		protected var currentTexture : Texture;
+		protected var _spriteSheet:ISpriteSheetG2D;
+		protected var _spriteIndex:int = 0;
+		
+		private var _scrachPoint : Point = new Point();
 
 		public function SpriteSheetRendererG2D()
 		{
 			super();
 		}
+
+		public function get spriteSheet():ISpriteSheet { return _spriteSheet; }
+		public function set spriteSheet(obj : ISpriteSheet):void { _spriteSheet = obj as ISpriteSheetG2D; }
+		
+		public function get spriteIndex():int { return _spriteIndex; }
+		public function set spriteIndex(val : int):void { _spriteIndex = val; }
 
 		override public function onFrame(elapsed:Number) : void
 		{
@@ -51,24 +61,25 @@ package com.pblabs.starling2D
 
 		protected function getCurrentTexture():Texture
 		{
-			if (!spriteSheet || !spriteSheet.isLoaded)
+			if (!_spriteSheet || !_spriteSheet.isLoaded)
 				return null;
 			
 			
 			if(directionReference)
-				currentTexture = modifyTexture(spriteSheet.getTexture(spriteIndex, owner.getProperty(directionReference) as Number));
+				currentTexture = modifyTexture(_spriteSheet.getTexture(_spriteIndex, owner.getProperty(directionReference) as Number));
 			else
-				currentTexture = modifyTexture(spriteSheet.getTexture(spriteIndex));
+				currentTexture = modifyTexture(_spriteSheet.getTexture(_spriteIndex));
 			
 			if(!currentTexture)
 				return null;
 			
 			// Our registration point is the center of a frame as specified by the spritesheet
-			if(spriteSheet && spriteSheet.isLoaded && spriteSheet.center)
+			if(_spriteSheet && _spriteSheet.isLoaded && _spriteSheet.center)
 			{
-				registrationPoint = spriteSheet.center.clone();					
+				_scrachPoint.copyFrom(_spriteSheet.center);
+				registrationPoint = _scrachPoint;					
 			}
-			if (spriteSheet.centered)
+			if (_spriteSheet.centered)
 				registrationPoint = new Point(currentTexture.width/2,currentTexture.height/2);
 			if(currentTexture && this.size && this.sizeProperty && overrideSizePerFrame && (this.size.x != currentTexture.width || this.size.y != currentTexture.height))
 			{
@@ -101,7 +112,7 @@ package com.pblabs.starling2D
 		protected override function dataModified():void
 		{
 			// set the registration (alignment) point to the sprite's center
-			/*if (spriteSheet.centered)
+			/*if (_spriteSheet.centered)
 				registrationPoint = new Point(currentTexture.width/2,currentTexture.height/2);*/
 		}
 		
@@ -110,7 +121,7 @@ package com.pblabs.starling2D
 			// this function is overridden so spriteIndex can be passed to 
 			// the applied modifiers
 			/*for (var m:int = 0; m<modifiers.length; m++)
-				data = (modifiers[m] as Modifier).modify(data, spriteIndex, spriteSheet.frameCount);
+				data = (modifiers[m] as Modifier).modify(data, _spriteIndex, _spriteSheet.frameCount);
 			return data;*/     
 			return data;
 		}
