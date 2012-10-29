@@ -19,7 +19,7 @@ package com.pblabs.rendering2D
     /**
      * Simple way to render a bitmap to a scene.
      */
-    public class BitmapRenderer extends DisplayObjectRendererG2D implements ICopyPixelsRenderer
+    public class BitmapRenderer extends DisplayObjectRendererG2D implements ICopyPixelsRenderer, IBitmapRenderer
     {
         protected var bitmap:Bitmap = new Bitmap();
         protected var _smoothing:Boolean = false;

@@ -31,9 +31,8 @@ package com.pblabs.starling2D
 			_smoothing = false;
 			bitmap.pixelSnapping = PixelSnapping.AUTO;
 			
-			lineSize = 0;
-			lineAlpha = 0;
-			redraw();
+			_lineSize = 0;
+			_lineAlpha = 0;
 		}
 		
 		override public function pointOccupied(worldPosition:Point, mask:ObjectType):Boolean
