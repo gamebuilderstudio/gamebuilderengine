@@ -246,6 +246,9 @@ package com.pblabs.rendering2D
             
             if(!_size)
                 _size = new Point();
+			
+			if(_size.x == value.x && _size.y == value.y)
+				return;
             
             _size.x = value.x;
             _size.y = value.y;

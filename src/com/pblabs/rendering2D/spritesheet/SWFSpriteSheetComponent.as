@@ -175,10 +175,10 @@ package com.pblabs.rendering2D.spritesheet
 				if(frameCache && frameCache.referenceCount > 0){
 					frameCache.referenceCount -= 1;
 				}
-				if(frameCache && frameCache.referenceCount <= 0){
+				/*if(frameCache && frameCache.referenceCount <= 0){
 					frameCache.destroy();
 					delete _frameCache[getFramesCacheKey()];
-				}
+				}*/
 			}else{
 				var len : int = frames.length;
 				for(var i : int = 0; i < len; i++)

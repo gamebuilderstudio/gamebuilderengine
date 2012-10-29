@@ -206,8 +206,8 @@ package com.pblabs.starling2D
 					originObject = texture;
 				}
 				
-				//Release original parent texture if it is no longer reference anywhere in the engine
-				for(var key : * in _originTexturesMap)
+				//Release original parent texture if it is no longer referenced anywhere in the engine
+				/*for(var key : * in _originTexturesMap)
 				{
 					var len : int = _originTexturesMap[key].length;
 					for(var i : int = 0; i < len; i++)
@@ -226,7 +226,7 @@ package com.pblabs.starling2D
 							return;
 						}
 					}
-				}
+				}*/
 			}catch(e : Error){
 				Logger.error(null, "releaseTexture", "Error releasing texture");
 			}

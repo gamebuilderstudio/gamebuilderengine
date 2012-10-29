@@ -275,11 +275,11 @@ package com.pblabs.rendering2D.spritesheet
 				if(frameCache && frameCache.referenceCount > 0){
 					frameCache.referenceCount -= 1;
 				}
-				if(frameCache && frameCache.referenceCount <= 0){
+				/*if(frameCache && frameCache.referenceCount <= 0){
 					frameCache.destroy();
 					delete _frameCache[getFramesCacheKey()];
 					//Divider is cleaned up in the CachedFramesData.destroy()
-				}
+				}*/
 				
 			}else{
 				var len : int = frames.length;
