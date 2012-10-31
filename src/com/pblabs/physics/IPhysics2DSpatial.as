@@ -24,7 +24,7 @@ package com.pblabs.physics
 		function set canSleep(val : Boolean):void;
 		function get collidesContinuously():Boolean;
 		function set collidesContinuously(val : Boolean):void;
-		function get bodyType():uint; 
-		function set bodyType(val : uint):void; 
+		function get bodyType():*; 
+		function set bodyType(val : *):void;
 	}
 }

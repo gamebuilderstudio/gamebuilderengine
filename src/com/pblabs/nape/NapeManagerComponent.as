@@ -163,7 +163,7 @@ package com.pblabs.nape
 			numFoundBodies = bodyList.length;
 			bodyList.foreach(function (item:Body):void
 			{
-				var curComponent:NapeSpatialComponent = item.userData;
+				var curComponent:NapeSpatialComponent = item.userData.spatial;
 				if ( !curComponent )	//so what should we do? is it even possible?
 				{
 					Logger.error(this, "queryRectangle", "Body user data must contain spatialComponent!");
@@ -195,7 +195,7 @@ package com.pblabs.nape
 			numFoundBodies = bodyList.length;
 			bodyList.foreach(function (item:Body):void
 			{
-				var curComponent:NapeSpatialComponent = item.userData;
+				var curComponent:NapeSpatialComponent = item.userData.spatial;
 				if ( !curComponent )	//so what should we do? is it even possible?
 				{
 					Logger.error(this, "queryCircle", "Body user data must contain spatialComponent!");
@@ -225,7 +225,7 @@ package com.pblabs.nape
 				result.normal = new Point(napeResult.normal.x, napeResult.normal.y);
 				var contact:Vec2 = ray.at(napeResult.distance);
 				result.position = new Point(contact.x*_scale, contact.y*_scale);
-				result.hitObject = napeResult.shape.body.userData;
+				result.hitObject = napeResult.shape.body.userData.spatial;
 				return true;
 			}
 			return _otherItems.castRay(start, end, mask, result);
@@ -244,7 +244,7 @@ package com.pblabs.nape
 			numFoundBodies = bodyList.length;
 			bodyList.foreach(function (item:Body):void
 			{
-				var curComponent:NapeSpatialComponent = item.userData;
+				var curComponent:NapeSpatialComponent = item.userData.spatial;
 				if ( !curComponent )	//so what should we do? is it even possible?
 				{
 					Logger.error(this, "getObjectsUnderPoint", "Body user data must contain spatialComponent!");
@@ -262,6 +262,20 @@ package com.pblabs.nape
 			return false;
 		}
 		
+		/**
+		 * Grab all spatials within a rectangular region
+		 */
+		public function getObjectsInRec(worldRec:Rectangle, results:Array):Boolean
+		{
+			var tmpResults:Array = new Array();
+			
+			// First use the normal spatial query...
+			queryRectangle(worldRec, null, tmpResults);
+			
+			// Ok, now pass control to the objects and see what they think.
+			return _otherItems.getObjectsInRec(worldRec, results);
+		}
+
 		override protected function onAdd():void
 		{
 			super.onAdd();
@@ -334,8 +348,8 @@ package com.pblabs.nape
 		{
 			if ( arbiter.isCollisionArbiter() )
 			{
-				var spatial1:NapeSpatialComponent = arbiter.body1.userData;
-				var spatial2:NapeSpatialComponent = arbiter.body2.userData;
+				var spatial1:NapeSpatialComponent = arbiter.body1.userData.spatial;
+				var spatial2:NapeSpatialComponent = arbiter.body2.userData.spatial;
 				var ce:CollisionEvent = new CollisionEvent(eventType, spatial1, spatial2, new Point(arbiter.collisionArbiter.normal.x*scale, arbiter.collisionArbiter.normal.y*scale), arbiter.collisionArbiter.contacts);
 				//Logger.debug(this, "dispatchCollisionEvents", "Dispatching " + eventType + " normal " + ce.normal.toString());
 				if ( spatial1.owner )

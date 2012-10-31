@@ -104,14 +104,14 @@ package com.pblabs.box2D
             return _body;
         }
 		
-		public function get bodyType():uint 
+		public function get bodyType():* 
 		{
 			if (_body)
 				return _body.GetType();
 			return _bodyDef.type;
 		}
 				
-		public function set bodyType(value:uint):void {
+		public function set bodyType(value:*):void {
 			_bodyDef.type = value;
 				
 			if (_body)

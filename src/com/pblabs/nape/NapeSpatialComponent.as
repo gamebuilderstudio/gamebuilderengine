@@ -5,6 +5,8 @@ package com.pblabs.nape
 	import com.pblabs.engine.core.ObjectType;
 	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.entity.EntityComponent;
+	import com.pblabs.physics.IPhysics2DSpatial;
+	import com.pblabs.rendering2D.DisplayObjectRenderer;
 	import com.pblabs.rendering2D.IMobileSpatialObject2D;
 	import com.pblabs.rendering2D.IScene2D;
 	import com.pblabs.rendering2D.ISpatialManager2D;
@@ -22,19 +24,35 @@ package com.pblabs.nape
 	import nape.shape.ShapeList;
 	import nape.space.Space;
 	
-	public class NapeSpatialComponent extends TickedComponent implements IMobileSpatialObject2D
+	public class NapeSpatialComponent extends TickedComponent implements IMobileSpatialObject2D, IPhysics2DSpatial
 	{
 		public function NapeSpatialComponent()
 		{
 			super();
 		}
 		
-		public function get bodyType():BodyTypeEnum
+		private var _spriteForPointChecks : DisplayObjectRenderer;
+		/**
+		 * If set, a SpriteRenderComponent we can use to fulfill point occupied
+		 * tests.
+		 */
+		[EditorData(referenceType="componentReference")]
+		public function get spriteForPointChecks():DisplayObjectRenderer { return _spriteForPointChecks; }
+		public function set spriteForPointChecks(value:DisplayObjectRenderer):void
+		{
+			if(!value) return;
+			if(_spriteForPointChecks){
+				size = value.size;
+			}
+			_spriteForPointChecks = value;
+		}
+
+		public function get bodyType():*
 		{
 			return _bodyType;			
 		}
 		
-		public function set bodyType(value:BodyTypeEnum):void
+		public function set bodyType(value:*):void
 		{
 			_bodyType = value;
 			if ( _body )
@@ -197,6 +215,34 @@ package com.pblabs.nape
 				_body.allowRotation = value;
 		}
 		
+		[EditorData(defaultValue="true")]
+		public function get canSleep():Boolean
+		{
+			return _canSleep;
+		}
+		
+		public function set canSleep(value:Boolean):void
+		{
+			_canSleep = value;
+			//if (_body)
+				//_body.SetSleepingAllowed(value);
+		}
+		
+		public function get collidesContinuously():Boolean
+		{
+			//if (_body)
+				//return _body.IsBullet();
+			
+			return _collidesContinuously;
+		}
+		
+		public function set collidesContinuously(value:Boolean):void
+		{
+			_collidesContinuously = value;
+			//if (_body)
+				//_body.SetBullet(value);
+		}
+
 		[TypeHint(type="com.pblabs.nape.CollisionShape")]
 		public function get collisionShapes():Array
 		{
@@ -327,8 +373,8 @@ package com.pblabs.nape
 			_body.angularVel = PBUtil.getRadiansFromDegrees(angularVelocity);
 			
 			buildCollisionShapes();
-			_body.cbType = (_spatialManager as NapeManagerComponent).bodyCallbackType;
-			_body.userData = this;
+			//_body.cbType = _spatialManager.bodyCallbackType;
+			_body.userData.spatial = this;
 			_body.space = _spatialManager.space;
 		}
 		
@@ -339,9 +385,11 @@ package com.pblabs.nape
 		private var _collisionShapes:Array;
 		private var _canMove:Boolean = true;
 		private var _canRotate:Boolean = true;
+		private var _canSleep:Boolean = true;
 		private var _autoAlign:Boolean = true;
 		private var _collisionType:ObjectType = null;
 		private var _collidesWithTypes:ObjectType = null;
+		private var _collidesContinuously:Boolean = false;
 		
 		protected var _linearVelocity:Point = new Point(0, 0);
 		protected var _angularVelocity:Number = 0.0;
