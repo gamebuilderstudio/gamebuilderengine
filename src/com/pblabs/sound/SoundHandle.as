@@ -25,7 +25,7 @@ package com.pblabs.sound
      */
     internal class SoundHandle implements ISoundHandle
     {
-        public function SoundHandle(_manager:SoundManager, _sound:Sound, __category:String, _pan:Number, _loopCount:int, _startDelay:Number)
+        public function SoundHandle(_manager:SoundManager, _sound:Sound, __category:String, _pan:Number, _loopCount:int, _startDelay:Number, _initialSoundTransform : SoundTransform = null)
         {
             manager = _manager;
             sound = _sound;
@@ -34,7 +34,7 @@ package com.pblabs.sound
             loopCount = _loopCount;
             pausedPosition = _startDelay;
             
-            resume();
+            resume(_initialSoundTransform);
         }
         
         public function get transform():SoundTransform
@@ -85,7 +85,7 @@ package com.pblabs.sound
             playing = false;
         }
         
-        public function resume():void
+        public function resume(intialSoundTransform : SoundTransform = null):void
         {
             Profiler.enter("SoundHandle.resume");
             
@@ -95,7 +95,7 @@ package com.pblabs.sound
             // For now, the ability to "pause" should be avoided.
             try
             {
-                channel = sound.play(pausedPosition, loopCount);
+                channel = sound.play(pausedPosition, loopCount, intialSoundTransform);
                 playing = true;                
 
                 // notify when this sound is done (all loops completed)

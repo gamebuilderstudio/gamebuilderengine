@@ -90,16 +90,17 @@ package com.pblabs.sound
                 throw new Error("Parameter sound is of unexpected type. Should be Sound, SoundResource, or String.");
             }
             
-            // Great, so set up the SoundHandle, start it, and return it.
-            var sh:SoundHandle = new SoundHandle(this, actualSound, category, pan, loopCount, startDelay);            
-
             // Look up its category.
             var categoryRef:SoundCategory = categories[category] as SoundCategory;
             
             // Apply the category's transform to avoid transitory sound issues.
+			var initialSoundTransform : SoundTransform;
             if(categoryRef)
-                sh.transform = SoundCategory.applyCategoriesToTransform(categoryRef.muted, sh.pan, sh.volume, categoryRef);            
+				initialSoundTransform = SoundCategory.applyCategoriesToTransform(categoryRef.muted, pan, 1, categoryRef);            
 
+			// Great, so set up the SoundHandle, start it, and return it.
+			var sh:SoundHandle = new SoundHandle(this, actualSound, category, pan, loopCount, startDelay, initialSoundTransform);            
+			
             // Add to the list of playing sounds.
             playingSounds.push(sh);
             

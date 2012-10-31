@@ -24,7 +24,7 @@ package com.pblabs.sound
         /**
          * Resume playback paused with pause().
          */
-        function resume():void;
+        function resume(initialSoundTransform : SoundTransform = null):void;
         
         /**
          * Irrevocably stop playback. The sound is removed from the SoundManager,
