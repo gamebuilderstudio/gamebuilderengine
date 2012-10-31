@@ -24,6 +24,7 @@ package com.pblabs.box2D
     import com.pblabs.engine.core.ObjectType;
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.entity.EntityComponent;
+    import com.pblabs.physics.IPhysics2DSpatial;
     import com.pblabs.rendering2D.DisplayObjectRenderer;
     import com.pblabs.rendering2D.IMobileSpatialObject2D;
     import com.pblabs.rendering2D.IScene2D;
@@ -42,7 +43,7 @@ package com.pblabs.box2D
      * your questions about this component will really be Box2D questions in
      * disguise.</p> 
      */
-    public class Box2DSpatialComponent extends TickedComponent implements IBox2DSpatial
+    public class Box2DSpatialComponent extends TickedComponent implements IPhysics2DSpatial
     {
 		private var _spriteForPointChecks : DisplayObjectRenderer;
 		/**

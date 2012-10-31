@@ -1,10 +1,12 @@
-package com.pblabs.box2D
+package com.pblabs.physics
 {
 	import com.pblabs.engine.core.ObjectType;
 	import com.pblabs.rendering2D.IMobileSpatialObject2D;
 
-	public interface IBox2DSpatial extends IMobileSpatialObject2D
+	public interface IPhysics2DSpatial extends IMobileSpatialObject2D
 	{
+		function buildCollisionShapes():void;
+		
 		function get collisionType():ObjectType;
 		function set collisionType(type : ObjectType):void;
 		function get collidesWithTypes():ObjectType;

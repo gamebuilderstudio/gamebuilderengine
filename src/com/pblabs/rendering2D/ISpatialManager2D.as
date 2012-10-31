@@ -8,6 +8,7 @@
  ******************************************************************************/
 package com.pblabs.rendering2D
 {
+   import com.pblabs.engine.core.IAnimatedObject;
    import com.pblabs.engine.core.ObjectType;
    
    import flash.geom.Point;

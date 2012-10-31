@@ -24,6 +24,7 @@ package com.pblabs.box2D
     import com.pblabs.engine.core.ProcessManager;
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.entity.EntityComponent;
+    import com.pblabs.physics.IPhysics2DManager;
     import com.pblabs.rendering2D.BasicSpatialManager2D;
     import com.pblabs.rendering2D.IScene2D;
     import com.pblabs.rendering2D.ISpatialManager2D;
@@ -34,7 +35,7 @@ package com.pblabs.box2D
     import flash.geom.Point;
     import flash.geom.Rectangle;
     
-    public class Box2DManagerComponent extends EntityComponent implements ITickedObject, IAnimatedObject, ISpatialManager2D
+    public class Box2DManagerComponent extends EntityComponent implements ITickedObject, IAnimatedObject, ISpatialManager2D, IPhysics2DManager
     {
         [EditorData(defaultValue="30")]
         public function get scale():Number

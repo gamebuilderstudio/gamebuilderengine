@@ -11,10 +11,12 @@ package com.pblabs.box2D
 	import Box2DAS.Dynamics.b2Fixture;
 	import Box2DAS.Dynamics.b2FixtureDef;
 	
+	import com.pblabs.physics.IPhysicsShape;
+	
 	import flash.geom.Point;
 
    [EditorData(ignore="true")]
-   public class CollisionShape
+   public class CollisionShape implements IPhysicsShape
    {
 	  private var _b2FixtureRef : b2Fixture
 	  [EditorData(ignore="true")]
