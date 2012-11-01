@@ -42,7 +42,15 @@ package com.pblabs.rendering2D
             return a.zIndex - b.zIndex;
         }
         
-        public function DisplayObjectSceneLayer()
+		static public function defaultRenderOrderSortFunction(a:DisplayObjectRenderer, b:DisplayObjectRenderer):int
+		{
+			if(a.zIndex == b.zIndex){
+				return a.rendererOrder - b.rendererOrder;
+			}
+			return a.zIndex - b.zIndex;
+		}
+
+		public function DisplayObjectSceneLayer()
         {
             drawOrderFunction = defaultSortFunction;
             mouseEnabled = false;
@@ -71,7 +79,8 @@ package com.pblabs.rendering2D
             // TODO: A bubble sort might be more efficient in cases where
             // things don't change order much.
             rendererList.sort(drawOrderFunction);
-            
+			rendererList.sort(defaultRenderOrderSortFunction);
+			
             // Apply the order.
             var updated:int = 0;
             for(var i:int=0; i<rendererList.length; i++)

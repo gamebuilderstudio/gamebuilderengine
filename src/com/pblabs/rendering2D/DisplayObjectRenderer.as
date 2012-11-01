@@ -110,6 +110,7 @@ package com.pblabs.rendering2D
         protected var _layerIndex:int = 0;
         protected var _lastLayerIndex:int = -1;
         protected var _zIndex:int = 0;
+		protected var _rendererOrder:int = 0;
         
         protected var _rotationOffset:Number = 0;
         protected var _registrationPoint:Point = new Point();
@@ -171,7 +172,28 @@ package com.pblabs.rendering2D
             _zIndexDirty = true;
         }
         
-        public function get registrationPoint():Point
+		/**
+		 * By default, layers are sorted based on the z-index, from small
+		 * to large. But if you have multiple renderers on one entity you need 
+		 * to set which order each renderer will appear. Make sure that the zIndex
+		 * is the same for all renderers on the same entity.
+		 * @param value Renderer Order to set.
+		 */
+		public function get rendererOrder():int
+		{
+			return _rendererOrder;
+		}
+		
+		public function set rendererOrder(value:int):void
+		{
+			if (_rendererOrder == value)
+				return;
+			
+			_rendererOrder = value;
+			_zIndexDirty = true;
+		}
+
+		public function get registrationPoint():Point
         {
             return _registrationPoint.clone();
         }

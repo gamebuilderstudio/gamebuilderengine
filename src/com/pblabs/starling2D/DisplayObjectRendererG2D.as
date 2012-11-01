@@ -76,7 +76,7 @@ package com.pblabs.starling2D
 		 */
 		override public function updateTransform(updateProps:Boolean = false):void
 		{
-			if(updateProps)
+			if((gpuObject || displayObject) && updateProps)
 				updateProperties();
 			
 			if(!gpuObject){
