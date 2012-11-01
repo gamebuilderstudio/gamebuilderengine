@@ -49,7 +49,10 @@ package com.pblabs.rendering2D.spritesheet
 		 * are re-used by all instances of the SpriteSheetComponent
 		 * with the same filename.
 		 */
-		public var cached:Boolean = true;
+		public function get cached():Boolean { return _cached; }
+		public function set cached(val : Boolean):void{
+			_cached = true;
+		}
 
 		[EditorData(ignore="true")]
 		/**
@@ -208,10 +211,10 @@ package com.pblabs.rendering2D.spritesheet
                 return null;
             
 			var cachedFrames : CachedFramesData = getCachedFrames();
-			if (cached && cachedFrames)
+			if (_cached && cachedFrames)
 			{
 				cachedFrames.referenceCount += 1;
-				_divider = cachedFrames.divider ? cachedFrames.divider : _divider;
+				_divider = cachedFrames.divider;
 				_bounds = cachedFrames.bounds ? cachedFrames.bounds : _bounds;
 				return cachedFrames.frames;
 			}
@@ -243,7 +246,7 @@ package com.pblabs.rendering2D.spritesheet
                 }				
             }		
 			
-			if(cached){
+			if(_cached){
 				var frameCache : CachedFramesData = new CachedFramesData(_frames, imageFilename, _divider, _bounds);
 				frameCache.referenceCount += 1;
 				setCachedFrames(frameCache);
@@ -269,18 +272,12 @@ package com.pblabs.rendering2D.spritesheet
 		{
 			if(_destroyed) return;
 			
-			if(cached){
+			if(_cached){
 				var frameCache : CachedFramesData = getCachedFrames();
 				
 				if(frameCache && frameCache.referenceCount > 0){
 					frameCache.referenceCount -= 1;
 				}
-				/*if(frameCache && frameCache.referenceCount <= 0){
-					frameCache.destroy();
-					delete _frameCache[getFramesCacheKey()];
-					//Divider is cleaned up in the CachedFramesData.destroy()
-				}*/
-				
 			}else{
 				var len : int = frames.length;
 				for(var i : int = 0; i < len; i++)
@@ -317,7 +314,18 @@ package com.pblabs.rendering2D.spritesheet
 			
 			_destroyed = true;
 		}
-        
+		
+		public function releaseCache(checkReferenceCount : Boolean = true):void
+		{
+			var frameCache : CachedFramesData = getCachedFrames();
+			if(!frameCache || (checkReferenceCount && frameCache && frameCache.referenceCount > 0)){
+				return;
+			}
+			frameCache.destroy();
+			delete _frameCache[getFramesCacheKey()];
+			//Divider is cleaned up in the CachedFramesData.destroy()
+		}
+		
 		protected function onImageLoaded(resource:ImageResource):void
 		{
 			_loading = false;
@@ -372,11 +380,11 @@ package com.pblabs.rendering2D.spritesheet
 		//* Caching Functionality
 		/*--------------------------------------------------------------------------------------------*/
 		/**
-		 * Reads the frames from the cache. Returns a null reference if they are not cached.
+		 * Reads the frames from the cache. Returns a null reference if they are not _cached.
 		 */
 		protected function getCachedFrames():CachedFramesData
 		{
-			if (!cached) 
+			if (!_cached) 
 				return null;
 			
 			return _frameCache[getFramesCacheKey()] as CachedFramesData;
@@ -387,7 +395,7 @@ package com.pblabs.rendering2D.spritesheet
 		 */
 		protected function setCachedFrames(frames:CachedFramesData):void 
 		{
-			if (!cached) 
+			if (!_cached) 
 				return;
 			_frameCache[getFramesCacheKey()] = frames;
 		}
@@ -410,5 +418,6 @@ package com.pblabs.rendering2D.spritesheet
 		protected var _bounds:Rectangle;
 		protected var _forcedBitmaps:Array = null;
 		protected var _destroyed:Boolean = false;
+		protected var _cached:Boolean = true;
     }
 }

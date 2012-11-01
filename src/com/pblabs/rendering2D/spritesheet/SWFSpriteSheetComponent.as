@@ -35,7 +35,10 @@ package com.pblabs.rendering2D.spritesheet
          * are re-used by all instances of the SWFSpriteSheetComponent
          * with the same values for swf, smoothing, and clipName.
          */
-        public var cached:Boolean = true;
+		public function get cached():Boolean { return _cached; }
+		public function set cached(val : Boolean):void{
+			_cached = true;
+		}
 
         /**
          * The SWF to be rasterized into frames.
@@ -169,16 +172,12 @@ package com.pblabs.rendering2D.spritesheet
 		 **/
 		public function destroy():void
 		{
-			if(cached){
+			if(_cached){
 				var frameCache : CachedFramesData = getCachedFrames();
 				
 				if(frameCache && frameCache.referenceCount > 0){
 					frameCache.referenceCount -= 1;
 				}
-				/*if(frameCache && frameCache.referenceCount <= 0){
-					frameCache.destroy();
-					delete _frameCache[getFramesCacheKey()];
-				}*/
 			}else{
 				var len : int = frames.length;
 				for(var i : int = 0; i < len; i++)
@@ -193,6 +192,16 @@ package com.pblabs.rendering2D.spritesheet
 			_clip = null;
 		}
 		
+		public function releaseCache(checkReferenceCount : Boolean = true):void
+		{
+			var frameCache : CachedFramesData = getCachedFrames();
+			if(!frameCache || (checkReferenceCount && frameCache && frameCache.referenceCount > 0)){
+				return;
+			}
+			frameCache.destroy();
+			delete _frameCache[getFramesCacheKey()];
+		}
+
 		override protected function deleteFrames():void
 		{
 			super.deleteFrames();
@@ -220,11 +229,11 @@ package com.pblabs.rendering2D.spritesheet
         }
 
         /**
-         * Reads the frames from the cache. Returns a null reference if they are not cached.
+         * Reads the frames from the cache. Returns a null reference if they are not _cached.
          */
         protected function getCachedFrames():CachedFramesData
         {
-            if (!cached) 
+            if (!_cached) 
                 return null;
 
             return _frameCache[getFramesCacheKey()] as CachedFramesData;
@@ -235,7 +244,7 @@ package com.pblabs.rendering2D.spritesheet
          */
         protected function setCachedFrames(frames:CachedFramesData):void 
         {
-            if (!cached) 
+            if (!_cached) 
                 return;
 
             _frameCache[getFramesCacheKey()] = frames;
@@ -281,7 +290,7 @@ package com.pblabs.rendering2D.spritesheet
             frames = onRasterize(_clip);
 			_center = new Point(-_bounds.x, -_bounds.y);
 			
-			if(cached){
+			if(_cached){
 				var frameCache : CachedFramesDataMC = new CachedFramesDataMC(frames, _bounds, _clip, _frameCenters);
 				frameCache.referenceCount += 1;
 				setCachedFrames(frameCache);
@@ -444,6 +453,7 @@ package com.pblabs.rendering2D.spritesheet
 		protected var _clipName:String;
 		protected var _clip:MovieClip;
 		protected var _bounds:Rectangle;
+		protected var _cached:Boolean = true;
     }
 }
 import flash.display.BitmapData;

@@ -244,7 +244,7 @@ package com.pblabs.rendering2D.spritesheet
          */
         protected function getRawFrame(index:int):BitmapData
         {
-            if (frames == null)
+            if (frames == null || frames.length < 1)
                 buildFrames();
             
             if (frames == null)

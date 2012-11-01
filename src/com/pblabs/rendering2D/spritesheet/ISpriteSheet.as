@@ -22,6 +22,14 @@ package com.pblabs.rendering2D.spritesheet
 		function destroy():void;
 		
 		/**
+		 * release the cached image frames if there are any and allow gc to kick in.
+		 * This can cause a performance hit.
+		 * @param checkReferenceCount : check the reference count before releasing
+		 * 								and do not release if there are still references
+		 **/
+		function releaseCache(checkReferenceCount : Boolean = true):void;
+		
+		/**
 		 * Gets the bitmap data for a frame at the specified index.
 		 * 
 		 * @param index The index of the frame to retrieve.
@@ -64,5 +72,7 @@ package com.pblabs.rendering2D.spritesheet
 		function get frameCount():int;
 		function set frameCount(val : int):void;
 
+		function get cached():Boolean;
+		function set cached(val : Boolean):void;
 	}
 }
