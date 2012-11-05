@@ -10,14 +10,19 @@ package com.pblabs.nape
 	import com.pblabs.rendering2D.IMobileSpatialObject2D;
 	import com.pblabs.rendering2D.IScene2D;
 	import com.pblabs.rendering2D.ISpatialManager2D;
+	import com.pblabs.rendering2D.ISpatialObject2D;
 	import com.pblabs.rendering2D.RayHitInfo;
 	
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
+	import nape.dynamics.InteractionFilter;
 	import nape.dynamics.InteractionGroup;
+	import nape.geom.Ray;
+	import nape.geom.RayResult;
 	import nape.geom.Vec2;
 	import nape.phys.Body;
+	import nape.phys.BodyList;
 	import nape.phys.BodyType;
 	import nape.phys.Material;
 	import nape.shape.Shape;
@@ -81,7 +86,7 @@ package com.pblabs.nape
 		public function set collisionType(value:ObjectType):void
 		{
 			_collisionType = value;
-			
+			_interactionFilter.collisionGroup = _collisionType ? _collisionType.bits : 1;
 			if (_body)
 				buildCollisionShapes();
 		}
@@ -94,7 +99,7 @@ package com.pblabs.nape
 		public function set collidesWithTypes(value:ObjectType):void
 		{
 			_collidesWithTypes = value;
-			
+			_interactionFilter.collisionMask = collidesWithTypes ? collidesWithTypes.bits : -1;
 			if (_body)
 				buildCollisionShapes();
 		}
@@ -258,7 +263,10 @@ package com.pblabs.nape
 		
 		public function get worldExtents():Rectangle
 		{
-			return null;
+			if(spriteForPointChecks)
+				return spriteForPointChecks.sceneBounds;
+			
+			return new Rectangle(position.x - (size.x * 0.5), position.y - (size.y * 0.5), size.x, size.y);         
 		}
 		
 		public function get spatialManager():ISpatialManager2D
@@ -271,13 +279,31 @@ package com.pblabs.nape
 			_spatialManager = value as NapeManagerComponent;			
 		}
 		
+		private var _interactionFilter : InteractionFilter = new InteractionFilter();
+		public function get interactionFilter():InteractionFilter
+		{
+			return _interactionFilter;
+		}
+		
 		public function castRay(start:Point, end:Point, flags:ObjectType, result:RayHitInfo):Boolean
 		{
 			return false;
 		}
 		
+		private var _scratchVec : Vec2 = new Vec2();
 		public function pointOccupied(pos:Point, mask:ObjectType, scene:IScene2D):Boolean
 		{
+			// If no sprite then we just test our bounds.
+			if(!spriteForPointChecks && _size && _size.x > 0 && _size.y > 0)
+				return worldExtents.containsPoint(pos);
+			
+			if(spriteForPointChecks && scene)
+				return spriteForPointChecks.pointOccupied(scene.transformWorldToScreen(pos), mask);
+
+			//Check Nape body
+			if(_body){
+				return _body.contains( _scratchVec.setxy( pos.x*_spatialManager.inverseScale, pos.y*_spatialManager.inverseScale ) );
+			}
 			return false;
 		}
 		
@@ -376,6 +402,14 @@ package com.pblabs.nape
 			//_body.cbType = _spatialManager.bodyCallbackType;
 			_body.userData.spatial = this;
 			_body.space = _spatialManager.space;
+		}
+		
+		private function distanceToPoint(pointA : Point, pointB : Point):Number
+		{
+			var dx:Number = pointA.x - pointB.x;
+			var dy:Number = pointA.y - pointB.y;
+			var dist:Number = Math.sqrt(dx * dx + dy * dy);
+			return dist;
 		}
 		
 		private var _spatialManager:NapeManagerComponent;

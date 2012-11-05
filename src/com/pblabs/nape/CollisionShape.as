@@ -53,7 +53,7 @@ package com.pblabs.nape
 			{
 				shape.filter = new InteractionFilter( parent.collisionType ? parent.collisionType.bits : 1, parent.collidesWithTypes ? parent.collidesWithTypes.bits : -1);
 			}*/
-			shape.filter = new InteractionFilter( parent.collisionType ? parent.collisionType.bits : 1, parent.collidesWithTypes ? parent.collidesWithTypes.bits : -1);
+			shape.filter = parent.interactionFilter;
 
 			shape.userData.spatial = parent;
 			

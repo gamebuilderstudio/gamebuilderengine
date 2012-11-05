@@ -250,8 +250,12 @@ package com.pblabs.rendering2D
         public function pointOccupied(pos:Point, mask:ObjectType, scene:IScene2D):Boolean
         {
             // If no sprite then we just test our bounds.
-            if(!spriteForPointChecks || !scene)
-                return worldExtents.containsPoint(pos);
+            if(!spriteForPointChecks || !scene){
+				var extents : Rectangle = worldExtents;
+				if(!extents)
+					return false;
+                return extents.containsPoint(pos);
+			}
             
             // OK, so pass it over to the sprite.
             return spriteForPointChecks.pointOccupied(scene.transformWorldToScreen(pos), mask);
