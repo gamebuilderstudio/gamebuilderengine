@@ -54,6 +54,13 @@ package com.pblabs.engine.core
 		public static const LEVEL_UNLOADED_EVENT:String = "levelUnloaded";
 
 		/**
+		 * This event is dispatched by the LevelManager when a level's data has failed to load.
+		 *
+		 * @eventType LEVEL_LOAD_FAILED_EVENT
+		 */
+		public static const LEVEL_LOAD_FAILED_EVENT:String = "levelFailedLoad";
+
+		/**
          * The level associated with this event.
          */
         public var level:int = -1;

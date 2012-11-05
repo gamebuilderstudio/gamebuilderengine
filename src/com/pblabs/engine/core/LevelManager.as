@@ -381,7 +381,9 @@ package com.pblabs.engine.core
       private function onFileLoadFailed(event:Event):void
       {
          Logger.error(this, "LoadLevel", "One of the files for level " + _currentLevel + " failed to load.");
-         finishLoad();
+		 dispatchEvent(new LevelEvent(LevelEvent.LEVEL_LOAD_FAILED_EVENT, _currentLevel));
+		 _pendingFiles--;
+         //finishLoad();
       }
       
       private function finishLoad():void
