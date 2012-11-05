@@ -41,6 +41,12 @@ package com.pblabs.starling2D
 			buildG2DObject();
 		}
 		
+		protected override function onRemove():void
+		{
+			super.onRemove();
+			InitializationUtilG2D.initializeRenderers.remove(buildG2DObject);
+		}
+
 		override protected function buildG2DObject():void
 		{
 			if(!Starling.context){
@@ -140,10 +146,10 @@ package com.pblabs.starling2D
 		 */
 		override public function set size(value:Point):void
 		{
-			
 			super.size = value;
 			
-			if(!gpuObject || !value) return;
+			if(!gpuObject || !value || !_transformDirty) 
+				return;
 			gpuObject.width = _size.x+tmpPadding.x;
 			gpuObject.height = _size.y+tmpPadding.y;
 		}
