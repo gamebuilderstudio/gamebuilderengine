@@ -22,6 +22,39 @@ package com.pblabs.starling2D
 		{
 		}
 		
+		public static function releaseTextures():void
+		{
+			//Release original parent texture if it is no longer referenced anywhere in the engine
+			for(var key : * in _originTexturesMap)
+			{
+				var len : int = _originTexturesMap[key].length;
+				for(var i : int = 0; i < len; i++)
+				{
+					var originObject : * = _originTexturesMap[key][i]
+					_originTexturesMap[key].splice(i, 1);
+					if(!_originTexturesMap[key] || _originTexturesMap[key].length < 1)
+						_originTexturesMap[key] = null;
+					
+					_textureReferenceCount[originObject] = null;
+					if(originObject["disposed"] && originObject["dispose"] != null )
+					{
+						originObject.disposed.remove(releaseTexture);
+						originObject.dispose();
+					}
+				}
+			}
+			for(key in _subTexturesMap)
+			{
+				_subTexturesMap[key].disposed.remove(releaseTexture);
+				_subTexturesMap[key].dispose();
+				_subTexturesMap[key] = null;
+			}
+			_originTexturesMap = new Dictionary();
+			_subTexturesMap = new Dictionary();
+			_textureAtlasMap = new Dictionary();
+			_textureReferenceCount = new Dictionary();
+		}
+		
 		public static function mapTextureToResource(texture : Texture, resource : Resource):void
 		{
 			if(!resource || !texture)

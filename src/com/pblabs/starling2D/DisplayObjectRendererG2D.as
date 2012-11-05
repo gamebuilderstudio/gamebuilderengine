@@ -22,6 +22,7 @@ package com.pblabs.starling2D
 	import starling.core.Starling;
 	import starling.display.DisplayObject;
 	import starling.display.Image;
+	import starling.textures.Texture;
 	import starling.utils.deg2rad;
 	
 	/**
@@ -121,13 +122,15 @@ package com.pblabs.starling2D
 			super.onRemove();
 			
 			if(gpuObject) {
-				gpuObject.dispose();
 				if(gpuObject.hasOwnProperty("texture"))
 				{
 					gpuObject['texture'].dispose();
 				}
+				if(gpuObject.parent)
+					gpuObject.parent.removeChild(gpuObject, true);
 				gpuObject = null;
 			}
+			InitializationUtilG2D.initializeRenderers.remove(buildG2DObject);
 		}
 		
 		override protected function removeFromScene():void

@@ -84,6 +84,12 @@ package com.pblabs.starling2D
 			super.buildG2DObject();
 		}
 		
+		override protected function onRemove():void
+		{
+			super.onRemove();
+			InitializationUtilG2D.initializeRenderers.remove(buildG2DObject);
+		}
+		
 		override public function redraw():void
 		{
 			super.redraw();

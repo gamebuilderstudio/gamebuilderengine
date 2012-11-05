@@ -169,6 +169,8 @@ package starling.core
         
         private var mContext:Context3D;
         private var mPrograms:Dictionary;
+		
+		private var _disposed : Boolean = false;
         
         private static var sCurrent:Starling;
         private static var sHandleLostContext:Boolean;
@@ -190,7 +192,7 @@ package starling.core
          */
         public function Starling(rootClass:Class, stage:flash.display.Stage, 
                                  viewPort:Rectangle=null, stage3D:Stage3D=null,
-                                 renderMode:String="auto", profile:String="baselineConstrained") 
+                                 renderMode:String="auto", profile:String="baselineConstrained", sharedOverride : Boolean = false) 
         {
             if (stage == null) throw new ArgumentError("Stage must not be null");
             if (rootClass == null) throw new ArgumentError("Root class must not be null");
@@ -220,14 +222,14 @@ package starling.core
                 stage.addEventListener(touchEventType, onTouch, false, 0, true);
             
             // register other event handlers
-            stage.addEventListener(Event.ENTER_FRAME, onEnterFrame, false, 0, true);
+            //stage.addEventListener(Event.ENTER_FRAME, onEnterFrame, false, 0, true);
             stage.addEventListener(KeyboardEvent.KEY_DOWN, onKey, false, 0, true);
             stage.addEventListener(KeyboardEvent.KEY_UP, onKey, false, 0, true);
             stage.addEventListener(Event.RESIZE, onResize, false, 0, true);
             
             if (mStage3D.context3D && mStage3D.context3D.driverInfo != "Disposed")
             {
-                mShareContext = true;
+                mShareContext = sharedOverride ? false : true;
                 setTimeout(initialize, 1); // we don't call it right away, because Starling should
                                            // behave the same way with or without a shared context
             }
@@ -277,6 +279,7 @@ package starling.core
             if (mSupport) mSupport.dispose();
             if (mStage) mStage.dispose();
             if (sCurrent == this) sCurrent = null;
+			_disposed = true;
         }
         
         // functions
@@ -636,10 +639,11 @@ package starling.core
         /** Displays the statistics box at a certain position. */
         public function showStatsAt(hAlign:String="left", vAlign:String="top"):void
         {
-            if (mContext == null)
+            
+			if (mContext == null)
             {
                 // Starling is not yet ready - we postpone this until it's initialized.
-                addEventListener(starling.events.Event.ROOT_CREATED, onRootCreated);
+                //addEventListener(starling.events.Event.ROOT_CREATED, onRootCreated);
             }
             else
             {
@@ -745,5 +749,10 @@ package starling.core
             else
                 sHandleLostContext = value;
         }
+		
+		public function get disposed():Boolean
+		{
+			return _disposed;
+		}
     }
 }

@@ -112,6 +112,8 @@ package com.pblabs.starling2D
 			}   
 			
 			super.onRemove();
+
+			InitializationUtilG2D.initializeRenderers.remove(buildG2DObject);
 		}
 		
 		/**

@@ -51,7 +51,6 @@ package com.pblabs.starling2D
 				// Intelligent default size.
 				_width = PBE.mainStage.stage.stageWidth;
 				_height = PBE.mainStage.stage.stageHeight;
-				name = "SceneView";
 
 				PBE.mainStage.scaleMode = StageScaleMode.NO_SCALE;
 				PBE.mainStage.align = StageAlign.TOP_LEFT;
@@ -59,15 +58,17 @@ package com.pblabs.starling2D
 				Starling.multitouchEnabled = true; // useful on mobile devices
 				Starling.handleLostContext = true; // deactivate on mobile devices (to save memory)
 				
-				_starlingInstance = new Starling(Sprite, PBE.mainStage.stage, new Rectangle(0,0, width, height), PBE.mainStage.stage3Ds[_stage3DIndex]);
 				_stage3DIndex = _stage3DIndex + 1;
+				if(PBE.mainStage.stage3Ds[_stage3DIndex].context3D)
+					PBE.mainStage.stage3Ds[_stage3DIndex].context3D.clear();
+				_starlingInstance = new Starling(Sprite, PBE.mainStage.stage, new Rectangle(0,0, width, height), PBE.mainStage.stage3Ds[_stage3DIndex], "auto", "baselineConstrained", true);
 				_starlingInstance.simulateMultitouch = true;
 				_starlingInstance.addEventListener("context3DCreate", onContextCreated);
 				_starlingInstance.addEventListener("rootCreated", onRootInitialized);
 				if(!PBE.IS_SHIPPING_BUILD)
 					_starlingInstance.enableErrorChecking = true;
 				//_starlingInstance.start();
-				PBE.processManager.addAnimatedObject(this);
+				name = "SceneView_"+_stage3DIndex;
 			}
 			
 			this.addEventListener("removedFromStage", onRemoved);
@@ -83,7 +84,7 @@ package com.pblabs.starling2D
 		
 		public function onFrame(deltaTime:Number):void
 		{
-			if(Starling.context && _starlingInstance)
+			if(Starling.context && _starlingInstance && !_disposed && this.stage)
 			{
 				_starlingInstance.nextFrame();
 			}
@@ -140,13 +141,33 @@ package com.pblabs.starling2D
 			_starlingInstance.stage.stageHeight = _height;
 			_starlingInstance.viewPort = newViewPort;
 		}
-
-		private function onRemoved(event : *):void
+		
+		public function dispose():void
 		{
+			this.removeEventListener("removedFromStage", onRemoved);
+			PBE.mainStage.stage.removeEventListener(Event.DEACTIVATE, stage_deactivateHandler);
+
+			_starlingInstance.removeEventListener("context3DCreate", onContextCreated);
+			_starlingInstance.removeEventListener("rootCreated", onRootInitialized);
+
+			InitializationUtilG2D.disposed.dispatch();
+
+			clearDisplayObjects();
+			
+			PBE.processManager.removeAnimatedObject(this);
+			
+			_disposed = true;
+			
 			_stage3DIndex = _stage3DIndex - 1;
 			_starlingInstance.dispose();
 			_starlingInstance = null;
 			_gpuCanvasContainer = null;
+			delete _starlingViewMap[name];
+		}
+
+		private function onRemoved(event : *):void
+		{
+			
 		}
 		
 		private function onRootInitialized(event : * ):void{
@@ -155,6 +176,8 @@ package com.pblabs.starling2D
 			{
 				(calls.func as Function).apply(this, calls.params);
 			}
+			PBE.processManager.addAnimatedObject(this);
+			InitializationUtilG2D.initializeRenderers.dispatch();
 		}
 		
 		private function onContextCreated(event : *):void{
@@ -162,7 +185,6 @@ package com.pblabs.starling2D
 			if (Starling.context.driverInfo.toLowerCase().indexOf("software") != -1) {
 				Starling.current.nativeStage.frameRate = 32;
 			}
-			InitializationUtilG2D.initializeRenderers.dispatch();
 		}
 		
 		private function stage_deactivateHandler(event:Event):void
@@ -226,5 +248,6 @@ package com.pblabs.starling2D
 		
         private var _width:Number = 500;
         private var _height:Number = 500;
+		private var _disposed : Boolean = false;
     }
 }

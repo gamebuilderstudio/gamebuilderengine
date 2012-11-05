@@ -19,6 +19,7 @@ package com.pblabs.starling2D.spritesheet
 	import flash.display.BitmapData;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import flash.utils.Dictionary;
 	
 	import starling.core.Starling;
 	import starling.textures.Texture;
@@ -29,6 +30,19 @@ package com.pblabs.starling2D.spritesheet
 		public function SpriteSheetComponentG2D()
 		{
 			super();
+			InitializationUtilG2D.disposed.add(releaseTextures);
+		}
+		
+		public static function releaseTextures():void
+		{
+			for(var key : String in _frameCache)
+			{
+				var cache : CachedFramesDataG2D = _frameCache[key] as CachedFramesDataG2D;
+				cache.destroy();
+				_frameCache[key] = null;
+			}
+			_frameCache = new Dictionary(true);
+			InitializationUtilG2D.disposed.remove(releaseTextures);
 		}
 		
 		override public function getFrame(index:int, direction:Number=0.0):BitmapData{ return null; }

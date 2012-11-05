@@ -20,6 +20,7 @@ package com.pblabs.starling2D.spritesheet
 		override public function destroy():void
 		{
 			super.destroy();
+			this.atlas.dispose();
 			this.atlas = null;
 		}
 	}

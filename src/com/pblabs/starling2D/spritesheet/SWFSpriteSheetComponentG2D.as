@@ -3,11 +3,13 @@ package com.pblabs.starling2D.spritesheet
 	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.rendering2D.spritesheet.CachedFramesDataMC;
 	import com.pblabs.rendering2D.spritesheet.SWFSpriteSheetComponent;
+	import com.pblabs.starling2D.InitializationUtilG2D;
 	import com.pblabs.starling2D.ResourceTextureManagerG2D;
 	
 	import flash.display.BitmapData;
 	import flash.display.MovieClip;
 	import flash.geom.Point;
+	import flash.utils.Dictionary;
 	
 	import starling.core.Starling;
 	import starling.textures.Texture;
@@ -18,6 +20,19 @@ package com.pblabs.starling2D.spritesheet
 		public function SWFSpriteSheetComponentG2D()
 		{
 			super();
+			InitializationUtilG2D.disposed.add(releaseTextures);
+		}
+		
+		public static function releaseTextures():void
+		{
+			for(var key : String in _frameCache)
+			{
+				var cache : CachedFramesDataMCG2D = _frameCache[key] as CachedFramesDataMCG2D;
+				cache.destroy();
+				_frameCache[key] = null;
+			}
+			_frameCache = new Dictionary(true);
+			InitializationUtilG2D.disposed.remove(releaseTextures);
 		}
 
 		override public function getFrame(index:int, direction:Number=0.0):BitmapData{ return null; }

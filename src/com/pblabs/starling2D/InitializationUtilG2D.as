@@ -12,6 +12,7 @@ package com.pblabs.starling2D
 
 	public class InitializationUtilG2D
 	{
+		public static const disposed : Signal = new Signal();
 		public static const initializeRenderers : Signal = new Signal();
 		
 		public function InitializationUtilG2D()

@@ -138,6 +138,7 @@ package com.pblabs.starling2D
 			super.onRemove();
 			
 			currentTexture = null;
+			InitializationUtilG2D.initializeRenderers.remove(buildG2DObject);
 		}
 
 		override protected function buildG2DObject():void
