@@ -60,7 +60,7 @@ package com.pblabs.starling2D
 				(gpuObject as TextField).hAlign = HAlign.LEFT;
 				(gpuObject as TextField).vAlign = VAlign.TOP;
 				(gpuObject as TextField).nativeTextField.wordWrap = false;
-				(gpuObject as TextField).autoScale = true;
+				//(gpuObject as TextField).autoScale = true;
 				//(gpuObject as TextField).smoothing = TextureSmoothing.NONE;
 				
 			}
@@ -71,7 +71,6 @@ package com.pblabs.starling2D
 		{
 			if(!owner || !gpuObject) return;
 			
-			//_size.setTo( (gpuObject as TextField).width, (gpuObject as TextField).height);
 			var tmpNewSize : Point = new Point( (gpuObject as TextField).nativeTextField.textWidth, (gpuObject as TextField).nativeTextField.textHeight );
 			
 			if(sizeProperty && sizeProperty.property != "")
@@ -140,17 +139,5 @@ package com.pblabs.starling2D
 		}
 		
 		private var tmpPadding : Point = new Point(2,2);
-		/**
-		 * @inheritDoc
-		 */
-		override public function set size(value:Point):void
-		{
-			super.size = value;
-			
-			if(!gpuObject || !value || !_transformDirty) 
-				return;
-			//gpuObject.width = _size.x+tmpPadding.x;
-			//gpuObject.height = _size.y+tmpPadding.y;
-		}
 	}
 }
