@@ -59,9 +59,9 @@ package com.pblabs.starling2D
 				gpuObject = new TextField(_size.x+tmpPadding.x, _size.y+tmpPadding.y, _text, "Arial", _fontSize, _fontColor, true);
 				(gpuObject as TextField).hAlign = HAlign.LEFT;
 				(gpuObject as TextField).vAlign = VAlign.TOP;
-				(gpuObject as TextField).autoReSize = true;
 				(gpuObject as TextField).nativeTextField.wordWrap = false;
-				(gpuObject as TextField).smoothing = TextureSmoothing.NONE;
+				(gpuObject as TextField).autoScale = true;
+				//(gpuObject as TextField).smoothing = TextureSmoothing.NONE;
 				
 			}
 			super.buildG2DObject();
@@ -71,15 +71,15 @@ package com.pblabs.starling2D
 		{
 			if(!owner || !gpuObject) return;
 			
-			var bounds : Rectangle = (gpuObject as TextField).textBounds;
+			//_size.setTo( (gpuObject as TextField).width, (gpuObject as TextField).height);
+			var tmpNewSize : Point = new Point( (gpuObject as TextField).nativeTextField.textWidth, (gpuObject as TextField).nativeTextField.textHeight );
 			
-			var newSize : Point = new Point(bounds.width, bounds.height)
 			if(sizeProperty && sizeProperty.property != "")
 			{
-				size = newSize;
-				this.owner.setProperty( sizeProperty, newSize )
+				size = tmpNewSize;
+				this.owner.setProperty( sizeProperty, tmpNewSize )
 			}else{
-				size = newSize;
+				size = tmpNewSize;
 			}
 		}
 
@@ -121,7 +121,6 @@ package com.pblabs.starling2D
 			if(!gpuObject) return;
 			gpuTextObject.text = _text;
 			updateFontSize();
-			//gpuTextObject.autoScale = true;
 		}
 		
 		private function get gpuTextObject():TextField{ return gpuObject ? gpuObject as TextField : null; }
@@ -131,7 +130,7 @@ package com.pblabs.starling2D
 		 */
 		override public function get size():Point
 		{
-			if(!gpuObject || (gpuObject && !(gpuObject as TextField).autoReSize)){
+			if(!gpuObject){
 				return super.size;
 			}
 			if(!_size)
@@ -150,8 +149,8 @@ package com.pblabs.starling2D
 			
 			if(!gpuObject || !value || !_transformDirty) 
 				return;
-			gpuObject.width = _size.x+tmpPadding.x;
-			gpuObject.height = _size.y+tmpPadding.y;
+			//gpuObject.width = _size.x+tmpPadding.x;
+			//gpuObject.height = _size.y+tmpPadding.y;
 		}
 	}
 }

@@ -28,8 +28,10 @@ package com.pblabs.starling2D.spritesheet
 			for(var key : String in _frameCache)
 			{
 				var cache : CachedFramesDataMCG2D = _frameCache[key] as CachedFramesDataMCG2D;
-				cache.destroy();
-				_frameCache[key] = null;
+				if(cache){
+					cache.destroy();
+					delete _frameCache[key];
+				}
 			}
 			_frameCache = new Dictionary(true);
 			InitializationUtilG2D.disposed.remove(releaseTextures);
