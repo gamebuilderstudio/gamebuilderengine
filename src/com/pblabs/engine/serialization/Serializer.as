@@ -492,10 +492,11 @@ package com.pblabs.engine.serialization
                         value = deserialize(value, childXML);
                     
                     // Assign, either to key or to end of array.
-                    if (key.length > 0)
+                    if (key.length > 0){
                         object[key] = value;
-                    else
+					}else{
                         object.push(value);
+					}
                 }
             }
             
@@ -621,7 +622,18 @@ package com.pblabs.engine.serialization
             var childObject:*;
             try
             {
-                childObject = object[fieldName]; 
+                childObject = object[fieldName];
+				if(childObject is Array || childObject is OrderedArray || childObject is Vector){
+					try{
+						if(childObject && childObject is OrderedArray){
+							childObject = new OrderedArray();
+						}else if(childObject){
+							childObject.splice(0);
+						}
+					}catch(e:Error){
+						Logger.error(this, "deserializeDictionary", "Error trying to clear an existing array type object. ["+e.message+"]");
+					}
+				}
             } 
             catch(e:Error)
             {
