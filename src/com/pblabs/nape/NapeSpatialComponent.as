@@ -25,11 +25,13 @@ package com.pblabs.nape
 	import nape.phys.BodyList;
 	import nape.phys.BodyType;
 	import nape.phys.Material;
+	import nape.shape.Polygon;
 	import nape.shape.Shape;
 	import nape.shape.ShapeList;
 	import nape.space.Space;
+	import nape.util.ShapeDebug;
 	
-	public class NapeSpatialComponent extends TickedComponent implements IMobileSpatialObject2D, IPhysics2DSpatial
+	public class NapeSpatialComponent extends TickedComponent implements IPhysics2DSpatial
 	{
 		public function NapeSpatialComponent()
 		{
@@ -52,6 +54,7 @@ package com.pblabs.nape
 			_spriteForPointChecks = value;
 		}
 
+		[TypeHint(type="com.pblabs.nape.BodyTypeEnum")]
 		public function get bodyType():*
 		{
 			return _bodyType;			
@@ -108,7 +111,7 @@ package com.pblabs.nape
 		{
 			if ( _body )
 				_position.setTo(_body.position.x*_spatialManager.scale, _body.position.y*_spatialManager.scale);
-			return _position;
+			return _position.clone();
 		}
 		
 		public function set position(value:Point):void
@@ -141,7 +144,7 @@ package com.pblabs.nape
 				_linearVelocity.setTo(vel.x*scale, vel.y*scale);
 			}
 			
-			return _linearVelocity;
+			return _linearVelocity.clone();
 		}
 		
 		public function set linearVelocity(value:Point):void
@@ -178,7 +181,7 @@ package com.pblabs.nape
 		
 		public function get size():Point
 		{
-			return _size;
+			return _size.clone();
 		}
 		
 		public function set size(value:Point):void
@@ -276,12 +279,26 @@ package com.pblabs.nape
 		
 		public function set spatialManager(value:ISpatialManager2D):void
 		{
-			_spatialManager = value as NapeManagerComponent;			
+			if (!isRegistered)
+			{
+				_spatialManager = value as NapeManagerComponent;
+				return;
+			}
+			
+			if (_spatialManager){
+				destroyBody();
+			}
+			
+			_spatialManager = value as NapeManagerComponent;
+			
+			setupBody();
 		}
 		
 		private var _interactionFilter : InteractionFilter = new InteractionFilter();
 		public function get interactionFilter():InteractionFilter
 		{
+			_interactionFilter.collisionGroup = (this.collisionType ? this.collisionType.bits : 1);
+			_interactionFilter.collisionMask = (this.collidesWithTypes ? this.collidesWithTypes.bits : -1);
 			return _interactionFilter;
 		}
 		
@@ -322,42 +339,107 @@ package com.pblabs.nape
 				_body.space = null;
 			}
 			
+			clearShapesFromBody();
+			
+			if (_collisionShapes && _collisionShapes.length > 0)
+			{
+				for each (var newShape:CollisionShape in _collisionShapes){
+					newShape.createShape(this).body = _body;
+				}
+			}else{
+				var tmpShape : Polygon = new Polygon( Polygon.rect(-(_size.x/2), -(_size.y/2),_size.x, _size.y) );
+				tmpShape.body = _body;
+			}
+			
+			if ( space )
+				_body.space = space;
+		}
+		
+		override protected function onAdd():void
+		{
+			super.onAdd();
+			if(! _collisionShapes){
+				_collisionShapes = [ new CircleCollisionShape() ];
+			}
+			setupBody();
+			attachRenderer();
+		}
+		
+		override protected function onRemove():void
+		{
+			super.onRemove();
+			destroyBody();
+		}
+		
+		override protected function onReset():void
+		{
+			super.onReset();
+			
+			if(spriteForPointChecks && (spriteForPointChecks.owner == null || spriteForPointChecks.owner != this.owner))
+				_spriteForPointChecks = null;
+			
+			attachRenderer();
+		}
+
+		private function destroyBody():void
+		{
+			if ( _body )
+			{
+				clearShapesFromBody();
+				
+				_body.space = null;
+				_body.clear();
+				_body = null;
+			}
+		}
+		
+		private function clearShapesFromBody():void
+		{
 			var shapeList:ShapeList = _body.shapes;
 			shapeList.foreach( function (shape:Shape):void
 			{
 				shape.body = null;				
 			});
-			
-			if (_collisionShapes)
-			{
-				for each (var newShape:CollisionShape in _collisionShapes){
-					newShape.createShape(this).body = _body;
-				}
-			}
-			
-			if ( space )
-				_body.space = space;
-			
-			if ( autoAlign )
-				_body.align();
+			_body.shapes.clear();
 		}
 		
-		override protected function onAdd():void
+		private function setupBody():void
 		{
-			/*if(! _collisionShapes)
-				addCollisionShape( new CircleCollisionShape() );*/
-			setupBody();
+			if((_spatialManager == null) || (_spatialManager != null && _body != null))
+				return;
+			
+			var invScale:Number = _spatialManager.inverseScale;
+			
+			_body = new Body(napeBodyType);
+			_body.position.setxy(_position.x*invScale, _position.y*invScale);
+			_body.rotation = PBUtil.getRadiansFromDegrees(_rotation);
+			_body.allowMovement = _canMove;
+			_body.allowRotation = _canRotate;
+			_body.velocity.setxy(_linearVelocity.x*invScale, _linearVelocity.y*invScale);
+			_body.angularVel = PBUtil.getRadiansFromDegrees(angularVelocity);
+			buildCollisionShapes();
+			_body.cbTypes.add(_spatialManager.bodyCallbackType);
+			_body.userData.spatial = this;
+			_body.space = _spatialManager.space;
 		}
 		
-		override protected function onRemove():void
+		private function distanceToPoint(pointA : Point, pointB : Point):Number
 		{
-			if ( _body )
-			{
-				_body.space = null;
-				_body = null;
+			var dx:Number = pointA.x - pointB.x;
+			var dy:Number = pointA.y - pointB.y;
+			var dist:Number = Math.sqrt(dx * dx + dy * dy);
+			return dist;
+		}
+		
+		private function attachRenderer():void
+		{
+			if(!spriteForPointChecks){
+				var renderer : DisplayObjectRenderer = owner.lookupComponentByType( DisplayObjectRenderer) as DisplayObjectRenderer;
+				if(renderer && (!renderer.positionProperty || renderer.positionProperty.property == "" || (renderer.positionProperty && renderer.positionProperty.property.split(".")[0].indexOf("@"+this.name) != -1)))
+					spriteForPointChecks = renderer;
 			}
 		}
-		
+
 		private function get napeBodyType():BodyType
 		{
 			switch(_bodyType)
@@ -384,32 +466,6 @@ package com.pblabs.nape
 				}
 			}
 			return null;
-		}
-		
-		private function setupBody():void
-		{
-			if((_spatialManager == null) || (_spatialManager != null && _body != null)) return;
-			var invScale:Number = _spatialManager.inverseScale;
-			_body = new Body(napeBodyType);
-			_body.position.setxy(_position.x*invScale, _position.y*invScale);
-			_body.rotation = PBUtil.getRadiansFromDegrees(_rotation);
-			_body.allowMovement = _canMove;
-			_body.allowRotation = _canRotate;
-			_body.velocity.setxy(_linearVelocity.x*invScale, _linearVelocity.y*invScale);
-			_body.angularVel = PBUtil.getRadiansFromDegrees(angularVelocity);
-			
-			buildCollisionShapes();
-			//_body.cbType = _spatialManager.bodyCallbackType;
-			_body.userData.spatial = this;
-			_body.space = _spatialManager.space;
-		}
-		
-		private function distanceToPoint(pointA : Point, pointB : Point):Number
-		{
-			var dx:Number = pointA.x - pointB.x;
-			var dy:Number = pointA.y - pointB.y;
-			var dist:Number = Math.sqrt(dx * dx + dy * dy);
-			return dist;
 		}
 		
 		private var _spatialManager:NapeManagerComponent;

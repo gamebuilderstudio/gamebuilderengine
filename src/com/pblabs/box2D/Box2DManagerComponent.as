@@ -31,11 +31,12 @@ package com.pblabs.box2D
     import com.pblabs.rendering2D.ISpatialObject2D;
     import com.pblabs.rendering2D.RayHitInfo;
     
+    import flash.display.DisplayObject;
     import flash.display.Shape;
     import flash.geom.Point;
     import flash.geom.Rectangle;
     
-    public class Box2DManagerComponent extends EntityComponent implements ITickedObject, IAnimatedObject, ISpatialManager2D, IPhysics2DManager
+    public class Box2DManagerComponent extends EntityComponent implements ITickedObject, IAnimatedObject, IPhysics2DManager
     {
         [EditorData(defaultValue="30")]
         public function get scale():Number
@@ -94,7 +95,7 @@ package com.pblabs.box2D
 				_debugDrawer.ClearAll();
 		}
 		
-		public function get debugDrawer() : b2DebugDraw
+		public function get debugDrawer() : DisplayObject
 		{
 			return _debugDrawer;
 		}

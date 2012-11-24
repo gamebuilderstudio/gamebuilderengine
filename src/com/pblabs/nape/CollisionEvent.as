@@ -8,9 +8,10 @@ package com.pblabs.nape
 	
 	public class CollisionEvent extends Event
 	{
-		public static const BEGIN_COLLISION:String = "BEGIN_COLLISION";
+		public static const COLLISION_EVENT:String = "COLLISION_EVENT";
+		public static const COLLISION_STOPPED_EVENT:String = "COLLISION_STOPPED_EVENT";
 		public static const ONGOING_COLLISION:String = "ONGOING_COLLISION";
-		public static const END_COLLISION:String = "END_COLLISION";
+		public static const PRE_COLLISION_EVENT:String = "PRE_COLLISION_EVENT";
 		
 		public var collider:NapeSpatialComponent = null;
 		public var collidee:NapeSpatialComponent = null;

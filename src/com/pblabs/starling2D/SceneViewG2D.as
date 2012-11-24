@@ -39,7 +39,7 @@ package com.pblabs.starling2D
 		private var _delayedCalls : Vector.<Object> = new Vector.<Object>();
 		
 		private static var _starlingViewMap : Dictionary = new Dictionary();
-		private static var _stage3DIndex : int = 0;
+		private static var _stage3DIndex : int = -1;
 		
 		public function SceneViewG2D()
 		{

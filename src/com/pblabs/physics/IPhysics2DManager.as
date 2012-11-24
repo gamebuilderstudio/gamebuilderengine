@@ -2,6 +2,7 @@ package com.pblabs.physics
 {
 	import com.pblabs.rendering2D.ISpatialManager2D;
 	
+	import flash.display.DisplayObject;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 
@@ -17,5 +18,6 @@ package com.pblabs.physics
 		function set worldBounds(value:Rectangle):void;
 		function get visualDebugging():Boolean;
 		function set visualDebugging(value:Boolean):void;
+		function get debugDrawer() : DisplayObject;
 	}
 }

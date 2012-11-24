@@ -8,9 +8,8 @@ package com.pblabs.nape
 	
 	
 	/**
-	 * Named material storage
+	 * Named material storage manager for managing all materials in a given level.
 	 * 
-	 * TODO: Should it be a entityComponent instead?..
 	 * @author Pavel Belyaev
 	 * 
 	 */
@@ -22,7 +21,7 @@ package com.pblabs.nape
 			setupMaterials();
 		}
 		
-		[TypeHint(type="nape.phys.Material")]
+		[TypeHint(type="com.pblabs.nape.MaterialVO")]
 		public function get materials():Dictionary
 		{
 			return _materials;
@@ -77,12 +76,18 @@ package com.pblabs.nape
 		
 		protected function setupMaterials():void
 		{
-			addMaterial("napeGlass", Material.glass());
-			addMaterial("napeIce", Material.ice());
-			addMaterial("napeRubber", Material.rubber());
-			addMaterial("napeSand", Material.sand());
-			addMaterial("napeSteel", Material.steel());
-			addMaterial("napeWood", Material.wood());
+			if(!getMaterial("napeGlass"))
+				addMaterial("napeGlass", Material.glass());
+			if(!getMaterial("napeIce"))
+				addMaterial("napeIce", Material.ice());
+			if(!getMaterial("napeRubber"))
+				addMaterial("napeRubber", Material.rubber());
+			if(!getMaterial("napeSand"))
+				addMaterial("napeSand", Material.sand());
+			if(!getMaterial("napeSteel"))
+				addMaterial("napeSteel", Material.steel());
+			if(!getMaterial("napeWood"))
+				addMaterial("napeWood", Material.wood());
 		}
 		
 		private var _materials:Dictionary = new Dictionary;

@@ -43,10 +43,10 @@ package com.pblabs.nape
 		override protected function doCreateShape():Shape
 		{
 			var invScale:Number = NapeManagerComponent(_parent.spatialManager).inverseScale;
-			//var pos:Vec2 = position;
-			var nPos:Vec2 = new Vec2(_parent.size.x * 0.5 * invScale * _position.x, _parent.size.y * 0.5 * invScale * _position.y);
 			
-			return new Circle(radius*invScale, nPos);
+			var nPos:Vec2 = new Vec2(_position.x * invScale, _position.y * invScale);
+			
+			return new Circle( ((_radius * Math.sqrt(shapeScale.x * shapeScale.y)) * invScale) , nPos);
 		}
 		
 		private var _radius:Number = 20.0;

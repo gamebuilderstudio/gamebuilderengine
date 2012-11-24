@@ -31,16 +31,23 @@ package com.pblabs.nape
 		
 		override protected function doCreateShape():Shape
 		{
-			var invScale:Number = NapeManagerComponent(_parent.spatialManager).inverseScale;
-			var halfSize:Point = new Point(_parent.size.x * 0.5, _parent.size.y * 0.5);
+			var invScale:Number = (_parent.spatialManager as NapeManagerComponent).inverseScale;
+
+			if(!_vertices) generateBox(_parent.size.x/2, _parent.size.y/2);
 			var poly:GeomPoly = new GeomPoly();
-			
-			for each ( var vec:Point in _vertices )
-			{
-				poly.push(new Vec2(vec.x * halfSize.x * invScale, vec.y * halfSize.y * invScale));
-			}
-				
-			return new Polygon(poly);
+			for (var i:int = 0; i < _vertices.length; i++)
+				poly.push(new Vec2((_vertices[i].x * shapeScale.x) * invScale, (_vertices[i].y * shapeScale.y) * invScale));
+
+			var polygon : Polygon = new Polygon(poly);
+			return polygon;
+		}
+		
+		public function generateBox(halfWidth:Number, halfHeight:Number):void {
+			_vertices = new Array();
+			_vertices.push(new Point( -halfWidth, -halfHeight));
+			_vertices.push(new Point( halfWidth, -halfHeight));
+			_vertices.push(new Point( halfWidth, halfHeight));
+			_vertices.push(new Point( -halfWidth, halfHeight));
 		}
 		
 		private var _vertices:Array;

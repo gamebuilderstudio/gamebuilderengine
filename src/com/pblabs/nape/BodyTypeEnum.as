@@ -34,5 +34,9 @@ package com.pblabs.nape
 			return _typeMap;
 		}
 		
+		override public function get defaultType():Enumerable
+		{
+			return DYNAMIC;
+		}
 	}
 }

@@ -446,6 +446,7 @@ package com.pblabs.box2D
         
 		override protected function onAdd():void
         {
+			super.onAdd();
 			if(! _collisionShapes)
 				addCollisionShape( new CircleCollisionShape() );
 			
@@ -455,6 +456,7 @@ package com.pblabs.box2D
         
         override protected function onRemove():void 
         {
+			super.onRemove();
 			if(_manager)
             	_manager.removeBody(_body, this);
             _body = null;

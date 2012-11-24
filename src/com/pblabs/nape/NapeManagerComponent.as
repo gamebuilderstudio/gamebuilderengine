@@ -1,16 +1,19 @@
 package com.pblabs.nape
 {
 	import com.pblabs.engine.PBE;
+	import com.pblabs.engine.PBUtil;
 	import com.pblabs.engine.core.IAnimatedObject;
 	import com.pblabs.engine.core.ITickedObject;
 	import com.pblabs.engine.core.ObjectType;
 	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.entity.EntityComponent;
+	import com.pblabs.physics.IPhysics2DManager;
 	import com.pblabs.rendering2D.BasicSpatialManager2D;
 	import com.pblabs.rendering2D.ISpatialManager2D;
 	import com.pblabs.rendering2D.ISpatialObject2D;
 	import com.pblabs.rendering2D.RayHitInfo;
 	
+	import flash.display.DisplayObject;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
@@ -32,10 +35,11 @@ package com.pblabs.nape
 	import nape.phys.Material;
 	import nape.space.Broadphase;
 	import nape.space.Space;
+	import nape.util.ShapeDebug;
 	
 	import org.osmf.logging.Log;
 
-	public class NapeManagerComponent extends EntityComponent implements ITickedObject, IAnimatedObject, ISpatialManager2D
+	public class NapeManagerComponent extends EntityComponent implements ITickedObject, IAnimatedObject, IPhysics2DManager
 	{
 		public function NapeManagerComponent()
 		{
@@ -47,7 +51,7 @@ package com.pblabs.nape
 			return _space;
 		}
 		
-		[EditorData(defaultValue="30")]
+		[EditorData(defaultValue="1")]
 		public function get scale():Number
 		{
 			return _scale;
@@ -56,14 +60,12 @@ package com.pblabs.nape
 		public function set scale(value:Number):void
 		{
 			_scale = value;
-			_inverseScale = 1/_scale;
 		}
 		
 		public function get inverseScale():Number
 		{
-			return _inverseScale;
+			return 1 / _scale;
 		}
-		
 		public function get gravity():Point
 		{
 			return _gravity;
@@ -96,47 +98,72 @@ package com.pblabs.nape
 		
 		public function set visualDebugging(value:Boolean):void
 		{
-			if (!isRegistered)
-				_visualDebuggingPending = value;
+			_visualDebugging = value;
+			if(!_shapeDebug) 
+				return;
+			
+			if(_visualDebugging)
+				_shapeDebug.draw(_space);
 			else
-			{
-				_visualDebuggingPending = false;
-				if (_visualDebugging!=value)
-				{
-					_visualDebugging = value;
-					if ( _visualDebugging )
-					{
-						if (!_debugRenderer)
-						{
-							_debugRenderer = new NapeDebugRenderer();
-							_debugRenderer.spatialManager = this;
-							owner.addComponent(_debugRenderer, "NapeDebugRenderer");
-						}
-						_debugRenderer.enabled = true;
-					} else
-					{
-						if (_debugRenderer)
-							_debugRenderer.enabled = false;
-					}
-				}
-			}
+				_shapeDebug.clear();
 		}
 		
+		public function get debugDrawer() : DisplayObject
+		{
+			if(!_shapeDebug)
+				return null;
+			return _shapeDebug.display;
+		}
+
 		public function get bodyCallbackType():CbType
 		{
 			return _bodyCallbackType;
 		}
 		
+		[EditorData(defaultValue="true")]
+		public function get allowSleep():Boolean
+		{
+			return _allowSleep;
+		}
+		
+		public function set allowSleep(value:Boolean):void
+		{
+		
+		}
+		
+		[EditorData(defaultValue="-10000|-10000|20000|20000")]
+		public function get worldBounds():Rectangle
+		{
+			return _worldBounds;
+		}
+		
+		public function set worldBounds(value:Rectangle):void
+		{
+			if (_space)
+			{
+				Logger.warn(this, "WorldBounds", "This property cannot be changed once the world has been created!");
+				return;
+			}
+			/*_worldBounds.x = _space.world.bounds.x*scale;
+			_worldBounds.y = _space.world.bounds.y*scale;
+			_worldBounds.width = _space.world.bounds.width*scale;
+			_worldBounds.height = _space.world.bounds.height*scale;*/
+			_worldBounds = value;
+		}
+
 		public function onTick(dt:Number):void
 		{
-			if ( _visualDebuggingPending )
-				visualDebugging = _visualDebuggingPending;
 			_space.step(dt);
 		}
 		
 		public function onFrame(dt:Number):void
 		{
-			
+			if(_shapeDebug && _visualDebugging){
+				_shapeDebug.clear();
+				_shapeDebug.transform.setAs(scale, 0, 0, scale, 0, 0);
+				_shapeDebug.draw(_space);
+				_shapeDebug.flush();
+			}
 		}
 		
 		public function addSpatialObject(object:ISpatialObject2D):void
@@ -152,9 +179,9 @@ package com.pblabs.nape
 		public function queryRectangle(box:Rectangle, mask:ObjectType, results:Array):Boolean
 		{
 			//query aabb
-			var aabb:AABB = new AABB(box.left*_inverseScale, box.top*_inverseScale, box.width*_inverseScale, box.height*_inverseScale);
+			var aabb:AABB = new AABB(box.left*inverseScale, box.top*inverseScale, box.width*inverseScale, box.height*inverseScale);
 			//setup filter
-			var queryInteractionFilter:InteractionFilter = new InteractionFilter(-1, mask.bits);
+			var queryInteractionFilter:InteractionFilter = new InteractionFilter(-1, (mask ? mask.bits : -1));
 			
 			var numFoundBodies:int;
 			
@@ -184,13 +211,13 @@ package com.pblabs.nape
 		public function queryCircle(center:Point, radius:Number, mask:ObjectType, results:Array):Boolean
 		{
 			//query aabb
-			var pos:Vec2 = new Vec2(center.x*_inverseScale, center.y*_inverseScale);
+			var pos:Vec2 = new Vec2(center.x*inverseScale, center.y*inverseScale);
 			//setup filter
-			var queryInteractionFilter:InteractionFilter = new InteractionFilter(-1, mask.bits);
+			var queryInteractionFilter:InteractionFilter = new InteractionFilter(-1, (mask ? mask.bits : -1));
 			
 			var numFoundBodies:int;
 			
-			var bodyList:BodyList = _space.bodiesInCircle(pos, radius*_inverseScale, false, queryInteractionFilter);
+			var bodyList:BodyList = _space.bodiesInCircle(pos, radius*inverseScale, false, queryInteractionFilter);
 			
 			numFoundBodies = bodyList.length;
 			bodyList.foreach(function (item:Body):void
@@ -215,8 +242,8 @@ package com.pblabs.nape
 		
 		public function castRay(start:Point, end:Point, mask:ObjectType, result:RayHitInfo):Boolean
 		{
-			var ray:Ray = Ray.fromSegment(new Vec2(start.x*_inverseScale, start.y*_inverseScale), new Vec2(end.x*_inverseScale, end.y*_inverseScale));
-			var queryInteractionFilter:InteractionFilter = new InteractionFilter(-1, mask.bits);
+			var ray:Ray = Ray.fromSegment(new Vec2(start.x*inverseScale, start.y*inverseScale), new Vec2(end.x*inverseScale, end.y*inverseScale));
+			var queryInteractionFilter:InteractionFilter = new InteractionFilter(-1, (mask ? mask.bits : -1));
 			var napeResult:RayResult = _space.rayCast(ray, false, queryInteractionFilter);
 			if ( napeResult )
 			{
@@ -237,9 +264,9 @@ package com.pblabs.nape
 		public function getObjectsUnderPoint(worldPosition:Point, results:Array, mask:ObjectType = null):Boolean
 		{
 			var tmpResults:Array = new Array();
-			var queryInteractionFilter:InteractionFilter = new InteractionFilter(-1, mask.bits);
+			var queryInteractionFilter:InteractionFilter = new InteractionFilter(-1, (mask ? mask.bits : -1));
 			var numFoundBodies:int;
-			var bodyList:BodyList = _space.bodiesUnderPoint(new Vec2(worldPosition.x*_inverseScale, worldPosition.y*_inverseScale), queryInteractionFilter);
+			var bodyList:BodyList = _space.bodiesUnderPoint(new Vec2(worldPosition.x*inverseScale, worldPosition.y*inverseScale), queryInteractionFilter);
 			
 			numFoundBodies = bodyList.length;
 			bodyList.foreach(function (item:Body):void
@@ -304,11 +331,20 @@ package com.pblabs.nape
 			_space.listeners.add(new InteractionListener(CbEvent.BEGIN, InteractionType.COLLISION, _bodyCallbackType, _bodyCallbackType, beginCollisionCallback));
 			_space.listeners.add(new InteractionListener(CbEvent.END, InteractionType.COLLISION, _bodyCallbackType, _bodyCallbackType, endCollisionCallback));
 			_space.listeners.add(new InteractionListener(CbEvent.ONGOING, InteractionType.COLLISION, _bodyCallbackType, _bodyCallbackType, ongoingCollisionCallback));
+			
+			_shapeDebug = new ShapeDebug(PBUtil.clamp(PBE.mainClass.width, 10, 5000000), PBUtil.clamp(PBE.mainClass.height, 10, 5000000), 0x4D4D4D );
+			//_shapeDebug.drawShapeDetail = true;
+			_shapeDebug.drawConstraints = true;
+			//_shapeDebug.drawBodyDetail = true;
 		}
 		
 		private function freeSpace():void
 		{
 			_space.listeners.clear();
+			_space.clear();
+			
+			if(_shapeDebug)
+				_shapeDebug.clear();
 		}
 		
 		/*private function preCollisionCallback(cb:PreCallback):void
@@ -324,7 +360,7 @@ package com.pblabs.nape
 		{
 			cb.arbiters.foreach(function (item:Arbiter):void
 			{
-				dispatchCollisionEvents(item, CollisionEvent.BEGIN_COLLISION);
+				dispatchCollisionEvents(item, CollisionEvent.COLLISION_EVENT);
 			});
 		}
 		
@@ -332,7 +368,7 @@ package com.pblabs.nape
 		{
 			cb.arbiters.foreach(function (item:Arbiter):void
 			{
-				dispatchCollisionEvents(item, CollisionEvent.END_COLLISION);
+				dispatchCollisionEvents(item, CollisionEvent.COLLISION_STOPPED_EVENT);
 			});
 		}
 		
@@ -361,12 +397,13 @@ package com.pblabs.nape
 		
 		protected var _scale:Number = 1;
 		protected var _space:Space;
-		protected var _gravity:Point = new Point(0,0);
+		protected var _shapeDebug:ShapeDebug;
+		protected var _gravity:Point = new Point(0, 330);
 		protected var _otherItems:BasicSpatialManager2D = new BasicSpatialManager2D();
 		protected var _materialManager:NapeMaterialManager;
-		protected var _debugRenderer:NapeDebugRenderer;
+		protected var _allowSleep : Boolean = true;
+		protected var _worldBounds:Rectangle = new Rectangle(-5000, -5000, 10000, 10000);
 		
-		private var _inverseScale:Number = 1;
 		private var _visualDebugging:Boolean = false;
 		private var _visualDebuggingPending:Boolean = false;
 		private var _bodyCallbackType:CbType;
