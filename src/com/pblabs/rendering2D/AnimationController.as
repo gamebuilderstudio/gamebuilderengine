@@ -108,6 +108,14 @@ package com.pblabs.rendering2D
         private var _lastFrameIndex:int;
 		private var _newAnimationSet : Boolean = false;
         
+		public function get currentAnimationName():String{ 
+			for( var key : * in animations)
+			{
+				if(_currentAnimation && animations[key] == _currentAnimation)
+					return key as String;
+			}
+			return ""; 
+		}
         public function set currentAnimationName(value:String):void
         {
             var potentialAnim:AnimationControllerInfo = animations[value];
