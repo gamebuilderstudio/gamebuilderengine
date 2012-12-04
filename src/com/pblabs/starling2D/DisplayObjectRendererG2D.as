@@ -50,7 +50,7 @@ package com.pblabs.starling2D
 		
 		protected var gpuObject : DisplayObject;
 		protected var gpuObjectDirty : Boolean = false;
-		protected var _mouseEnabled:Boolean = false;
+		protected var _mouseEnabled:Boolean = true;
 		internal var _initialized : Boolean = false;
 
 		/**
@@ -89,7 +89,7 @@ package com.pblabs.starling2D
 			gpuObject.pivotY = _registrationPoint.y;
 			gpuObject.x = this._position.x + _positionOffset.x;
 			gpuObject.y = this._position.y + _positionOffset.y;
-			gpuObject.rotation = PBUtil.getRadiansFromDegrees(_rotation) + _rotationOffset;
+			gpuObject.rotation = (PBUtil.getRadiansFromDegrees(_rotation) % 360) + _rotationOffset;
 			gpuObject.scaleX = this.combinedScale.x;
 			gpuObject.scaleY = this.combinedScale.y;
 			gpuObject.alpha = this._alpha;
@@ -226,7 +226,7 @@ package com.pblabs.starling2D
 			super.rotation = value;
 
 			if(!gpuObject) return;
-			gpuObject.rotation = this._rotation;
+			gpuObject.rotation = (PBUtil.getRadiansFromDegrees(_rotation) % 360) + _rotationOffset;
 		}
 		
 		/**
@@ -303,7 +303,7 @@ package com.pblabs.starling2D
 		{
 			super.rotationOffset = value;
 			if(!gpuObject) return;
-			gpuObject.rotation = this._rotation + this._rotationOffset;
+			gpuObject.rotation = (PBUtil.getRadiansFromDegrees(_rotation) % 360) + _rotationOffset;
 		}
 		
 		/**

@@ -124,7 +124,7 @@ package com.pblabs.nape
 		public function get rotation():Number
 		{
 			if ( _body )
-				_rotation = PBUtil.getDegreesFromRadians(_body.rotation);
+				_rotation = PBUtil.getDegreesFromRadians(_body.rotation) % 360;
 			return _rotation;
 		}
 		
@@ -314,13 +314,17 @@ package com.pblabs.nape
 			if(!spriteForPointChecks && _size && _size.x > 0 && _size.y > 0)
 				return worldExtents.containsPoint(pos);
 			
-			if(spriteForPointChecks && scene)
-				return spriteForPointChecks.pointOccupied(scene.transformWorldToScreen(pos), mask);
-
 			//Check Nape body
 			if(_body){
 				return _body.contains( _scratchVec.setxy( pos.x*_spatialManager.inverseScale, pos.y*_spatialManager.inverseScale ) );
 			}
+
+			if(!scene && spriteForPointChecks && spriteForPointChecks.scene)
+				scene = spriteForPointChecks.scene;
+			
+			if(spriteForPointChecks && scene)
+				return spriteForPointChecks.pointOccupied(scene.transformWorldToScreen(pos), mask);
+
 			return false;
 		}
 		

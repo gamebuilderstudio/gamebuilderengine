@@ -257,7 +257,10 @@ package com.pblabs.rendering2D
                 return extents.containsPoint(pos);
 			}
             
-            // OK, so pass it over to the sprite.
+			if(!scene && spriteForPointChecks && spriteForPointChecks.scene)
+				scene = spriteForPointChecks.scene;
+
+			// OK, so pass it over to the sprite.
             return spriteForPointChecks.pointOccupied(scene.transformWorldToScreen(pos), mask);
         }
         
