@@ -262,7 +262,7 @@ package starling.core
         {
             stop();
             
-            mNativeStage.removeEventListener(Event.ENTER_FRAME, onEnterFrame, false);
+            //mNativeStage.removeEventListener(Event.ENTER_FRAME, onEnterFrame, false);
             mNativeStage.removeEventListener(KeyboardEvent.KEY_DOWN, onKey, false);
             mNativeStage.removeEventListener(KeyboardEvent.KEY_UP, onKey, false);
             mNativeStage.removeEventListener(Event.RESIZE, onResize, false);

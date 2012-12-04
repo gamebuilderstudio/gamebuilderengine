@@ -22,6 +22,9 @@ package com.pblabs.starling2D
     import starling.display.DisplayObject;
     import starling.display.DisplayObjectContainer;
     import starling.display.Sprite;
+    import starling.events.Touch;
+    import starling.events.TouchEvent;
+    import starling.events.TouchPhase;
     
     /**
      * This class can be set as the SceneView on the BaseSceneComponent class and is used
@@ -67,7 +70,7 @@ package com.pblabs.starling2D
 				_starlingInstance.addEventListener("rootCreated", onRootInitialized);
 				if(!PBE.IS_SHIPPING_BUILD)
 					_starlingInstance.enableErrorChecking = true;
-				//_starlingInstance.start();
+				_starlingInstance.start();
 				name = "SceneView_"+_stage3DIndex;
 			}
 			
@@ -149,6 +152,7 @@ package com.pblabs.starling2D
 
 			_starlingInstance.removeEventListener("context3DCreate", onContextCreated);
 			_starlingInstance.removeEventListener("rootCreated", onRootInitialized);
+			_starlingInstance.stage.removeEventListener(TouchEvent.TOUCH, onTouch);
 
 			InitializationUtilG2D.disposed.dispatch();
 
@@ -178,6 +182,23 @@ package com.pblabs.starling2D
 			}
 			PBE.processManager.addAnimatedObject(this);
 			InitializationUtilG2D.initializeRenderers.dispatch();
+			
+			_starlingInstance.stage.addEventListener(TouchEvent.TOUCH, onTouch);
+		}
+		
+		private function onTouch(event : TouchEvent):void
+		{
+			var touch : Touch = event.getTouch(starlingInstance.stage);
+			if(touch)
+			{
+				if(touch.phase == TouchPhase.BEGAN){
+					PBE.inputManager.simulateMouseDown();
+				}else if(touch.phase == TouchPhase.ENDED || touch.phase == TouchPhase.STATIONARY){
+					PBE.inputManager.simulateMouseUp();
+				}else if(touch.phase == TouchPhase.MOVED){
+					PBE.inputManager.simulateMouseMove();
+				}
+			}
 		}
 		
 		private function onContextCreated(event : *):void{
@@ -189,7 +210,7 @@ package com.pblabs.starling2D
 		
 		private function stage_deactivateHandler(event:Event):void
 		{
-			//this._starlingInstance.stop();
+			this._starlingInstance.stop();
 			PBE.processManager.stop();
 			PBE.mainStage.stage.addEventListener(Event.ACTIVATE, stage_activateHandler, false, 0, true);
 		}
@@ -197,7 +218,7 @@ package com.pblabs.starling2D
 		private function stage_activateHandler(event:Event):void
 		{
 			PBE.mainStage.stage.removeEventListener(Event.ACTIVATE, stage_activateHandler);
-			//this._starlingInstance.start();
+			this._starlingInstance.start();
 			PBE.processManager.start();
 		}
 		

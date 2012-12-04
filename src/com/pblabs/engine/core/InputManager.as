@@ -139,7 +139,7 @@ package com.pblabs.engine.core
          */
         public function simulateMouseDown():void
         {
-            dispatchEvent(new MouseEvent(MouseEvent.MOUSE_DOWN));
+			onMouseDown(new MouseEvent(MouseEvent.MOUSE_DOWN));
         }
 
         /**
@@ -147,7 +147,7 @@ package com.pblabs.engine.core
          */
         public function simulateMouseUp():void
         {
-            dispatchEvent(new MouseEvent(MouseEvent.MOUSE_UP));
+			onMouseUp(new MouseEvent(MouseEvent.MOUSE_UP));
         }
 
         /**
@@ -157,22 +157,22 @@ package com.pblabs.engine.core
          */
         public function simulateMouseMove():void
         {
-            dispatchEvent(new MouseEvent(MouseEvent.MOUSE_MOVE, true, false, Math.random() * 100, Math.random () * 100));
+			onMouseMove(new MouseEvent(MouseEvent.MOUSE_MOVE, true, false, Math.random() * 100, Math.random () * 100));
         }
 
         public function simulateMouseOver():void
         {
-            dispatchEvent(new MouseEvent(MouseEvent.MOUSE_OVER));
+			onMouseOver(new MouseEvent(MouseEvent.MOUSE_OVER));
         }
 
         public function simulateMouseOut():void
         {
-            dispatchEvent(new MouseEvent(MouseEvent.MOUSE_OUT));
+			onMouseOut(new MouseEvent(MouseEvent.MOUSE_OUT));
         }
 
         public function simulateMouseWheel():void
         {
-            dispatchEvent(new MouseEvent(MouseEvent.MOUSE_WHEEL));
+			onMouseWheel(new MouseEvent(MouseEvent.MOUSE_WHEEL));
         }
 
         private function onKeyDown(event:KeyboardEvent):void
