@@ -10,9 +10,9 @@
 
 package starling.core
 {
-    import assets.TouchMarkerAsset;
-    
     import flash.display.Bitmap;
+    import flash.display.BitmapData;
+    import flash.display.Shape;
     import flash.geom.Point;
     
     import starling.display.Image;
@@ -28,7 +28,7 @@ package starling.core
         public function TouchMarker()
         {
             mCenter = new Point();
-            mTexture = Texture.fromBitmap(new TouchMarkerAsset());
+            mTexture = createTexture();
             
             for (var i:int=0; i<2; ++i)
             {
@@ -65,6 +65,31 @@ package starling.core
             mCenter.x = x;
             mCenter.y = y;
             moveMarker(realX, realY); // reset mock position
+        }
+        
+        private function createTexture():Texture
+        {
+            var scale:Number = Starling.contentScaleFactor;
+            var radius:Number = 12 * scale;
+            var width:int = 32 * scale;
+            var height:int = 32 * scale;
+            var thickness:Number = 1.5 * scale;
+            var shape:Shape = new Shape();
+            
+            // draw dark outline
+            shape.graphics.lineStyle(thickness, 0x0, 0.3);
+            shape.graphics.drawCircle(width/2, height/2, radius + thickness);
+            
+            // draw white inner circle
+            shape.graphics.beginFill(0xffffff, 0.4);
+            shape.graphics.lineStyle(thickness, 0xffffff);
+            shape.graphics.drawCircle(width/2, height/2, radius);
+            shape.graphics.endFill();
+            
+            var bmpData:BitmapData = new BitmapData(width, height, true, 0x0);
+            bmpData.draw(shape);
+            
+            return Texture.fromBitmapData(bmpData, false, false, scale);
         }
         
         private function get realMarker():Image { return getChildAt(0) as Image; }

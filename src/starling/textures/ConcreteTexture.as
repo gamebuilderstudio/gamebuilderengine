@@ -72,38 +72,27 @@ package starling.textures
         
         private function onContextCreated(event:Event):void
         {
+            var context:Context3D = Starling.context;
             var bitmapData:BitmapData = mData as BitmapData;
             var atfData:AtfData = mData as AtfData;
+            var nativeTexture:flash.display3D.textures.Texture;
             
             if (bitmapData)
             {
-				restoreTextureFromBitmapDataOnLostContext(bitmapData);
+                nativeTexture = context.createTexture(mWidth, mHeight, 
+                    Context3DTextureFormat.BGRA, mOptimizedForRenderTexture);
+                Texture.uploadBitmapData(nativeTexture, bitmapData, mMipMapping);
             }
             else if (atfData)
             {
-				restoreTextureFromATFDataOnLostContext(atfData);
+                nativeTexture = context.createTexture(atfData.width, atfData.height, atfData.format,
+                                                      mOptimizedForRenderTexture);
+                Texture.uploadAtfData(nativeTexture, atfData.data);
             }
+            
+            mBase = nativeTexture;
         }
-		
-		public function restoreTextureFromBitmapDataOnLostContext(data : BitmapData):void
-		{
-			var context:Context3D = Starling.context;
-			var nativeTexture:flash.display3D.textures.Texture;
-			nativeTexture = context.createTexture(mWidth, mHeight, 
-				Context3DTextureFormat.BGRA, mOptimizedForRenderTexture);
-			Texture.uploadBitmapData(nativeTexture, data, mMipMapping);
-			mBase = nativeTexture;
-		}
-		
-		public function restoreTextureFromATFDataOnLostContext(atfData : AtfData):void
-		{
-			var context:Context3D = Starling.context;
-			var nativeTexture:flash.display3D.textures.Texture;
-			nativeTexture = context.createTexture(atfData.width, atfData.height, atfData.format,
-				mOptimizedForRenderTexture);
-			Texture.uploadAtfData(nativeTexture, atfData.data);
-			mBase = nativeTexture;
-		}
+        
         // properties
         
         /** Indicates if the base texture was optimized for being used in a render texture. */
@@ -113,6 +102,9 @@ package starling.textures
         public override function get base():TextureBase { return mBase; }
         
         /** @inheritDoc */
+        public override function get root():ConcreteTexture { return this; }
+        
+        /** @inheritDoc */
         public override function get format():String { return mFormat; }
         
         /** @inheritDoc */
@@ -120,6 +112,12 @@ package starling.textures
         
         /** @inheritDoc */
         public override function get height():Number { return mHeight / mScale; }
+        
+        /** @inheritDoc */
+        public override function get nativeWidth():Number { return mWidth; }
+        
+        /** @inheritDoc */
+        public override function get nativeHeight():Number { return mHeight; }
         
         /** The scale factor, which influences width and height properties. */
         public override function get scale():Number { return mScale; }

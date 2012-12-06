@@ -12,8 +12,6 @@ package starling.textures
 {
     import flash.geom.Rectangle;
     import flash.utils.Dictionary;
-    
-    import org.osflash.signals.Signal;
 
     /** A texture atlas is a collection of many smaller textures in one big image. This class
      *  is used to access textures from such an atlas.
@@ -60,7 +58,6 @@ package starling.textures
         private var mAtlasTexture:Texture;
         private var mTextureRegions:Dictionary;
         private var mTextureFrames:Dictionary;
-		private var _disposed : Signal = new Signal(TextureAtlas);
         
         /** Create a texture atlas from a texture by parsing the regions from an XML file. */
         public function TextureAtlas(texture:Texture, atlasXml:XML=null)
@@ -77,7 +74,6 @@ package starling.textures
         public function dispose():void
         {
             mAtlasTexture.dispose();
-			_disposed.dispatch(this);
         }
         
         /** This function is called by the constructor and will parse an XML in Starling's 
@@ -121,19 +117,23 @@ package starling.textures
         public function getTextures(prefix:String=""):Vector.<Texture>
         {
             var textures:Vector.<Texture> = new <Texture>[];
-            var names:Vector.<String> = new <String>[];
-            var name:String;
             
-            for (name in mTextureRegions)
-                if (name.indexOf(prefix) == 0 || prefix == "*")                
-                    names.push(name);                
-            
-            names.sort(Array.CASEINSENSITIVE);
-            
-            for each (name in names) 
+            for each (var name:String in getNames(prefix)) 
                 textures.push(getTexture(name)); 
             
             return textures;
+        }
+        
+        /** Returns all texture names that start with a certain string, sorted alphabetically. */
+        public function getNames(prefix:String=""):Vector.<String>
+        {
+            var names:Vector.<String> = new <String>[];
+            
+            for (var name:String in mTextureRegions)
+                if (name.indexOf(prefix) == 0)
+                    names.push(name);                
+            
+            return names.sort(Array.CASEINSENSITIVE);
         }
         
         /** Returns the region rectangle associated with a specific name. */
@@ -163,8 +163,5 @@ package starling.textures
             delete mTextureRegions[name];
             delete mTextureFrames[name];
         }
-		
-		public function get disposed():Signal{ return _disposed; }
-		public function get sourceTexture():Texture{ return mAtlasTexture; }
     }
 }

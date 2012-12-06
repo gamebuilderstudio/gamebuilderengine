@@ -21,9 +21,9 @@ package starling.display
     import starling.core.RenderSupport;
     import starling.errors.AbstractClassError;
     import starling.errors.AbstractMethodError;
-    import starling.events.Event;
     import starling.events.EventDispatcher;
     import starling.events.TouchEvent;
+    import starling.filters.FragmentFilter;
     import starling.utils.MatrixUtil;
     
     /** Dispatched when an object is added to a parent. */
@@ -126,10 +126,10 @@ package starling.display
         private var mBlendMode:String;
         private var mName:String;
         private var mUseHandCursor:Boolean;
-        private var mLastTouchTimestamp:Number;
         private var mParent:DisplayObjectContainer;  
         private var mTransformationMatrix:Matrix;
         private var mOrientationChanged:Boolean;
+        private var mFilter:FragmentFilter;
         
         /** Helper objects. */
         private static var sAncestors:Vector.<DisplayObject> = new <DisplayObject>[];
@@ -148,16 +148,16 @@ package starling.display
             mX = mY = mPivotX = mPivotY = mRotation = mSkewX = mSkewY = 0.0;
             mScaleX = mScaleY = mAlpha = 1.0;            
             mVisible = mTouchable = true;
-            mLastTouchTimestamp = -1;
             mBlendMode = BlendMode.AUTO;
-			mTransformationMatrix = new Matrix();
+            mTransformationMatrix = new Matrix();
             mOrientationChanged = mUseHandCursor = false;
         }
         
         /** Disposes all resources of the display object. 
-          * GPU buffers are released, event listeners are removed. */
+          * GPU buffers are released, event listeners are removed, filters are disposed. */
         public function dispose():void
         {
+            if (mFilter) mFilter.dispose();
             removeEventListeners();
         }
         
@@ -310,19 +310,11 @@ package starling.display
             throw new AbstractMethodError("Method needs to be implemented in subclass");
         }
         
-        /** @inheritDoc */
-        public override function dispatchEvent(event:Event):void
+        /** Indicates if an object occupies any visible area. (Which is the case when its 'alpha', 
+         *  'scaleX' and 'scaleY' values are not zero, and its 'visible' property is enabled.) */
+        public function get hasVisibleArea():Boolean
         {
-            // on one given moment, there is only one set of touches -- thus, 
-            // we process only one touch event with a certain timestamp per frame
-            if (event is TouchEvent)
-            {
-                var touchEvent:TouchEvent = event as TouchEvent;
-                if (touchEvent.timestamp == mLastTouchTimestamp) return;
-                else mLastTouchTimestamp = touchEvent.timestamp;
-            }
-            
-            super.dispatchEvent(event);
+            return mAlpha != 0.0 && mVisible && mScaleX != 0.0 && mScaleY != 0.0;
         }
         
         // internal methods
@@ -342,20 +334,14 @@ package starling.display
                 mParent = value; 
         }
         
-        /** @private */
-        internal function get hasVisibleArea():Boolean
-        {
-            return mAlpha != 0.0 && mVisible && mScaleX != 0.0 && mScaleY != 0.0;
-        }
-        
         // helpers
         
-		private final function isEquivalent(a:Number, b:Number, epsilon:Number=0.0001):Boolean
-		{
-			return (a - epsilon < b) && (a + epsilon > b);
-		}
-		
-		private function normalizeAngle(angle:Number):Number
+        private final function isEquivalent(a:Number, b:Number, epsilon:Number=0.0001):Boolean
+        {
+            return (a - epsilon < b) && (a + epsilon > b);
+        }
+        
+        private final function normalizeAngle(angle:Number):Number
         {
             // move into range [-180 deg, +180 deg]
             while (angle < -Math.PI) angle += Math.PI * 2.0;
@@ -366,9 +352,14 @@ package starling.display
         // properties
  
         /** The transformation matrix of the object relative to its parent.
-         *  If you assign a custom transformation matrix, Starling will figure out suitable values  
-         *  for the corresponding orienation properties (<code>x, y, scaleX/Y, rotation</code> etc).
-         *  CAUTION: Returns not a copy, but the actual object! */
+         * 
+         *  <p>If you assign a custom transformation matrix, Starling will try to figure out  
+         *  suitable values for <code>x, y, scaleX, scaleY,</code> and <code>rotation</code>.
+         *  However, if the matrix was created in a different way, this might not be possible. 
+         *  In that case, Starling will apply the matrix, but not update the corresponding 
+         *  properties.</p>
+         * 
+         *  @returns CAUTION: not a copy, but the actual object! */
         public function get transformationMatrix():Matrix
         {
             if (mOrientationChanged)
@@ -377,7 +368,7 @@ package starling.display
                 mTransformationMatrix.identity();
                 
                 if (mScaleX != 1.0 || mScaleY != 1.0) mTransformationMatrix.scale(mScaleX, mScaleY);
-				if (mSkewX  != 0.0 || mSkewY  != 0.0) MatrixUtil.skew(mTransformationMatrix, mSkewX, mSkewY);
+                if (mSkewX  != 0.0 || mSkewY  != 0.0) MatrixUtil.skew(mTransformationMatrix, mSkewX, mSkewY);
                 if (mRotation != 0.0)                 mTransformationMatrix.rotate(mRotation);
                 if (mX != 0.0 || mY != 0.0)           mTransformationMatrix.translate(mX, mY);
                 
@@ -396,36 +387,39 @@ package starling.display
         
         public function set transformationMatrix(matrix:Matrix):void
         {
-			mOrientationChanged = false;
-			mTransformationMatrix.copyFrom(matrix);
-			
-			mX = matrix.tx;
-			mY = matrix.ty;
-			
-			var a:Number = matrix.a;
-			var b:Number = matrix.b;
-			var c:Number = matrix.c;
-			var d:Number = matrix.d;
-			
-			mScaleX = Math.sqrt(a * a + b * b);
-			if (mScaleX != 0) mRotation = Math.atan2(b, a);
-			else              mRotation = 0; // Rotation is not defined when a = b = 0
-			
-			var cosTheta:Number = Math.cos(mRotation);
-			var sinTheta:Number = Math.sin(mRotation);
-			
-			mScaleY = d * cosTheta - c * sinTheta;
-			if (mScaleY != 0) mSkewX = Math.atan2(d * sinTheta + c * cosTheta, mScaleY);
-			else              mSkewX = 0; // skewX is not defined when scaleY = 0
-			
-			// A 2-D affine transform has only 6 degrees of freedom -- two for translation,
-			// two for scale, one for rotation and one for skew. We are using 2 parameters for skew.
-			// To calculate the parameters from matrix values, one skew can be set to any arbitrary 
-			// value. Setting it to 0 makes the math simpler.
-			
-			mSkewY  = 0;
-			mPivotX = 0;
-			mPivotY = 0;
+            mOrientationChanged = false;
+            mTransformationMatrix.copyFrom(matrix);
+
+            mX = matrix.tx;
+            mY = matrix.ty;
+            
+            mScaleX = Math.sqrt(matrix.a * matrix.a + matrix.b * matrix.b);
+            mSkewY  = Math.acos(matrix.a / mScaleX);
+            
+            if (!isEquivalent(matrix.b, mScaleX * Math.sin(mSkewY)))
+            {
+                mScaleX *= -1;
+                mSkewY = Math.acos(matrix.a / mScaleX);
+            }
+            
+            mScaleY = Math.sqrt(matrix.c * matrix.c + matrix.d * matrix.d);
+            mSkewX  = Math.acos(matrix.d / mScaleY);
+            
+            if (!isEquivalent(matrix.c, -mScaleY * Math.sin(mSkewX)))
+            {
+                mScaleY *= -1;
+                mSkewX = Math.acos(matrix.d / mScaleY);
+            }
+            
+            if (isEquivalent(mSkewX, mSkewY))
+            {
+                mRotation = mSkewX;
+                mSkewX = mSkewY = 0;
+            }
+            else
+            {
+                mRotation = 0;
+            }
         }
         
         /** Indicates if the mouse cursor should transform into a hand while it's over the sprite. 
@@ -463,7 +457,6 @@ package starling.display
             scaleX = 1.0;
             var actualWidth:Number = width;
             if (actualWidth != 0.0) scaleX = value / actualWidth;
-            else                    scaleX = 1.0;
         }
         
         /** The height of the object in pixels. */
@@ -473,7 +466,6 @@ package starling.display
             scaleY = 1.0;
             var actualHeight:Number = height;
             if (actualHeight != 0.0) scaleY = value / actualHeight;
-            else                     scaleY = 1.0;
         }
         
         /** The x coordinate of the object relative to the local coordinates of the parent. */
@@ -606,7 +598,14 @@ package starling.display
         /** The name of the display object (default: null). Used by 'getChildByName()' of 
          *  display object containers. */
         public function get name():String { return mName; }
-        public function set name(value:String):void { mName = value; }        
+        public function set name(value:String):void { mName = value; }
+        
+        /** The filter or filter group that is attached to the display object. The starling.filters 
+         *  package contains several classes that define specific filters you can use. 
+         *  Beware that you should NOT use the same filter on more than one object (for 
+         *  performance reasons). */ 
+        public function get filter():FragmentFilter { return mFilter; }
+        public function set filter(value:FragmentFilter):void { mFilter = value; }
         
         /** The display object container that contains this display object. */
         public function get parent():DisplayObjectContainer { return mParent; }

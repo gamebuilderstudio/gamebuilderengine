@@ -14,18 +14,23 @@ package starling.display.graphics
 	{
 		public static const VERTEX_STRIDE	:int = 9;
 		
-		protected var vertices		:VertexList;
-		protected var _uvMatrix		:Matrix;
+		private var vertices		:VertexList;
+		private var _numVertices	:int;
+		private var _uvMatrix		:Matrix;
 		
 		public var showProfiling	:Boolean;
 		
 		public function Fill( showProfiling:Boolean = false )
 		{
-			_uvMatrix = new Matrix();
 			this.showProfiling = showProfiling;
 			clear();
 		}
 		
+		public function get numVertices():int
+		{
+			return _numVertices;
+		}
+
 		public function clear():void
 		{
 			minBounds.x = minBounds.y = Number.POSITIVE_INFINITY; 
@@ -41,6 +46,11 @@ package starling.display.graphics
 			clear();
 		}
 		
+		/**
+		 * Matrix to convert vertex x/y position into u/v.
+		 * If null, will default to u=x/256, v=y/256 
+		 * @param value
+		 */		
 		public function set uvMatrix( value:Matrix ):void
 		{
 			_uvMatrix = value;
@@ -66,16 +76,14 @@ package starling.display.graphics
 			}
 			
 			var textureCoordinate:Point = new Point(x, y)
-			
-			var textures:Vector.<Texture> = _material.textures;
-			if ( textures.length > 0 )
+			if ( _uvMatrix )
 			{				
-				var invert:Matrix = _uvMatrix.clone();
-				invert.invert();
-				textureCoordinate = invert.transformPoint(textureCoordinate);
-				
-				textureCoordinate.x /= textures[0].width;
-				textureCoordinate.y /= textures[0].height;				
+				textureCoordinate = _uvMatrix.transformPoint(textureCoordinate);			
+			}
+			else
+			{
+				textureCoordinate.x /= 256;
+				textureCoordinate.y /= 256;
 			}
 			
 			var r:Number = (color >> 16) / 255;
@@ -145,7 +153,7 @@ package starling.display.graphics
 			super.render( renderSupport, alpha );
 		}
 		
-		public function shapeHitTest( stageX:Number, stageY:Number ):Boolean
+		override public function shapeHitTest( stageX:Number, stageY:Number ):Boolean
 		{
 			var pt:Point = globalToLocal(new Point(stageX,stageY));
 			var direction:int = windingNumber(vertices);

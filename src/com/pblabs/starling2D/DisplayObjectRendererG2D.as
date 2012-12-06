@@ -90,12 +90,13 @@ package com.pblabs.starling2D
 
 			_transformMatrix.identity();
 			_transformMatrix.scale(combinedScale.x, combinedScale.y);
+			_transformMatrix.translate(-_registrationPoint.x * combinedScale.x, -_registrationPoint.y * combinedScale.y);
 			_transformMatrix.rotate(PBUtil.getRadiansFromDegrees(_rotation) + _rotationOffset);
 			_transformMatrix.translate((_position.x + _positionOffset.x), (_position.y + _positionOffset.y));
 			
 			gpuObject.transformationMatrix = _transformMatrix;
-			gpuObject.pivotX = _registrationPoint.x;
-			gpuObject.pivotY = _registrationPoint.y;
+			//gpuObject.pivotX = _registrationPoint.x;
+			//gpuObject.pivotY = _registrationPoint.y;
 			
 			gpuObject.alpha = this._alpha;
 			gpuObject.blendMode = this._blendMode;
