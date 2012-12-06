@@ -85,13 +85,18 @@ package com.pblabs.starling2D
 				return;
 			}
 			
+			if(!_transformDirty)
+				return;
+
+			_transformMatrix.identity();
+			_transformMatrix.scale(combinedScale.x, combinedScale.y);
+			_transformMatrix.rotate(PBUtil.getRadiansFromDegrees(_rotation) + _rotationOffset);
+			_transformMatrix.translate((_position.x + _positionOffset.x), (_position.y + _positionOffset.y));
+			
+			gpuObject.transformationMatrix = _transformMatrix;
 			gpuObject.pivotX = _registrationPoint.x;
 			gpuObject.pivotY = _registrationPoint.y;
-			gpuObject.x = this._position.x + _positionOffset.x;
-			gpuObject.y = this._position.y + _positionOffset.y;
-			gpuObject.rotation = (PBUtil.getRadiansFromDegrees(_rotation) % 360) + _rotationOffset;
-			gpuObject.scaleX = this.combinedScale.x;
-			gpuObject.scaleY = this.combinedScale.y;
+			
 			gpuObject.alpha = this._alpha;
 			gpuObject.blendMode = this._blendMode;
 			gpuObject.visible = (alpha > 0);
@@ -182,129 +187,6 @@ package com.pblabs.starling2D
 			return gpuObject;
 		}
 
-		/**
-		 * @inheritDoc
-		 */
-		override public function set registrationPoint(value:Point):void
-		{
-			super.registrationPoint = value;
-			
-			if(!gpuObject) return;
-			gpuObject.pivotX = _registrationPoint.x;
-			gpuObject.pivotY = _registrationPoint.y;
-		}
-		
-		
-		/**
-		 * @inheritDoc
-		 */
-		override public function set scale(value:Point):void
-		{
-			super.scale = value;
-			if(!gpuObject) return;
-			gpuObject.scaleX = this._scale.x;
-			gpuObject.scaleY = this._scale.y;
-		}
-		
-		/**
-		 * @inheritDoc
-		 */
-		override public function set size(value:Point):void
-		{
-			super.size = value;
-			
-			if(!gpuObject) return;
-			//gpuObject.width = _size.x;
-			//gpuObject.height = _size.y;
-		}
-		
-		/**
-		 * @inheritDoc
-		 */
-		override public function set rotation(value:Number):void
-		{
-			super.rotation = value;
-
-			if(!gpuObject) return;
-			gpuObject.rotation = (PBUtil.getRadiansFromDegrees(_rotation) % 360) + _rotationOffset;
-		}
-		
-		/**
-		 * @inheritDoc
-		 */
-		override public function set alpha(value:Number):void
-		{
-			super.alpha = value;
-
-			if(!gpuObject) return;
-			gpuObject.alpha = this._alpha;
-		}
-		
-		/**
-		 * @inheritDoc
-		 */
-		override public function set blendMode(value:String):void
-		{
-			super.blendMode = value;
-			
-			if(!gpuObject) return;
-			gpuObject.blendMode = this._blendMode;
-		}
-
-		/**
-		 * @inheritDoc
-		 */
-		override public function set position(value:Point):void
-		{
-			super.position = value;
-			
-			if(!gpuObject) return;
-			gpuObject.x = this._position.x + _positionOffset.x;
-			gpuObject.y = this._position.y + _positionOffset.y;
-		}
-		
-		/**
-		 * @inheritDoc
-		 */
-		override public function set positionOffset(value:Point):void
-		{
-			super.positionOffset = value;
-			
-			if(!gpuObject) return;
-			gpuObject.x = this._position.x + _positionOffset.x;
-			gpuObject.y = this._position.y + _positionOffset.y;
-		}
-
-		/**
-		 * @inheritDoc
-		 */
-		override public function set x(value:Number):void
-		{
-			super.x = value;
-			if(!gpuObject) return;
-			gpuObject.x = this._position.x + _positionOffset.x;
-		}
-		
-		/**
-		 * @inheritDoc
-		 */
-		override public function set y(value:Number):void
-		{
-			super.y = value;
-			if(!gpuObject) return;
-			gpuObject.y = this._position.y + _positionOffset.y;
-		}
-
-		
-		/**
-		 * @inheritDoc
-		 */
-		override public function set rotationOffset(value:Number):void 
-		{
-			super.rotationOffset = value;
-			if(!gpuObject) return;
-			gpuObject.rotation = (PBUtil.getRadiansFromDegrees(_rotation) % 360) + _rotationOffset;
-		}
 		
 		/**
 		 * @inheritDoc

@@ -150,7 +150,7 @@ package starling.display
             mVisible = mTouchable = true;
             mLastTouchTimestamp = -1;
             mBlendMode = BlendMode.AUTO;
-            mTransformationMatrix = new Matrix();
+			mTransformationMatrix = new Matrix();
             mOrientationChanged = mUseHandCursor = false;
         }
         
@@ -350,7 +350,12 @@ package starling.display
         
         // helpers
         
-        private function normalizeAngle(angle:Number):Number
+		private final function isEquivalent(a:Number, b:Number, epsilon:Number=0.0001):Boolean
+		{
+			return (a - epsilon < b) && (a + epsilon > b);
+		}
+		
+		private function normalizeAngle(angle:Number):Number
         {
             // move into range [-180 deg, +180 deg]
             while (angle < -Math.PI) angle += Math.PI * 2.0;
@@ -371,8 +376,8 @@ package starling.display
                 mOrientationChanged = false;
                 mTransformationMatrix.identity();
                 
-                if (mSkewX  != 0.0 || mSkewY  != 0.0) MatrixUtil.skew(mTransformationMatrix, mSkewX, mSkewY);
                 if (mScaleX != 1.0 || mScaleY != 1.0) mTransformationMatrix.scale(mScaleX, mScaleY);
+				if (mSkewX  != 0.0 || mSkewY  != 0.0) MatrixUtil.skew(mTransformationMatrix, mSkewX, mSkewY);
                 if (mRotation != 0.0)                 mTransformationMatrix.rotate(mRotation);
                 if (mX != 0.0 || mY != 0.0)           mTransformationMatrix.translate(mX, mY);
                 
@@ -391,34 +396,36 @@ package starling.display
         
         public function set transformationMatrix(matrix:Matrix):void
         {
-            mOrientationChanged = false;
-            mX = matrix.tx;
-            mY = matrix.ty;
-            
-            var a:Number = matrix.a;
-            var b:Number = matrix.b;
-            var c:Number = matrix.c;
-            var d:Number = matrix.d;
-            
-            mScaleX = Math.sqrt(a * a + b * b);
-            if (mScaleX != 0) mRotation = Math.atan2(b, a);
-            else              mRotation = 0; // Rotation is not defined when a = b = 0
-            
-            var cosTheta:Number = Math.cos(mRotation);
-            var sinTheta:Number = Math.sin(mRotation);
-            
-            mScaleY = d * cosTheta - c * sinTheta;
-            if (mScaleY != 0) mSkewX = Math.atan2(d * sinTheta + c * cosTheta, mScaleY);
-            else              mSkewX = 0; // skewX is not defined when scaleY = 0
-            
-            // A 2-D affine transform has only 6 degrees of freedom -- two for translation,
-            // two for scale, one for rotation and one for skew. We are using 2 parameters for skew.
-            // To calculate the parameters from matrix values, one skew can be set to any arbitrary 
-            // value. Setting it to 0 makes the math simpler.
-            
-            mSkewY  = 0;
-            mPivotX = 0;
-            mPivotY = 0;
+			mOrientationChanged = false;
+			mTransformationMatrix.copyFrom(matrix);
+			
+			mX = matrix.tx;
+			mY = matrix.ty;
+			
+			var a:Number = matrix.a;
+			var b:Number = matrix.b;
+			var c:Number = matrix.c;
+			var d:Number = matrix.d;
+			
+			mScaleX = Math.sqrt(a * a + b * b);
+			if (mScaleX != 0) mRotation = Math.atan2(b, a);
+			else              mRotation = 0; // Rotation is not defined when a = b = 0
+			
+			var cosTheta:Number = Math.cos(mRotation);
+			var sinTheta:Number = Math.sin(mRotation);
+			
+			mScaleY = d * cosTheta - c * sinTheta;
+			if (mScaleY != 0) mSkewX = Math.atan2(d * sinTheta + c * cosTheta, mScaleY);
+			else              mSkewX = 0; // skewX is not defined when scaleY = 0
+			
+			// A 2-D affine transform has only 6 degrees of freedom -- two for translation,
+			// two for scale, one for rotation and one for skew. We are using 2 parameters for skew.
+			// To calculate the parameters from matrix values, one skew can be set to any arbitrary 
+			// value. Setting it to 0 makes the math simpler.
+			
+			mSkewY  = 0;
+			mPivotX = 0;
+			mPivotY = 0;
         }
         
         /** Indicates if the mouse cursor should transform into a hand while it's over the sprite. 
