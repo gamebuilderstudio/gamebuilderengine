@@ -51,7 +51,7 @@ package com.pblabs.nape
 			return _space;
 		}
 		
-		[EditorData(defaultValue="1")]
+		[EditorData(defaultValue="30")]
 		public function get scale():Number
 		{
 			return _scale;
@@ -395,10 +395,10 @@ package com.pblabs.nape
 			}
 		}
 		
-		protected var _scale:Number = 1;
+		protected var _scale:Number = 30;
 		protected var _space:Space;
 		protected var _shapeDebug:ShapeDebug;
-		protected var _gravity:Point = new Point(0, 330);
+		protected var _gravity:Point = new Point(0, 9.8);
 		protected var _otherItems:BasicSpatialManager2D = new BasicSpatialManager2D();
 		protected var _materialManager:NapeMaterialManager;
 		protected var _allowSleep : Boolean = true;

@@ -111,7 +111,7 @@ package com.pblabs.nape
 		{
 			if ( _body )
 				_position.setTo(_body.position.x*_spatialManager.scale, _body.position.y*_spatialManager.scale);
-			return _position.clone();
+			return _position;
 		}
 		
 		public function set position(value:Point):void
@@ -144,7 +144,7 @@ package com.pblabs.nape
 				_linearVelocity.setTo(vel.x*scale, vel.y*scale);
 			}
 			
-			return _linearVelocity.clone();
+			return _linearVelocity;
 		}
 		
 		public function set linearVelocity(value:Point):void
