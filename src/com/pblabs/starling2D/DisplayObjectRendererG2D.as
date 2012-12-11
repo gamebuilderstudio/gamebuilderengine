@@ -85,9 +85,6 @@ package com.pblabs.starling2D
 				return;
 			}
 			
-			if(!_transformDirty)
-				return;
-
 			_transformMatrix.identity();
 			_transformMatrix.scale(combinedScale.x, combinedScale.y);
 			_transformMatrix.translate(-_registrationPoint.x * combinedScale.x, -_registrationPoint.y * combinedScale.y);

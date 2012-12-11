@@ -180,7 +180,7 @@ package com.pblabs.starling2D
 			{
 				(calls.func as Function).apply(this, calls.params);
 			}
-			PBE.processManager.addAnimatedObject(this);
+			PBE.processManager.addAnimatedObject(this, 1000);
 			InitializationUtilG2D.initializeRenderers.dispatch();
 			
 			_starlingInstance.stage.addEventListener(TouchEvent.TOUCH, onTouch);

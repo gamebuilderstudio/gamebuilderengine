@@ -449,7 +449,7 @@ package com.pblabs.starling2D
 			SceneAlignment.calculate(_tempPoint, sceneAlignment, sceneView.width, sceneView.height);
 			_rootSprite.x += _tempPoint.x;
 			_rootSprite.y += _tempPoint.y;
-			Logger.print(this, "Scene Position = " + _rootPosition.toString());
+			//Logger.print(this, "Scene Position = " + _rootPosition.toString());
 			_transformDirty = false;
 		}
 		
@@ -466,16 +466,10 @@ package com.pblabs.starling2D
 			
 			// Make sure transforms are up to date.
 			updateTransform();
-			// This is disabled, because it causes everything in the screen
-			// to invalidate and redraw.
-			
-			//PBE.pushStageQuality(StageQuality.LOW);
 			
 			// Give layers a chance to sort and update.
 			for each(var l:DisplayObjectSceneLayerG2D in _layers)
 			l.onRender();
-			
-			//PBE.pushStageQuality(StageQuality.HIGH);
 		}
 		
 		protected function evaluateTrackedObject():void
@@ -484,9 +478,9 @@ package com.pblabs.starling2D
 			// Make sure we are up to date with latest track.
 			if(trackObject)
 			{
-				tmpPosition = new Point(-(trackObject.position.x + trackOffset.x), 
-					-(trackObject.position.y + trackOffset.y));
-				if(!_lastPos) _lastPos = tmpPosition;
+				tmpPosition = new Point((trackObject.position.x + trackOffset.x), (trackObject.position.y + trackOffset.y));
+ 				if(!_lastPos) 
+					_lastPos = tmpPosition;
 			}
 			
 			if(trackLimitRectangle != null)
@@ -510,7 +504,7 @@ package com.pblabs.starling2D
 				
 				_lastPos = tmpPosition;
 				
-				position = _rootPosition.subtract( _trackDifPoint );
+				position = _rootPosition.add( _trackDifPoint );
 			}else{
 				_lastPos = null;
 			}
