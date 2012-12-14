@@ -76,7 +76,28 @@ package com.pblabs.rendering2D.ui
         
         public function setDisplayObjectIndex(dObj:Object, index:int):void
         {
-            setChildIndex(dObj as DisplayObject, index);
+			if(this.numChildren >= index){
+            	addChildAt(dObj as DisplayObject, index);
+				//Try and add any pending objects, This is needed incase scenes are added out of order
+				if(_pendingDisplayObjectAdditions.length > 0)
+				{
+					var pendingListLen : int = _pendingDisplayObjectAdditions.length;
+					var tmpList : Array = [];
+					for(var i : int = 0; i < pendingListLen; i++)
+					{
+						var tmpData : Object = _pendingDisplayObjectAdditions[0];
+						if(this.numChildren >= tmpData.position){
+							addChildAt(tmpData.displayObject as DisplayObject, tmpData.position);
+							_pendingDisplayObjectAdditions.splice(0, 1);
+						}else{
+							tmpList.push(_pendingDisplayObjectAdditions.splice(0, 1));
+						}
+					}
+					_pendingDisplayObjectAdditions = tmpList;
+				}
+			}else{
+				_pendingDisplayObjectAdditions.push( {displayObject: dObj, position: index} );
+			}
         }
         
 		public function setSize(width : Number, height : Number):void
@@ -87,5 +108,6 @@ package com.pblabs.rendering2D.ui
 
 		private var _width:Number = 0;
         private var _height:Number = 0;
+		private var _pendingDisplayObjectAdditions : Array = [];
     }
 }

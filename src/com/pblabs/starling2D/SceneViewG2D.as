@@ -130,7 +130,29 @@ package com.pblabs.starling2D
 				_delayedCalls.push( {func : setDisplayObjectIndex, params: [dObj, index] } );
 				return;
 			}
-			_gpuCanvasContainer.addChildAt( dObj as DisplayObject, index);
+			
+			if(_gpuCanvasContainer.numChildren >= index){
+				_gpuCanvasContainer.addChildAt(dObj as DisplayObject, index);
+				//Try and add any pending objects, This is needed incase scenes are added out of order
+				if(_pendingDisplayObjectAdditions.length > 0)
+				{
+					var pendingListLen : int = _pendingDisplayObjectAdditions.length;
+					var tmpList : Array = [];
+					for(var i : int = 0; i < pendingListLen; i++)
+					{
+						var tmpData : Object = _pendingDisplayObjectAdditions[i];
+						if(_gpuCanvasContainer.numChildren >= tmpData.position){
+							_gpuCanvasContainer.addChildAt(tmpData.displayObject as DisplayObject, tmpData.position);
+							_pendingDisplayObjectAdditions.splice(0, 1);
+						}else{
+							tmpList.push(_pendingDisplayObjectAdditions.splice(0, 1));
+						}
+					}
+					_pendingDisplayObjectAdditions = tmpList;
+				}
+			}else{
+				_pendingDisplayObjectAdditions.push( {displayObject: dObj, position: index} );
+			}
 		}
 		
 		public function setSize(width : Number, height : Number):void
@@ -270,5 +292,6 @@ package com.pblabs.starling2D
         private var _width:Number = 500;
         private var _height:Number = 500;
 		private var _disposed : Boolean = false;
+		private var _pendingDisplayObjectAdditions : Array = [];
     }
 }

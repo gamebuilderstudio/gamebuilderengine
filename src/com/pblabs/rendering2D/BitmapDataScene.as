@@ -50,11 +50,16 @@ package com.pblabs.rendering2D
             if(_sceneView)
                 _sceneView.removeDisplayObject(bitmap);
             
-            super.sceneView = value;
-            
-            if(_sceneView)
+			_sceneView = value;
+			
+			if(_sceneView)
             {
-                _sceneView.removeDisplayObject(_rootSprite);
+				_sceneViewName = _sceneView["name"];
+				
+				if(_rootSprite.parent == _sceneView){
+                	_sceneView.removeDisplayObject(_rootSprite);
+				}
+				
 				_realRoot = new Sprite();
 				_realRoot.addChild(_rootSprite);
 				if (PBE.mainClass.parent!=PBE.mainStage)
@@ -63,7 +68,10 @@ package com.pblabs.rendering2D
 					_realRoot.y = PBE.mainClass.parent.y;
 				}
 				bitmap.pixelSnapping = PixelSnapping.NEVER;
-                _sceneView.addDisplayObject(bitmap);
+				if(_layerIndex == -1)
+					_sceneView.addDisplayObject(bitmap);
+				else
+					_sceneView.setDisplayObjectIndex(bitmap, _layerIndex);
             }
         }
 											

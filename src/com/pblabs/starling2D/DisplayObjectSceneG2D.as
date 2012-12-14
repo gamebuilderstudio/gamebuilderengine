@@ -119,6 +119,7 @@ package com.pblabs.starling2D
 		protected var _sceneAlignment:SceneAlignment = SceneAlignment.TOP_LEFT;
 		protected var _lastPos : Point;
 		protected var _trackDifPoint : Point = new Point();
+		protected var _layerIndex : int = -1;
 		
 		public function DisplayObjectSceneG2D()
 		{
@@ -255,7 +256,10 @@ package com.pblabs.starling2D
 			if(_sceneView)
 			{
 				_sceneViewName = _sceneView["name"];
-				_sceneView.addDisplayObject(_rootSprite);
+				if(_layerIndex == -1)
+					_sceneView.addDisplayObject(_rootSprite);
+				else
+					_sceneView.setDisplayObjectIndex(_rootSprite, _layerIndex);
 			}
 		}
 		
@@ -599,6 +603,17 @@ package com.pblabs.starling2D
 			return _rootSprite;
 		}
 		
+		/**
+		 * The position that this scene should be added to the scene view
+		 **/
+		public function get layerIndex():int { return _layerIndex; }
+		public function set layerIndex(val : int):void {
+			_layerIndex = val;
+			if(_sceneView){
+				sceneView = _sceneView;
+			}
+		}
+
 		public function sortSpatials(array:Array):void
 		{
 			// Subclasses can set how things are sorted.

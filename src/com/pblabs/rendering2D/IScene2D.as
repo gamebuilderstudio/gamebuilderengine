@@ -171,6 +171,9 @@ package com.pblabs.rendering2D
 		 */
 		function get sceneContainer():Object;
 
+		function get layerIndex():int;
+		function set layerIndex(val : int):void;
+
 		function transformWorldToScene(inPos:Point):Point;
         function transformSceneToWorld(inPos:Point):Point;
 
