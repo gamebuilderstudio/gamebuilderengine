@@ -178,14 +178,18 @@ package com.pblabs.nape
 		
 		public function queryRectangle(box:Rectangle, mask:ObjectType, results:Array):Boolean
 		{
+			if(box.width <= 1 || box.height <= 1)
+				box.inflate(5, 5);
+			
 			//query aabb
 			var aabb:AABB = new AABB(box.left*inverseScale, box.top*inverseScale, box.width*inverseScale, box.height*inverseScale);
 			//setup filter
-			var queryInteractionFilter:InteractionFilter = new InteractionFilter(-1, (mask ? mask.bits : -1));
+			_queryInteraction.collisionGroup = -1;
+			_queryInteraction.collisionMask = (mask ? mask.bits : -1);
 			
 			var numFoundBodies:int;
 			
-			var bodyList:BodyList = _space.bodiesInAABB(aabb, false, true, queryInteractionFilter);
+			var bodyList:BodyList = _space.bodiesInAABB(aabb, false, true, _queryInteraction);
 			
 			numFoundBodies = bodyList.length;
 			bodyList.foreach(function (item:Body):void
@@ -213,11 +217,11 @@ package com.pblabs.nape
 			//query aabb
 			var pos:Vec2 = new Vec2(center.x*inverseScale, center.y*inverseScale);
 			//setup filter
-			var queryInteractionFilter:InteractionFilter = new InteractionFilter(-1, (mask ? mask.bits : -1));
-			
+			_queryInteraction.collisionGroup = -1;
+			_queryInteraction.collisionMask = (mask ? mask.bits : -1);
 			var numFoundBodies:int;
 			
-			var bodyList:BodyList = _space.bodiesInCircle(pos, radius*inverseScale, false, queryInteractionFilter);
+			var bodyList:BodyList = _space.bodiesInCircle(pos, radius*inverseScale, false, _queryInteraction);
 			
 			numFoundBodies = bodyList.length;
 			bodyList.foreach(function (item:Body):void
@@ -243,8 +247,9 @@ package com.pblabs.nape
 		public function castRay(start:Point, end:Point, mask:ObjectType, result:RayHitInfo):Boolean
 		{
 			var ray:Ray = Ray.fromSegment(new Vec2(start.x*inverseScale, start.y*inverseScale), new Vec2(end.x*inverseScale, end.y*inverseScale));
-			var queryInteractionFilter:InteractionFilter = new InteractionFilter(-1, (mask ? mask.bits : -1));
-			var napeResult:RayResult = _space.rayCast(ray, false, queryInteractionFilter);
+			_queryInteraction.collisionGroup = -1;
+			_queryInteraction.collisionMask = (mask ? mask.bits : -1);
+			var napeResult:RayResult = _space.rayCast(ray, false, _queryInteraction);
 			if ( napeResult )
 			{
 				//convert nape result to RayHitInfo
@@ -264,9 +269,10 @@ package com.pblabs.nape
 		public function getObjectsUnderPoint(worldPosition:Point, results:Array, mask:ObjectType = null):Boolean
 		{
 			var tmpResults:Array = new Array();
-			var queryInteractionFilter:InteractionFilter = new InteractionFilter(-1, (mask ? mask.bits : -1));
+			_queryInteraction.collisionGroup = -1;
+			_queryInteraction.collisionMask = (mask ? mask.bits : -1);
 			var numFoundBodies:int;
-			var bodyList:BodyList = _space.bodiesUnderPoint(new Vec2(worldPosition.x*inverseScale, worldPosition.y*inverseScale), queryInteractionFilter);
+			var bodyList:BodyList = _space.bodiesUnderPoint(new Vec2(worldPosition.x*inverseScale, worldPosition.y*inverseScale), _queryInteraction);
 			
 			numFoundBodies = bodyList.length;
 			bodyList.foreach(function (item:Body):void
@@ -403,6 +409,7 @@ package com.pblabs.nape
 		protected var _materialManager:NapeMaterialManager;
 		protected var _allowSleep : Boolean = true;
 		protected var _worldBounds:Rectangle = new Rectangle(-5000, -5000, 10000, 10000);
+		protected var _queryInteraction:InteractionFilter = new InteractionFilter();
 		
 		private var _visualDebugging:Boolean = false;
 		private var _visualDebuggingPending:Boolean = false;
