@@ -40,13 +40,11 @@ package com.pblabs.starling2D
 			if (!gpuObject || !scene)
 				return false;
 			
-			//worldPosition = scene.transformWorldToScreen(worldPosition);
-			worldPosition = worldPosition.subtract( scene.position );
-			// Figure local position.
-			//var localPos:Point = transformWorldToObject(worldPosition);
-			//Convert global point to local gpuPoint
-			var localPos:Point = gpuObject.globalToLocal(worldPosition);
-			return gpuObject.hitTest(localPos) ? true : false;
+			// This is the generic version, which uses hitTestPoint. hitTestPoint
+			// takes a coordinate in screen space, so do that.
+			worldPosition = scene.transformWorldToScreen(worldPosition);
+			
+			return gpuObject.hitTest(worldPosition) ? true : false;
 		}
 
 		override protected function buildG2DObject():void
