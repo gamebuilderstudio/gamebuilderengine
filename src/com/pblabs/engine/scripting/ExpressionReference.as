@@ -45,7 +45,7 @@ package com.pblabs.engine.scripting
 		
 		private static var _initialized : Boolean = false;
 
-		public function ExpressionReference(expression:Object=null, selfContext : Object = null)
+		public function ExpressionReference(expression:Object="", selfContext : Object = null)
 		{
 			this.expression = String(expression);
 
@@ -140,8 +140,8 @@ package com.pblabs.engine.scripting
 			D.importStaticMethods( Math );
 			D.importClass( Point );
 			D.importClass( PBE );
-			D.importFunction("setPoint", ExpressionUtils.setPoint);
-			D.importFunction("getEntity", ExpressionUtils.getEntity);
+			D.importFunction("Point", ExpressionUtils.setPoint);
+			D.importFunction("Entity", ExpressionUtils.getEntity);
 			D.importFunction("magnitudeOfPoint", ExpressionUtils.magnitudeOfPoint);
 			D.importFunction("magnitude", ExpressionUtils.magnitude);
 			D.importFunction("rotationOfAngle", ExpressionUtils.rotationOfAngle);
