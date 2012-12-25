@@ -199,12 +199,8 @@ package com.pblabs.rendering2D
 				// Deal with clamping/looping.
                 if (_currentAnimation.loop)
                 {
-					if(curFrame >= _currentAnimation.frameCount){
-						if (currentAnimationStartTimeReference){
-							_currentAnimationStartTime = owner.getProperty(currentAnimationStartTimeReference);
-						}else{
-							_currentAnimationStartTime = PBE.processManager.virtualTime;
-						}
+					if(curFrame >= _currentAnimation.frameCount-1){
+						_currentAnimationStartTime = PBE.processManager.virtualTime;
 					}
 
 					var wasFrame:int = curFrame;
