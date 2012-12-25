@@ -524,10 +524,14 @@ package com.pblabs.rendering2D
          * @return Bounds in object space, relative to its local origin.
          */
         [EditorData(ignore="true")]
+		private var _tmpLocalBounds : Rectangle = new Rectangle();
         public function get localBounds():Rectangle
         {
-            if(!displayObject)
-                return null;
+            if(!displayObject){
+				_tmpLocalBounds.width = _size.x;
+				_tmpLocalBounds.height = _size.y;
+                return _tmpLocalBounds;
+			}
             
             return displayObject.getBounds(displayObject);
         }
