@@ -154,7 +154,7 @@ package com.pblabs.nape
 			if (_body)
 			{
 				var invScale:Number = _spatialManager.inverseScale;
-				_body.velocity.setxy(_linearVelocity.x*invScale, _linearVelocity.y*invScale);
+				_body.velocity.setxy(_linearVelocity.x*_spatialManager.inverseScale, _linearVelocity.y*_spatialManager.inverseScale);
 			}
 		}
 		
@@ -238,8 +238,8 @@ package com.pblabs.nape
 		
 		public function get collidesContinuously():Boolean
 		{
-			//if (_body)
-				//return _body.IsBullet();
+			if(_body)
+				return _body.isBullet;
 			
 			return _collidesContinuously;
 		}
@@ -247,8 +247,8 @@ package com.pblabs.nape
 		public function set collidesContinuously(value:Boolean):void
 		{
 			_collidesContinuously = value;
-			//if (_body)
-				//_body.SetBullet(value);
+			if(_body)
+				_body.isBullet = value;
 		}
 
 		[TypeHint(type="com.pblabs.nape.CollisionShape")]
@@ -392,7 +392,7 @@ package com.pblabs.nape
 				clearShapesFromBody();
 				
 				_body.space = null;
-				_body.clear();
+				//_body.clear();
 				_body = null;
 			}
 		}
@@ -417,9 +417,10 @@ package com.pblabs.nape
 			_body = new Body(napeBodyType);
 			_body.position.setxy(_position.x*invScale, _position.y*invScale);
 			_body.rotation = PBUtil.getRadiansFromDegrees(_rotation);
+			_body.isBullet = _collidesContinuously;
 			_body.allowMovement = _canMove;
 			_body.allowRotation = _canRotate;
-			_body.velocity.setxy(_linearVelocity.x*invScale, _linearVelocity.y*invScale);
+			_body.velocity.setxy(_linearVelocity.x, _linearVelocity.y);
 			_body.angularVel = PBUtil.getRadiansFromDegrees(angularVelocity);
 			buildCollisionShapes();
 			_body.cbTypes.add(_spatialManager.bodyCallbackType);

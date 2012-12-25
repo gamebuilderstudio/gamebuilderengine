@@ -17,14 +17,14 @@ package com.pblabs.nape
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
+	import nape.callbacks.Callback;
 	import nape.callbacks.CbEvent;
 	import nape.callbacks.CbType;
 	import nape.callbacks.InteractionCallback;
 	import nape.callbacks.InteractionListener;
 	import nape.callbacks.InteractionType;
-	import nape.callbacks.PreCallback;
-	import nape.callbacks.PreListener;
 	import nape.dynamics.Arbiter;
+	import nape.dynamics.ArbiterType;
 	import nape.dynamics.InteractionFilter;
 	import nape.geom.AABB;
 	import nape.geom.Ray;
@@ -37,8 +37,6 @@ package com.pblabs.nape
 	import nape.space.Space;
 	import nape.util.ShapeDebug;
 	
-	import org.osmf.logging.Log;
-
 	public class NapeManagerComponent extends EntityComponent implements ITickedObject, IAnimatedObject, IPhysics2DManager
 	{
 		public function NapeManagerComponent()
@@ -316,8 +314,8 @@ package com.pblabs.nape
 			//provide default material manager
 			if (!_materialManager)
 				_materialManager = new NapeMaterialManager();
-			PBE.processManager.addTickedObject(this);
-			PBE.processManager.addAnimatedObject(this);
+			PBE.processManager.addTickedObject(this, 1000);
+			PBE.processManager.addAnimatedObject(this, 1000);
 			initSpace();
 		}
 		
@@ -332,15 +330,19 @@ package com.pblabs.nape
 		private function initSpace():void
 		{
 			_space = new Space(new Vec2(_gravity.x, _gravity.y), Broadphase.DYNAMIC_AABB_TREE);
-			//we don't need it now
-			//_space.listeners.add(new PreListener(InteractionType.COLLISION, _bodyCallbackType, _bodyCallbackType, preCollisionCallback));
+			
 			_space.listeners.add(new InteractionListener(CbEvent.BEGIN, InteractionType.COLLISION, _bodyCallbackType, _bodyCallbackType, beginCollisionCallback));
 			_space.listeners.add(new InteractionListener(CbEvent.END, InteractionType.COLLISION, _bodyCallbackType, _bodyCallbackType, endCollisionCallback));
 			_space.listeners.add(new InteractionListener(CbEvent.ONGOING, InteractionType.COLLISION, _bodyCallbackType, _bodyCallbackType, ongoingCollisionCallback));
 			
+			_space.listeners.add(new InteractionListener(CbEvent.BEGIN, InteractionType.SENSOR, _bodyCallbackType, _bodyCallbackType, beginCollisionCallback));
+			_space.listeners.add(new InteractionListener(CbEvent.END, InteractionType.SENSOR, _bodyCallbackType, _bodyCallbackType, endCollisionCallback));
+			_space.listeners.add(new InteractionListener(CbEvent.ONGOING, InteractionType.SENSOR, _bodyCallbackType, _bodyCallbackType, ongoingCollisionCallback));
+
 			_shapeDebug = new ShapeDebug(PBUtil.clamp(PBE.mainClass.width, 10, 5000000), PBUtil.clamp(PBE.mainClass.height, 10, 5000000), 0x4D4D4D );
 			//_shapeDebug.drawShapeDetail = true;
 			_shapeDebug.drawConstraints = true;
+			_shapeDebug.drawBodies = true;
 			//_shapeDebug.drawBodyDetail = true;
 		}
 		
@@ -352,15 +354,6 @@ package com.pblabs.nape
 			if(_shapeDebug)
 				_shapeDebug.clear();
 		}
-		
-		/*private function preCollisionCallback(cb:PreCallback):void
-		{
-			if ( cb.arbiter.isCollisionArbiter() )
-			{
-				var ce:CollisionEvent = new CollisionEvent(COllisionev
-				cb.arbiter.collisionArbiter.normal
-			}
-		}*/
 		
 		private function beginCollisionCallback(cb:InteractionCallback):void
 		{

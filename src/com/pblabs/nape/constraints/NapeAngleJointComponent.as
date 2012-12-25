@@ -86,7 +86,7 @@ package com.pblabs.nape.constraints
 		override protected function getConstraintInstance():Constraint
 		{
 			var invScale:Number = _spatialManager.inverseScale;
-			var instance:AngleJoint = new AngleJoint(_spatial1.body, _spatial2.body, PBUtil.getRadiansFromDegrees(_jointMin), PBUtil.getRadiansFromDegrees(_jointMax));
+			var instance:AngleJoint = new AngleJoint(_spatial1.body, _spatial2.body, PBUtil.getRadiansFromDegrees(_jointMin), PBUtil.getRadiansFromDegrees(_jointMax), 1);
 			instance.ratio = _ratio;
 			return instance;
 		}

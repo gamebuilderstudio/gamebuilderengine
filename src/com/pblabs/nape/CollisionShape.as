@@ -4,6 +4,7 @@ package com.pblabs.nape
 	
 	import flash.geom.Point;
 	
+	import nape.callbacks.CbType;
 	import nape.dynamics.InteractionFilter;
 	import nape.phys.Material;
 	import nape.shape.Shape;
@@ -105,6 +106,8 @@ package com.pblabs.nape
 		public function set isTrigger(value:Boolean):void
 		{
 			_isTrigger = value;
+			if (_parent)
+				_parent.buildCollisionShapes();
 		}
 
 		public function createShape(parent:NapeSpatialComponent):Shape
@@ -123,6 +126,16 @@ package com.pblabs.nape
 				shape.material = materialObj;
 				
 			shape.filter = parent.interactionFilter;
+			if(_isTrigger){
+				shape.sensorEnabled = true;
+				if(!_parent.body.cbTypes.has(SENSORS))
+					_parent.body.cbTypes.add(SENSORS);
+			}else{
+				shape.sensorEnabled = false;
+				if(_parent.body.cbTypes.has(SENSORS))
+					_parent.body.cbTypes.remove(SENSORS);
+			}
+			
 			shape.userData.spatial = parent;
 			
 			return shape;
@@ -147,9 +160,10 @@ package com.pblabs.nape
 			return _internalMaterial;
 		}
 		
+		public static var SENSORS : CbType = new CbType();
+
 		protected var _parent:NapeSpatialComponent = null;
 		
-		private var _interactionFilter:InteractionFilter;
 		private var _material:String;
 		private var _internalMaterial:Material;
 		private var _density:Number = 1.0;
