@@ -73,6 +73,7 @@ package com.pblabs.animation
         	if (_currentAnimation && _currentAnimation.isAnimating)
         		   _currentAnimation.stop();
         	
+			_currentAnimationName = animation;
             _currentAnimation = animations[animation];
             if (!_currentAnimation)
                 return;
@@ -95,6 +96,8 @@ package com.pblabs.animation
             play(defaultAnimation);
         }
 		
+		private var _currentAnimationName : String;
+		public function get currentAnimation():String{ return _currentAnimationName; }
 		public function set currentAnimation(animationName : String):void
 		{
 			play(animationName);
