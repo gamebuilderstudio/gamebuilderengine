@@ -140,7 +140,7 @@ package com.pblabs.engine.scripting
 			D.importStaticMethods( Math );
 			D.importClass( Point );
 			D.importClass( PBE );
-			D.importFunction("Point", ExpressionUtils.setPoint);
+			D.importFunction("setPoint", ExpressionUtils.setPoint);
 			D.importFunction("Entity", ExpressionUtils.getEntity);
 			D.importFunction("magnitudeOfPoint", ExpressionUtils.magnitudeOfPoint);
 			D.importFunction("magnitude", ExpressionUtils.magnitude);
