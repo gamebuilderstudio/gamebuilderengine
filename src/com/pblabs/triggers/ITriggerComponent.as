@@ -1,4 +1,4 @@
-package com.flexgangsta.pbtriggers
+package com.pblabs.triggers
 {
 	import com.pblabs.engine.entity.IEntityComponent;
 	
@@ -14,7 +14,7 @@ package com.flexgangsta.pbtriggers
 		/**
 		 * Contains all of the actions that are to be executed 
 		 * 
-		 * see com.flexgangsta.pbtriggers.actions.IAction
+		 * see com.pblabs.triggers.actions.IAction
 		 */		
 		function get actions():Array;
 		function set actions(value:Array):void;

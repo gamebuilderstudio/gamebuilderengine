@@ -1,6 +1,6 @@
-package com.flexgangsta.pbtriggers.actions
+package com.pblabs.triggers.actions
 {
-	import com.flexgangsta.pbtriggers.ITriggerComponent;
+	import com.pblabs.triggers.ITriggerComponent;
 	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.entity.PropertyReference;
 	import com.pblabs.engine.scripting.ExpressionReference;

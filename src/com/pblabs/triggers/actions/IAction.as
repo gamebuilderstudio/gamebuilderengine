@@ -1,6 +1,6 @@
-package com.flexgangsta.pbtriggers.actions
+package com.pblabs.triggers.actions
 {
-	import com.flexgangsta.pbtriggers.ITriggerComponent;
+	import com.pblabs.triggers.ITriggerComponent;
 
 	/**
 	 * The main purpose of a trigger is to execute a set group of actions.

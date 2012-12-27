@@ -1,6 +1,6 @@
-package com.flexgangsta.pbtriggers
+package com.pblabs.triggers
 {
-	import com.flexgangsta.pbtriggers.actions.IAction;
+	import com.pblabs.triggers.actions.IAction;
 	import com.pblabs.engine.entity.EntityComponent;
 	
 	import flash.events.Event;
@@ -44,7 +44,7 @@ package com.flexgangsta.pbtriggers
 		//______________________________________	
 		public var eventType:String;
 		
-		[TypeHint(type="com.flexgangsta.pbtriggers.actions.IAction")]
+		[TypeHint(type="com.pblabs.triggers.actions.IAction")]
 		public function get actions():Array
 		{
 			return _actions;

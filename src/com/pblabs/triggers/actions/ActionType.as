@@ -1,4 +1,4 @@
-package com.flexgangsta.pbtriggers.actions
+package com.pblabs.triggers.actions
 {
 	public final class ActionType
 	{
