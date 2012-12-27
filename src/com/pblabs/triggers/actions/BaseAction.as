@@ -1,5 +1,6 @@
 package com.pblabs.triggers.actions
 {
+	import com.pblabs.engine.scripting.ExpressionReference;
 	import com.pblabs.triggers.ITriggerComponent;
 	
 	public class BaseAction implements IAction
@@ -20,6 +21,18 @@ package com.pblabs.triggers.actions
 			_owner = null;
 		}
 		
+		public function getExpressionValue(expression : ExpressionReference):*
+		{
+			var value : *;
+			if(expression){
+				expression.selfContext = _owner.owner.Self;
+				value = expression.value;
+				if(!value || value == "null" || value == "undefined")
+					value = expression.expression;
+			}
+			return value;
+		}
+
 		protected var _owner : ITriggerComponent;
 		public function get owner():ITriggerComponent { return _owner; }
 		public function set owner(value:ITriggerComponent):void

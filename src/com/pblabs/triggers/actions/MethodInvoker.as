@@ -1,11 +1,11 @@
 package com.pblabs.triggers.actions
 {
-	import com.pblabs.triggers.ITriggerComponent;
 	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.entity.PropertyReference;
 	import com.pblabs.engine.scripting.ExpressionReference;
+	import com.pblabs.triggers.ITriggerComponent;
 
-	public class MethodInvoker implements IAction
+	public class MethodInvoker extends BaseAction
 	{
 		//______________________________________ 
 		//	Public Properties
@@ -31,26 +31,10 @@ package com.pblabs.triggers.actions
 		 */		
 		public var passReferences:Boolean=true;
 		
-		public function get owner():ITriggerComponent { return _owner; }
-		public function set owner(value:ITriggerComponent):void
-		{
-			_owner = value;
-		}
-		
-		private var _label : String
-		public function get label():String { return _label; }
-		public function set label(value:String):void
-		{
-			_label=value;
-		}
-
-		private var _type : ActionType = ActionType.ONETIME;
-		public function get type():ActionType{ return _type; }
-		
 		//______________________________________ 
 		//	Public Methods
 		//______________________________________
-		public function execute():*
+		override public function execute():*
 		{
 			var processedArguments:Array = new Array();
 			
@@ -85,9 +69,7 @@ package com.pblabs.triggers.actions
 			}
 		}
 		
-		public function stop():void { }
-
-		public function destroy():void
+		override public function destroy():void
 		{
 			var len : int = args.length;
 			for(var i : int = 0; i < len; i++)
@@ -96,11 +78,7 @@ package com.pblabs.triggers.actions
 				args.pop();
 			}
 			methodReference = null;
-			_owner = null;
+			super.destroy();
 		}
-		//______________________________________ 
-		//	Private Properties
-		//______________________________________
-		private var _owner:ITriggerComponent;
 	}
 }

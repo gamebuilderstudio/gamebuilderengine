@@ -1,11 +1,10 @@
 package com.pblabs.triggers.actions
 {
-	import com.pblabs.triggers.ITriggerComponent;
 	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.entity.PropertyReference;
 	import com.pblabs.engine.scripting.ExpressionReference;
 	
-	public class PropertySetter implements IAction
+	public class PropertySetter extends BaseAction
 	{
 		//______________________________________ 
 		//	Public Properties
@@ -22,26 +21,10 @@ package com.pblabs.triggers.actions
 		 */		
 		public var passReferences:Boolean=true;
 		
-		public function get owner():ITriggerComponent { return _owner; }
-		public function set owner(value:ITriggerComponent):void
-		{
-			_owner=value;
-		}
-
-		protected var _label : String
-		public function get label():String { return _label; }
-		public function set label(value:String):void
-		{
-			_label=value;
-		}
-		
-		protected var _type : ActionType = ActionType.ONETIME;
-		public function get type():ActionType{ return _type; }
-
 		//______________________________________ 
 		//	Public Methods
 		//______________________________________
-		public function execute():*
+		override public function execute():*
 		{
 			var newPropValue:*;
 			
@@ -75,18 +58,12 @@ package com.pblabs.triggers.actions
 			return _owner.owner.getProperty(property);
 		}
 		
-		public function stop():void { }
-
-		public function destroy():void
+		override public function destroy():void
 		{
 			if(source is ExpressionReference) (source as ExpressionReference).destroy();
 			source = null;
 			property = null;
-			_owner = null;
+			super.destroy();
 		}
-		//______________________________________ 
-		//	Private Properties
-		//______________________________________
-		private var _owner:ITriggerComponent;
 	}
 }
