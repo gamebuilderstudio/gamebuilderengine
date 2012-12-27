@@ -8,7 +8,11 @@
  ******************************************************************************/
 package com.pblabs.animation
 {
+    import com.pblabs.engine.PBE;
+    
     import flash.events.EventDispatcher;
+    import flash.utils.getTimer;
+
     /**
      * @eventType com.pblabs.animation.AnimationEvent.ANIMATION_STARTED_EVENT
      */
@@ -91,7 +95,7 @@ package com.pblabs.animation
 		}
 
 		/**
-		 * The time it should take to animate from the start value to the target value.
+		 * The time it should take to animate from the start value to the target value in milliseconds.
 		 */
 		public function get duration():Number
 		{
@@ -266,7 +270,7 @@ package com.pblabs.animation
 			}
 			
 			if (ease!=null)
-				_current = doEase(_elapsedTime,_start, _target - _start, _duration);
+				_current = doEase(_elapsedTime, _start, _target - _start, _duration);
 			else
 				_current = interpolate(_start, _target, _elapsedTime / _duration);
 		}
@@ -308,12 +312,17 @@ package com.pblabs.animation
 		}
 				
 		/**
-		 * Applies an ease function
-		 * Can be overridden to support easing objects  
+		 * Applies an ease function from the ease package to the value being animated.
+		 * Can be overridden to support easing different types of objects
+		 * 
+		 * #see com.pblabs.animation.easing.Linear
 		 */
-		protected function doEase(start:*, end:*, elapsed:Number, duration:Number):*
+		protected function doEase(elapsed:Number, start:*, end:*, duration:Number):*
 		{
-			return ease(elapsed, start, end - start, duration);
+			var secElapsed : Number = elapsed+((getTimer()-getTimer())/1000);
+			var secTotal : Number = duration/1000;
+			var easeValue:Number = ease(secElapsed, start, end, secTotal);
+			return easeValue;
 		}
 		
         /**

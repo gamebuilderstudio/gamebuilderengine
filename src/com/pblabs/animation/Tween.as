@@ -8,9 +8,11 @@
  ******************************************************************************/
 package com.pblabs.animation
 {	
+	import com.pblabs.animation.easing.Linear;
 	import com.pblabs.engine.PBE;
 	import com.pblabs.engine.core.IAnimatedObject;
 	import com.pblabs.engine.core.ITickedObject;
+	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.entity.IEntity;
 	import com.pblabs.engine.entity.PropertyReference;
 	
@@ -92,7 +94,7 @@ package com.pblabs.animation
 		    this.object = object;
 			this.delay = delay;
 			this.duration = duration;
-			this.fromVars = fromVars;
+			this.fromVars = (fromVars is Point) ? fromVars.clone() : fromVars;
 			this.toVars = toVars;
 			this.pingpong = pingpong;
 			// if pingpong provided duration is total pingpong duration
@@ -162,7 +164,7 @@ package com.pblabs.animation
 		 */
 		public function advance(deltaSecs:Number):Number
 		{									
-			var start:int = getTimer();
+			var start:int = PBE.processManager.platformTime;
 			var elapsed:int
 			
 			if (pause || object==null ) return 0;
@@ -196,14 +198,14 @@ package com.pblabs.animation
 					}
 					dispose();
 					
-					elapsed = getTimer() - start;
+					elapsed = PBE.processManager.platformTime - start;
 					return elapsed/1000;
 				}
 			}				
 			else
 				_running = false;
 								
-			elapsed = getTimer() - start;
+			elapsed = PBE.processManager.platformTime - start;
 			return elapsed/1000;
 		}
 		
@@ -233,11 +235,11 @@ package com.pblabs.animation
 			if (vf is Point && vd is Point)
 			{
 				vv = (vf as Point).clone();
-				vv.x = ease(secs, vf.x , vd.x, duration);
-				vv.y = ease(secs, vf.y , vd.y, duration);				
+				vv.x = calcEase(secs, vf.x , vd.x, duration);
+				vv.y = calcEase(secs, vf.y , vd.y, duration);				
 			}
 			else
-			  vv = ease(secs, vf , vd, duration);
+			  vv = calcEase(secs, vf , vd, duration);
 			// assign eased value to object variable
 			setVar(v,vv);
 		} 
@@ -288,13 +290,13 @@ package com.pblabs.animation
 						if (fromVars is Point && deltaVars is Point)
 						{
 							vv = (fromVars as Point).clone();
-							vv.x = ease(secs, fromVars.x , deltaVars.x, duration);
-							vv.y = ease(secs, fromVars.y , deltaVars.y, duration);				
+							vv.x = calcEase(secs, fromVars.x , deltaVars.x, duration);
+							vv.y = calcEase(secs, fromVars.y , deltaVars.y, duration);				
 							setVar(object,vv);
 						}
 						else
 						{
-							vv = ease(secs, fromVars , deltaVars, duration);
+							vv = calcEase(secs, fromVars , deltaVars, duration);
 							setVar(object,vv);
 						}
 					}
@@ -398,6 +400,12 @@ package com.pblabs.animation
 			}
 		}
 		
+		private function calcEase(elapsed:Number, start:Number, end:Number, duration:Number):Number
+		{
+			var easeValue:Number = ease(elapsed, start, end, duration);
+			return easeValue;
+		}
+		
 		// --------------------------------------------------------------
 		// private variables				
 		// --------------------------------------------------------------
@@ -408,7 +416,7 @@ package com.pblabs.animation
 		private var fromVars:*;
 		private var toVars:*;
 		private var deltaVars:*;
-		private var ease:Function = Linear.easeIn;
+		private var ease:Function = Linear.easeNone;
 		private var pause:Boolean = false;
 		private var _running:Boolean = false;
 		private var onComplete:Function = null;
@@ -423,29 +431,5 @@ package com.pblabs.animation
 		
 		private var totalTimePlayed:Number = 0;
 		
-	}
-}
-
-class Linear
-{		
-	public static function easeNone(t:Number, b:Number,
-									c:Number, d:Number):Number
-	{
-		return c * t / d + b;
-	}
-	public static function easeIn(t:Number, b:Number,
-								  c:Number, d:Number):Number
-	{
-		return c * t / d + b;
-	}
-	public static function easeOut(t:Number, b:Number,
-								   c:Number, d:Number):Number
-	{
-		return c * t / d + b;
-	}
-	public static function easeInOut(t:Number, b:Number,
-									 c:Number, d:Number):Number
-	{
-		return c * t / d + b;
 	}
 }

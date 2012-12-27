@@ -12,6 +12,7 @@ package com.pblabs.animation
 	import com.pblabs.engine.components.TickedComponent;
 	import com.pblabs.engine.core.IAnimatedObject;
 	import com.pblabs.engine.core.ITickedObject;
+	import com.pblabs.engine.core.ProcessManager;
 	import com.pblabs.engine.debug.Console;
 	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.entity.EntityComponent;
@@ -104,9 +105,9 @@ package com.pblabs.animation
 		{
 			if (tickTweens.length>0)
 			{
-				var baseTime:int = getTimer();
+				var baseTime:int = PBE.processManager.platformTime;
 				for (var t:int = 0; t<tickTweens.length; t++)
-					(tickTweens[t] as Tween).advance(deltaTime+((getTimer()-baseTime)/1000));				
+					(tickTweens[t] as Tween).advance(deltaTime+((PBE.processManager.platformTime-baseTime)/1000));				
 			}
 		}
 		
@@ -114,9 +115,9 @@ package com.pblabs.animation
 		{
 			if (frameTweens.length>0)
 			{
-				var baseTime:int = getTimer();
+				var baseTime:int = PBE.processManager.platformTime;
 				for (var t:int = 0; t<frameTweens.length; t++)
-					(frameTweens[t] as Tween).advance(deltaTime+((getTimer()-baseTime)/1000));				
+					(frameTweens[t] as Tween).advance(deltaTime+((PBE.processManager.platformTime-baseTime)/1000));				
 			}
 		}
 		

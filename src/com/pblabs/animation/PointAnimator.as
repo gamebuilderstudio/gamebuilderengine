@@ -16,7 +16,7 @@ package com.pblabs.animation
    public class PointAnimator extends Animator
    {
 	   
-	   override protected function doEase(start:*, end:*, elapsed:Number, duration:Number):*
+	   override protected function doEase(elapsed:Number, start:*, end:*, duration:Number):*
 	   {
 		   var result:Point = new Point();
 		   result.x = ease(elapsed, start.x, end.x - start.x, duration);
