@@ -25,17 +25,23 @@ package com.pblabs.triggers.actions
 		/**
 		 * The animation duration in seconds
 		 **/
-		public var durationReference : ExpressionReference;
+		public var durationReference : ExpressionReference = new ExpressionReference("5");
 		/**
 		 * The amount of dealy before the begins in seconds
 		 **/
-		public var delayReference : ExpressionReference;
+		public var delayReference : ExpressionReference = new ExpressionReference("0");
+		/**
+		 * The amount of dealy before the begins in seconds
+		 **/
+		public var repeatCountReference : ExpressionReference = new ExpressionReference("1");
 		
 		public var easingClass : String = getQualifiedClassName(Linear);
 		public var easingFunction : String = "easeNone";
+		public var pingpong : Boolean = false;
 
 		private var _duration : Number;
 		private var _delay : Number;
+		private var _repeat : Number;
 		private var _tween : Tween;
 		private var _propertyToTween : *;
 		
@@ -43,12 +49,11 @@ package com.pblabs.triggers.actions
 		{
 			_duration = Number(getExpressionValue(durationReference));
 			_delay = Number(getExpressionValue(delayReference));
+			_repeat = Number(getExpressionValue(repeatCountReference));
 			var easeClazz : Class = getDefinitionByName(easingClass) as Class;
 			_propertyToTween = this.owner.owner.getProperty(propertyReference);
-			_tween = new Tween(this.owner ? this.owner.owner : null, propertyReference, _duration, _propertyToTween, getExpressionValue(valueReference), easeClazz[easingFunction], onComplete, _delay, false, 1, 0, 0);
-			//_tween.start();
-			
-			return null;
+			_tween = new Tween(this.owner ? this.owner.owner : null, propertyReference, _duration, _propertyToTween, getExpressionValue(valueReference), easeClazz[easingFunction], onComplete, _delay, pingpong, _repeat, 0, 0);
+			return;
 		}
 		
 		public function onComplete(tween : Tween):void
@@ -66,7 +71,8 @@ package com.pblabs.triggers.actions
 		
 		override public function destroy():void
 		{
-			_tween.dispose();
+			if(_tween)
+				_tween.dispose();
 			_tween = null;
 			super.destroy();
 		}
