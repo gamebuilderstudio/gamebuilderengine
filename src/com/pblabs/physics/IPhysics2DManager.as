@@ -8,6 +8,7 @@ package com.pblabs.physics
 
 	public interface IPhysics2DManager extends ISpatialManager2D
 	{
+		function get inverseScale():Number;
 		function get scale():Number;
 		function set scale(value:Number):void;
 		function get allowSleep():Boolean;
