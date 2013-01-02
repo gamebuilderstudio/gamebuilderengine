@@ -351,7 +351,7 @@ package com.pblabs.nape
 					newShape.createShape(this).body = _body;
 				}
 			}else{
-				var tmpShape : Polygon = new Polygon( Polygon.rect(-(_size.x/2), -(_size.y/2),_size.x, _size.y) );
+				var tmpShape : Polygon = new Polygon( Polygon.rect(-(_size.x/2)*_spatialManager.inverseScale, -(_size.y/2)*_spatialManager.inverseScale, _size.x*_spatialManager.inverseScale, _size.y*_spatialManager.inverseScale) );
 				tmpShape.body = _body;
 			}
 			
