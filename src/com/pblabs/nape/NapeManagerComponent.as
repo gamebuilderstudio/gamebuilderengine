@@ -365,10 +365,19 @@ package com.pblabs.nape
 		
 		private function endCollisionCallback(cb:InteractionCallback):void
 		{
-			cb.arbiters.foreach(function (item:Arbiter):void
+			/*cb.arbiters.foreach(function (item:Arbiter):void
 			{
 				dispatchCollisionEvents(item, CollisionEvent.COLLISION_STOPPED_EVENT);
-			});
+			});*/
+			var spatial1:NapeSpatialComponent = cb.int1.userData.spatial;
+			var spatial2:NapeSpatialComponent = cb.int2.userData.spatial;
+			var ce:CollisionEvent = new CollisionEvent(CollisionEvent.COLLISION_STOPPED_EVENT, spatial1, spatial2, new Point(), null, null);
+			//Logger.debug(this, "dispatchCollisionEvents", "Dispatching " + eventType + " normal " + ce.normal.toString());
+			if ( spatial1.owner )
+				spatial1.owner.eventDispatcher.dispatchEvent(ce);
+			if ( spatial2.owner )
+				spatial2.owner.eventDispatcher.dispatchEvent(ce.clone());
+
 		}
 		
 		private function ongoingCollisionCallback(cb:InteractionCallback):void
@@ -381,17 +390,20 @@ package com.pblabs.nape
 		
 		private function dispatchCollisionEvents(arbiter:Arbiter, eventType:String):void
 		{
-			if ( arbiter.isCollisionArbiter() )
+			var spatial1:NapeSpatialComponent = arbiter.body1.userData.spatial;
+			var spatial2:NapeSpatialComponent = arbiter.body2.userData.spatial;
+			var ce:CollisionEvent;
+
+			if ( arbiter.isCollisionArbiter())
 			{
-				var spatial1:NapeSpatialComponent = arbiter.body1.userData.spatial;
-				var spatial2:NapeSpatialComponent = arbiter.body2.userData.spatial;
-				var ce:CollisionEvent = new CollisionEvent(eventType, spatial1, spatial2, new Point(arbiter.collisionArbiter.normal.x*scale, arbiter.collisionArbiter.normal.y*scale), arbiter.collisionArbiter.contacts);
-				//Logger.debug(this, "dispatchCollisionEvents", "Dispatching " + eventType + " normal " + ce.normal.toString());
-				if ( spatial1.owner )
-					spatial1.owner.eventDispatcher.dispatchEvent(ce);
-				if ( spatial2.owner )
-					spatial2.owner.eventDispatcher.dispatchEvent(ce.clone());
+				ce = new CollisionEvent(eventType, spatial1, spatial2, new Point(arbiter.collisionArbiter.normal.x, arbiter.collisionArbiter.normal.y), arbiter.collisionArbiter.contacts, arbiter.collisionArbiter);
+			}else if(arbiter.isSensorArbiter()){
+				ce = new CollisionEvent(eventType, spatial1, spatial2, new Point(0,0), null, null);
 			}
+			if ( spatial1.owner )
+				spatial1.owner.eventDispatcher.dispatchEvent(ce);
+			if ( spatial2.owner )
+				spatial2.owner.eventDispatcher.dispatchEvent(ce.clone());
 		}
 		
 		protected var _scale:Number = 30;
