@@ -181,6 +181,10 @@ package com.pblabs.rendering2D
             if (_currentAnimation.frameCount == 1)
             {
 				targetCurFrame = _currentAnimation.getFrameByIndex(0);
+				if (_currentAnimation.loop)
+				{
+					_currentAnimationStartTime = PBE.processManager.virtualTime;
+				}
             }
             else
             {
