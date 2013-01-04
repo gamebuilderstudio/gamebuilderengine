@@ -49,7 +49,7 @@ package com.pblabs.starling2D.spritesheet
 		
 		override public function getFrame(index:int, direction:Number=0.0):BitmapData{ return null; }
 
-		override protected function getRawFrame(index:int):BitmapData{ return null; }
+		override protected function getRawFrame(index:int):BitmapData{ return super.getRawFrame(index); }
 
 		override protected function getSourceFrames() : Array
 		{

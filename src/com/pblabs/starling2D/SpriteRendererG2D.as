@@ -52,6 +52,10 @@ package com.pblabs.starling2D
 			if(!this.bitmap || !this.bitmap.bitmapData)
 				return;
 			
+			if(!resource){
+				super.buildG2DObject();
+				return;
+			}
 			var texture : Texture = ResourceTextureManagerG2D.getTextureForResource(resource);
 			if(!gpuObject){
 				if(texture){
@@ -59,7 +63,10 @@ package com.pblabs.starling2D
 				}else{
 					texture = Texture.fromBitmap(this.bitmap);
 					ResourceTextureManagerG2D.mapTextureToResource(texture, resource);
-					gpuObject = new Image( ResourceTextureManagerG2D.getTextureForResource(resource) );
+					texture = ResourceTextureManagerG2D.getTextureForResource(resource);
+					if(!texture)
+						return;
+					gpuObject = new Image( texture );
 				}
 			}else{
 				if((gpuObject as Image).texture)
