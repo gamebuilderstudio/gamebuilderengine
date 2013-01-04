@@ -8,43 +8,46 @@
  ******************************************************************************/
 package com.pblabs.starling2D
 {
-	import com.pblabs.engine.debug.Logger;
-	import com.pblabs.engine.resource.DataResource;
-	import com.pblabs.engine.resource.ImageResource;
-	import com.pblabs.rendering2D.ITextRenderer;
+	import com.pblabs.engine.core.ObjectType;
+	import com.pblabs.rendering2D.UITextRendererComponent;
 	
+	import flash.display.BitmapData;
 	import flash.geom.Point;
-	import flash.geom.Rectangle;
 	
 	import starling.core.Starling;
-	import starling.text.TextField;
+	import starling.display.Image;
+	import starling.events.Touch;
+	import starling.events.TouchEvent;
+	import starling.events.TouchPhase;
 	import starling.textures.TextureSmoothing;
-	import starling.utils.HAlign;
-	import starling.utils.VAlign;
-
-	public class UITextRendererComponentG2D extends DisplayObjectRendererG2D implements ITextRenderer
+	
+	public class UITextRendererComponentG2D extends UITextRendererComponent
 	{
-		protected var _fontColor : uint = 0x000000;
-		protected var _fontSize : Number = 12;
-		protected var _text : String = "[EMPTY]";
-		protected var _fontImage : ImageResource;
-		protected var _fontData : DataResource;
-		
 		public function UITextRendererComponentG2D()
 		{
 			super();
 		}
-		
+
+		override public function pointOccupied(worldPosition:Point, mask:ObjectType):Boolean
+		{
+			if (!gpuObject || !scene)
+				return false;
+			
+			var localPos:Point = transformWorldToObject(worldPosition);
+			return gpuObject.hitTest(localPos) ? true : false;
+		}
+
 		override protected function onAdd():void
 		{
 			super.onAdd();
-			buildG2DObject();
+			Starling.current.stage.addEventListener(TouchEvent.TOUCH, onStageTouch);
+			
 		}
-		
-		protected override function onRemove():void
+
+		override protected function onRemove():void
 		{
 			super.onRemove();
-			InitializationUtilG2D.initializeRenderers.remove(buildG2DObject);
+			Starling.current.stage.removeEventListener(TouchEvent.TOUCH, onStageTouch);
 		}
 
 		override protected function buildG2DObject():void
@@ -53,91 +56,72 @@ package com.pblabs.starling2D
 				InitializationUtilG2D.initializeRenderers.add(buildG2DObject);
 				return;
 			}
-
+			
 			if(!gpuObject){
 				//Create GPU Renderer Object
-				gpuObject = new TextField(_size.x+tmpPadding.x, _size.y+tmpPadding.y, _text, "Arial", _fontSize, _fontColor, true);
-				(gpuObject as TextField).hAlign = HAlign.LEFT;
-				(gpuObject as TextField).vAlign = VAlign.TOP;
-				(gpuObject as TextField).nativeTextField.wordWrap = false;
-				//(gpuObject as TextField).autoScale = true;
-				//(gpuObject as TextField).smoothing = TextureSmoothing.NONE;
-				
+				gpuObject = new Image( ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmap.bitmapData ) );
+			}else{
+				if(( gpuObject as Image).texture)
+					( gpuObject as Image).texture.dispose();
+				( gpuObject as Image).texture = ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmap.bitmapData );
+				( gpuObject as Image).readjustSize();
 			}
+			smoothing = _smoothing;
 			super.buildG2DObject();
 		}
-
-		private function updateFontSize():void
+		
+		protected function onStageTouch(event : TouchEvent):void
 		{
-			if(!owner || !gpuObject) return;
+			var touch : Touch = event.getTouch(Starling.current.stage, TouchPhase.BEGAN);
+			if(!touch)
+				return;
+			_stagePoint.setTo( touch.globalX, touch.globalY );
+			toggleInputDisplay();
+		}
+		
+		override public function set bitmapData(value:BitmapData):void
+		{
+			if (value === bitmap.bitmapData)
+				return;
 			
-			var tmpNewSize : Point = new Point( (gpuObject as TextField).nativeTextField.textWidth, (gpuObject as TextField).nativeTextField.textHeight );
+			// store orginal BitmapData so that modifiers can be re-implemented 
+			// when assigned modifiers attribute later on.
+			originalBitmapData = value;
 			
-			if(sizeProperty && sizeProperty.property != "")
+			// check if we should do modification
+			/*
+			if (modifiers.length>0)
 			{
-				size = tmpNewSize;
-				this.owner.setProperty( sizeProperty, tmpNewSize )
-			}else{
-				size = tmpNewSize;
-			}
+			// apply all bitmapData modifiers
+			bitmap.bitmapData = modify(originalBitmapData.clone());
+			dataModified();			
+			}	
+			else	
+			*/					
+			bitmap.bitmapData = value;
+			
+			// Due to a bug, this has to be reset after setting bitmapData.
+			smoothing = _smoothing;
+			
+			buildG2DObject();
+			
+			_transformDirty = true;
 		}
-
-		public function get fontImage():ImageResource{ return _fontImage; }
-		public function set fontImage(img : ImageResource):void{
-			_fontImage = img;
-		}
-		
-		public function get fontData():DataResource{ return _fontData; }
-		public function set fontData(data : DataResource):void{
-			_fontData = data;
-		}
-
-		public function get fontColor():uint{ return _fontColor; }
-		public function set fontColor(val : uint):void{
-			_fontColor = val;
-			if(!gpuObject) return;
-			gpuTextObject.color = _fontColor;			
-		}
-		
-		public function get fontSize():Number{ return _fontSize; }
-		public function set fontSize(val : Number):void{
-			if(_fontSize == val)
-				return;
-			_fontSize = val;
-			if(!gpuObject) return;
-			gpuTextObject.fontSize = _fontSize;
-			updateFontSize();
-		}
-		
-		private var _textBounds : Rectangle = new Rectangle();
-		public function get text():String{ return _text; }
-		public function set text(val : String):void{
-			if(_text == val)
-				return;
-			if(val == "") 
-				val = "[Empty]";
-			_text = val;
-			if(!gpuObject) return;
-			gpuTextObject.text = _text;
-			updateFontSize();
-		}
-		
-		private function get gpuTextObject():TextField{ return gpuObject ? gpuObject as TextField : null; }
 
 		/**
-		 * @inheritDoc
+		 * @see Bitmap.smoothing 
 		 */
-		override public function get size():Point
+		[EditorData(ignore="true")]
+		override public function set smoothing(value:Boolean):void
 		{
-			if(!gpuObject){
-				return super.size;
+			super.smoothing = value;
+			if(gpuObject)
+			{
+				if(!_smoothing)
+					(gpuObject as Image).smoothing = TextureSmoothing.NONE;
+				else
+					(gpuObject as Image).smoothing = TextureSmoothing.TRILINEAR;
 			}
-			if(!_size)
-				return _size;
-			_size.setTo( (gpuObject as TextField).width, (gpuObject as TextField).height);
-			return _size.clone();
 		}
-		
-		private var tmpPadding : Point = new Point(2,2);
 	}
 }

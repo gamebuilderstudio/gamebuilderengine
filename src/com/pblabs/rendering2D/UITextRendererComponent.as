@@ -11,36 +11,44 @@ package com.pblabs.rendering2D
 	import flash.display.BitmapData;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
+	import flash.events.Event;
+	import flash.events.FocusEvent;
+	import flash.events.MouseEvent;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
+	import flash.text.TextFieldType;
 	import flash.text.TextFormat;
 	
 	import spark.primitives.Rect;
 	
 	public class UITextRendererComponent extends BitmapRenderer implements ITextRenderer
 	{
-		private var _fontImage : ImageResource;
-		private var _fontData : DataResource;
-		
 		[EditorData(ignore="true")]
 		public var textFormatter : TextFormat = new TextFormat("Arial", 30, 0xFFFFFF, true);
+		public var autoResize : Boolean = true;
 		
-		private var bmFontObject : BMFont;
-		private var textDisplay : TextField = new TextField();
-		private var _textDirty : Boolean = false;
+		protected var _bmFontObject : BMFont;
+		protected var _textDisplay : TextField = new TextField();
+		protected var _fontImage : ImageResource;
+		protected var _fontData : DataResource;
+		protected var _textDirty : Boolean = false;
+		protected var _textInputType : String = TextFieldType.DYNAMIC;
+		protected var _stagePoint : Point = new Point();
+		protected var _previousAlpha : Number = 0;
+		protected var _inputEnabled : Boolean = false;
 		
 		public function UITextRendererComponent()
 		{
 			super();
-			//_displayObject = textDisplay;
+			//_displayObject = _textDisplay;
 		}
 		
 		override public function onFrame(elapsed:Number):void
 		{
-			buildFontOBject();
+			buildFontObject();
 			
 			if(_textDirty == true){
 				paintTextToBitmap();
@@ -51,53 +59,123 @@ package com.pblabs.rendering2D
 		
 		override protected function onAdd():void
 		{
-			if(!textDisplay.text || textDisplay.text == "") 
-				text = "NEW TEXT";
-			textDisplay.selectable = false;
+			/*if(!_textDisplay.text || _textDisplay.text == "") 
+				text = "[EMPTY]";*/
 			
-			/*if(_displayObject == textDisplay && useBitmapFont && fontImage && fontData)
-				_displayObject = null;*/
+			_textDisplay.setTextFormat(textFormatter);
+			_textDisplay.autoSize = TextFieldAutoSize.LEFT;
+
+			updateFontSize();
 			paintTextToBitmap();
+			
+			PBE.mainStage.addEventListener(MouseEvent.MOUSE_DOWN, onStageMouseDown, true);
+			
+			_textDisplay.addEventListener(FocusEvent.FOCUS_OUT, onFocusOutInputField);
+			_textDisplay.addEventListener(Event.CHANGE, onTextInputChanged);
 			
 			super.onAdd();
 		}
 		
-		private function buildFontOBject():void
+		override protected function onRemove():void
 		{
-			if(!bmFontObject && fontData && fontData.isLoaded && fontImage && fontImage.isLoaded)
+			super.onRemove();
+			
+			PBE.mainStage.removeEventListener(MouseEvent.MOUSE_DOWN, onStageMouseDown, true)
+
+			_textDisplay.removeEventListener(FocusEvent.FOCUS_OUT, onFocusOutInputField);
+			_textDisplay.removeEventListener(Event.CHANGE, onTextInputChanged);
+			_textDisplay = null;
+		}
+		
+		protected function onStageMouseDown(event : MouseEvent):void
+		{
+			_stagePoint.setTo( event.stageX, event.stageY );
+			toggleInputDisplay();
+		}
+		
+		protected function toggleInputDisplay():void
+		{
+			var localBounds : Rectangle = this.localBounds;
+			localBounds.inflate( 10, 10 );
+			localBounds.x -= 10;
+			localBounds.y -= 10;
+			var localTextPoint : Point = this.transformWorldToObject( scene.transformScreenToWorld(_stagePoint) );
+			if( localBounds.containsPoint( localTextPoint ) && _textDisplay.type == TextFieldType.INPUT && !_inputEnabled)
 			{
-				var fontData : String = fontData.data.readUTFBytes(fontData.data.length);
-				bmFontObject = new BMFont();
-				bmFontObject.parseFont(fontData);
+				_textDisplay.selectable = true;
+				var globalPoint : Point = scene.transformSceneToScreen( _position );
+				PBE.mainStage.addChild(_textDisplay);
+				_textDisplay.x = globalPoint.x;
+				_textDisplay.y = globalPoint.y;
+				var charIndex : int = _textDisplay.getCharIndexAtPoint(localTextPoint.x, localTextPoint.y);
+				PBE.mainStage.focus = _textDisplay;
+				_textDisplay.setSelection(charIndex, charIndex);
 				
-				bmFontObject.addSheet(0, fontImage.bitmapData);
+				_previousAlpha = this._alpha;
+				this.alpha = 0;
+				_inputEnabled = true;
+			}else if(!localBounds.containsPoint( localTextPoint ) && _inputEnabled){
+				onFocusOutInputField(null);
+			}
+		}
+		
+		protected function onFocusOutInputField(event : FocusEvent):void
+		{
+			_textDisplay.setSelection(0, 0);
+			PBE.mainStage.focus = null;
+			_textDisplay.selectable = false;
+			if(PBE.mainStage.contains(_textDisplay))
+				PBE.mainStage.removeChild(_textDisplay);
+
+			this.alpha = _previousAlpha;
+			_inputEnabled = false;
+			_textDirty = true;
+		}
+		
+		protected function onTextInputChanged(event : Event):void
+		{
+			text = _textDisplay.text;
+			_textDirty = false;
+		}
+		
+		protected function buildFontObject():void
+		{
+			if(!_bmFontObject && fontData && fontData.isLoaded && fontImage && fontImage.isLoaded)
+			{
+				var fontDataStr : String = fontData.data.readUTFBytes(fontData.data.length);
+				_bmFontObject = new BMFont();
+				_bmFontObject.parseFont(fontDataStr);
+				
+				_bmFontObject.addSheet(0, fontImage.bitmapData);
 				paintTextToBitmap();
 			}
 		}
 		
-		private function paintTextToBitmap():void
+		protected function paintTextToBitmap():void
 		{
 			if(!size || size.x == 0 || size.y == 0) {
-				this.bitmapData = new BitmapData(100,100);
+				this.bitmapData = new BitmapData(150,50);
 				return;
 			}
-			if(!bmFontObject)
-				buildFontOBject();
-			//var bounds : Rectangle = textDisplay.getBounds(textDisplay);
+			if(!_bmFontObject)
+				buildFontObject();
+			//var bounds : Rectangle = _textDisplay.getBounds(_textDisplay);
 			var textBitmapData:BitmapData = this.originalBitmapData;
 			if(textBitmapData) 
 				textBitmapData.fillRect(textBitmapData.rect, 0);
-			if(!this.bitmapData || this.bitmapData.width != size.x || this.bitmapData.height != size.y)
+			if(!this.bitmapData || this.bitmapData.width != size.x || this.bitmapData.height != size.y || this.text == "")
 			{
+				if(textBitmapData)
+					textBitmapData.dispose();
 				textBitmapData = new BitmapData(size.x, size.y, true, 0x0);
 			}
 			textBitmapData.lock();
-			if(bmFontObject && fontData && fontData.isLoaded && fontData && fontData.isLoaded )
+			if(_bmFontObject && fontData && fontData.isLoaded && fontData && fontData.isLoaded )
 			{
 				// OK, draw some fonts!
-				bmFontObject.drawString(textBitmapData, 0, 0, textDisplay.text);
+				_bmFontObject.drawString(textBitmapData, 0, 0, _textDisplay.text);
 			}else{
-				textBitmapData.draw(textDisplay);
+				textBitmapData.draw(_textDisplay);
 			}
 			textBitmapData.unlock();
 			this.bitmapData = textBitmapData;
@@ -105,17 +183,21 @@ package com.pblabs.rendering2D
 			_textDirty = false;
 		}
 		
-		private function updateFontSize():void
+		protected var _newTextSize : Point = new Point();
+		protected function updateFontSize():void
 		{
-			if(!owner || !textDisplay ) return;
+			if(!_textDisplay || !autoResize) 
+				return;
 			
-			var newSize : Point = new Point(textDisplay.textWidth, textDisplay.textHeight)
+			var textSize : Rectangle = _textDisplay.getBounds(_textDisplay);
+			_newTextSize.setTo( textSize.width+10, textSize.height+10);
 			if(sizeProperty && sizeProperty.property != "")
 			{
-				size = newSize;
-				this.owner.setProperty( sizeProperty, newSize )
+				size = _newTextSize;
+				if(owner)
+					this.owner.setProperty( sizeProperty, _newTextSize )
 			}else{
-				size = newSize;
+				size = _newTextSize;
 			}
 		}
 
@@ -132,30 +214,32 @@ package com.pblabs.rendering2D
 		public function get fontColor():uint{ return uint(textFormatter.color); }
 		public function set fontColor(val : uint):void{
 			textFormatter.color = val;
-			textDisplay.setTextFormat(textFormatter);
-			textDisplay.autoSize = TextFieldAutoSize.LEFT;
+			_textDisplay.setTextFormat(textFormatter);
+			_textDisplay.autoSize = TextFieldAutoSize.LEFT;
 			_textDirty = true;
 		}
 		
 		public function get fontSize():Number{ return int(textFormatter.size); }
 		public function set fontSize(val : Number):void{
 			textFormatter.size = val;
-			textDisplay.setTextFormat(textFormatter);
-			textDisplay.autoSize = TextFieldAutoSize.LEFT;
+			_textDisplay.setTextFormat(textFormatter);
+			_textDisplay.autoSize = TextFieldAutoSize.LEFT;
 			
 			updateFontSize();
-			//Logger.print(this, "Text Size = W - "+textDisplay.textWidth + ", H - "+textDisplay.textHeight);
+			//Logger.print(this, "Text Size = W - "+_textDisplay.textWidth + ", H - "+_textDisplay.textHeight);
 			_textDirty = true;
 		}
 
-		public function get text():String{ return textDisplay.text; }
+		public function get text():String{ return _textDisplay.text; }
 		public function set text(val : String):void{
-			if(val == "") 
-				val = "[Empty]";
-			textDisplay.text = val;
-			textDisplay.setTextFormat(textFormatter);
-			textDisplay.autoSize = TextFieldAutoSize.LEFT;
-			updateFontSize();
+			if(!val || val == ""){
+				_textDisplay.text = "";
+			}else{
+				_textDisplay.text = val;
+				_textDisplay.setTextFormat(textFormatter);
+				_textDisplay.autoSize = TextFieldAutoSize.LEFT;
+				updateFontSize();
+			}
 			_textDirty = true;
 		}
 
@@ -168,6 +252,13 @@ package com.pblabs.rendering2D
 			if(!val.equals(this._scale))
 				_textDirty = true;
 			super.scale = val;
+		}
+
+		public function get type():String{ return _textInputType; }
+		public function set type(val : String):void{
+			_textInputType = val;
+			_textDirty = true;
+			_textDisplay.type = _textInputType;
 		}
 	}
 }
