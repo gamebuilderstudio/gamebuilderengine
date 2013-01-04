@@ -157,7 +157,7 @@ package com.pblabs.rendering2D
             if(!bitmap || !bitmap.bitmapData || !scene)
                 return false;
             
-			worldPosition = worldPosition.subtract( scene.position );
+			//worldPosition = worldPosition.add( scene.position );
             // Figure local position.
             var localPos:Point = transformWorldToObject(worldPosition);
 			return bitmap.bitmapData.hitTest(zeroPoint, 0x01, localPos);

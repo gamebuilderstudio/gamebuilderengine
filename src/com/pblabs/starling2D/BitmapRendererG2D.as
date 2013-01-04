@@ -31,11 +31,8 @@ package com.pblabs.starling2D
 			if (!gpuObject || !scene)
 				return false;
 			
-			// This is the generic version, which uses hitTestPoint. hitTestPoint
-			// takes a coordinate in screen space, so do that.
-			worldPosition = scene.transformWorldToScreen(worldPosition);
-			
-			return gpuObject.hitTest(worldPosition) ? true : false;
+			var localPos:Point = transformWorldToObject(worldPosition);
+			return gpuObject.hitTest(localPos) ? true : false;
 		}
 
 		override protected function buildG2DObject():void
@@ -57,12 +54,6 @@ package com.pblabs.starling2D
 			}
 			smoothing = _smoothing;
 			super.buildG2DObject();
-		}
-		
-		override protected function onRemove():void
-		{
-			super.onRemove();
-			InitializationUtilG2D.initializeRenderers.remove(buildG2DObject);
 		}
 		
 		protected function modifyTexture(data:Texture):Texture

@@ -113,11 +113,8 @@ package com.pblabs.starling2D
 			if (!gpuObject || !scene)
 				return super.pointOccupied(worldPosition, mask);
 			
-			// This is the generic version, which uses hitTestPoint. hitTestPoint
-			// takes a coordinate in screen space, so do that.
-			worldPosition = scene.transformWorldToScreen(worldPosition);
-			
-			return gpuObject.hitTest(worldPosition) ? true : false;
+			var localPos:Point = transformWorldToObject(worldPosition);
+			return gpuObject.hitTest(localPos) ? true : false;
 		}
 		
 		override protected function onRemove() : void

@@ -528,6 +528,8 @@ package com.pblabs.rendering2D
         public function get localBounds():Rectangle
         {
             if(!displayObject){
+				_tmpLocalBounds.x = _position.x;
+				_tmpLocalBounds.y = _position.y;
 				_tmpLocalBounds.width = _size.x;
 				_tmpLocalBounds.height = _size.y;
                 return _tmpLocalBounds;
