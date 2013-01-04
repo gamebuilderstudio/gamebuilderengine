@@ -146,7 +146,7 @@ package com.pblabs.nape
 			return new Shape();
 		}
 		
-		protected function get internalMaterial():Material
+		public function get internalMaterial():Material
 		{
 			if(!_internalMaterial)
 			{
