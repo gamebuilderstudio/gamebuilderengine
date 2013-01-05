@@ -54,6 +54,10 @@ package com.pblabs.rendering2D
 				paintTextToBitmap();
 			}
 			
+			if(_inputEnabled && _transformDirty)
+				hideInputField(null);
+			if(_inputEnabled && this._alpha != 0)
+				this.alpha = 0;
 			super.onFrame(elapsed);
 		}
 		
@@ -70,8 +74,7 @@ package com.pblabs.rendering2D
 			
 			PBE.mainStage.addEventListener(MouseEvent.MOUSE_DOWN, onStageMouseDown, true);
 			
-			_textDisplay.addEventListener(FocusEvent.FOCUS_OUT, onFocusOutInputField);
-			_textDisplay.addEventListener(Event.CHANGE, onTextInputChanged);
+			_textDisplay.addEventListener(FocusEvent.FOCUS_OUT, hideInputField);
 			
 			super.onAdd();
 		}
@@ -82,8 +85,7 @@ package com.pblabs.rendering2D
 			
 			PBE.mainStage.removeEventListener(MouseEvent.MOUSE_DOWN, onStageMouseDown, true)
 
-			_textDisplay.removeEventListener(FocusEvent.FOCUS_OUT, onFocusOutInputField);
-			_textDisplay.removeEventListener(Event.CHANGE, onTextInputChanged);
+			_textDisplay.removeEventListener(FocusEvent.FOCUS_OUT, hideInputField);
 			_textDisplay = null;
 		}
 		
@@ -112,14 +114,13 @@ package com.pblabs.rendering2D
 				_textDisplay.setSelection(charIndex, charIndex);
 				
 				_previousAlpha = this._alpha;
-				this.alpha = 0;
 				_inputEnabled = true;
 			}else if(!localBounds.containsPoint( localTextPoint ) && _inputEnabled){
-				onFocusOutInputField(null);
+				hideInputField(null);
 			}
 		}
 		
-		protected function onFocusOutInputField(event : FocusEvent):void
+		protected function hideInputField(event : FocusEvent):void
 		{
 			_textDisplay.setSelection(0, 0);
 			PBE.mainStage.focus = null;
@@ -129,13 +130,7 @@ package com.pblabs.rendering2D
 
 			this.alpha = _previousAlpha;
 			_inputEnabled = false;
-			_textDirty = true;
-		}
-		
-		protected function onTextInputChanged(event : Event):void
-		{
 			text = _textDisplay.text;
-			_textDirty = false;
 		}
 		
 		protected function buildFontObject():void
