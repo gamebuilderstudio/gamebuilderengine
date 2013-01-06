@@ -266,7 +266,7 @@ package com.pblabs.nape
 		
 		public function get worldExtents():Rectangle
 		{
-			if(spriteForPointChecks)
+			if(spriteForPointChecks && spriteForPointChecks.displayObject)
 				return spriteForPointChecks.sceneBounds;
 			
 			return new Rectangle(position.x - (size.x * 0.5), position.y - (size.y * 0.5), size.x, size.y);         
