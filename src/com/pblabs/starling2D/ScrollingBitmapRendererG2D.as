@@ -23,14 +23,16 @@ package com.pblabs.starling2D
 		//-------------------------------------------------------------------------
 		// public variable declarations
 		//-------------------------------------------------------------------------		
+		[EditorData(inspectable="true")]
 		public var scrollSpeed:Point = new Point(0,0);
 
-		private var scrollRect:Rectangle = new Rectangle();	// will hold the drawing area
-		private var _scratchPoint : Point = new Point();
-		private var _tmpPoint : Point = new Point();
-		private var _initialDraw : Boolean = true;
-		protected var hRatio : Number = 1;
-		protected var vRatio : Number = 1;
+		protected var scrollRect:Rectangle = new Rectangle();	// will hold the drawing area
+		protected var _scratchPoint : Point = new Point();
+		protected var _tmpPoint : Point = new Point();
+		protected var _initialDraw : Boolean = true;
+		
+		protected var hRatio : Number = -1;
+		protected var vRatio : Number = -1;
 		protected var customBitmapCreated : Boolean = false;
 		protected var textureWidth : Number = 0;
 		protected var textureHeight : Number = 0;
@@ -48,10 +50,10 @@ package com.pblabs.starling2D
 			_scratchPoint.x -= (scrollSpeed.x * deltaTime); 
 			_scratchPoint.y -= (scrollSpeed.y * deltaTime);	
 			
-			setOffset(_scratchPoint.x, _scratchPoint.y);
+			offsetTexture(_scratchPoint.x, _scratchPoint.y);
 		}
 		
-		public function setOffset(xx:Number, yy:Number):void
+		public function offsetTexture(xx:Number, yy:Number):void
 		{
 			if(!gpuObject || (!_initialDraw && PBE.processManager.timeScale == 0))
 				return;
@@ -62,10 +64,10 @@ package com.pblabs.starling2D
 			var imageText : Image = (gpuObject as Image);
 			xx = ((xx/textureWidth % 1)+1);
 			yy = ((yy/textureHeight % 1)+1);
-			imageText.setTexCoords(0, new Point(xx, yy));
-			imageText.setTexCoords(1, new Point(xx+hRatio, yy ));
-			imageText.setTexCoords(2, new Point(xx, yy + vRatio));
-			imageText.setTexCoords(3, new Point(xx + hRatio, yy + vRatio));
+			imageText.setTexCoords(0, new Point(xx, yy));//top left
+			imageText.setTexCoords(1, new Point(xx+hRatio, yy));//top right
+			imageText.setTexCoords(2, new Point(xx, yy + vRatio));//bottom left
+			imageText.setTexCoords(3, new Point(xx+hRatio, yy + vRatio));//bottom right
 
 			if(_initialDraw)
 				_initialDraw = false;
@@ -108,8 +110,10 @@ package com.pblabs.starling2D
 			{
 				textureWidth = (gpuObject as Image).texture.width;
 				textureHeight = (gpuObject as Image).texture.height;
-				hRatio = _size.x / textureWidth;
-				vRatio = _size.y / textureHeight;
+				if(hRatio == -1)
+					hRatio = Math.round(_size.x / textureWidth);
+				if(vRatio == -1)
+					vRatio = Math.round(_size.y / textureHeight);
 				//var intialPosX : Number = scrollPosition.x / _size.x;
 				//var intialPosY : Number = scrollPosition.y / _size.y;
 				(gpuObject as Image).texture.repeat = true;
