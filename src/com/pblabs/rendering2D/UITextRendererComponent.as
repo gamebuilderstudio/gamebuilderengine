@@ -39,6 +39,7 @@ package com.pblabs.rendering2D
 		protected var _stagePoint : Point = new Point();
 		protected var _previousAlpha : Number = 0;
 		protected var _inputEnabled : Boolean = false;
+		protected var _startMouseDownPos : Point = new Point();
 		
 		public function UITextRendererComponent()
 		{
@@ -72,8 +73,10 @@ package com.pblabs.rendering2D
 			updateFontSize();
 			paintTextToBitmap();
 			
+			PBE.mainStage.addEventListener(MouseEvent.MOUSE_UP, onStageMouseUp, true);
 			PBE.mainStage.addEventListener(MouseEvent.MOUSE_DOWN, onStageMouseDown, true);
 			
+			_textDisplay.addEventListener(Event.CHANGE, inputChanged);
 			_textDisplay.addEventListener(FocusEvent.FOCUS_OUT, hideInputField);
 			
 			super.onAdd();
@@ -83,16 +86,29 @@ package com.pblabs.rendering2D
 		{
 			super.onRemove();
 			
-			PBE.mainStage.removeEventListener(MouseEvent.MOUSE_DOWN, onStageMouseDown, true)
+			PBE.mainStage.removeEventListener(MouseEvent.MOUSE_UP, onStageMouseUp, true)
+			PBE.mainStage.removeEventListener(MouseEvent.MOUSE_DOWN, onStageMouseDown, true);
 
+			_textDisplay.removeEventListener(Event.CHANGE, inputChanged);
 			_textDisplay.removeEventListener(FocusEvent.FOCUS_OUT, hideInputField);
 			_textDisplay = null;
 		}
 		
+		protected function inputChanged(event : Event):void
+		{
+			_textDisplay.setTextFormat(textFormatter);
+		}
+		
 		protected function onStageMouseDown(event : MouseEvent):void
 		{
+			_startMouseDownPos.setTo( event.stageX, event.stageY );
+		}
+		
+		protected function onStageMouseUp(event : MouseEvent):void
+		{
 			_stagePoint.setTo( event.stageX, event.stageY );
-			toggleInputDisplay();
+			if(!_transformDirty && _startMouseDownPos.equals(_stagePoint))
+				toggleInputDisplay();
 		}
 		
 		protected function toggleInputDisplay():void
@@ -109,6 +125,7 @@ package com.pblabs.rendering2D
 				PBE.mainStage.addChild(_textDisplay);
 				_textDisplay.x = globalPoint.x;
 				_textDisplay.y = globalPoint.y;
+				_textDisplay.setTextFormat(textFormatter);
 				var charIndex : int = _textDisplay.getCharIndexAtPoint(localTextPoint.x, localTextPoint.y);
 				PBE.mainStage.focus = _textDisplay;
 				_textDisplay.setSelection(charIndex, charIndex);
@@ -255,5 +272,7 @@ package com.pblabs.rendering2D
 			_textDirty = true;
 			_textDisplay.type = _textInputType;
 		}
+	
+		public function get nativeTextField():TextField{ return _textDisplay; }
 	}
 }
