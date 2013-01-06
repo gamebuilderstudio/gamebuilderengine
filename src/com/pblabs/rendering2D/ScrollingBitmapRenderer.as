@@ -28,16 +28,17 @@ package com.pblabs.rendering2D
 		//-------------------------------------------------------------------------
 		// public variable declarations
 		//-------------------------------------------------------------------------		
+		[EditorData(inspectable="true")]
 		public var scrollSpeed:Point = new Point(0,0);
 		
 		//-------------------------------------------------------------------------
 		// private variable declarations
 		//-------------------------------------------------------------------------
 		
-		private var scrollRect:Rectangle = new Rectangle();	// will hold the drawing area
-		private var _scratchPosition : Point = new Point();
-		private var _m : Matrix = new Matrix();
-		private var _painted : Boolean = false;
+		protected var scrollRect:Rectangle = new Rectangle();	// will hold the drawing area
+		protected var _scratchPosition : Point = new Point();
+		protected var _m : Matrix = new Matrix();
+		protected var _painted : Boolean = false;
 
 		//-------------------------------------------------------------------------
 		// public methods
@@ -96,7 +97,15 @@ package com.pblabs.rendering2D
 		{
 			// call onFrame of the extended BitmapRenderer
 			super.onFrame(deltaTime);
-			paintRenderer(deltaTime);
+
+			// adjust scroll offset using the scrollSpeed
+			_scratchPosition.x += (scrollSpeed.x * deltaTime); 
+			_scratchPosition.y += (scrollSpeed.y * deltaTime);	
+			
+			if(PBE.processManager.timeScale == 0) 
+				_scratchPosition.x = _scratchPosition.y = 0;
+
+			offsetImage(_scratchPosition.x, _scratchPosition.y);
 		}
 		
 		override protected function onAdd():void
@@ -105,30 +114,27 @@ package com.pblabs.rendering2D
 			super.onAdd();
 		}
 		
-		protected function paintRenderer(deltaTime:Number):void
+		protected function offsetImage(x : Number, y : Number):void
 		{
-			if(!bitmapData || (_painted && PBE.processManager.timeScale == 0)) 
+			if(!bitmapData) 
 				return;
-
+			
 			if(!size || size.x == 0 || size.y == 0) 
 				return;
 			
-			// adjust scroll offset using the scrollSpeed
-			_scratchPosition.x += (scrollSpeed.x * deltaTime); 
-			_scratchPosition.y += (scrollSpeed.y * deltaTime);	
 			// determine the right drawing rectangle area of the bitmapData object with all display info 
 			// for the copyPixel command
 			// determine x offset of rectangle draw area 
 			var dx:Number = _scratchPosition.x - (Math.floor(_scratchPosition.x/originalBitmapData.width)*originalBitmapData.width);
 			//if(!_painted)
-				//dx += scrollPosition.x;
+			//dx += scrollPosition.x;
 			scrollRect.x = dx;
 			if((int(dx) % originalBitmapData.width) == 0)
 				scrollRect.x = 0;
 			// determine y offset of rectangle draw area 
 			var dy:Number = _scratchPosition.y - (Math.floor((_scratchPosition.y)/originalBitmapData.height)*originalBitmapData.height);
 			//if(!_painted)
-				//dy += scrollPosition.y;
+			//dy += scrollPosition.y;
 			scrollRect.y = dy;			
 			if((int(dy) % originalBitmapData.height) == 0)
 				scrollRect.y = 0;
@@ -146,6 +152,5 @@ package com.pblabs.rendering2D
 				_painted = true;
 			}
 		}
-		
 	}
 }
