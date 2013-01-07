@@ -15,10 +15,18 @@ package com.pblabs.nape
 	 */
 	public class NapeMaterialManager
 	{
-		public function NapeMaterialManager()
+		public function NapeMaterialManager(clazz : Privatizer)
 		{
 			super();
 			setupMaterials();
+		}
+		
+		private static var _instance : NapeMaterialManager;
+		public static function get instance():NapeMaterialManager
+		{
+			if(!_instance)
+				_instance = new NapeMaterialManager(new Privatizer());
+			return _instance;
 		}
 		
 		[TypeHint(type="com.pblabs.nape.MaterialVO")]
@@ -94,4 +102,8 @@ package com.pblabs.nape
 		private var _materialsDirty:Boolean;
 		private var _cachedArray:Array;
 	}
+}
+
+class Privatizer{
+	
 }

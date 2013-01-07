@@ -313,7 +313,7 @@ package com.pblabs.nape
 			_bodyCallbackType = new CbType();
 			//provide default material manager
 			if (!_materialManager)
-				_materialManager = new NapeMaterialManager();
+				_materialManager = NapeMaterialManager.instance;
 			PBE.processManager.addTickedObject(this, 1000);
 			PBE.processManager.addAnimatedObject(this, 1000);
 			initSpace();
@@ -353,6 +353,8 @@ package com.pblabs.nape
 			
 			if(_shapeDebug)
 				_shapeDebug.clear();
+			
+			_materialManager = null;
 		}
 		
 		private function beginCollisionCallback(cb:InteractionCallback):void
