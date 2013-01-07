@@ -51,7 +51,16 @@ package com.pblabs.engine.entity
          return _isRegistered;
       }
       
-      /**
+	  /**
+	   * @inheritDoc
+	   */
+	  public function changeName(name:String):void
+	  {
+		  _owner.changeComponentName(_name, name);
+		  _name = name;
+	  }
+
+	  /**
        * @inheritDoc
        */
       public function register(owner:IEntity, name:String):void

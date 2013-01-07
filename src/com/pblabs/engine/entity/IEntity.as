@@ -69,6 +69,15 @@ package com.pblabs.engine.entity
        */
       function removeComponent(component:IEntityComponent):void;
       
+	  /**
+	   * Changes the name of a component in the entity.
+	   * 
+	   * <p>This should not be called at runtime because PropertyReferences will throw errors.</p>
+	   * 
+	   * @param component The component to change the name of.
+	   */
+	  function changeComponentName(currentName : String, newName : String):void;
+		  
       /**
        * Creates an XML description of this entity, including all currently attached
        * components.

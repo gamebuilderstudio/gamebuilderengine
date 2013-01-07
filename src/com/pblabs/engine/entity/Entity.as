@@ -292,6 +292,12 @@ package com.pblabs.engine.entity
             
             doResetComponents();
         }
+		
+		public function changeComponentName(currentName : String, newName : String):void
+		{
+			_components[newName] = _components[currentName];
+			delete _components[currentName];
+		}
         
         public function lookupComponentByType(componentType:Class):IEntityComponent
         {

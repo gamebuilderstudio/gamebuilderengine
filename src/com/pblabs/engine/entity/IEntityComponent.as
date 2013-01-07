@@ -84,5 +84,11 @@ package com.pblabs.engine.entity
        * owner entity should be purged and re-looked up.
        */
       function reset():void;
+	  
+	  /**
+	   * This is used to dynamically change the name of a component. This should never really be used at runtime in a game
+	   * because it can cause inconsistencies with property references by name.
+	   */
+	  function changeName(name : String):void;
    }
 }
