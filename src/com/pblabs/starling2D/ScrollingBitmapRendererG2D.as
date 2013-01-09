@@ -25,6 +25,7 @@ package com.pblabs.starling2D
 		//-------------------------------------------------------------------------		
 		[EditorData(inspectable="true")]
 		public var scrollSpeed:Point = new Point(0,0);
+		public var autoCorrectImageSize : Boolean = false;
 
 		protected var scrollRect:Rectangle = new Rectangle();	// will hold the drawing area
 		protected var _scratchPoint : Point = new Point();
@@ -95,7 +96,7 @@ package com.pblabs.starling2D
 
 			var legalWidth:int  = getNextPowerOfTwo(bitmapData.width);
 			var legalHeight:int = getNextPowerOfTwo(bitmapData.height);
-			if (legalWidth > bitmapData.width || legalHeight > bitmapData.height)
+			if (autoCorrectImageSize && (legalWidth > bitmapData.width || legalHeight > bitmapData.height))
 			{
 				customBitmapCreated = true;
 				bitmapData = increaseBitmapByPowerOfTwo(bitmapData, legalWidth, legalHeight);

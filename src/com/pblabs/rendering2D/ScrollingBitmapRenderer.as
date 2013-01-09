@@ -58,33 +58,7 @@ package com.pblabs.rendering2D
 		
 		override public function set bitmapData(value:BitmapData):void
 		{
-			if (value === bitmap.bitmapData)
-				return;
-			
-			// store orginal BitmapData so that modifiers can be re-implemented 
-			// when assigned modifiers attribute later on.
-			originalBitmapData = value;
-		
-			// check if we should do modification
-			if (modifiers.length>0)
-			{
-				// apply all bitmapData modifiers
-				bitmap.bitmapData = modify(originalBitmapData.clone());
-				dataModified();			
-			} else {				
-				bitmap.bitmapData = value;
-			}
-			
-			if (displayObject==null)
-			{
-				_displayObject = new Sprite();
-				_displayObject.visible = true;
-				(_displayObject as Sprite).mouseEnabled = _mouseEnabled;
-			}
-			
-			// Due to a bug, this has to be reset after setting bitmapData.
-			smoothing = _smoothing;
-			_transformDirty = true;
+			super.bitmapData = value;
 			_painted = false;
 		}
 
