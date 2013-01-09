@@ -84,18 +84,18 @@ package com.pblabs.nape
 		
 		protected function setupMaterials():void
 		{
-			if(!getMaterial("napeGlass"))
-				addMaterial("napeGlass", Material.glass());
-			if(!getMaterial("napeIce"))
-				addMaterial("napeIce", Material.ice());
-			if(!getMaterial("napeRubber"))
-				addMaterial("napeRubber", Material.rubber());
-			if(!getMaterial("napeSand"))
-				addMaterial("napeSand", Material.sand());
-			if(!getMaterial("napeSteel"))
-				addMaterial("napeSteel", Material.steel());
-			if(!getMaterial("napeWood"))
-				addMaterial("napeWood", Material.wood());
+			if(!getMaterial("Glass"))
+				addMaterial("Glass", Material.glass());
+			if(!getMaterial("Ice"))
+				addMaterial("Ice", Material.ice());
+			if(!getMaterial("Rubber"))
+				addMaterial("Rubber", Material.rubber());
+			if(!getMaterial("Sand"))
+				addMaterial("Sand", Material.sand());
+			if(!getMaterial("Steel"))
+				addMaterial("Steel", Material.steel());
+			if(!getMaterial("Wood"))
+				addMaterial("Wood", Material.wood());
 		}
 		
 		private var _materials:Dictionary = new Dictionary;
