@@ -17,6 +17,8 @@ package com.pblabs.nape
 		
 		public function serialize(xml:XML):void
 		{
+			if(!material)
+				return;
 			xml.elasticity = material.elasticity;
 			xml.staticFriction = material.staticFriction;
 			xml.dynamicFriction = material.dynamicFriction;
@@ -27,12 +29,15 @@ package com.pblabs.nape
 		
 		public function deserialize(xml:XML):*
 		{
+			if(!material)
+				material = new Material();
 			material.elasticity = Number(xml.elasticity);
 			material.staticFriction = Number(xml.staticFriction);
 			material.dynamicFriction = Number(xml.dynamicFriction);
 			material.rollingFriction = Number(xml.rollingFriction);
 			material.density = Number(xml.density);
 			name = String(xml.@name);
+			return this;
 		}
 	}
 }

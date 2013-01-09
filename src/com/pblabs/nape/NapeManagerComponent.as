@@ -79,12 +79,14 @@ package com.pblabs.nape
 		
 		public function get materialManager():NapeMaterialManager
 		{
+			if(!_materialManager)
+				_materialManager = NapeMaterialManager.instance;
 			return _materialManager;
 		}
 		
 		public function set materialManager(value:NapeMaterialManager):void
 		{
-			if (_materialManager)
+			if (_materialManager && _materialManager != NapeMaterialManager.instance)
 				throw new Error("Material manager already set!");
 			_materialManager = value;
 		}
