@@ -97,6 +97,8 @@ package com.pblabs.rendering2D
 		protected function inputChanged(event : Event):void
 		{
 			_textDisplay.setTextFormat(textFormatter);
+			if(autoResize)
+				_textDisplay.width += 25;
 		}
 		
 		protected function onStageMouseDown(event : MouseEvent):void
@@ -117,8 +119,8 @@ package com.pblabs.rendering2D
 			localBounds.inflate( 10, 10 );
 			localBounds.x -= 10;
 			localBounds.y -= 10;
-			var localTextPoint : Point = this.transformWorldToObject( scene.transformScreenToWorld(_stagePoint) );
-			if( localBounds.containsPoint( localTextPoint ) && _textDisplay.type == TextFieldType.INPUT && !_inputEnabled)
+			var localTextPoint : Point = scene ? this.transformWorldToObject( scene.transformScreenToWorld(_stagePoint) ) : new Point();
+			if( localBounds.containsPoint( localTextPoint ) && scene && _textDisplay.type == TextFieldType.INPUT && !_inputEnabled)
 			{
 				_textDisplay.selectable = true;
 				var globalPoint : Point = scene.transformSceneToScreen( _position );
@@ -129,6 +131,8 @@ package com.pblabs.rendering2D
 				var charIndex : int = _textDisplay.getCharIndexAtPoint(localTextPoint.x, localTextPoint.y);
 				PBE.mainStage.focus = _textDisplay;
 				_textDisplay.setSelection(charIndex, charIndex);
+				if(autoResize)
+					_textDisplay.width += 15;
 				
 				_previousAlpha = this._alpha;
 				_inputEnabled = true;
@@ -159,7 +163,6 @@ package com.pblabs.rendering2D
 				_bmFontObject.parseFont(fontDataStr);
 				
 				_bmFontObject.addSheet(0, fontImage.bitmapData);
-				paintTextToBitmap();
 			}
 		}
 		

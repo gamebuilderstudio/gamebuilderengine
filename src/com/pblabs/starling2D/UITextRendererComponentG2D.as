@@ -70,6 +70,14 @@ package com.pblabs.starling2D
 			super.buildG2DObject();
 		}
 		
+		override protected function paintTextToBitmap():void
+		{
+			if(this.bitmapData){
+				this.bitmap.bitmapData = null;
+			}
+			super.paintTextToBitmap();
+		}
+		
 		protected function onStageTouch(event : TouchEvent):void
 		{
 			var touch : Touch = event.getTouch(Starling.current.stage, TouchPhase.BEGAN);
@@ -83,7 +91,6 @@ package com.pblabs.starling2D
 		{
 			if (value === bitmap.bitmapData)
 				return;
-			
 			// store orginal BitmapData so that modifiers can be re-implemented 
 			// when assigned modifiers attribute later on.
 			originalBitmapData = value;
