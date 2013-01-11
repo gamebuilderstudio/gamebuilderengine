@@ -25,7 +25,8 @@ package com.pblabs.starling2D
 		//-------------------------------------------------------------------------		
 		[EditorData(inspectable="true")]
 		public var scrollSpeed:Point = new Point(0,0);
-		public var autoCorrectImageSize : Boolean = false;
+		[EditorData(inspectable="true")]
+		public var autoCorrectImageSize : Boolean = true;
 
 		protected var scrollRect:Rectangle = new Rectangle();	// will hold the drawing area
 		protected var _scratchPoint : Point = new Point();

@@ -30,6 +30,8 @@ package com.pblabs.rendering2D
 		//-------------------------------------------------------------------------		
 		[EditorData(inspectable="true")]
 		public var scrollSpeed:Point = new Point(0,0);
+		[EditorData(inspectable="true")]
+		public var autoCorrectImageSize : Boolean = true;
 		
 		//-------------------------------------------------------------------------
 		// private variable declarations
