@@ -118,6 +118,11 @@ package com.pblabs.rendering2D
 		}
         public function set currentAnimationName(value:String):void
         {
+			if(!value || value.length < 1){
+				_currentAnimation = null;
+				return;
+			}
+			
             var potentialAnim:AnimationControllerInfo = animations[value];
             if(!potentialAnim)
             {
@@ -234,7 +239,7 @@ package com.pblabs.rendering2D
                 owner.setProperty(spriteSheetReference, _currentAnimation.spriteSheet);
             }
 			
-			_newAnimationSet = false
+			_newAnimationSet = false;
         }
         
         /**
@@ -284,10 +289,13 @@ package com.pblabs.rendering2D
         protected function getNextAnimation():AnimationControllerInfo
         {
             var nextAnim:AnimationControllerInfo = null;
-            if (currentAnimationReference)
+            if (currentAnimationReference && currentAnimationReference.property && currentAnimationReference.property.length > 0)
             {
                 var nextAnimName:String = owner.getProperty(currentAnimationReference);
                 nextAnim = animations[nextAnimName];
+				if(nextAnim && nextAnim != _currentAnimation){
+					setAnimation(nextAnim);
+				}
             }
             else
             {
