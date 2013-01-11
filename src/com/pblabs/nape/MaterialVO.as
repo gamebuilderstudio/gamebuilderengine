@@ -9,7 +9,7 @@ package com.pblabs.nape
 		public var material:Material;
 		public var name:String;
 		
-		public function MaterialVO(name:String, material:Material)
+		public function MaterialVO(name:String = null, material:Material = null)
 		{
 			this.name = name;
 			this.material = material;
