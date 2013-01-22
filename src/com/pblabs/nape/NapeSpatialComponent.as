@@ -1,5 +1,6 @@
 package com.pblabs.nape
 {
+	import com.pblabs.engine.PBE;
 	import com.pblabs.engine.PBUtil;
 	import com.pblabs.engine.components.TickedComponent;
 	import com.pblabs.engine.core.ObjectType;
@@ -38,6 +39,18 @@ package com.pblabs.nape
 			super();
 		}
 		
+		private var _debugDisplayEnabled : Boolean = true;
+		public function get debugDisplayEnabled():Boolean { return _debugDisplayEnabled; }
+		public function set debugDisplayEnabled(value:Boolean):void
+		{
+			if(_debugDisplayEnabled && !value && _shapeDebug)
+			{
+				if(PBE.mainStage.contains(_shapeDebug.display))
+					PBE.mainStage.addChild( _shapeDebug.display );
+			}
+			_debugDisplayEnabled = value;
+		}
+
 		private var _spriteForPointChecks : DisplayObjectRenderer;
 		/**
 		 * If set, a SpriteRenderComponent we can use to fulfill point occupied
@@ -119,6 +132,9 @@ package com.pblabs.nape
 			_position.setTo(value.x, value.y);
 			if ( _body )
 				_body.position.setxy(_position.x*_spatialManager.inverseScale, _position.y*_spatialManager.inverseScale);
+			
+			if(_shapeDebug && _body)
+				_shapeDebug.transform.transform(_body.position.copy(true));
 		}
 		
 		public function get rotation():Number
@@ -359,6 +375,22 @@ package com.pblabs.nape
 				_body.space = space;
 		}
 		
+		override public function onTick(deltaTime:Number):void
+		{
+			super.onTick(deltaTime);
+			
+			if(_debugDisplayEnabled && _shapeDebug && _spatialManager && !PBE.IS_SHIPPING_BUILD){
+				_shapeDebug.clear();
+				_shapeDebug.transform.setAs(_spatialManager.scale, 0, 0, _spatialManager.scale, 0, 0);
+				_shapeDebug.draw(_body);
+				_shapeDebug.flush();
+				if(_spriteForPointChecks && _spriteForPointChecks.scene){
+					_shapeDebug.display.x = _spriteForPointChecks.scene.position.x;
+					_shapeDebug.display.y = _spriteForPointChecks.scene.position.y;
+				}
+			}
+		}
+		
 		override protected function onAdd():void
 		{
 			super.onAdd();
@@ -367,6 +399,15 @@ package com.pblabs.nape
 			}
 			setupBody();
 			attachRenderer();
+			
+			if(!PBE.IS_SHIPPING_BUILD){
+				_shapeDebug = new ShapeDebug(PBUtil.clamp(PBE.mainClass.width, 10, 5000000), PBUtil.clamp(PBE.mainClass.height, 10, 5000000), 0x4D4D4D );
+				_shapeDebug.drawConstraints = true;
+				_shapeDebug.drawBodies = true;
+				PBE.mainStage.addChild( _shapeDebug.display );
+				if(updatePriority != 10)
+					updatePriority = 10;
+			}
 		}
 		
 		override protected function onRemove():void
@@ -486,6 +527,7 @@ package com.pblabs.nape
 		private var _collidesWithTypes:ObjectType = null;
 		private var _collidesContinuously:Boolean = false;
 		
+		protected var _shapeDebug:ShapeDebug;
 		protected var _linearVelocity:Point = new Point(0, 0);
 		protected var _angularVelocity:Number = 0.0;
 		protected var _position:Point = new Point();
