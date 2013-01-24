@@ -38,10 +38,12 @@ package com.pblabs.engine.scripting
 	 **/
 	public class ExpressionReference implements ISerializable
 	{
-		private var _cachedExpression:Boolean = false;
+		public var cacheExpression : Boolean = false;
+		
 		private var _value:*;
 		private var _dynamicThisObject : Object = new Object();
 		private var _thisObjectName : String;
+		private var _cachedProgram : *;
 		
 		private static var _initialized : Boolean = false;
 
@@ -106,6 +108,7 @@ package com.pblabs.engine.scripting
 			_dynamicThisObject = null;
 			_value = null;
 			_expression = null;
+			_cachedProgram = null;
 		}
 		/*-----------------------------------------------------------------------------------------------------------
 		*                                          Private Method
@@ -120,9 +123,12 @@ package com.pblabs.engine.scripting
 					thisObject.Self = context;
 				}
 			}
-			_cachedExpression = true;
 			try{
-				_value = D.eval(_expression, context, thisObject);
+				if(cacheExpression){
+					_value = D.eval(_cachedProgram, context, thisObject);
+				}else{
+					_value = D.eval(_expression, context, thisObject);
+				}
 			}catch(e : Error){
 				Logger.error(this, 'evaluateExpression', 'Failed expression ['+_expression+'] Msg = '+e.message);
 			}
@@ -167,13 +173,15 @@ package com.pblabs.engine.scripting
 		public function get expression():String { return _expression; }
 		public function set expression(str:String):void
 		{
-			if(str == null) return;
-			
-			if (_expression !== str) {
-				_cachedExpression = false;
-			}
+			if(str == null || _expression == str) return;
 			
 			_expression = str;
+			if(cacheExpression){
+				_cachedProgram = D.parseProgram(_expression);
+			}else{
+				_cachedProgram = null;
+			}
+				
 			parseExpression();
 		}
 		
