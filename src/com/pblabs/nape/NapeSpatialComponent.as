@@ -306,7 +306,7 @@ package com.pblabs.nape
 			}
 			
 			_spatialManager = value as NapeManagerComponent;
-			
+			debugDisplayEnabled = _spatialManager.visualDebugging ? false : true;
 			setupBody();
 		}
 		
@@ -404,9 +404,11 @@ package com.pblabs.nape
 				_shapeDebug = new ShapeDebug(PBUtil.clamp(PBE.mainClass.width, 10, 5000000), PBUtil.clamp(PBE.mainClass.height, 10, 5000000), 0x4D4D4D );
 				_shapeDebug.drawConstraints = true;
 				_shapeDebug.drawBodies = true;
-				PBE.mainStage.addChild( _shapeDebug.display );
-				if(updatePriority != 10)
-					updatePriority = 10;
+				
+				if(_spatialManager)
+					debugDisplayEnabled = _spatialManager.visualDebugging ? false : true;
+				if(debugDisplayEnabled)
+					PBE.mainStage.addChild( _shapeDebug.display );
 			}
 		}
 		
