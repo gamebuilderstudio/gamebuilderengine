@@ -215,7 +215,7 @@ package com.pblabs.nape
 		public function queryCircle(center:Point, radius:Number, mask:ObjectType, results:Array):Boolean
 		{
 			//query aabb
-			var pos:Vec2 = new Vec2(center.x*inverseScale, center.y*inverseScale);
+			var pos:Vec2 = Vec2.weak(center.x*inverseScale, center.y*inverseScale);
 			//setup filter
 			_queryInteraction.collisionGroup = -1;
 			_queryInteraction.collisionMask = (mask ? mask.bits : -1);
@@ -246,7 +246,7 @@ package com.pblabs.nape
 		
 		public function castRay(start:Point, end:Point, mask:ObjectType, result:RayHitInfo):Boolean
 		{
-			var ray:Ray = Ray.fromSegment(new Vec2(start.x*inverseScale, start.y*inverseScale), new Vec2(end.x*inverseScale, end.y*inverseScale));
+			var ray:Ray = Ray.fromSegment(Vec2.weak(start.x*inverseScale, start.y*inverseScale), Vec2.weak(end.x*inverseScale, end.y*inverseScale));
 			_queryInteraction.collisionGroup = -1;
 			_queryInteraction.collisionMask = (mask ? mask.bits : -1);
 			var napeResult:RayResult = _space.rayCast(ray, false, _queryInteraction);
@@ -268,11 +268,10 @@ package com.pblabs.nape
 		 */
 		public function getObjectsUnderPoint(worldPosition:Point, results:Array, mask:ObjectType = null):Boolean
 		{
-			var tmpResults:Array = new Array();
 			_queryInteraction.collisionGroup = -1;
 			_queryInteraction.collisionMask = (mask ? mask.bits : -1);
 			var numFoundBodies:int;
-			var bodyList:BodyList = _space.bodiesUnderPoint(new Vec2(worldPosition.x*inverseScale, worldPosition.y*inverseScale), _queryInteraction);
+			var bodyList:BodyList = _space.bodiesUnderPoint(Vec2.weak(worldPosition.x*inverseScale, worldPosition.y*inverseScale), _queryInteraction);
 			
 			numFoundBodies = bodyList.length;
 			bodyList.foreach(function (item:Body):void
@@ -300,10 +299,10 @@ package com.pblabs.nape
 		 */
 		public function getObjectsInRec(worldRec:Rectangle, results:Array):Boolean
 		{
-			var tmpResults:Array = new Array();
+			_tmpResults.splice(0);
 			
 			// First use the normal spatial query...
-			queryRectangle(worldRec, null, tmpResults);
+			queryRectangle(worldRec, null, _tmpResults);
 			
 			// Ok, now pass control to the objects and see what they think.
 			return _otherItems.getObjectsInRec(worldRec, results);
@@ -423,6 +422,7 @@ package com.pblabs.nape
 		private var _visualDebugging:Boolean = false;
 		private var _visualDebuggingPending:Boolean = false;
 		private var _bodyCallbackType:CbType;
+		private var _tmpResults:Array = new Array();
 		
 	}
 }
