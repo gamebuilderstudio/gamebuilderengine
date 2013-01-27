@@ -153,7 +153,11 @@ package com.pblabs.nape
 
 		public function onTick(dt:Number):void
 		{
-			_space.step(dt);
+			try{
+				_space.step(dt);
+			}catch(e : Error){
+				Logger.error(this, "onTick", e.message);
+			}
 		}
 		
 		public function onFrame(dt:Number):void

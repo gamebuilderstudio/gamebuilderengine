@@ -46,7 +46,7 @@ package com.pblabs.nape
 			if(_debugDisplayEnabled && !value && _shapeDebug)
 			{
 				if(PBE.mainStage.contains(_shapeDebug.display))
-					PBE.mainStage.addChild( _shapeDebug.display );
+					PBE.mainStage.removeChild( _shapeDebug.display );
 			}
 			_debugDisplayEnabled = value;
 		}
@@ -352,12 +352,12 @@ package com.pblabs.nape
 				return;
 			}
 			
-			var space:Space;
+			/*var space:Space;
 			if ( _body.space && bodyType == BodyTypeEnum.STATIC )
 			{
 				space = _body.space;
 				_body.space = null;
-			}
+			}*/
 			
 			clearShapesFromBody();
 			
@@ -371,8 +371,8 @@ package com.pblabs.nape
 				tmpShape.body = _body;
 			}
 			
-			if ( space )
-				_body.space = space;
+			if ( _spatialManager && _spatialManager.space && _body.space != _spatialManager.space)
+				_body.space = _spatialManager.space;
 		}
 		
 		override public function onTick(deltaTime:Number):void
@@ -384,7 +384,7 @@ package com.pblabs.nape
 				_shapeDebug.transform.setAs(_spatialManager.scale, 0, 0, _spatialManager.scale, 0, 0);
 				_shapeDebug.draw(_body);
 				_shapeDebug.flush();
-				if(_spriteForPointChecks && _spriteForPointChecks.scene){
+				if(_debugLayerSceneTracking && _spriteForPointChecks && _spriteForPointChecks.scene){
 					_shapeDebug.display.x = _spriteForPointChecks.scene.position.x;
 					_shapeDebug.display.y = _spriteForPointChecks.scene.position.y;
 				}
@@ -437,6 +437,13 @@ package com.pblabs.nape
 				_body.space = null;
 				//_body.clear();
 				_body = null;
+			}
+			if(_shapeDebug && _shapeDebug.display)
+			{
+				if(PBE.mainStage.contains(_shapeDebug.display))
+					PBE.mainStage.removeChild( _shapeDebug.display );
+				_shapeDebug.clear();
+				_shapeDebug = null;
 			}
 		}
 		
@@ -530,6 +537,7 @@ package com.pblabs.nape
 		private var _collidesContinuously:Boolean = false;
 		
 		protected var _shapeDebug:ShapeDebug;
+		protected var _debugLayerSceneTracking:Boolean = true;
 		protected var _linearVelocity:Point = new Point(0, 0);
 		protected var _angularVelocity:Number = 0.0;
 		protected var _position:Point = new Point();
