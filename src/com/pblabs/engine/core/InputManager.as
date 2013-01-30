@@ -53,8 +53,8 @@ package com.pblabs.engine.core
             // It should be called at the beginning of the tick to give the most accurate responses possible.
             
             var cnt:int;
-            
-            for (cnt = 0; cnt < _keyState.length; cnt++)
+            var len : int = _keyState.length;
+            for (cnt = 0; cnt < len; cnt++)
             {
                 if (_keyState[cnt] && !_keyStateOld[cnt])
                     _justPressed[cnt] = true;
