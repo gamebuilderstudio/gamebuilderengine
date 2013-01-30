@@ -114,9 +114,9 @@ package com.pblabs.starling2D
 			
 			var subtexture : Texture;
 			var texture : Texture;
-			if(_originTexturesMap[ key ])
+			if(_originTexturesMap.hasOwnProperty(key) && _originTexturesMap[ key ] != null)
 			{
-				texture = _originTexturesMap[key] as Texture;
+				texture = _originTexturesMap[key][0] as Texture;
 				_textureReferenceCount[texture]++;
 				subtexture = Texture.fromTexture(texture);
 				subtexture.disposed.addOnce(releaseTexture);
