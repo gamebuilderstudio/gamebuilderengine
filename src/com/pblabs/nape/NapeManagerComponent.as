@@ -193,8 +193,7 @@ package com.pblabs.nape
 			
 			var numFoundBodies:int;
 			
-			var bodyList:BodyList = _space.bodiesInAABB(aabb, false, true, _queryInteraction);
-			
+			var bodyList:BodyList = _space.bodiesInAABB(aabb, false, true, _queryInteraction);			
 			numFoundBodies = bodyList.length;
 			bodyList.foreach(function (item:Body):void
 			{
@@ -303,10 +302,8 @@ package com.pblabs.nape
 		 */
 		public function getObjectsInRec(worldRec:Rectangle, results:Array):Boolean
 		{
-			_tmpResults.splice(0);
-			
 			// First use the normal spatial query...
-			queryRectangle(worldRec, null, _tmpResults);
+			queryRectangle(worldRec, null, results);
 			
 			// Ok, now pass control to the objects and see what they think.
 			return _otherItems.getObjectsInRec(worldRec, results);
@@ -426,7 +423,6 @@ package com.pblabs.nape
 		private var _visualDebugging:Boolean = false;
 		private var _visualDebuggingPending:Boolean = false;
 		private var _bodyCallbackType:CbType;
-		private var _tmpResults:Array = new Array();
 		
 	}
 }
