@@ -66,7 +66,8 @@ package com.pblabs.triggers.actions
 		
 		override public function stop():void
 		{
-			_tween.stop();
+			if(_tween)
+				_tween.stop();
 		}
 		
 		override public function destroy():void
