@@ -66,8 +66,7 @@ package com.pblabs.rendering2D
 		{
 			/*if(!_textDisplay.text || _textDisplay.text == "") 
 				text = "[EMPTY]";*/
-			
-			_textDisplay.setTextFormat(textFormatter);
+			_textDisplay.defaultTextFormat = textFormatter;
 			_textDisplay.autoSize = TextFieldAutoSize.LEFT;
 
 			updateFontSize();
@@ -123,7 +122,7 @@ package com.pblabs.rendering2D
 			if( localBounds.containsPoint( localTextPoint ) && scene && _textDisplay.type == TextFieldType.INPUT && !_inputEnabled)
 			{
 				_textDisplay.selectable = true;
-				var globalPoint : Point = scene.transformSceneToScreen( _position );
+				var globalPoint : Point = scene.transformSceneToScreen( new Point(_transformMatrix.tx, _transformMatrix.ty) );
 				PBE.mainStage.addChild(_textDisplay);
 				_textDisplay.x = globalPoint.x;
 				_textDisplay.y = globalPoint.y;
