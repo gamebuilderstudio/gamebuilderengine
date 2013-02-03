@@ -77,11 +77,11 @@ package com.pblabs.starling2D
 		 */
 		override public function updateTransform(updateProps:Boolean = false):void
 		{
-			if((gpuObject || displayObject) && updateProps)
+			if(gpuObject && updateProps)
 				updateProperties();
 			
 			if(!gpuObject){
-				super.updateTransform(false);
+				super.updateTransform(updateProps);
 				return;
 			}
 			
