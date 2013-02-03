@@ -71,17 +71,25 @@ package com.pblabs.rendering2D
 		
 		public override function onFrame(deltaTime:Number):void
 		{
-			// call onFrame of the extended BitmapRenderer
-			super.onFrame(deltaTime);
-
+			// Lookup and apply properties. This only makes adjustments to the
+			// underlying DisplayObject if necessary.
+			if (!displayObject)
+				return;
+			
+			updateProperties();
+			
 			// adjust scroll offset using the scrollSpeed
 			_scratchPosition.x += (scrollSpeed.x * deltaTime); 
 			_scratchPosition.y += (scrollSpeed.y * deltaTime);	
 			
 			if(PBE.processManager.timeScale == 0) 
 				_scratchPosition.x = _scratchPosition.y = 0;
-
+			
 			offsetImage(_scratchPosition.x, _scratchPosition.y);
+			
+			// Now that we've read all our properties, apply them to our transform.
+			if (_transformDirty)
+				updateTransform();
 		}
 		
 		override protected function onAdd():void
