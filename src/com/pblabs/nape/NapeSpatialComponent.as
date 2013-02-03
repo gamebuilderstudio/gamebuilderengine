@@ -306,7 +306,7 @@ package com.pblabs.nape
 			}
 			
 			_spatialManager = value as NapeManagerComponent;
-			debugDisplayEnabled = _spatialManager.visualDebugging ? false : true;
+			debugDisplayEnabled = (_spatialManager && _spatialManager.visualDebugging) ? false : true;
 			setupBody();
 		}
 		
@@ -352,12 +352,14 @@ package com.pblabs.nape
 				return;
 			}
 			
-			/*var space:Space;
+			var space:Space;
+			//Because Nape STATIC bodies can not have shapes removed from them we have to remove it
+			//from the space first.
 			if ( _body.space && bodyType == BodyTypeEnum.STATIC )
 			{
 				space = _body.space;
 				_body.space = null;
-			}*/
+			}
 			
 			clearShapesFromBody();
 			
