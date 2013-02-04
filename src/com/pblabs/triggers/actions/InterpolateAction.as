@@ -38,6 +38,7 @@ package com.pblabs.triggers.actions
 		public var easingClass : String = getQualifiedClassName(Linear);
 		public var easingFunction : String = "easeNone";
 		public var pingpong : Boolean = false;
+		public var runtoCompletion : Boolean = true;
 
 		private var _duration : Number;
 		private var _delay : Number;
@@ -66,7 +67,7 @@ package com.pblabs.triggers.actions
 		
 		override public function stop():void
 		{
-			if(_tween)
+			if(_tween && !runtoCompletion)
 				_tween.stop();
 		}
 		
