@@ -1,31 +1,27 @@
-PUSHBUTTON ENGINE
+GAMEBUILDER STUDIO ENGINE
 =================
 
-Welcome to the [PushButton Engine](http://www.pushbuttonengine.com)!
+Welcome to the [GameBuilder Studio Engine](http://www.gamebuilderstudio.com)!
 
-PushButton Engine is a framework for Flash game development. Build your game 
-with reusable gameplay, physics, rendering, and networking components - some 
-written by others, and some written by you. There are lots of great libraries 
-for game development on Flash, and PBEngine helps you use them more 
-effectively.
+GameBuilder Studio is a visual development tool built on top of the PushButton Engine framework. Build your game with reusable gameplay, physics, rendering, and networking components.
 
-PushButton Engine has been used by PushButton Labs, Playdom, Zynga, Hive7 and other developers in commercial games.
+The original PushButton Engine was used by PushButton Labs, Playdom, Zynga, Hive7 and other developers in commercial games.
 
 Next Steps
 ----------
 
-* Documentation is at [http://pushbuttonengine.com/docs/](http://pushbuttonengine.com/docs/)
-* Forums are at [http://pushbuttonengine.com/forum/](http://pushbuttonengine.com/forum/)
-* Follow [@PushButtonLabs](http://twitter.com/pushbuttonlabs) and/or [@BenGarney](http://twitter.com/bengarney)
-* Join us on IRC: #pbengine on irc.freenode.net
+* Documentation is at [http://support.gamebuilderstudio.com/categories/20012036-Using-GameBuilder-Studio](http://support.gamebuilderstudio.com/categories/20012036-Using-GameBuilder-Studio)
+* Forums are at [http://support.gamebuilderstudio.com](http://support.gamebuilderstudio.com)
+* Follow [@gamebuilders](http://twitter.com/gamebuilders) and/or [@LavonWoods](http://twitter.com/lavonwoods)
+* Look for us on Skype: gamebuilders
 
 Contributing & Details
 ----------------------
 
-Visit the official PBE repository at GitHub: [http://github.com/PushButtonLabs/PushButtonEngine](http://github.com/PushButtonLabs/PushButtonEngine). Follow it for updates. Fork PBE and submit your improvements!  ([Forking Instructions](http://help.github.com/forking/))
+Visit the official PBE repository at GitHub: [http://github.com/gamebuilderstudio/gamebuilderengine.git](http://github.com/gamebuilderstudio/gamebuilderengine.git). Follow it for updates. Fork the engine and submit your improvements!  ([Forking Instructions](http://help.github.com/forking/))
 
-The PushButton Engine is covered under the MIT license in its entirety,
+The GameBuilder Engine is covered under the MIT license in its entirety,
 not including 3rd party components. Please read LICENSE for more 
 information on the MIT license.
 
-Copyright 2009-2010 PushButton Labs, LLC. All rights reserved.
+Copyright 2010-2013 GameBuilder, Inc. All rights reserved.
