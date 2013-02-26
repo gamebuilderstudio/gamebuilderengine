@@ -134,7 +134,15 @@ package com.pblabs.engine.core
             return _platformTime;
         }
         
-        /**
+		/**
+		 * Whether the process manager is started or not.
+		 */
+		public function get isStarted():Boolean
+		{
+			return started;
+		}
+
+		/**
          * Starts the process manager. This is automatically called when the first object
          * is added to the process manager. If the manager is stopped manually, then this
          * will have to be called to restart it.
