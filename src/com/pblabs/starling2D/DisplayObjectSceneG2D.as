@@ -13,6 +13,7 @@ package com.pblabs.starling2D
 	import com.pblabs.engine.components.AnimatedComponent;
 	import com.pblabs.engine.core.ObjectType;
 	import com.pblabs.engine.debug.Logger;
+	import com.pblabs.rendering2D.Camera;
 	import com.pblabs.rendering2D.DisplayObjectRenderer;
 	import com.pblabs.rendering2D.ICachingLayer;
 	import com.pblabs.rendering2D.IDisplayObjectSceneLayer;
@@ -120,6 +121,8 @@ package com.pblabs.starling2D
 		protected var _lastPos : Point;
 		protected var _trackDifPoint : Point = new Point();
 		protected var _layerIndex : int = -1;
+		
+		protected var _camera : StarlingCamera;
 		
 		public function DisplayObjectSceneG2D()
 		{
@@ -443,17 +446,19 @@ package com.pblabs.starling2D
 			if(_transformDirty == false)
 				return;
 
-			// Update our transform, if required
-			_rootSprite.x = _rootPosition.x;
-			_rootSprite.y = _rootPosition.y;
-			_rootSprite.scaleX = _rootSprite.scaleY = zoom;
-			// Apply rotation.
-			_rootSprite.rotation = _rootRotation;
-			// Center it appropriately.
-			SceneAlignment.calculate(_tempPoint, sceneAlignment, sceneView.width, sceneView.height);
-			_rootSprite.x += _tempPoint.x;
-			_rootSprite.y += _tempPoint.y;
-			//Logger.print(this, "Scene Position = " + _rootPosition.toString());
+			if(!_camera){
+				// Update our transform, if required
+				_rootSprite.x = _rootPosition.x;
+				_rootSprite.y = _rootPosition.y;
+				_rootSprite.scaleX = _rootSprite.scaleY = zoom;
+				// Apply rotation.
+				_rootSprite.rotation = _rootRotation;
+				// Center it appropriately.
+				SceneAlignment.calculate(_tempPoint, sceneAlignment, sceneView.width, sceneView.height);
+				_rootSprite.x += _tempPoint.x;
+				_rootSprite.y += _tempPoint.y;
+			}
+			
 			_transformDirty = false;
 		}
 		
@@ -465,54 +470,36 @@ package com.pblabs.starling2D
 				return;
 			}
 			
+			// Give layers a chance to sort and update.
+			for each(var l:DisplayObjectSceneLayerG2D in _layers)
+			l.onRender();
+
 			// Update our state based on the tracked object, if any.
 			evaluateTrackedObject();
 			
 			// Make sure transforms are up to date.
 			updateTransform();
-			
-			// Give layers a chance to sort and update.
-			for each(var l:DisplayObjectSceneLayerG2D in _layers)
-			l.onRender();
 		}
 		
+		private var _cameraPos : Point = new Point();
 		protected function evaluateTrackedObject():void
 		{
-			var tmpPosition : Point;
-			// Make sure we are up to date with latest track.
 			if(trackObject)
 			{
-				tmpPosition = new Point((trackObject.position.x + trackOffset.x), (trackObject.position.y + trackOffset.y));
- 				if(!_lastPos) 
-					_lastPos = tmpPosition;
+				if(!_camera){
+					_camera = new StarlingCamera(_rootSprite);
+					_camera.setUp(trackObject, trackOffset, trackLimitRectangle);
+				}
+				if(_camera && _camera.target != trackObject)
+					_camera.target = trackObject;
+				_camera.offset = trackOffset;
+				_camera.bounds = trackLimitRectangle;
+				_camera.update();
+				_cameraPos.setTo(int(_camera.camProxy.x), int(_camera.camProxy.y));
+				position = _cameraPos;
+			}else if(!trackObject && _camera){
+				_camera = null;
 			}
-			
-			if(trackLimitRectangle != null)
-			{
-				var centeredLimitBounds:Rectangle = new Rectangle( trackLimitRectangle.x     + (sceneView.width * 0.5) / zoom, trackLimitRectangle.y      + (sceneView.height * 0.5) / zoom,
-					trackLimitRectangle.width - (sceneView.width / zoom)      , trackLimitRectangle.height - (sceneView.height/zoom) );
-				
-				
-				tmpPosition = new Point(PBUtil.clamp(tmpPosition.x, -centeredLimitBounds.right, -centeredLimitBounds.left ), 
-					PBUtil.clamp(tmpPosition.y, -centeredLimitBounds.bottom, -centeredLimitBounds.top) );
-			}
-			
-			if(trackObject && tmpPosition)
-			{
-				var difX : Number = _lastPos.x - tmpPosition.x;
-				var difY : Number = _lastPos.y - tmpPosition.y;
-				var direction:Number = Math.atan2(difY, difX);
-				var length:Number = PBUtil.xyLength(difX,difY);
-				_trackDifPoint.x = difX = Math.cos(direction)*length;
-				_trackDifPoint.y = difY = Math.sin(direction)*length;
-				
-				_lastPos = tmpPosition;
-				
-				position = _rootPosition.add( _trackDifPoint );
-			}else{
-				_lastPos = null;
-			}
-			
 		}
 		
 		public function setWorldCenter(pos:Point):void
@@ -559,24 +546,11 @@ package com.pblabs.starling2D
 			if (!value)
 				return;
 			
-			var newX:int = value.x;
-			var newY:int = value.y;
-			
-			if (_rootPosition.x == newX && _rootPosition.y == newY)
+			if (_rootPosition.x == value.x && _rootPosition.y == value.y)
 				return;
 			
-			_rootPosition.x = newX;
-			_rootPosition.y = newY;
-			
-			// Apply limit to camera movement.
-			if(trackLimitRectangle != null)
-			{
-				var centeredLimitBounds:Rectangle = new Rectangle( trackLimitRectangle.x     + (sceneView.width * 0.5) / zoom, trackLimitRectangle.y      + (sceneView.height * 0.5) / zoom,
-					trackLimitRectangle.width - (sceneView.width / zoom)      , trackLimitRectangle.height - (sceneView.height/zoom) );
-				
-				_rootPosition.x = PBUtil.clamp(_rootPosition.x, -centeredLimitBounds.right, -centeredLimitBounds.left );
-				_rootPosition.y = PBUtil.clamp(_rootPosition.y, -centeredLimitBounds.bottom, -centeredLimitBounds.top);
-			}
+			_rootPosition.x = value.x;
+			_rootPosition.y = value.y;
 			
 			_transformDirty = true;
 		}
@@ -613,6 +587,8 @@ package com.pblabs.starling2D
 				sceneView = _sceneView;
 			}
 		}
+		
+		public function get camera():Camera{ return _camera; }
 
 		public function sortSpatials(array:Array):void
 		{

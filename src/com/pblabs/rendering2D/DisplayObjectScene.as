@@ -488,16 +488,6 @@ package com.pblabs.rendering2D
 				if(!_lastPos) _lastPos = tmpPosition;
 			}
 			
-			if(trackLimitRectangle != null)
-			{
-				var centeredLimitBounds:Rectangle = new Rectangle( trackLimitRectangle.x     + (sceneView.width * 0.5) / zoom, trackLimitRectangle.y      + (sceneView.height * 0.5) / zoom,
-					trackLimitRectangle.width - (sceneView.width / zoom)      , trackLimitRectangle.height - (sceneView.height/zoom) );
-				
-				
-				tmpPosition = new Point(PBUtil.clamp(tmpPosition.x, -centeredLimitBounds.right, -centeredLimitBounds.left ), 
-					PBUtil.clamp(tmpPosition.y, -centeredLimitBounds.bottom, -centeredLimitBounds.top) );
-			}
-			
 			if(trackObject && tmpPosition)
 			{
 				var difX : Number = _lastPos.x - tmpPosition.x;
