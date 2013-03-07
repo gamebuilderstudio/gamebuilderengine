@@ -8,6 +8,7 @@
  ******************************************************************************/
 package com.pblabs.rendering2D.spritesheet
 {
+    import com.pblabs.engine.PBE;
     import com.pblabs.engine.PBUtil;
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.resource.SWFResource;
@@ -123,7 +124,7 @@ package com.pblabs.rendering2D.spritesheet
         
         override public function get isLoaded() : Boolean
         {
-            if (!_resource || !_resource.isLoaded) 
+            if (!_resource || !_resource.isLoaded || _resource.didFail) 
                 return false;
 
             if (!frames) 
@@ -190,6 +191,7 @@ package com.pblabs.rendering2D.spritesheet
 			_resource = null;
 			_bounds = null;
 			_clip = null;
+			_parentMC = null;
 		}
 		
 		public function releaseCache(checkReferenceCount : Boolean = true):void
@@ -219,7 +221,7 @@ package com.pblabs.rendering2D.spritesheet
          */
         override protected function getSourceFrames() : Array
         {
-            if (!_resource || !_resource.isLoaded)
+            if (!_resource || !_resource.isLoaded || _resource.didFail)
                 return null;
 
             if (!frames)
@@ -261,7 +263,7 @@ package com.pblabs.rendering2D.spritesheet
          */
         protected function rasterize():void
         {
-            if (!_resource.isLoaded) return;
+            if (!_resource.isLoaded || _resource.didFail) return;
 
             var cache:CachedFramesDataMC = getCachedFrames() as CachedFramesDataMC;
             if (cache)
@@ -302,7 +304,7 @@ package com.pblabs.rendering2D.spritesheet
          */
         protected function onRasterize(mc:MovieClip):Array
         {
-            var maxFrames:int = swf.findMaxFrames(mc, mc.totalFrames);
+            var maxFrames:int = mc.totalFrames;
             var rasterized:Array = new Array(maxFrames);
 			_frameCenters = new Array(maxFrames);
 
@@ -336,15 +338,24 @@ package com.pblabs.rendering2D.spritesheet
 				}
 			}*/
 			
+			//Hack required so that the movie clip animation is drawn correctly
+			//Ridiculous Adobe!!!
+			if(PBE.mainStage){
+				PBE.mainStage.addChild(_parentMC);
+				_parentMC.addChild( mc );
+			}
+			
 			var tmpBounds : Rectangle;
             if (maxFrames > 0){
+				
+				mc.gotoAndStop(1);
+				swf.advanceChildClips(mc, 1);
+				
 				//Get overall bounds
 				for(var i : int = 1; i <= maxFrames; i++)
 				{
 					if (mc.totalFrames >= i)
 						mc.gotoAndStop(i);
-					
-					swf.advanceChildClips(mc, i);
 					
 					if(!_bounds)
 						_bounds = getRealBounds(mc);
@@ -352,8 +363,7 @@ package com.pblabs.rendering2D.spritesheet
 						_bounds = _bounds.union(getRealBounds(mc));
 				}
 				//Reset MC
-				mc.gotoAndStop(0);
-				swf.advanceChildClips(mc, 0);
+				mc.gotoAndStop(1);
 				//Rasterize all the frames
 				for(i = 1; i <= maxFrames; i++)
 				{
@@ -361,6 +371,12 @@ package com.pblabs.rendering2D.spritesheet
 				}
 			}
 			
+			//Clean up hack
+			if(PBE.mainStage){
+				PBE.mainStage.removeChild(_parentMC);
+				_parentMC.removeChild( mc );
+			}
+
             return rasterized;
         }
 
@@ -368,8 +384,6 @@ package com.pblabs.rendering2D.spritesheet
         {
             if (mc.totalFrames >= frameIndex)
                 mc.gotoAndStop(frameIndex);
-
-			swf.advanceChildClips(mc, frameIndex);
 
 			var frameData : ImageFrameData = getBitmapDataByDisplay(mc, _scale, mc.transform.colorTransform, _bounds);
 			_frameCenters[frameIndex-1] = new Point(-(frameData.bounds.x*_scale.x), -(frameData.bounds.y*_scale.y));
@@ -454,6 +468,7 @@ package com.pblabs.rendering2D.spritesheet
 		protected var _clip:MovieClip;
 		protected var _bounds:Rectangle;
 		protected var _cached:Boolean = true;
+		protected var _parentMC : MovieClip = new MovieClip();
     }
 }
 import flash.display.BitmapData;

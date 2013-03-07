@@ -51,7 +51,7 @@ package com.pblabs.starling2D.spritesheet
 		 */
 		override protected function rasterize():void
 		{
-			if (!_resource.isLoaded || !Starling.context) return;
+			if (!_resource || !_resource.isLoaded || _resource.didFail || !Starling.context) return;
 			
 			var cache:CachedFramesDataMC = getCachedFrames() as CachedFramesDataMC;
 			if (cache)
@@ -85,11 +85,7 @@ package com.pblabs.starling2D.spritesheet
 				//Convert all Bitmaps into textures and upload to GPU
 				for(var i : int = 0; i < len; i++)
 				{
-					textureList.push( ResourceTextureManagerG2D.getTextureForBitmapData(frames[i] as BitmapData, getFramesCacheKey()) );
-				}
-				for(i = 0; i < len; i++)
-				{
-					(frames[i] as BitmapData).dispose();
+					textureList[i] = ResourceTextureManagerG2D.getTextureForBitmapData(frames[i] as BitmapData, getFramesCacheKey()+"_"+i);
 				}
 				frames = textureList;
 			}
