@@ -159,6 +159,7 @@ package com.pblabs.engine.core
             elapsed = 0.0;
             PBE.mainStage.addEventListener(Event.ENTER_FRAME, onFrame);
             started = true;
+			stopped = false;
         }
         
         /**
@@ -175,6 +176,7 @@ package com.pblabs.engine.core
             }
             
             started = false;
+			stopped = true;
             PBE.mainStage.removeEventListener(Event.ENTER_FRAME, onFrame);
         }
         
@@ -337,7 +339,7 @@ package com.pblabs.engine.core
                 return;
             }
             
-            if (!started)
+            if (!started && !stopped)
                 start();
             
             var position:int = -1;
@@ -618,6 +620,7 @@ package com.pblabs.engine.core
         
         protected var deferredMethodQueue:Array = [];
         protected var started:Boolean = false;
+		protected var stopped:Boolean = false;
         protected var _virtualTime:int = 0.0;
         protected var _interpolationFactor:Number = 0.0;
         protected var _timeScale:Number = 1.0;
