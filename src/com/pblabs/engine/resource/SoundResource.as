@@ -35,6 +35,13 @@ package com.pblabs.engine.resource
 			}
 		}
 
+		override protected function onContentReady(content:*):Boolean
+		{
+			if(content is Sound)
+				return true;
+			return false;
+		}
+
 		override protected function onLoadComplete(event:Event = null):void
 		{
 			try
