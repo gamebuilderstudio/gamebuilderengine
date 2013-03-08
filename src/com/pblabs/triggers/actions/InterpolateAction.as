@@ -53,6 +53,8 @@ package com.pblabs.triggers.actions
 			_repeat = Number(getExpressionValue(repeatCountReference));
 			var easeClazz : Class = getDefinitionByName(easingClass) as Class;
 			_propertyToTween = this.owner.owner.getProperty(propertyReference);
+			if(_tween)
+				_tween.dispose();
 			_tween = new Tween(this.owner ? this.owner.owner : null, propertyReference, _duration, _propertyToTween, getExpressionValue(valueReference), easeClazz[easingFunction], onComplete, _delay, pingpong, _repeat, 0, 0);
 			return;
 		}

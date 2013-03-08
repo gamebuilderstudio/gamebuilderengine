@@ -154,6 +154,8 @@ package com.pblabs.animation
 		 */
 		public function dispose():void
 		{
+			this.entity = null
+			this.object = null;
 			// remove this tween from Tweencontroller
 			if (running) stop();
 			TweenController.removeTween(this);			
@@ -394,7 +396,7 @@ package com.pblabs.animation
 						delta.y = (vt.y - vf.y);
 					}
 					else
-					  delta = (vt-vf);
+						delta = (vt-vf);
 					deltaVars[v] = delta;		
 				}
 			}

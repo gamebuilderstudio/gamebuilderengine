@@ -77,7 +77,13 @@ package com.pblabs.rendering2D
          */
         public var layers:Array = [];
         
-        /**
+		/**
+		 * If set, the scene will follow the exact position of the trackedObject
+		 * It will also account for the offset position.
+		 */
+		public var trackByOffset:Boolean = true;
+
+		/**
          * If set, every frame, trackObject's position is read and assigned
          * to the scene's position, so that the scene follows the trackObject.
          */
@@ -483,23 +489,32 @@ package com.pblabs.rendering2D
 			// Make sure we are up to date with latest track.
 			if(trackObject)
 			{
-				tmpPosition = new Point(-(trackObject.position.x + trackOffset.x), 
-					-(trackObject.position.y + trackOffset.y));
+				if(trackByOffset){
+					tmpPosition = new Point(-(trackObject.position.x + trackOffset.x), 
+						-(trackObject.position.y + trackOffset.y));
+				}else{
+					tmpPosition = new Point((trackObject.position.x - trackOffset.x), 
+						(trackObject.position.y - trackOffset.y));
+				}
 				if(!_lastPos) _lastPos = tmpPosition;
 			}
 			
 			if(trackObject && tmpPosition)
 			{
-				var difX : Number = _lastPos.x - tmpPosition.x;
-				var difY : Number = _lastPos.y - tmpPosition.y;
-				var direction:Number = Math.atan2(difY, difX);
-				var length:Number = PBUtil.xyLength(difX,difY);
-				_trackDifPoint.x = difX = Math.cos(direction)*length;
-				_trackDifPoint.y = difY = Math.sin(direction)*length;
-				
-				_lastPos = tmpPosition;
-				
-				position = position.subtract( _trackDifPoint );
+				if(trackByOffset){
+					var difX : Number = _lastPos.x - tmpPosition.x;
+					var difY : Number = _lastPos.y - tmpPosition.y;
+					var direction:Number = Math.atan2(difY, difX);
+					var length:Number = PBUtil.xyLength(difX,difY);
+					_trackDifPoint.x = difX = Math.cos(direction)*length;
+					_trackDifPoint.y = difY = Math.sin(direction)*length;
+					
+					_lastPos = tmpPosition;
+					
+					position = position.subtract( _trackDifPoint );
+				}else{
+					position = tmpPosition;
+				}
 			}else{
 				_lastPos = null;
 			}

@@ -243,14 +243,6 @@ package com.pblabs.starling2D {
 				_camProxy.y = -invGT.y * _camProxy.scale + _camProxy.offsetY;
 				
 			}
-			
-			_viewRoot.scaleX = _viewRoot.scaleY = _camProxy.scale;
-			_viewRoot.rotation = _camProxy.rotation;
-			
-			_viewRoot.x = int(_camProxy.x);
-			_viewRoot.y = int(_camProxy.y);
-			
-			
 			_camPos = pointFromLocal(new Point(0, 0));
 			
 		}

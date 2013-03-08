@@ -86,6 +86,12 @@ package com.pblabs.starling2D
 		public var layers:Array = [];
 		
 		/**
+		 * If set, the scene will follow the exact position of the trackedObject
+		 * It will also account for the offset position.
+		 */
+		public var trackByOffset:Boolean = true;
+
+		/**
 		 * If set, every frame, trackObject's position is read and assigned
 		 * to the scene's position, so that the scene follows the trackObject.
 		 */
@@ -457,6 +463,12 @@ package com.pblabs.starling2D
 				SceneAlignment.calculate(_tempPoint, sceneAlignment, sceneView.width, sceneView.height);
 				_rootSprite.x += _tempPoint.x;
 				_rootSprite.y += _tempPoint.y;
+			}else{
+				_rootSprite.scaleX = _rootSprite.scaleY = zoom;
+				_rootSprite.rotation = _rootRotation;
+				
+				_rootSprite.x = int(_rootPosition.x);
+				_rootSprite.y = int(_rootPosition.y);
 			}
 			
 			_transformDirty = false;
@@ -490,12 +502,21 @@ package com.pblabs.starling2D
 					_camera = new StarlingCamera(_rootSprite);
 					_camera.setUp(trackObject, trackOffset, trackLimitRectangle);
 				}
-				if(_camera && _camera.target != trackObject)
-					_camera.target = trackObject;
+				if(trackByOffset){
+					if(_camera && _camera.target != trackObject)
+						_camera.target = trackObject;
+				}else{
+					_camera.manualPosition = trackObject.position;
+				}
 				_camera.offset = trackOffset;
 				_camera.bounds = trackLimitRectangle;
 				_camera.update();
-				_cameraPos.setTo(int(_camera.camProxy.x), int(_camera.camProxy.y));
+				if(trackByOffset){
+					_cameraPos.setTo(int(_camera.camProxy.x), int(_camera.camProxy.y));
+				}else{
+					_cameraPos.setTo(int(_camera.camProxy.x * -1), int(_camera.camProxy.y * -1));
+				}
+				Logger.print(this, "Scene Pos = " + _cameraPos.toString());
 				position = _cameraPos;
 			}else if(!trackObject && _camera){
 				_camera = null;
