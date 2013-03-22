@@ -516,7 +516,6 @@ package com.pblabs.starling2D
 				}else{
 					_cameraPos.setTo(int(_camera.camProxy.x * -1), int(_camera.camProxy.y * -1));
 				}
-				Logger.print(this, "Scene Pos = " + _cameraPos.toString());
 				position = _cameraPos;
 			}else if(!trackObject && _camera){
 				_camera = null;
