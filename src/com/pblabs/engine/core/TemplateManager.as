@@ -185,7 +185,7 @@ package com.pblabs.engine.core
 				Profiler.exit("instantiateEntityFromCallBack");
 			}
 			
-			return null;
+			return instantiateEntity(name, !initialize);
 		}
 		
 		/**
