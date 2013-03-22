@@ -413,7 +413,7 @@ package com.pblabs.nape
 		protected var _scale:Number = 30;
 		protected var _space:Space;
 		protected var _shapeDebug:ShapeDebug;
-		protected var _gravity:Point = new Point(0, 9.8);
+		protected var _gravity:Point = new Point(0, 15);
 		protected var _otherItems:BasicSpatialManager2D = new BasicSpatialManager2D();
 		protected var _materialManager:NapeMaterialManager;
 		protected var _allowSleep : Boolean = true;
