@@ -46,6 +46,11 @@ package com.pblabs.engine.debug
          */
         public static function startup():void
         {
+			if(PBE.IS_SHIPPING_BUILD){
+				disable();
+				return;
+			}
+			
             // Put default listeners into the list.
             registerListener(new TraceAppender());
             
