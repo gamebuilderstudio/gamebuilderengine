@@ -8,6 +8,12 @@ package com.pblabs.engine.util
 		{
 		}
 
+		public static function isDynamic(object) : Boolean
+		{
+			var type:XML = describeType(object);
+			return type.@isDynamic.toString() == "true";
+		}
+		
 		public static function clearDynamicObject(source:Object):void
 		{
 			var p:String;
@@ -17,6 +23,15 @@ package com.pblabs.engine.util
 			}
 		}
 		
+		public static function clearFromDynamicObject(source:Object, destination:Object):void
+		{
+			var p:String;
+			
+			for (p in source) {
+				delete destination[p];
+			}
+		}
+
 		public static function copyDynamicObject(source:Object, destination:Object):void
 		{
 			var p:String;
@@ -26,18 +41,18 @@ package com.pblabs.engine.util
 			}
 		}
 		
-		public static function copyData(source:Object, destination:Object):void {
+		public static function copyData(source:Object, destination:Object, objectDescription : XML = null):void {
 			
 			//copies data from commonly named properties and getter/setter pairs
 			if((source) && (destination)) {
-				
+				var destDynamic : Boolean = isDynamic(destination);
 				try {
-					var sourceInfo:XML = describeType(source);
+					var sourceInfo:XML = objectDescription ? objectDescription : describeType(source);
 					var prop:XML;
 					
 					for each(prop in sourceInfo.variable) {
 						
-						if(destination.hasOwnProperty(prop.@name)) {
+						if(destination.hasOwnProperty(prop.@name) || destDynamic) {
 							destination[prop.@name] = source[prop.@name];
 						}
 						
@@ -45,7 +60,7 @@ package com.pblabs.engine.util
 					
 					for each(prop in sourceInfo.accessor) {
 						if(prop.@access == "readwrite") {
-							if(destination.hasOwnProperty(prop.@name)) {
+							if(destination.hasOwnProperty(prop.@name) || destDynamic) {
 								destination[prop.@name] = source[prop.@name];
 							}
 							
