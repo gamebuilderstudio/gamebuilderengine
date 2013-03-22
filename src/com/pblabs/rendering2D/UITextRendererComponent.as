@@ -244,17 +244,19 @@ package com.pblabs.rendering2D
 			_textDirty = true;
 		}
 
+		private var _text : String;
 		public function get text():String{ return _textDisplay.text; }
 		public function set text(val : String):void{
 			if(!val || val == ""){
 				_textDisplay.text = "";
-			}else{
-				_textDisplay.text = val;
+				_textDirty = true;
+			}else if(_text != val){
+				_textDisplay.text = _text = val;
 				_textDisplay.setTextFormat(textFormatter);
 				_textDisplay.autoSize = TextFieldAutoSize.LEFT;
 				updateFontSize();
+				_textDirty = true;
 			}
-			_textDirty = true;
 		}
 
 		override public function set size(val : Point):void{
