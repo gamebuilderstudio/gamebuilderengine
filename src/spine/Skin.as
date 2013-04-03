@@ -28,7 +28,7 @@ package spine
 	
 	/** Stores attachments by slot index and attachment name. */
 	public class Skin {
-		public var attachments : Dictionary = new Dictionary(true);
+		public var attachments : Dictionary = new Dictionary();
 		protected var _name : String;
 	
 		public function Skin (name : String) : void {

@@ -33,7 +33,7 @@ package spine
 		private var curves : Vector.<Number>; // dfx, dfy, ddfx, ddfy, dddfx, dddfy, ...
 		
 		public function CurveTimeline (keyframeCount : int) {
-			curves = new Vector.<Number>[(keyframeCount - 1) * 6];
+			curves = new Vector.<Number>((keyframeCount - 1) * 6);
 			var len : int = curves.length;
 			for (var i : int = len - 6; i >= 0; i -= 6)
 				curves[i] = LINEAR;

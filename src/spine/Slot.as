@@ -90,7 +90,7 @@ package spine
 		}
 	
 		public function setToBindPose () : void {
-			_setToBindPose(skeleton.slots.indexOf(_data));
+			_setToBindPose(skeleton.slots.indexOf(this));
 		}
 	
 		public function setToBindPoseWithIndex(slotIndex : int) : void {

@@ -182,6 +182,7 @@ package spine.utils
 		 * @param hex The hex string
 		 **/
 		public static function valueOfHex (hex : String) : Color {
+			if(!hex) return null;
 			var r : int = int(hex.substring(0, 2));
 			var g : int = int(hex.substring(2, 4));
 			var b : int = int(hex.substring(4, 6));

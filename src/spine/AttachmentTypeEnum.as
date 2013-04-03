@@ -32,18 +32,23 @@ package spine
 		public static const REGION_SEQUENCE : AttachmentTypeEnum = new AttachmentTypeEnum('regionSequence');
 		
 		private var _name : String;
-		private static var _types : Dictionary = new Dictionary();
+		public static var _types : Dictionary;
 		
 		public function AttachmentTypeEnum(name : String)
 		{
 			_name = name;
-			_types[name] = this;
 		}
 		
 		public function get name():String { return _name; }
 		
 		public static function getRegionType(type : String) : AttachmentTypeEnum
 		{
+			if(!_types){
+				_types = new Dictionary();
+				_types[REGION.name] = REGION;
+				_types[REGION_SEQUENCE.name] = REGION_SEQUENCE;
+			}
+			
 			return _types[type];
 		}
 	}

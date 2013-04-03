@@ -31,52 +31,57 @@ package spine.attachments
 	
 	/** Attachment that displays various texture regions over time. */
 	public class RegionSequenceAttachment extends RegionAttachment {
-		private var _mode : ModeEnum;
-		private var _frameTime : Number;
-		private var _regions : Vector.<Rectangle>;
+		protected var _mode : ModeEnum;
+		protected var _frameTime : Number;
+		protected var _frameIndex : int;
+		protected var _frames : Vector.<Rectangle>;
 		
 		public function RegionSequenceAttachment (name : String) : void {
 			super(name);
 		}
 		
 		override public function draw ( displayObject : *, slot : Slot) : void {
-			if (_regions == null) throw new Error("RegionSequenceAttachment is not resolved: " + this);
+			if (_frames == null) throw new Error("RegionSequenceAttachment is not resolved: " + this);
 			
-			var frameIndex : int = int(slot.attachmentTime / _frameTime);
+			_frameIndex = int(slot.attachmentTime / _frameTime);
 			switch (_mode) {
 				case ModeEnum.FORWARD:
-					frameIndex = Math.min(_regions.length - 1, frameIndex);
+					_frameIndex = Math.min(_frames.length - 1, _frameIndex);
 					break;
 				case ModeEnum.FORWARD_LOOP:
-					frameIndex = frameIndex % _regions.length;
+					_frameIndex = _frameIndex % _frames.length;
 					break;
 				case ModeEnum.PINGPONG:
-					frameIndex = frameIndex % (_regions.length * 2);
-					if (frameIndex >= _regions.length) frameIndex = _regions.length - 1 - (frameIndex - _regions.length);
+					_frameIndex = _frameIndex % (_frames.length * 2);
+					if (_frameIndex >= _frames.length) _frameIndex = _frames.length - 1 - (_frameIndex - _frames.length);
 					break;
 				case ModeEnum.RANDOM:
-					frameIndex = MathUtils.randomRange(0, _regions.length - 1);
+					_frameIndex = MathUtils.randomRange(0, _frames.length - 1);
 					break;
 				case ModeEnum.BACKWARD:
-					frameIndex = Math.max(_regions.length - frameIndex - 1, 0);
+					_frameIndex = Math.max(_frames.length - _frameIndex - 1, 0);
 					break;
 				case ModeEnum.BACKWARD_LOOP:
-					frameIndex = frameIndex % _regions.length;
-					frameIndex = _regions.length - frameIndex - 1;
+					_frameIndex = _frameIndex % _frames.length;
+					_frameIndex = _frames.length - _frameIndex - 1;
 					break;
 			}
-			region = _regions[frameIndex];
+			//region = _frames[_frameIndex];
 			super.draw(displayObject, slot);
 		}
 		
+		public function get frameIndex () : int {
+			return _frameIndex;
+		}
+
 		/** May be null if the attachment is not resolved. */
-		public function get regions () : Vector.<Rectangle> {
-			if (_regions == null) throw new Error("RegionSequenceAttachment is not resolved: " + this);
-			return _regions;
+		public function get frames () : Vector.<Rectangle> {
+			if (_frames == null) throw new Error("RegionSequenceAttachment is not resolved: " + this);
+			return _frames;
 		}
 		
-		public function set regions (regions : Vector.<Rectangle>) : void {
-			this._regions = regions;
+		public function set frames (frames : Vector.<Rectangle>) : void {
+			this._frames = frames;
 		}
 		
 		/** Sets the time in seconds each frame is shown. */

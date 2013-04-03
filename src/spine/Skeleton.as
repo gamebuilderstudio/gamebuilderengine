@@ -24,6 +24,11 @@
  ******************************************************************************/
 package spine
 {
+	import flash.display.Sprite;
+	
+	import spine.utils.Color;
+	import spine.utils.ColorUtil;
+
 	public class Skeleton 
 	{
 		public var bones : Vector.<Bone>;
@@ -33,7 +38,7 @@ package spine
 		public var flipX : Boolean;
 		public var flipY : Boolean;
 		public var skin : Skin;
-		public var color : uint;
+		public var color : Color;
 		public var time : Number;
 	
 		protected var _data : SkeletonData;
@@ -44,24 +49,31 @@ package spine
 			this._data = data;
 			
 			var bones : Vector.<Bone> = new Vector.<Bone>(_data.bones.length);
-			for each(var boneData : BoneData in _data.bones) {
+			var len : int = _data.bones.length;
+			for(var i : int = 0; i < len; i++) {
+				var boneData : BoneData = _data.bones[i];
 				var parent : Bone = boneData.parent == null ? null : bones[_data.bones.indexOf(boneData.parent)];
-				bones.push(new Bone(boneData, parent));
+				bones[i] = new Bone(boneData, parent);
+				//trace("Adding Bone ["+i+"] = "+ bones[i].data.name);
 			}
+			//trace("Adding Bones");
 			this.bones = bones;
 			
 			var slots : Vector.<Slot> = new Vector.<Slot>(_data.slots.length);
 			var drawOrder : Vector.<Slot> = new Vector.<Slot>(_data.slots.length);
-			for each(var slotData : SlotData in _data.slots) {
+			len = _data.slots.length;
+			for(i = 0; i < len; i++) {
+				var slotData : SlotData = _data.slots[i];
 				var bone : Bone = bones[_data.bones.indexOf(slotData.boneData)];
 				var slot : Slot = new Slot(slotData, this, bone);
-				slots.push(slot);
-				drawOrder.push(slot);
+				//trace("Adding Slot ["+i+"] = "+ slot.data.name);
+				slots[i] = slot;
+				drawOrder[i] = slot;
 			}
 			this.slots = slots;
 			this.drawOrder = drawOrder;
 			
-			this.color = 0xFFFFFF;
+			this.color = new Color(1,1,1,1);
 		}
 		
 		public function clone() : Skeleton {
@@ -131,25 +143,17 @@ package spine
 		}
 	
 		public function drawDebug (displayObject : *) : void {
-			/*renderer.setColor(Color.RED);
-			renderer.begin(ShapeType.Line);
-			for (int i = 0, n = bones.size; i < n; i++) {
-			Bone bone = bones.get(i);
-			if (bone.parent == null) continue;
-			float x = bone.data.length * bone.m00 + bone.worldX;
-			float y = bone.data.length * bone.m10 + bone.worldY;
-			renderer.line(bone.worldX, bone.worldY, x, y);
+			var renderer : Sprite = displayObject as Sprite;
+			renderer.graphics.clear();
+			renderer.graphics.lineStyle(4, 0xFFFFFF, .4);
+			for (var i : int = 0; i < bones.length; i++) {
+				var bone : Bone = bones[i];
+				if (bone.parent == null) continue;
+				var x : Number = bone.data.length * bone.m00 + bone.worldX;
+				var y : Number = bone.data.length * bone.m10 + bone.worldY;
+				renderer.graphics.moveTo(bone.worldX, -bone.worldY);
+				renderer.graphics.lineTo(x, -y);
 			}
-			renderer.end();
-			
-			renderer.setColor(Color.GREEN);
-			renderer.begin(ShapeType.Filled);
-			for (int i = 0, n = bones.size; i < n; i++) {
-			Bone bone = bones.get(i);
-			renderer.setColor(Color.GREEN);
-			renderer.circle(bone.worldX, bone.worldY, 3);
-			}
-			renderer.end();*/
 		}
 	
 		public function get data () : SkeletonData {

@@ -37,7 +37,7 @@ package spine
 		
 		public function TranslateTimeline (keyframeCount : int) : void {
 			super(keyframeCount);
-			frames = new Vector.<Number>[keyframeCount * 3];
+			frames = new Vector.<Number>(keyframeCount * 3);
 		}
 		
 		public function setBoneIndex (boneIndex : int) : void {

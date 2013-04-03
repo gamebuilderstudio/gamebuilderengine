@@ -41,7 +41,7 @@ package spine
 		
 		public function ColorTimeline (keyframeCount : int) : void{
 			super(keyframeCount);
-			frames = new Vector.<Number>[keyframeCount * 5];
+			frames = new Vector.<Number>(keyframeCount * 5);
 		}
 		
 		public function setSlotIndex (slotIndex : int) : void {

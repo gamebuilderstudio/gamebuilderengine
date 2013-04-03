@@ -24,5 +24,17 @@ package spine.utils
 			if(v > max) return max;
 			return v;
 		}
+		
+		/**
+		 * Converts an angle in degrees to an angle in radians.
+		 * 
+		 * @param degrees The angle to convert.
+		 * 
+		 * @return The converted value.
+		 */
+		public static function getRadiansFromDegrees(degrees:Number):Number
+		{
+			return degrees * Math.PI / 180;
+		}
 	}
 }

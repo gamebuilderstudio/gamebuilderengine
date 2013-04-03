@@ -24,6 +24,15 @@ package spine.attachments
 		
 		public static function getMode(modeName : String) : ModeEnum
 		{
+			if(!_modes){
+				_modes = new Dictionary();
+				_modes[FORWARD.name] = FORWARD;
+				_modes[BACKWARD.name] = BACKWARD;
+				_modes[FORWARD_LOOP.name] = FORWARD_LOOP;
+				_modes[BACKWARD_LOOP.name] = BACKWARD_LOOP;
+				_modes[PINGPONG.name] = PINGPONG;
+				_modes[RANDOM.name] = RANDOM;
+			}
 			return _modes[modeName];
 		}
 	}

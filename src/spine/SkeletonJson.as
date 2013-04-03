@@ -24,10 +24,13 @@
  ******************************************************************************/
 package spine
 {
-	import spine.attachments.AtlasAttachmentLoader;
+	import flash.display.BitmapData;
+	
+	import spine.attachments.Basic2DAttachmentLoader;
 	import spine.attachments.ModeEnum;
 	import spine.attachments.RegionAttachment;
 	import spine.attachments.RegionSequenceAttachment;
+	import spine.attachments.StarlingAtlasAttachmentLoader;
 	import spine.utils.Color;
 	
 	import starling.textures.TextureAtlas;
@@ -48,12 +51,18 @@ package spine
 			this._attachmentLoader = attachmentloader;
 		}
 	
-		public static function createSkeletonDataWithAtlas(atlas : TextureAtlas):SkeletonJson
+		public static function createSkeletonFromAtlas(atlas : TextureAtlas):SkeletonJson
 		{
-			var textureAttachmentLoader : AtlasAttachmentLoader = new AtlasAttachmentLoader(atlas);
+			var textureAttachmentLoader : StarlingAtlasAttachmentLoader = new StarlingAtlasAttachmentLoader(atlas);
 			return new SkeletonJson( textureAttachmentLoader );
 		}
 		
+		public static function createBasic2DSkeleton(atlas : TextureAtlas, atlasImageData : BitmapData):SkeletonJson
+		{
+			var basic2DAttachmentLoader : Basic2DAttachmentLoader = new Basic2DAttachmentLoader(atlas, atlasImageData);
+			return new SkeletonJson( basic2DAttachmentLoader );
+		}
+
 		public function readSkeletonData (jsonData : String, skeletonName : String) : SkeletonData {
 			if (jsonData == null) throw new Error("file cannot be null.");
 			if (skeletonName == null) throw new Error("Skeleton name cannot be null.");
@@ -87,8 +96,8 @@ package spine
 			// Slots.
 			var slotMap : Array = _json.slots;
 			if (slotMap != null) {
-				var len : int = slotMap.length;
-				for(var i : int = 0; i < len; i++) {
+				len = slotMap.length;
+				for(i = 0; i < len; i++) {
 					var boneName : String = slotMap[i]["bone"];
 					boneData = skeletonData.findBone(boneName);
 					if (boneData == null) throw new Error("Bone not found: " + boneName);
@@ -117,6 +126,7 @@ package spine
 						}
 					}
 					
+					skeletonData.addSkin(skin);
 					if (skin.name == "default") skeletonData.defaultSkin = skin;
 				}
 			}
@@ -169,25 +179,32 @@ package spine
 			
 			var timelines : Vector.<Timeline> = new Vector.<Timeline>();
 			var duration : Number = 0;
-	
+			var keyframeIndex : int;
+			var values : Array;
+			var valLen : int;
+			var time : Number;
+			var timelineMap : Object;
+			var timelineName : String;
+			var timelineEntry : String
+			
 			var bonesMap : Object = animationJsonObject.bones;
 			
 			for (var entry : String in bonesMap) {
 				var boneName : String = entry;
 				var boneIndex : int = skeletonData.findBoneIndex(boneName);
 				if (boneIndex == -1) throw new Error("Bone not found: " + boneName);
-				var timelineMap : Object = bonesMap[entry];
-				for (var timelineEntry : String in timelineMap) {
-					var values : Array = timelineMap[timelineEntry];
-					var valLen : int = values.length;
-					var timelineName : String = timelineEntry;
+				timelineMap = bonesMap[entry];
+				for (timelineEntry in timelineMap) {
+					values = timelineMap[timelineEntry];
+					valLen = values.length;
+					timelineName = timelineEntry;
 					if (timelineName == TIMELINE_ROTATE) {
 						var timeline : RotateTimeline = new RotateTimeline(valLen);
 						timeline.setBoneIndex(boneIndex);
 						
-						var keyframeIndex : int = 0;
+						keyframeIndex = 0;
 						for (var i : int = 0; i < valLen; i++) {
-							var time : Number = values[i]["time"];
+							time = values[i]["time"];
 							timeline.setFrame(keyframeIndex, time, Number(values[i]["angle"]));
 							readCurve(timeline, keyframeIndex, values[i]);
 							keyframeIndex++;
@@ -206,10 +223,10 @@ package spine
 						}
 						transTimeline.setBoneIndex(boneIndex);
 						
-						var keyframeIndex : int = 0;
-						for (var i : int = 0; i < valLen; i++) {
-							var time : Number = values[i]["time"];
-							var x : Number = values[i]["x"], y = values[i]["y"];
+						keyframeIndex = 0;
+						for (i = 0; i < valLen; i++) {
+							time = values[i]["time"];
+							var x : Number = values[i]["x"], y : Number = values[i]["y"];
 							transTimeline.setFrame(keyframeIndex, time, (isNaN(x)) ? 0 : (x * timelineScale), (isNaN(y)) ? 0 : (y * timelineScale) );
 							readCurve(transTimeline, keyframeIndex, values[i]);
 							keyframeIndex++;
@@ -228,19 +245,19 @@ package spine
 					var slotName : String = slotEntry;
 					var slotIndex : int = skeletonData.findSlotIndex(slotName);
 					
-					var timelineMap : Object = slotsMap[slotEntry];
-					for (var timelineEntry : String in timelineMap) {
-						var values : Array = timelineMap[timelineEntry];
-						var valLen : int = values.length;
+					timelineMap = slotsMap[slotEntry];
+					for (timelineEntry in timelineMap) {
+						values = timelineMap[timelineEntry];
+						valLen = values.length;
 
-						var timelineName : String = timelineEntry;
+						timelineName = timelineEntry;
 						if (timelineName == TIMELINE_COLOR) {
 							var colorTimeline : ColorTimeline = new ColorTimeline(valLen);
 							colorTimeline.setSlotIndex(slotIndex);
 							
-							var keyframeIndex : int = 0;
-							for (var i : int = 0; i < valLen; i++) {
-								var time : Number = values[i]["time"];
+							keyframeIndex = 0;
+							for (i = 0; i < valLen; i++) {
+								time = values[i]["time"];
 								var color : Color = Color.valueOfHex(values[i]["color"]);
 								colorTimeline.setFrame(keyframeIndex, time, color.r, color.g, color.b, color.a);
 								readCurve(colorTimeline, keyframeIndex, values[i]);
@@ -253,9 +270,9 @@ package spine
 							var attachmentTimeline : AttachmentTimeline = new AttachmentTimeline(valLen);
 							attachmentTimeline.slotIndex = slotIndex;
 							
-							var keyframeIndex : int = 0;
-							for (var i : int = 0; i < valLen; i++) {
-								var time : Number = values[i]["time"];
+							keyframeIndex = 0;
+							for (i = 0; i < valLen; i++) {
+								time = values[i]["time"];
 								attachmentTimeline.setFrame(keyframeIndex++, time, values[i]["name"]);
 							}
 							timelines.push(attachmentTimeline);
