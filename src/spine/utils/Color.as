@@ -1,22 +1,13 @@
 /*******************************************************************************
- * Copyright 2011 See AUTHORS file.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * GameBuilder Studio
+ * Copyright (C) 2012 GameBuilder Inc.
+ * For more information see http://www.gamebuilderstudio.com
+ *
+ * This file is licensed under the terms of the MIT license, which is included
+ * in the License.html file at the root directory of this SDK.
  ******************************************************************************/
-
 package spine.utils
 {
-	
 	/** A color class, holding the r, g, b and alpha component as floats in the range [0,1]. All methods perform clamping on the
 	 * internal values after execution.
 	 * 
@@ -172,11 +163,6 @@ package spine.utils
 			return null;
 		}
 		
-		public static function testFunction():void
-		{
-			
-		}
-		
 		/** Gets a color object from a hex string
 		 * 
 		 * @param hex The hex string
@@ -204,90 +190,5 @@ package spine.utils
 		public static function alpha (alpha : Number) : int {
 			return int(alpha * 255.0);
 		}
-		
-		/*
-		public static function luminanceAlpha (luminance : Number, alpha : Number) : int {
-			return int((luminance * 255.0) << 8)) || int(alpha * 255);
-		}
-		public static int rgb565 (float r, float g, float b) {
-			return ((int)(r * 31) << 11) | ((int)(g * 63) << 5) | (int)(b * 31);
-		}
-		
-		public static int rgba4444 (float r, float g, float b, float a) {
-			return ((int)(r * 15) << 12) | ((int)(g * 15) << 8) | ((int)(b * 15) << 4) | (int)(a * 15);
-		}
-		
-		public static int rgb888 (float r, float g, float b) {
-			return ((int)(r * 255) << 16) | ((int)(g * 255) << 8) | (int)(b * 255);
-		}
-		
-		public static int rgba8888 (float r, float g, float b, float a) {
-			return ((int)(r * 255) << 24) | ((int)(g * 255) << 16) | ((int)(b * 255) << 8) | (int)(a * 255);
-		}
-		
-		public static int rgb565 (Color color) {
-			return ((int)(color.r * 31) << 11) | ((int)(color.g * 63) << 5) | (int)(color.b * 31);
-		}
-		
-		public static int rgba4444 (Color color) {
-			return ((int)(color.r * 15) << 12) | ((int)(color.g * 15) << 8) | ((int)(color.b * 15) << 4) | (int)(color.a * 15);
-		}
-		
-		public static int rgb888 (Color color) {
-			return ((int)(color.r * 255) << 16) | ((int)(color.g * 255) << 8) | (int)(color.b * 255);
-		}
-		
-		public static int rgba8888 (Color color) {
-			return ((int)(color.r * 255) << 24) | ((int)(color.g * 255) << 16) | ((int)(color.b * 255) << 8) | (int)(color.a * 255);
-		}
-		*/
-		/** Sets the Color components using the specified integer value in the format RGB565. This is inverse to the rgb565(r, g, b)
-		 * method.
-		 * 
-		 * @param color The Color to be modified.
-		 * @param value An integer color value in RGB565 format. 
-		 **/
-		/*public static void rgb565ToColor (Color color, int value) {
-			color.r = ((value & 0x0000F800) >>> 11) / 31f;
-			color.g = ((value & 0x000007E0) >>> 5) / 63f;
-			color.b = ((value & 0x0000001F) >>> 0) / 31f;
-		}*/
-		
-		/** Sets the Color components using the specified integer value in the format RGBA4444. This is inverse to the rgba4444(r, g, b,
-		 * a) method.
-		 * 
-		 * @param color The Color to be modified.
-		 * @param value An integer color value in RGBA4444 format. 
-		 **/
-		/*		
-		public static void rgba4444ToColor (Color color, int value) {
-			color.r = ((value & 0x0000f000) >>> 12) / 15f;
-			color.g = ((value & 0x00000f00) >>> 8) / 15f;
-			color.b = ((value & 0x000000f0) >>> 4) / 15f;
-			color.a = ((value & 0x0000000f)) / 15f;
-		}*/
-		
-		/** Sets the Color components using the specified integer value in the format RGB888. This is inverse to the rgb888(r, g, b)
-		 * method.
-		 * 
-		 * @param color The Color to be modified.
-		 * @param value An integer color value in RGB888 format. */
-		/*public static void rgb888ToColor (Color color, int value) {
-			color.r = ((value & 0x00ff0000) >>> 16) / 255f;
-			color.g = ((value & 0x0000ff00) >>> 8) / 255f;
-			color.b = ((value & 0x000000ff)) / 255f;
-		}*/
-		
-		/** Sets the Color components using the specified integer value in the format RGBA8888. This is inverse to the rgb8888(r, g, b,
-		 * a) method.
-		 * 
-		 * @param color The Color to be modified.
-		 * @param value An integer color value in RGBA8888 format. */
-		/*public static void rgba8888ToColor (Color color, int value) {
-			color.r = ((value & 0xff000000) >>> 24) / 255f;
-			color.g = ((value & 0x00ff0000) >>> 16) / 255f;
-			color.b = ((value & 0x0000ff00) >>> 8) / 255f;
-			color.a = ((value & 0x000000ff)) / 255f;
-		}*/
 	}
 }
