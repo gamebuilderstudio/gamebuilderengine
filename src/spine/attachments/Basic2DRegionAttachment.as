@@ -80,26 +80,14 @@ package spine.attachments
 			updateWorldPosition(slot.bone, slot.skeleton.flipX, slot.skeleton.flipY);
 			
 				
-			_imageContainer.x = (slot.bone.worldX + this.x * slot.bone.m00 + this.y * slot.bone.m01);
-			_imageContainer.y = (-(slot.bone.worldY + this.x * slot.bone.m10 + this.y * slot.bone.m11));
-			_imageContainer.rotation = -(slot.bone.worldRotation + this.rotation);
-			_imageContainer.scaleX = slot.bone.worldScaleX + this.scaleX - 1;
-			_imageContainer.scaleY = slot.bone.worldScaleY + this.scaleY - 1;
+			_imageContainer.x = _worldX;
+			_imageContainer.y = _worldY;
+			_imageContainer.rotation = _worldRotation;
+			_imageContainer.scaleX = _worldScaleX;
+			_imageContainer.scaleY = _worldScaleY;
 				
-			if(slot.skeleton.flipX){
-				_imageContainer.scaleX = -_image.scaleX;
-				_imageContainer.rotation = -_image.rotation;
-			}
-			if(slot.skeleton.flipY){
-				_imageContainer.scaleY = -_image.scaleY;
-				_imageContainer.rotation = -_image.rotation;
-			}
-			_image.x = -centerX*_imageContainer.scaleX;
-			_image.y = -centerY*_imageContainer.scaleY;
-		}
-		
-		override public function updateWorldPosition(bone : Bone, flipX : Boolean = false, flipY : Boolean = false):void
-		{
+			_image.x = -centerX;
+			_image.y = -centerY;
 		}
 		
 		public function set region (region : Rectangle) : void {

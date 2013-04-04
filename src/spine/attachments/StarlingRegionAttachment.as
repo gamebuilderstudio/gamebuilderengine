@@ -52,11 +52,6 @@ package spine.attachments
 		protected var _image : Image;
 		protected var _frame : Rectangle;
 		
-		private var _imgX : Number = 0;
-		private var _imgY : Number = 0;
-		private var _imgRotation : Number = 0;
-		private var _imgScaleX : Number = 1;
-		private var _imgScaleY : Number = 1;
 		
 		public function StarlingRegionAttachment (name : String) : void {
 			super(name);
@@ -78,34 +73,16 @@ package spine.attachments
 				
 			/*_image.width = this.width;
 			_image.height = this.height;*/
-			_image.pivotX = centerX * this._imgScaleX;
-			_image.pivotY = centerY * this._imgScaleY;
+			_image.pivotX = centerX;
+			_image.pivotY = centerY;
 			
-			_image.x = this._imgX;
-			_image.y = this._imgY;
-			_image.rotation = this._imgRotation;
-			_image.scaleX = this._imgScaleX;
-			_image.scaleY = this._imgScaleY;
+			_image.x = this._worldX;
+			_image.y = this._worldY;
+			_image.rotation = MathUtils.getRadiansFromDegrees(this._worldRotation);
+			_image.scaleX = this._worldScaleX;
+			_image.scaleY = this._worldScaleY;
 			
 			batch.addImage(_image);
-		}
-		
-		override public function updateWorldPosition(bone : Bone, flipX : Boolean = false, flipY : Boolean = false):void
-		{
-			this._imgX = bone.worldX + this.x * bone.m00 + this.y * bone.m01;
-			this._imgY = -(bone.worldY + this.x * bone.m10 + this.y * bone.m11);
-			this._imgRotation = MathUtils.getRadiansFromDegrees(-(bone.worldRotation + this.rotation));
-			this._imgScaleX = bone.worldScaleX + this.scaleX - 1;
-			this._imgScaleY = bone.worldScaleY + this.scaleY - 1;
-			
-			if(flipX){
-				this._imgScaleX = -this._imgScaleX;
-				this._imgRotation = -this._imgRotation;
-			}
-			if(flipY){
-				this._imgScaleY = -this._imgScaleY;
-				this._imgRotation = -this._imgRotation;
-			}
 		}
 		
 		public function set region (region : Rectangle) : void {
