@@ -1,8 +1,8 @@
 /*******************************************************************************
- * PushButton Engine
- * Copyright (C) 2009 PushButton Labs, LLC
- * For more information see http://www.pushbuttonengine.com
- * 
+ * GameBuilder Studio
+ * Copyright (C) 2012 GameBuilder Inc.
+ * For more information see http://www.gamebuilderstudio.com
+ *
  * This file is licensed under the terms of the MIT license, which is included
  * in the License.html file at the root directory of this SDK.
  ******************************************************************************/
@@ -17,23 +17,40 @@ package com.pblabs.rendering2D.spritesheet
     import flash.geom.Rectangle;
     import flash.utils.describeType;
     
-    import mx.utils.ObjectUtil;
-    
     /**
-     * Divide a spritesheet into cells based on the rect coordinates in the loaded JSONResource
+     * Divide a spritesheet into cells based on the rect coordinates in the loaded Texture Packer Json-Array 
+	 * JSONResource data.
      */
-    public class PackedSheetDivider implements ISpriteSheetDivider
+    public class TexturePackerSheetDivider implements ISpriteSheetDivider
     {
 		private var _frames : Vector.<CoordinateDataVO>;
+
+		/**
+		 * Grab the frame area rectangle by the filename.
+		 */
+		public function getFrameByName(name:String):Rectangle
+		{
+			if (!name)
+				throw new Error("Name can not be null");
+			
+			if(!_frames || _frames.length < 0)
+			{
+				if(resource && resource.isLoaded)
+				{
+					buildFrames();
+					getFrameByName(name);
+				}
+				return new Rectangle(0, 0, 1, 1);
+			}
+			var frameIndex : int = findFrameIndex(name);
+			return frameIndex >= 0 ? _frames[frameIndex].frameBounds : null;
+		}
 
 		/**
 		 * @inheritDoc
 		 */
 		public function getFrameArea(index:int):Rectangle
 		{
-			if (!_owningSheet)
-				throw new Error("OwningSheet must be set before calling this!");
-			
 			if(!_frames || _frames.length < 0)
 			{
 				if(resource && resource.isLoaded)
@@ -69,7 +86,7 @@ package com.pblabs.rendering2D.spritesheet
 				var i : int = 0;
 				for each(var frameData : Object in objectData)
 				{
-					_frames.push( new CoordinateDataVO( new Rectangle(frameData.frame.x, frameData.frame.y, frameData.frame.w, frameData.frame.h),
+					_frames.push( new CoordinateDataVO(frameData.filename, new Rectangle( frameData.frame.x, frameData.frame.y, frameData.frame.w, frameData.frame.h),
 						new Point(frameData.sourceSize.w, frameData.sourceSize.h),
 						new Rectangle(frameData.spriteSourceSize.x, frameData.spriteSourceSize.y, frameData.spriteSourceSize.w, frameData.spriteSourceSize.h),
 						frameData.rotated,
@@ -84,8 +101,20 @@ package com.pblabs.rendering2D.spritesheet
 		protected function onResourceReady(resoure : ResourceEvent):void
 		{
 			buildFrames();
-			_owningSheet.divider = this;
+			if(_owningSheet)
+				_owningSheet.divider = this;
 			resource.removeEventListener(ResourceEvent.LOADED_EVENT, onResourceReady);
+		}
+		
+		protected function findFrameIndex(name : String):int
+		{
+			var len : int = _frames.length;
+			for(var i : int = 0; i < len; i++)
+			{
+				if(_frames[i].name == name)
+					return i;
+			}
+			return -1;
 		}
 
 		/**
@@ -94,8 +123,6 @@ package com.pblabs.rendering2D.spritesheet
         [EditorData(ignore="true")]
         public function set owningSheet(value:ISpriteSheet):void
         {
-            /*if(_owningSheet && value)
-                Logger.warn(this, "set OwningSheet", "Already assigned to a sheet, reassigning may result in unexpected behavior.");*/
             _owningSheet = value;
         }
         
@@ -124,7 +151,7 @@ package com.pblabs.rendering2D.spritesheet
          */
         public function clone():ISpriteSheetDivider
         {
-            var c:PackedSheetDivider = new PackedSheetDivider();
+            var c:TexturePackerSheetDivider = new TexturePackerSheetDivider();
             c.resource = resource;
             return c;
         }
@@ -148,6 +175,7 @@ import flash.geom.Rectangle;
 
 final class CoordinateDataVO
 {
+	public var name : String;
 	public var frameBounds:Rectangle;
 	public var originalFrameSize:Point;
 	public var originalFrameTrimmedBounds:Rectangle;
@@ -155,8 +183,11 @@ final class CoordinateDataVO
 	public var trimmed:Boolean;
 	public var index:int;
 	
-	public function CoordinateDataVO(frameBounds:Rectangle, originalFrameSize:Point, originalFrameTrimmedBounds:Rectangle, rotated:Boolean, trimmed:Boolean, index : int):void
+	public function CoordinateDataVO(name : String, frameBounds:Rectangle, originalFrameSize:Point, originalFrameTrimmedBounds:Rectangle, rotated:Boolean, trimmed:Boolean, index : int):void
 	{
+		if(name.indexOf("."))
+			name = name.split(".")[0];
+		this.name = name;
 		this.frameBounds = frameBounds;
 		this.originalFrameSize = originalFrameSize;
 		this.originalFrameTrimmedBounds = originalFrameTrimmedBounds;

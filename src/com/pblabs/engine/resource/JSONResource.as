@@ -28,25 +28,36 @@ package com.pblabs.engine.resource
          return _jsonObject;
       }
       
-      /**
+	  /**
+	   * The loaded JSON string. This will be null until loading of the resource has completed.
+	   */
+	  public function get jsonString():String
+	  {
+		  return _jsonString;
+	  }
+
+	  /**
        * The data loaded from a JSON file is just a string containing the object structure itself,
        * so we don't need any special loading. This just converts the byte array to
        * a string and marks the resource as loaded.
        */
       override public function initialize(data:*):void
       {
-         if (data is ByteArray)
-         {
-         	// convert ByteArray data to a string
-         	data = (data as ByteArray).readUTFBytes((data as ByteArray).length);
-         }
-            
-         try
-         {
+		  try
+		  {
+	         if (data is ByteArray)
+	         {
+	         	// convert ByteArray data to a string
+				(data as ByteArray).position = 0;
+				_jsonString = (data as ByteArray).readUTFBytes((data as ByteArray).length);
+	         }else{
+				 _jsonString = data;
+			 }
+			 
 			 if(COMPILE_TARGET::AIR){
-				_jsonObject = JSON.parse(data);
+				_jsonObject = JSON.parse(_jsonString);
 			 }else{
-				_jsonObject = JSONAS3.decode(data);
+				_jsonObject = JSONAS3.decode(_jsonString);
 			 }
 
          }
@@ -69,5 +80,6 @@ package com.pblabs.engine.resource
       
       private var _valid:Boolean = true;
       private var _jsonObject:Object = null;
+	  private var _jsonString : String;
    }
 }

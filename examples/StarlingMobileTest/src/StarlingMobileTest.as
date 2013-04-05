@@ -8,7 +8,7 @@ package
 	import com.pblabs.engine.resource.JSONResource;
 	import com.pblabs.rendering2D.AnimationController;
 	import com.pblabs.rendering2D.AnimationControllerInfo;
-	import com.pblabs.rendering2D.spritesheet.PackedSheetDivider;
+	import com.pblabs.rendering2D.spritesheet.TexturePackerSheetDivider;
 	import com.pblabs.starling2D.BitmapRendererG2D;
 	import com.pblabs.starling2D.DisplayObjectSceneG2D;
 	import com.pblabs.starling2D.SceneViewG2D;
@@ -87,7 +87,7 @@ package
 			spriteSheetRenderer.layerIndex = 1;
 			var sheet : SpriteSheetComponentG2D = new SpriteSheetComponentG2D();
 			sheet.image = PBE.resourceManager.getResource("assets/PigsSheet.png", ImageResource) as ImageResource;
-			var dataDivider : PackedSheetDivider = new PackedSheetDivider();
+			var dataDivider : TexturePackerSheetDivider = new TexturePackerSheetDivider();
 			dataDivider.resource = PBE.resourceManager.getResource("assets/PigsSheet.json", JSONResource) as JSONResource;
 			sheet.divider = dataDivider;
 			spriteSheetRenderer.spriteSheet = sheet;
