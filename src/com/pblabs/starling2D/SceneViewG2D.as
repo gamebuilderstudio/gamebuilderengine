@@ -34,7 +34,7 @@ package com.pblabs.starling2D
      * <p>Currently this is just a stub, and exists for clarity and potential expandability in
      * the future.</p>
      */
-    public class SceneViewG2D extends SceneViewG2DSprite implements IUITarget, IAnimatedObject
+    public class SceneViewG2D extends SceneViewG2DSprite implements IUITarget
     {
 		private var _starlingInstance : Starling;
 		private var _gpuCanvasContainer : Sprite;
@@ -76,6 +76,7 @@ package com.pblabs.starling2D
 			
 			this.addEventListener("removedFromStage", onRemoved);
 			PBE.mainStage.stage.addEventListener(Event.DEACTIVATE, stage_deactivateHandler, false, 0, true);
+			PBE.mainStage.stage.addEventListener(Event.ENTER_FRAME, onFrame);
 		}
 		
 		public static function findStarlingView(name : String):SceneViewG2D
@@ -85,9 +86,9 @@ package com.pblabs.starling2D
 			return null;
 		}
 		
-		public function onFrame(deltaTime:Number):void
+		public function onFrame(event : Event):void
 		{
-			if(Starling.context && _starlingInstance && !_disposed && this.stage)
+			if(Starling.context && _starlingInstance && !_disposed && this.stage && this._starlingInstance.isStarted)
 			{
 				_starlingInstance.nextFrame();
 			}
@@ -171,6 +172,7 @@ package com.pblabs.starling2D
 		{
 			this.removeEventListener("removedFromStage", onRemoved);
 			PBE.mainStage.stage.removeEventListener(Event.DEACTIVATE, stage_deactivateHandler);
+			PBE.mainStage.stage.removeEventListener(Event.ENTER_FRAME, onFrame);
 
 			_starlingInstance.removeEventListener("context3DCreate", onContextCreated);
 			_starlingInstance.removeEventListener("rootCreated", onRootInitialized);
@@ -180,7 +182,7 @@ package com.pblabs.starling2D
 
 			clearDisplayObjects();
 			
-			PBE.processManager.removeAnimatedObject(this);
+			//PBE.processManager.removeAnimatedObject(this);
 			
 			_disposed = true;
 			
@@ -202,7 +204,7 @@ package com.pblabs.starling2D
 			{
 				(calls.func as Function).apply(this, calls.params);
 			}
-			PBE.processManager.addAnimatedObject(this, 1000);
+			//PBE.processManager.addAnimatedObject(this, 1000);
 			InitializationUtilG2D.initializeRenderers.dispatch();
 			
 			_starlingInstance.stage.addEventListener(TouchEvent.TOUCH, onTouch);
