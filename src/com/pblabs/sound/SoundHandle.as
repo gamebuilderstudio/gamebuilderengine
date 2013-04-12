@@ -80,8 +80,10 @@ package com.pblabs.sound
 
         public function pause():void
         {
-            pausedPosition = channel.position;
-            channel.stop();
+			if(channel){
+            	pausedPosition = channel.position;
+           		channel.stop();
+			}
             playing = false;
         }
         
