@@ -155,7 +155,7 @@ package com.pblabs.rendering2D
 		
 		protected function buildFontObject():void
 		{
-			if(!_bmFontObject && fontData && fontData.isLoaded && fontImage && fontImage.isLoaded)
+			if(!_bmFontObject && _fontData && _fontData.isLoaded && _fontImage && _fontImage.isLoaded)
 			{
 				var fontDataStr : String = fontData.data.readUTFBytes(fontData.data.length);
 				_bmFontObject = new BMFont();
@@ -184,7 +184,7 @@ package com.pblabs.rendering2D
 				textBitmapData = new BitmapData(size.x, size.y, true, 0x0);
 			}
 			textBitmapData.lock();
-			if(_bmFontObject && fontData && fontData.isLoaded && fontData && fontData.isLoaded )
+			if(_bmFontObject && _fontData && _fontData.isLoaded )
 			{
 				// OK, draw some fonts!
 				_bmFontObject.drawString(textBitmapData, 0, 0, _textDisplay.text);
