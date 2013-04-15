@@ -482,15 +482,16 @@ package com.pblabs.starling2D
 				return;
 			}
 			
-			// Give layers a chance to sort and update.
-			for each(var l:DisplayObjectSceneLayerG2D in _layers)
-			l.onRender();
-
 			// Update our state based on the tracked object, if any.
 			evaluateTrackedObject();
 			
 			// Make sure transforms are up to date.
 			updateTransform();
+
+			// Give layers a chance to sort and update.
+			for each(var l:DisplayObjectSceneLayerG2D in _layers)
+			l.onRender();
+			
 		}
 		
 		private var _cameraPos : Point = new Point();
