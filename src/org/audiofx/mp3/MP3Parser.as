@@ -37,7 +37,8 @@ package org.audiofx.mp3
 		private var mp3Data:ByteArray;
 		private var loader:URLLoader;
 		private var currentPosition:uint;
-		private var sampleRate:uint;
+		private var _sampleRate:uint;
+		private var bitRate:uint;
 		private var channels:uint;
 		private var version:uint;
 		private static var bitRates:Array=[-1,32,40,48,56,64,80,96,112,128,160,192,224,256,320,-1,-1,8,16,24,32,40,48,56,64,80,96,112,128,144,160,-1];
@@ -160,7 +161,7 @@ package org.audiofx.mp3
 		}
 		internal function writeSwfFormatByte(byteArray:ByteArray):void
 		{
-			var sampleRateIndex:uint=4-(44100/sampleRate);
+			var sampleRateIndex:uint=4-(44100/_sampleRate);
 			byteArray.writeByte((2<<4)+(sampleRateIndex<<2)+(1<<1)+(channels-1));
 		}
 		private function parseHeader(headerBytes:uint):void
@@ -171,14 +172,14 @@ package org.audiofx.mp3
 			channels=(channelMode>2)?1:2;
 			var actualVersion:Number=versions[version];
 			var samplingRates:Array=[44100,48000,32000];
-			sampleRate=samplingRates[samplingRate];
+			_sampleRate=samplingRates[samplingRate];
 			switch(actualVersion)
 			{
 				case 2:
-					sampleRate/=2;
+					_sampleRate/=2;
 					break;
 				case 2.5:
-					sampleRate/=4;
+					_sampleRate/=4;
 			}
 			
 		}
@@ -193,7 +194,7 @@ package org.audiofx.mp3
 			var channelMode:uint=getModeIndex(headerBytes);
 			var actualVersion:Number=versions[version];
 			var sampleRate:uint=samplingRates[samplingRate];
-			if(sampleRate!=this.sampleRate||this.version!=version)
+			if(sampleRate!=this._sampleRate||this.version!=version)
 			{
 				return 0xffffffff;
 			}
@@ -206,7 +207,7 @@ package org.audiofx.mp3
 					sampleRate/=4;
 			}
 			var bitRatesYIndex:uint=((actualVersion==1)?0:1)*bitRates.length/2;
-			var actualBitRate:uint=bitRates[bitRatesYIndex+bitRate]*1000;			
+			var actualBitRate:uint = bitRate = bitRates[bitRatesYIndex+bitRate]*1000;			
 			var frameLength:uint=(((actualVersion==1?144:72)*actualBitRate)/sampleRate)+padding;
 			return frameLength;
 			
@@ -263,5 +264,8 @@ package org.audiofx.mp3
 	        return uint(headerBits & 3);  
 	    }
 		
+		public function get sampleRate():uint{
+			return _sampleRate;
+		}
 	}
 }

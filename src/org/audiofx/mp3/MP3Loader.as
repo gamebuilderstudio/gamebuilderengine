@@ -44,6 +44,7 @@ package org.audiofx.mp3
 	 */
 	public class MP3Loader extends EventDispatcher
 	{
+		public var sound : Sound;
 		protected var mp3Parser:MP3Parser;
 		
 		public function MP3Loader()
@@ -144,9 +145,11 @@ package org.audiofx.mp3
 			
 			var loaderInfo:LoaderInfo=ev.currentTarget as LoaderInfo;
 			var soundClass:Class=loaderInfo.applicationDomain.getDefinition("SoundClass") as Class;
-			var sound:Sound=new soundClass();
+			sound = new soundClass();
 			dispatchEvent(new MP3SoundEvent(MP3SoundEvent.COMPLETE,sound));
 			
 		}
+		
+		public function get sampleRate():uint{ return mp3Parser.sampleRate; }
 	}
 }
