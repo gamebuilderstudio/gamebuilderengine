@@ -22,6 +22,7 @@ package com.pblabs.engine.entity
     import flash.events.Event;
     import flash.events.EventDispatcher;
     import flash.events.IEventDispatcher;
+    import flash.sampler.clearSamples;
     import flash.utils.Dictionary;
     import flash.utils.getQualifiedClassName;
     
@@ -426,6 +427,7 @@ package com.pblabs.engine.entity
             deferring = false;
         }
         
+		private var _tmpPropertyInfo : PropertyInfo = new PropertyInfo();
 		private function findProperty(reference:PropertyReference, willSet:Boolean = false, providedPi:PropertyInfo = null, suppressErrors:Boolean = false):PropertyInfo
 		{
 			// TODO: we use appendChild but relookup the results, can we just use return value?
@@ -437,8 +439,11 @@ package com.pblabs.engine.entity
 			Profiler.enter("Entity.findProperty");
 			
 			// Must have a propertyInfo to operate with.
-			if(!providedPi)
-				providedPi = new PropertyInfo();
+			if(!providedPi){
+				if(_tmpPropertyInfo)
+					_tmpPropertyInfo.clear();
+				providedPi = _tmpPropertyInfo;
+			}
 			
 			// Cached lookups apply only to components.
 			if(reference.cachedLookup && reference.cachedLookup.length > 0)
@@ -452,8 +457,8 @@ package com.pblabs.engine.entity
 					Profiler.exit("Entity.findProperty");
 					return null;
 				}
-				
-				for(var i:int = 1; i<cl.length - 1; i++)
+				var len : int = cl.length;
+				for(var i:int = 1; i < (len - 1); i++)
 				{
 					cachedWalk = cachedWalk[cl[i]];
 					

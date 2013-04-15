@@ -43,6 +43,8 @@ package com.pblabs.engine.debug
        */
       public static function enter(blockName:String):void
       {
+		  if(PBE.IS_SHIPPING_BUILD)
+			  return;
          if(!_currentNode)
          {
             _rootNode = new ProfileInfo("Root")
@@ -105,6 +107,8 @@ package com.pblabs.engine.debug
        */
       public static function exit(blockName:String):void
       {
+		  if(PBE.IS_SHIPPING_BUILD)
+			  return;
          // Update stack depth and early out.
          _stackDepth--;
          if(!_reallyEnabled)
@@ -129,6 +133,8 @@ package com.pblabs.engine.debug
        */
       public static function report():void
       {
+		  if(PBE.IS_SHIPPING_BUILD)
+			  return;
          if(_stackDepth)
          {
             _wantReport = true;
@@ -143,6 +149,8 @@ package com.pblabs.engine.debug
        */
       public static function wipe():void
       {
+		  if(PBE.IS_SHIPPING_BUILD)
+			  return;
          if(_stackDepth)
          {
             _wantWipe = true;
@@ -161,6 +169,8 @@ package com.pblabs.engine.debug
        */
       public static function ensureAtRoot():void
       {
+		  if(PBE.IS_SHIPPING_BUILD)
+			  return;
          if(_stackDepth){
             Logger.error(Profiler, 'ensureAtRoot', 'Not at root!');
 			_stackDepth = 0;
