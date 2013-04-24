@@ -12,9 +12,6 @@ package com.pblabs.screens
     import com.pblabs.engine.core.*;
     import com.pblabs.engine.debug.Logger;
     
-    import flash.display.DisplayObject;
-    import flash.display.DisplayObjectContainer;
-    import flash.display.Sprite;
     import flash.events.*;
     import flash.utils.*;
 
@@ -133,7 +130,7 @@ package com.pblabs.screens
             screenStack.push(screenName);
             currentScreen = screenName;
 
-            screenParent.addChild(get(screenName) as DisplayObject);
+            screenParent.addChild(get(screenName));
         }
         
         /**
@@ -149,10 +146,10 @@ package com.pblabs.screens
                 return;
             }
             
-            var oldScreen:DisplayObject = get(screenStack.pop()) as DisplayObject;
+            var oldScreen:Object = get(screenStack.pop());
             currentScreen = screenStack[screenStack.length - 1];
             
-            if(oldScreen && oldScreen.parent)
+            if(oldScreen && oldScreen.hasOwnProperty("parent") && oldScreen.parent)
                 oldScreen.parent.removeChild(oldScreen);
         }
         
@@ -186,7 +183,7 @@ package com.pblabs.screens
          * set to Global.mainClass, but you may want to override it for
          * special cases.
          */ 
-        public var screenParent:DisplayObjectContainer = null;
+        public var screenParent:Object = null;
 
         private var _currentScreen:IScreen = null;
         private var screenStack:Array = [null];
