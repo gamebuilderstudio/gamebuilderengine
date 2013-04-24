@@ -68,8 +68,9 @@ package com.pblabs.starling2D.spritesheet
 				return null;
 			
 			var cachedFrames : CachedFramesData = getCachedFrames();
-			if (cached && cachedFrames)
+			if (_cached && cachedFrames)
 			{
+				cachedFrames.released.addOnce(onCacheReleased);
 				cachedFrames.referenceCount += 1;
 				_divider = cachedFrames.divider ? cachedFrames.divider : _divider;
 				_bounds = cachedFrames.bounds ? cachedFrames.bounds : _bounds;
@@ -114,6 +115,7 @@ package com.pblabs.starling2D.spritesheet
 			
 			if(cached){
 				var frameCache : CachedFramesData = new CachedFramesDataG2D(_frames, imageFilename, _divider, _bounds, atlas);
+				frameCache.released.addOnce(onCacheReleased);
 				frameCache.referenceCount += 1;
 				setCachedFrames(frameCache);
 			}

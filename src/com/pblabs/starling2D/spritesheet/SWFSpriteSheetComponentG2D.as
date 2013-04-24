@@ -27,9 +27,9 @@ package com.pblabs.starling2D.spritesheet
 		{
 			for(var key : String in _frameCache)
 			{
-				var cache : CachedFramesDataMCG2D = _frameCache[key] as CachedFramesDataMCG2D;
-				if(cache){
-					cache.destroy();
+				var cacheData : CachedFramesDataMCG2D = _frameCache[key] as CachedFramesDataMCG2D;
+				if(cacheData){
+					cacheData.destroy();
 					delete _frameCache[key];
 				}
 			}
@@ -53,14 +53,16 @@ package com.pblabs.starling2D.spritesheet
 		{
 			if (!_resource || !_resource.isLoaded || _resource.didFail || !Starling.context) return;
 			
-			var cache:CachedFramesDataMC = getCachedFrames() as CachedFramesDataMC;
-			if (cache)
+			var cacheData:CachedFramesDataMC = getCachedFrames() as CachedFramesDataMC;
+			if (_cached && cacheData)
 			{
-				cache.referenceCount += 1;
-				frames = cache.frames;
-				_frameCenters = cache.frameCenters;
-				_bounds = cache.bounds;
-				_clip = cache.clip;
+				cacheData.released.addOnce(onCacheReleased);
+				cacheData.referenceCount += 1;
+				frames = cacheData.frames;
+				_frameCenters = cacheData.frameCenters;
+				_bounds = cacheData.bounds;
+				_clip = cacheData.clip;
+				_scale = cacheData.scale;
 				return;
 			} else {
 				_bounds = null;
@@ -92,7 +94,8 @@ package com.pblabs.starling2D.spritesheet
 			_center = new Point(-_bounds.x, -_bounds.y);
 			
 			if(cached && frames){
-				var frameCache : CachedFramesDataMC = new CachedFramesDataMCG2D(textureList, _bounds, _clip, _frameCenters);
+				var frameCache : CachedFramesDataMC = new CachedFramesDataMCG2D(textureList, _bounds, _clip, _frameCenters, _scale);
+				frameCache.released.addOnce(onCacheReleased);
 				frameCache.referenceCount += 1;
 				setCachedFrames(frameCache);
 			}
