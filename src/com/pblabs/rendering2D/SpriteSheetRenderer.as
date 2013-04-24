@@ -8,6 +8,7 @@
  ******************************************************************************/
 package com.pblabs.rendering2D
 {
+    import com.pblabs.engine.entity.IEntityComponent;
     import com.pblabs.engine.entity.PropertyReference;
     import com.pblabs.rendering2D.modifier.Modifier;
     import com.pblabs.rendering2D.spritesheet.ISpriteSheet;
@@ -47,6 +48,13 @@ package com.pblabs.rendering2D
 		{
 			super.onAdd();
 			bitmapData = getCurrentFrame();
+		}
+		
+		override protected function onReset():void
+		{
+			super.onReset();
+			if(spriteSheet && spriteSheet.isDestroyed)
+				spriteSheet = null;
 		}
 		
         protected function getCurrentFrame():BitmapData

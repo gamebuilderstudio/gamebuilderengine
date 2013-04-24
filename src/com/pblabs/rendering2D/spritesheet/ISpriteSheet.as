@@ -74,5 +74,7 @@ package com.pblabs.rendering2D.spritesheet
 
 		function get cached():Boolean;
 		function set cached(val : Boolean):void;
+		
+		function get isDestroyed():Boolean;
 	}
 }

@@ -1,6 +1,8 @@
 package com.pblabs.rendering2D.spritesheet
 {
 	import flash.geom.Rectangle;
+	
+	import org.osflash.signals.Signal;
 
 	public class CachedFramesData
 	{
@@ -11,6 +13,7 @@ package com.pblabs.rendering2D.spritesheet
 			this.divider = divider;
 			this.bounds = bounds;
 		}
+		public var released : Signal = new Signal(CachedFramesData);
 		public var frames:Array;
 		public var fileName:String;
 		public var divider:ISpriteSheetDivider;
@@ -19,6 +22,7 @@ package com.pblabs.rendering2D.spritesheet
 		
 		public function destroy():void
 		{
+			released.dispatch(this);
 			if(frames){
 				while(frames.length > 0)
 				{
@@ -27,10 +31,6 @@ package com.pblabs.rendering2D.spritesheet
 				}
 			}
 			frames = null;
-			if(divider){
-				divider.destroy();
-				divider = null;
-			}
 			bounds = null;
 		}
 	}

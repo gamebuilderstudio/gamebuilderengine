@@ -39,6 +39,8 @@ package com.pblabs.rendering2D.spritesheet
     public class MultiImageSpriteSheetComponent extends SpriteContainerComponentG2D implements ISpriteSheet
     {
 						
+		public function get isDestroyed():Boolean{ return _destroyed; }
+
 		/**
 		 * When cached is set to true (the default) the rasterized frames
 		 * are re-used by all instances of the SpriteSheetComponent
@@ -46,7 +48,12 @@ package com.pblabs.rendering2D.spritesheet
 		 */
 		public function get cached():Boolean { return _cached; }
 		public function set cached(val : Boolean):void{
-			_cached = true;
+			if(_cached && !val)
+			{
+				var frameCache : CachedFramesData = getCachedFrames();
+				frameCache.released.remove(onCacheReleased);
+			}
+			_cached = val;
 		}
 
 		/**
@@ -176,6 +183,7 @@ package com.pblabs.rendering2D.spritesheet
 			var cachedFrames : CachedFramesData = getCachedFrames();
 			if (_cached && cachedFrames)
 			{
+				cachedFrames.released.addOnce(onCacheReleased);
 				cachedFrames.referenceCount += 1;
 				_bounds = cachedFrames.bounds ? cachedFrames.bounds : _bounds;
 				return cachedFrames.frames;
@@ -202,6 +210,7 @@ package com.pblabs.rendering2D.spritesheet
 			
 			if(_cached){
 				var frameCache : CachedFramesData = new CachedFramesData(_frames, _imageFilename, null, _bounds);
+				frameCache.released.addOnce(onCacheReleased);
 				frameCache.referenceCount += 1;
 				setCachedFrames(frameCache);
 			}
@@ -230,6 +239,7 @@ package com.pblabs.rendering2D.spritesheet
 				var frameCache : CachedFramesData = getCachedFrames();
 				
 				if(frameCache && frameCache.referenceCount > 0){
+					frameCache.released.remove(onCacheReleased);
 					frameCache.referenceCount -= 1;
 				}
 			}else{
@@ -350,6 +360,10 @@ package com.pblabs.rendering2D.spritesheet
 			return _imageFilename;
 		}
 
+		protected function onCacheReleased(cache : CachedFramesData):void
+		{
+			deleteFrames();
+		}
 
 		protected static var _frameCache:Dictionary = new Dictionary(true);
 

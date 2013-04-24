@@ -44,6 +44,7 @@ package com.pblabs.rendering2D.spritesheet
     public class SpriteSheetComponent extends SpriteContainerComponentG2D implements ISpriteSheet
     {
 						
+		public function get isDestroyed():Boolean{ return _destroyed; }
 		/**
 		 * When cached is set to true (the default) the rasterized frames
 		 * are re-used by all instances of the SpriteSheetComponent
@@ -51,7 +52,12 @@ package com.pblabs.rendering2D.spritesheet
 		 */
 		public function get cached():Boolean { return _cached; }
 		public function set cached(val : Boolean):void{
-			_cached = true;
+			if(_cached && !val)
+			{
+				var frameCache : CachedFramesData = getCachedFrames();
+				frameCache.released.remove(onCacheReleased);
+			}
+			_cached = val;
 		}
 
 		[EditorData(ignore="true")]
@@ -189,14 +195,10 @@ package com.pblabs.rendering2D.spritesheet
         public function set divider(value:ISpriteSheetDivider):void
         {
             _divider = value;
-            _divider.owningSheet = this;
+			if(_divider)
+            	_divider.owningSheet = this;
             deleteFrames();
         }
-		
-		protected override function deleteFrames():void
-		{
-			super.deleteFrames();	
-		}
 		
         protected override function getSourceFrames() : Array
         {
@@ -213,6 +215,7 @@ package com.pblabs.rendering2D.spritesheet
 			var cachedFrames : CachedFramesData = getCachedFrames();
 			if (_cached && cachedFrames)
 			{
+				cachedFrames.released.addOnce(onCacheReleased);
 				cachedFrames.referenceCount += 1;
 				_divider = cachedFrames.divider;
 				_bounds = cachedFrames.bounds ? cachedFrames.bounds : _bounds;
@@ -248,6 +251,7 @@ package com.pblabs.rendering2D.spritesheet
 			
 			if(_cached){
 				var frameCache : CachedFramesData = new CachedFramesData(_frames, imageFilename, _divider, _bounds);
+				frameCache.released.addOnce(onCacheReleased);
 				frameCache.referenceCount += 1;
 				setCachedFrames(frameCache);
 			}
@@ -277,6 +281,7 @@ package com.pblabs.rendering2D.spritesheet
 				
 				if(frameCache && frameCache.referenceCount > 0){
 					frameCache.referenceCount -= 1;
+					frameCache.released.remove(onCacheReleased);
 				}
 			}else{
 				var len : int = frames.length;
@@ -294,9 +299,8 @@ package com.pblabs.rendering2D.spritesheet
 					}
 					_forcedBitmaps = null;
 				}
-				if(_divider && ((frameCache && frameCache.divider !== _divider) || !frameCache)){
+				if(_divider){
 					_divider.destroy();
-					_divider.owningSheet = null;
 				}
 			}
 		
@@ -323,7 +327,6 @@ package com.pblabs.rendering2D.spritesheet
 			}
 			frameCache.destroy();
 			delete _frameCache[getFramesCacheKey()];
-			//Divider is cleaned up in the CachedFramesData.destroy()
 		}
 		
 		protected function onImageLoaded(resource:ImageResource):void
@@ -363,7 +366,7 @@ package com.pblabs.rendering2D.spritesheet
 		
 		override protected function buildFrames():void
 		{
-			if(!_divider) return;
+			if(!_divider && (!_cached || (_cached && !getCachedFrames()) )) return;
 			
 			super.buildFrames();
 		}
@@ -405,6 +408,11 @@ package com.pblabs.rendering2D.spritesheet
 			return imageFilename;
 		}
 
+		protected function onCacheReleased(cache : CachedFramesData):void
+		{
+			deleteFrames();
+			_divider = null;
+		}
 
 		protected static var _frameCache:Dictionary = new Dictionary(true);
 

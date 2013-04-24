@@ -31,6 +31,9 @@ package com.pblabs.rendering2D.spritesheet
 			super();
 			_defaultCenter = false;
 		}
+		
+		public function get isDestroyed():Boolean{ return _destroyed; }
+		
         /**
          * When cached is set to true (the default) the rasterized frames
          * are re-used by all instances of the SWFSpriteSheetComponent
@@ -38,7 +41,12 @@ package com.pblabs.rendering2D.spritesheet
          */
 		public function get cached():Boolean { return _cached; }
 		public function set cached(val : Boolean):void{
-			_cached = true;
+			if(_cached && !val)
+			{
+				var frameCache : CachedFramesData = getCachedFrames();
+				frameCache.released.remove(onCacheReleased);
+			}
+			_cached = val;
 		}
 
         /**
@@ -117,8 +125,10 @@ package com.pblabs.rendering2D.spritesheet
             _scale = value.clone();
 			if(newScale){
 				this.deleteFrames();
-				getCachedFrames().destroy();
-				delete _frameCache[getFramesCacheKey()];
+				if(_cached){
+					getCachedFrames().destroy();
+					delete _frameCache[getFramesCacheKey()];
+				}
 			}
         }
         
@@ -139,7 +149,6 @@ package com.pblabs.rendering2D.spritesheet
 		[EditorData(ignore="true")]
 		public function get imageData():BitmapData
 		{
-			//Logger.warn(this, "imageData", "Image data is not available on a swf spritesheet");
 			return null;
 		}
 		public function set imageData(data : BitmapData):void
@@ -155,7 +164,6 @@ package com.pblabs.rendering2D.spritesheet
 		[TypeHint(type="dynamic")]
 		public function get divider():ISpriteSheetDivider
 		{
-			Logger.warn(this, "divider", "There is no divider on a swf spritesheet");
 			return null;
 		}
 		
@@ -173,11 +181,15 @@ package com.pblabs.rendering2D.spritesheet
 		 **/
 		public function destroy():void
 		{
+			if(_destroyed)
+				return;
+			
 			if(_cached){
 				var frameCache : CachedFramesData = getCachedFrames();
 				
 				if(frameCache && frameCache.referenceCount > 0){
 					frameCache.referenceCount -= 1;
+					frameCache.released.remove(onCacheReleased);
 				}
 			}else{
 				var len : int = frames.length;
@@ -192,6 +204,7 @@ package com.pblabs.rendering2D.spritesheet
 			_bounds = null;
 			_clip = null;
 			_parentMC = null;
+			_destroyed = true;
 		}
 		
 		public function releaseCache(checkReferenceCount : Boolean = true):void
@@ -257,7 +270,15 @@ package com.pblabs.rendering2D.spritesheet
             return _resource.filename + ":" + (clipName ? clipName : "") + (_smoothing ? ":1" : ":0");
         }
 
-        /**
+		protected function onCacheReleased(cache : CachedFramesData):void
+		{
+			deleteFrames();
+			_clip = null;
+			_frameCenters = null;
+			_bounds = null;
+		}
+
+		/**
          * Rasterizes the clip into an Array of BitmapData objects.
          * This array can then be used just like a sprite sheet.
          */
@@ -265,14 +286,16 @@ package com.pblabs.rendering2D.spritesheet
         {
             if (!_resource.isLoaded || _resource.didFail) return;
 
-            var cache:CachedFramesDataMC = getCachedFrames() as CachedFramesDataMC;
-            if (cache)
+            var cacheData:CachedFramesDataMC = getCachedFrames() as CachedFramesDataMC;
+            if (_cached && cacheData)
             {
-				cache.referenceCount += 1;
-				frames = cache.frames;
-                _frameCenters = cache.frameCenters;
-                _bounds = cache.bounds;
-                _clip = cache.clip;
+				cacheData.released.addOnce(onCacheReleased);
+				cacheData.referenceCount += 1;
+				frames = cacheData.frames;
+                _frameCenters = cacheData.frameCenters;
+                _bounds = cacheData.bounds;
+                _clip = cacheData.clip;
+				_scale = cacheData.scale;
                 return;
             } else {
 				_bounds = null;
@@ -293,7 +316,8 @@ package com.pblabs.rendering2D.spritesheet
 			_center = new Point(-_bounds.x, -_bounds.y);
 			
 			if(_cached){
-				var frameCache : CachedFramesDataMC = new CachedFramesDataMC(frames, _bounds, _clip, _frameCenters);
+				var frameCache : CachedFramesDataMC = new CachedFramesDataMC(frames, _bounds, _clip, _frameCenters, _scale);
+				frameCache.released.addOnce(onCacheReleased);
 				frameCache.referenceCount += 1;
 				setCachedFrames(frameCache);
 			}
@@ -469,6 +493,7 @@ package com.pblabs.rendering2D.spritesheet
 		protected var _bounds:Rectangle;
 		protected var _cached:Boolean = true;
 		protected var _parentMC : MovieClip = new MovieClip();
+		protected var _destroyed : Boolean = false;
     }
 }
 import flash.display.BitmapData;
