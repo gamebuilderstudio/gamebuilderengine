@@ -48,6 +48,11 @@ package com.pblabs.engine
 		public static const RENDER_GPU : String = "GPU";
 		public static const RENDER_CPU : String = "CPU";
 		
+		/**
+		 * Set this to true to disable some functionality that can be destructive while editing the game. Some
+		 * components that may destroy objects don't need to execute while in editor.
+		 */
+		public static var IN_EDITOR:Boolean = false;
         /**
          * Set this to true to get rid of a bunch of development related functionality that isn't
          * needed in a final release build.

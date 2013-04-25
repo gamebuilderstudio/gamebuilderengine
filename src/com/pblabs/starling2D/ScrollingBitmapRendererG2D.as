@@ -57,7 +57,7 @@ package com.pblabs.starling2D
 		
 		public function offsetTexture(xx:Number, yy:Number):void
 		{
-			if(!gpuObject || (!_initialDraw && PBE.processManager.timeScale == 0))
+			if(!gpuObject || (!_initialDraw && PBE.IN_EDITOR))
 				return;
 			
 			if(!(gpuObject as Image).texture.repeat)

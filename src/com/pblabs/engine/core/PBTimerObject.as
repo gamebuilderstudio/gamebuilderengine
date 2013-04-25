@@ -34,10 +34,11 @@ package com.pblabs.engine.core
 			}
 			
 			if(_running){
+				var _currentTime : Number = _ignoreTimeScale ? PBE.processManager.platformTime : PBE.processManager.virtualTime;
 				if(delay == 0 || delay < 0){
 					if(delay == 0 && limit > 0)
 					{
-						_overallPastTime = PBE.processManager.virtualTime - _startTime;
+						_overallPastTime = _currentTime - _startTime;
 						if(_overallPastTime >= limit)
 						{
 							onTickSignal.dispatch();
@@ -48,12 +49,12 @@ package com.pblabs.engine.core
 						_activeCount++;
 					}
 				}else{
-					_activePastTime = PBE.processManager.virtualTime - _startTime;
+					_activePastTime = _currentTime - _startTime;
 					if(delay <= _activePastTime)
 					{
 						onTickSignal.dispatch();
 						_activeCount++;
-						_startTime = PBE.processManager.virtualTime;
+						_startTime = _currentTime;
 					}
 				}
 			}

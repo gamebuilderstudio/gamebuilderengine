@@ -468,7 +468,7 @@ package com.pblabs.engine.core
                         continue;
                     
 					ignoreTimeScale = (object.listener is ITickedObject) ? (object.listener as ITickedObject).ignoreTimeScale : false;
-					if(_timeScale <= 0 && (object.listener is ITickedObject) && !ignoreTimeScale )
+					if(_timeScale <= 0 && (object.listener is ITickedObject) && (!ignoreTimeScale || (ignoreTimeScale && PBE.IN_EDITOR)) )
 					{
 						continue;
 					}else{
@@ -520,7 +520,7 @@ package com.pblabs.engine.core
                     continue;
                 
 				ignoreTimeScale = (animatedObject.listener is IAnimatedObject) ? (animatedObject.listener as IAnimatedObject).ignoreTimeScale : false;
-				if(_timeScale <= 0 && (((animatedObject.listener is IAnimatedObject) && !ignoreTimeScale) && !(animatedObject.listener is ILogAppender)) )
+				if(_timeScale <= 0 && (((animatedObject.listener is IAnimatedObject) && (!ignoreTimeScale || (ignoreTimeScale && PBE.IN_EDITOR))) && !(animatedObject.listener is ILogAppender)) )
 				{
 					continue;
 				}else{

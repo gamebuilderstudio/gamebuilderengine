@@ -82,7 +82,7 @@ package com.pblabs.rendering2D
 			_scratchPosition.x += (scrollSpeed.x * deltaTime); 
 			_scratchPosition.y += (scrollSpeed.y * deltaTime);	
 			
-			if(PBE.processManager.timeScale == 0) 
+			if(!PBE.IN_EDITOR) 
 				_scratchPosition.x = _scratchPosition.y = 0;
 			
 			offsetImage(_scratchPosition.x, _scratchPosition.y);
