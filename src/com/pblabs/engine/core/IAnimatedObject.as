@@ -33,5 +33,12 @@ package com.pblabs.engine.core
        * @see ProcessManager#AddAnimatedObject()
        */
       function onFrame(deltaTime:Number):void;
+
+	  /**
+	   * Used to exclude the current components from the effects of the timeScale property of the 
+	   * processManager. You use this to pause everything else in a game except certain components
+	   **/ 
+	  function get ignoreTimeScale():Boolean;
+	  function set ignoreTimeScale(val : Boolean):void;
    }
 }

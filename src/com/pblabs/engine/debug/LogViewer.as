@@ -52,6 +52,7 @@ package com.pblabs.engine.debug
         protected var bottomLineIndex:int = int.MAX_VALUE;
         protected var logCache:Array = [];
         protected var _dirtyConsole:Boolean = true;
+		protected var _ignoreTimeScale : Boolean = false;
         
         public function LogViewer():void
         {
@@ -439,5 +440,14 @@ package com.pblabs.engine.debug
 		{
 			return _input.restrict;
 		}
-    }
+
+		/**
+		 * @inheritDoc
+		 */
+		public function get ignoreTimeScale():Boolean { return _ignoreTimeScale; }
+		public function set ignoreTimeScale(val:Boolean):void
+		{
+			_ignoreTimeScale = val;
+		}
+	}
 }

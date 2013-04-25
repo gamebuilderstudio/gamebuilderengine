@@ -44,6 +44,15 @@ package com.pblabs.nape
 			super();
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
+		public function get ignoreTimeScale():Boolean { return _ignoreTimeScale; }
+		public function set ignoreTimeScale(val:Boolean):void
+		{
+			_ignoreTimeScale = val;
+		}
+
 		public function get space():Space
 		{
 			return _space;
@@ -423,6 +432,7 @@ package com.pblabs.nape
 		private var _visualDebugging:Boolean = false;
 		private var _visualDebuggingPending:Boolean = false;
 		private var _bodyCallbackType:CbType;
+		private var _ignoreTimeScale : Boolean = false;
 		
 	}
 }

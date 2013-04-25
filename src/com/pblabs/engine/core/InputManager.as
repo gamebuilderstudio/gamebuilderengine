@@ -44,7 +44,17 @@ package com.pblabs.engine.core
             PBE.processManager.addTickedObject( this, Number.MAX_VALUE );
         }
         
-        /**
+		private var _ignoreTimeScale : Boolean = true;
+		/**
+		 * @inheritDoc
+		 */
+		public function get ignoreTimeScale():Boolean { return _ignoreTimeScale; }
+		public function set ignoreTimeScale(val:Boolean):void
+		{
+			_ignoreTimeScale = val;
+		}
+
+		/**
          * @inheritDoc
          */
         public function onTick(deltaTime:Number):void

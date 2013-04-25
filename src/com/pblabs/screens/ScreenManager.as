@@ -43,7 +43,17 @@ package com.pblabs.screens
             return _instance;
         }
         
-        public function ScreenManager()
+		private var _ignoreTimeScale : Boolean = true;
+		/**
+		 * @inheritDoc
+		 */
+		public function get ignoreTimeScale():Boolean { return _ignoreTimeScale; }
+		public function set ignoreTimeScale(val:Boolean):void
+		{
+			_ignoreTimeScale = val;
+		}
+
+		public function ScreenManager()
         {
             PBE.processManager.addTickedObject(this);
             PBE.processManager.addAnimatedObject(this);

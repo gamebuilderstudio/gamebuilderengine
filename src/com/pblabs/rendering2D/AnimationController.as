@@ -152,9 +152,10 @@ package com.pblabs.rendering2D
                 Logger.error(this, "playAnimation", "Unable to find default animation '" + defaultAnimation + "'!");
 			}
 
+			var _currentTime : Number = ignoreTimeScale ? PBE.processManager.platformTime : PBE.processManager.virtualTime;
             // Expire current animation if it has finished playing and it's what we
             // want to keep playing.
-            if (_currentAnimation !== nextAnim && PBE.processManager.virtualTime > (_currentAnimationStartTime + _currentAnimationDuration))
+            if (_currentAnimation !== nextAnim && _currentTime > (_currentAnimationStartTime + _currentAnimationDuration))
 			{
 				if (_currentAnimation && _currentAnimation.completeEvent)
 				{
@@ -188,7 +189,7 @@ package com.pblabs.rendering2D
 				targetCurFrame = _currentAnimation.getFrameByIndex(0);
 				if (_currentAnimation.loop)
 				{
-					_currentAnimationStartTime = PBE.processManager.virtualTime;
+					_currentAnimationStartTime = _currentTime;
 				}
             }
             else
@@ -202,14 +203,14 @@ package com.pblabs.rendering2D
                 if (frameTime > _currentAnimation.maxFrameDelay)
                     frameTime = _currentAnimation.maxFrameDelay;
     
-                var animationAge:Number = PBE.processManager.virtualTime - _currentAnimationStartTime;
+                var animationAge:Number = _currentTime - _currentAnimationStartTime;
                 var curFrame:int = Math.floor(animationAge / frameTime);
     			
 				// Deal with clamping/looping.
                 if (_currentAnimation.loop)
                 {
 					if(curFrame >= _currentAnimation.frameCount-1){
-						_currentAnimationStartTime = PBE.processManager.virtualTime;
+						_currentAnimationStartTime = _currentTime;
 					}
 
 					var wasFrame:int = curFrame;
@@ -267,12 +268,9 @@ package com.pblabs.rendering2D
             if (currentAnimationStartTimeReference)
                 _currentAnimationStartTime = owner.getProperty(currentAnimationStartTimeReference);
             else
-                _currentAnimationStartTime = PBE.processManager.virtualTime;
+                _currentAnimationStartTime = ignoreTimeScale ? PBE.processManager.platformTime : PBE.processManager.virtualTime;
 
             updateAnimationDuration();
-            //trace("Age at start was " + (PBE.processManager.virtualTime - _currentAnimationStartTime));
-
-            //Logger.(this, "Changed animation to: " + _currentAnimation.spriteSheet.name + ". duration is " + _currentAnimationDuration);
 
             Profiler.exit("AnimationController.SetAnimation");
         }

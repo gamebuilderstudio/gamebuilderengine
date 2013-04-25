@@ -38,6 +38,8 @@ package com.pblabs.sound
         protected var rootCategory:SoundCategory = new SoundCategory();
         protected var cachedSounds:Object = {};
         
+		private var _ignoreTimeScale : Boolean = true;
+		
         public function SoundManager()
         {
             createCategory(MUSIC_MIXER_CATEGORY);
@@ -298,7 +300,16 @@ package com.pblabs.sound
             updateSounds();
         }
         
-        internal function isInPlayingSounds(sh:SoundHandle):Boolean
+		/**
+		 * @inheritDoc
+		 */
+		public function get ignoreTimeScale():Boolean { return _ignoreTimeScale; }
+		public function set ignoreTimeScale(val:Boolean):void
+		{
+			_ignoreTimeScale = val;
+		}
+
+		internal function isInPlayingSounds(sh:SoundHandle):Boolean
         {
             var idx:int = playingSounds.indexOf(sh);
             return idx != -1;

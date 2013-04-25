@@ -21,6 +21,7 @@ package com.pblabs.engine.core
 		private var _overallPastTime : Number = 0;
 		private var _addedToProcessManager : Boolean = false;
 		private var _destroyed : Boolean = false;
+		private var _ignoreTimeScale : Boolean = false;
 		
 		public function onTick(deltaTime:Number):void{
 			
@@ -80,6 +81,15 @@ package com.pblabs.engine.core
 			return _running;
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
+		public function get ignoreTimeScale():Boolean { return _ignoreTimeScale; }
+		public function set ignoreTimeScale(val:Boolean):void
+		{
+			_ignoreTimeScale = val;
+		}
+
 		public function destroy():void
 		{
 			if(_destroyed)

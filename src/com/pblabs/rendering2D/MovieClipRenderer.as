@@ -1,10 +1,10 @@
 package com.pblabs.rendering2D
 {
     import com.pblabs.engine.PBE;
-	import com.pblabs.engine.resource.SWFResource;
+    import com.pblabs.engine.resource.SWFResource;
     
     import flash.display.MovieClip;
-	import flash.geom.Point;
+    import flash.geom.Point;
 
     /**
      * Renderer which is for displaying MovieClips/SWFs and playing their
@@ -130,8 +130,9 @@ package com.pblabs.rendering2D
                 _clipDirty = false;
             }
             
+			var _currentTime : Number = ignoreTimeScale ? PBE.processManager.platformTime : PBE.processManager.virtualTime;
             // Update to next frame when appropriate.
-            if(PBE.processManager.virtualTime - _clipLastUpdate > 1000/frameRate)
+            if(_currentTime - _clipLastUpdate > 1000/frameRate)
             {
                 // If we're on the last frame, loop or self-destruct.
                 if(++_clipFrame > _maxFrames)
@@ -155,7 +156,7 @@ package com.pblabs.rendering2D
                 // Update child clips as well.
                 updateChildClips(clip, _clipFrame);
 
-                _clipLastUpdate = PBE.processManager.virtualTime;
+                _clipLastUpdate = _currentTime;
             }
             
             

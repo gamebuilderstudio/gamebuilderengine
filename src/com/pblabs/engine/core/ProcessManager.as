@@ -425,14 +425,15 @@ package com.pblabs.engine.core
             }
             
             // Calculate time since last frame and advance that much.
-            var deltaTime:Number = Number(currentTime - lastTime) * _timeScale;
-            advance(deltaTime);
+            var deltaTimePreScale:Number = Number(currentTime - lastTime);
+			var deltaTime:Number = deltaTimePreScale * _timeScale;
+            advance(deltaTime, false, deltaTimePreScale);
             
             // Note new last time.
             lastTime = currentTime;
         }
         
-        private function advance(deltaTime:Number, suppressSafety:Boolean = false):void
+        private function advance(deltaTime:Number, suppressSafety:Boolean = false, deltaPreScale : Number = 0):void
         {
             // Update platform time, to avoid lots of costly calls to getTimer.
             _platformTime = getTimer();
@@ -441,8 +442,9 @@ package com.pblabs.engine.core
             var startTime:Number = _virtualTime;
             
             // Add time to the accumulator.
-            elapsed += deltaTime;
+            elapsed += deltaTime > 0 ? deltaTime : deltaPreScale;
             
+			var ignoreTimeScale : Boolean = false;
             // Perform ticks, respecting tick caps.
             var tickCount:int = 0;
             while (elapsed >= TICK_RATE_MS && (suppressSafety || tickCount < MAX_TICKS_PER_FRAME))
@@ -452,7 +454,8 @@ package com.pblabs.engine.core
                 
                 // Process pending events at this tick.
                 // This is done in the loop to ensure the correct order of events.
-                processScheduledObjects();
+				if(_timeScale > 0)
+                	processScheduledObjects();
                 
                 // Do the onTick callbacks, noting time in profiler appropriately.
                 Profiler.enter("Tick");
@@ -464,7 +467,8 @@ package com.pblabs.engine.core
                     if(!object)
                         continue;
                     
-					if(PBE.processManager.timeScale <= 0 && ( (object.listener is IEntityComponent) || (object.listener is ITickedObject) ))
+					ignoreTimeScale = (object.listener is ITickedObject) ? (object.listener as ITickedObject).ignoreTimeScale : false;
+					if(_timeScale <= 0 && (object.listener is ITickedObject) && !ignoreTimeScale )
 					{
 						continue;
 					}else{
@@ -477,8 +481,9 @@ package com.pblabs.engine.core
                 
                 Profiler.exit("Tick");
                 
+				if(_timeScale > 0)
+					_virtualTime += TICK_RATE_MS;
                 // Update virtual time by subtracting from accumulator.
-                _virtualTime += TICK_RATE_MS;
                 elapsed -= TICK_RATE_MS;
                 tickCount++;
             }
@@ -514,12 +519,16 @@ package com.pblabs.engine.core
                 if(!animatedObject)
                     continue;
                 
-				if(PBE.processManager.timeScale <= 0 && ( (animatedObject.listener is IEntityComponent) || ((animatedObject.listener is IAnimatedObject) && !(animatedObject.listener is ILogAppender)) ))
+				ignoreTimeScale = (animatedObject.listener is IAnimatedObject) ? (animatedObject.listener as IAnimatedObject).ignoreTimeScale : false;
+				if(_timeScale <= 0 && (((animatedObject.listener is IAnimatedObject) && !ignoreTimeScale) && !(animatedObject.listener is ILogAppender)) )
 				{
 					continue;
 				}else{
 	                Profiler.enter(animatedObject.profilerKey);
-					(animatedObject.listener as IAnimatedObject).onFrame(deltaTime / 1000);
+					if(ignoreTimeScale)
+						(animatedObject.listener as IAnimatedObject).onFrame(deltaPreScale / 1000);
+					else
+						(animatedObject.listener as IAnimatedObject).onFrame(deltaTime / 1000);
 	                Profiler.exit(animatedObject.profilerKey);
 				}
             }

@@ -57,6 +57,15 @@ package com.pblabs.animation
 			return _instance;
 		}
 
+		private var _ignoreTimeScale : Boolean = false;
+		/**
+		 * @inheritDoc
+		 */
+		public function get ignoreTimeScale():Boolean { return _ignoreTimeScale; }
+		public function set ignoreTimeScale(val:Boolean):void
+		{
+			_ignoreTimeScale = val;
+		}
 		// -----------------------------------------------------------------
 		// Public methods
 		// -----------------------------------------------------------------

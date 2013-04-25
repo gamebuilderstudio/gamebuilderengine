@@ -25,6 +25,7 @@ package com.pblabs.engine.components
          */
         public var updatePriority:Number = 0.0;
         
+		private var _ignoreTimeScale:Boolean = false;
         private var _registerForUpdates:Boolean = true;
         private var _isRegisteredForUpdates:Boolean = false;
 		private var initialRegisterForUpdates:Boolean = true;
@@ -57,7 +58,16 @@ package com.pblabs.engine.components
         {
             return _registerForUpdates;
         }
-        
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function get ignoreTimeScale():Boolean { return _ignoreTimeScale; }
+		public function set ignoreTimeScale(val:Boolean):void
+		{
+			_ignoreTimeScale = val;
+		}
+		
         /**
          * @inheritDoc
          */
