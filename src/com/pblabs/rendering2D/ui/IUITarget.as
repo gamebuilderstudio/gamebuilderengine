@@ -43,9 +43,9 @@ package com.pblabs.rendering2D.ui
         function setDisplayObjectIndex(dobj:Object, index:int):void;
         
 		/**
-		 * Set the index of a display object which is added to this control.
-		 * @param dobj Object to position in order.
-		 * @param index Draw order to assign.
+		 * Set the size of the overall view
+		 * @param width the width of the view object
+		 * @param height the height of the view object
 		 */
 		function setSize(width:Number, height:Number):void;
 
