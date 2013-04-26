@@ -66,7 +66,7 @@ package com.pblabs.engine.core
 				_addedToProcessManager = true;
 				_initialStart = false;
 			}
-			_startTime = PBE.processManager.virtualTime;
+			_startTime = _ignoreTimeScale ? PBE.processManager.platformTime : PBE.processManager.virtualTime;
 			_running = true;
 			_activeCount = 0;
 		}
@@ -98,12 +98,12 @@ package com.pblabs.engine.core
 			
 			_destroyed = true;
 			stop();
+			onTickSignal.removeAll();
+			onTickSignal = null;
 			if(_addedToProcessManager){
 				PBE.processManager.removeTickedObject( this );
 				_addedToProcessManager = false;
 			}
-			onTickSignal.removeAll();
-			onTickSignal = null;
 		}
 	}
 }
