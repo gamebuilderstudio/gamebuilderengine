@@ -6,6 +6,15 @@ package com.pblabs.triggers.actions
 	
 	public class PropertySetter extends BaseAction
 	{
+		public static const PROPERTYTYPES_POINT : String = "Point";
+		public static const PROPERTYTYPES_PROPERTYREF : String = "Reference";
+		public static const PROPERTYTYPES_EXPRESSIONREF : String = "Expression";
+		public static const PROPERTYTYPES_COLOR : String = "Color";
+		public static const PROPERTYTYPES_STRING : String = "String";
+		public static const PROPERTYTYPES_INT : String = "int";
+		public static const PROPERTYTYPES_NUMBER : String = "Number";
+		public static const PROPERTYTYPES_UINT : String = "uint";
+		
 		//______________________________________ 
 		//	Public Properties
 		//______________________________________
@@ -20,6 +29,7 @@ package com.pblabs.triggers.actions
 		 * @default true
 		 */		
 		public var passReferences:Boolean=true;
+		public var propertyType : String = "int";
 		
 		//______________________________________ 
 		//	Public Methods

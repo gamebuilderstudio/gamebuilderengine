@@ -110,6 +110,18 @@ package com.pblabs.engine.scripting
 			_expression = null;
 			_cachedProgram = null;
 		}
+
+		public static function getExpressionValue(expression : ExpressionReference, owner : IEntity):*
+		{
+			var value : *;
+			if(expression){
+				expression.selfContext = owner.Self;
+				value = expression.value;
+				if(value == null || value == "null" || value == "undefined")
+					value = expression.expression;
+			}
+			return value;
+		}
 		/*-----------------------------------------------------------------------------------------------------------
 		*                                          Private Method
 		-------------------------------------------------------------------------------------------------------------*/

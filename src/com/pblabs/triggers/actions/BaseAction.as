@@ -23,14 +23,7 @@ package com.pblabs.triggers.actions
 		
 		public function getExpressionValue(expression : ExpressionReference):*
 		{
-			var value : *;
-			if(expression){
-				expression.selfContext = _owner.owner.Self;
-				value = expression.value;
-				if(!value || value == "null" || value == "undefined")
-					value = expression.expression;
-			}
-			return value;
+			return ExpressionReference.getExpressionValue(expression, _owner.owner);
 		}
 
 		protected var _owner : ITriggerComponent;
