@@ -10,7 +10,7 @@ The original PushButton Engine was used by PushButton Labs, Playdom, Zynga, Hive
 Next Steps
 ----------
 
-* Documentation is at [http://support.gamebuilderstudio.com/categories/20012036-Using-GameBuilder-Studio](http://support.gamebuilderstudio.com/categories/20012036-Using-GameBuilder-Studio)
+* Documentation is at [http://gamebuilderstudio.com/documentation](http://gamebuilderstudio.com/documentation)
 * Forums are at [http://support.gamebuilderstudio.com](http://support.gamebuilderstudio.com)
 * Follow [@gamebuilders](http://twitter.com/gamebuilders) and/or [@LavonWoods](http://twitter.com/lavonwoods)
 * Look for us on Skype: gamebuilders
@@ -18,7 +18,7 @@ Next Steps
 Contributing & Details
 ----------------------
 
-Visit the official PBE repository at GitHub: [http://github.com/gamebuilderstudio/gamebuilderengine.git](http://github.com/gamebuilderstudio/gamebuilderengine.git). Follow it for updates. Fork the engine and submit your improvements!  ([Forking Instructions](http://help.github.com/forking/))
+Visit the official GBE repository at GitHub: [http://github.com/gamebuilderstudio/gamebuilderengine.git](http://github.com/gamebuilderstudio/gamebuilderengine.git). Watch it for updates. Fork the engine and submit your improvements!  ([Forking Instructions](http://help.github.com/forking/))
 
 The GameBuilder Engine is covered under the MIT license in its entirety,
 not including 3rd party components. Please read LICENSE for more 
