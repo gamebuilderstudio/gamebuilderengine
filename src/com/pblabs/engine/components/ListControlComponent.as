@@ -138,7 +138,11 @@ package com.pblabs.engine.components
 			{
 				var entity : IEntity;
 				if(i >= _listItems.length){
-					entity = PBE.templateManager.instantiateEntityFromCallBack(itemEntityName, itemEntityName, false);
+					if(PBE.IS_SHIPPING_BUILD)
+						entity = PBE.templateManager.instantiateEntityFromCallBack(itemEntityName, itemEntityName, false);
+					else
+						entity = PBE.templateManager.instantiateEntity(itemEntityName, true);
+						
 					if(!entity){
 						Logger.error(this, 'execute', 'Error - The entity ['+itemEntityName+'] could not be spawned!');
 						return;
