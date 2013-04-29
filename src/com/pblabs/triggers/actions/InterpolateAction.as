@@ -19,6 +19,10 @@ package com.pblabs.triggers.actions
 		[TypeHint(type="com.pblabs.engine.entity.PropertyReference")]
 		public var propertyReference:PropertyReference;
 		/**
+		 * The expression value to tween the property from
+		 **/
+		public var fromValueReference : ExpressionReference;
+		/**
 		 * The expression value to tween the property to
 		 **/
 		public var valueReference : ExpressionReference;
@@ -52,10 +56,9 @@ package com.pblabs.triggers.actions
 			_delay = Number(getExpressionValue(delayReference));
 			_repeat = Number(getExpressionValue(repeatCountReference));
 			var easeClazz : Class = getDefinitionByName(easingClass) as Class;
-			_propertyToTween = this.owner.owner.getProperty(propertyReference);
 			if(_tween)
 				_tween.dispose();
-			_tween = new Tween(this.owner ? this.owner.owner : null, propertyReference, _duration, _propertyToTween, getExpressionValue(valueReference), easeClazz[easingFunction], onComplete, _delay, pingpong, _repeat, 0, 0);
+			_tween = new Tween(this.owner ? this.owner.owner : null, propertyReference, _duration, Number(getExpressionValue(fromValueReference)), Number(getExpressionValue(valueReference)), easeClazz[easingFunction], onComplete, _delay, pingpong, _repeat, 0, 0);
 			return;
 		}
 		
@@ -78,6 +81,17 @@ package com.pblabs.triggers.actions
 			if(_tween)
 				_tween.dispose();
 			_tween = null;
+			
+			if(fromValueReference)
+				fromValueReference.destroy()
+			if(valueReference)
+				valueReference.destroy()
+			if(durationReference)
+				durationReference.destroy()
+			if(delayReference)
+				delayReference.destroy()
+			if(repeatCountReference)
+				repeatCountReference.destroy()
 			super.destroy();
 		}
 	}
