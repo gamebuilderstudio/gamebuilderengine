@@ -6,18 +6,37 @@ package com.pblabs.engine.core
 	
 	import org.osflash.signals.Signal;
 	
+	/**
+	 * An engine timer object that times in with the engines' virtual time.
+	 * Using this object is more optimized than creating a bunch of native Flash timer objects
+	 * and functions the same way.
+	 * 
+	 * Each timer tick is dispatched using a Signal instead of generating events.
+	 **/
 	public final class PBTimerObject implements ITickedObject
 	{
+		/**
+		 * An event signal used to notify of progress each tick.
+		 **/
 		public var onTickSignal : Signal = new Signal();
+		/**
+		 * The amount of time to wait before the next timer interval/tick
+		 **/
 		public var delay : Number = 0;
+		/**
+		 * The amount of times to start the timer over again. If repeat count is 0 this timer will repeat continuously
+		 **/
 		public var repeatCount : int = 0;
+		
+		/**
+		 * The max amount of time the timer should run. If the limit is 0 no elapsed time will be counted to trigger a timer stop.
+		 **/
 		public var limit : Number = 0;
 		
 		private var _initialStart : Boolean = true;
 		private var _startTime : Number = 0;
 		private var _running : Boolean = false;
 		private var _activeCount : int = 0;
-		private var _activePastTime : Number = 0;
 		private var _overallPastTime : Number = 0;
 		private var _addedToProcessManager : Boolean = false;
 		private var _destroyed : Boolean = false;
@@ -35,30 +54,33 @@ package com.pblabs.engine.core
 			
 			if(_running){
 				var _currentTime : Number = _ignoreTimeScale ? PBE.processManager.platformTime : PBE.processManager.virtualTime;
-				if(delay == 0 || delay < 0){
-					if(delay == 0 && limit > 0)
+				_overallPastTime = _currentTime - _startTime;
+				if(delay <= 0 && limit > 0){
+				//Executes timer For A certain limit of time.
+					if(_overallPastTime <= limit)
 					{
-						_overallPastTime = _currentTime - _startTime;
-						if(_overallPastTime >= limit)
-						{
-							onTickSignal.dispatch();
-							stop();
-						}
+						advanceTimerTick(_currentTime);
 					}else{
-						onTickSignal.dispatch();
-						_activeCount++;
+						stop();
 					}
 				}else{
-					_activePastTime = _currentTime - _startTime;
-					if(delay <= _activePastTime)
+				//Checks for a certain amount of elapsed time (delay) before ticking timer
+					if(delay >= _overallPastTime)
 					{
-						onTickSignal.dispatch();
-						_activeCount++;
-						_startTime = _currentTime;
+						advanceTimerTick(_currentTime, true);
 					}
 				}
 			}
 		}
+		
+		private function advanceTimerTick(currentTime : Number, resetTimeCount : Boolean = false):void
+		{
+			onTickSignal.dispatch();
+			_activeCount++;
+			if(resetTimeCount)
+				_startTime = currentTime;
+		}
+		
 		public function start():void
 		{
 			if(_initialStart){
@@ -69,6 +91,7 @@ package com.pblabs.engine.core
 			_startTime = _ignoreTimeScale ? PBE.processManager.platformTime : PBE.processManager.virtualTime;
 			_running = true;
 			_activeCount = 0;
+			_overallPastTime = 0;
 		}
 		
 		public function stop():void
