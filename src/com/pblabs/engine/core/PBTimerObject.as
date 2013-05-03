@@ -53,6 +53,8 @@ package com.pblabs.engine.core
 			}
 			
 			if(_running){
+				if(limit)
+					delay = 0;
 				var _currentTime : Number = _ignoreTimeScale ? PBE.processManager.platformTime : PBE.processManager.virtualTime;
 				_overallPastTime = _currentTime - _startTime;
 				if(delay <= 0 && limit > 0){
@@ -65,7 +67,7 @@ package com.pblabs.engine.core
 					}
 				}else{
 				//Checks for a certain amount of elapsed time (delay) before ticking timer
-					if(delay >= _overallPastTime)
+					if(delay <= _overallPastTime)
 					{
 						advanceTimerTick(_currentTime, true);
 					}
