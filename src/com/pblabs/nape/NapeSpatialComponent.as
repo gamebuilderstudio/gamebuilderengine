@@ -122,8 +122,11 @@ package com.pblabs.nape
 		
 		public function get position():Point
 		{
-			if ( _body )
-				_position.setTo(_body.position.x*_spatialManager.scale, _body.position.y*_spatialManager.scale);
+			if ( _body ){
+				_body.position.toPoint(_position);
+				var _scale : Number = _spatialManager.scale;
+				_position.setTo(_position.x*_scale, _position.y*_scale);
+			}
 			return _position;
 		}
 		
@@ -156,8 +159,8 @@ package com.pblabs.nape
 			if (_body)
 			{
 				var scale:Number = _spatialManager.scale;
-				var vel:Vec2 = _body.velocity;
-				_linearVelocity.setTo(vel.x*scale, vel.y*scale);
+				_body.velocity.toPoint(_linearVelocity);
+				_linearVelocity.setTo(_linearVelocity.x*scale, _linearVelocity.y*scale);
 			}
 			
 			return _linearVelocity;
@@ -197,7 +200,7 @@ package com.pblabs.nape
 		
 		public function get size():Point
 		{
-			return _size.clone();
+			return _size;
 		}
 		
 		public function set size(value:Point):void
@@ -452,10 +455,11 @@ package com.pblabs.nape
 		private function clearShapesFromBody():void
 		{
 			var shapeList:ShapeList = _body.shapes;
-			shapeList.foreach( function (shape:Shape):void
+			for(var i : int = 0; i < shapeList.length; i++)
 			{
-				shape.body = null;				
-			});
+				var shape : Shape = shapeList.at(i);
+				shape.body = null;
+			}
 			_body.shapes.clear();
 		}
 		
@@ -474,10 +478,10 @@ package com.pblabs.nape
 			_body.allowRotation = _canRotate;
 			_body.velocity.setxy(_linearVelocity.x, _linearVelocity.y);
 			_body.angularVel = PBUtil.getRadiansFromDegrees(angularVelocity);
-			buildCollisionShapes();
 			_body.cbTypes.add(_spatialManager.bodyCallbackType);
 			_body.userData.spatial = this;
 			_body.space = _spatialManager.space;
+			buildCollisionShapes();
 		}
 		
 		private function distanceToPoint(pointA : Point, pointB : Point):Number

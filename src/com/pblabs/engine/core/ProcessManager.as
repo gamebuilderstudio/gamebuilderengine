@@ -570,7 +570,8 @@ package com.pblabs.engine.core
         {
             // Do any deferred methods.
             var oldDeferredMethodQueue:Array = deferredMethodQueue;
-            if(oldDeferredMethodQueue.length)
+			var queLen : int = oldDeferredMethodQueue.length;
+            if(queLen)
             {
                 Profiler.enter("callLater");
 
@@ -578,7 +579,7 @@ package com.pblabs.engine.core
                 // state due to more calls being added.
                 deferredMethodQueue = [];
                 
-                for(var j:int=0; j<oldDeferredMethodQueue.length; j++)
+                for(var j:int=0; j < queLen; j++)
                 {
                     var curDM:DeferredMethod = oldDeferredMethodQueue[j] as DeferredMethod;
                     curDM.method.apply(null, curDM.args);

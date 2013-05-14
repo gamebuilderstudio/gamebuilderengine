@@ -213,6 +213,7 @@ package com.pblabs.starling2D
 		/**
 		 * The combined scale that takes into account the size and scale property when calculating scale
 		 */
+		private var _boundsRec : Rectangle = new Rectangle();
 		override public function get combinedScale():Point
 		{
 			if(!gpuObject)
@@ -222,9 +223,9 @@ package com.pblabs.starling2D
 			_tmpCombinedScale.y = _scale.y;
 			if(_size && (_size.x > 0 || _size.y > 0))
 			{
-				var localDimensions:Rectangle = displayObjectG2D.getBounds(displayObjectG2D);
-				_tmpCombinedScale.x = _scale.x * (_size.x / localDimensions.width);
-				_tmpCombinedScale.y = _scale.y * (_size.y / localDimensions.height);
+				displayObjectG2D.getBounds(displayObjectG2D, _boundsRec);
+				_tmpCombinedScale.x = _scale.x * (_size.x / _boundsRec.width);
+				_tmpCombinedScale.y = _scale.y * (_size.y / _boundsRec.height);
 			}
 			return _tmpCombinedScale;
 		}

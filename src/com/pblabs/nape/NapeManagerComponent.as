@@ -37,7 +37,7 @@ package com.pblabs.nape
 	import nape.space.Space;
 	import nape.util.ShapeDebug;
 	
-	public class NapeManagerComponent extends EntityComponent implements ITickedObject, IAnimatedObject, IPhysics2DManager
+	public class NapeManagerComponent extends EntityComponent implements IAnimatedObject, IPhysics2DManager
 	{
 		public function NapeManagerComponent()
 		{
@@ -160,17 +160,14 @@ package com.pblabs.nape
 			_worldBounds = value;
 		}
 
-		public function onTick(dt:Number):void
+		public function onFrame(dt:Number):void
 		{
 			try{
-				_space.step(dt);
+				if(!PBE.IN_EDITOR)
+					_space.step(dt);
 			}catch(e : Error){
 				Logger.error(this, "onTick", e.message);
 			}
-		}
-		
-		public function onFrame(dt:Number):void
-		{
 			if(_shapeDebug && _visualDebugging){
 				_shapeDebug.clear();
 				_shapeDebug.transform.setAs(scale, 0, 0, scale, 0, 0);
@@ -204,17 +201,18 @@ package com.pblabs.nape
 			
 			var bodyList:BodyList = _space.bodiesInAABB(aabb, false, true, _queryInteraction);			
 			numFoundBodies = bodyList.length;
-			bodyList.foreach(function (item:Body):void
+			for(var i : int = 0; i < numFoundBodies; i++)
 			{
+				var item : Body = bodyList.at(i);
 				var curComponent:NapeSpatialComponent = item.userData.spatial;
 				if ( !curComponent )	//so what should we do? is it even possible?
 				{
 					Logger.error(this, "queryRectangle", "Body user data must contain spatialComponent!");
-					return;
+					continue;
 				}
 				results.push(curComponent);				
-			});
-			
+			}
+
 			// Let the other items have a turn.
 			numFoundBodies += _otherItems.queryRectangle(box, mask, results) ? 1 : 0;
 			
@@ -236,17 +234,18 @@ package com.pblabs.nape
 			var bodyList:BodyList = _space.bodiesInCircle(pos, radius*inverseScale, false, _queryInteraction);
 			
 			numFoundBodies = bodyList.length;
-			bodyList.foreach(function (item:Body):void
+			for(var i : int = 0; i < numFoundBodies; i++)
 			{
+				var item : Body = bodyList.at(i);
 				var curComponent:NapeSpatialComponent = item.userData.spatial;
 				if ( !curComponent )	//so what should we do? is it even possible?
 				{
 					Logger.error(this, "queryCircle", "Body user data must contain spatialComponent!");
-					return;
+					continue;
 				}
 				results.push(curComponent);				
-			});
-			
+			}
+
 			// Let the other items have a turn.
 			numFoundBodies += _otherItems.queryCircle(center, radius, mask, results)  ? 1 : 0;
 			
@@ -286,17 +285,18 @@ package com.pblabs.nape
 			var bodyList:BodyList = _space.bodiesUnderPoint(Vec2.weak(worldPosition.x*inverseScale, worldPosition.y*inverseScale), _queryInteraction);
 			
 			numFoundBodies = bodyList.length;
-			bodyList.foreach(function (item:Body):void
+			for(var i : int = 0; i < numFoundBodies; i++)
 			{
+				var item : Body = bodyList.at(i);
 				var curComponent:NapeSpatialComponent = item.userData.spatial;
 				if ( !curComponent )	//so what should we do? is it even possible?
 				{
 					Logger.error(this, "getObjectsUnderPoint", "Body user data must contain spatialComponent!");
-					return;
+					continue;
 				}
 				results.push(curComponent);				
-			});
-			
+			}
+
 			// Let the other items have a turn.
 			numFoundBodies += _otherItems.getObjectsUnderPoint(worldPosition, results, mask)  ? 1 : 0;
 			
@@ -325,7 +325,6 @@ package com.pblabs.nape
 			//provide default material manager
 			if (!_materialManager)
 				_materialManager = NapeMaterialManager.instance;
-			PBE.processManager.addTickedObject(this, 1000);
 			PBE.processManager.addAnimatedObject(this, 1000);
 			initSpace();
 		}
@@ -333,7 +332,6 @@ package com.pblabs.nape
 		override protected function onRemove():void
 		{
 			freeSpace();
-			PBE.processManager.removeTickedObject(this);
 			PBE.processManager.removeAnimatedObject(this);
 			super.onRemove();
 		}
@@ -344,17 +342,15 @@ package com.pblabs.nape
 			
 			_space.listeners.add(new InteractionListener(CbEvent.BEGIN, InteractionType.COLLISION, _bodyCallbackType, _bodyCallbackType, beginCollisionCallback));
 			_space.listeners.add(new InteractionListener(CbEvent.END, InteractionType.COLLISION, _bodyCallbackType, _bodyCallbackType, endCollisionCallback));
-			_space.listeners.add(new InteractionListener(CbEvent.ONGOING, InteractionType.COLLISION, _bodyCallbackType, _bodyCallbackType, ongoingCollisionCallback));
+			//_space.listeners.add(new InteractionListener(CbEvent.ONGOING, InteractionType.COLLISION, _bodyCallbackType, _bodyCallbackType, ongoingCollisionCallback));
 			
 			_space.listeners.add(new InteractionListener(CbEvent.BEGIN, InteractionType.SENSOR, _bodyCallbackType, _bodyCallbackType, beginCollisionCallback));
 			_space.listeners.add(new InteractionListener(CbEvent.END, InteractionType.SENSOR, _bodyCallbackType, _bodyCallbackType, endCollisionCallback));
-			_space.listeners.add(new InteractionListener(CbEvent.ONGOING, InteractionType.SENSOR, _bodyCallbackType, _bodyCallbackType, ongoingCollisionCallback));
+			//_space.listeners.add(new InteractionListener(CbEvent.ONGOING, InteractionType.SENSOR, _bodyCallbackType, _bodyCallbackType, ongoingCollisionCallback));
 
 			_shapeDebug = new ShapeDebug(PBUtil.clamp(PBE.mainClass.width, 10, 5000000), PBUtil.clamp(PBE.mainClass.height, 10, 5000000), 0x4D4D4D );
-			//_shapeDebug.drawShapeDetail = true;
 			_shapeDebug.drawConstraints = true;
 			_shapeDebug.drawBodies = true;
-			//_shapeDebug.drawBodyDetail = true;
 		}
 		
 		private function freeSpace():void
@@ -370,36 +366,35 @@ package com.pblabs.nape
 		
 		private function beginCollisionCallback(cb:InteractionCallback):void
 		{
-			cb.arbiters.foreach(function (item:Arbiter):void
+			var len : int = cb.arbiters.length;
+			for(var i : int = 0; i < len; i++)
 			{
+				var item : Arbiter = cb.arbiters.at(i);
 				dispatchCollisionEvents(item, CollisionEvent.COLLISION_EVENT);
-			});
+			}
 		}
 		
 		private function endCollisionCallback(cb:InteractionCallback):void
 		{
-			/*cb.arbiters.foreach(function (item:Arbiter):void
-			{
-				dispatchCollisionEvents(item, CollisionEvent.COLLISION_STOPPED_EVENT);
-			});*/
 			var spatial1:NapeSpatialComponent = cb.int1.userData.spatial;
 			var spatial2:NapeSpatialComponent = cb.int2.userData.spatial;
 			var ce:CollisionEvent = new CollisionEvent(CollisionEvent.COLLISION_STOPPED_EVENT, spatial1, spatial2, new Point(), null, null);
-			//Logger.debug(this, "dispatchCollisionEvents", "Dispatching " + eventType + " normal " + ce.normal.toString());
 			if ( spatial1.owner )
 				spatial1.owner.eventDispatcher.dispatchEvent(ce);
 			if ( spatial2.owner )
-				spatial2.owner.eventDispatcher.dispatchEvent(ce.clone());
+				spatial2.owner.eventDispatcher.dispatchEvent(ce);
 
 		}
 		
-		private function ongoingCollisionCallback(cb:InteractionCallback):void
+		/*private function ongoingCollisionCallback(cb:InteractionCallback):void
 		{
-			cb.arbiters.foreach(function (item:Arbiter):void
+			var len : int = cb.arbiters.length;
+			for(var i : int = 0; i < len; i++)
 			{
+				var item : Arbiter = cb.arbiters.at(i);
 				dispatchCollisionEvents(item, CollisionEvent.ONGOING_COLLISION);
-			});
-		}
+			}
+		}*/
 		
 		private function dispatchCollisionEvents(arbiter:Arbiter, eventType:String):void
 		{
@@ -416,7 +411,7 @@ package com.pblabs.nape
 			if ( spatial1.owner )
 				spatial1.owner.eventDispatcher.dispatchEvent(ce);
 			if ( spatial2.owner )
-				spatial2.owner.eventDispatcher.dispatchEvent(ce.clone());
+				spatial2.owner.eventDispatcher.dispatchEvent(ce);
 		}
 		
 		protected var _scale:Number = 30;
