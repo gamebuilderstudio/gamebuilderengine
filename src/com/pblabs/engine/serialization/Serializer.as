@@ -200,11 +200,18 @@ package com.pblabs.engine.serialization
         {
             // If the tag is empty and we're not a string where """ is a valid value,
             // just return that value.
-            if (xml.toString() == "" && !(object is String)){
+			var xmlVal : String = xml.toString();
+            if (xmlVal == "" && !(object is String)){
                 return object;
 			}else if(!(object is String) && typeHint == "dynamic"){
 				var clazz : Class = getDefinitionByName( getQualifiedClassName(object) ) as Class;
 				return clazz(xml.children()[0]);
+			}else if((xmlVal == "true" || xmlVal == "false") && typeHint == "Boolean"){
+				return xmlVal == "true" ? true : false;
+			}else if(!isNaN(Number(xmlVal)) && typeHint == "Number"){
+				return Number(xmlVal);
+			}else if(!isNaN(int(xmlVal)) && typeHint == "int"){
+				return int(xmlVal);
 			}
             
             return xml.toString();
@@ -273,7 +280,7 @@ package com.pblabs.engine.serialization
                     if (child != null)
                     {
                         // Deal with typehints.
-                        var childTypeHint:String = TypeUtility.getTypeHint(object, fieldName);
+                        var childTypeHint:String = !typeName ? TypeUtility.getTypeHint(object, fieldName) : typeName;
                         child = deserialize(child, fieldXML, childTypeHint);
                     }
                     
