@@ -163,10 +163,10 @@ package com.pblabs.nape
 		public function onFrame(dt:Number):void
 		{
 			try{
-				if(!PBE.IN_EDITOR)
+				if(_space && !PBE.IN_EDITOR)
 					_space.step(dt);
 			}catch(e : Error){
-				Logger.error(this, "onTick", e.message);
+				Logger.error(this, "Physics Manager - onFrame ", e.message);
 			}
 			if(_shapeDebug && _visualDebugging){
 				_shapeDebug.clear();

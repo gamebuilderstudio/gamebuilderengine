@@ -358,11 +358,11 @@ package com.pblabs.nape
 			var space:Space;
 			//Because Nape STATIC bodies can not have shapes removed from them we have to remove it
 			//from the space first.
-			/*if ( _body.space && bodyType == BodyTypeEnum.STATIC )
+			if ( _body.space && bodyType == BodyTypeEnum.STATIC )
 			{
 				space = _body.space;
 				_body.space = null;
-			}*/
+			}
 			
 			clearShapesFromBody();
 			
