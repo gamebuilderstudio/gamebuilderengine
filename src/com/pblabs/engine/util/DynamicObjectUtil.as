@@ -8,7 +8,7 @@ package com.pblabs.engine.util
 		{
 		}
 
-		public static function isDynamic(object) : Boolean
+		public static function isDynamic(object : *) : Boolean
 		{
 			var type:XML = describeType(object);
 			return type.@isDynamic.toString() == "true";

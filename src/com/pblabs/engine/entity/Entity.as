@@ -50,7 +50,7 @@ package com.pblabs.engine.entity
 			}
 			DynamicObjectUtil.clearDynamicObject(_selfObject);
 			DynamicObjectUtil.copyDynamicObject(_components, _selfObject);
-			_selfObject.name = this.name;
+			_selfObject.name = _name ? _name : _alias;
 			_entityDirty = false;
 			return _selfObject;
 		}
