@@ -1,23 +1,33 @@
 package com.pblabs.nape.constraints
 {
+	import com.pblabs.engine.PBE;
+	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.entity.EntityComponent;
 	import com.pblabs.nape.NapeManagerComponent;
+	import com.pblabs.physics.IPhysics2DConstraint;
+	import com.pblabs.physics.IPhysics2DManager;
 	
 	import nape.constraint.Constraint;
 	
-	public class NapeConstraintComponent extends EntityComponent
+	public class NapeConstraintComponent extends EntityComponent implements IPhysics2DConstraint
 	{
 		public function NapeConstraintComponent()
 		{
 			super();
 		}
 		
-		public function get spatialManager():NapeManagerComponent
+		public function resetConstraint():void
+		{
+			destroyConstraint();
+			constructConstraint();
+		}
+		
+		public function get spatialManager():IPhysics2DManager
 		{
 			return _spatialManager;
 		}
 		
-		public function set spatialManager(value:NapeManagerComponent):void
+		public function set spatialManager(value:IPhysics2DManager):void
 		{
 			_spatialManager = value;
 		}
@@ -67,17 +77,27 @@ package com.pblabs.nape.constraints
 		protected function constructConstraint():void
 		{
 			_constraint = getConstraintInstance();
+			if(!_constraint){
+				if(!PBE.IN_EDITOR && !_delayedConstruction){
+					PBE.callLater(constructConstraint);
+					_delayedConstruction = true
+				}
+				return;
+			}
 			_constraint.active = _active;
 			_constraint.ignore = _ignore;
 			_constraint.stiff = _stiff;
 			_constraint.frequency = _frequency;
 			_constraint.damping = _damping;
-			_constraint.space = _spatialManager.space;
+			if(_spatialManager && _spatialManager is NapeManagerComponent)
+				_constraint.space = (_spatialManager as NapeManagerComponent).space;
+			_delayedConstruction = false;
 		}
 		
 		protected function destroyConstraint():void
 		{
-			_constraint.space = null;
+			if(_constraint)
+				_constraint.space = null;
 		}
 		
 		protected function getConstraintInstance():Constraint
@@ -97,15 +117,23 @@ package com.pblabs.nape.constraints
 			destroyConstraint();
 			super.onRemove();
 		}
+		
+		override protected function onReset():void
+		{
+			if(!_constraint)
+				resetConstraint();
+			super.onReset();
+		}
 
 		protected var _constraint:Constraint;
-		protected var _spatialManager:NapeManagerComponent;
+		protected var _spatialManager:IPhysics2DManager;
 		
 		private var _active:Boolean = true;
 		private var _ignore:Boolean = false;
 		private var _stiff:Boolean = true;
 		private var _frequency:Number = 10;
 		private var _damping:Number = 0.5;
+		private var _delayedConstruction : Boolean = false;
 		
 	}
 }

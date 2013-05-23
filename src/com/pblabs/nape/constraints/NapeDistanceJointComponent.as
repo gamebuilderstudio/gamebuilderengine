@@ -1,6 +1,9 @@
 package com.pblabs.nape.constraints
 {
+	import com.pblabs.engine.PBE;
 	import com.pblabs.nape.NapeSpatialComponent;
+	
+	import flash.geom.Point;
 	
 	import nape.constraint.Constraint;
 	import nape.constraint.DistanceJoint;
@@ -33,30 +36,30 @@ package com.pblabs.nape.constraints
 			_spatial2 = value;
 		}
 		
-		public function get anchor1():Vec2
+		public function get anchor1():Point
 		{
 			if ( _constraint )
 				_anchor1 = (_constraint as DistanceJoint).anchor1.mul(_spatialManager.scale);
-			return _anchor1;
+			return _anchor1.toPoint();
 		}
 		
-		public function set anchor1(value:Vec2):void
+		public function set anchor1(value:Point):void
 		{
-			_anchor1 = value;
+			_anchor1 = Vec2.fromPoint(value, true);
 			if ( _constraint )
 				(_constraint as DistanceJoint).anchor1 = _anchor1.mul(_spatialManager.inverseScale);
 		}
 		
-		public function get anchor2():Vec2
+		public function get anchor2():Point
 		{
 			if ( _constraint )
 				_anchor2 = (_constraint as DistanceJoint).anchor2.mul(_spatialManager.scale);
-			return _anchor2;
+			return _anchor2.toPoint();
 		}
 		
-		public function set anchor2(value:Vec2):void
+		public function set anchor2(value:Point):void
 		{
-			_anchor2 = value;
+			_anchor2 = Vec2.fromPoint(value, true);
 			if ( _constraint )
 				(_constraint as DistanceJoint).anchor2 = _anchor2.mul(_spatialManager.inverseScale);
 		}
@@ -91,22 +94,27 @@ package com.pblabs.nape.constraints
 		
 		override protected function destroyConstraint():void
 		{
-			(_constraint as DistanceJoint).body1 = null;
-			(_constraint as DistanceJoint).body2 = null;
+			if(_constraint){
+				(_constraint as DistanceJoint).body1 = null;
+				(_constraint as DistanceJoint).body2 = null;
+			}
 			super.destroyConstraint();
 		}
 		
 		override protected function getConstraintInstance():Constraint
 		{
+			if(!_spatial1 || !_spatial1.body || !_spatial2 || !_spatial2.body || !_spatialManager){
+				return null;
+			}
 			var invScale:Number = _spatialManager.inverseScale;
 			return new DistanceJoint(_spatial1.body, _spatial2.body, _anchor1.mul(invScale), _anchor2.mul(invScale), _jointMin*invScale, _jointMax*invScale);
 		}
 		
 		private var _spatial1:NapeSpatialComponent;
 		private var _spatial2:NapeSpatialComponent;
-		private var _anchor1:Vec2;
-		private var _anchor2:Vec2;
-		private var _jointMin:Number = 0;
-		private var _jointMax:Number = 0;
+		private var _anchor1:Vec2 = Vec2.weak();
+		private var _anchor2:Vec2 = Vec2.weak();
+		private var _jointMin:Number = 20;
+		private var _jointMax:Number = 20;
 	}
 }
