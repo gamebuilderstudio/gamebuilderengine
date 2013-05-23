@@ -104,6 +104,15 @@ package com.pblabs.engine
             return r;
         }
 
+		/**
+		 * Get distance between two points
+		 **/
+		public static function distanceTwoPoints(x1:Number, x2:Number,  y1:Number, y2:Number):Number {
+			var dx:Number = x1-x2;
+			var dy:Number = y1-y2;
+			return Math.sqrt(dx * dx + dy * dy);
+		}
+		
         /**
          * Return the shortest distance to get from from to to, in radians.
          */
