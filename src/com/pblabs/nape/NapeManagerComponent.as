@@ -165,14 +165,13 @@ package com.pblabs.nape
 			try{
 				if(_space && !PBE.IN_EDITOR)
 					_space.step(dt);
+				if(_shapeDebug && _visualDebugging){
+					_shapeDebug.clear();
+					_shapeDebug.draw(_space);
+					_shapeDebug.flush();
+				}
 			}catch(e : Error){
 				Logger.error(this, "Physics Manager - onFrame ", e.message);
-			}
-			if(_shapeDebug && _visualDebugging){
-				_shapeDebug.clear();
-				_shapeDebug.transform.setAs(scale, 0, 0, scale, 0, 0);
-				_shapeDebug.draw(_space);
-				_shapeDebug.flush();
 			}
 		}
 		
@@ -414,7 +413,7 @@ package com.pblabs.nape
 				spatial2.owner.eventDispatcher.dispatchEvent(ce);
 		}
 		
-		protected var _scale:Number = 30;
+		protected var _scale:Number = 1;
 		protected var _space:Space;
 		protected var _shapeDebug:ShapeDebug;
 		protected var _gravity:Point = new Point(0, 15);

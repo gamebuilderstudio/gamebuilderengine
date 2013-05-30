@@ -12,26 +12,6 @@ package com.pblabs.nape.constraints
 			super();
 		}
 		
-		public function get spatial1():NapeSpatialComponent
-		{
-			return _spatial1;
-		}
-		
-		public function set spatial1(value:NapeSpatialComponent):void
-		{
-			_spatial1 = value;
-		}
-		
-		public function get spatial2():NapeSpatialComponent
-		{
-			return _spatial2;
-		}
-		
-		public function set spatial2(value:NapeSpatialComponent):void
-		{
-			_spatial2 = value;
-		}
-		
 		public function get ratio():Number
 		{
 			if ( _constraint )
@@ -63,19 +43,22 @@ package com.pblabs.nape.constraints
 		
 		override protected function destroyConstraint():void
 		{
-			(_constraint as MotorJoint).body1 = null;
-			(_constraint as MotorJoint).body2 = null;
+			if(_constraint){
+				(_constraint as MotorJoint).body1 = null;
+				(_constraint as MotorJoint).body2 = null;
+			}
 			super.destroyConstraint();
 		}
 		
 		override protected function getConstraintInstance():Constraint
 		{
+			if(!_spatial1 || !_spatial1.body || !_spatial2 || !_spatial2.body || !_spatialManager){
+				return null;
+			}
 			var invScale:Number = _spatialManager.inverseScale;
 			return new MotorJoint(_spatial1.body, _spatial2.body, _rate, _ratio);
 		}
 		
-		private var _spatial1:NapeSpatialComponent;
-		private var _spatial2:NapeSpatialComponent;
 		private var _ratio:Number = 1;
 		private var _rate:Number = 0;
 	}

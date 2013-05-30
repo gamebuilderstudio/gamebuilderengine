@@ -16,54 +16,34 @@ package com.pblabs.nape.constraints
 			super();
 		}
 		
-		public function get spatial1():NapeSpatialComponent
-		{
-			return _spatial1;
-		}
-		
-		public function set spatial1(value:NapeSpatialComponent):void
-		{
-			_spatial1 = value;
-		}
-		
-		public function get spatial2():NapeSpatialComponent
-		{
-			return _spatial2;
-		}
-		
-		public function set spatial2(value:NapeSpatialComponent):void
-		{
-			_spatial2 = value;
-		}
-		
-		public function get anchor1():Point
+		override public function get anchor1():Point
 		{
 			if ( _constraint )
 				_anchor1 = (_constraint as DistanceJoint).anchor1.mul(_spatialManager.scale);
-			return _anchor1.toPoint();
+			return super.anchor1;
 		}
 		
-		public function set anchor1(value:Point):void
+		override public function set anchor1(value:Point):void
 		{
-			_anchor1 = Vec2.fromPoint(value, true);
+			super.anchor1 = value;
 			if ( _constraint )
 				(_constraint as DistanceJoint).anchor1 = _anchor1.mul(_spatialManager.inverseScale);
 		}
 		
-		public function get anchor2():Point
+		override public function get anchor2():Point
 		{
 			if ( _constraint )
 				_anchor2 = (_constraint as DistanceJoint).anchor2.mul(_spatialManager.scale);
-			return _anchor2.toPoint();
+			return super.anchor2;
 		}
 		
-		public function set anchor2(value:Point):void
+		override public function set anchor2(value:Point):void
 		{
-			_anchor2 = Vec2.fromPoint(value, true);
+			super.anchor2 = value;
 			if ( _constraint )
 				(_constraint as DistanceJoint).anchor2 = _anchor2.mul(_spatialManager.inverseScale);
 		}
-		
+
 		public function get jointMin():Number
 		{
 			if ( _constraint )
@@ -110,10 +90,6 @@ package com.pblabs.nape.constraints
 			return new DistanceJoint(_spatial1.body, _spatial2.body, _anchor1.mul(invScale), _anchor2.mul(invScale), _jointMin*invScale, _jointMax*invScale);
 		}
 		
-		private var _spatial1:NapeSpatialComponent;
-		private var _spatial2:NapeSpatialComponent;
-		private var _anchor1:Vec2 = Vec2.weak();
-		private var _anchor2:Vec2 = Vec2.weak();
 		private var _jointMin:Number = 20;
 		private var _jointMax:Number = 20;
 	}

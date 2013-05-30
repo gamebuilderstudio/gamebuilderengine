@@ -2,6 +2,8 @@ package com.pblabs.nape.constraints
 {
 	import com.pblabs.nape.NapeSpatialComponent;
 	
+	import flash.geom.Point;
+	
 	import nape.constraint.Constraint;
 	import nape.constraint.LineJoint;
 	import nape.geom.Vec2;
@@ -13,66 +15,46 @@ package com.pblabs.nape.constraints
 			super();
 		}
 		
-		public function get spatial1():NapeSpatialComponent
-		{
-			return _spatial1;
-		}
-		
-		public function set spatial1(value:NapeSpatialComponent):void
-		{
-			_spatial1 = value;
-		}
-		
-		public function get spatial2():NapeSpatialComponent
-		{
-			return _spatial2;
-		}
-		
-		public function set spatial2(value:NapeSpatialComponent):void
-		{
-			_spatial2 = value;
-		}
-		
-		public function get anchor1():Vec2
+		override public function get anchor1():Point
 		{
 			if ( _constraint )
 				_anchor1 = (_constraint as LineJoint).anchor1.mul(_spatialManager.scale);
-			return _anchor1;
+			return super.anchor1;
 		}
 		
-		public function set anchor1(value:Vec2):void
+		override public function set anchor1(value:Point):void
 		{
-			_anchor1 = value;
+			super.anchor1 = value;
 			if ( _constraint )
 				(_constraint as LineJoint).anchor1 = _anchor1.mul(_spatialManager.inverseScale);
 		}
 		
-		public function get anchor2():Vec2
+		override public function get anchor2():Point
 		{
 			if ( _constraint )
 				_anchor2 = (_constraint as LineJoint).anchor2.mul(_spatialManager.scale);
-			return _anchor2;
+			return super.anchor2;
 		}
 		
-		public function set anchor2(value:Vec2):void
+		override public function set anchor2(value:Point):void
 		{
-			_anchor2 = value;
+			super.anchor2 = value;
 			if ( _constraint )
 				(_constraint as LineJoint).anchor2 = _anchor2.mul(_spatialManager.inverseScale);
 		}
-		
-		public function get direction():Vec2
+
+		public function get direction():Point
 		{
 			if ( _constraint )
 				_direction = (_constraint as LineJoint).direction.mul(_spatialManager.scale);
-			return _anchor2;
+			return _direction.toPoint();
 		}
 		
-		public function set direction(value:Vec2):void
+		public function set direction(value:Point):void
 		{
-			_direction = value;
+			_direction = Vec2.fromPoint(value, true);
 			if ( _constraint )
-				(_constraint as LineJoint).direction = _anchor2.mul(_spatialManager.inverseScale);
+				(_constraint as LineJoint).direction = _direction.mul(_spatialManager.inverseScale);
 		}
 		
 		public function get jointMin():Number
@@ -105,22 +87,23 @@ package com.pblabs.nape.constraints
 		
 		override protected function destroyConstraint():void
 		{
-			(_constraint as LineJoint).body1 = null;
-			(_constraint as LineJoint).body2 = null;
+			if(_constraint){
+				(_constraint as LineJoint).body1 = null;
+				(_constraint as LineJoint).body2 = null;
+			}
 			super.destroyConstraint();
 		}
 		
 		override protected function getConstraintInstance():Constraint
 		{
+			if(!_spatial1 || !_spatial1.body || !_spatial2 || !_spatial2.body || !_spatialManager){
+				return null;
+			}
 			var invScale:Number = _spatialManager.inverseScale;
 			return new LineJoint(_spatial1.body, _spatial2.body, _anchor1.mul(invScale), _anchor2.mul(invScale), _direction.mul(invScale), _jointMin*invScale, _jointMax*invScale);
 		}
 		
-		private var _spatial1:NapeSpatialComponent;
-		private var _spatial2:NapeSpatialComponent;
-		private var _anchor1:Vec2;
-		private var _anchor2:Vec2;
-		private var _direction:Vec2;
+		private var _direction:Vec2 = Vec2.weak();
 		private var _jointMin:Number = 0;
 		private var _jointMax:Number = 0;
 	}

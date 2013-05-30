@@ -14,26 +14,6 @@ package com.pblabs.nape.constraints
 			super();
 		}
 		
-		public function get spatial1():NapeSpatialComponent
-		{
-			return _spatial1;
-		}
-		
-		public function set spatial1(value:NapeSpatialComponent):void
-		{
-			_spatial1 = value;
-		}
-		
-		public function get spatial2():NapeSpatialComponent
-		{
-			return _spatial2;
-		}
-		
-		public function set spatial2(value:NapeSpatialComponent):void
-		{
-			_spatial2 = value;
-		}
-		
 		public function get jointMin():Number
 		{
 			if ( _constraint )
@@ -78,23 +58,23 @@ package com.pblabs.nape.constraints
 		
 		override protected function destroyConstraint():void
 		{
-			(_constraint as AngleJoint).body1 = null;
-			(_constraint as AngleJoint).body2 = null;
+			if(_constraint){
+				(_constraint as AngleJoint).body1 = null;
+				(_constraint as AngleJoint).body2 = null;
+			}
 			super.destroyConstraint();
 		}
 		
 		override protected function getConstraintInstance():Constraint
 		{
+			if(!_spatial1 || !_spatial1.body || !_spatial2 || !_spatial2.body || !_spatialManager){
+				return null;
+			}
 			var invScale:Number = _spatialManager.inverseScale;
-			var instance:AngleJoint = new AngleJoint(_spatial1.body, _spatial2.body, PBUtil.getRadiansFromDegrees(_jointMin), PBUtil.getRadiansFromDegrees(_jointMax), 1);
-			instance.ratio = _ratio;
+			var instance:AngleJoint = new AngleJoint(_spatial1.body, _spatial2.body, PBUtil.getRadiansFromDegrees(_jointMin), PBUtil.getRadiansFromDegrees(_jointMax), _ratio);
 			return instance;
 		}
 		
-		private var _spatial1:NapeSpatialComponent;
-		private var _spatial2:NapeSpatialComponent;
-		private var _anchor1:Vec2;
-		private var _anchor2:Vec2;
 		private var _jointMin:Number = 0;
 		private var _jointMax:Number = 0;
 		private var _ratio:Number = 1;

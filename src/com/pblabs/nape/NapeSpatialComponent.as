@@ -32,7 +32,7 @@ package com.pblabs.nape
 	import nape.space.Space;
 	import nape.util.ShapeDebug;
 	
-	public class NapeSpatialComponent extends TickedComponent implements IPhysics2DSpatial
+	public class NapeSpatialComponent extends TickedComponent implements INape2DSpatialComponent
 	{
 		public function NapeSpatialComponent()
 		{
@@ -326,7 +326,6 @@ package com.pblabs.nape
 			return false;
 		}
 		
-		private var _scratchVec : Vec2 = new Vec2();
 		public function pointOccupied(pos:Point, mask:ObjectType, scene:IScene2D):Boolean
 		{
 			// If no sprite then we just test our bounds.
@@ -342,7 +341,10 @@ package com.pblabs.nape
 			//Check Nape body
 			if(_body && scene){
 				var worldPoint : Point = scene.transformScreenToWorld( pos );
-				return _body.contains( _scratchVec.setxy( worldPoint.x*_spatialManager.inverseScale, worldPoint.y*_spatialManager.inverseScale ) );
+				var tempVec : Vec2 = Vec2.get(worldPoint.x*_spatialManager.inverseScale, worldPoint.y*_spatialManager.inverseScale);
+				var contained : Boolean = _body.contains( tempVec );
+				tempVec.dispose();
+				return contained;
 			}
 			return false;
 		}
@@ -373,6 +375,8 @@ package com.pblabs.nape
 				}
 			}else{
 				var tmpShape : Polygon = new Polygon( Polygon.rect(-(_size.x/2)*_spatialManager.inverseScale, -(_size.y/2)*_spatialManager.inverseScale, _size.x*_spatialManager.inverseScale, _size.y*_spatialManager.inverseScale) );
+				if(PBE.IN_EDITOR)
+					tmpShape.body.debugDraw = false;
 				tmpShape.body = _body;
 			}
 			
@@ -482,14 +486,6 @@ package com.pblabs.nape
 			_body.userData.spatial = this;
 			_body.space = _spatialManager.space;
 			buildCollisionShapes();
-		}
-		
-		private function distanceToPoint(pointA : Point, pointB : Point):Number
-		{
-			var dx:Number = pointA.x - pointB.x;
-			var dy:Number = pointA.y - pointB.y;
-			var dist:Number = Math.sqrt(dx * dx + dy * dy);
-			return dist;
 		}
 		
 		private function attachRenderer():void
