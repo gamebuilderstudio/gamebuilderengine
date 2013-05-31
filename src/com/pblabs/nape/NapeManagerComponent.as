@@ -211,7 +211,7 @@ package com.pblabs.nape
 				}
 				results.push(curComponent);				
 			}
-
+			bodyList.clear();
 			// Let the other items have a turn.
 			numFoundBodies += _otherItems.queryRectangle(box, mask, results) ? 1 : 0;
 			
@@ -224,7 +224,7 @@ package com.pblabs.nape
 		public function queryCircle(center:Point, radius:Number, mask:ObjectType, results:Array):Boolean
 		{
 			//query aabb
-			var pos:Vec2 = Vec2.weak(center.x*inverseScale, center.y*inverseScale);
+			var pos:Vec2 = Vec2.get(center.x*inverseScale, center.y*inverseScale);
 			//setup filter
 			_queryInteraction.collisionGroup = -1;
 			_queryInteraction.collisionMask = (mask ? mask.bits : -1);
@@ -245,6 +245,8 @@ package com.pblabs.nape
 				results.push(curComponent);				
 			}
 
+			bodyList.clear();
+			pos.dispose();
 			// Let the other items have a turn.
 			numFoundBodies += _otherItems.queryCircle(center, radius, mask, results)  ? 1 : 0;
 			
@@ -256,10 +258,15 @@ package com.pblabs.nape
 		
 		public function castRay(start:Point, end:Point, mask:ObjectType, result:RayHitInfo):Boolean
 		{
-			var ray:Ray = Ray.fromSegment(Vec2.weak(start.x*inverseScale, start.y*inverseScale), Vec2.weak(end.x*inverseScale, end.y*inverseScale));
+			var startVec : Vec2 = Vec2.get(start.x*inverseScale, start.y*inverseScale);
+			var endVec : Vec2 = Vec2.get(end.x*inverseScale, end.y*inverseScale);
+			
+			var ray:Ray = Ray.fromSegment(startVec, endVec);
 			_queryInteraction.collisionGroup = -1;
 			_queryInteraction.collisionMask = (mask ? mask.bits : -1);
 			var napeResult:RayResult = _space.rayCast(ray, false, _queryInteraction);
+			startVec.dispose();
+			endVec.dispose();
 			if ( napeResult )
 			{
 				//convert nape result to RayHitInfo
@@ -268,6 +275,8 @@ package com.pblabs.nape
 				var contact:Vec2 = ray.at(napeResult.distance);
 				result.position = new Point(contact.x*_scale, contact.y*_scale);
 				result.hitObject = napeResult.shape.body.userData.spatial;
+				napeResult.dispose();
+				contact.dispose();
 				return true;
 			}
 			return _otherItems.castRay(start, end, mask, result);
@@ -281,7 +290,8 @@ package com.pblabs.nape
 			_queryInteraction.collisionGroup = -1;
 			_queryInteraction.collisionMask = (mask ? mask.bits : -1);
 			var numFoundBodies:int;
-			var bodyList:BodyList = _space.bodiesUnderPoint(Vec2.weak(worldPosition.x*inverseScale, worldPosition.y*inverseScale), _queryInteraction);
+			var worldPoint : Vec2 = Vec2.get(worldPosition.x*inverseScale, worldPosition.y*inverseScale);
+			var bodyList:BodyList = _space.bodiesUnderPoint(worldPoint, _queryInteraction);
 			
 			numFoundBodies = bodyList.length;
 			for(var i : int = 0; i < numFoundBodies; i++)
@@ -295,6 +305,8 @@ package com.pblabs.nape
 				}
 				results.push(curComponent);				
 			}
+			bodyList.clear();
+			worldPoint.dispose();
 
 			// Let the other items have a turn.
 			numFoundBodies += _otherItems.getObjectsUnderPoint(worldPosition, results, mask)  ? 1 : 0;
