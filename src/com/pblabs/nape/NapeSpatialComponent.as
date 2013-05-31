@@ -373,11 +373,12 @@ package com.pblabs.nape
 				for each (var newShape:CollisionShape in _collisionShapes){
 					newShape.createShape(this).body = _body;
 				}
+				_body.debugDraw = true;
 			}else{
 				var tmpShape : Polygon = new Polygon( Polygon.rect(-(_size.x/2)*_spatialManager.inverseScale, -(_size.y/2)*_spatialManager.inverseScale, _size.x*_spatialManager.inverseScale, _size.y*_spatialManager.inverseScale) );
-				if(PBE.IN_EDITOR)
-					tmpShape.body.debugDraw = false;
 				tmpShape.body = _body;
+				if(PBE.IN_EDITOR)
+					_body.debugDraw = false;
 			}
 			
 			if ( _spatialManager && _spatialManager.space && _body.space != _spatialManager.space)
