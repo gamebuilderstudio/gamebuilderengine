@@ -52,6 +52,7 @@ package com.pblabs.nape.constraints
 				wp.dispose();
 				if((_constraint as PivotJoint).body2)
 					_constraint.active = true;
+				_bodyList.length = 0;
 			}else if(_constraint && PBE.inputManager.keyJustReleased(InputKey.MOUSE_BUTTON.keyCode)){
 				_constraint.active = false;
 				(_constraint as PivotJoint).body2 = null;
