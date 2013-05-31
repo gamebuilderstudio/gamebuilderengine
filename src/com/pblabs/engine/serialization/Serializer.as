@@ -635,7 +635,7 @@ package com.pblabs.engine.serialization
 						if(childObject && childObject is OrderedArray){
 							childObject = new OrderedArray();
 						}else if(childObject){
-							childObject.splice(0);
+							childObject.length = 0;
 						}
 					}catch(e:Error){
 						Logger.error(this, "deserializeDictionary", "Error trying to clear an existing array type object. ["+e.message+"]");

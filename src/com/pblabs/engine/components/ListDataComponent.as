@@ -92,7 +92,7 @@ package com.pblabs.engine.components
 			   delete this["item"+i];
 		   }
 		   if(len > 0)
-		   		_data.splice(0);
+		   		_data.length = 0;
 		   refresh();
 	   }
 	   
