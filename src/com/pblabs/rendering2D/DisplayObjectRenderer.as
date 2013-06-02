@@ -730,28 +730,34 @@ package com.pblabs.rendering2D
             }
             
             // Position.
-            var pos:Point = owner.getProperty(positionProperty) as Point;
-            if (pos)
-            {
-                if(scene)
-                    position = scene.transformWorldToScene(pos);
-                else
-                    position = pos;
-            }
+			if(positionProperty){
+	            var pos:Point = owner.getProperty(positionProperty) as Point;
+	            if (pos)
+	            {
+	                if(scene)
+	                    position = scene.transformWorldToScene(pos);
+	                else
+	                    position = pos;
+	            }
+			}
             
             // Scale.
-            var scale:Point = owner.getProperty(scaleProperty) as Point;
-            if (scale)
-            {
-                this.scale = scale;
-            }
+			if(scaleProperty){
+	            var scale:Point = owner.getProperty(scaleProperty) as Point;
+	            if (scale)
+	            {
+	                this.scale = scale;
+	            }
+			}
             
             // Size.
-            var size:Point = owner.getProperty(sizeProperty) as Point;
-            if (size)
-            {
-                this.size = size;
-            }
+			if(sizeProperty){
+	            var size:Point = owner.getProperty(sizeProperty) as Point;
+	            if (size)
+	            {
+	                this.size = size;
+	            }
+			}
             
             // Rotation.
             if (rotationProperty)
@@ -775,11 +781,13 @@ package com.pblabs.rendering2D
 			}			
 			
             // Registration Point.
-            var reg:Point = owner.getProperty(registrationPointProperty) as Point;
-            if (reg)
-            {
-                registrationPoint = reg;
-            }
+			if(registrationPointProperty){
+	            var reg:Point = owner.getProperty(registrationPointProperty) as Point;
+	            if (reg)
+	            {
+	                registrationPoint = reg;
+	            }
+			}
             
             // Make sure we're in the right layer and at the right zIndex in the scene.
             // Do this last to be more caching-layer-friendly. If we change position and

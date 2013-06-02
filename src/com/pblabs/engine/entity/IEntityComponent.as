@@ -58,7 +58,12 @@ package com.pblabs.engine.entity
        */
       function get name():String;
       
-      /**
+	  /**
+	   * Set the name of this component even before it is registered.
+	   */
+	  function set name(value:String):void;
+
+	  /**
        * Whether or not the component is currently registered with an entity.
        */
       function get isRegistered():Boolean;

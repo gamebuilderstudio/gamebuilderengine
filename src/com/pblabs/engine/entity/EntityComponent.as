@@ -41,8 +41,15 @@ package com.pblabs.engine.entity
       {
          return _name;
       }
-      
-      /**
+	  public function set name(value:String):void
+	  {
+		  if(_isRegistered){
+			  return;
+		  }
+		  _name = value;
+	  }
+
+	  /**
        * @inheritDoc
        */
       [EditorData(ignore="true")]
@@ -56,7 +63,8 @@ package com.pblabs.engine.entity
 	   */
 	  public function changeName(name:String):void
 	  {
-		  _owner.changeComponentName(_name, name);
+		  if(_owner && (_owner is Entity))
+		  	(_owner as Entity).invalidateEntity();
 		  _name = name;
 	  }
 

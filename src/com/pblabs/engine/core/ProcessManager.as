@@ -330,7 +330,7 @@ package com.pblabs.engine.core
          * @param priority Priority; this is used to keep the list ordered.
          * @param list List to add to.
          */
-        private function addObject(object:*, priority:Number, list:Array):void
+        private function addObject(object:*, priority:Number, list:Vector.<ProcessObject>):void
         {
             // If we are in a tick, defer the add.
             if(duringAdvance)
@@ -377,7 +377,7 @@ package com.pblabs.engine.core
          * @param object Object to remove.
          * @param list List from which to remove.
          */
-        private function removeObject(object:*, list:Array):void
+        private function removeObject(object:*, list:Vector.<ProcessObject>):void
         {
             if (listenerCount == 1 && thinkHeap.size == 0)
                 stop();
@@ -447,6 +447,7 @@ package com.pblabs.engine.core
 			var ignoreTimeScale : Boolean = false;
             // Perform ticks, respecting tick caps.
             var tickCount:int = 0;
+			var listLen : int = 0;
             while (elapsed >= TICK_RATE_MS && (suppressSafety || tickCount < MAX_TICKS_PER_FRAME))
             {
                 // Ticks always happen on interpolation boundary.
@@ -461,7 +462,8 @@ package com.pblabs.engine.core
                 Profiler.enter("Tick");
                 
                 duringAdvance = true;
-                for(var j:int=0; j<tickedObjects.length; j++)
+				listLen = tickedObjects.length;
+                for(var j:int=0; j < listLen; j++)
                 {
                     var object:ProcessObject = tickedObjects[j] as ProcessObject;
                     if(!object)
@@ -513,7 +515,8 @@ package com.pblabs.engine.core
             Profiler.enter("frame");
             duringAdvance = true;
             _interpolationFactor = elapsed / TICK_RATE_MS;
-            for(var i:int=0; i<animatedObjects.length; i++)
+			listLen = animatedObjects.length;
+            for(var i:int=0; i < listLen; i++)
             {
                 var animatedObject:ProcessObject = animatedObjects[i] as ProcessObject;
                 if(!animatedObject)
@@ -541,23 +544,25 @@ package com.pblabs.engine.core
                 needPurgeEmpty = false;
                 
                 Profiler.enter("purgeEmpty");
-                
-                for(j=0; j<animatedObjects.length; j++)
+                listLen = animatedObjects.length;
+                for(j=0; j < listLen; j++)
                 {
                     if(animatedObjects[j])
                         continue;
                     
                     animatedObjects.splice(j, 1);
                     j--;
+					listLen = animatedObjects.length;
                 }
-                
-                for(var k:int=0; k<tickedObjects.length; k++)
+                listLen = tickedObjects.length;
+                for(var k:int=0; k < listLen; k++)
                 {                    
                     if(tickedObjects[k])
                         continue;
                     
                     tickedObjects.splice(k, 1);
                     k--;
+					listLen = tickedObjects.length;
                 }
 
                 Profiler.exit("purgeEmpty");
@@ -569,7 +574,7 @@ package com.pblabs.engine.core
         private function processScheduledObjects():void
         {
             // Do any deferred methods.
-            var oldDeferredMethodQueue:Array = deferredMethodQueue;
+            var oldDeferredMethodQueue:Vector.<DeferredMethod> = deferredMethodQueue;
 			var queLen : int = oldDeferredMethodQueue.length;
             if(queLen)
             {
@@ -577,11 +582,11 @@ package com.pblabs.engine.core
 
                 // Put a new array in the queue to avoid getting into corrupted
                 // state due to more calls being added.
-                deferredMethodQueue = [];
+                deferredMethodQueue = new Vector.<DeferredMethod>();
                 
                 for(var j:int=0; j < queLen; j++)
                 {
-                    var curDM:DeferredMethod = oldDeferredMethodQueue[j] as DeferredMethod;
+                    var curDM:DeferredMethod = oldDeferredMethodQueue[j];
                     curDM.method.apply(null, curDM.args);
                 }
                 
@@ -628,7 +633,7 @@ package com.pblabs.engine.core
             }
         }
         
-        protected var deferredMethodQueue:Array = [];
+        protected var deferredMethodQueue:Vector.<DeferredMethod> = new Vector.<DeferredMethod>();
         protected var started:Boolean = false;
 		protected var stopped:Boolean = false;
         protected var _virtualTime:int = 0.0;
@@ -636,8 +641,8 @@ package com.pblabs.engine.core
         protected var _timeScale:Number = 1.0;
         protected var lastTime:int = -1.0;
         protected var elapsed:Number = 0.0;
-        protected var animatedObjects:Array = new Array();
-        protected var tickedObjects:Array = new Array();
+        protected var animatedObjects:Vector.<ProcessObject> = new Vector.<ProcessObject>();
+        protected var tickedObjects:Vector.<ProcessObject> = new Vector.<ProcessObject>();
         protected var needPurgeEmpty:Boolean = false;
         
         protected var _platformTime:int = 0;

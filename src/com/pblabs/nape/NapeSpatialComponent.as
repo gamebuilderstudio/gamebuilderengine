@@ -123,9 +123,8 @@ package com.pblabs.nape
 		public function get position():Point
 		{
 			if ( _body ){
-				_body.position.toPoint(_position);
 				var _scale : Number = _spatialManager.scale;
-				_position.setTo(_position.x*_scale, _position.y*_scale);
+				_position.setTo(_body.position.x*_scale, _body.position.y*_scale);
 			}
 			return _position;
 		}
@@ -159,8 +158,7 @@ package com.pblabs.nape
 			if (_body)
 			{
 				var scale:Number = _spatialManager.scale;
-				_body.velocity.toPoint(_linearVelocity);
-				_linearVelocity.setTo(_linearVelocity.x*scale, _linearVelocity.y*scale);
+				_linearVelocity.setTo(_body.velocity.x*scale, _body.velocity.y*scale);
 			}
 			
 			return _linearVelocity;

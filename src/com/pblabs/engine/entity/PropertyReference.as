@@ -8,8 +8,8 @@
  ******************************************************************************/
 package com.pblabs.engine.entity
 {
-    import com.pblabs.engine.serialization.ISerializable;
     import com.pblabs.engine.debug.Logger;
+    import com.pblabs.engine.serialization.ISerializable;
     
     /**
      * A property reference stores the information necessary to lookup a property
@@ -69,7 +69,10 @@ package com.pblabs.engine.entity
         public function set property(value:String):void
         {
             if (_property != value) {
-                cachedLookup = null;
+				cachedLookup = null;
+				if(cachedInfo)
+					cachedInfo.clear();
+				cachedInfo = null;
             }
             _property = value;
         }
@@ -103,7 +106,16 @@ package com.pblabs.engine.entity
             return _property;
         }
         
-        private var _property:String = null;
+		public function destroy():void
+		{
+			if(cachedLookup)
+				cachedLookup.length = 0;
+			if(cachedInfo)
+				cachedInfo.clear();
+		}
+
+		private var _property:String = null;
         public var cachedLookup:Array;
+		public var cachedInfo : PropertyInfo;
     }
 }

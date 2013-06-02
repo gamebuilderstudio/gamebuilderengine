@@ -49,7 +49,14 @@ package com.pblabs.engine.entity
 				return _selfObject;
 			}
 			DynamicObjectUtil.clearDynamicObject(_selfObject);
-			DynamicObjectUtil.copyDynamicObject(_components, _selfObject);
+			
+			var len : int = _components.length;
+			var component:IEntityComponent;
+			for(var i : int = 0; i < len; i++)
+			{
+				component = _components[i];
+				_selfObject[component.name] = component;   
+			}
 			_selfObject.name = _name ? _name : _alias;
 			_entityDirty = false;
 			return _selfObject;
@@ -122,15 +129,17 @@ package com.pblabs.engine.entity
                 _eventDispatcher.dispatchEvent(new Event("EntityDestroyed"));
             
             // Unregister our components.
-            for each(var component:IEntityComponent in _components)
-            {
-                if(component.isRegistered)
-                    component.unregister();    
-            }
+			var len : int = _components.length;
+			var component:IEntityComponent;
+			for(var i : int = 0; i < len; i++)
+			{
+				component = _components[i];
+				if(component.isRegistered)
+					component.unregister();    
+			}
             
             // And remove their references from the dictionary.
-            for (var name:String in _components)
-                delete _components[name];
+			_components.length = 0;
 			
 			//Clear Dynamic Object Container
 			DynamicObjectUtil.clearDynamicObject( _selfObject );
@@ -150,12 +159,15 @@ package com.pblabs.engine.entity
             if(alias!=null)
                 entityXML = <entity name={name} alias={alias} />;   
             
-            for each (var component:IEntityComponent in _components)
-            {        	
-                var componentXML:XML = <component type={getQualifiedClassName(component).replace(/::/,".")} name={component.name} />;
-                Serializer.instance.serialize(component, componentXML);
-                entityXML.appendChild(componentXML);
-            }
+			var len : int = _components.length;
+			var component:IEntityComponent;
+			for(var i : int = 0; i < len; i++)
+			{
+				component = _components[i];
+				var componentXML:XML = <component type={getQualifiedClassName(component).replace(/::/,".")} name={component.name} />;
+				Serializer.instance.serialize(component, componentXML);
+				entityXML.appendChild(componentXML);
+			}
 
             xml.appendChild(entityXML);            
         }
@@ -294,20 +306,21 @@ package com.pblabs.engine.entity
             doResetComponents();
         }
 		
-		public function changeComponentName(currentName : String, newName : String):void
+		internal function invalidateEntity():void
 		{
-			_components[newName] = _components[currentName];
-			delete _components[currentName];
+			doResetComponents();
 		}
         
         public function lookupComponentByType(componentType:Class):IEntityComponent
         {
-            for each(var component:IEntityComponent in _components)
-            {
-                if (component is componentType)
-                    return component;
-            }
-            
+			var len : int = _components.length;
+			var component:IEntityComponent;
+			for(var i : int = 0; i < len; i++)
+			{
+				component = _components[i];
+				if (component is componentType)
+					return component;
+			}            
             return null;
         }
         
@@ -315,29 +328,44 @@ package com.pblabs.engine.entity
         {
             var list:Array = new Array();
             
-            for each(var component:IEntityComponent in _components)
-            {
-                if (component is componentType)
-                    list.push(component);
-            }
-            
+			var len : int = _components.length;
+			var component:IEntityComponent;
+			for(var i : int = 0; i < len; i++)
+			{
+				component = _components[i];
+				if(component is componentType)
+					list.push(component);
+			}            
             return list;
         }
         
         public function lookupComponentByName(componentName:String):IEntityComponent
         {
-            return _components[componentName];
+			var len : int = _components.length;
+			for(var i : int = 0; i < len; i++)
+			{
+				if(_components[i].name == componentName) 
+					return _components[i];
+			}
+            return null;
         }
         
         public function doesPropertyExist(property:PropertyReference):Boolean
         {
-            return findProperty(property, false, _tempPropertyInfo, true) != null;
+            return findProperty(property, false, null, true) != null;
         }
         
         public function getProperty(property:PropertyReference, defaultVal:* = null):*
         {
+			if(!property)
+				return defaultVal;
             // Look up the property.
-            var info:PropertyInfo = findProperty(property, false, _tempPropertyInfo);
+			var info:PropertyInfo;
+			if(property.cachedInfo && !PBE.IN_EDITOR){
+				info = property.cachedInfo;
+			}else{
+				info = findProperty(property, false);
+			}
             var result:* = null;
             
             // Get value if any.
@@ -346,21 +374,25 @@ package com.pblabs.engine.entity
             else
                 result = defaultVal; 
             
-            // Clean up to avoid dangling references.
-            _tempPropertyInfo.clear();
-            
             return result;
         }
         
         public function setProperty(property:PropertyReference, value:*):void
         {
             // Look up and set.
-            var info:PropertyInfo = findProperty(property, true, _tempPropertyInfo);
+            var info:PropertyInfo;
+			if(property.cachedInfo){
+				info = property.cachedInfo;
+			}else{
+				if(property.cachedInfo){
+					property.cachedInfo.clear();
+					property.cachedInfo = null;
+				}
+				info = findProperty(property, false, null, true);
+			}
+			
             if (info)
                 info.setValue(value);
-            
-            // Clean up to avoid dangling references.
-            _tempPropertyInfo.clear();
         }
         
         private function doAddComponent(component:IEntityComponent, componentName:String):Boolean
@@ -376,14 +408,15 @@ package com.pblabs.engine.entity
                 return false;
             }
             
-            if (_components[componentName])
+            if (lookupComponentByName(componentName))
             {
                 Logger.error(this, "AddComponent", "A component with name " + componentName + " already exists on this entity (" + name + ").");
                 return false;
             }
             
             component.owner = this;
-            _components[componentName] = component;
+			component.name = componentName;
+			_components.push(component);
 			_entityDirty = true;
             return true;
         }
@@ -396,13 +429,23 @@ package com.pblabs.engine.entity
                 return false;
             }
             
-            if (!_components[component.name])
+            if (!lookupComponentByName(component.name))
             {
                 Logger.error(this, "AddComponent", "The component " + component.name + " was not found on this entity. (" + name + ")");
                 return false;
             }
-            
-            delete _components[component.name];
+			var len : int = _components.length;
+			var comp:IEntityComponent;
+			var index : int = -1;
+			for(var i : int = 0; i < len; i++)
+			{
+				comp = _components[i];
+
+				if(comp.name == component.name)
+					index = i;
+			}     
+			if(index > -1)
+				_components.splice(index,1);
 			_entityDirty = true;
             return true;
         }
@@ -414,20 +457,23 @@ package com.pblabs.engine.entity
         {
             var oldDefer:Boolean = _deferring;
             deferring = true;
-            for each(var component:IEntityComponent in _components)
-            {
-                // Skip unregistered entities. 
-                if(!component.isRegistered)
-                    continue;
-                
-                // Reset it!
-                component.reset();                
-            }
+			var len : int = _components.length;
+			var component:IEntityComponent;
+			for(var i : int = 0; i < len; i++)
+			{
+				component = _components[i];
+				// Skip unregistered entities. 
+				if(!component.isRegistered)
+					continue;
+				
+				// Reset it!
+				component.reset();                
+			}            
+
 			_entityDirty = true;
             deferring = false;
         }
         
-		private var _tmpPropertyInfo : PropertyInfo = new PropertyInfo();
 		private function findProperty(reference:PropertyReference, willSet:Boolean = false, providedPi:PropertyInfo = null, suppressErrors:Boolean = false):PropertyInfo
 		{
 			// TODO: we use appendChild but relookup the results, can we just use return value?
@@ -440,9 +486,7 @@ package com.pblabs.engine.entity
 			
 			// Must have a propertyInfo to operate with.
 			if(!providedPi){
-				if(_tmpPropertyInfo)
-					_tmpPropertyInfo.clear();
-				providedPi = _tmpPropertyInfo;
+				providedPi = PropertyInfo.getInstance();
 			}
 			
 			// Cached lookups apply only to components.
@@ -496,7 +540,7 @@ package com.pblabs.engine.entity
 				parentElem = lookupComponentByName(curLookup);
 				if(!parentElem)
 				{
-					if(!suppressErrors)
+					if(!suppressErrors && !_deferring)
 						Logger.warn(this, "findProperty", "[#"+this.name+"] Could not resolve component named '" + curLookup + "' for property '" + reference.property + "'");
 					Profiler.exit("Entity.findProperty");
 					return null;
@@ -651,6 +695,7 @@ package com.pblabs.engine.entity
 				var pi:PropertyInfo = providedPi;
 				pi.propertyParent = parentElem;
 				pi.propertyName = curLookup;
+				reference.cachedInfo = pi;
 				Profiler.exit("Entity.findProperty");
 				return pi;
 			}
@@ -661,8 +706,7 @@ package com.pblabs.engine.entity
         
         private var _deferring:Boolean = true;
         
-        protected var _components:Dictionary = new Dictionary();
-        protected var _tempPropertyInfo:PropertyInfo = new PropertyInfo();
+        protected var _components:Vector.<IEntityComponent> = new Vector.<IEntityComponent>();
         protected var _deferredComponents:Array = new Array();
         protected var _eventDispatcher:EventDispatcher = new EventDispatcher();
 		protected var _signalBus : Signal = new Signal();

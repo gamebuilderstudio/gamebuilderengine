@@ -46,6 +46,17 @@ package com.pblabs.engine.entity
         {
             propertyParent = null;
             propertyName = null;
+			_infoObjectsPool.push(this);
         }
+		
+		public static function getInstance():PropertyInfo
+		{
+			if(_infoObjectsPool.length < 1){
+				var info : PropertyInfo = new PropertyInfo();
+				return info;
+			}
+			return _infoObjectsPool.shift();
+		}
+		private static var _infoObjectsPool : Vector.<PropertyInfo> = new Vector.<PropertyInfo>();
     }
 }
