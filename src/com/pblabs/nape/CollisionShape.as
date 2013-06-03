@@ -110,11 +110,12 @@ package com.pblabs.nape
 				_parent.buildCollisionShapes();
 		}
 
-		public function createShape(parent:NapeSpatialComponent):Shape
+		public function createShape(parent:NapeSpatialComponent, forceNewInstance : Boolean = false):Shape
 		{
 			_parent = parent;
 			
-			var shape:Shape = doCreateShape();
+			if(!_shape || forceNewInstance)
+				_shape = doCreateShape();
 			var materialObj:Material;
 			if(!_material || _material == ""){
 				materialObj = internalMaterial;
@@ -123,22 +124,22 @@ package com.pblabs.nape
 				materialObj = matManager.getMaterial(this.material);
 			}
 			if ( materialObj )
-				shape.material = materialObj;
+				_shape.material = materialObj;
 				
-			shape.filter = parent.interactionFilter;
+			_shape.filter = parent.interactionFilter;
 			if(_isTrigger){
-				shape.sensorEnabled = true;
+				_shape.sensorEnabled = true;
 				if(!_parent.body.cbTypes.has(SENSORS))
 					_parent.body.cbTypes.add(SENSORS);
 			}else{
-				shape.sensorEnabled = false;
+				_shape.sensorEnabled = false;
 				if(_parent.body.cbTypes.has(SENSORS))
 					_parent.body.cbTypes.remove(SENSORS);
 			}
 			
-			shape.userData.spatial = parent;
+			_shape.userData.spatial = parent;
 			
-			return shape;
+			return _shape;
 		}
 		
 		protected function doCreateShape():Shape
@@ -172,5 +173,6 @@ package com.pblabs.nape
 		private var _restitution:Number = 0.0;
 		private var _shapeScale : Point = new Point(1,1);
 		private var _isTrigger:Boolean = false;
+		private var _shape : Shape;
 	}
 }
