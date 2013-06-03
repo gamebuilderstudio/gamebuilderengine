@@ -39,8 +39,9 @@ package com.pblabs.engine.core
 		private var _activeCount : int = 0;
 		private var _overallPastTime : Number = 0;
 		private var _addedToProcessManager : Boolean = false;
-		private var _destroyed : Boolean = false;
 		private var _ignoreTimeScale : Boolean = false;
+		
+		private static var _timerPool : Vector.<PBTimerObject> = new Vector.<PBTimerObject>();
 		
 		public function onTick(deltaTime:Number):void{
 			
@@ -116,19 +117,31 @@ package com.pblabs.engine.core
 			_ignoreTimeScale = val;
 		}
 
-		public function destroy():void
+		final public function destroy():void
 		{
-			if(_destroyed)
-				return;
-			
-			_destroyed = true;
 			stop();
 			onTickSignal.removeAll();
-			onTickSignal = null;
 			if(_addedToProcessManager){
 				PBE.processManager.removeTickedObject( this );
 				_addedToProcessManager = false;
 			}
+			if(_timerPool.indexOf(this) == -1)
+				_timerPool.push(this);
+		}
+		
+		/**
+		 * Used to grab an instance from the timer object pool. This is a pretty light class already
+		 * because it just wraps the exiting processManager virtual/platformTime value with timer triggering functionality.
+		 * Call destroy when timer is no longer needed to release back to pool
+		 **/
+		public static function getInstance():PBTimerObject
+		{
+			if(_timerPool.length < 1)
+			{
+				return new PBTimerObject();
+			}
+			var timer : PBTimerObject = _timerPool.shift();
+			return timer;
 		}
 	}
 }
