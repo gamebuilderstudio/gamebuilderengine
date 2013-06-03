@@ -17,6 +17,7 @@ package com.pblabs.nape
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
+	import nape.constraint.Constraint;
 	import nape.dynamics.InteractionFilter;
 	import nape.dynamics.InteractionGroup;
 	import nape.geom.Ray;
@@ -358,7 +359,7 @@ package com.pblabs.nape
 			var space:Space;
 			//Because Nape STATIC bodies can not have shapes removed from them we have to remove it
 			//from the space first.
-			if ( _body.space && bodyType == BodyTypeEnum.STATIC )
+			if ( _body.space && _bodyType == BodyTypeEnum.STATIC )
 			{
 				space = _body.space;
 				_body.space = null;
@@ -442,8 +443,14 @@ package com.pblabs.nape
 			{
 				clearShapesFromBody();
 				
+				if(_body.constraints){
+					for(var i : int = 0; i < _body.constraints.length; i++)
+					{
+						var constraint:Constraint = _body.constraints.at(i);
+						constraint.active = false;
+					}
+				}
 				_body.space = null;
-				//_body.clear();
 				_body = null;
 			}
 			if(_shapeDebug && _shapeDebug.display)
@@ -457,6 +464,12 @@ package com.pblabs.nape
 		
 		private function clearShapesFromBody():void
 		{
+			var bodyTypeChanged : Boolean = false;
+			if ( _bodyType == BodyTypeEnum.STATIC )
+			{
+				_body.type = BodyType.KINEMATIC;
+				bodyTypeChanged = true;
+			}
 			var shapeList:ShapeList = _body.shapes;
 			for(var i : int = 0; i < shapeList.length; i++)
 			{
@@ -464,6 +477,8 @@ package com.pblabs.nape
 				shape.body = null;
 			}
 			_body.shapes.clear();
+			if(bodyTypeChanged)
+				_body.type = napeBodyType;
 		}
 		
 		private function setupBody():void

@@ -4,6 +4,7 @@ package com.pblabs.nape.constraints
 	import com.pblabs.engine.core.ITickedObject;
 	import com.pblabs.engine.core.InputKey;
 	import com.pblabs.engine.debug.Logger;
+	import com.pblabs.engine.entity.IEntityComponent;
 	import com.pblabs.nape.INape2DSpatialComponent;
 	import com.pblabs.nape.NapeManagerComponent;
 	import com.pblabs.nape.NapeSpatialComponent;
@@ -33,12 +34,14 @@ package com.pblabs.nape.constraints
 			if(!_constraint){
 				constructConstraint();
 			}
+			if(!_constraint || !_spatialManager)
+				return;
 
-			if(PBE.inputManager.keyJustPressed(InputKey.MOUSE_BUTTON.keyCode) && _constraint && _spatialManager)
+			_worldPoint.setTo(PBE.mainStage.mouseX, PBE.mainStage.mouseY);
+			if(PBE.inputManager.keyJustPressed(InputKey.MOUSE_BUTTON.keyCode))
 			{
-				_worldPoint.setTo(PBE.mainStage.mouseX, PBE.mainStage.mouseY);
 				_spatialManager.getObjectsUnderPoint(_worldPoint, _bodyList);
-				var wp:Vec2 = Vec2.get(PBE.mainStage.mouseX, PBE.mainStage.mouseY);
+				var wp:Vec2 = Vec2.get(_worldPoint.x, _worldPoint.y);
 				for (var i:int = 0; i < _bodyList.length; i++) {
 					var body:Body = _bodyList[i].body;
 					if (body.isDynamic()) {
@@ -53,14 +56,21 @@ package com.pblabs.nape.constraints
 				if((_constraint as PivotJoint).body2)
 					_constraint.active = true;
 				_bodyList.length = 0;
-			}else if(_constraint && PBE.inputManager.keyJustReleased(InputKey.MOUSE_BUTTON.keyCode)){
-				_constraint.active = false;
-				(_constraint as PivotJoint).body2 = null;
+			}else if(PBE.inputManager.keyJustReleased(InputKey.MOUSE_BUTTON.keyCode)){
+				disableConstraint();
 			}
-			if(_constraint && _constraint.active && (_constraint as PivotJoint).body2){
-				(_constraint as PivotJoint).anchor1.setxy(PBE.mainStage.mouseX, PBE.mainStage.mouseY);
+			if(_constraint && _constraint.active && (_constraint as PivotJoint).body2 && (_constraint as PivotJoint).body2.space){
+				(_constraint as PivotJoint).anchor1.setxy(_worldPoint.x, _worldPoint.y);
 				//(_constraint as PivotJoint).body2.angularVel *= 0.9;
+			}else{
+				disableConstraint();
 			}
+		}
+		
+		private function disableConstraint():void
+		{
+			_constraint.active = false;
+			(_constraint as PivotJoint).body2 = null;
 		}
 		
 		public function get ignoreTimeScale():Boolean { return _ignoreTimeScale; }
