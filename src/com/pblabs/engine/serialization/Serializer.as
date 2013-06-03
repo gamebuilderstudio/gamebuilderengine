@@ -626,25 +626,14 @@ package com.pblabs.engine.serialization
         private function getChildObject(object:*, fieldName:String, typeName:String, fieldXml:XML):*
         {
             // Get the child object, if it is present.
-            var childObject:*;
-            try
-            {
-                childObject = object[fieldName];
-				if(childObject is Array || childObject is OrderedArray || childObject is Vector){
-					try{
-						if(childObject && childObject is OrderedArray){
-							childObject = new OrderedArray();
-						}else if(childObject){
-							childObject.length = 0;
-						}
-					}catch(e:Error){
-						Logger.error(this, "deserializeDictionary", "Error trying to clear an existing array type object. ["+e.message+"]");
-					}
+            var childObject:* = object[fieldName];
+			if(childObject is Array || childObject is OrderedArray || childObject is Vector){
+				if(childObject && childObject is OrderedArray){
+					childObject = new OrderedArray();
+				}else if(childObject){
+					childObject.length = 0;
 				}
-            } 
-            catch(e:Error)
-            {
-            }
+			}
 			
 			//If typeName is a wildcard we need to handle this special case
 			if(typeName == '*')
