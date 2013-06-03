@@ -20,17 +20,11 @@ package com.pblabs.engine.entity
         
         final public function getValue():*
         {
-            try
-            {         
-                if(propertyName)
-                    return propertyParent[propertyName];
-                else
-                    return propertyParent;
-            }
-            catch(e:Error)
-            {
-                return null;
-            }
+            if(propertyParent && propertyName && propertyParent.hasOwnProperty(propertyName))
+                return propertyParent[propertyName];
+            else if(propertyParent)
+                return propertyParent;
+			return null;
         }
         
         final public function setValue(value:*):void
@@ -46,7 +40,8 @@ package com.pblabs.engine.entity
         {
             propertyParent = null;
             propertyName = null;
-			_infoObjectsPool.push(this);
+			if(_infoObjectsPool.indexOf(this) == -1)
+				_infoObjectsPool.push(this);
         }
 		
 		public static function getInstance():PropertyInfo
