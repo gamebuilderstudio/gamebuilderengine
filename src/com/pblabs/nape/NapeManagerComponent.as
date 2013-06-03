@@ -162,16 +162,12 @@ package com.pblabs.nape
 
 		public function onFrame(dt:Number):void
 		{
-			try{
-				if(_space && !PBE.IN_EDITOR)
-					_space.step(dt);
-				if(_shapeDebug && _visualDebugging){
-					_shapeDebug.clear();
-					_shapeDebug.draw(_space);
-					_shapeDebug.flush();
-				}
-			}catch(e : Error){
-				Logger.error(this, "Physics Manager - onFrame ", e.message);
+			if(_space && !PBE.IN_EDITOR)
+				_space.step(dt);
+			if(_space && _shapeDebug && _visualDebugging){
+				_shapeDebug.clear();
+				_shapeDebug.draw(_space);
+				_shapeDebug.flush();
 			}
 		}
 		
