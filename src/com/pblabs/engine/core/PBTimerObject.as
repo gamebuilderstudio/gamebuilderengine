@@ -33,7 +33,6 @@ package com.pblabs.engine.core
 		 **/
 		public var limit : Number = 0;
 		
-		private var _initialStart : Boolean = true;
 		private var _startTime : Number = 0;
 		private var _running : Boolean = false;
 		private var _activeCount : int = 0;
@@ -86,10 +85,9 @@ package com.pblabs.engine.core
 		
 		public function start():void
 		{
-			if(_initialStart){
+			if(!_addedToProcessManager){
 				PBE.processManager.addTickedObject( this );
 				_addedToProcessManager = true;
-				_initialStart = false;
 			}
 			_startTime = _ignoreTimeScale ? PBE.processManager.platformTime : PBE.processManager.virtualTime;
 			_running = true;
@@ -121,6 +119,9 @@ package com.pblabs.engine.core
 		{
 			stop();
 			onTickSignal.removeAll();
+			delay = 0;
+			repeatCount = 0;
+			limit = 0;
 			if(_addedToProcessManager){
 				PBE.processManager.removeTickedObject( this );
 				_addedToProcessManager = false;
