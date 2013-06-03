@@ -163,6 +163,8 @@ package com.pblabs.engine.scripting
 			D.importFunction("magnitudeOfPoint", ExpressionUtils.magnitudeOfPoint);
 			D.importFunction("magnitude", ExpressionUtils.magnitude);
 			D.importFunction("rotationOfAngle", ExpressionUtils.rotationOfAngle);
+			D.importFunction("distance", ExpressionUtils.distance);
+			D.importFunction("distanceOfPoint", ExpressionUtils.distanceOfPoint);
 			
 			_initialized = true;
 		}
@@ -213,6 +215,18 @@ import com.pblabs.engine.entity.IEntity;
 import flash.geom.Point;
 
 class ExpressionUtils{
+	public static function distanceOfPoint(pointA : Point, pointB : Point):Number
+	{
+		return distance(pointA.x, pointA.y, pointB.x, pointB.y);
+	}
+
+	public static function distance(x1 : Number, y1 : Number, x2 : Number, y2 : Number):Number
+	{
+		var dx:Number = x1-x2;
+		var dy:Number = y1-y2;
+		return Math.sqrt(dx * dx + dy * dy);
+	}
+
 	public static function magnitudeOfPoint(pointA : Point, pointB : Point):Number
 	{
 		return Math.sqrt( Math.abs( ((pointA.x-pointB.x) * (pointA.x-pointB.x)) + ((pointA.y-pointB.y) * (pointA.y-pointB.y)) ) );
