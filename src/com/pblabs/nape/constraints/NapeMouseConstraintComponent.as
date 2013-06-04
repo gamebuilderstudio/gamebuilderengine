@@ -27,6 +27,8 @@ package com.pblabs.nape.constraints
 		public function NapeMouseConstraintComponent()
 		{
 			super();
+			_active = false;
+			_stiff = false;
 		}
 		
 		public function onTick(deltaTime:Number):void
@@ -46,7 +48,7 @@ package com.pblabs.nape.constraints
 					var body:Body = _bodyList[i].body;
 					if (body.isDynamic()) {
 						(_constraint as PivotJoint).body2 = body;
-						(_constraint as PivotJoint).anchor2 = body.worldPointToLocal(wp, true);
+						(_constraint as PivotJoint).anchor2.set( body.worldPointToLocal(wp, true) );
 						(_constraint as PivotJoint).active = true;
 						break;
 					}
@@ -135,8 +137,6 @@ package com.pblabs.nape.constraints
 			if(!_spatialManager || !(_spatialManager as NapeManagerComponent).space){
 				return null;
 			}
-			this.active = false;
-			this.stiff = false;
 			var invScale:Number = _spatialManager.inverseScale;
 			return new PivotJoint((_spatialManager as NapeManagerComponent).space.world, null, _anchor1.mul(invScale), _anchor2.mul(invScale));
 		}

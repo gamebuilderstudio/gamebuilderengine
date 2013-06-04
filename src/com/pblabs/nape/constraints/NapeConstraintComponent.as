@@ -263,16 +263,15 @@ package com.pblabs.nape.constraints
 		protected var _spatial2:INape2DSpatialComponent;
 		protected var _anchor1:Vec2 = Vec2.weak();
 		protected var _anchor2:Vec2 = Vec2.weak();
-		
-		private var _active:Boolean = true;
-		private var _ignore:Boolean = false;
-		private var _stiff:Boolean = true;
-		private var _frequency:Number = 10;
-		private var _damping:Number = 0.5;
-		private var _breakUnderMaxForce:Boolean = false;
-		private var _breakUnderError:Boolean = false;
-		private var _maxForce : Number = 0;
-		private var _maxError : Number = 0;
+		protected var _active:Boolean = true;
+		protected var _ignore:Boolean = false;
+		protected var _stiff:Boolean = true;
+		protected var _frequency:Number = 10;
+		protected var _damping:Number = 0.5;
+		protected var _breakUnderMaxForce:Boolean = false;
+		protected var _breakUnderError:Boolean = false;
+		protected var _maxForce : Number = 0;
+		protected var _maxError : Number = 0;
 		private var _delayedConstruction : Boolean = false;
 		
 	}
