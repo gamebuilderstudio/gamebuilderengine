@@ -110,11 +110,10 @@ package com.pblabs.nape
 				_parent.buildCollisionShapes();
 		}
 
-		public function createShape(parent:NapeSpatialComponent, forceNewInstance : Boolean = false):Shape
+		public function createShape(parent:NapeSpatialComponent, createNewInstance : Boolean = true):Shape
 		{
 			_parent = parent;
-			
-			if(!_shape || forceNewInstance)
+			if(!_shape || createNewInstance)
 				_shape = doCreateShape();
 			var materialObj:Material;
 			if(!_material || _material == ""){
