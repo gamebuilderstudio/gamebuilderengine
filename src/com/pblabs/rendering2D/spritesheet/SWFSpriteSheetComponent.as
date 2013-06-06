@@ -12,6 +12,8 @@ package com.pblabs.rendering2D.spritesheet
     import com.pblabs.engine.PBUtil;
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.resource.SWFResource;
+    import com.pblabs.engine.util.ImageFrameData;
+    import com.pblabs.engine.util.MCUtil;
     import com.pblabs.starling2D.spritesheet.SpriteContainerComponentG2D;
     
     import flash.display.*;
@@ -382,9 +384,9 @@ package com.pblabs.rendering2D.spritesheet
 						mc.gotoAndStop(i);
 					
 					if(!_bounds)
-						_bounds = getRealBounds(mc);
+						_bounds = MCUtil.getRealBounds(mc);
 					else
-						_bounds = _bounds.union(getRealBounds(mc));
+						_bounds = _bounds.union(MCUtil.getRealBounds(mc));
 				}
 				//Reset MC
 				mc.gotoAndStop(1);
@@ -409,73 +411,12 @@ package com.pblabs.rendering2D.spritesheet
             if (mc.totalFrames >= frameIndex)
                 mc.gotoAndStop(frameIndex);
 
-			var frameData : ImageFrameData = getBitmapDataByDisplay(mc, _scale, mc.transform.colorTransform, _bounds);
+			var frameData : ImageFrameData = MCUtil.getBitmapDataByDisplay(mc, _scale, mc.transform.colorTransform, _bounds);
 			_frameCenters[frameIndex-1] = new Point(-(frameData.bounds.x*_scale.x), -(frameData.bounds.y*_scale.y));
 			var bd:BitmapData = frameData.bitmapData;
             return bd;
         }
 
-		public static function getRealBounds(clip:DisplayObject):Rectangle {
-			var bounds:Rectangle = clip.getBounds(clip.parent);
-			bounds.x = Math.floor(bounds.x);
-			bounds.y = Math.floor(bounds.y);
-			bounds.height = Math.ceil(bounds.height);
-			bounds.width = Math.ceil(bounds.width);
-			
-			var realBounds:Rectangle = new Rectangle(0, 0, bounds.width, bounds.height);
-			
-			// Checking filters in case we need to expand the outer bounds
-			if (clip.filters.length > 0)
-			{
-				// filters
-				var j:int = 0;
-				//var clipFilters:Array = clipChild.filters.concat();
-				var clipFilters:Array = clip.filters;
-				var clipFiltersLength:int = clipFilters.length;
-				var tmpBData:BitmapData;
-				var filterRect:Rectangle;
-				
-				tmpBData = new BitmapData(realBounds.width, realBounds.height, false);
-				filterRect = tmpBData.generateFilterRect(tmpBData.rect, clipFilters[j]);
-				tmpBData.dispose();
-				
-				while (++j < clipFiltersLength)
-				{
-					tmpBData = new BitmapData(filterRect.width, filterRect.height, true, 0);
-					filterRect = tmpBData.generateFilterRect(tmpBData.rect, clipFilters[j]);
-					realBounds = realBounds.union(filterRect);
-					tmpBData.dispose();
-				}
-			}
-			
-			realBounds.offset(bounds.x, bounds.y);
-			realBounds.width = Math.max(realBounds.width, 1);
-			realBounds.height = Math.max(realBounds.height, 1);
-			
-			tmpBData = null;
-			return realBounds;
-		}
-		
-		public static function getBitmapDataByDisplay(clip:DisplayObject, scaleFactor : Point, clipColorTransform:ColorTransform = null, frameBounds:Rectangle=null):ImageFrameData
-		{
-			if(!scaleFactor)
-				scaleFactor = new Point(1,1);
-			var realBounds:Rectangle = getRealBounds(clip);
-			
-			var bdData : BitmapData = new BitmapData((realBounds.width*scaleFactor.x), (realBounds.height*scaleFactor.y), true, 0);
-			var _mat : Matrix = clip.transform.matrix;
-			_mat.translate(-realBounds.x, -realBounds.y);
-			_mat.scale(scaleFactor.x, scaleFactor.y);
-			
-			bdData.draw(clip, _mat, clipColorTransform);
-			
-			var item:ImageFrameData = new ImageFrameData(bdData, realBounds);
-			
-			bdData = null;
-			
-			return item;
-		}
-		
 		override protected function onRemove():void
 		{
 			destroy();
@@ -495,17 +436,5 @@ package com.pblabs.rendering2D.spritesheet
 		protected var _parentMC : MovieClip = new MovieClip();
 		protected var _destroyed : Boolean = false;
     }
-}
-import flash.display.BitmapData;
-
-final class ImageFrameData
-{
-	public function ImageFrameData(data:BitmapData, bounds:flash.geom.Rectangle)
-	{
-		this.bitmapData = data;
-		this.bounds = bounds;
-	}
-	public var bitmapData:BitmapData;
-	public var bounds:flash.geom.Rectangle;
 }
 

@@ -1,8 +1,11 @@
 package com.pblabs.engine.util
 {
+	import flash.display.BitmapData;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.display.MovieClip;
+	import flash.geom.ColorTransform;
+	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 
@@ -86,5 +89,67 @@ package com.pblabs.engine.util
 				stopMovieClips(mc);
 			}
 		}
+		
+		public static function getRealBounds(clip:DisplayObject):Rectangle {
+			var bounds:Rectangle = clip.getBounds(clip.parent);
+			bounds.x = Math.floor(bounds.x);
+			bounds.y = Math.floor(bounds.y);
+			bounds.height = Math.ceil(bounds.height);
+			bounds.width = Math.ceil(bounds.width);
+			
+			var realBounds:Rectangle = new Rectangle(0, 0, bounds.width, bounds.height);
+			
+			// Checking filters in case we need to expand the outer bounds
+			if (clip.filters.length > 0)
+			{
+				// filters
+				var j:int = 0;
+				//var clipFilters:Array = clipChild.filters.concat();
+				var clipFilters:Array = clip.filters;
+				var clipFiltersLength:int = clipFilters.length;
+				var tmpBData:BitmapData;
+				var filterRect:Rectangle;
+				
+				tmpBData = new BitmapData(realBounds.width, realBounds.height, false);
+				filterRect = tmpBData.generateFilterRect(tmpBData.rect, clipFilters[j]);
+				tmpBData.dispose();
+				
+				while (++j < clipFiltersLength)
+				{
+					tmpBData = new BitmapData(filterRect.width, filterRect.height, true, 0);
+					filterRect = tmpBData.generateFilterRect(tmpBData.rect, clipFilters[j]);
+					realBounds = realBounds.union(filterRect);
+					tmpBData.dispose();
+				}
+			}
+			
+			realBounds.offset(bounds.x, bounds.y);
+			realBounds.width = Math.max(realBounds.width, 1);
+			realBounds.height = Math.max(realBounds.height, 1);
+			
+			tmpBData = null;
+			return realBounds;
+		}
+		
+		public static function getBitmapDataByDisplay(clip:DisplayObject, scaleFactor : Point, clipColorTransform:ColorTransform = null, frameBounds:Rectangle=null):ImageFrameData
+		{
+			if(!scaleFactor)
+				scaleFactor = new Point(1,1);
+			var realBounds:Rectangle = getRealBounds(clip);
+			
+			var bdData : BitmapData = new BitmapData((realBounds.width*scaleFactor.x), (realBounds.height*scaleFactor.y), true, 0);
+			var _mat : Matrix = clip.transform.matrix;
+			_mat.translate(-realBounds.x, -realBounds.y);
+			_mat.scale(scaleFactor.x, scaleFactor.y);
+			
+			bdData.draw(clip, _mat, clipColorTransform);
+			
+			var item:ImageFrameData = new ImageFrameData(bdData, realBounds);
+			
+			bdData = null;
+			
+			return item;
+		}
+		
 	}
 }

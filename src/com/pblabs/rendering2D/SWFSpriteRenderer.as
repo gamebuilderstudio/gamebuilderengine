@@ -13,6 +13,7 @@ package com.pblabs.rendering2D
 	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.resource.ResourceEvent;
 	import com.pblabs.engine.resource.SWFResource;
+	import com.pblabs.engine.util.ImageFrameData;
 	import com.pblabs.engine.util.MCUtil;
 	
 	import flash.display.BitmapData;
@@ -34,6 +35,7 @@ package com.pblabs.rendering2D
 		protected var _resource:SWFResource = null;
 		protected var _classInstance:DisplayObject = null;
 		protected var _origSize : Point;
+		protected var _parentMC : MovieClip = new MovieClip();
 
 		public function SWFSpriteRenderer()
 		{
@@ -60,10 +62,10 @@ package com.pblabs.rendering2D
 				}else{
 					swfClass = getDefinitionByName( getQualifiedClassName(resource.clip) ) as Class;
 				}
-				paintDisplayObjectToBitmap( new swfClass() );
+				paintMovieClipToBitmap( new swfClass() );
 				//Logger.error(this, 'resourceContent', 'A SWF resource requires that the containingObjectName be populated');
 			}else if(resource.appDomain){
-				paintDisplayObjectToBitmap( resource.getExportedAsset(_containingObjectName) as DisplayObject );
+				paintMovieClipToBitmap( resource.getExportedAsset(_containingObjectName) as DisplayObject );
 			}else{
 				Logger.error(this, 'onResourceLoaded', 'The SWF resource is missing domain information, so it can not be extracted.');
 			}
@@ -83,17 +85,28 @@ package com.pblabs.rendering2D
 			_failed = true;					
 		}
 		
-		protected function paintDisplayObjectToBitmap(instance : DisplayObject):void
+		protected function paintMovieClipToBitmap(instance : DisplayObject):void
 		{
 			if(!instance) return;
 			
-			var localDimensions:Rectangle = instance.getBounds(instance);
+			//Hack required so that the movie clip animation is drawn correctly
+			//Ridiculous Adobe!!!
+			if(PBE.mainStage){
+				PBE.mainStage.addChild(_parentMC);
+				_parentMC.addChild( instance );
+			}
+
+			MCUtil.stopMovieClips( instance as MovieClip);
+
+			var localDimensions:Rectangle = MCUtil.getRealBounds(instance);
+
+			//Set original size if this movie clip is new
 			if(!_classInstance || _classInstance != instance)
 			{
 				_origSize = localDimensions.size;
 			}
 			_classInstance = instance;
-			MCUtil.stopMovieClips( _classInstance as MovieClip);
+			
 			// set the registration (alignment) point to the sprite's center
 			if(!bitmapData && _registrationPoint.x == 0 && _registrationPoint.y == 0){
 				_registrationPoint = MCUtil.getRegistrationPoint( _classInstance );
@@ -101,13 +114,16 @@ package com.pblabs.rendering2D
 				if(_registrationPoint.y < 0) _registrationPoint.y *= -1;
 			}
 			
-			var m : Matrix = new Matrix();
-			m.scale(combinedScale.x, combinedScale.y);
-			m.translate(-localDimensions.topLeft.x * combinedScale.x, -localDimensions.topLeft.y * combinedScale.y);
-			var swfBitmapData : BitmapData = new BitmapData(Math.max(1, Math.min(2880, (_origSize.x*combinedScale.x))), Math.max(1, Math.min(2880,(_origSize.y*combinedScale.y))), true, 0x000000);
-			swfBitmapData.draw(_classInstance, m, _classInstance.transform.colorTransform, _classInstance.blendMode );
+			var frameData : ImageFrameData = MCUtil.getBitmapDataByDisplay(instance, combinedScale, instance.transform.colorTransform, localDimensions);
+
+			//Clean up hack
+			if(PBE.mainStage){
+				PBE.mainStage.removeChild(_parentMC);
+				_parentMC.removeChild( instance );
+			}
+
 			// set the bitmapData of this render object
-			bitmapData = swfBitmapData;	
+			bitmapData = frameData.bitmapData;	
 		}
 
 		protected override function onAdd():void
@@ -180,7 +196,7 @@ package com.pblabs.rendering2D
 				rePaint = true;
 			super.size = value;
 			if(_classInstance && rePaint)
-				paintDisplayObjectToBitmap(_classInstance);
+				paintMovieClipToBitmap(_classInstance);
 		}
 
 		override public function set scale(value:Point):void
@@ -190,7 +206,7 @@ package com.pblabs.rendering2D
 				rePaint = true;
 			super.scale = value;
 			if(_classInstance && rePaint)
-				paintDisplayObjectToBitmap(_classInstance);
+				paintMovieClipToBitmap(_classInstance);
 		}
 
 		protected var _containingObjectName : String;
