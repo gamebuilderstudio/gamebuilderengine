@@ -125,6 +125,7 @@ package com.pblabs.rendering2D
             // Get ticked after all the renderers.
             updatePriority = -10;
             _rootSprite = generateRootSprite();
+			ignoreTimeScale = true;
         }
         
         protected override function onAdd() : void
