@@ -361,9 +361,13 @@ package com.pblabs.engine.entity
 				return defaultVal;
             // Look up the property.
 			var info:PropertyInfo;
-			if(property.cachedInfo && !PBE.IN_EDITOR){
+			if(property.cachedInfo && ((property.cachedInfo.propertyParent is IEntityComponent) || (property.cachedInfo.propertyParent is IEntity)) && !PBE.IN_EDITOR){
 				info = property.cachedInfo;
 			}else{
+				if(property.cachedInfo){
+					property.cachedInfo.clear();
+					property.cachedInfo = null;
+				}
 				info = findProperty(property, false);
 			}
             var result:* = null;
@@ -381,7 +385,7 @@ package com.pblabs.engine.entity
         {
             // Look up and set.
             var info:PropertyInfo;
-			if(property.cachedInfo){
+			if(property.cachedInfo && ((property.cachedInfo.propertyParent is IEntityComponent) || (property.cachedInfo.propertyParent is IEntity)) && !PBE.IN_EDITOR){
 				info = property.cachedInfo;
 			}else{
 				if(property.cachedInfo){
@@ -496,7 +500,8 @@ package com.pblabs.engine.entity
 				var cachedWalk:* = lookupComponentByName(cl[0]);
 				if(!cachedWalk)
 				{
-					if(!suppressErrors)
+					reference.cachedLookup = null;
+					if(!suppressErrors && !PBE.IN_EDITOR)
 						Logger.warn(this, "findProperty", "[#"+this.name+"] Could not resolve component named '" + cl[0] + "' for property '" + reference.property + "' with cached reference. " + Logger.getCallStack());
 					Profiler.exit("Entity.findProperty");
 					return null;
