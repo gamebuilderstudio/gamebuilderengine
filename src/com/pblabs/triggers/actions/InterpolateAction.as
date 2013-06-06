@@ -6,6 +6,7 @@ package com.pblabs.triggers.actions
 	import com.pblabs.engine.entity.PropertyReference;
 	import com.pblabs.engine.scripting.ExpressionReference;
 	
+	import flash.geom.Point;
 	import flash.utils.getDefinitionByName;
 	import flash.utils.getQualifiedClassName;
 	
@@ -52,13 +53,16 @@ package com.pblabs.triggers.actions
 		
 		override public function execute():*
 		{
+			if(_tween && _tween.running)
+				return;
+			
 			_duration = Number(getExpressionValue(durationReference));
 			_delay = Number(getExpressionValue(delayReference));
 			_repeat = Number(getExpressionValue(repeatCountReference));
 			var easeClazz : Class = getDefinitionByName(easingClass) as Class;
 			if(_tween)
 				_tween.dispose();
-			_tween = new Tween(this.owner ? this.owner.owner : null, propertyReference, _duration, Number(getExpressionValue(fromValueReference)), Number(getExpressionValue(valueReference)), easeClazz[easingFunction], onComplete, _delay, pingpong, _repeat, 0, 0);
+			_tween = new Tween(this.owner ? this.owner.owner : null, propertyReference, _duration, ( (getExpressionValue(fromValueReference) is Point) ? getExpressionValue(fromValueReference) as Point : Number(getExpressionValue(fromValueReference)) ), ( (getExpressionValue(valueReference) is Point) ? getExpressionValue(valueReference) as Point : Number(getExpressionValue(valueReference)) ), easeClazz[easingFunction], onComplete, _delay, pingpong, _repeat, 0, 0);
 			return;
 		}
 		
