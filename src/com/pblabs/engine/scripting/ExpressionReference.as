@@ -165,6 +165,9 @@ package com.pblabs.engine.scripting
 			D.importFunction("rotationOfAngle", ExpressionUtils.rotationOfAngle);
 			D.importFunction("distance", ExpressionUtils.distance);
 			D.importFunction("distanceOfPoint", ExpressionUtils.distanceOfPoint);
+			D.importFunction("percentOfRange", ExpressionUtils.percentOfRange);
+			D.importFunction("valueOfRangePercent", ExpressionUtils.valueOfRangePercent);
+			D.importFunction("roundTo", ExpressionUtils.roundTo);
 			
 			_initialized = true;
 		}
@@ -215,6 +218,24 @@ import com.pblabs.engine.entity.IEntity;
 import flash.geom.Point;
 
 class ExpressionUtils{
+	public static function roundTo(value:Number, decimals:int = 1):Number
+	{
+		var m:int = Math.pow(10, decimals);
+		return Math.round(value * m) / m;
+	}
+	
+	public static function percentOfRange(currentValue : Number, min : Number, max : Number, decimal : Boolean = true):Number
+	{
+		if(decimal)
+			return ((( currentValue - min ) / ( max - min )) / 1 );
+		return ((( currentValue - min ) / ( max - min )) * 100 );
+	}
+
+	public static function valueOfRangePercent(percentage : Number, min : Number, max : Number):Number
+	{
+		return ((( max - min ) / 100 ) * percentage ) + min;
+	}
+
 	public static function distanceOfPoint(pointA : Point, pointB : Point):Number
 	{
 		return distance(pointA.x, pointA.y, pointB.x, pointB.y);
