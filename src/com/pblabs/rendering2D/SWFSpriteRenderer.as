@@ -89,6 +89,9 @@ package com.pblabs.rendering2D
 		{
 			if(!instance) return;
 			
+			if(bitmapData)
+				bitmapData.dispose();
+			
 			//Hack required so that the movie clip animation is drawn correctly
 			//Ridiculous Adobe!!!
 			if(PBE.mainStage){

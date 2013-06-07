@@ -13,6 +13,7 @@ package com.pblabs.starling2D
 	import com.pblabs.rendering2D.SWFSpriteRenderer;
 	
 	import flash.display.BitmapData;
+	import flash.display.DisplayObject;
 	import flash.geom.Point;
 	
 	import starling.core.Starling;
@@ -71,27 +72,51 @@ package com.pblabs.starling2D
 				InitializationUtilG2D.initializeRenderers.add(buildG2DObject);
 				return;
 			}
+			if(!_resource)
+				return;
+			
+			var texture : Texture = ResourceTextureManagerG2D.getTextureByKey( getTextureCacheKey() );
 			if(!gpuObject){
-				gpuObject = new Image(Texture.fromBitmap(this.bitmap));
+				if(texture)
+				{
+					gpuObject = new Image(texture);
+				}else{
+					//Create GPU Renderer Object
+					gpuObject = new Image(ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmap.bitmapData, getTextureCacheKey() ));
+				}
 			}else{
 				if(( gpuObject as Image).texture)
 					( gpuObject as Image).texture.dispose();
-				(gpuObject as Image).texture = Texture.fromBitmap(this.bitmap);
+				texture = (gpuObject as Image).texture = ResourceTextureManagerG2D.getTextureForBitmapData(this.bitmap.bitmapData, getTextureCacheKey());
 				( gpuObject as Image).readjustSize();
 			}
 			smoothing = _smoothing;
 			super.buildG2DObject();
 		}
 		
-		protected override function onRemove():void
+		override protected function onRemove():void
 		{
 			super.onRemove();
 			InitializationUtilG2D.initializeRenderers.remove(buildG2DObject);
 		}
 
+		override protected function paintMovieClipToBitmap(instance : DisplayObject):void
+		{
+			var texture : Texture = ResourceTextureManagerG2D.getTextureByKey( getTextureCacheKey() );
+			if(texture)
+				return;
+			super.paintMovieClipToBitmap(instance);
+		}
+
 		protected function modifyTexture(data:Texture):Texture
 		{
 			return data;            
+		}
+
+		protected function getTextureCacheKey():String{
+			if(!_resource)
+				return null;
+			return _resource.filename + _containingObjectName + combinedScale.x.toString() + combinedScale.y.toString();
 		}
 
 		override public function set mouseEnabled(value:Boolean):void
@@ -143,7 +168,7 @@ package com.pblabs.starling2D
 				if(!_smoothing)
 					(gpuObject as Image).smoothing = TextureSmoothing.NONE;
 				else
-					(gpuObject as Image).smoothing = TextureSmoothing.TRILINEAR;
+					(gpuObject as Image).smoothing = TextureSmoothing.BILINEAR;
 			}
 		}
 		
