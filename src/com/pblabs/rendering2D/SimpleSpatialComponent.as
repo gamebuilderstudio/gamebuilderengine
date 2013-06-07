@@ -52,7 +52,7 @@ package com.pblabs.rendering2D
             _position.y = value.y;
         }
 		
-        [EditorData(ignore="true")]
+        [EditorData(ignore="true", inspectable="true")]
         public function set x(value:Number):void
         {
             _position.x = value;
@@ -63,7 +63,7 @@ package com.pblabs.rendering2D
             return _position.x;
         }
         
-		[EditorData(ignore="true")]
+		[EditorData(ignore="true", inspectable="true")]
         public function set y(value:Number):void
         {
             _position.y = value;

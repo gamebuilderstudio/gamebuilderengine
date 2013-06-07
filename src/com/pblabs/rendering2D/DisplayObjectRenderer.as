@@ -420,7 +420,7 @@ package com.pblabs.rendering2D
         /**
          * The x value of our scene space position.
          */
-        [EditorData(ignore="true")]
+        [EditorData(ignore="true", inspectable="true")]
         public function get x():Number
         {
             return _position.x;
@@ -449,7 +449,7 @@ package com.pblabs.rendering2D
         /**
          * The y component of our scene space position. Used for sorting.
          */
-        [EditorData(ignore="true")]
+        [EditorData(ignore="true", inspectable="true")]
         public function get y():Number
         {
             return _position.y;
@@ -503,7 +503,7 @@ package com.pblabs.rendering2D
         /**
          * Our bounds in scene coordinates.
          */
-        [EditorData(ignore="true")]
+        [EditorData(ignore="true", inspectable="true")]
         public function get sceneBounds():Rectangle
         {
             // NOP if no DO.
@@ -523,7 +523,7 @@ package com.pblabs.rendering2D
         /**
          * @return Bounds in object space, relative to its local origin.
          */
-        [EditorData(ignore="true")]
+        [EditorData(ignore="true", inspectable="true")]
 		private var _tmpLocalBounds : Rectangle = new Rectangle();
         public function get localBounds():Rectangle
         {

@@ -24,6 +24,26 @@ package com.pblabs.rendering2D
 	   * Position setter.
 	   */
 	  function set position(value:Point):void;
+
+	  /**
+	   * X Position setter.
+	   */
+	  function set x(value:Number):void;
+	  
+	  /**
+	   * X Position getter.
+	   */
+	  function get x():Number;
+	  
+	  /**
+	   * Y Position setter.
+	   */
+	  function set y(value:Number):void;
+	  
+	  /**
+	   * Y Position getter.
+	   */
+	  function get y():Number;
 	  
 	  /**
 	   * Rotation getter.
