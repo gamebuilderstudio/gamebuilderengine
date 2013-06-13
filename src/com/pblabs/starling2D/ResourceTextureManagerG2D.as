@@ -33,9 +33,9 @@ package com.pblabs.starling2D
 					var originObject : * = _originTexturesMap[key][i]
 					_originTexturesMap[key].splice(i, 1);
 					if(!_originTexturesMap[key] || _originTexturesMap[key].length < 1)
-						_originTexturesMap[key] = null;
+						delete _originTexturesMap[key];
 					
-					_textureReferenceCount[originObject] = null;
+					delete _textureReferenceCount[originObject];
 					if(originObject["disposed"] && originObject["dispose"] != null )
 					{
 						originObject.disposed.remove(releaseTexture);
@@ -47,7 +47,7 @@ package com.pblabs.starling2D
 			{
 				_subTexturesMap[key].disposed.remove(releaseTexture);
 				_subTexturesMap[key].dispose();
-				_subTexturesMap[key] = null;
+				delete _subTexturesMap[key];
 			}
 			_originTexturesMap = new Dictionary();
 			_subTexturesMap = new Dictionary();
@@ -240,7 +240,7 @@ package com.pblabs.starling2D
 				}
 				
 				//Release original parent texture if it is no longer referenced anywhere in the engine
-				/*for(var key : * in _originTexturesMap)
+				for(var key : * in _originTexturesMap)
 				{
 					var len : int = _originTexturesMap[key].length;
 					for(var i : int = 0; i < len; i++)
@@ -259,7 +259,7 @@ package com.pblabs.starling2D
 							return;
 						}
 					}
-				}*/
+				}
 			}catch(e : Error){
 				Logger.error(null, "releaseTexture", "Error releasing texture");
 			}
