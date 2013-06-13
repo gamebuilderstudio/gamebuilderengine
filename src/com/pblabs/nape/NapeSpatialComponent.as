@@ -104,6 +104,7 @@ package com.pblabs.nape
 		{
 			_collisionType = value;
 			_interactionFilter.collisionGroup = _collisionType ? _collisionType.bits : 1;
+			_interactionFilter.sensorGroup = _collisionType ? _collisionType.bits : 1;
 			if (_body)
 				buildCollisionShapes();
 		}
@@ -117,6 +118,7 @@ package com.pblabs.nape
 		{
 			_collidesWithTypes = value;
 			_interactionFilter.collisionMask = collidesWithTypes ? collidesWithTypes.bits : -1;
+			_interactionFilter.sensorMask = collidesWithTypes ? collidesWithTypes.bits : -1;
 			if (_body)
 				buildCollisionShapes();
 		}
@@ -357,6 +359,8 @@ package com.pblabs.nape
 		{
 			_interactionFilter.collisionGroup = (this.collisionType ? this.collisionType.bits : 1);
 			_interactionFilter.collisionMask = (this.collidesWithTypes ? this.collidesWithTypes.bits : -1);
+			_interactionFilter.sensorGroup = (this.collisionType ? this.collisionType.bits : 1);
+			_interactionFilter.sensorMask = (this.collidesWithTypes ? this.collidesWithTypes.bits : -1);
 			return _interactionFilter;
 		}
 		
