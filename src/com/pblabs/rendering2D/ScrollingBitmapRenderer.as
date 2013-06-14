@@ -88,7 +88,7 @@ package com.pblabs.rendering2D
 			offsetImage(_scratchPosition.x, _scratchPosition.y);
 			
 			// Now that we've read all our properties, apply them to our transform.
-			if (_transformDirty)
+			if (_transformDirty || PBE.IN_EDITOR)
 				updateTransform();
 		}
 		
