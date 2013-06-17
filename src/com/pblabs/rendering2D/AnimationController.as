@@ -197,23 +197,22 @@ package com.pblabs.rendering2D
                 // If the sprite sheet was not initialized before we tick, the duration can be 0, causing us never to get past frame 0.
                 if (_currentAnimationDuration == 0)
                     updateAnimationDuration();
-                
+
                 // Figure out what frame we are on.
                 var frameTime:Number = _currentAnimationDuration / _currentAnimation.frameCount;
                 if (frameTime > _currentAnimation.maxFrameDelay)
                     frameTime = _currentAnimation.maxFrameDelay;
     
-                var animationAge:Number = _currentTime - _currentAnimationStartTime;
+				var animationAge:Number = _currentTime - _currentAnimationStartTime;
                 var curFrame:int = Math.floor(animationAge / frameTime);
     			
 				// Deal with clamping/looping.
                 if (_currentAnimation.loop)
                 {
-					if(curFrame >= _currentAnimation.frameCount-1){
+					if(curFrame >= _currentAnimation.frameCount){
 						_currentAnimationStartTime = _currentTime;
 					}
 
-					var wasFrame:int = curFrame;
 					curFrame = curFrame % _currentAnimation.frameCount;
                 }
                 else
@@ -224,7 +223,6 @@ package com.pblabs.rendering2D
 				
 				targetCurFrame = _currentAnimation.getFrameByIndex(curFrame);
             }
-
 
             // Assign properties.
             // For performance, we only set the properties if they have changed since the last frame.
