@@ -210,19 +210,14 @@ package com.pblabs.starling2D
 			_starlingInstance.stage.addEventListener(TouchEvent.TOUCH, onTouch);
 		}
 		
+		private var _touches : Vector.<Touch> = new Vector.<Touch>();
 		private function onTouch(event : TouchEvent):void
 		{
-			var touch : Touch = event.getTouch(starlingInstance.stage);
-			if(touch)
-			{
-				if(touch.phase == TouchPhase.BEGAN){
-					PBE.inputManager.simulateMouseDown();
-				}else if(touch.phase == TouchPhase.ENDED || touch.phase == TouchPhase.STATIONARY){
-					PBE.inputManager.simulateMouseUp();
-				}else if(touch.phase == TouchPhase.MOVED){
-					PBE.inputManager.simulateMouseMove();
-				}
-			}
+			_touches.length = 0;
+			event.getTouches(starlingInstance.stage, null, _touches);
+			//TODO: Do a touch object conversion to a generic engine Touch object instead of 
+			//having the Starling dependency on the InputManager!!!
+			PBE.inputManager.simulateTouch(_touches);
 		}
 		
 		private function onContextCreated(event : *):void{

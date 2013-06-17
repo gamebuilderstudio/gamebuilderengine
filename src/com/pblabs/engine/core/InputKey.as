@@ -140,6 +140,16 @@ package com.pblabs.engine.core
         public static const MOUSE_WHEEL:InputKey = new InputKey(256);
         public static const MOUSE_HOVER:InputKey = new InputKey(257);
 
+		public static const TOUCH_1:InputKey = new InputKey(301);
+		public static const TOUCH_2:InputKey = new InputKey(302);
+		public static const TOUCH_3:InputKey = new InputKey(303);
+		public static const TOUCH_4:InputKey = new InputKey(304);
+		public static const TOUCH_5:InputKey = new InputKey(305);
+		public static const TOUCH_6:InputKey = new InputKey(306);
+		public static const TOUCH_7:InputKey = new InputKey(307);
+		public static const TOUCH_8:InputKey = new InputKey(308);
+		public static const TOUCH_9:InputKey = new InputKey(309);
+		public static const TOUCH_10:InputKey = new InputKey(310);
         /**
          * A dictionary mapping the string names of all the keys to the InputKey they represent.
          */
@@ -311,7 +321,18 @@ package com.pblabs.engine.core
                 _typeMap["MOUSE_Y"] = MOUSE_Y;
                 _typeMap["MOUSE_WHEEL"] = MOUSE_WHEEL;
                 _typeMap["MOUSE_HOVER"] = MOUSE_HOVER;
-            }
+
+				_typeMap["TOUCH1"] = TOUCH_1;
+				_typeMap["TOUCH2"] = TOUCH_2;
+				_typeMap["TOUCH3"] = TOUCH_3;
+				_typeMap["TOUCH4"] = TOUCH_4;
+				_typeMap["TOUCH5"] = TOUCH_5;
+				_typeMap["TOUCH6"] = TOUCH_6;
+				_typeMap["TOUCH7"] = TOUCH_7;
+				_typeMap["TOUCH8"] = TOUCH_8;
+				_typeMap["TOUCH9"] = TOUCH_9;
+				_typeMap["TOUCH10"] = TOUCH_10;
+			}
 
             return _typeMap;
         }

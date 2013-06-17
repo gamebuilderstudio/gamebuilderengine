@@ -9,10 +9,14 @@
 package com.pblabs.engine.core
 {
     import com.pblabs.engine.PBE;
+    import com.pblabs.engine.debug.Logger;
     
     import flash.events.EventDispatcher;
     import flash.events.KeyboardEvent;
     import flash.events.MouseEvent;
+    
+    import starling.events.Touch;
+    import starling.events.TouchPhase;
 
     /**
      * The input manager wraps the default input events produced by Flash to make
@@ -66,17 +70,22 @@ package com.pblabs.engine.core
             var len : int = _keyState.length;
             for (cnt = 0; cnt < len; cnt++)
             {
-                if (_keyState[cnt] && !_keyStateOld[cnt])
-                    _justPressed[cnt] = true;
+				var curKeyState : InputState = _keyState[cnt];
+				
+				var oldKeyIndex : int = findKeyStateIndex(curKeyState.keyCode, _keyStateOld);
+				var oldKeyState : InputState = _keyStateOld[oldKeyIndex];
+				
+				if (curKeyState.value && !oldKeyState.value)
+					findKeyState(curKeyState.keyCode, _justPressed).value = true;
                 else
-                    _justPressed[cnt] = false;
+					findKeyState(curKeyState.keyCode, _justPressed).value = false;
                 
-                if (!_keyState[cnt] && _keyStateOld[cnt])
-                    _justReleased[cnt] = true;
+                if (!curKeyState.value && oldKeyState.value)
+					findKeyState(curKeyState.keyCode, _justReleased).value = true;
                 else
-                    _justReleased[cnt] = false;
+					findKeyState(curKeyState.keyCode, _justReleased).value = false;
                 
-                _keyStateOld[cnt] = _keyState[cnt];
+				oldKeyState.value = curKeyState.value;
             }
         }
         
@@ -85,7 +94,7 @@ package com.pblabs.engine.core
          */
         public function keyJustPressed(keyCode:int):Boolean
         {
-            return _justPressed[keyCode];
+			return findKeyState(keyCode, _justPressed).value;
         }
         
         /**
@@ -93,7 +102,7 @@ package com.pblabs.engine.core
          */
         public function keyJustReleased(keyCode:int):Boolean
         {
-            return _justReleased[keyCode];
+            return findKeyState(keyCode, _justReleased).value;
         }
 
         /**
@@ -101,7 +110,7 @@ package com.pblabs.engine.core
          */
         public function isKeyDown(keyCode:int):Boolean
         {
-            return _keyState[keyCode];
+            return findKeyState(keyCode, _keyState).value;
         }
         
         /**
@@ -109,13 +118,32 @@ package com.pblabs.engine.core
          */
         public function isAnyKeyDown():Boolean
         {
-            for each(var b:Boolean in _keyState)
-                if(b)
-                    return true;
+			var len : int = _keyState.length;
+			for(var i : int = 0; i < len; i++)
+			{
+				if(_keyState[i].value)
+					return true;
+			}
             return false;
         }
 
-        /**
+		/**
+		 * Returns true if any touch events have been received
+		 */
+		public function isTouching():Boolean
+		{
+			var len : int = _keyState.length;
+			for(var i : int = 1; i < 11; i++)
+			{
+				if(findKeyState(InputKey["TOUCH_"+i].keyCode, _keyState).value)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+		/**
          * Simulates a key press. The key will remain 'down' until SimulateKeyUp is called
          * with the same keyCode.
          *
@@ -127,7 +155,7 @@ package com.pblabs.engine.core
         public function simulateKeyDown(keyCode:int):void
         {
             dispatchEvent(new KeyboardEvent(KeyboardEvent.KEY_DOWN, true, false, 0, keyCode));
-            _keyState[keyCode] = true;
+			findKeyState(keyCode, _keyState).value = true;
         }
 
         /**
@@ -141,7 +169,7 @@ package com.pblabs.engine.core
         public function simulateKeyUp(keyCode:int):void
         {
             dispatchEvent(new KeyboardEvent(KeyboardEvent.KEY_UP, true, false, 0, keyCode));
-            _keyState[keyCode] = false;
+			findKeyState(keyCode, _keyState).value = false;
         }
 
         /**
@@ -185,30 +213,82 @@ package com.pblabs.engine.core
 			onMouseWheel(new MouseEvent(MouseEvent.MOUSE_WHEEL));
         }
 
-        private function onKeyDown(event:KeyboardEvent):void
-        {
-            if (_keyState[event.keyCode])
-                return;
+		/**
+		 * Simulates clicking the mouse button.
+		 */
+		public function simulateTouch(touches : Vector.<Touch>):void
+		{
+			if(touches.length > 0)
+			{
+				var len : int = touches.length;
+				for(var i : int = 0; i < len; i++)
+				{
+					var touch : Touch = touches[i];
+					var inputData : InputState = findKeyState(InputKey["TOUCH_"+(touch.id+1)].keyCode, _keyState);
+					if(touch.phase == TouchPhase.BEGAN){
+						if(i == 0)
+							simulateMouseDown();
+						inputData.value = true;
+					}else if(touch.phase == TouchPhase.ENDED){// || touch.phase == TouchPhase.STATIONARY
+						if(i == 0)
+							simulateMouseUp();
+						inputData.value = false;
+					}else if(touch.phase == TouchPhase.MOVED){
+						if(i == 0)
+							simulateMouseMove();
+						inputData.value = true;
+					}
+					inputData.stageX = touch.globalX;
+					inputData.stageY = touch.globalY;
+					inputData.touchCount = touch.tapCount;
+				}
+			}
+		}
+		
+		public function getKeyData(keyCode : int):InputState
+		{
+			var len : int = _keyState.length;
+			for(var i : int = 0; i < len; i++)
+			{
+				if(_keyState[i].keyCode == keyCode)
+					return _keyState[i];
+			}
+			var keyState : InputState = InputState.getInstance(keyCode);
+			_keyState.push( keyState );
+			return keyState;
+		}
 
-            _keyState[event.keyCode] = true;
+		private function onKeyDown(event:KeyboardEvent):void
+        {
+			findKeyState(event.keyCode, _keyState).value = true;
             dispatchEvent(event);
         }
 
         private function onKeyUp(event:KeyboardEvent):void
         {
-            _keyState[event.keyCode] = false;
+			findKeyState(event.keyCode, _keyState).value = false;
             dispatchEvent(event);
         }
 
         private function onMouseDown(event:MouseEvent):void
         {
-			_keyState[InputKey.MOUSE_BUTTON.keyCode] = true;
+			var keyData : InputState = findKeyState(InputKey.MOUSE_BUTTON.keyCode, _keyState);
+			keyData.value = true;
+			keyData.stageX = PBE.mainStage.mouseX;
+			keyData.stageY = PBE.mainStage.mouseY;
+			if(event.hasOwnProperty("clickCount"))
+				keyData.touchCount = event.clickCount;
             dispatchEvent(event);
         }
 
         private function onMouseUp(event:MouseEvent):void
         {
-			_keyState[InputKey.MOUSE_BUTTON.keyCode] = false;
+			var keyData : InputState = findKeyState(InputKey.MOUSE_BUTTON.keyCode, _keyState);
+			keyData.value = false;
+			keyData.stageX = PBE.mainStage.mouseX;
+			keyData.stageY = PBE.mainStage.mouseY;
+			if(event.hasOwnProperty("clickCount"))
+				keyData.touchCount = event.clickCount;
             dispatchEvent(event);
         }
 
@@ -231,11 +311,36 @@ package com.pblabs.engine.core
         {
             dispatchEvent(event);
         }
+		
+		private function findKeyState(keyCode : int, stateMap : Vector.<InputState>):InputState
+		{
+			var len : int = stateMap.length;
+			for(var i : int = 0; i < len; i++)
+			{
+				if(stateMap[i].keyCode == keyCode)
+					return stateMap[i];
+			}
+			var inputState : InputState = InputState.getInstance(keyCode);
+			stateMap.push( inputState );
+			return inputState;
+		}
 
-        private var _keyState:Array = new Array();     // The most recent information on key states
-        private var _keyStateOld:Array = new Array();  // The state of the keys on the previous tick
-        private var _justPressed:Array = new Array();  // An array of keys that were just pressed within the last tick.
-        private var _justReleased:Array = new Array(); // An array of keys that were just released within the last tick.
+		private function findKeyStateIndex(keyCode : int, stateMap : Vector.<InputState>):int
+		{
+			var len : int = stateMap.length;
+			for(var i : int = 0; i < len; i++)
+			{
+				if(stateMap[i].keyCode == keyCode)
+					return i;
+			}
+			stateMap.push( InputState.getInstance(keyCode) );
+			return len;
+		}
+
+		private var _keyState:Vector.<InputState> = new Vector.<InputState>();     // The most recent information on key states
+        private var _keyStateOld:Vector.<InputState> = new Vector.<InputState>();  // The state of the keys on the previous tick
+        private var _justPressed:Vector.<InputState> = new Vector.<InputState>();  // An array of keys that were just pressed within the last tick.
+        private var _justReleased:Vector.<InputState> = new Vector.<InputState>(); // An array of keys that were just released within the last tick.
     }
 }
 
