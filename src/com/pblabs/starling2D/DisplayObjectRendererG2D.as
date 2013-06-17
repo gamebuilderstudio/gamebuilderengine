@@ -77,13 +77,13 @@ package com.pblabs.starling2D
 		 */
 		override public function updateTransform(updateProps:Boolean = false):void
 		{
-			if(gpuObject && updateProps)
-				updateProperties();
-			
 			if(!gpuObject){
 				super.updateTransform(updateProps);
 				return;
 			}
+
+			if(updateProps)
+				updateProperties();
 			
 			_transformMatrix.identity();
 			_transformMatrix.scale(combinedScale.x, combinedScale.y);
@@ -94,7 +94,6 @@ package com.pblabs.starling2D
 			gpuObject.transformationMatrix = _transformMatrix;
 			//gpuObject.pivotX = _registrationPoint.x;
 			//gpuObject.pivotY = _registrationPoint.y;
-			
 			gpuObject.alpha = this._alpha;
 			gpuObject.blendMode = this._blendMode;
 			gpuObject.visible = (alpha > 0);

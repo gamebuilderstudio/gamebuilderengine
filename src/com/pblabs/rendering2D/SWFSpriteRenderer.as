@@ -117,7 +117,7 @@ package com.pblabs.rendering2D
 				if(_registrationPoint.y < 0) _registrationPoint.y *= -1;
 			}
 			
-			var frameData : ImageFrameData = MCUtil.getBitmapDataByDisplay(instance, combinedScale, instance.transform.colorTransform, localDimensions);
+			var frameData : ImageFrameData = MCUtil.getBitmapDataByDisplay(instance, scale, instance.transform.colorTransform, localDimensions);
 
 			//Clean up hack
 			if(PBE.mainStage){

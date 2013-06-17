@@ -10,6 +10,7 @@ package com.pblabs.starling2D
 {
 	import com.pblabs.engine.PBUtil;
 	import com.pblabs.engine.core.ObjectType;
+	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.rendering2D.SWFSpriteRenderer;
 	
 	import flash.display.BitmapData;
@@ -45,24 +46,27 @@ package com.pblabs.starling2D
 		override public function updateTransform(updateProps:Boolean = false):void
 		{
 			if(!gpuObject){
+				super.updateTransform(updateProps);
 				return;
 			}
 			
 			if(updateProps)
 				updateProperties();
 			
-			gpuObject.pivotX = _registrationPoint.x;
-			gpuObject.pivotY = _registrationPoint.y;
-			gpuObject.x = this._position.x + _positionOffset.x;
-			gpuObject.y = this._position.y + _positionOffset.y;
-			gpuObject.rotation = PBUtil.getRadiansFromDegrees(_rotation) + _rotationOffset;
-			gpuObject.scaleX = this.combinedScale.x;
-			gpuObject.scaleY = this.combinedScale.y;
+			_transformMatrix.identity();
+			//_transformMatrix.scale(combinedScale.x, combinedScale.y);
+			_transformMatrix.translate(-_registrationPoint.x * combinedScale.x, -_registrationPoint.y * combinedScale.y);
+			_transformMatrix.rotate(PBUtil.getRadiansFromDegrees(_rotation) + _rotationOffset);
+			_transformMatrix.translate((_position.x + _positionOffset.x), (_position.y + _positionOffset.y));
+			
+			gpuObject.transformationMatrix = _transformMatrix;
+			//gpuObject.pivotX = _registrationPoint.x;
+			//gpuObject.pivotY = _registrationPoint.y;
 			gpuObject.alpha = this._alpha;
 			gpuObject.blendMode = this._blendMode;
 			gpuObject.visible = (alpha > 0);
 			gpuObject.touchable = _mouseEnabled;
-
+			
 			_transformDirty = false;
 		}
 
@@ -89,6 +93,7 @@ package com.pblabs.starling2D
 					( gpuObject as Image).texture.dispose();
 				texture = (gpuObject as Image).texture = ResourceTextureManagerG2D.getTextureForBitmapData(this.bitmap.bitmapData, getTextureCacheKey());
 				( gpuObject as Image).readjustSize();
+				Logger.print(this, "Re-painting GPU Object w Key - ["+getTextureCacheKey()+"]");
 			}
 			smoothing = _smoothing;
 			super.buildG2DObject();
