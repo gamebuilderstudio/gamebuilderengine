@@ -143,7 +143,7 @@ package com.pblabs.rendering2D
             // The hash lookup and findProperty each frame gets expensive with a lot of 
             // animation components running.
             var nextAnim:AnimationControllerInfo = null;
-            if ((!changeAnimationEvent || !_currentAnimation) && !_newAnimationSet)
+			if(!_currentAnimation || (_newAnimationSet && _currentAnimation) || (changeAnimationEvent && !_currentAnimation))
                 nextAnim = getNextAnimation();
             else
                 nextAnim = _currentAnimation;
