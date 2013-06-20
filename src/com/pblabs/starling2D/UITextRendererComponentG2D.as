@@ -8,6 +8,7 @@
  ******************************************************************************/
 package com.pblabs.starling2D
 {
+	import com.pblabs.engine.PBUtil;
 	import com.pblabs.engine.core.ObjectType;
 	import com.pblabs.rendering2D.UITextRendererComponent;
 	
@@ -26,6 +27,34 @@ package com.pblabs.starling2D
 		public function UITextRendererComponentG2D()
 		{
 			super();
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		override public function updateTransform(updateProps:Boolean = false):void
+		{
+			if(!gpuObject){
+				super.updateTransform(updateProps);
+				return;
+			}
+			
+			if(updateProps)
+				updateProperties();
+			
+			_transformMatrix.identity();
+			//_transformMatrix.scale(combinedScale.x, combinedScale.y);
+			_transformMatrix.translate(-_registrationPoint.x * combinedScale.x, -_registrationPoint.y * combinedScale.y);
+			_transformMatrix.rotate(PBUtil.getRadiansFromDegrees(_rotation) + _rotationOffset);
+			_transformMatrix.translate((_position.x + _positionOffset.x), (_position.y + _positionOffset.y));
+			
+			gpuObject.transformationMatrix = _transformMatrix;
+			gpuObject.alpha = this._alpha;
+			gpuObject.blendMode = this._blendMode;
+			gpuObject.visible = (alpha > 0);
+			gpuObject.touchable = _mouseEnabled;
+			
+			_transformDirty = false;
 		}
 
 		override public function pointOccupied(worldPosition:Point, mask:ObjectType):Boolean

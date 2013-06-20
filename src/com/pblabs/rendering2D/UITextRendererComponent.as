@@ -1,6 +1,7 @@
 package com.pblabs.rendering2D
 {
 	import com.pblabs.engine.PBE;
+	import com.pblabs.engine.PBUtil;
 	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.resource.DataResource;
 	import com.pblabs.engine.resource.ImageResource;
@@ -28,18 +29,20 @@ package com.pblabs.rendering2D
 	{
 		[EditorData(ignore="true")]
 		public var textFormatter : TextFormat = new TextFormat("Arial", 30, 0xFFFFFF, true);
-		public var autoResize : Boolean = true;
 		
 		protected var _bmFontObject : BMFont;
 		protected var _textDisplay : TextField = new TextField();
 		protected var _fontImage : ImageResource;
 		protected var _fontData : DataResource;
 		protected var _textDirty : Boolean = false;
+		protected var _textSizeDirty : Boolean = false;
 		protected var _textInputType : String = TextFieldType.DYNAMIC;
 		protected var _stagePoint : Point = new Point();
 		protected var _previousAlpha : Number = 0;
 		protected var _inputEnabled : Boolean = false;
 		protected var _startMouseDownPos : Point = new Point();
+		protected var _wordWrap : Boolean = false; 
+		protected var _autoResize : Boolean = true;
 		
 		public function UITextRendererComponent()
 		{
@@ -51,6 +54,10 @@ package com.pblabs.rendering2D
 		{
 			buildFontObject();
 			
+			if(_textSizeDirty)
+			{
+				updateFontSize();
+			}
 			if(_textDirty == true){
 				paintTextToBitmap();
 			}
@@ -66,6 +73,9 @@ package com.pblabs.rendering2D
 		{
 			/*if(!_textDisplay.text || _textDisplay.text == "") 
 				text = "[EMPTY]";*/
+			if(!_textDisplay)
+				_textDisplay = new TextField();
+			_textDisplay.wordWrap = _wordWrap;
 			_textDisplay.defaultTextFormat = textFormatter;
 			_textDisplay.autoSize = TextFieldAutoSize.LEFT;
 
@@ -108,7 +118,7 @@ package com.pblabs.rendering2D
 		protected function onStageMouseUp(event : MouseEvent):void
 		{
 			_stagePoint.setTo( event.stageX, event.stageY );
-			if(!_transformDirty && _startMouseDownPos.equals(_stagePoint))
+			if(!_transformDirty && _startMouseDownPos.equals(_stagePoint) && !PBE.IN_EDITOR)
 				toggleInputDisplay();
 		}
 		
@@ -177,11 +187,24 @@ package com.pblabs.rendering2D
 			var textBitmapData:BitmapData = this.originalBitmapData;
 			if(textBitmapData) 
 				textBitmapData.fillRect(textBitmapData.rect, 0);
-			if(!this.bitmapData || this.bitmapData.width != size.x || this.bitmapData.height != size.y || this.text == "")
+			if(!this.bitmapData || this.bitmapData.width != size.x || this.bitmapData.height != size.y || _textSizeDirty || this.text == "")
 			{
 				if(textBitmapData)
 					textBitmapData.dispose();
-				textBitmapData = new BitmapData(size.x, size.y, true, 0x0);
+				
+				var textSize : Point;
+				if(autoResize)
+				{
+					textSize = this._size;
+				}else{
+					textSize = new Point();
+					textSize.setTo( this._size.x*this._scale.x, this._size.y*this._scale.y );
+				}
+				if(textSize.x < 2)
+					textSize.x = 2;
+				if(textSize.y < 2)
+					textSize.y = 2;
+				textBitmapData = new BitmapData(textSize.x, textSize.y, true, 0x0);
 			}
 			textBitmapData.lock();
 			if(_bmFontObject && _fontData && _fontData.isLoaded )
@@ -195,24 +218,55 @@ package com.pblabs.rendering2D
 			this.bitmapData = textBitmapData;
 			
 			_textDirty = false;
+			_textSizeDirty = false;
 		}
 		
 		protected var _newTextSize : Point = new Point();
 		protected function updateFontSize():void
 		{
-			if(!_textDisplay || !autoResize) 
+			if(!_textDisplay) {
+				return;
+			}
+			if(!autoResize){
+				_textDisplay.width = this._size.x * this._scale.x;
+				_textDisplay.height = this._size.y * this._scale.y;
+			}
+			
+			if(autoResize){
+				var textSize : Rectangle = _textDisplay.getBounds(_textDisplay);
+				_newTextSize.setTo( textSize.width, textSize.height );
+				if(sizeProperty && sizeProperty.property != "")
+				{
+					this._size = _newTextSize;
+					if(owner && sizeProperty)
+						this.owner.setProperty( sizeProperty, _newTextSize )
+				}else{
+					this._size = _newTextSize;
+				}
+				_transformDirty = true;
+			}
+		}
+
+		override public function updateTransform(updateProps:Boolean = false):void
+		{
+			if(!displayObject)
 				return;
 			
-			var textSize : Rectangle = _textDisplay.getBounds(_textDisplay);
-			_newTextSize.setTo( textSize.width+10, textSize.height+10);
-			if(sizeProperty && sizeProperty.property != "")
-			{
-				size = _newTextSize;
-				if(owner)
-					this.owner.setProperty( sizeProperty, _newTextSize )
-			}else{
-				size = _newTextSize;
-			}
+			if(updateProps)
+				updateProperties();
+			
+			_transformMatrix.identity();
+			//_transformMatrix.scale(combinedScale.x, combinedScale.y);
+			_transformMatrix.translate(-_registrationPoint.x * combinedScale.x, -_registrationPoint.y * combinedScale.y);
+			_transformMatrix.rotate(PBUtil.getRadiansFromDegrees(_rotation) + _rotationOffset);
+			_transformMatrix.translate((_position.x + _positionOffset.x), (_position.y + _positionOffset.y));
+			
+			displayObject.transform.matrix = _transformMatrix;
+			displayObject.alpha = _alpha;
+			displayObject.blendMode = _blendMode;
+			displayObject.visible = (alpha > 0);
+			
+			_transformDirty = false;
 		}
 
 		public function get fontImage():ImageResource{ return _fontImage; }
@@ -239,8 +293,7 @@ package com.pblabs.rendering2D
 			_textDisplay.setTextFormat(textFormatter);
 			_textDisplay.autoSize = TextFieldAutoSize.LEFT;
 			
-			updateFontSize();
-			//Logger.print(this, "Text Size = W - "+_textDisplay.textWidth + ", H - "+_textDisplay.textHeight);
+			_textSizeDirty = true;
 			_textDirty = true;
 		}
 
@@ -254,20 +307,28 @@ package com.pblabs.rendering2D
 				_textDisplay.text = _text = val;
 				_textDisplay.setTextFormat(textFormatter);
 				_textDisplay.autoSize = TextFieldAutoSize.LEFT;
-				updateFontSize();
+				_textSizeDirty = true;
 				_textDirty = true;
 			}
 		}
 
 		override public function set size(val : Point):void{
-			if(!val.equals(this._size))
+			if(!val.equals(this._size)){
 				_textDirty = true;
+				if(!autoResize)
+					_textSizeDirty = true;
+			}
 			super.size = val;
+			Logger.print(this, "Text Size = "+this._size.toString());
 		}
 		override public function set scale(val : Point):void{
-			if(!val.equals(this._scale))
+			if(!val.equals(this._scale)){
 				_textDirty = true;
+				_textSizeDirty = true;
+			}
 			super.scale = val;
+			Logger.print(this, "Text Scale = "+this._scale.toString());
+			Logger.print(this, "Text Object Width = "+ _textDisplay.width);
 		}
 
 		public function get type():String{ return _textInputType; }
@@ -277,6 +338,21 @@ package com.pblabs.rendering2D
 			_textDisplay.type = _textInputType;
 		}
 	
+		public function get wordWrap():Boolean{ return _wordWrap; }
+		public function set wordWrap(val : Boolean):void{
+			_wordWrap = val;
+			if(_textDisplay)
+				_textDisplay.wordWrap = _wordWrap;
+			_textDirty = true;
+			_textSizeDirty = true;
+		}
+
+		public function get autoResize():Boolean{ return _autoResize; }
+		public function set autoResize(val : Boolean):void{
+			_autoResize = val;
+			_textDirty = true;
+			_textSizeDirty = true;
+		}
 		public function get nativeTextField():TextField{ return _textDisplay; }
 	}
 }
