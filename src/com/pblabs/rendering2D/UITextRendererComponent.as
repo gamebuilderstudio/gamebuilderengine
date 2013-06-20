@@ -2,7 +2,6 @@ package com.pblabs.rendering2D
 {
 	import com.pblabs.engine.PBE;
 	import com.pblabs.engine.PBUtil;
-	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.resource.DataResource;
 	import com.pblabs.engine.resource.ImageResource;
 	import com.pblabs.rendering2D.BitmapRenderer;
@@ -319,7 +318,6 @@ package com.pblabs.rendering2D
 					_textSizeDirty = true;
 			}
 			super.size = val;
-			Logger.print(this, "Text Size = "+this._size.toString());
 		}
 		override public function set scale(val : Point):void{
 			if(!val.equals(this._scale)){
@@ -327,8 +325,6 @@ package com.pblabs.rendering2D
 				_textSizeDirty = true;
 			}
 			super.scale = val;
-			Logger.print(this, "Text Scale = "+this._scale.toString());
-			Logger.print(this, "Text Object Width = "+ _textDisplay.width);
 		}
 
 		public function get type():String{ return _textInputType; }
