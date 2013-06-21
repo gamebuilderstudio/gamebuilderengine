@@ -65,18 +65,19 @@ package com.pblabs.starling2D
 				if(PBE.mainStage.stage3Ds[_stage3DIndex].context3D)
 					PBE.mainStage.stage3Ds[_stage3DIndex].context3D.clear();
 				_starlingInstance = new Starling(Sprite, PBE.mainStage.stage, new Rectangle(0,0, width, height), PBE.mainStage.stage3Ds[_stage3DIndex], "auto", "baselineConstrained", true);
-				_starlingInstance.simulateMultitouch = true;
 				_starlingInstance.addEventListener("context3DCreate", onContextCreated);
 				_starlingInstance.addEventListener("rootCreated", onRootInitialized);
-				if(!PBE.IS_SHIPPING_BUILD)
+				if(!PBE.IS_SHIPPING_BUILD){
 					_starlingInstance.enableErrorChecking = true;
+					_starlingInstance.simulateMultitouch = true;
+				}
 				_starlingInstance.start();
 				name = "SceneView_"+_stage3DIndex;
 			}
 			
 			this.addEventListener("removedFromStage", onRemoved);
-			PBE.mainStage.stage.addEventListener(Event.DEACTIVATE, stage_deactivateHandler, false, 0, true);
-			PBE.mainStage.stage.addEventListener(Event.ENTER_FRAME, onFrame);
+			PBE.mainStage.addEventListener(Event.DEACTIVATE, stage_deactivateHandler, false, 0, true);
+			PBE.mainStage.addEventListener(Event.ENTER_FRAME, onFrame);
 		}
 		
 		public static function findStarlingView(name : String):SceneViewG2D
@@ -171,8 +172,8 @@ package com.pblabs.starling2D
 		public function dispose():void
 		{
 			this.removeEventListener("removedFromStage", onRemoved);
-			PBE.mainStage.stage.removeEventListener(Event.DEACTIVATE, stage_deactivateHandler);
-			PBE.mainStage.stage.removeEventListener(Event.ENTER_FRAME, onFrame);
+			PBE.mainStage.removeEventListener(Event.DEACTIVATE, stage_deactivateHandler);
+			PBE.mainStage.removeEventListener(Event.ENTER_FRAME, onFrame);
 
 			_starlingInstance.removeEventListener("context3DCreate", onContextCreated);
 			_starlingInstance.removeEventListener("rootCreated", onRootInitialized);
