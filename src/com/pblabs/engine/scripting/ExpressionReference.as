@@ -54,7 +54,8 @@ package com.pblabs.engine.scripting
 			DynamicObjectUtil.copyDynamicObject(PBE.GLOBAL_DYNAMIC_OBJECT, _dynamicThisObject);
 			
 			this.selfContext = selfContext;
-			initialize();	
+			if(!_initialized)
+				initialize();	
 		}
 		
 		public function eval(str : String, context : Object = null, thisObject : * = null):ExpressionReference
@@ -168,6 +169,8 @@ package com.pblabs.engine.scripting
 			D.importFunction("percentOfRange", ExpressionUtils.percentOfRange);
 			D.importFunction("valueOfRangePercent", ExpressionUtils.valueOfRangePercent);
 			D.importFunction("roundTo", ExpressionUtils.roundTo);
+			D.importFunction("inchesToPixels", ExpressionUtils.inchesToPixels);
+			D.importFunction("mmToPixels", ExpressionUtils.mmToPixels);
 			
 			_initialized = true;
 		}
@@ -216,8 +219,19 @@ import com.pblabs.engine.PBE;
 import com.pblabs.engine.entity.IEntity;
 
 import flash.geom.Point;
+import flash.system.Capabilities;
 
 class ExpressionUtils{
+	public static function inchesToPixels(inches:Number):Number
+	{
+		return Math.round(Capabilities.screenDPI * inches);
+	}
+	
+	public static function mmToPixels(mm:Number):Number
+	{
+		return Math.round(Capabilities.screenDPI * (mm / 25.4));
+	}
+
 	public static function roundTo(value:Number, decimals:int = 1):Number
 	{
 		var m:int = Math.pow(10, decimals);
