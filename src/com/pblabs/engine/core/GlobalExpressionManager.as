@@ -7,6 +7,7 @@ package com.pblabs.engine.core
 	import flash.events.Event;
 	import flash.events.StageOrientationEvent;
 	import flash.geom.Rectangle;
+	import flash.system.ApplicationDomain;
 	import flash.system.Capabilities;
 
 	public final class GlobalExpressionManager implements ITickedObject
@@ -97,8 +98,10 @@ package com.pblabs.engine.core
 				throw new Error("Game engine has to be started first!");
 			
 			PBE.mainStage.addEventListener(Event.RESIZE, onScreenResize);
-			if(Stage.supportsOrientationChange)
-				PBE.mainStage.addEventListener(StageOrientationEvent.ORIENTATION_CHANGE, orientationChange);
+			if(ApplicationDomain.currentDomain.hasDefinition("flash.events.StageOrientationEvent")){
+				if(Stage.supportsOrientationChange)
+					PBE.mainStage.addEventListener(StageOrientationEvent.ORIENTATION_CHANGE, orientationChange);
+			}
 			
 			objectContext = PBE.GLOBAL_DYNAMIC_OBJECT;
 			if(!objectContext.Game) objectContext.Game = new Object();
@@ -140,9 +143,9 @@ package com.pblabs.engine.core
 			calculateScreenSize();	
 		}
 		
-		private function orientationChange(event : StageOrientationEvent):void
+		private function orientationChange(event : Event):void
 		{
-			switch (event.afterOrientation) { 
+			switch ((event as StageOrientationEvent).afterOrientation) { 
 				case StageOrientation.DEFAULT: 
 					// re-orient display objects based on 
 					// the default (right-sideup) orientation. 
