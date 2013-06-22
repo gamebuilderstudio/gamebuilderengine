@@ -10,6 +10,7 @@ package com.pblabs.starling2D
 {
     import com.pblabs.engine.PBE;
     import com.pblabs.engine.core.IAnimatedObject;
+    import com.pblabs.engine.core.PBTimerObject;
     import com.pblabs.rendering2D.ui.IUITarget;
     
     import flash.display.StageAlign;
@@ -43,6 +44,7 @@ package com.pblabs.starling2D
 		
 		private static var _starlingViewMap : Dictionary = new Dictionary();
 		private static var _stage3DIndex : int = -1;
+		private  var _timer : PBTimerObject;
 		
 		public function SceneViewG2D()
 		{
@@ -73,11 +75,17 @@ package com.pblabs.starling2D
 				}
 				_starlingInstance.start();
 				name = "SceneView_"+_stage3DIndex;
-			}
 			
+				PBE.mainStage.addEventListener(Event.DEACTIVATE, stage_deactivateHandler, false, 0, true);
+				PBE.mainStage.addEventListener(Event.ENTER_FRAME, onFrame);
+				
+				_timer = PBTimerObject.getInstance();
+				_timer.ignoreTimeScale = true;
+				_timer.repeatCount = 1;
+				_timer.delay = 30000;
+				_timer.onTickSignal.add( stopRendering );
+			}
 			this.addEventListener("removedFromStage", onRemoved);
-			PBE.mainStage.addEventListener(Event.DEACTIVATE, stage_deactivateHandler, false, 0, true);
-			PBE.mainStage.addEventListener(Event.ENTER_FRAME, onFrame);
 		}
 		
 		public static function findStarlingView(name : String):SceneViewG2D
@@ -230,16 +238,21 @@ package com.pblabs.starling2D
 		
 		private function stage_deactivateHandler(event:Event):void
 		{
-			this._starlingInstance.stop();
-			PBE.processManager.stop();
 			PBE.mainStage.stage.addEventListener(Event.ACTIVATE, stage_activateHandler, false, 0, true);
+			_timer.start();
 		}
 		
 		private function stage_activateHandler(event:Event):void
 		{
+			_timer.stop();
 			PBE.mainStage.stage.removeEventListener(Event.ACTIVATE, stage_activateHandler);
-			this._starlingInstance.start();
-			PBE.processManager.start();
+			if(!this._starlingInstance.isStarted)
+				this._starlingInstance.start();
+		}
+		
+		private function stopRendering():void
+		{
+			this._starlingInstance.stop();
 		}
 		
 		override public function get width():Number
