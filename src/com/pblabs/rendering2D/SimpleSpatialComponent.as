@@ -230,8 +230,8 @@ package com.pblabs.rendering2D
         {
 			if(spriteForPointChecks && spriteForPointChecks.displayObject)
 				return spriteForPointChecks.sceneBounds;
-			
-			return new Rectangle(position.x - (size.x * 0.5), position.y - (size.y * 0.5), size.x, size.y);         
+			_worldExtents.setTo(position.x - (size.x * 0.5), position.y - (size.y * 0.5), size.x, size.y);
+			return _worldExtents;         
         }
         
         /**
@@ -265,5 +265,6 @@ package com.pblabs.rendering2D
         
         private var _objectMask:ObjectType;
         private var _spatialManager:ISpatialManager2D;
+		private var _worldExtents:Rectangle = new Rectangle();
     }
 }
