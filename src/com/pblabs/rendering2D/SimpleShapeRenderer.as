@@ -50,6 +50,8 @@ package com.pblabs.rendering2D
          */
         public function set lineAlpha(value:Number):void
         {
+			if(_lineAlpha == value)
+				return;
             _lineAlpha = value;
             redraw();
         }
@@ -64,6 +66,8 @@ package com.pblabs.rendering2D
          */
         public function set lineSize(value:Number):void
         {
+			if(_lineSize == value)
+				return;
             _lineSize = value;
             redraw();
         }
@@ -78,6 +82,8 @@ package com.pblabs.rendering2D
          */
         public function set lineColor(value:uint):void
         {
+			if(_lineColor == value)
+				return;
             _lineColor = value;
             redraw();
         }
@@ -92,6 +98,8 @@ package com.pblabs.rendering2D
          */
         public function set fillAlpha(value:Number):void
         {
+			if(_fillAlpha == value)
+				return;
             _fillAlpha = value;
             redraw();
         }
@@ -106,6 +114,8 @@ package com.pblabs.rendering2D
          */
         public function set fillColor(value:uint):void
         {
+			if(_fillColor == value)
+				return;
             _fillColor = value;
             redraw();
         }
@@ -120,6 +130,8 @@ package com.pblabs.rendering2D
          */
         public function set isCircle(value:Boolean):void
         {
+			if(_isCircle == value)
+				return;
             _isCircle = value;
             redraw();
         }
@@ -134,6 +146,8 @@ package com.pblabs.rendering2D
          */
         public function set isSquare(value:Boolean):void
         {
+			if(_isSquare == value)
+				return;
             _isSquare = value;
             redraw();
         }
@@ -148,6 +162,8 @@ package com.pblabs.rendering2D
          */
         public function set radius(value:Number):void
         {
+			if(_radius == value)
+				return;
             _radius = value;
             redraw();
         }
