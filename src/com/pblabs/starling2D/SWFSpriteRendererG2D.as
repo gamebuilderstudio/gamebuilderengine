@@ -93,7 +93,6 @@ package com.pblabs.starling2D
 					( gpuObject as Image).texture.dispose();
 				texture = (gpuObject as Image).texture = ResourceTextureManagerG2D.getTextureForBitmapData(this.bitmap.bitmapData, getTextureCacheKey());
 				( gpuObject as Image).readjustSize();
-				Logger.print(this, "Re-painting GPU Object w Key - ["+getTextureCacheKey()+"]");
 			}
 			smoothing = _smoothing;
 			super.buildG2DObject();
@@ -105,13 +104,13 @@ package com.pblabs.starling2D
 			InitializationUtilG2D.initializeRenderers.remove(buildG2DObject);
 		}
 
-		override protected function paintMovieClipToBitmap(instance : DisplayObject):void
+		/*override protected function paintMovieClipToBitmap(instance : DisplayObject):void
 		{
 			var texture : Texture = ResourceTextureManagerG2D.getTextureByKey( getTextureCacheKey() );
 			if(texture)
 				return;
 			super.paintMovieClipToBitmap(instance);
-		}
+		}*/
 
 		protected function modifyTexture(data:Texture):Texture
 		{

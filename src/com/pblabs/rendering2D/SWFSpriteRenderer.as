@@ -54,6 +54,10 @@ package com.pblabs.rendering2D
 			if(resource.hasEventListener(ResourceEvent.FAILED_EVENT))
 				resource.removeEventListener(ResourceEvent.FAILED_EVENT, resourceFailedLoadingHandler );
 
+			_loaded = true;
+			_resource = resource;
+			_fileName = _resource.filename;
+
 			if(!containingObjectName) {
 				var swfClass : Class;
 				if(resource.appDomain)
@@ -69,10 +73,6 @@ package com.pblabs.rendering2D
 			}else{
 				Logger.error(this, 'onResourceLoaded', 'The SWF resource is missing domain information, so it can not be extracted.');
 			}
-			
-			_loaded = true;
-			_resource = resource;
-			_fileName = _resource.filename;
 		}
 		
 		/**
