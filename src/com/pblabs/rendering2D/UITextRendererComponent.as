@@ -182,14 +182,16 @@ package com.pblabs.rendering2D
 			}
 			if(!_bmFontObject)
 				buildFontObject();
+			var clearedBitmap : Boolean = false;
+			var textBitmapData:BitmapData = originalBitmapData;
 			//var bounds : Rectangle = _textDisplay.getBounds(_textDisplay);
-			var textBitmapData:BitmapData = this.originalBitmapData;
-			if(textBitmapData) 
-				textBitmapData.fillRect(textBitmapData.rect, 0);
 			if(!this.bitmapData || this.bitmapData.width != size.x || this.bitmapData.height != size.y || _textSizeDirty || this.text == "")
 			{
-				if(textBitmapData)
+				if(bitmapData != textBitmapData)
 					textBitmapData.dispose();
+				if(bitmapData)
+					bitmapData.dispose();
+				
 				
 				var textSize : Point;
 				if(autoResize)
@@ -204,7 +206,11 @@ package com.pblabs.rendering2D
 				if(textSize.y < 2)
 					textSize.y = 2;
 				textBitmapData = new BitmapData(textSize.x, textSize.y, true, 0x0);
+				clearedBitmap = true;
 			}
+			
+			if(textBitmapData && !clearedBitmap) 
+				textBitmapData.fillRect(textBitmapData.rect, 0);
 			textBitmapData.lock();
 			if(_bmFontObject && _fontData && _fontData.isLoaded )
 			{
@@ -329,6 +335,8 @@ package com.pblabs.rendering2D
 
 		public function get type():String{ return _textInputType; }
 		public function set type(val : String):void{
+			if(_textInputType == val)
+				return;
 			_textInputType = val;
 			_textDirty = true;
 			_textDisplay.type = _textInputType;
@@ -336,6 +344,8 @@ package com.pblabs.rendering2D
 	
 		public function get wordWrap():Boolean{ return _wordWrap; }
 		public function set wordWrap(val : Boolean):void{
+			if(_wordWrap == val)
+				return;
 			_wordWrap = val;
 			if(_textDisplay)
 				_textDisplay.wordWrap = _wordWrap;
@@ -349,6 +359,17 @@ package com.pblabs.rendering2D
 			_textDirty = true;
 			_textSizeDirty = true;
 		}
+		
+		/**
+		 * @inheritDocs
+		 */
+		override public function set alpha(value:Number):void
+		{
+			if(value != _alpha)
+				_textDirty = true;
+			super.alpha = value;
+		}
+		
 		public function get nativeTextField():TextField{ return _textDisplay; }
 	}
 }
