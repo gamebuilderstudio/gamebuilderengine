@@ -8,6 +8,7 @@ package com.pblabs.nape.constraints
 	import com.pblabs.nape.INape2DSpatialComponent;
 	import com.pblabs.nape.NapeManagerComponent;
 	import com.pblabs.nape.NapeSpatialComponent;
+	import com.pblabs.physics.IPhysics2DSpatial;
 	
 	import flash.geom.Point;
 	import flash.ui.Keyboard;
@@ -45,6 +46,8 @@ package com.pblabs.nape.constraints
 				_spatialManager.getObjectsUnderPoint(_worldPoint, _bodyList);
 				var wp:Vec2 = Vec2.get(_worldPoint.x, _worldPoint.y);
 				for (var i:int = 0; i < _bodyList.length; i++) {
+					if(!(_bodyList[i] is IPhysics2DSpatial))
+						continue;
 					var body:Body = _bodyList[i].body;
 					if (body.isDynamic()) {
 						(_constraint as PivotJoint).body2 = body;
