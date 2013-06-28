@@ -72,7 +72,12 @@ package com.pblabs.starling2D
 			}else{
 				if(( gpuObject as Image).texture)
 					( gpuObject as Image).texture.dispose();
-				texture = (gpuObject as Image).texture = ResourceTextureManagerG2D.getTextureForBitmapData(this.bitmap.bitmapData, getTextureCacheKey());
+				if(!texture)
+				{
+					(gpuObject as Image).texture = texture = ResourceTextureManagerG2D.getTextureForBitmapData(this.bitmap.bitmapData, getTextureCacheKey());
+				}else{
+					(gpuObject as Image).texture = texture;
+				}
 				( gpuObject as Image).readjustSize();
 			}
 			smoothing = _smoothing;
@@ -87,13 +92,15 @@ package com.pblabs.starling2D
 		
 		override public function redraw():void
 		{
-			super.redraw();
-			
+			var texture : Texture = ResourceTextureManagerG2D.getTextureByKey( getTextureCacheKey() );
+			if(!texture){
+				super.redraw();
+			}
 			buildG2DObject();
 		}
 		
 		protected function getTextureCacheKey():String{
-			return _isSquare + ":" + _isCircle + ":" + _radius + ":" + _fillColor + ":" + _fillAlpha + ":" + _lineColor + ":" + _lineSize + ":" + _lineAlpha + ":"
+			return _isSquare + ":" + _isCircle + ":" + _radius + ":" + _fillColor + ":" + _fillAlpha + ":" + _lineColor + ":" + _lineSize + ":" + _lineAlpha + ":" + _size.toString() + ":" + _scale.toString();
 		}
 		
 		/**
