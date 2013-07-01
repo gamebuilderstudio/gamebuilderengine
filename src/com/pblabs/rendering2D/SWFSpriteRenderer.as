@@ -245,7 +245,7 @@ package com.pblabs.rendering2D
 			onResourceLoaded( resource );
 		}
 
-		private var _fileName:String = null;
+		protected var _fileName:String = null;
 		/**
 		 * Resource (file)name of the SWFResource 
 		 */ 

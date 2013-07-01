@@ -34,10 +34,8 @@ package com.pblabs.starling2D
 			if (!gpuObject || !scene)
 				return false;
 			
-			// This is the generic version, which uses hitTestPoint. hitTestPoint
-			// takes a coordinate in screen space, so do that.
-			worldPosition = scene.transformWorldToScreen(worldPosition);
-			return gpuObject.hitTest(worldPosition) ? true : false;
+			var localPos:Point = transformWorldToObject(worldPosition);
+			return gpuObject.hitTest(localPos) ? true : false;
 		}
 
 		/**
@@ -91,7 +89,11 @@ package com.pblabs.starling2D
 			}else{
 				if(( gpuObject as Image).texture)
 					( gpuObject as Image).texture.dispose();
-				texture = (gpuObject as Image).texture = ResourceTextureManagerG2D.getTextureForBitmapData(this.bitmap.bitmapData, getTextureCacheKey());
+				
+				if(!texture)
+					texture = ResourceTextureManagerG2D.getTextureForBitmapData(this.bitmap.bitmapData, getTextureCacheKey());
+				
+				(gpuObject as Image).texture = texture;
 				( gpuObject as Image).readjustSize();
 			}
 			smoothing = _smoothing;
@@ -104,13 +106,13 @@ package com.pblabs.starling2D
 			InitializationUtilG2D.initializeRenderers.remove(buildG2DObject);
 		}
 
-		/*override protected function paintMovieClipToBitmap(instance : DisplayObject):void
+		override protected function paintMovieClipToBitmap(instance : DisplayObject):void
 		{
 			var texture : Texture = ResourceTextureManagerG2D.getTextureByKey( getTextureCacheKey() );
-			if(texture)
-				return;
-			super.paintMovieClipToBitmap(instance);
-		}*/
+			if(!texture){
+				super.paintMovieClipToBitmap(instance);
+			}
+		}
 
 		protected function modifyTexture(data:Texture):Texture
 		{
@@ -120,7 +122,7 @@ package com.pblabs.starling2D
 		protected function getTextureCacheKey():String{
 			if(!_resource)
 				return null;
-			return _resource.filename + _containingObjectName + combinedScale.x.toString() + combinedScale.y.toString();
+			return _fileName + ":" + _containingObjectName + ":" + _size.toString() + ":" + _scale.toString();
 		}
 
 		override public function set mouseEnabled(value:Boolean):void
@@ -141,6 +143,7 @@ package com.pblabs.starling2D
 			originalBitmapData = value;
 			
 			// check if we should do modification
+			//TODO: Add gpu modifiers later on
 			/*
 			if (modifiers.length>0)
 			{
@@ -150,7 +153,7 @@ package com.pblabs.starling2D
 			}	
 			else						
 			*/
-				bitmap.bitmapData = value;
+			bitmap.bitmapData = value;
 			
 			// Due to a bug, this has to be reset after setting bitmapData.
 			smoothing = _smoothing;
