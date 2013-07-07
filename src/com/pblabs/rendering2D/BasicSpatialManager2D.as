@@ -76,8 +76,10 @@ package com.pblabs.rendering2D
          Profiler.enter("QueryRectangle");
 
          var foundAny:Boolean = false;
-         for each (var object:ISpatialObject2D in _objectList)
-         {
+		 var len : int = _objectList.length;
+		 for(var i : int = 0; i < len; i++)
+		 {
+			 var object:ISpatialObject2D = _objectList[i];
 			if (mask != null)
 			{
 				if (!PBE.objectTypeManager.doTypesOverlap(object.objectMask, mask))
@@ -104,11 +106,10 @@ package com.pblabs.rendering2D
 
          var foundAny:Boolean = false;
          
-         var scratchRect:Rectangle = new Rectangle();
-         var tmpRect:Rectangle = new Rectangle();
-         
-         for each (var object:ISpatialObject2D in _objectList)
-         {
+		 var len : int = _objectList.length;
+		 for(var i : int = 0; i < len; i++)
+		 {
+			var object:ISpatialObject2D = _objectList[i];
 			if (mask != null)
 			{
 				if (!PBE.objectTypeManager.doTypesOverlap(object.objectMask, mask))
@@ -116,15 +117,15 @@ package com.pblabs.rendering2D
 			}
             
             // Avoid allocations - so manually copy.
-            tmpRect = object.worldExtents;
-            scratchRect.x = tmpRect.x;
-            scratchRect.y = tmpRect.y;
-            scratchRect.width = tmpRect.width;
-            scratchRect.height = tmpRect.height;
+			_tmpRect = object.worldExtents;
+            _scratchRect.x = _tmpRect.x;
+			_scratchRect.y = _tmpRect.y;
+			_scratchRect.width = _tmpRect.width;
+			_scratchRect.height = _tmpRect.height;
             
-            scratchRect.inflate(radius, radius);
+			_scratchRect.inflate(radius, radius);
             
-            if (!scratchRect.containsPoint(center))
+            if (!_scratchRect.containsPoint(center))
                continue;
             
             results.push(object);
@@ -142,7 +143,10 @@ package com.pblabs.rendering2D
 	  public function getObjectsUnderPoint(worldPosition:Point, results:Array, mask:ObjectType = null):Boolean
       {
          var tmpResults:Array = new Array();
-         
+		 // First use the normal spatial query...
+		 if(!queryCircle(worldPosition, 5, mask, tmpResults))
+			 return false;
+		 
          // Ok, now pass control to the objects and see what they think.
          var hitAny:Boolean = false;
          for each(var tmp:ISpatialObject2D in tmpResults)
@@ -174,8 +178,10 @@ package com.pblabs.rendering2D
 		  
 		  // Ok, now check the renderer on all spatials with one as a last resort to check their bounds.
 		  var hitAny:Boolean = false;
-		  for each(var tmp:ISpatialObject2D in this._objectList)
+		  var len : int = _objectList.length;
+		  for(var i : int = 0; i < len; i++)
 		  {
+			  var tmp:ISpatialObject2D =  _objectList[i];
 			  if(results.indexOf( tmp ) != -1)
 				  continue;
 			  var rendererRec : Rectangle = tmp.worldExtents;
@@ -236,6 +242,8 @@ package com.pblabs.rendering2D
          return false;
       }
       
-      protected var _objectList:Array = new Array();
+      protected var _objectList:Vector.<ISpatialObject2D> = new Vector.<ISpatialObject2D>();
+	  private var _scratchRect : Rectangle = new Rectangle();
+	  private var _tmpRect : Rectangle;
    }
 }
