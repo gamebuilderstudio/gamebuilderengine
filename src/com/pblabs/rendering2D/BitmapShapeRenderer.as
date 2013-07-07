@@ -112,6 +112,7 @@ package com.pblabs.rendering2D
 			
 			if(!bitmap)
 				bitmap = new Bitmap();
+				bitmap.blendMode = this._blendMode;
 			if(bitmap.bitmapData){
 				bitmap.bitmapData.dispose();
 				bitmap.bitmapData = null;
@@ -122,6 +123,7 @@ package com.pblabs.rendering2D
 			bitmap.bitmapData = new BitmapData(bounds.width, bounds.height, true, 0x000000);
 			bitmap.bitmapData.draw(s,m, s.transform.colorTransform, s.blendMode );
 			
+			bitmap.smoothing = this._smoothing;
 			if(_initialDraw)
 				_initialDraw = false
 		}
@@ -148,6 +150,15 @@ package com.pblabs.rendering2D
 				redraw();
 			}
 		}
+		
+		
+		override public function set blendMode(value:String):void
+		{
+			super.blendMode = value;
+			if(bitmap)
+				bitmap.blendMode = this._blendMode;
+		}
+
 		/**
 		 * @see Bitmap.smoothing 
 		 */

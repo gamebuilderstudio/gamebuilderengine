@@ -117,11 +117,19 @@ package com.pblabs.rendering2D
 			}
 			
             // Due to a bug, this has to be reset after setting bitmapData.
-            smoothing = _smoothing;
+            bitmap.smoothing = this._smoothing;
+			bitmap.blendMode = this._blendMode;
             _transformDirty = true;
         }
         
-        [EditorData(ignore="true")]
+		override public function set blendMode(value:String):void
+		{
+			super.blendMode = value;
+			if(bitmap)
+				bitmap.blendMode = this._blendMode;
+		}
+
+		[EditorData(ignore="true")]
         override public function set displayObject(value:DisplayObject):void
         {
             throw new Error("Cannot set displayObject in BitmapRenderer; it is always a Sprite containing a Bitmap.");

@@ -25,7 +25,7 @@ package com.pblabs.rendering2D
             super();
             
             // Initialize displayObject to be a Sprite.
-            displayObject = new Sprite();
+			_displayObject = new Sprite();
             
             // Initial draw.
             redraw();
