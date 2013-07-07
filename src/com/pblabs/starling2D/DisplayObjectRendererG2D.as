@@ -222,7 +222,7 @@ package com.pblabs.starling2D
 			_tmpCombinedScale.y = _scale.y;
 			if(_size && (_size.x > 0 || _size.y > 0))
 			{
-				displayObjectG2D.getBounds(displayObjectG2D, _boundsRec);
+				gpuObject.getBounds(gpuObject, _boundsRec);
 				_tmpCombinedScale.x = _scale.x * (_size.x / _boundsRec.width);
 				_tmpCombinedScale.y = _scale.y * (_size.y / _boundsRec.height);
 			}

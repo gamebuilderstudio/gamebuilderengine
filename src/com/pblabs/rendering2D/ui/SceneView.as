@@ -74,6 +74,11 @@ package com.pblabs.rendering2D.ui
             removeChild(dObj as DisplayObject);
         }
         
+		public function getDisplayObjectIndex(dObj:Object):int
+		{
+			return this.getChildIndex( dObj as DisplayObject );
+		}
+		
         public function setDisplayObjectIndex(dObj:Object, index:int):void
         {
 			if(this.numChildren >= index){

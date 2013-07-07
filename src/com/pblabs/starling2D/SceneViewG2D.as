@@ -134,6 +134,13 @@ package com.pblabs.starling2D
 				_gpuCanvasContainer.removeChild( dObj as DisplayObject );
 		}
 		
+		public function getDisplayObjectIndex(dObj:Object):int
+		{
+			if(!_gpuCanvasContainer) 
+				return -1;
+			return _gpuCanvasContainer.getChildIndex( dObj as DisplayObject );
+		}
+
 		public function setDisplayObjectIndex(dObj:Object, index:int):void
 		{
 			if(!_gpuCanvasContainer){

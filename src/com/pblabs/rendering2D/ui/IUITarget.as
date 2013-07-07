@@ -43,6 +43,12 @@ package com.pblabs.rendering2D.ui
         function setDisplayObjectIndex(dobj:Object, index:int):void;
         
 		/**
+		 * Get the index of a display object which is added to this control.
+		 * @param dobj DisplayObject to check index for
+		 */
+		function getDisplayObjectIndex(dObj:Object):int
+		
+		/**
 		 * Set the size of the overall view
 		 * @param width the width of the view object
 		 * @param height the height of the view object
