@@ -9,15 +9,15 @@
 package com.pblabs.rendering2D
 {
 	import com.pblabs.engine.PBE;
-    import com.pblabs.engine.core.ObjectType;
-    import com.pblabs.engine.core.ObjectTypeManager;
-    import com.pblabs.engine.debug.Logger;
-    import com.pblabs.engine.debug.Profiler;
-    import com.pblabs.engine.entity.EntityComponent;
-    
-    import flash.events.Event;
-    import flash.geom.Point;
-    import flash.geom.Rectangle;
+	import com.pblabs.engine.core.ObjectType;
+	import com.pblabs.engine.core.ObjectTypeManager;
+	import com.pblabs.engine.debug.Logger;
+	import com.pblabs.engine.debug.Profiler;
+	import com.pblabs.engine.entity.EntityComponent;
+	
+	import flash.events.Event;
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
 
    /**
     * Basic 2d spatial manager that stores everything in a list. There are many
@@ -143,23 +143,20 @@ package com.pblabs.rendering2D
       {
          var tmpResults:Array = new Array();
          
-         // First use the normal spatial query...
-         if(!queryCircle(worldPosition, 64, mask, tmpResults))
-            return false;
-         
          // Ok, now pass control to the objects and see what they think.
          var hitAny:Boolean = false;
          for each(var tmp:ISpatialObject2D in tmpResults)
          {
             if (!tmp.pointOccupied(worldPosition, mask, PBE.scene))
                continue;
-            
+            if(!results)
+				results = new Array();
             results.push(tmp);
             hitAny = true;
          }
          
          // Sort the results.
-         if(PBE.scene)
+         if(PBE.scene && results)
             PBE.scene.sortSpatials(results);
          
          return hitAny;

@@ -299,6 +299,8 @@ package com.pblabs.nape
 					Logger.error(this, "getObjectsUnderPoint", "Body user data must contain spatialComponent!");
 					continue;
 				}
+				if(!results)
+					results = new Array();
 				results.push(curComponent);				
 			}
 			bodyList.clear();
