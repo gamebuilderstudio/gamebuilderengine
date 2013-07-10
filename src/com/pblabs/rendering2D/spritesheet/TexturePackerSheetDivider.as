@@ -33,7 +33,7 @@ package com.pblabs.rendering2D.spritesheet
 			if (!name)
 				throw new Error("Name can not be null");
 			
-			if(!_frames || _frames.length < 0)
+			if(!_frames || _frames.length < 1)
 			{
 				if(resource && resource.isLoaded)
 				{
@@ -51,7 +51,7 @@ package com.pblabs.rendering2D.spritesheet
 		 */
 		public function getFrameArea(index:int):Rectangle
 		{
-			if(!_frames || _frames.length < 0)
+			if(!_frames || _frames.length < 1)
 			{
 				if(resource && resource.isLoaded)
 				{
@@ -64,6 +64,18 @@ package com.pblabs.rendering2D.spritesheet
 			return _frames[index].frameBounds;
 		}
 		
+		/**
+		 * Grab the file name of the frame or image that was packed into the sheet
+		 */
+		public function getFrameNameByIndex(index:int):String
+		{
+			if(!_frames || _frames.length < 1)
+			{
+				return null;
+			}
+			return _frames[index].name;
+		}
+
 		protected function buildFrames():void
 		{
 			if(!resource){
