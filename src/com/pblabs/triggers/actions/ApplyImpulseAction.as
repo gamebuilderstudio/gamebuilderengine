@@ -29,7 +29,7 @@ package com.pblabs.triggers.actions
 		
 		public function ApplyImpulseAction(){
 			super();
-			_type = ActionType.PERSISTANT;
+			_type = ActionType.ONETIME;
 		}
 		
 		override public function execute():*

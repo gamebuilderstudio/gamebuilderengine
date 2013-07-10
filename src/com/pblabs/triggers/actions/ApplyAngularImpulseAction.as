@@ -24,7 +24,7 @@ package com.pblabs.triggers.actions
 		
 		public function ApplyAngularImpulseAction(){
 			super();
-			_type = ActionType.PERSISTANT;
+			_type = ActionType.ONETIME;
 		}
 		
 		override public function execute():*
