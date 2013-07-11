@@ -144,7 +144,7 @@ package com.pblabs.rendering2D
       {
          var tmpResults:Array = new Array();
 		 // First use the normal spatial query...
-		 if(!queryCircle(worldPosition, 5, mask, tmpResults))
+		 if(!queryCircle(worldPosition, 0, mask, tmpResults))
 			 return false;
 		 
          // Ok, now pass control to the objects and see what they think.
