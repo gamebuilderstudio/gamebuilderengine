@@ -51,8 +51,9 @@ package com.pblabs.starling2D
 				return;
 			}
 
+			var texture : Texture = ResourceTextureManagerG2D.getTextureByKey( getTextureCacheKey() );
 			try{
-				if(!this.isRegistered || !bitmap || !bitmap.bitmapData)
+				if((!bitmap || !bitmap.bitmapData) && !texture)
 				{
 					return;
 				}
@@ -60,7 +61,6 @@ package com.pblabs.starling2D
 				return;
 			}
 			
-			var texture : Texture = ResourceTextureManagerG2D.getTextureByKey( getTextureCacheKey() );
 			if(!gpuObject){
 				if(texture)
 				{
@@ -94,6 +94,8 @@ package com.pblabs.starling2D
 		{
 			var texture : Texture = ResourceTextureManagerG2D.getTextureByKey( getTextureCacheKey() );
 			if(!texture){
+				if(!this.isRegistered || !_size || _size.x == 0 || _size.y == 0) 
+					return;
 				super.redraw();
 			}
 			buildG2DObject();

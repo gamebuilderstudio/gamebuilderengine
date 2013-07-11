@@ -21,7 +21,6 @@ package com.pblabs.rendering2D
 		protected var bitmap:Bitmap = new Bitmap();
 		protected var _smoothing:Boolean = false;
 		protected var _shape:Sprite = new Sprite();
-		protected var _initialDraw : Boolean = true;
 		
 		public function BitmapShapeRenderer()
 		{
@@ -62,15 +61,13 @@ package com.pblabs.rendering2D
 		override protected function onAdd():void
 		{
 			super.onAdd();
-			_initialDraw = true;
 			redraw();
-			_initialDraw = false;
 		}
 
 		
 		override public function redraw():void
 		{
-			if(!this.isRegistered && !_initialDraw) 
+			if(!this.isRegistered) 
 				return;
 			
 			if(!_size || _size.x == 0 || _size.y == 0) 
@@ -124,8 +121,6 @@ package com.pblabs.rendering2D
 			bitmap.bitmapData.draw(s,m, s.transform.colorTransform, s.blendMode );
 			
 			bitmap.smoothing = this._smoothing;
-			if(_initialDraw)
-				_initialDraw = false
 		}
 		
 		override public function set scale(value:Point):void
