@@ -89,8 +89,10 @@ package com.pblabs.rendering2D
 		{
 			if(!instance) return;
 			
-			if(bitmapData)
+			if(bitmapData){
 				bitmapData.dispose();
+				bitmapData = null;
+			}
 			
 			//Hack required so that the movie clip animation is drawn correctly
 			//Ridiculous Adobe!!!
@@ -259,10 +261,17 @@ package com.pblabs.rendering2D
 					_resource = null;
 				}            
 				_fileName = value;
-				// Tell the ResourceManager to load the ImageResource
-				var resource : SWFResource = PBE.resourceManager.load(fileName,SWFResource,onResourceLoaded,onResourceLoadFailed,false) as SWFResource;	
-				if(resource && resource.isLoaded)
-					onResourceLoaded(resource);
+				if(_fileName){
+					// Tell the ResourceManager to load the ImageResource
+					var resource : SWFResource = PBE.resourceManager.load(fileName,SWFResource,onResourceLoaded,onResourceLoadFailed,false) as SWFResource;	
+					if(resource && resource.isLoaded)
+						onResourceLoaded(resource);
+				}else{
+					_loaded = false;
+					_failed = true;
+					_resource = null;
+					bitmapData = null;
+				}
 			}	
 		}
 		

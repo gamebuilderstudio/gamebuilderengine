@@ -73,6 +73,12 @@ package com.pblabs.rendering2D
 			if(!_size || _size.x == 0 || _size.y == 0) 
 				return;
 
+			if(!isCircle && !isSquare)
+			{
+				return;
+				//Logger.error(this, "redraw", "Neither square nor circle, what am I?");
+			}               
+
 			// Get references.
 			var s:Sprite = _shape;
 			if(!s)
@@ -86,12 +92,6 @@ package com.pblabs.rendering2D
 			g.lineStyle(lineSize, lineColor, lineAlpha);
 			g.beginFill(fillColor, fillAlpha);
 			
-			// Sanity check.
-			if(!isCircle && !isSquare)
-			{
-				_isSquare = true;
-			}               
-
 			// Draw one or both shapes.
 			if(isSquare)
 				g.drawRect(0, 0, size.x, size.y);
@@ -114,13 +114,15 @@ package com.pblabs.rendering2D
 				bitmap.bitmapData.dispose();
 				bitmap.bitmapData = null;
 			}
-			var bounds : Rectangle = s.getBounds( s );
-			var m : Matrix = new Matrix();
-			//_registrationPoint = new Point(-bounds.topLeft.x, -bounds.topLeft.y);
-			bitmap.bitmapData = new BitmapData(bounds.width, bounds.height, true, 0x000000);
-			bitmap.bitmapData.draw(s,m, s.transform.colorTransform, s.blendMode );
-			
-			bitmap.smoothing = this._smoothing;
+			if(isCircle || isSquare){
+				var bounds : Rectangle = s.getBounds( s );
+				var m : Matrix = new Matrix();
+				//_registrationPoint = new Point(-bounds.topLeft.x, -bounds.topLeft.y);
+				bitmap.bitmapData = new BitmapData(bounds.width, bounds.height, true, 0x000000);
+				bitmap.bitmapData.draw(s,m, s.transform.colorTransform, s.blendMode );
+				
+				bitmap.smoothing = this._smoothing;
+			}
 		}
 		
 		override public function set scale(value:Point):void

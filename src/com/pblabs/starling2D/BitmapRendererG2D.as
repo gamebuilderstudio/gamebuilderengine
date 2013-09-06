@@ -80,7 +80,7 @@ package com.pblabs.starling2D
 			
 			// check if we should do modification
 			/*
-			if (modifiers.length>0)
+			if (modifiers.length>0 && originalBitmapData)
 			{
 				// apply all bitmapData modifiers
 				bitmap.bitmapData = modify(originalBitmapData.clone());

@@ -102,8 +102,10 @@ package com.pblabs.rendering2D
 			if (modifiers.length>0)
 			{
 				// apply all bitmapData modifiers
-				bitmap.bitmapData = modify(originalBitmapData.clone());
-				dataModified();			
+				if(originalBitmapData){
+					bitmap.bitmapData = modify(originalBitmapData.clone());
+					dataModified();			
+				}
 			}	
 			else						
               bitmap.bitmapData = value;

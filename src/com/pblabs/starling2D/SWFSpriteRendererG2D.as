@@ -74,10 +74,19 @@ package com.pblabs.starling2D
 				InitializationUtilG2D.initializeRenderers.add(buildG2DObject);
 				return;
 			}
-			if(!_resource)
+			var texture : Texture;
+			if(!_resource){
 				return;
+			}
+			if(!bitmapData)
+			{
+				texture = ResourceTextureManagerG2D.getTextureByKey( getTextureCacheKey() );
+				if(texture)
+					texture.dispose();
+				return;
+			}
 			
-			var texture : Texture = ResourceTextureManagerG2D.getTextureByKey( getTextureCacheKey() );
+			texture = ResourceTextureManagerG2D.getTextureByKey( getTextureCacheKey() );
 			if(!gpuObject){
 				if(texture)
 				{

@@ -41,11 +41,18 @@ package com.pblabs.rendering2D
 					_resource = null;
 				}            
 				_fileName = value;
-				_loading = true;
-				// Tell the ResourceManager to load the ImageResource
-				var resource : ImageResource = PBE.resourceManager.load(fileName,ImageResource,imageLoadCompleted,imageLoadFailed,false) as ImageResource;	
-				if(resource && resource.bitmapData)
-					imageLoadCompleted(resource);
+				if(_fileName){
+					_loading = true;
+					// Tell the ResourceManager to load the ImageResource
+					var resource : ImageResource = PBE.resourceManager.load(fileName,ImageResource,imageLoadCompleted,imageLoadFailed,false) as ImageResource;	
+ 					if(resource && resource.bitmapData)
+						imageLoadCompleted(resource);
+				}else{
+					_loading = false;
+					_resource = null;
+					if(bitmapData)
+						bitmapData = null;
+				}
 			}	
 		}
 						
