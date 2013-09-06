@@ -268,9 +268,9 @@ class ExpressionUtils{
 		return Math.sqrt(dx * dx + dy * dy);
 	}
 
-	public static function magnitudeOfPoint(pointA : Point, pointB : Point):Number
+	public static function magnitudeOfPoint(point : Point):Number
 	{
-		return Math.sqrt( Math.abs( ((pointA.x-pointB.x) * (pointA.x-pointB.x)) + ((pointA.y-pointB.y) * (pointA.y-pointB.y)) ) );
+		return magnitude(point.x, point.y);
 	}
 
 	/**
@@ -278,7 +278,7 @@ class ExpressionUtils{
 	 **/
 	public static function magnitude(valA : Number, valB : Number):Number
 	{
-		return Math.sqrt( Math.abs( ((valA) * (valA)) + ((valB) * (valB)) ) );
+		return Math.sqrt( ((valA) * (valA)) + ((valB) * (valB)) );
 	}
 
 	/**
