@@ -30,6 +30,7 @@ package com.pblabs.rendering2D
 			
 			_lineSize = 0;
 			_lineAlpha = 0;
+			_size = new Point(100,100);
 		}
 		
 		public function isPixelPathActive(objectToScreen:Matrix):Boolean
