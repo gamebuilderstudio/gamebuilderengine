@@ -63,7 +63,7 @@ package com.pblabs.nape
 		{
 			if(!value) return;
 			if(_spriteForPointChecks){
-				size = value.size;
+				size = value.size.clone();
 			}
 			_spriteForPointChecks = value;
 		}

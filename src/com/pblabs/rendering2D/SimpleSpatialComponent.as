@@ -95,7 +95,7 @@ package com.pblabs.rendering2D
 		{
 			if(!value) return;
 			if(_spriteForPointChecks){
-				size = value.size;
+				size = value.size.clone();
 			}
 			_spriteForPointChecks = value;
 		}
