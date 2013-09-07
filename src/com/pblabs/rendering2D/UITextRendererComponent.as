@@ -99,7 +99,6 @@ package com.pblabs.rendering2D
 
 			_textDisplay.removeEventListener(Event.CHANGE, inputChanged);
 			_textDisplay.removeEventListener(FocusEvent.FOCUS_OUT, hideInputField);
-			_textDisplay = null;
 		}
 		
 		protected function inputChanged(event : Event):void

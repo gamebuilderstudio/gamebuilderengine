@@ -350,6 +350,7 @@ package com.pblabs.rendering2D.spritesheet
 				_loading = true;
 				PBE.resourceManager.load(imageFilename, ImageResource, onImageLoaded, onImageFailed);
 			}
+			_destroyed = false;
 		}
 		
 		override protected function onRemove():void

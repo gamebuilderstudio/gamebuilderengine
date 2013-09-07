@@ -27,6 +27,7 @@ package com.pblabs.starling2D
 	 */ 
 	public class SpriteSheetRendererG2D extends BitmapRendererG2D implements ISpriteSheetRenderer
 	{
+		public var spriteSheetProperty : PropertyReference;
 		public var directionReference:PropertyReference;
 		public var overrideSizePerFrame : Boolean = true;
 		
@@ -139,6 +140,15 @@ package com.pblabs.starling2D
 			
 			currentTexture = null;
 			InitializationUtilG2D.initializeRenderers.remove(buildG2DObject);
+		}
+
+		override protected function onReset():void
+		{
+			super.onReset();
+			if(spriteSheetProperty)
+				spriteSheet = this.owner.getProperty( spriteSheetProperty ) as ISpriteSheet;
+			if(spriteSheet && spriteSheet.isDestroyed)
+				spriteSheet = null;
 		}
 
 		override protected function buildG2DObject():void

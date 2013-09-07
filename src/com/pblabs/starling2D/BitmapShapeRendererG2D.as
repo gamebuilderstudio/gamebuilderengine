@@ -11,10 +11,7 @@ package com.pblabs.starling2D
 	import com.pblabs.engine.core.ObjectType;
 	import com.pblabs.rendering2D.BitmapShapeRenderer;
 	
-	import flash.display.BitmapData;
-	import flash.display.DisplayObject;
 	import flash.display.PixelSnapping;
-	import flash.display.Shape;
 	import flash.geom.Point;
 	
 	import starling.core.Starling;

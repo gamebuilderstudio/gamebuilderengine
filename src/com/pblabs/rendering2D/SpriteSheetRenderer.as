@@ -8,20 +8,17 @@
  ******************************************************************************/
 package com.pblabs.rendering2D
 {
-    import com.pblabs.engine.entity.IEntityComponent;
     import com.pblabs.engine.entity.PropertyReference;
     import com.pblabs.rendering2D.modifier.Modifier;
     import com.pblabs.rendering2D.spritesheet.ISpriteSheet;
-    import com.pblabs.rendering2D.spritesheet.SpriteContainerComponent;
     
-    import flash.display.Bitmap;
     import flash.display.BitmapData;
     import flash.display.DisplayObject;
-    import flash.display.Sprite;
     import flash.geom.Point;
     
 	public class SpriteSheetRenderer extends BitmapRenderer implements ISpriteSheetRenderer
 	{		
+		public var spriteSheetProperty : PropertyReference;
 		public var directionReference:PropertyReference;
 		public var overrideSizePerFrame : Boolean = true;
 
@@ -31,7 +28,9 @@ package com.pblabs.rendering2D
 		protected var _spriteIndex:int = 0;
 
 		public function get spriteSheet():ISpriteSheet { return _spriteSheet; }
-		public function set spriteSheet(val : ISpriteSheet):void { _spriteSheet = val; }
+		public function set spriteSheet(val : ISpriteSheet):void { 
+			_spriteSheet = val; 
+		}
 
 		public function get spriteIndex():int { return _spriteIndex; }
 		public function set spriteIndex(val : int):void { _spriteIndex = val; }
@@ -53,6 +52,8 @@ package com.pblabs.rendering2D
 		override protected function onReset():void
 		{
 			super.onReset();
+			if(spriteSheetProperty)
+				spriteSheet = this.owner.getProperty( spriteSheetProperty ) as ISpriteSheet;
 			if(spriteSheet && spriteSheet.isDestroyed)
 				spriteSheet = null;
 		}

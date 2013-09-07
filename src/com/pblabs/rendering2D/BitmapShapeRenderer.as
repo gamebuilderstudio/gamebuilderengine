@@ -1,8 +1,6 @@
 package com.pblabs.rendering2D
 {
-	import com.pblabs.engine.PBUtil;
 	import com.pblabs.engine.core.ObjectType;
-	import com.pblabs.engine.debug.Logger;
 	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -67,17 +65,12 @@ package com.pblabs.rendering2D
 		
 		override public function redraw():void
 		{
-			if(!this.isRegistered) 
+			if(!this.isRegistered || !_size || _size.x == 0 || _size.y == 0 || (!isCircle && !isSquare) ) {
+				if(bitmap.bitmapData)
+					bitmap.bitmapData.dispose();
+				bitmap.bitmapData = null;
 				return;
-			
-			if(!_size || _size.x == 0 || _size.y == 0) 
-				return;
-
-			if(!isCircle && !isSquare)
-			{
-				return;
-				//Logger.error(this, "redraw", "Neither square nor circle, what am I?");
-			}               
+			}
 
 			// Get references.
 			var s:Sprite = _shape;
@@ -105,7 +98,6 @@ package com.pblabs.rendering2D
 			}
 			
 			g.endFill();
-			
 			
 			if(!bitmap)
 				bitmap = new Bitmap();
