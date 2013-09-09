@@ -60,13 +60,22 @@ package com.pblabs.rendering2D
 		override protected function onAdd():void
 		{
 			super.onAdd();
-			redraw();
+			if(bitmap && !bitmap.bitmapData){
+				redraw();
+			}
 		}
 
+		override protected function onRemove():void
+		{
+			if(bitmap && bitmap.bitmapData){
+				bitmap.bitmapData.dispose();
+			}
+			super.onRemove();
+		}
 		
 		override public function redraw():void
 		{
-			if(!this.isRegistered || !_size || _size.x == 0 || _size.y == 0 || (!isCircle && !isSquare) ) {
+			if(!_size || _size.x == 0 || _size.y == 0 || (!isCircle && !isSquare) ) {
 				if(bitmap.bitmapData)
 					bitmap.bitmapData.dispose();
 				bitmap.bitmapData = null;
@@ -102,7 +111,7 @@ package com.pblabs.rendering2D
 			
 			if(!bitmap)
 				bitmap = new Bitmap();
-				bitmap.blendMode = this._blendMode;
+			bitmap.blendMode = this._blendMode;
 			if(bitmap.bitmapData){
 				bitmap.bitmapData.dispose();
 				bitmap.bitmapData = null;
