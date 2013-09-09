@@ -2,6 +2,8 @@ package com.pblabs.physics
 {
 	import com.pblabs.engine.core.ObjectType;
 	import com.pblabs.rendering2D.IMobileSpatialObject2D;
+	
+	import flash.geom.Point;
 
 	public interface IPhysics2DSpatial extends IMobileSpatialObject2D
 	{
@@ -26,5 +28,8 @@ package com.pblabs.physics
 		function set collidesContinuously(val : Boolean):void;
 		function get bodyType():*; 
 		function set bodyType(val : *):void;
+		function get gravity():Point; 
+		function set gravity(val : Point):void;
+		
 	}
 }

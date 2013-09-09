@@ -5,13 +5,9 @@ package com.pblabs.nape
 	import com.pblabs.engine.components.TickedComponent;
 	import com.pblabs.engine.core.ObjectType;
 	import com.pblabs.engine.debug.Logger;
-	import com.pblabs.engine.entity.EntityComponent;
-	import com.pblabs.physics.IPhysics2DSpatial;
 	import com.pblabs.rendering2D.DisplayObjectRenderer;
-	import com.pblabs.rendering2D.IMobileSpatialObject2D;
 	import com.pblabs.rendering2D.IScene2D;
 	import com.pblabs.rendering2D.ISpatialManager2D;
-	import com.pblabs.rendering2D.ISpatialObject2D;
 	import com.pblabs.rendering2D.RayHitInfo;
 	
 	import flash.geom.Point;
@@ -19,14 +15,9 @@ package com.pblabs.nape
 	
 	import nape.constraint.Constraint;
 	import nape.dynamics.InteractionFilter;
-	import nape.dynamics.InteractionGroup;
-	import nape.geom.Ray;
-	import nape.geom.RayResult;
 	import nape.geom.Vec2;
 	import nape.phys.Body;
-	import nape.phys.BodyList;
 	import nape.phys.BodyType;
-	import nape.phys.Material;
 	import nape.shape.Polygon;
 	import nape.shape.Shape;
 	import nape.shape.ShapeList;
@@ -292,10 +283,25 @@ package com.pblabs.nape
 		public function set canSleep(value:Boolean):void
 		{
 			_canSleep = value;
-			//if (_body)
-				//_body.SetSleepingAllowed(value);
 		}
 		
+		/**
+		 * This is a constant force applied to the containing body. It is individual gravity. 
+		 * If you want to control all objects indivdually set global gravity to 0,0 and
+		 * specify a force on each object using this gravity property.
+		 * @params force : Point;
+		 */
+		public function get gravity():Point
+		{
+			return _gravity;
+		}
+		public function set gravity(value:Point):void
+		{
+			_gravity = value;
+			if(_body)
+				_body.force.setxy(_gravity.x, _gravity.y);
+		}
+
 		public function get collidesContinuously():Boolean
 		{
 			if(_body)
@@ -543,6 +549,7 @@ package com.pblabs.nape
 			_body.cbTypes.add(_spatialManager.bodyCallbackType);
 			_body.userData.spatial = this;
 			_body.space = _spatialManager.space;
+			_body.force.setxy(_gravity.x, _gravity.y);
 			buildCollisionShapes();
 		}
 		
@@ -595,6 +602,7 @@ package com.pblabs.nape
 		private var _collisionType:ObjectType = null;
 		private var _collidesWithTypes:ObjectType = null;
 		private var _collidesContinuously:Boolean = false;
+		protected var _gravity:Point = new Point(0,0);
 		
 		protected var _shapeDebug:ShapeDebug;
 		protected var _debugLayerSceneTracking:Boolean = true;
