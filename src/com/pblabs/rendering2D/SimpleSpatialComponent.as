@@ -159,9 +159,11 @@ package com.pblabs.rendering2D
         {
             // Note we set directly, as position (the accessor) clones the point,
             // which would result in a nop.
-            _position.x += linearVelocity.x * tickRate;
-            _position.y += linearVelocity.y * tickRate;
-            rotation   += angularVelocity * tickRate;
+			if(!PBE.IN_EDITOR){
+	            _position.x += linearVelocity.x * tickRate;
+	            _position.y += linearVelocity.y * tickRate;
+	            _rotation   += angularVelocity * tickRate;
+			}
         }
         
         /**
