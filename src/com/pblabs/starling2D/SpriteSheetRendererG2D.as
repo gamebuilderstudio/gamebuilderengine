@@ -29,13 +29,13 @@ package com.pblabs.starling2D
 	{
 		public var spriteSheetProperty : PropertyReference;
 		public var directionReference:PropertyReference;
-		public var overrideSizePerFrame : Boolean = true;
 		
 		protected var currentSpatialName : String;
 		protected var currentSpatialRef : PropertyReference;
 		protected var currentTexture : Texture;
 		protected var _spriteSheet:ISpriteSheetG2D;
 		protected var _spriteIndex:int = 0;
+		protected var _overrideSizePerFrame : Boolean = true;
 		
 		private var _scrachPoint : Point = new Point();
 
@@ -50,6 +50,9 @@ package com.pblabs.starling2D
 		public function get spriteIndex():int { return _spriteIndex; }
 		public function set spriteIndex(val : int):void { _spriteIndex = val; }
 
+		public function get overrideSizePerFrame():Boolean { return _overrideSizePerFrame; }
+		public function set overrideSizePerFrame(val : Boolean):void { _overrideSizePerFrame = val; }
+		
 		override public function onFrame(elapsed:Number) : void
 		{
 			// Update the Starling object
@@ -82,7 +85,7 @@ package com.pblabs.starling2D
 			}
 			if (_spriteSheet.centered)
 				registrationPoint = new Point(currentTexture.width/2,currentTexture.height/2);
-			if(currentTexture && this.size && this.sizeProperty && overrideSizePerFrame && (this.size.x != currentTexture.width || this.size.y != currentTexture.height))
+			if(currentTexture && this.size && this.sizeProperty && _overrideSizePerFrame && (this.size.x != currentTexture.width || this.size.y != currentTexture.height))
 			{
 				var newSize : Point = new Point(currentTexture.width, currentTexture.height);
 				this.size = newSize;
@@ -102,7 +105,7 @@ package com.pblabs.starling2D
 				if(spatial && spatial.spriteForPointChecks == this){
 					this.owner.setProperty( this.sizeProperty, newSize);
 				}
-			}else if(overrideSizePerFrame && (this.size.x != currentTexture.width || this.size.y != currentTexture.height)){
+			}else if(_overrideSizePerFrame && (this.size.x != currentTexture.width || this.size.y != currentTexture.height)){
 				this.size =  new Point(currentTexture.width, currentTexture.height);
 			}
 			

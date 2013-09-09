@@ -4,6 +4,8 @@ package com.pblabs.rendering2D
 
 	public interface ISpriteSheetRenderer
 	{
+		function get overrideSizePerFrame():Boolean;
+		function set overrideSizePerFrame(val : Boolean):void;
 		function get spriteSheet():ISpriteSheet;
 		function set spriteSheet(sheet : ISpriteSheet):void;
 		function get spriteIndex():int;

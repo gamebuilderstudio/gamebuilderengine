@@ -20,12 +20,12 @@ package com.pblabs.rendering2D
 	{		
 		public var spriteSheetProperty : PropertyReference;
 		public var directionReference:PropertyReference;
-		public var overrideSizePerFrame : Boolean = true;
 
 		protected var currentSpatialName : String;
 		protected var currentSpatialRef : PropertyReference;
 		protected var _spriteSheet:ISpriteSheet;
 		protected var _spriteIndex:int = 0;
+		protected var _overrideSizePerFrame : Boolean = true;
 
 		public function get spriteSheet():ISpriteSheet { return _spriteSheet; }
 		public function set spriteSheet(val : ISpriteSheet):void { 
@@ -34,6 +34,9 @@ package com.pblabs.rendering2D
 
 		public function get spriteIndex():int { return _spriteIndex; }
 		public function set spriteIndex(val : int):void { _spriteIndex = val; }
+
+		public function get overrideSizePerFrame():Boolean { return _overrideSizePerFrame; }
+		public function set overrideSizePerFrame(val : Boolean):void { _overrideSizePerFrame = val; }
 
 		override public function get displayObject():DisplayObject
 		{
@@ -78,7 +81,7 @@ package com.pblabs.rendering2D
 			{
 	            registrationPoint = _spriteSheet.center.clone();					
 			}
-			if(curFrame && this.size && this.sizeProperty && overrideSizePerFrame && (this.size.x != curFrame.width || this.size.y != curFrame.height))
+			if(curFrame && this.size && this.sizeProperty && _overrideSizePerFrame && (this.size.x != curFrame.width || this.size.y != curFrame.height))
 			{
 				var newSize : Point = new Point(curFrame.width, curFrame.height);
 				this.size = newSize;
@@ -98,7 +101,7 @@ package com.pblabs.rendering2D
 				if(spatial && spatial.spriteForPointChecks == this){
 					this.owner.setProperty( this.sizeProperty, newSize);
 				}
-			}else if(overrideSizePerFrame && (this.size.x != curFrame.width || this.size.y != curFrame.height)){
+			}else if(_overrideSizePerFrame && (this.size.x != curFrame.width || this.size.y != curFrame.height)){
 				this.size =  new Point(curFrame.width, curFrame.height);
 			}
 			
