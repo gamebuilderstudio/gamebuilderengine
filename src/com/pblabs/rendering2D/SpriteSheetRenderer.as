@@ -55,7 +55,7 @@ package com.pblabs.rendering2D
 		override protected function onReset():void
 		{
 			super.onReset();
-			if(spriteSheetProperty)
+			if(spriteSheetProperty && !spriteSheet)
 				spriteSheet = this.owner.getProperty( spriteSheetProperty ) as ISpriteSheet;
 			if(spriteSheet && spriteSheet.isDestroyed)
 				spriteSheet = null;
