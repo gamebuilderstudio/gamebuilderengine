@@ -198,6 +198,8 @@ package com.pblabs.engine.serialization
         
         private function deserializeSimple(object:*, xml:XML, typeHint:String):*
         {
+			if(!typeHint && xml.attribute("type"))
+				typeHint = String(xml.@type);
             // If the tag is empty and we're not a string where """ is a valid value,
             // just return that value.
 			var xmlVal : String = xml.toString();
@@ -496,7 +498,7 @@ package com.pblabs.engine.serialization
                 {
                     var value:* = getChildObject(object, key, typeName, childXML);
                     if (value != null)
-                        value = deserialize(value, childXML);
+                        value = deserialize(value, childXML, typeName);
                     
                     // Assign, either to key or to end of array.
                     if (key.length > 0){
