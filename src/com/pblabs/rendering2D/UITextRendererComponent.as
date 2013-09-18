@@ -6,23 +6,17 @@ package com.pblabs.rendering2D
 	import com.pblabs.engine.resource.ImageResource;
 	import com.pblabs.rendering2D.BitmapRenderer;
 	import com.pblabs.rendering2D.fonts.BMFont;
-	import com.pblabs.screens.ScreenManager;
 	
 	import flash.display.BitmapData;
-	import flash.display.DisplayObject;
-	import flash.display.DisplayObjectContainer;
 	import flash.events.Event;
 	import flash.events.FocusEvent;
 	import flash.events.MouseEvent;
-	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFieldType;
 	import flash.text.TextFormat;
-	
-	import spark.primitives.Rect;
 	
 	public class UITextRendererComponent extends BitmapRenderer implements ITextRenderer
 	{
@@ -243,7 +237,7 @@ package com.pblabs.rendering2D
 				{
 					this._size = _newTextSize;
 					if(owner && sizeProperty)
-						this.owner.setProperty( sizeProperty, _newTextSize )
+						this.owner.setProperty( sizeProperty, _newTextSize.clone() )
 				}else{
 					this._size = _newTextSize;
 				}
