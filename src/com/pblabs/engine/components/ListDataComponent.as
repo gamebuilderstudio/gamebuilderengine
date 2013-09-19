@@ -8,7 +8,6 @@
  ******************************************************************************/
 package com.pblabs.engine.components
 {
-   import com.pblabs.engine.PBE;
    import com.pblabs.engine.entity.EntityComponent;
    import com.pblabs.engine.serialization.ISerializable;
    import com.pblabs.engine.serialization.Serializer;
@@ -41,7 +40,8 @@ package com.pblabs.engine.components
 	   
 	   public function deserialize(xml:XML):*
 	   {
-		   source = Serializer.instance.deserialize( _data, xml.source[0]);
+		   var newData : Array = new Array();
+		   source = Serializer.instance.deserialize( newData, xml.source[0]);
 		   return this;
 	   }
 	   
@@ -112,6 +112,18 @@ package com.pblabs.engine.components
 		   for(var i : int = 0; i < len; i++)
 		   {
 			   this["item"+i] = _data[i];
+		   }
+	   }
+	   
+	   override protected function onAdd():void
+	   {
+		   super.onAdd();
+		   
+		   if(!_data){
+		     _data = new Array(); 
+		   }
+		   if(!updated){
+			   updated = new Signal(ListDataComponent); 
 		   }
 	   }
 	   
