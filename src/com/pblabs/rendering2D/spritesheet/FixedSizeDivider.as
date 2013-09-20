@@ -8,6 +8,7 @@
  ******************************************************************************/
 package com.pblabs.rendering2D.spritesheet
 {
+    import com.pblabs.engine.PBE;
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.rendering2D.spritesheet.ISpriteSheet;
     
@@ -46,9 +47,10 @@ package com.pblabs.rendering2D.spritesheet
          * @inheritDoc
          */
         [EditorData(ignore="true")]
+		public function get owningSheet():ISpriteSheet{ return _owningSheet; }
         public function set owningSheet(value:ISpriteSheet):void
         {
-            if(_owningSheet && value)
+            if(_owningSheet && value && !PBE.IN_EDITOR)
                 Logger.warn(this, "set OwningSheet", "Already assigned to a sheet, reassigning may result in unexpected behavior.");
             _owningSheet = value;
         }
@@ -86,8 +88,25 @@ package com.pblabs.rendering2D.spritesheet
             var c:FixedSizeDivider = new FixedSizeDivider();
             c.width = width;
             c.height = height;
+			c.horizontalSpacing = horizontalSpacing;
+			c.verticalSpacing = verticalSpacing;
             return c;
         }
+
+		/**
+		 * @inheritDoc
+		 */
+		public function copy(divider : ISpriteSheetDivider):ISpriteSheetDivider
+		{
+			if(divider is FixedSizeDivider){
+				(divider as FixedSizeDivider).width = width;
+				(divider as FixedSizeDivider).height = height;
+				(divider as FixedSizeDivider).horizontalSpacing = horizontalSpacing;
+				(divider as FixedSizeDivider).verticalSpacing = verticalSpacing;
+				return divider;
+			}
+			return null;
+		}
 
 		/**
 		 * @inheritDoc

@@ -29,6 +29,7 @@ package com.pblabs.rendering2D.spritesheet
          * get information from it.
          */
         function set owningSheet(value:ISpriteSheet):void;
+		function get owningSheet():ISpriteSheet;
         
         /**
          * Return the size of a frame, given the desired index and the source
@@ -42,6 +43,12 @@ package com.pblabs.rendering2D.spritesheet
          */
         function clone():ISpriteSheetDivider;
 		
+		/**
+		 * copy over the properties of one sprite sheet divider to another. These dividers need to be
+		 * of the same type for this to work.
+		 */
+		function copy(divider : ISpriteSheetDivider):ISpriteSheetDivider;
+
 		/**
 		 * Used to clean up any resources the divider may have
 		 **/

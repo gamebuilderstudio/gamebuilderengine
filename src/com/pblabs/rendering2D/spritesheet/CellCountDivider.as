@@ -8,6 +8,7 @@
  ******************************************************************************/
 package com.pblabs.rendering2D.spritesheet
 {
+    import com.pblabs.engine.PBE;
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.rendering2D.spritesheet.ISpriteSheet;
     
@@ -34,9 +35,10 @@ package com.pblabs.rendering2D.spritesheet
          * @inheritDoc
          */
         [EditorData(ignore="true")]
+		public function get owningSheet():ISpriteSheet{ return _owningSheet; }
         public function set owningSheet(value:ISpriteSheet):void
         {
-            if(_owningSheet && value)
+            if(_owningSheet && value && !PBE.IN_EDITOR)
                 Logger.warn(this, "set OwningSheet", "Already assigned to a sheet, reassigning may result in unexpected behavior.");
             _owningSheet = value;
         }
@@ -54,7 +56,7 @@ package com.pblabs.rendering2D.spritesheet
          */
         public function getFrameArea(index:int):Rectangle
         {
-            if (!_owningSheet)
+            if (!_owningSheet && !PBE.IN_EDITOR)
                 throw new Error("OwningSheet must be set before calling this!");
             
             var imageWidth:int = _owningSheet.imageData.width;
@@ -83,6 +85,19 @@ package com.pblabs.rendering2D.spritesheet
             return c;
         }
 		
+		/**
+		 * @inheritDoc
+		 */
+		public function copy(divider : ISpriteSheetDivider):ISpriteSheetDivider
+		{
+			if(divider is CellCountDivider){
+				(divider as CellCountDivider).xCount = xCount;
+				(divider as CellCountDivider).yCount = yCount;
+				return divider;
+			}
+			return null;
+		}
+
 		public function destroy():void
 		{
 			_owningSheet = null;

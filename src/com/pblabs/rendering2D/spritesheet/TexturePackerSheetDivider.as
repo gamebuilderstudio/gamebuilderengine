@@ -15,7 +15,6 @@ package com.pblabs.rendering2D.spritesheet
     
     import flash.geom.Point;
     import flash.geom.Rectangle;
-    import flash.utils.describeType;
     
     /**
      * Divide a spritesheet into cells based on the rect coordinates in the loaded Texture Packer Json-Array 
@@ -133,6 +132,7 @@ package com.pblabs.rendering2D.spritesheet
          * @inheritDoc
          */
         [EditorData(ignore="true")]
+		public function get owningSheet():ISpriteSheet{ return _owningSheet; }
         public function set owningSheet(value:ISpriteSheet):void
         {
             _owningSheet = value;
@@ -168,6 +168,18 @@ package com.pblabs.rendering2D.spritesheet
             return c;
         }
 		
+		/**
+		 * @inheritDoc
+		 */
+		public function copy(divider : ISpriteSheetDivider):ISpriteSheetDivider
+		{
+			if(divider is TexturePackerSheetDivider){
+				(divider as TexturePackerSheetDivider).resource = resource;
+				return divider;
+			}
+			return null;
+		}
+
 		/**
 		 * @inheritDoc
 		 */
