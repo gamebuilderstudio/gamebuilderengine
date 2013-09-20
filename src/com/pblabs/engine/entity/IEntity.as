@@ -135,5 +135,10 @@ package com.pblabs.engine.entity
        * @see #AddComponent()
        */
       function lookupComponentByName(componentName:String):IEntityComponent;
+	  
+	  /**
+	  * Resets / invalidates all components on the entity.
+	   */
+	  function reset():void;
    }
 }

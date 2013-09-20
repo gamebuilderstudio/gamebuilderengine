@@ -9,10 +9,8 @@
 package com.pblabs.engine.entity
 {
     import com.pblabs.engine.PBE;
-    import com.pblabs.engine.core.NameManager;
     import com.pblabs.engine.core.PBObject;
     import com.pblabs.engine.core.PBSet;
-    import com.pblabs.engine.core.TemplateManager;
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.debug.Profiler;
     import com.pblabs.engine.serialization.Serializer;
@@ -22,8 +20,6 @@ package com.pblabs.engine.entity
     import flash.events.Event;
     import flash.events.EventDispatcher;
     import flash.events.IEventDispatcher;
-    import flash.sampler.clearSamples;
-    import flash.utils.Dictionary;
     import flash.utils.getQualifiedClassName;
     
     import org.osflash.signals.Signal;
@@ -311,6 +307,11 @@ package com.pblabs.engine.entity
 			doResetComponents();
 		}
         
+		public function reset():void
+		{
+			invalidateEntity();
+		}
+		
         public function lookupComponentByType(componentType:Class):IEntityComponent
         {
 			var len : int = _components.length;
