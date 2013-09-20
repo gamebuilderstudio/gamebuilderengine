@@ -11,11 +11,9 @@ package com.pblabs.starling2D
 	import com.pblabs.engine.entity.PropertyReference;
 	import com.pblabs.rendering2D.ISpatialObject2D;
 	import com.pblabs.rendering2D.ISpriteSheetRenderer;
-	import com.pblabs.rendering2D.modifier.Modifier;
 	import com.pblabs.rendering2D.spritesheet.ISpriteSheet;
 	import com.pblabs.starling2D.spritesheet.ISpriteSheetG2D;
 	
-	import flash.display.BitmapData;
 	import flash.geom.Point;
 	
 	import starling.core.Starling;
@@ -148,10 +146,11 @@ package com.pblabs.starling2D
 		override protected function onReset():void
 		{
 			super.onReset();
-			if(spriteSheetProperty)
+			if(spriteSheetProperty && !spriteSheet)
 				spriteSheet = this.owner.getProperty( spriteSheetProperty ) as ISpriteSheet;
 			if(spriteSheet && spriteSheet.isDestroyed)
 				spriteSheet = null;
+			buildG2DObject();
 		}
 
 		override protected function buildG2DObject():void

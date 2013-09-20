@@ -14,7 +14,6 @@ package com.pblabs.rendering2D.spritesheet
     import com.pblabs.engine.resource.ImageResource;
     import com.pblabs.engine.resource.Resource;
     import com.pblabs.engine.resource.ResourceEvent;
-    import com.pblabs.engine.resource.ResourceManager;
     import com.pblabs.rendering2D.spritesheet.ISpriteSheet;
     import com.pblabs.starling2D.spritesheet.SpriteContainerComponentG2D;
     
@@ -55,7 +54,8 @@ package com.pblabs.rendering2D.spritesheet
 			if(_cached && !val)
 			{
 				var frameCache : CachedFramesData = getCachedFrames();
-				frameCache.released.remove(onCacheReleased);
+				if(frameCache)
+					frameCache.released.remove(onCacheReleased);
 			}
 			_cached = val;
 		}
@@ -197,6 +197,12 @@ package com.pblabs.rendering2D.spritesheet
             _divider = value;
 			if(_divider)
             	_divider.owningSheet = this;
+			if(_cached){
+				var cachedFrames : CachedFramesData = getCachedFrames();
+				if(cachedFrames)
+					_divider.copy( cachedFrames.divider ); 
+			}
+				
             deleteFrames();
         }
 		
@@ -217,7 +223,8 @@ package com.pblabs.rendering2D.spritesheet
 			{
 				cachedFrames.released.addOnce(onCacheReleased);
 				cachedFrames.referenceCount += 1;
-				_divider = cachedFrames.divider;
+				if(_divider)
+					cachedFrames.divider.copy( _divider );
 				_bounds = cachedFrames.bounds ? cachedFrames.bounds : _bounds;
 				return cachedFrames.frames;
 			}
@@ -283,6 +290,9 @@ package com.pblabs.rendering2D.spritesheet
 					frameCache.referenceCount -= 1;
 					frameCache.released.remove(onCacheReleased);
 				}
+				if(_divider){
+					_divider.destroy();
+				}
 			}else{
 				var len : int = frames.length;
 				for(var i : int = 0; i < len; i++)
@@ -325,8 +335,8 @@ package com.pblabs.rendering2D.spritesheet
 			if(!frameCache || (checkReferenceCount && frameCache && frameCache.referenceCount > 0)){
 				return;
 			}
-			frameCache.destroy();
 			delete _frameCache[getFramesCacheKey()];
+			frameCache.destroy();
 		}
 		
 		protected function onImageLoaded(resource:ImageResource):void
@@ -388,6 +398,7 @@ package com.pblabs.rendering2D.spritesheet
 		 */
 		protected function getCachedFrames():CachedFramesData
 		{
+			var tmp : * = _frameCache;
 			if (!_cached) 
 				return null;
 			
@@ -412,7 +423,8 @@ package com.pblabs.rendering2D.spritesheet
 		protected function onCacheReleased(cache : CachedFramesData):void
 		{
 			deleteFrames();
-			_divider = null;
+			if(this.owner)
+				this.owner.reset();
 		}
 
 		protected static var _frameCache:Dictionary = new Dictionary(true);

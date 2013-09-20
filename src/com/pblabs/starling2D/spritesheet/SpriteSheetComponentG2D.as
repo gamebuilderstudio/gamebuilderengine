@@ -8,10 +8,10 @@
  ******************************************************************************/
 package com.pblabs.starling2D.spritesheet
 {
+	import com.pblabs.engine.PBE;
 	import com.pblabs.engine.PBUtil;
 	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.rendering2D.spritesheet.CachedFramesData;
-	import com.pblabs.rendering2D.spritesheet.FrameNote;
 	import com.pblabs.rendering2D.spritesheet.SpriteSheetComponent;
 	import com.pblabs.starling2D.InitializationUtilG2D;
 	import com.pblabs.starling2D.ResourceTextureManagerG2D;
@@ -39,8 +39,8 @@ package com.pblabs.starling2D.spritesheet
 			{
 				var cache : CachedFramesDataG2D = _frameCache[key] as CachedFramesDataG2D;
 				if(cache){
-					cache.destroy();
 					delete _frameCache[key];
+					cache.destroy();
 				}
 			}
 			_frameCache = new Dictionary(true);
@@ -72,7 +72,7 @@ package com.pblabs.starling2D.spritesheet
 			{
 				cachedFrames.released.addOnce(onCacheReleased);
 				cachedFrames.referenceCount += 1;
-				_divider = cachedFrames.divider ? cachedFrames.divider : _divider;
+				_divider = cachedFrames.divider ? cachedFrames.divider.copy(_divider) : _divider;
 				_bounds = cachedFrames.bounds ? cachedFrames.bounds : _bounds;
 				return cachedFrames.frames;
 			}

@@ -59,6 +59,7 @@ package com.pblabs.rendering2D
 				spriteSheet = this.owner.getProperty( spriteSheetProperty ) as ISpriteSheet;
 			if(spriteSheet && spriteSheet.isDestroyed)
 				spriteSheet = null;
+			bitmapData = getCurrentFrame();
 		}
 		
         protected function getCurrentFrame():BitmapData
