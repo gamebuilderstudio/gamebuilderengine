@@ -110,8 +110,10 @@ package com.pblabs.engine.entity
 		{
 			if(cachedLookup)
 				cachedLookup.length = 0;
+			cachedLookup = null;
 			if(cachedInfo)
 				cachedInfo.clear();
+			cachedInfo = null;
 		}
 
 		private var _property:String = null;
