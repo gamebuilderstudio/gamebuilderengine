@@ -310,6 +310,7 @@ package com.pblabs.engine.entity
 		public function reset():void
 		{
 			invalidateEntity();
+			_eventDispatcher.dispatchEvent( new EntityEvent(EntityEvent.ON_RESET) );
 		}
 		
         public function lookupComponentByType(componentType:Class):IEntityComponent
