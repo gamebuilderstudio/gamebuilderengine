@@ -34,6 +34,7 @@ package com.pblabs.rendering2D.spritesheet
 		public function set modifiers(value:Array):void
 		{
 			_modifiers = value;
+			deleteFrames();
 			buildFrames();
 		}
        /**

@@ -16,8 +16,10 @@ package com.pblabs.rendering2D.spritesheet
     import com.pblabs.engine.util.MCUtil;
     import com.pblabs.starling2D.spritesheet.SpriteContainerComponentG2D;
     
-    import flash.display.*;
-    import flash.geom.*;
+    import flash.display.BitmapData;
+    import flash.display.MovieClip;
+    import flash.geom.Point;
+    import flash.geom.Rectangle;
     import flash.utils.Dictionary;
 
     /**
@@ -47,6 +49,8 @@ package com.pblabs.rendering2D.spritesheet
 			{
 				var frameCache : CachedFramesData = getCachedFrames();
 				frameCache.released.remove(onCacheReleased);
+			}else if(!_cached && val){
+				deleteFrames();
 			}
 			_cached = val;
 		}
@@ -61,10 +65,21 @@ package com.pblabs.rendering2D.spritesheet
 
         public function set swf(value:SWFResource):void
         {
+			var changed : Boolean = false;
+			if(_resource != value)
+				changed = true;
             _resource = value;
             frames = null;
             _clip = null;
-            deleteFrames();
+			if(_cached && changed){
+				var cacheData:CachedFramesDataMC = getCachedFrames() as CachedFramesDataMC;
+				if(cacheData){
+					cacheData.clip = getMovieClip();
+					releaseCache(false);
+				}
+			}else if(changed){
+				deleteFrames();
+			}
         }
 
         /**
@@ -78,10 +93,19 @@ package com.pblabs.rendering2D.spritesheet
 
         public function set clipName(value:String):void
         {
+			var changed : Boolean = false;
+			if(_clipName != value)
+				changed = true;
             _clipName = value;
-            frames = null;
-            _clip = null;
-            deleteFrames();
+			if(_cached && changed){
+				var cacheData:CachedFramesDataMC = getCachedFrames() as CachedFramesDataMC;
+				if(cacheData){
+					cacheData.clip = getMovieClip();
+					releaseCache(false);
+				}
+			}else if(changed){
+				deleteFrames();
+			}
         }
 
         /**
@@ -124,13 +148,14 @@ package com.pblabs.rendering2D.spritesheet
 			if(value.x < .1) value.x = .1;
 			if(value.y < .1) value.y = .1;
 			
-            _scale = value.clone();
-			if(newScale){
-				this.deleteFrames();
-				if(_cached){
-					getCachedFrames().destroy();
-					delete _frameCache[getFramesCacheKey()];
+            _scale.copyFrom( value );
+			if(_cached && newScale){
+				var cacheData:CachedFramesDataMC = getCachedFrames() as CachedFramesDataMC;
+				if(cacheData){
+					releaseCache(false);
 				}
+			}else if(newScale){
+				deleteFrames();
 			}
         }
         
@@ -205,7 +230,6 @@ package com.pblabs.rendering2D.spritesheet
 			_resource = null;
 			_bounds = null;
 			_clip = null;
-			_parentMC = null;
 			_destroyed = true;
 		}
 		
@@ -215,15 +239,10 @@ package com.pblabs.rendering2D.spritesheet
 			if(!frameCache || (checkReferenceCount && frameCache && frameCache.referenceCount > 0)){
 				return;
 			}
-			frameCache.destroy();
 			delete _frameCache[getFramesCacheKey()];
+			frameCache.destroy();
 		}
 
-		override protected function deleteFrames():void
-		{
-			super.deleteFrames();
-		}
-		
 		override public function getFrame(index:int, direction:Number=0.0):BitmapData
 		{
 			var curframe : BitmapData = super.getFrame(index, direction);
@@ -275,9 +294,8 @@ package com.pblabs.rendering2D.spritesheet
 		protected function onCacheReleased(cache : CachedFramesData):void
 		{
 			deleteFrames();
-			_clip = null;
-			_frameCenters = null;
-			_bounds = null;
+			if(this.owner)
+				this.owner.reset();
 		}
 
 		/**
@@ -286,7 +304,7 @@ package com.pblabs.rendering2D.spritesheet
          */
         protected function rasterize():void
         {
-            if (!_resource.isLoaded || _resource.didFail) return;
+            if (!_resource || !_resource.isLoaded || _resource.didFail) return;
 
             var cacheData:CachedFramesDataMC = getCachedFrames() as CachedFramesDataMC;
             if (_cached && cacheData)
@@ -303,17 +321,7 @@ package com.pblabs.rendering2D.spritesheet
 				_bounds = null;
 			}
 
-            if (_clipName)
-            {
-                _clip = _resource.getExportedAsset(_clipName) as MovieClip;
-                if (!_clip)
-                    _clip = _resource.clip;
-            }
-            else
-            {
-                _clip = _resource.clip;
-            }
-
+			_clip = getMovieClip();
             frames = onRasterize(_clip);
 			_center = new Point(-_bounds.x, -_bounds.y);
 			
@@ -324,6 +332,24 @@ package com.pblabs.rendering2D.spritesheet
 				setCachedFrames(frameCache);
 			}
         }
+		
+		protected function getMovieClip():MovieClip
+		{
+			if(!_resource)
+				return null;
+			var clip : MovieClip;
+			if (_clipName)
+			{
+				clip = _resource.getExportedAsset(_clipName) as MovieClip;
+				if (!clip)
+					clip = _resource.clip;
+			}
+			else
+			{
+				clip = _resource.clip;
+			}
+			return clip;
+		}
 
         /**
          * Performs the actual rasterizing. Override this to perform custom rasterizing of a clip.
@@ -366,7 +392,7 @@ package com.pblabs.rendering2D.spritesheet
 			
 			//Hack required so that the movie clip animation is drawn correctly
 			//Ridiculous Adobe!!!
-			if(PBE.mainStage){
+			if(PBE.mainStage && !_parentMC.parent){
 				PBE.mainStage.addChild(_parentMC);
 				_parentMC.addChild( mc );
 			}
@@ -398,7 +424,7 @@ package com.pblabs.rendering2D.spritesheet
 			}
 			
 			//Clean up hack
-			if(PBE.mainStage){
+			if(PBE.mainStage && _parentMC.parent && PBE.mainStage.contains(_parentMC)){
 				PBE.mainStage.removeChild(_parentMC);
 				_parentMC.removeChild( mc );
 			}
@@ -417,6 +443,14 @@ package com.pblabs.rendering2D.spritesheet
             return bd;
         }
 
+		override protected function onAdd():void
+		{
+			super.onAdd();
+			_destroyed = false;
+			if(!frames)
+				buildFrames();
+		}
+		
 		override protected function onRemove():void
 		{
 			destroy();
@@ -433,7 +467,7 @@ package com.pblabs.rendering2D.spritesheet
 		protected var _clip:MovieClip;
 		protected var _bounds:Rectangle;
 		protected var _cached:Boolean = true;
-		protected var _parentMC : MovieClip = new MovieClip();
+		protected static var _parentMC : MovieClip = new MovieClip();
 		protected var _destroyed : Boolean = false;
     }
 }
