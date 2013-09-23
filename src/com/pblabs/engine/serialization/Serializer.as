@@ -276,7 +276,7 @@ package com.pblabs.engine.serialization
                     typeName = "String";
                 
                 // deserialize into the child.
-                if (!getChildReference(object, fieldName, fieldXML) && !getResourceObject(object, fieldName, fieldXML))
+                if (!getChildReference(object, fieldName, fieldXML) && !getResourceObject(object, fieldName, fieldXML, typeName))
                 {
                     var child:* = getChildObject(object, fieldName, typeName, fieldXML);
                     if (child != null)
@@ -494,7 +494,7 @@ package com.pblabs.engine.serialization
                     typeName = typeHint ? typeHint : "String";
                 
                 // deserialize the value.
-                if (!getChildReference(object, key, childXML) && !getResourceObject(object, key, childXML, typeHint))
+                if (!getChildReference(object, key, childXML) && !getResourceObject(object, key, childXML, typeName))
                 {
                     var value:* = getChildObject(object, key, typeName, childXML);
                     if (value != null)
