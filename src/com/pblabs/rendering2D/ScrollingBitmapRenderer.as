@@ -9,18 +9,11 @@
 package com.pblabs.rendering2D
 {
 	import com.pblabs.engine.PBE;
-	import com.pblabs.engine.core.IAnimatedObject;
-	import com.pblabs.rendering2D.BitmapRenderer;
-	
-	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.Sprite;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
-	import flash.utils.getTimer;
-	
-	import spark.primitives.Graphic;
 	
 	public class ScrollingBitmapRenderer extends SpriteRenderer
 	{

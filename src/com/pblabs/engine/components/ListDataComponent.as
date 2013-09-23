@@ -84,16 +84,15 @@ package com.pblabs.engine.components
 		   refresh();
 	   }
 	   
-	   public function clearAll():void
+	   public function clearAll(callRefresh : Boolean = true):void
 	   {
 		   var len : int = _data.length;
 		   for(var i : int = 0; i < len; i++)
 		   {
 			   delete this["item"+i];
 		   }
-		   if(len > 0)
-		   		_data.length = 0;
-		   refresh();
+		   if(callRefresh)
+		       refresh();
 	   }
 	   
 	   /**
@@ -129,12 +128,7 @@ package com.pblabs.engine.components
 	   
 	   override protected function onRemove():void
 	   {
-		   
-		   var len : int = _data.length;
-		   for(var i : int = 0; i < len; i++)
-		   {
-			   delete this["item"+i];
-		   }
+		   clearAll();
 		   _data = null;
 		   
 		   updated.removeAll();
