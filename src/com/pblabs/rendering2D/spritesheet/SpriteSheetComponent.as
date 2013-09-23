@@ -398,7 +398,6 @@ package com.pblabs.rendering2D.spritesheet
 		 */
 		protected function getCachedFrames():CachedFramesData
 		{
-			var tmp : * = _frameCache;
 			if (!_cached) 
 				return null;
 			

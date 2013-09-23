@@ -8,20 +8,15 @@
  ******************************************************************************/
 package com.pblabs.rendering2D.spritesheet
 {
-    import com.pblabs.engine.PBE;
     import com.pblabs.engine.PBUtil;
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.resource.ImageResource;
-    import com.pblabs.engine.resource.Resource;
     import com.pblabs.engine.resource.ResourceEvent;
-    import com.pblabs.engine.resource.ResourceManager;
     import com.pblabs.rendering2D.spritesheet.ISpriteSheet;
     import com.pblabs.starling2D.spritesheet.SpriteContainerComponentG2D;
     
     import flash.display.BitmapData;
-    import flash.geom.Point;
     import flash.geom.Rectangle;
-    import flash.utils.Dictionary;
     
     /**
      * Handles loading multiple individual images to make a runtime spritesheet object for rendering.
@@ -46,14 +41,9 @@ package com.pblabs.rendering2D.spritesheet
 		 * are re-used by all instances of the SpriteSheetComponent
 		 * with the same filename.
 		 */
-		public function get cached():Boolean { return _cached; }
+		public function get cached():Boolean { return false; }
 		public function set cached(val : Boolean):void{
-			if(_cached && !val)
-			{
-				var frameCache : CachedFramesData = getCachedFrames();
-				frameCache.released.remove(onCacheReleased);
-			}
-			_cached = val;
+			Logger.warn(this, "cached", "Caching is not supported with a MultiImageSpriteSheetComponent")
 		}
 
 		/**
@@ -97,11 +87,12 @@ package com.pblabs.rendering2D.spritesheet
 		 */
 		public function set images(value : Vector.<ImageResource>):void
 		{
-			if(!value || value.length < 1)
+			if(!value)
 				return;
 			
+			_imageFilename = "";
 			var len : int = value.length;
-			var loaded : Boolean = true;
+			var loaded : Boolean = len > 0 ? true : false;
 			for(var i : int = 0; i < len; i++)
 			{
 				if(!value[i].isLoaded){
@@ -115,6 +106,8 @@ package com.pblabs.rendering2D.spritesheet
 			_failed = false;
 			_images = value;
 			deleteFrames();
+			if(_images && _images.length > 0)
+				buildFrames();
 		}
 		
 		/**
@@ -122,7 +115,7 @@ package com.pblabs.rendering2D.spritesheet
          */
         public override function get isLoaded():Boolean
         {
-            return (_loaded || _forcedBitmaps)
+            return _loaded;
         }
         
         /**
@@ -136,7 +129,7 @@ package com.pblabs.rendering2D.spritesheet
 		public function set imageData(data : BitmapData):void
 		{
 			//Not Implemented
-			Logger.error(this, "set imageData", "The imageData property is not supported on a MultiImageSpriteSheet");
+			Logger.warn(this, "set imageData", "The imageData property is not supported on a MultiImageSpriteSheet");
 		}
         
         /**
@@ -155,7 +148,7 @@ package com.pblabs.rendering2D.spritesheet
 		public function set divider(value:ISpriteSheetDivider):void
 		{
 			//Not Implemented
-			Logger.error(this, "set divider", "The divider property is not supported on a MultiImageSpriteSheet");
+			Logger.warn(this, "set divider", "The divider property is not supported on a MultiImageSpriteSheet");
 		}
 		
         
@@ -174,28 +167,17 @@ package com.pblabs.rendering2D.spritesheet
             if(_forcedBitmaps)
                 return _forcedBitmaps;
             
-            var _frames:Array;
-            
             // image isn't loaded, can't do anything yet
             if (!_loaded)
                 return null;
             
-			var cachedFrames : CachedFramesData = getCachedFrames();
-			if (_cached && cachedFrames)
-			{
-				cachedFrames.released.addOnce(onCacheReleased);
-				cachedFrames.referenceCount += 1;
-				_bounds = cachedFrames.bounds ? cachedFrames.bounds : _bounds;
-				return cachedFrames.frames;
-			}
-
-			_frames = new Array(_images);
+			var _frames:Array = new Array(_images);
 			var tmpBounds : Rectangle;
 			var len : int = _images.length;
 			for (var i:int = 0; i < len; i++)
 			{
 				var resource:ImageResource = _images[i];										
-				_frames[i] = resource.bitmapData.clone();
+				_frames[i] = resource.bitmapData;
 				tmpBounds = new Rectangle(0,0,_frames[i].width, _frames[i].height);
 				if(!_bounds){
 					_bounds = tmpBounds;
@@ -206,14 +188,6 @@ package com.pblabs.rendering2D.spritesheet
 				}
 				
 			}				
-		
-			
-			if(_cached){
-				var frameCache : CachedFramesData = new CachedFramesData(_frames, _imageFilename, null, _bounds);
-				frameCache.released.addOnce(onCacheReleased);
-				frameCache.referenceCount += 1;
-				setCachedFrames(frameCache);
-			}
             return _frames;
         }
         
@@ -225,7 +199,17 @@ package com.pblabs.rendering2D.spritesheet
         {
 			//TODO: Add Caching Handling Herer
             _forcedBitmaps = bitmaps;
+			if(bitmaps && bitmaps.length > 0)
+				_loaded = true;
+			else
+				_loaded = false;
         }
+		
+		public function releaseCache(checkReferenceCount:Boolean=true):void
+		{
+			// TODO Auto Generated method stub
+			
+		}
 		
 		/**
 		 * destory provides a mechanism to cleans up this component externally if not added to an 
@@ -235,47 +219,26 @@ package com.pblabs.rendering2D.spritesheet
 		{
 			if(_destroyed) return;
 			
-			if(_cached){
-				var frameCache : CachedFramesData = getCachedFrames();
-				
-				if(frameCache && frameCache.referenceCount > 0){
-					frameCache.released.remove(onCacheReleased);
-					frameCache.referenceCount -= 1;
+			var len : int;
+			if(_forcedBitmaps){
+				len = _forcedBitmaps.length;
+				for(var i : int = 0; i < len; i++){
+					//We don't clean up the bitmaps in the forced bitmaps array 
+					//because the bitmaps were created elsewhere
+					_forcedBitmaps.pop();
 				}
-			}else{
-				var len : int = frames.length;
-				for(var i : int = 0; i < len; i++)
-				{
-					frames[i].dispose();
-				}
-				if(_forcedBitmaps){
-					len = _forcedBitmaps.length;
-					for(i = 0; i < len; i++){
-						//We don't clean up the bitmaps in the forced bitmaps array 
-						//because the bitmaps were created elsewhere
-						_forcedBitmaps.pop();
-					}
-					_forcedBitmaps = null;
-				}
+				_forcedBitmaps = null;
 			}
-		
 			this.deleteFrames();
 			
 			_bounds = null;
-			images = null;
+			if (_images)
+			{
+				_images = null;
+				_loaded = false;
+			}  
 			
 			_destroyed = true;
-		}
-		
-		public function releaseCache(checkReferenceCount : Boolean = true):void
-		{
-			var frameCache : CachedFramesData = getCachedFrames();
-			if(!frameCache || (checkReferenceCount && frameCache && frameCache.referenceCount > 0)){
-				return;
-			}
-			frameCache.destroy();
-			delete _frameCache[getFramesCacheKey()];
-			//Divider is cleaned up in the CachedFramesData.destroy()
 		}
 		
 		protected function onImageLoaded(resource:ImageResource):void
@@ -291,8 +254,10 @@ package com.pblabs.rendering2D.spritesheet
 			if(loaded)
 				_loading = false;
 			_loaded = loaded;
-			if(_loaded)
+			if(_loaded){
 				deleteFrames();
+				buildFrames();
+			}
 		}
 		
 		protected function onImageFailed(resource:ImageResource):void
@@ -305,20 +270,11 @@ package com.pblabs.rendering2D.spritesheet
 		override protected function onAdd():void
 		{
 			super.onAdd();
-			/*if (!_image && imageFilename!=null && imageFilename!="" && !loading)
-			{
-				_loading = true;
-				PBE.resourceManager.load(imageFilename, ImageResource, onImageLoaded, onImageFailed);
-			}*/
+			_destroyed = false;
 		}
 		
 		override protected function onRemove():void
 		{
-			if (_images)
-			{
-				_images = null;
-				_loaded = false;
-			}  
 			destroy();
 			super.onRemove();         			
 		}
@@ -331,42 +287,7 @@ package com.pblabs.rendering2D.spritesheet
 		{
 			onImageFailed(event.resourceObject as ImageResource);
 		}
-		/*--------------------------------------------------------------------------------------------*/
-		//* Caching Functionality
-		/*--------------------------------------------------------------------------------------------*/
-		/**
-		 * Reads the frames from the cache. Returns a null reference if they are not _cached.
-		 */
-		protected function getCachedFrames():CachedFramesData
-		{
-			if (!_cached) 
-				return null;
-			
-			return _frameCache[getFramesCacheKey()] as CachedFramesData;
-		}
 		
-		/**
-		 * Caches the frames based on the current values.
-		 */
-		protected function setCachedFrames(frames:CachedFramesData):void 
-		{
-			if (!_cached) 
-				return;
-			_frameCache[getFramesCacheKey()] = frames;
-		}
-		
-		protected function getFramesCacheKey():String
-		{
-			return _imageFilename;
-		}
-
-		protected function onCacheReleased(cache : CachedFramesData):void
-		{
-			deleteFrames();
-		}
-
-		protected static var _frameCache:Dictionary = new Dictionary(true);
-
 		protected var _imageFilename:String = null;
 		protected var _images:Vector.<ImageResource> = null;
 		protected var _loading:Boolean = false;

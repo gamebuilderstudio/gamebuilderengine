@@ -11,41 +11,21 @@ package com.pblabs.starling2D.spritesheet
 	import com.pblabs.engine.PBUtil;
 	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.resource.ImageResource;
-	import com.pblabs.rendering2D.spritesheet.CachedFramesData;
-	import com.pblabs.rendering2D.spritesheet.FrameNote;
 	import com.pblabs.rendering2D.spritesheet.MultiImageSpriteSheetComponent;
-	import com.pblabs.starling2D.InitializationUtilG2D;
 	import com.pblabs.starling2D.ResourceTextureManagerG2D;
 	
 	import flash.display.BitmapData;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
-	import flash.utils.Dictionary;
 	
 	import starling.core.Starling;
 	import starling.textures.Texture;
-	import starling.textures.TextureAtlas;
 	
 	public class MultiImageSpriteSheetComponentG2D extends MultiImageSpriteSheetComponent implements ISpriteSheetG2D
 	{
 		public function MultiImageSpriteSheetComponentG2D()
 		{
 			super();
-			InitializationUtilG2D.disposed.add(releaseTextures);
-		}
-		
-		public static function releaseTextures():void
-		{
-			for(var key : String in _frameCache)
-			{
-				var cache : CachedFramesDataG2D = _frameCache[key] as CachedFramesDataG2D;
-				if(cache){
-					cache.destroy();
-					delete _frameCache[key];
-				}
-			}
-			_frameCache = new Dictionary(true);
-			InitializationUtilG2D.disposed.remove(releaseTextures);
 		}
 		
 		override public function getFrame(index:int, direction:Number=0.0):BitmapData{ return null; }
@@ -62,22 +42,12 @@ package com.pblabs.starling2D.spritesheet
 			/*if(_forcedBitmaps)
 				return _forcedBitmaps;*/
 			
-			var _frames:Array;
-			
 			// image isn't loaded, can't do anything yet
 			if (!loaded)
 				return null;
 			
-			var cachedFrames : CachedFramesData = getCachedFrames();
-			if (cached && cachedFrames)
-			{
-				cachedFrames.referenceCount += 1;
-				_bounds = cachedFrames.bounds ? cachedFrames.bounds : _bounds;
-				return cachedFrames.frames;
-			}
-			
 			// no divider means treat the image as a single frame
-			_frames = new Array(_images.length);
+			var _frames:Array = new Array(_images.length);
 			var tmpBounds : Rectangle;
 			for (var i:int = 0; i < _images.length; i++)
 			{
@@ -100,12 +70,6 @@ package com.pblabs.starling2D.spritesheet
 				}
 			}				
 		
-			
-			if(cached){
-				var frameCache : CachedFramesData = new CachedFramesDataG2D(_frames, _imageFilename, null, _bounds, null);
-				frameCache.referenceCount += 1;
-				setCachedFrames(frameCache);
-			}
 			return _frames;
 		}
 
