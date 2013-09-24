@@ -71,7 +71,10 @@ package starling.events
                     var remainingListeners:Vector.<Function> = new <Function>[];
                     
                     for (var i:int=0; i<numListeners; ++i)
-                        if (listeners[i] != listener) remainingListeners.push(listeners[i]);
+                    {
+                        var otherListener:Function = listeners[i];
+                        if (otherListener != listener) remainingListeners.push(otherListener);
+                    }
                     
                     mEventListeners[type] = remainingListeners;
                 }
@@ -164,7 +167,7 @@ package starling.events
             else chain = new <EventDispatcher>[element];
             
             while ((element = element.parent) != null)
-                chain[length++] = element;
+                chain[int(length++)] = element;
 
             for (var i:int=0; i<length; ++i)
             {

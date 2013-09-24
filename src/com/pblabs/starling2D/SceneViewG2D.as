@@ -259,7 +259,7 @@ package com.pblabs.starling2D
 		
 		private function stopRendering():void
 		{
-			this._starlingInstance.stop();
+			this._starlingInstance.stop(true);
 		}
 		
 		override public function get width():Number

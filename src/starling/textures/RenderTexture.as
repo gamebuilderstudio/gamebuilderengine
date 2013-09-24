@@ -20,7 +20,6 @@ package starling.textures
     import starling.display.DisplayObject;
     import starling.display.Image;
     import starling.errors.MissingContextError;
-    import starling.utils.getNextPowerOfTwo;
 
     /** A RenderTexture is a dynamic texture onto which you can draw any display object.
      * 
@@ -66,7 +65,7 @@ package starling.textures
         private var mSupport:RenderSupport;
         
         /** helper object */
-        private static var sScissorRect:Rectangle = new Rectangle();
+        private static var sClipRect:Rectangle = new Rectangle();
         
         /** Creates a new RenderTexture with a certain size. If the texture is persistent, the
          *  contents of the texture remains intact after each draw call, allowing you to use the
@@ -75,20 +74,21 @@ package starling.textures
          *  for one draw (or drawBundled) call, you should deactivate it. */
         public function RenderTexture(width:int, height:int, persistent:Boolean=true, scale:Number=-1)
         {
-            if (scale <= 0) scale = Starling.contentScaleFactor; 
-            
-            var nativeWidth:int  = getNextPowerOfTwo(width  * scale);
-            var nativeHeight:int = getNextPowerOfTwo(height * scale);
-            mActiveTexture = Texture.empty(width, height, PMA, true, scale);
+            mActiveTexture = Texture.empty(width, height, PMA, false, true, scale);
+            mActiveTexture.root.onRestore = mActiveTexture.root.clear;
             
             super(mActiveTexture, new Rectangle(0, 0, width, height), true);
             
+            var rootWidth:Number  = mActiveTexture.root.width;
+            var rootHeight:Number = mActiveTexture.root.height;
+            
             mSupport = new RenderSupport();
-            mSupport.setOrthographicProjection(0, 0, nativeWidth/scale, nativeHeight/scale);
+            mSupport.setOrthographicProjection(0, 0, rootWidth, rootHeight);
             
             if (persistent)
             {
-                mBufferTexture = Texture.empty(width, height, PMA, true, scale);
+                mBufferTexture = Texture.empty(width, height, PMA, false, true, scale);
+                mBufferTexture.root.onRestore = mBufferTexture.root.clear;
                 mHelperImage = new Image(mBufferTexture);
                 mHelperImage.smoothing = TextureSmoothing.NONE; // solves some antialias-issues
             }
@@ -97,6 +97,9 @@ package starling.textures
         /** @inheritDoc */
         public override function dispose():void
         {
+            mSupport.dispose();
+            mActiveTexture.dispose();
+            
             if (isPersistent) 
             {
                 mBufferTexture.dispose();
@@ -106,7 +109,8 @@ package starling.textures
             super.dispose();
         }
         
-        /** Draws an object into the texture.
+        /** Draws an object into the texture. Note that any filters on the object will currently
+         *  be ignored.
          * 
          *  @param object       The object to draw.
          *  @param matrix       If 'matrix' is null, the object will be drawn adhering its 
@@ -157,9 +161,9 @@ package starling.textures
             }
             
             // limit drawing to relevant area
-            sScissorRect.setTo(0, 0, mActiveTexture.nativeWidth, mActiveTexture.nativeHeight);
+            sClipRect.setTo(0, 0, mActiveTexture.width, mActiveTexture.height);
 
-            mSupport.scissorRectangle = sScissorRect;
+            mSupport.pushClipRect(sClipRect);
             mSupport.renderTarget = mActiveTexture;
             mSupport.clear();
             
@@ -183,7 +187,7 @@ package starling.textures
                 mSupport.finishQuadBatch();
                 mSupport.nextFrame();
                 mSupport.renderTarget = null;
-                mSupport.scissorRectangle = null;
+                mSupport.popClipRect();
             }
         }
         

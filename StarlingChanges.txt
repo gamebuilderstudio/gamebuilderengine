@@ -1,0 +1,8 @@
+- Changed Texture.as Added a disposed signal property
+- CurveUtil.as Was Added for Graphics package
+- Starling
+	- Commented out Juggler
+	- Added SharedOverride to Starling constructor
+	- Added disposed getter
+	
+-Added getObjectsUnderPoint method to DisplayObjectContainer.as

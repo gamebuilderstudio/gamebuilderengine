@@ -102,18 +102,38 @@ package starling.animation
             }
         }
         
+        /** Figures out if the juggler contains one or more tweens with a certain target. */
+        public function containsTweens(target:Object):Boolean
+        {
+            if (target == null) return false;
+            
+            for (var i:int=mObjects.length-1; i>=0; --i)
+            {
+                var tween:Tween = mObjects[i] as Tween;
+                if (tween && tween.target == target) return true;
+            }
+            
+            return false;
+        }
+        
         /** Removes all objects at once. */
         public function purge():void
         {
+            // the object vector is not purged right away, because if this method is called 
+            // from an 'advanceTime' call, this would make the loop crash. Instead, the
+            // vector is filled with 'null' values. They will be cleaned up on the next call
+            // to 'advanceTime'.
+            
             for (var i:int=mObjects.length-1; i>=0; --i)
             {
-                var dispatcher:EventDispatcher = mObjects.pop() as EventDispatcher;
+                var dispatcher:EventDispatcher = mObjects[i] as EventDispatcher;
                 if (dispatcher) dispatcher.removeEventListener(Event.REMOVE_FROM_JUGGLER, onRemove);
+                mObjects[i] = null;
             }
         }
         
-        /** Delays the execution of a function until a certain time has passed. Creates an
-         *  object of type 'DelayedCall' internally and returns it. Remove that object
+        /** Delays the execution of a function until <code>delay</code> seconds have passed.
+         *  Creates an object of type 'DelayedCall' internally and returns it. Remove that object
          *  from the juggler to cancel the function call. */
         public function delayCall(call:Function, delay:Number, ...args):DelayedCall
         {
@@ -124,8 +144,8 @@ package starling.animation
             return delayedCall;
         }
         
-        /** Utilizes a tween to animate the target object over a certain time. Internally, this
-         *  method uses a tween instance (taken from an object pool) that is added to the
+        /** Utilizes a tween to animate the target object over <code>time</code> seconds. Internally,
+         *  this method uses a tween instance (taken from an object pool) that is added to the
          *  juggler right away. This method provides a convenient alternative for creating 
          *  and adding a tween manually.
          *  
@@ -201,7 +221,7 @@ package starling.animation
                 numObjects = mObjects.length; // count might have changed!
                 
                 while (i < numObjects)
-                    mObjects[currentIndex++] = mObjects[i++];
+                    mObjects[int(currentIndex++)] = mObjects[int(i++)];
                 
                 mObjects.length = currentIndex;
             }
@@ -216,7 +236,7 @@ package starling.animation
                 add(tween.nextTween);
         }
         
-        /** The total life time of the juggler. */
+        /** The total life time of the juggler (in seconds). */
         public function get elapsedTime():Number { return mElapsedTime; }        
     }
 }
