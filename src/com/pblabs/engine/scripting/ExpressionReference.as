@@ -128,6 +128,8 @@ package com.pblabs.engine.scripting
 		-------------------------------------------------------------------------------------------------------------*/
 		private function evaluateExpression(context : Object = null, thisObject : * = null):void
 		{
+			if(PBE.IN_EDITOR)
+				return;
 			if(thisObject == null){
 				thisObject = _dynamicThisObject;
 
