@@ -18,7 +18,7 @@ package com.pblabs.triggers.actions
 		//______________________________________ 
 		//	Public Properties
 		//______________________________________
-		public var source:*;
+		public var source:Object;
 
 		[TypeHint(type="com.pblabs.engine.entity.PropertyReference")]
 		public var property:PropertyReference;
@@ -46,7 +46,7 @@ package com.pblabs.triggers.actions
 				
 			}else if(source is PropertyReference && passReferences) {
 				
-				newPropValue = _owner.owner.getProperty(source);
+				newPropValue = _owner.owner.getProperty(source as PropertyReference);
 			}
 			// If our source is just a plain object
 			else
