@@ -34,6 +34,9 @@ package com.pblabs.engine.core
     {
         public function InputManager()
         {
+			if(PBE.IN_EDITOR)
+				return;
+			
             PBE.mainStage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
             PBE.mainStage.addEventListener(KeyboardEvent.KEY_UP,   onKeyUp);
             PBE.mainClass.parent.addEventListener(MouseEvent.MOUSE_DOWN,  onMouseDown, true);
