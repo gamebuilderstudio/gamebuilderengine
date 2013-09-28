@@ -84,7 +84,7 @@ package com.pblabs.engine.debug
             return _textField.getLineMetrics(0).height;
         }
         
-        protected const _textFormat:TextFormat = new TextFormat("_typewriter", 11, 0xDDDDDD); 
+        protected const _textFormat:TextFormat = new TextFormat("_typewriter", 13, 0xDDDDDD); 
         protected const _textField:TextField = new TextField();
         protected const _glyphCache:Array = [];
         protected const _colorCache:Array = [];

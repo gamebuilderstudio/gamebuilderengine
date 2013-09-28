@@ -9,11 +9,8 @@
 package com.pblabs.engine.debug
 {
 	import com.pblabs.engine.PBE;
-	import com.pblabs.engine.core.InputKey;
-	import com.pblabs.engine.core.InputManager;
 	
 	import flash.events.KeyboardEvent;
-	import flash.ui.Keyboard;
 
 	/**
 	 * LogAppender for displaying log messages in a LogViewer. The LogViewer will be
@@ -31,11 +28,8 @@ package com.pblabs.engine.debug
 			_logViewer = new LogViewer();
 		}
   
-		private function onKeyDown(event:KeyboardEvent):void
+		public function toggleViewer():void
 		{
-			if (event.keyCode != Console.hotKeyCode)
-				return;
-			 
 			if(_logViewer)
 			{
 				if (_logViewer.parent)
@@ -46,13 +40,20 @@ package com.pblabs.engine.debug
 				else
 				{
 					PBE.mainStage.addChild(_logViewer);
-					var char:String = String.fromCharCode(event.charCode);
+					var char:String = String.fromCharCode(Console.hotKeyCode);
 					_logViewer.restrict = "^"+char.toUpperCase()+char.toLowerCase();	// disallow hotKey character
 					_logViewer.activate();
 				}
 			}
 		}
-  
+		
+		private function onKeyDown(event:KeyboardEvent):void
+		{
+			if (event.keyCode != Console.hotKeyCode)
+				return;
+			toggleViewer();
+		}
+		
 		public function addLogMessage(level:String, loggerName:String, message:String):void
 		{
 			if(_logViewer)

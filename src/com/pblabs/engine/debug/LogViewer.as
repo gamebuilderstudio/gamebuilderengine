@@ -11,7 +11,6 @@ package com.pblabs.engine.debug
     import com.pblabs.engine.PBE;
     import com.pblabs.engine.PBUtil;
     import com.pblabs.engine.core.IAnimatedObject;
-    import com.pblabs.engine.core.InputKey;
     
     import flash.display.Bitmap;
     import flash.display.BitmapData;
@@ -52,7 +51,7 @@ package com.pblabs.engine.debug
         protected var bottomLineIndex:int = int.MAX_VALUE;
         protected var logCache:Array = [];
         protected var _dirtyConsole:Boolean = true;
-		protected var _ignoreTimeScale : Boolean = false;
+		protected var _ignoreTimeScale : Boolean = true;
         
         public function LogViewer():void
         {

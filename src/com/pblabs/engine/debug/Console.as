@@ -255,8 +255,11 @@ package com.pblabs.engine.debug
             registerCommand("timeScale", _setTimescale, 
                 "Sets the timeScale for the PBE ProcessManager.");    
             
-            if(ExternalInterface.available)
-            {
+			if(PBE.IN_EDITOR)
+			{
+				registerCommand("exit", _exitConsoleMethod,
+					"Exits console window while in the editor");
+			}else if(ExternalInterface.available) {
                 registerCommand("exit", _exitMethod,
                     "Attempts to exit the application using ExternalInterface if avaliable");
             }
@@ -377,7 +380,12 @@ package com.pblabs.engine.debug
             }
         }
         
-        protected static function _exitMethod():void
+		protected static function _exitConsoleMethod():void
+		{
+			PBE.inputManager.simulateKeyDown( InputKey.TILDE.keyCode );
+		}
+
+		protected static function _exitMethod():void
         {
             if(ExternalInterface.available)
             {
