@@ -3,13 +3,11 @@ package com.pblabs.nape
 	import com.pblabs.engine.PBE;
 	import com.pblabs.engine.PBUtil;
 	import com.pblabs.engine.core.IAnimatedObject;
-	import com.pblabs.engine.core.ITickedObject;
 	import com.pblabs.engine.core.ObjectType;
 	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.entity.EntityComponent;
 	import com.pblabs.physics.IPhysics2DManager;
 	import com.pblabs.rendering2D.BasicSpatialManager2D;
-	import com.pblabs.rendering2D.ISpatialManager2D;
 	import com.pblabs.rendering2D.ISpatialObject2D;
 	import com.pblabs.rendering2D.RayHitInfo;
 	
@@ -17,14 +15,12 @@ package com.pblabs.nape
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
-	import nape.callbacks.Callback;
 	import nape.callbacks.CbEvent;
 	import nape.callbacks.CbType;
 	import nape.callbacks.InteractionCallback;
 	import nape.callbacks.InteractionListener;
 	import nape.callbacks.InteractionType;
 	import nape.dynamics.Arbiter;
-	import nape.dynamics.ArbiterType;
 	import nape.dynamics.InteractionFilter;
 	import nape.geom.AABB;
 	import nape.geom.Ray;
@@ -32,7 +28,6 @@ package com.pblabs.nape
 	import nape.geom.Vec2;
 	import nape.phys.Body;
 	import nape.phys.BodyList;
-	import nape.phys.Material;
 	import nape.space.Broadphase;
 	import nape.space.Space;
 	import nape.util.ShapeDebug;
