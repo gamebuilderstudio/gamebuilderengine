@@ -186,7 +186,9 @@ package com.pblabs.rendering2D.spritesheet
 		 */
 		public function get bounds():Rectangle
 		{
-			return new Rectangle(_bounds.x, _bounds.y, _bounds.width, _bounds.height);
+			if(!_bounds)
+				return new Rectangle();
+			return _bounds.clone();
 		}
 
 		/**
