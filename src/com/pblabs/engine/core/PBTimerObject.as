@@ -2,7 +2,6 @@ package com.pblabs.engine.core
 {
 	import com.pblabs.engine.PBE;
 	import com.pblabs.engine.core.ITickedObject;
-	import com.pblabs.engine.debug.Logger;
 	
 	import org.osflash.signals.Signal;
 	
@@ -19,6 +18,10 @@ package com.pblabs.engine.core
 		 * An event signal used to notify of progress each tick.
 		 **/
 		public var onTickSignal : Signal = new Signal();
+		/**
+		 * An event signal used to notify of progress each tick.
+		 **/
+		public var onCompleteSignal : Signal = new Signal();
 		/**
 		 * The amount of time to wait before the next timer interval/tick
 		 **/
@@ -98,6 +101,7 @@ package com.pblabs.engine.core
 		public function stop():void
 		{
 			//_startTime = PBE.processManager.virtualTime;
+			onCompleteSignal.dispatch();
 			_running = false;
 		}
 		
@@ -117,8 +121,10 @@ package com.pblabs.engine.core
 
 		final public function destroy():void
 		{
-			stop();
+			if(_running)
+				stop();
 			onTickSignal.removeAll();
+			onCompleteSignal.removeAll();
 			delay = 0;
 			repeatCount = 0;
 			limit = 0;
