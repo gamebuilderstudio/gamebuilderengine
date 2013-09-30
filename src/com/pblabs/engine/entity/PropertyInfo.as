@@ -20,7 +20,7 @@ package com.pblabs.engine.entity
         
         final public function getValue():*
         {
-            if(propertyParent && propertyName && propertyParent.hasOwnProperty(propertyName))
+            if(propertyParent && propertyName && propertyName in propertyParent)
                 return propertyParent[propertyName];
             else if(propertyParent)
                 return propertyParent;
@@ -29,7 +29,7 @@ package com.pblabs.engine.entity
         
         final public function setValue(value:*):void
         {
-			if(!propertyParent.hasOwnProperty(propertyName)) {
+			if(!(propertyName in propertyParent)) {
 				Logger.warn(this, 'setValue', 'Setting property on parent object failed. Property ['+propertyName+'] not found on ['+propertyParent+']!');
 				return;
 			}

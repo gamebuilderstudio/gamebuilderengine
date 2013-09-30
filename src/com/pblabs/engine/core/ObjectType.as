@@ -153,13 +153,13 @@ package com.pblabs.engine.core
         {
             if (xml.hasSimpleContent())
             {
-                typeName = xml.toString();
+                typeName = String(xml);
                 return this;
             }
             
             _bits = 0;
             for each (var childXML:XML in xml.*)
-                _bits |= PBE.objectTypeManager.getType(childXML.toString());
+                _bits |= PBE.objectTypeManager.getType(String(childXML));
             
             return this;
         }

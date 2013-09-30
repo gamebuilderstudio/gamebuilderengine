@@ -3,12 +3,10 @@ package com.pblabs.engine.scripting
 	import com.pblabs.engine.PBE;
 	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.entity.IEntity;
-	import com.pblabs.engine.entity.PropertyReference;
 	import com.pblabs.engine.serialization.ISerializable;
 	import com.pblabs.engine.util.DynamicObjectUtil;
 	
 	import flash.geom.Point;
-	import flash.ui.Mouse;
 	
 	import r1.deval.D;
 	
@@ -73,10 +71,6 @@ package com.pblabs.engine.scripting
 		public function serialize(xml:XML):void
 		{
 			var expressionXML : XML = new XML("<![CDATA["+ _expression +"]]>");
-			if(_dynamicThisObject && _dynamicThisObject.Self && _dynamicThisObject.Self["name"])
-			{
-				xml.@thisObjectName = _dynamicThisObject.Self.name;
-			}
 			xml.appendChild(expressionXML);
 		}
 		
@@ -85,21 +79,8 @@ package com.pblabs.engine.scripting
 		 */
 		public function deserialize(xml:XML):*
 		{
-			/*if(_expression && _expression !== xml.toString())
-				Logger.warn(this, "deserialize", "Overwriting property; was '" + _property + "', new value is '" + xml.toString() + "'");*/
-			_expression = xml.toString();
+			_expression = String(xml);
 			_thisObjectName = String(xml.@thisObjectName);
-			if(_dynamicThisObject && _expression.indexOf(_thisObjectName) != -1)
-			{
-				var entity : IEntity = PBE.lookupEntity(_thisObjectName);
-				if(!entity){
-					PBE.callLater(deserialize, [xml]);
-					return this;
-				}
-				_dynamicThisObject.selfContext = entity.Self;
-			//}else{
-				//Logger.error(this, "deserialize", "Fatal Error deserializing Expression Reference. The @thisObjectName property is missing from the xml node tag");
-			}
 			return this;
 		}
 		

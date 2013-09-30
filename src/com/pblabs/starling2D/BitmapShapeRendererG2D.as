@@ -99,7 +99,7 @@ package com.pblabs.starling2D
 		}
 		
 		protected function getTextureCacheKey():String{
-			return _isSquare + ":" + _isCircle + ":" + _radius + ":" + _fillColor + ":" + _fillAlpha + ":" + _lineColor + ":" + _lineSize + ":" + _lineAlpha + ":" + _size.toString() + ":" + _scale.toString();
+			return _isSquare + ":" + _isCircle + ":" + _radius + ":" + _fillColor + ":" + _fillAlpha + ":" + _lineColor + ":" + _lineSize + ":" + _lineAlpha + ":" + "_"+_size.x +","+_size.y+ "_:_"+_scale.x +","+_scale.y+ "_";
 		}
 		
 		/**

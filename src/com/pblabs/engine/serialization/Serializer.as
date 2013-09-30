@@ -181,7 +181,7 @@ package com.pblabs.engine.serialization
             if (xml.hasComplexContent())
                 return false;
             
-            if (xml.toString() == "")
+            if (String(xml) == "")
                 return false;
             
             return true;
@@ -202,7 +202,7 @@ package com.pblabs.engine.serialization
 				typeHint = String(xml.@type);
             // If the tag is empty and we're not a string where """ is a valid value,
             // just return that value.
-			var xmlVal : String = xml.toString();
+			var xmlVal : String = String(xml);
             if (xmlVal == "" && !(object is String)){
                 return object;
 			}else if(!(object is String) && typeHint == "dynamic"){
@@ -216,7 +216,7 @@ package com.pblabs.engine.serialization
 				return int(xmlVal);
 			}
             
-            return xml.toString();
+            return String(xml);
         }
         
         private function serializeSimple(object:*, xml:XML):void
@@ -234,12 +234,12 @@ package com.pblabs.engine.serialization
                 // Figure out the field we're setting, and make sure it is present.
                 var fieldName:String = fieldXML.name().toString();
                 
-                if (!object.hasOwnProperty(fieldName) && !isDynamic)
+                if (!(fieldName in object) && !isDynamic)
                 {
                     // Try decapitalizing first letter.
                     var decappedFieldName:String = fieldName.charAt(0).toLowerCase() + fieldName.substr(1);
                     
-                    if(object.hasOwnProperty(decappedFieldName))
+                    if(decappedFieldName in object)
                     {
                         fieldName = decappedFieldName;
                     }
@@ -325,7 +325,7 @@ package com.pblabs.engine.serialization
                 
                 path += "<" + x.name().toString();
                 
-                if(x.hasOwnProperty("@name"))
+                if("@name" in x)
                     path += " name=\"" + x.@name + "\"";
                 
                 path += ">"
@@ -455,7 +455,7 @@ package com.pblabs.engine.serialization
         
         private function deserializeBoolean(object:*, xml:XML, typeHint:String):*
         {
-            return (xml.toString() == "true")
+            return (String(xml) == "true")
         }
         
         private function serializeBoolean(object:*, xml:XML):void
@@ -558,7 +558,7 @@ package com.pblabs.engine.serialization
 
         private function deserializeClass(object:*, xml:XML, typeHint:String):*
         {
-            return TypeUtility.getClassFromName(xml.toString());
+            return TypeUtility.getClassFromName(String(xml));
         }
         
         /**

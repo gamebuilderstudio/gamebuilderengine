@@ -52,7 +52,7 @@ package com.pblabs.engine.util
 					
 					for each(prop in sourceInfo.variable) {
 						
-						if(destination.hasOwnProperty(prop.@name) || destDynamic) {
+						if(prop.@name in destination || destDynamic) {
 							destination[prop.@name] = source[prop.@name];
 						}
 						
@@ -60,7 +60,7 @@ package com.pblabs.engine.util
 					
 					for each(prop in sourceInfo.accessor) {
 						if(prop.@access == "readwrite") {
-							if(destination.hasOwnProperty(prop.@name) || destDynamic) {
+							if(prop.@name in destination || destDynamic) {
 								destination[prop.@name] = source[prop.@name];
 							}
 							

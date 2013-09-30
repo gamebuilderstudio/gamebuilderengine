@@ -201,7 +201,7 @@ package com.pblabs.engine.core
 			
 			for each( var action : String in _keymap)
 			{
-				if(_bindings.hasOwnProperty(action)) delete _bindings[action];
+				if(action in _bindings) delete _bindings[action];
 			}
         }
 

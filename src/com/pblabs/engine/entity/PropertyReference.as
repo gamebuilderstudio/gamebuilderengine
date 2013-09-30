@@ -95,9 +95,10 @@ package com.pblabs.engine.entity
          */
         public function deserialize(xml:XML):*
         {
-            if(_property && _property !== xml.toString())
-                Logger.warn(this, "deserialize", "Overwriting property; was '" + _property + "', new value is '" + xml.toString() + "'");
-            _property = xml.toString();
+			var xmlStr : String = String(xml);
+            if(_property && _property !== xmlStr)
+                Logger.warn(this, "deserialize", "Overwriting property; was '" + _property + "', new value is '" + xmlStr + "'");
+            _property = xmlStr;
             return this;
         }
         

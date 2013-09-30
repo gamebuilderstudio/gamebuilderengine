@@ -7,7 +7,6 @@ package com.pblabs.starling2D
 	import flash.geom.Rectangle;
 	import flash.utils.Dictionary;
 	
-	import starling.textures.SubTexture;
 	import starling.textures.Texture;
 	import starling.textures.TextureAtlas;
 
@@ -114,7 +113,7 @@ package com.pblabs.starling2D
 			
 			var subtexture : Texture;
 			var texture : Texture;
-			if(_originTexturesMap.hasOwnProperty(key) && _originTexturesMap[ key ] != null)
+			if(key in _originTexturesMap && _originTexturesMap[ key ] != null)
 			{
 				texture = _originTexturesMap[key][0] as Texture;
 				_textureReferenceCount[texture]++;
@@ -240,7 +239,7 @@ package com.pblabs.starling2D
 				}
 				
 				//Release original parent texture if it is no longer referenced anywhere in the engine
-				for(var key : * in _originTexturesMap)
+				/*for(var key : * in _originTexturesMap)
 				{
 					var len : int = _originTexturesMap[key].length;
 					for(var i : int = 0; i < len; i++)
@@ -259,7 +258,7 @@ package com.pblabs.starling2D
 							return;
 						}
 					}
-				}
+				}*/
 			}catch(e : Error){
 				Logger.error(null, "releaseTexture", "Error releasing texture");
 			}
