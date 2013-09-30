@@ -73,6 +73,11 @@ package com.pblabs.engine.core
         function destroy():void;
 
 		/**
+		 * Set to true if the object has been destroyed
+		 */
+		function get destroyed():Boolean;
+
+		/**
 		 * Changes the entities name. This will unregister the old name and register the new name with 
 		 * the NameManager as well.
 		 * 

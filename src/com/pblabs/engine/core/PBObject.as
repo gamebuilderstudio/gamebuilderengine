@@ -20,6 +20,7 @@ package com.pblabs.engine.core
         protected var _name:String, _alias:String;
         protected var _owningGroup:PBGroup;
         protected var _sets:Array;
+		protected var _destroyed:Boolean = false;
         
         internal function noteInSet(s:PBSet):void
         {
@@ -101,6 +102,7 @@ package com.pblabs.engine.core
                 _owningGroup.removeFromGroup(this);
                 _owningGroup = null;                
             }
+			_destroyed = true;
         }
 		
 		public function changeName(name : String):void
@@ -116,5 +118,7 @@ package com.pblabs.engine.core
 				PBE.nameManager.add(this);
 			}
 		}
+		
+		public function get destroyed():Boolean { return _destroyed; }
     }
 }
