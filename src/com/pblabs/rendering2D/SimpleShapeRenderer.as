@@ -13,7 +13,6 @@ package com.pblabs.rendering2D
     
     import flash.display.Graphics;
     import flash.display.Sprite;
-    import flash.geom.Point;
 
     /**
      * Draw a simple shape, a box or a circle, with color. 
@@ -202,5 +201,11 @@ package com.pblabs.rendering2D
                 Logger.error(this, "redraw", "Neither square nor circle, what am I?");
             }               
         }
+		
+		override protected function onAdd():void
+		{
+			super.onAdd();
+			redraw();
+		}
     }
 }
