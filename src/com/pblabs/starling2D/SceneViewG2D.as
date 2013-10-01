@@ -9,8 +9,6 @@
 package com.pblabs.starling2D
 {
     import com.pblabs.engine.PBE;
-    import com.pblabs.engine.core.IAnimatedObject;
-    import com.pblabs.engine.core.PBTimerObject;
     import com.pblabs.rendering2D.ui.IUITarget;
     
     import flash.display.StageAlign;
@@ -25,7 +23,6 @@ package com.pblabs.starling2D
     import starling.display.Sprite;
     import starling.events.Touch;
     import starling.events.TouchEvent;
-    import starling.events.TouchPhase;
     
     /**
      * This class can be set as the SceneView on the BaseSceneComponent class and is used
@@ -44,7 +41,6 @@ package com.pblabs.starling2D
 		
 		private static var _starlingViewMap : Dictionary = new Dictionary();
 		private static var _stage3DIndex : int = -1;
-		private  var _timer : PBTimerObject;
 		
 		public function SceneViewG2D()
 		{
@@ -78,12 +74,6 @@ package com.pblabs.starling2D
 			
 				PBE.mainStage.addEventListener(Event.DEACTIVATE, stage_deactivateHandler, false, 0, true);
 				PBE.mainStage.addEventListener(Event.ENTER_FRAME, onFrame);
-				
-				_timer = PBTimerObject.getInstance();
-				_timer.ignoreTimeScale = true;
-				_timer.repeatCount = 1;
-				_timer.delay = 30000;
-				_timer.onTickSignal.add( stopRendering );
 			}
 			this.addEventListener("removedFromStage", onRemoved);
 		}
@@ -245,13 +235,12 @@ package com.pblabs.starling2D
 		
 		private function stage_deactivateHandler(event:Event):void
 		{
+			stopRendering();
 			PBE.mainStage.stage.addEventListener(Event.ACTIVATE, stage_activateHandler, false, 0, true);
-			_timer.start();
 		}
 		
 		private function stage_activateHandler(event:Event):void
 		{
-			_timer.stop();
 			PBE.mainStage.stage.removeEventListener(Event.ACTIVATE, stage_activateHandler);
 			if(!this._starlingInstance.isStarted)
 				this._starlingInstance.start();
