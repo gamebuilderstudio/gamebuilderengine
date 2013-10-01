@@ -9,7 +9,6 @@
 package com.pblabs.engine.core
 {
     import com.pblabs.engine.PBE;
-    import com.pblabs.engine.debug.Logger;
     
     import flash.events.EventDispatcher;
     import flash.events.KeyboardEvent;
@@ -130,12 +129,13 @@ package com.pblabs.engine.core
 		/**
 		 * Returns true if any touch events have been received
 		 */
-		public function isTouching():Boolean
+		public function isTouching(index : int = -1):Boolean
 		{
 			var len : int = _keyState.length;
 			for(var i : int = 1; i < 11; i++)
 			{
-				if(findKeyState(InputKey["TOUCH_"+i].keyCode, _keyState).value)
+				var inputState : InputState = findKeyState(InputKey["TOUCH_"+i].keyCode, _keyState);
+				if(inputState.phase != TouchPhase.BEGAN && inputState.value && (index == -1 || index == i))
 				{
 					return true;
 				}
@@ -233,14 +233,11 @@ package com.pblabs.engine.core
 						if(i == 0)
 							simulateMouseUp();
 						inputData.value = false;
-					}else if(touch.phase == TouchPhase.MOVED){
-						if(i == 0)
-							simulateMouseMove();
-						inputData.value = true;
 					}
 					inputData.stageX = touch.globalX;
 					inputData.stageY = touch.globalY;
 					inputData.touchCount = touch.tapCount;
+					inputData.phase = touch.phase;
 				}
 			}
 		}

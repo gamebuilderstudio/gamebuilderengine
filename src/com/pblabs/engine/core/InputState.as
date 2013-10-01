@@ -8,6 +8,7 @@ package com.pblabs.engine.core
 		public var stageY : Number;
 		public var pressure : Number;
 		public var touchCount : int = 0;
+		public var phase : String = "";
 		
 		private static var _pool : Vector.<InputState> = new Vector.<InputState>();
 		
