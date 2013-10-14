@@ -41,8 +41,6 @@ package com.pblabs.starling2D
 				InitializationUtilG2D.initializeRenderers.add(buildG2DObject);
 				return;
 			}
-			//TODO: Get texture from the resource manager for similar bitmaps so that the memory could be re-used.
-			
 			if(!gpuObject){
 				//Create GPU Renderer Object
 				gpuObject = new Image( ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmap.bitmapData ) );

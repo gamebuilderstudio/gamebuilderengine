@@ -165,7 +165,7 @@ package com.pblabs.rendering2D
         override public function pointOccupied(worldPosition:Point, mask:ObjectType):Boolean
         {
             if(!bitmap || !bitmap.bitmapData || !scene)
-                return false;
+                return super.pointOccupied(worldPosition, mask);
             
 			//worldPosition = worldPosition.add( scene.position );
             // Figure local position.

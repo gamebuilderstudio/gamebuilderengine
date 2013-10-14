@@ -8,12 +8,9 @@
  ******************************************************************************/
 package com.pblabs.starling2D
 {
-	import com.pblabs.engine.PBE;
 	import com.pblabs.engine.PBUtil;
 	import com.pblabs.engine.core.ObjectType;
-	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.rendering2D.DisplayObjectRenderer;
-	import com.pblabs.rendering2D.IScene2D;
 	import com.pblabs.starling2D.IGPURenderer;
 	
 	import flash.geom.Point;
@@ -21,9 +18,6 @@ package com.pblabs.starling2D
 	
 	import starling.core.Starling;
 	import starling.display.DisplayObject;
-	import starling.display.Image;
-	import starling.textures.Texture;
-	import starling.utils.deg2rad;
 	
 	/**
 	 * Base renderer for Rendering Starling GPU 2D DisplayObjects. It wraps a starling DisplayObject, allows it

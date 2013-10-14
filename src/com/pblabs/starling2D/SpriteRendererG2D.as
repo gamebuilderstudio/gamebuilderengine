@@ -11,12 +11,7 @@ package com.pblabs.starling2D
 	import avmplus.INCLUDE_METHODS;
 	
 	import com.pblabs.engine.PBE;
-	import com.pblabs.engine.core.ObjectType;
 	import com.pblabs.engine.resource.ImageResource;
-	import com.pblabs.rendering2D.SpriteRenderer;
-	
-	import flash.display.BitmapData;
-	import flash.geom.Point;
 	
 	import starling.core.Starling;
 	import starling.display.Image;
