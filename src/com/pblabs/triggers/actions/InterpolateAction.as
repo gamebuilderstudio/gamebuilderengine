@@ -68,7 +68,7 @@ package com.pblabs.triggers.actions
 		
 		public function onComplete(tween : Tween):void
 		{
-			if(action && (!action.owner || action.owner != this.owner)){
+			if(action){
 				action.owner = this.owner;
 				action.execute();
 			}
@@ -85,6 +85,8 @@ package com.pblabs.triggers.actions
 			if(_tween)
 				_tween.dispose();
 			_tween = null;
+			
+			action = null;
 			
 			if(fromValueReference)
 				fromValueReference.destroy()
