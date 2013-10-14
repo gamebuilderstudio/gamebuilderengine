@@ -224,6 +224,8 @@ package com.pblabs.engine.core
 				for(var i : int = 0; i < len; i++)
 				{
 					var touch : Touch = touches[i];
+					if(!InputKey["TOUCH_"+(touch.id+1)])
+						continue;
 					var inputData : InputState = findKeyState(InputKey["TOUCH_"+(touch.id+1)].keyCode, _keyState);
 					if(touch.phase == TouchPhase.BEGAN){
 						if(i == 0)
