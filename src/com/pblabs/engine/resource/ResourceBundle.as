@@ -27,7 +27,10 @@ package com.pblabs.engine.resource
     public class ResourceBundle
     {
         
-		private var _json : JSONResource;
+		private var _data : DataResource;
+		private var _image : ImageResource;
+		private var _xml : XMLResource;
+		private var _mp3 : MP3Resource;
 		private var _wav : WAVResource;
 
 		/**
@@ -41,6 +44,7 @@ package com.pblabs.engine.resource
          *  ResourceBundle.ExtensionTypes.mycustomext = "com.mydomain.customresource"
          */
         public static var ExtensionTypes:Object = {
+			atf:"com.pblabs.engine.resource.DataResource",
             png:"com.pblabs.engine.resource.ImageResource",
             jpg:"com.pblabs.engine.resource.ImageResource",
             gif:"com.pblabs.engine.resource.ImageResource",
@@ -73,12 +77,6 @@ package com.pblabs.engine.resource
             var resSource:String;
             var resMimeType:String;
             var resTypeName:String;
-            
-            // Force linkage.
-            new DataResource();
-            new ImageResource();
-            new XMLResource();
-            new MP3Resource();
             
             // Loop through each public variable in this class
             for each (var v:XML in desc.variable)

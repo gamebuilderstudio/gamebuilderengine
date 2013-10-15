@@ -138,9 +138,9 @@ package com.pblabs.screens
         public function push(screenName:String):void
         {
             screenStack.push(screenName);
-            currentScreen = screenName;
 
             screenParent.addChild(get(screenName));
+			currentScreen = screenName;
         }
         
         /**

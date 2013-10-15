@@ -250,7 +250,7 @@ package starling.core
                 stage.addEventListener(touchEventType, onTouch, false, 0, true);
             
             // register other event handlers
-            //stage.addEventListener(Event.ENTER_FRAME, onEnterFrame, false, 0, true);
+            stage.addEventListener(Event.ENTER_FRAME, onEnterFrame, false, 0, true);
             stage.addEventListener(KeyboardEvent.KEY_DOWN, onKey, false, 0, true);
             stage.addEventListener(KeyboardEvent.KEY_UP, onKey, false, 0, true);
             stage.addEventListener(Event.RESIZE, onResize, false, 0, true);
@@ -291,7 +291,7 @@ package starling.core
         {
             stop(true);
             
-            //mNativeStage.removeEventListener(Event.ENTER_FRAME, onEnterFrame, false);
+            mNativeStage.removeEventListener(Event.ENTER_FRAME, onEnterFrame, false);
             mNativeStage.removeEventListener(KeyboardEvent.KEY_DOWN, onKey, false);
             mNativeStage.removeEventListener(KeyboardEvent.KEY_UP, onKey, false);
             mNativeStage.removeEventListener(Event.RESIZE, onResize, false);

@@ -73,7 +73,6 @@ package com.pblabs.starling2D
 				name = "SceneView_"+_stage3DIndex;
 			
 				PBE.mainStage.addEventListener(Event.DEACTIVATE, stage_deactivateHandler, false, 0, true);
-				PBE.mainStage.addEventListener(Event.ENTER_FRAME, onFrame);
 			}
 			this.addEventListener("removedFromStage", onRemoved);
 		}
@@ -83,14 +82,6 @@ package com.pblabs.starling2D
 			if(_starlingViewMap.hasOwnProperty(name))
 				return _starlingViewMap[name];
 			return null;
-		}
-		
-		public function onFrame(event : Event):void
-		{
-			if(Starling.context && _starlingInstance && !_disposed && this.stage && this._starlingInstance.isStarted)
-			{
-				_starlingInstance.nextFrame();
-			}
 		}
 		
 		public function addDisplayObject(dObj:Object):void
@@ -178,7 +169,6 @@ package com.pblabs.starling2D
 		{
 			this.removeEventListener("removedFromStage", onRemoved);
 			PBE.mainStage.removeEventListener(Event.DEACTIVATE, stage_deactivateHandler);
-			PBE.mainStage.removeEventListener(Event.ENTER_FRAME, onFrame);
 
 			_starlingInstance.removeEventListener("context3DCreate", onContextCreated);
 			_starlingInstance.removeEventListener("rootCreated", onRootInitialized);
