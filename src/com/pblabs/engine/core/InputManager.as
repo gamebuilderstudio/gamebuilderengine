@@ -135,7 +135,7 @@ package com.pblabs.engine.core
 			for(var i : int = 1; i < 11; i++)
 			{
 				var inputState : InputState = findKeyState(InputKey["TOUCH_"+i].keyCode, _keyState);
-				if(inputState.phase != TouchPhase.BEGAN && inputState.value && (index == -1 || index == i))
+				if(inputState.phase != TouchPhase.HOVER && inputState.value && (index == -1 || index == i))
 				{
 					return true;
 				}
