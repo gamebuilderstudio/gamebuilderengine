@@ -164,7 +164,7 @@ package com.pblabs.rendering2D
         
         override public function pointOccupied(worldPosition:Point, mask:ObjectType):Boolean
         {
-            if(!bitmap || !bitmap.bitmapData || !scene)
+            if(!bitmap || !bitmap.bitmapData || !scene || gpuObject)
                 return super.pointOccupied(worldPosition, mask);
             
 			//worldPosition = worldPosition.add( scene.position );
