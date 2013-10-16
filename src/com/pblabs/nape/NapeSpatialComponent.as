@@ -385,12 +385,11 @@ package com.pblabs.nape
 				scene = spriteForPointChecks.scene;
 			
 			if(spriteForPointChecks && scene)
-				return spriteForPointChecks.pointOccupied(scene.transformScreenToWorld(pos), mask);
+				return spriteForPointChecks.pointOccupied(pos, mask);
 			
 			//Check Nape body
 			if(_body && scene){
-				var worldPoint : Point = scene.transformScreenToWorld( pos );
-				var tempVec : Vec2 = Vec2.get(worldPoint.x*_spatialManager.inverseScale, worldPoint.y*_spatialManager.inverseScale);
+				var tempVec : Vec2 = Vec2.get(pos.x*_spatialManager.inverseScale, pos.y*_spatialManager.inverseScale);
 				var contained : Boolean = _body.contains( tempVec );
 				tempVec.dispose();
 				return contained;

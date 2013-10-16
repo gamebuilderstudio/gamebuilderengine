@@ -262,7 +262,7 @@ package com.pblabs.rendering2D
 			if(!scene && spriteForPointChecks && spriteForPointChecks.scene)
 				scene = spriteForPointChecks.scene;
 			// OK, so pass it over to the sprite.
-            return spriteForPointChecks.pointOccupied(scene.transformWorldToScreen(pos), mask);
+            return spriteForPointChecks.pointOccupied(pos, mask);
         }
         
         private var _objectMask:ObjectType;
