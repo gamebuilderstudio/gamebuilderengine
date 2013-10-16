@@ -7,6 +7,8 @@ package com.pblabs.starling2D
 	import flash.geom.Rectangle;
 	import flash.utils.Dictionary;
 	
+	import org.osflash.signals.Signal;
+	
 	import starling.textures.Texture;
 	import starling.textures.TextureAtlas;
 
@@ -29,22 +31,25 @@ package com.pblabs.starling2D
 				var len : int = _originTexturesMap[key].length;
 				for(var i : int = 0; i < len; i++)
 				{
-					var originObject : * = _originTexturesMap[key][i]
+					var originObject : Object = _originTexturesMap[key][i]
 					_originTexturesMap[key].splice(i, 1);
 					if(!_originTexturesMap[key] || _originTexturesMap[key].length < 1)
 						delete _originTexturesMap[key];
 					
 					delete _textureReferenceCount[originObject];
-					if(originObject["disposed"] && originObject["dispose"] != null )
+					if(originObject.hasOwnProperty("disposed") && originObject.disposed && originObject.disposed is Signal)
 					{
 						originObject.disposed.remove(releaseTexture);
-						originObject.dispose();
 					}
+					originObject.dispose();
 				}
 			}
 			for(key in _subTexturesMap)
 			{
-				_subTexturesMap[key].disposed.remove(releaseTexture);
+				if(_subTexturesMap[key].hasOwnProperty("disposed") && _subTexturesMap[key].disposed && _subTexturesMap[key].disposed is Signal)
+				{
+					_subTexturesMap[key].disposed.remove(releaseTexture);
+				}
 				_subTexturesMap[key].dispose();
 				delete _subTexturesMap[key];
 			}

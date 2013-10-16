@@ -232,13 +232,14 @@ package com.pblabs.starling2D
 		private function stage_activateHandler(event:Event):void
 		{
 			PBE.mainStage.stage.removeEventListener(Event.ACTIVATE, stage_activateHandler);
-			if(!this._starlingInstance.isStarted)
+			if(this._starlingInstance && !this._starlingInstance.isStarted)
 				this._starlingInstance.start();
 		}
 		
 		private function stopRendering():void
 		{
-			this._starlingInstance.stop(true);
+			if(this._starlingInstance)
+				this._starlingInstance.stop(true);
 		}
 		
 		override public function get width():Number
