@@ -48,9 +48,13 @@ package com.pblabs.engine.core
 		public function onTick(deltaTime:Number):void
 		{
 
+			var processManager : ProcessManager = PBE.processManager;
+			var levelManager : LevelManager = PBE.levelManager;
+			var mainStage : Stage = PBE.mainStage;
+			
 			//Update mouse position for globally for expressions
-			objectContext.Game.Mouse.x = PBE.mainStage.mouseX;
-			objectContext.Game.Mouse.y = PBE.mainStage.mouseY;
+			objectContext.Game.Mouse.x = mainStage.mouseX;
+			objectContext.Game.Mouse.y = mainStage.mouseY;
 
 			for(var i : int = 1; i < 11; i++)
 			{
@@ -63,9 +67,10 @@ package com.pblabs.engine.core
 				objectContext.Game["TouchPoint"+i].pressure = touchData.pressure;
 			}
 
-			objectContext.Game.Time.virtualTime = PBE.processManager.virtualTime;
-			objectContext.Game.Time.timeScale = PBE.processManager.timeScale;
-			objectContext.Game.Time.gameTime = PBE.processManager.platformTime;
+			objectContext.Game.Time.virtualTime = processManager.virtualTime;
+			objectContext.Game.Time.timeScale = processManager.timeScale;
+			objectContext.Game.Time.gameTime = processManager.platformTime;
+			objectContext.Game.Time.deltaTime = deltaTime;
 
 			//Screen Size
 			objectContext.Game.Screen.fullScreenScale = screenScale;
@@ -81,15 +86,15 @@ package com.pblabs.engine.core
 			
 			objectContext.Game.Screen.screenOrientation = screenOrientation;
 			
-			objectContext.Game.Screen.fullScreenWidth = PBE.mainStage.fullScreenWidth;
-			objectContext.Game.Screen.fullScreenHeight = PBE.mainStage.fullScreenHeight;
+			objectContext.Game.Screen.fullScreenWidth = mainStage.fullScreenWidth;
+			objectContext.Game.Screen.fullScreenHeight = mainStage.fullScreenHeight;
 			objectContext.Game.Screen.screenResolutionX = Capabilities.screenResolutionX;
 			objectContext.Game.Screen.screenResolutionY = Capabilities.screenResolutionY;
-			objectContext.Game.Screen.width = PBE.mainStage.stageWidth;
-			objectContext.Game.Screen.height = PBE.mainStage.stageHeight;
+			objectContext.Game.Screen.width = mainStage.stageWidth;
+			objectContext.Game.Screen.height = mainStage.stageHeight;
 
-			objectContext.Game.Level.currentLevel = PBE.levelManager.currentLevel;
-			objectContext.Game.Level.levelCount = PBE.levelManager.levelCount;
+			objectContext.Game.Level.currentLevel = levelManager.currentLevel;
+			objectContext.Game.Level.levelCount = levelManager.levelCount;
 		}
 
 		private function initialize():void
