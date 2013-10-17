@@ -12,13 +12,10 @@ package com.pblabs.animation
 	import com.pblabs.engine.PBE;
 	import com.pblabs.engine.core.IAnimatedObject;
 	import com.pblabs.engine.core.ITickedObject;
-	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.entity.IEntity;
 	import com.pblabs.engine.entity.PropertyReference;
 	
 	import flash.geom.Point;
-	import flash.utils.describeType;
-	import flash.utils.getTimer;
 
 	/*****************************************************
 	 * The Tween Class can be used to tween values of an object
@@ -264,7 +261,8 @@ package com.pblabs.animation
 					if (playCount!=0)
 					{
 						if (!pingpong || (pingpong && !ping)) 
-							if (playCount>0) playCount-=1;
+							if (playCount >= 1) 
+								playCount -= 1;
 						
 						if ((!pingpong && playCount==0) || (pingpong && !ping && playCount==0))
 						  secs = duration;
