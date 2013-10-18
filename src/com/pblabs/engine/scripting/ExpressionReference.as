@@ -149,6 +149,7 @@ package com.pblabs.engine.scripting
 			D.importFunction("rotationOfAngle", ExpressionUtils.rotationOfAngle);
 			D.importFunction("distance", ExpressionUtils.distance);
 			D.importFunction("distanceOfPoint", ExpressionUtils.distanceOfPoint);
+			D.importFunction("randomRange", ExpressionUtils.randomRange);
 			D.importFunction("clampToRange", ExpressionUtils.clampToRange);
 			D.importFunction("percentOfRange", ExpressionUtils.percentOfRange);
 			D.importFunction("valueOfRangePercent", ExpressionUtils.valueOfRangePercent);
@@ -237,6 +238,11 @@ class ExpressionUtils{
 	public static function clampToRange(value : Number, min : Number, max : Number):Number
 	{
 		return Math.max(min, Math.min(max, value));
+	}
+
+	public static function randomRange(min : Number, max : Number):Number
+	{
+		return (Math.floor(Math.random() * (max - min + 1)) + min);
 	}
 
 	public static function distanceOfPoint(pointA : Point, pointB : Point):Number
