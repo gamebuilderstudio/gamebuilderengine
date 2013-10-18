@@ -150,6 +150,7 @@ package com.pblabs.rendering2D
 
             if (!nextAnim){
                 Logger.error(this, "playAnimation", "Unable to find default animation '" + defaultAnimation + "'!");
+				return
 			}
 
 			var _currentTime : Number = ignoreTimeScale ? PBE.processManager.platformTime : PBE.processManager.virtualTime;
