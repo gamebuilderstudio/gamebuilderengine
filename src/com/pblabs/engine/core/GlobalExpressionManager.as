@@ -61,10 +61,13 @@ package com.pblabs.engine.core
 				if(!objectContext.Game["TouchPoint"+i]) 
 					objectContext.Game["TouchPoint"+i] = new Object();
 				var touchData : InputState = PBE.inputManager.getKeyData(InputKey["TOUCH_"+i].keyCode);
-				objectContext.Game["TouchPoint"+i].isTouching = touchData.value;
-				objectContext.Game["TouchPoint"+i].x = touchData.stageX;
-				objectContext.Game["TouchPoint"+i].y = touchData.stageY;
-				objectContext.Game["TouchPoint"+i].pressure = touchData.pressure;
+				if(touchData)
+				{
+					objectContext.Game["TouchPoint"+i].isTouching = touchData.value;
+					objectContext.Game["TouchPoint"+i].x = touchData.stageX;
+					objectContext.Game["TouchPoint"+i].y = touchData.stageY;
+					objectContext.Game["TouchPoint"+i].pressure = touchData.pressure;
+				}
 			}
 
 			objectContext.Game.Time.virtualTime = processManager.virtualTime;
