@@ -80,7 +80,7 @@ package com.pblabs.starling2D.spritesheet
 			var atlas : TextureAtlas = ResourceTextureManagerG2D.getTextureAtlasForResource(_image);
 			var atlasTexture : Texture;
 			if(!atlas){
-				atlasTexture = Texture.fromBitmapData(_image.bitmapData);
+				atlasTexture = Texture.fromBitmapData(_image.bitmapData, false);
 				atlas = new TextureAtlas(atlasTexture);
 				//ResourceTextureManagerG2D.mapTextureToResource(atlasTexture, _image);
 				ResourceTextureManagerG2D.mapTextureAtlasToResource(atlas, _image);

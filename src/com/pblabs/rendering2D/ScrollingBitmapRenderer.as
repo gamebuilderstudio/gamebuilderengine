@@ -23,8 +23,6 @@ package com.pblabs.rendering2D
 		//-------------------------------------------------------------------------		
 		[EditorData(inspectable="true")]
 		public var scrollSpeed:Point = new Point(0,0);
-		[EditorData(inspectable="true")]
-		public var autoCorrectImageSize : Boolean = true;
 		
 		//-------------------------------------------------------------------------
 		// private variable declarations
@@ -75,13 +73,13 @@ package com.pblabs.rendering2D
 			_scratchPosition.x += (scrollSpeed.x * deltaTime); 
 			_scratchPosition.y += (scrollSpeed.y * deltaTime);	
 			
-			if(!PBE.IN_EDITOR) 
+			if(PBE.IN_EDITOR) 
 				_scratchPosition.x = _scratchPosition.y = 0;
 			
 			offsetImage(_scratchPosition.x, _scratchPosition.y);
 			
 			// Now that we've read all our properties, apply them to our transform.
-			if (_transformDirty || PBE.IN_EDITOR)
+			if (_transformDirty || PBE.IN_EDITOR) // || PBE.IN_EDITOR is here to get the scrolling renderer to repaint while in editor on load of project
 				updateTransform();
 		}
 		

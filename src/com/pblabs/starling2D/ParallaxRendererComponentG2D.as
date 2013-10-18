@@ -9,7 +9,6 @@
 package com.pblabs.starling2D
 {
 	import com.pblabs.engine.PBUtil;
-	import com.pblabs.engine.debug.Logger;
 	
 	import flash.geom.Point;
 

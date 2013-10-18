@@ -159,6 +159,7 @@ package com.pblabs.rendering2D
 		{
 			if(!_bmFontObject && _fontData && _fontData.isLoaded && _fontImage && _fontImage.isLoaded)
 			{
+				fontData.data.position = 0;
 				var fontDataStr : String = fontData.data.readUTFBytes(fontData.data.length);
 				_bmFontObject = new BMFont();
 				_bmFontObject.parseFont(fontDataStr);

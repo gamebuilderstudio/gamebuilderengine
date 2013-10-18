@@ -9,14 +9,12 @@
 package com.pblabs.starling2D
 {
 	import com.pblabs.engine.PBE;
-	import com.pblabs.engine.debug.Logger;
 	
 	import flash.display.BitmapData;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
 	import starling.display.Image;
-	import starling.utils.getNextPowerOfTwo;
 
 	public class ScrollingBitmapRendererG2D extends SpriteRendererG2D
 	{
@@ -25,8 +23,6 @@ package com.pblabs.starling2D
 		//-------------------------------------------------------------------------		
 		[EditorData(inspectable="true")]
 		public var scrollSpeed:Point = new Point(0,0);
-		[EditorData(inspectable="true")]
-		public var autoCorrectImageSize : Boolean = true;
 
 		protected var scrollRect:Rectangle = new Rectangle();	// will hold the drawing area
 		protected var _scratchPoint : Point = new Point();
@@ -95,17 +91,6 @@ package com.pblabs.starling2D
 			if(!this.bitmap || !this.bitmap.bitmapData)
 				return;
 
-			var legalWidth:int  = getNextPowerOfTwo(bitmapData.width);
-			var legalHeight:int = getNextPowerOfTwo(bitmapData.height);
-			if (autoCorrectImageSize && (legalWidth > bitmapData.width || legalHeight > bitmapData.height))
-			{
-				customBitmapCreated = true;
-				bitmapData = increaseBitmapByPowerOfTwo(bitmapData, legalWidth, legalHeight);
-				return;
-			}else{
-				customBitmapCreated = false;
-			}
-			
 			super.buildG2DObject();
 			
 			if(gpuObject)
@@ -130,15 +115,6 @@ package com.pblabs.starling2D
 		{
 			super.onAdd();
 			buildG2DObject();
-		}
-		
-		override protected function onRemove():void
-		{
-			super.onRemove();
-			if(customBitmapCreated){
-				originalBitmapData.dispose();
-				customBitmapCreated = false;
-			}
 		}
 		
 		protected function increaseBitmapByPowerOfTwo(data : BitmapData, targetW : Number, targetH : Number):BitmapData

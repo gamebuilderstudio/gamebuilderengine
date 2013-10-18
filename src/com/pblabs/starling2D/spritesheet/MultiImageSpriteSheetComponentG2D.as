@@ -55,7 +55,7 @@ package com.pblabs.starling2D.spritesheet
 				var resourceTexture : Texture = ResourceTextureManagerG2D.getTextureForResource(resource);
 				if(!resourceTexture)
 				{
-					resourceTexture = Texture.fromBitmapData(resource.bitmapData);
+					resourceTexture = Texture.fromBitmapData(resource.bitmapData, false);
 					ResourceTextureManagerG2D.mapTextureToResource(resourceTexture, resource);
 				}
 				_frames[i] = resourceTexture;
