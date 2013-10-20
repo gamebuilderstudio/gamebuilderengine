@@ -406,15 +406,17 @@ package com.pblabs.nape
 			var spatial2:NapeSpatialComponent = arbiter.body2.userData.spatial;
 			var ce:CollisionEvent;
 
-			if ( arbiter.isCollisionArbiter())
+			var isCollision : Boolean = arbiter.isCollisionArbiter();
+			var isSensorTrigger : Boolean = arbiter.isSensorArbiter();
+			if ( isCollision )
 			{
 				ce = new CollisionEvent(eventType, spatial1, spatial2, new Point(arbiter.collisionArbiter.normal.x, arbiter.collisionArbiter.normal.y), arbiter.collisionArbiter.contacts, arbiter.collisionArbiter);
-			}else if(arbiter.isSensorArbiter()){
-				ce = new CollisionEvent(eventType, spatial1, spatial2, new Point(0,0), null, null);
+			}else if( isSensorTrigger ){
+				ce = new CollisionEvent(eventType, spatial1, spatial2, new Point(), null, null);
 			}
-			if ( spatial1.owner )
+			if ( spatial1.owner && (!isSensorTrigger || (isSensorTrigger && arbiter.shape1.sensorEnabled)))
 				spatial1.owner.eventDispatcher.dispatchEvent(ce);
-			if ( spatial2.owner )
+			if ( spatial2.owner && (!isSensorTrigger || (isSensorTrigger && arbiter.shape2.sensorEnabled)))
 				spatial2.owner.eventDispatcher.dispatchEvent(ce);
 		}
 		

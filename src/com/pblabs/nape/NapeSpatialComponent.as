@@ -108,8 +108,10 @@ package com.pblabs.nape
 		public function set collidesWithTypes(value:ObjectType):void
 		{
 			_collidesWithTypes = value;
-			_interactionFilter.collisionMask = collidesWithTypes ? collidesWithTypes.bits : -1;
-			_interactionFilter.sensorMask = collidesWithTypes ? collidesWithTypes.bits : -1;
+			_interactionFilter.collisionMask = -1;
+			_interactionFilter.collisionMask &= collidesWithTypes ? collidesWithTypes.bits : -1;
+			_interactionFilter.sensorMask = -1;
+			_interactionFilter.sensorMask &= collidesWithTypes ? collidesWithTypes.bits : -1;
 			if (_body)
 				buildCollisionShapes();
 		}
@@ -364,9 +366,11 @@ package com.pblabs.nape
 		public function get interactionFilter():InteractionFilter
 		{
 			_interactionFilter.collisionGroup = (this.collisionType ? this.collisionType.bits : 1);
-			_interactionFilter.collisionMask = (this.collidesWithTypes ? this.collidesWithTypes.bits : -1);
+			_interactionFilter.collisionMask = -1;
+			_interactionFilter.collisionMask &= (this.collidesWithTypes ? this.collidesWithTypes.bits : -1);
 			_interactionFilter.sensorGroup = (this.collisionType ? this.collisionType.bits : 1);
-			_interactionFilter.sensorMask = (this.collidesWithTypes ? this.collidesWithTypes.bits : -1);
+			_interactionFilter.sensorMask = -1;
+			_interactionFilter.sensorMask &= (this.collidesWithTypes ? this.collidesWithTypes.bits : -1);
 			return _interactionFilter;
 		}
 		
