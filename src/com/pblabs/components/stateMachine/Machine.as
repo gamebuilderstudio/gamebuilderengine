@@ -39,6 +39,7 @@ package com.pblabs.components.stateMachine
         private var _enteredStateTime:Number = 0;
         
         private var _propertyBag:IPropertyBag = null;
+		private var _hasTicked : Boolean = false;
         
         /**
          * Virtual time at which we entered the state.
@@ -60,10 +61,13 @@ package com.pblabs.components.stateMachine
         
         public function tick():void
         {
+			if(!_hasTicked)
+				_hasTicked = true;
+			
             _setNewState = false;
             
             // DefaultState - we get it if no state is set.
-            if(!_currentState)
+            if(!_currentState && defaultState)
                 setCurrentState(defaultState);
             
             if(_currentState)
@@ -81,7 +85,7 @@ package com.pblabs.components.stateMachine
         public function getCurrentState():IState
         {
             // DefaultState - we get it if no state is set.
-            if(!_currentState)
+            if(!_currentState && defaultState)
                 setCurrentState(defaultState);
             
             return _currentState;
@@ -99,7 +103,7 @@ package com.pblabs.components.stateMachine
         
         public function set currentStateName(value:String):void
         {
-            if(!setCurrentState(value))
+            if(!setCurrentState(value) && _hasTicked)
                 Logger.warn(this, "set currentStateName", "Could not transition to state '" + value + "'");
         }
         
@@ -141,6 +145,8 @@ package com.pblabs.components.stateMachine
         
         public function setCurrentState(name:String):Boolean
         {
+			if(!name)
+				return false;
             var newState:IState = getState(name);
             if(!newState || newState == oldState)
                 return false;
