@@ -9,6 +9,7 @@
 package com.pblabs.engine.core
 {
     import com.pblabs.engine.PBE;
+    import com.pblabs.engine.debug.Logger;
     
     import flash.events.EventDispatcher;
     import flash.events.KeyboardEvent;
@@ -220,13 +221,11 @@ package com.pblabs.engine.core
 		{
 			if(touches.length > 0)
 			{
-				var len : int = touches.length;
+				var len : int = touches.length > 10 ? 10 : touches.length;
 				for(var i : int = 0; i < len; i++)
 				{
 					var touch : Touch = touches[i];
-					if(!InputKey["TOUCH_"+(touch.id+1)])
-						continue;
-					var inputData : InputState = findKeyState(InputKey["TOUCH_"+(touch.id+1)].keyCode, _keyState);
+					var inputData : InputState = findKeyState(InputKey["TOUCH_"+(i+1)].keyCode, _keyState);
 					if(touch.phase == TouchPhase.BEGAN){
 						if(i == 0)
 							simulateMouseDown();
