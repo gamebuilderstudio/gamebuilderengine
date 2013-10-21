@@ -52,7 +52,9 @@ package com.pblabs.engine.core
 			
 			if(_activeCount >= repeatCount && repeatCount > 0) 
 			{
+				onCompleteSignal.dispatch();
 				stop();
+				return;
 			}
 			
 			if(_running){
@@ -66,6 +68,7 @@ package com.pblabs.engine.core
 					{
 						advanceTimerTick(_currentTime);
 					}else{
+						onCompleteSignal.dispatch();
 						stop();
 					}
 				}else{
@@ -100,9 +103,9 @@ package com.pblabs.engine.core
 		
 		public function stop():void
 		{
-			//_startTime = PBE.processManager.virtualTime;
-			onCompleteSignal.dispatch();
 			_running = false;
+			PBE.processManager.removeTickedObject(this);
+			_addedToProcessManager = false;
 		}
 		
 		public function get running():Boolean
