@@ -57,6 +57,17 @@ package com.pblabs.triggers.actions
 			//Set property
 			try
 			{
+				switch(propertyType){
+					case PROPERTYTYPES_INT:
+						newPropValue = int(newPropValue);
+						break;
+					case PROPERTYTYPES_NUMBER:
+						newPropValue = Number(newPropValue);
+						break;
+					case PROPERTYTYPES_UINT:
+						newPropValue = uint(newPropValue);
+						break;
+				}
 				_owner.owner.setProperty(property,newPropValue);
 			}
 			catch(e:Error)
