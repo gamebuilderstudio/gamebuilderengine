@@ -1,6 +1,8 @@
 package com.pblabs.engine.core
 {
 	import com.pblabs.engine.PBE;
+	import com.pblabs.engine.components.DataComponent;
+	import com.pblabs.engine.entity.IEntity;
 	
 	import flash.display.Stage;
 	import flash.display.StageOrientation;
@@ -15,7 +17,8 @@ package com.pblabs.engine.core
 		public var screenScale : Number = 1;
 		public var screenLayout : String = "Portrait";
 		public var screenOrientation : String = "Portrait";
-
+		public var globalExpressionEntity : IEntity;
+		
 		private var objectContext : Object;
 		
 		public function GlobalExpressionManager(clazz : Privatizer)
@@ -47,7 +50,6 @@ package com.pblabs.engine.core
 
 		public function onTick(deltaTime:Number):void
 		{
-
 			var processManager : ProcessManager = PBE.processManager;
 			var levelManager : LevelManager = PBE.levelManager;
 			var mainStage : Stage = PBE.mainStage;
@@ -58,15 +60,15 @@ package com.pblabs.engine.core
 
 			for(var i : int = 1; i < 11; i++)
 			{
-				if(!objectContext.Game["TouchPoint"+i]) 
-					objectContext.Game["TouchPoint"+i] = new Object();
+				if(!objectContext.Game.Touch["TouchPoint"+i]) 
+					objectContext.Game.Touch["TouchPoint"+i] = new Object();
 				var touchData : InputState = PBE.inputManager.getKeyData(InputKey["TOUCH_"+i].keyCode);
 				if(touchData)
 				{
-					objectContext.Game["TouchPoint"+i].isTouching = touchData.value;
-					objectContext.Game["TouchPoint"+i].x = touchData.stageX;
-					objectContext.Game["TouchPoint"+i].y = touchData.stageY;
-					objectContext.Game["TouchPoint"+i].pressure = touchData.pressure;
+					objectContext.Game.Touch["TouchPoint"+i].isTouching = touchData.value;
+					objectContext.Game.Touch["TouchPoint"+i].x = touchData.stageX;
+					objectContext.Game.Touch["TouchPoint"+i].y = touchData.stageY;
+					objectContext.Game.Touch["TouchPoint"+i].pressure = touchData.pressure;
 				}
 			}
 
@@ -113,14 +115,23 @@ package com.pblabs.engine.core
 			
 			objectContext = PBE.GLOBAL_DYNAMIC_OBJECT;
 			if(!objectContext.Game) objectContext.Game = new Object();
-			if(!objectContext.Game.Mouse) objectContext.Game.Mouse = new Object();
-			if(!objectContext.Game.Time) objectContext.Game.Time = new Object();
-			if(!objectContext.Game.Screen) objectContext.Game.Screen = new Object();
-			if(!objectContext.Game.Level) objectContext.Game.Level = new Object();
+			if(!objectContext.Game.Mouse) objectContext.Game.Mouse = new DataComponent();
+			if(!objectContext.Game.Time) objectContext.Game.Time = new DataComponent();
+			if(!objectContext.Game.Screen) objectContext.Game.Screen = new DataComponent();
+			if(!objectContext.Game.Level) objectContext.Game.Level = new DataComponent();
+			if(!objectContext.Game.Touch) objectContext.Game.Touch = new DataComponent();
 
 			objectContext.Game.Level.currentLevel = PBE.levelManager.currentLevel;
 			calculateScreenSize();
 			screenOrientation = "right-sideup";
+			
+			globalExpressionEntity = PBE.allocateEntity();
+			globalExpressionEntity.initialize("Game");
+			globalExpressionEntity.addComponent(objectContext.Game.Mouse, "Mouse");
+			globalExpressionEntity.addComponent(objectContext.Game.Time, "Time");
+			globalExpressionEntity.addComponent(objectContext.Game.Screen, "Screen");
+			globalExpressionEntity.addComponent(objectContext.Game.Level, "Level");
+			globalExpressionEntity.addComponent(objectContext.Game.Touch, "Touch");
 		}
 		
 		private function calculateScreenSize():void
