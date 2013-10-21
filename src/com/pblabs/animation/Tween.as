@@ -39,10 +39,16 @@ package com.pblabs.animation
 		 */
 		public static const PROCESS_ONFRAME:int = 1;
 		
+		/**
+		 * A toggle to enable an individual tween for advancement if needed. The TweenController by default is set to ignore Timescale
+		 */
+		[EditorData(ignore="true")]
+		public var ignoreTimeScale : Boolean = false;
+
 		// --------------------------------------------------------------
 		// public getter/setter functions
-		// --------------------------------------------------------------		
-
+		// --------------------------------------------------------------
+		
 		/*****************************************************
 		 * Indicates that the tween is running
 		 */
@@ -76,11 +82,12 @@ package com.pblabs.animation
 		 * @param playTime Total amount of time the tween will run.
 		 * @param processMode How the tween will advance , onTick or onFrame
 		 */
-		public function Tween( entity:IEntity, object:*, duration:Number, fromVars:* , toVars:*, ease:Function=null, onComplete:Function= null, delay:Number = 0, pingpong:Boolean = false, playCount:int=1, playTime:Number=0, processMode:int = 1)
+		public function Tween( entity:IEntity, object:*, duration:Number, fromVars:* , toVars:*, ease:Function=null, onComplete:Function= null, delay:Number = 0, pingpong:Boolean = false, playCount:int=1, playTime:Number=0, processMode:int = 1, ignoreTimeScale : Boolean = false)
 		{				
 			// initialize tweenController
 			TweenController.getInstance();			
 		
+			this.ignoreTimeScale = ignoreTimeScale;
 			if (object is String)
 				object = new PropertyReference(object);
 
@@ -154,7 +161,8 @@ package com.pblabs.animation
 			this.entity = null
 			this.object = null;
 			// remove this tween from Tweencontroller
-			if (running) stop();
+			if (running) 
+				stop();
 			TweenController.removeTween(this);			
 		} 
 		
@@ -163,7 +171,7 @@ package com.pblabs.animation
 		 */
 		public function advance(deltaSecs:Number):Number
 		{									
-			var start:int = PBE.processManager.platformTime;
+			var start:int = ignoreTimeScale ? PBE.processManager.platformTime : PBE.processManager.virtualTime;
 			var elapsed:int
 			
 			if (pause || object==null ) return 0;
@@ -197,14 +205,14 @@ package com.pblabs.animation
 					}
 					dispose();
 					
-					elapsed = PBE.processManager.platformTime - start;
+					elapsed = (ignoreTimeScale ? PBE.processManager.platformTime : PBE.processManager.virtualTime) - start;
 					return elapsed/1000;
 				}
 			}				
 			else
 				_running = false;
 								
-			elapsed = PBE.processManager.platformTime - start;
+			elapsed = (ignoreTimeScale ? PBE.processManager.platformTime : PBE.processManager.virtualTime) - start;
 			return elapsed/1000;
 		}
 		
@@ -311,7 +319,7 @@ package com.pblabs.animation
 						}
 					
 					totalTimePlayed += deltaSecs;
-					if (playTime>0  && totalTimePlayed >= playTime)
+					if (playTime > 0  && totalTimePlayed >= playTime)
 						return false;
 									
 					return true;

@@ -2,9 +2,11 @@ package com.pblabs.triggers.actions
 {
 	import com.pblabs.animation.Tween;
 	import com.pblabs.animation.easing.Linear;
-	import com.pblabs.engine.debug.Logger;
+	import com.pblabs.engine.core.IAnimatedObject;
+	import com.pblabs.engine.core.ITickedObject;
 	import com.pblabs.engine.entity.PropertyReference;
 	import com.pblabs.engine.scripting.ExpressionReference;
+	import com.pblabs.triggers.ITriggerComponent;
 	
 	import flash.geom.Point;
 	import flash.utils.getDefinitionByName;
@@ -53,7 +55,7 @@ package com.pblabs.triggers.actions
 		
 		override public function execute():*
 		{
-			if(_tween && _tween.running)
+			if(_tween && _tween.running && runtoCompletion)
 				return;
 			
 			_duration = Number(getExpressionValue(durationReference));
@@ -62,7 +64,14 @@ package com.pblabs.triggers.actions
 			var easeClazz : Class = getDefinitionByName(easingClass) as Class;
 			if(_tween)
 				_tween.dispose();
-			_tween = new Tween(this.owner ? this.owner.owner : null, propertyReference, _duration, ( (getExpressionValue(fromValueReference) is Point) ? getExpressionValue(fromValueReference) as Point : Number(getExpressionValue(fromValueReference)) ), ( (getExpressionValue(valueReference) is Point) ? getExpressionValue(valueReference) as Point : Number(getExpressionValue(valueReference)) ), easeClazz[easingFunction], onComplete, _delay, pingpong, _repeat, 0, 0);
+			var ignoreTimeScale : Boolean = false;
+			if(this.owner){
+				if(this.owner is ITickedObject)
+					ignoreTimeScale = (this.owner as ITickedObject).ignoreTimeScale;
+				if(this.owner is IAnimatedObject)
+					ignoreTimeScale = (this.owner as IAnimatedObject).ignoreTimeScale;
+			}
+			_tween = new Tween(this.owner ? this.owner.owner : null, propertyReference, _duration, ( (getExpressionValue(fromValueReference) is Point) ? getExpressionValue(fromValueReference) as Point : Number(getExpressionValue(fromValueReference)) ), ( (getExpressionValue(valueReference) is Point) ? getExpressionValue(valueReference) as Point : Number(getExpressionValue(valueReference)) ), easeClazz[easingFunction], onComplete, _delay, pingpong, _repeat, 0, 0, ignoreTimeScale);
 			return;
 		}
 		
@@ -99,6 +108,17 @@ package com.pblabs.triggers.actions
 			if(repeatCountReference)
 				repeatCountReference.destroy()
 			super.destroy();
+		}
+
+		override public function set owner(value:ITriggerComponent):void
+		{
+			super.owner = value;
+			if(value && _tween){
+				if(value is ITickedObject)
+					_tween.ignoreTimeScale = (value as ITickedObject).ignoreTimeScale;
+				if(value is IAnimatedObject)
+					_tween.ignoreTimeScale = (value as IAnimatedObject).ignoreTimeScale;
+			}
 		}
 	}
 }

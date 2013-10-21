@@ -9,16 +9,10 @@
 package com.pblabs.animation
 {
 	import com.pblabs.engine.PBE;
-	import com.pblabs.engine.components.TickedComponent;
 	import com.pblabs.engine.core.IAnimatedObject;
 	import com.pblabs.engine.core.ITickedObject;
-	import com.pblabs.engine.core.ProcessManager;
-	import com.pblabs.engine.debug.Console;
-	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.entity.EntityComponent;
 	import com.pblabs.engine.entity.IEntity;
-	
-	import flash.utils.getTimer;
 	
 	public class TweenController extends EntityComponent implements ITickedObject, IAnimatedObject
 	{
@@ -57,7 +51,7 @@ package com.pblabs.animation
 			return _instance;
 		}
 
-		private var _ignoreTimeScale : Boolean = false;
+		private var _ignoreTimeScale : Boolean = true;
 		/**
 		 * @inheritDoc
 		 */
@@ -114,9 +108,13 @@ package com.pblabs.animation
 		{
 			if (tickTweens.length>0)
 			{
-				var baseTime:int = PBE.processManager.platformTime;
-				for (var t:int = 0; t<tickTweens.length; t++)
-					(tickTweens[t] as Tween).advance(deltaTime+((PBE.processManager.platformTime-baseTime)/1000));				
+				var tween : Tween;
+				for (var t:int = 0; t<tickTweens.length; t++){
+					tween = (tickTweens[t] as Tween);
+					var baseTime:int = tween.ignoreTimeScale ? PBE.processManager.platformTime : PBE.processManager.virtualTime;
+					if(tween && (tween.ignoreTimeScale || PBE.processManager.timeScale > 0))
+						tween.advance(deltaTime+(((tween.ignoreTimeScale ? PBE.processManager.platformTime : PBE.processManager.virtualTime)-baseTime)/1000));
+				}
 			}
 		}
 		
@@ -124,9 +122,13 @@ package com.pblabs.animation
 		{
 			if (frameTweens.length>0)
 			{
-				var baseTime:int = PBE.processManager.platformTime;
-				for (var t:int = 0; t<frameTweens.length; t++)
-					(frameTweens[t] as Tween).advance(deltaTime+((PBE.processManager.platformTime-baseTime)/1000));				
+				var tween : Tween;
+				for (var t:int = 0; t<frameTweens.length; t++){
+					tween = (frameTweens[t] as Tween);
+					var baseTime:int = tween.ignoreTimeScale ? PBE.processManager.platformTime : PBE.processManager.virtualTime;
+					if(tween && (tween.ignoreTimeScale || PBE.processManager.timeScale > 0))
+						tween.advance(deltaTime+(((tween.ignoreTimeScale ? PBE.processManager.platformTime : PBE.processManager.virtualTime)-baseTime)/1000));
+				}
 			}
 		}
 		
