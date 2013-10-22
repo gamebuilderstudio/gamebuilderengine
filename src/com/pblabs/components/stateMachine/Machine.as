@@ -9,9 +9,9 @@
 package com.pblabs.components.stateMachine
 {
     import com.pblabs.engine.PBE;
-    import com.pblabs.engine.core.ProcessManager;
-    import com.pblabs.engine.entity.IPropertyBag;
     import com.pblabs.engine.debug.Logger;
+    import com.pblabs.engine.entity.IEntity;
+    import com.pblabs.engine.entity.IPropertyBag;
     
     import flash.utils.Dictionary;
 
@@ -41,6 +41,8 @@ package com.pblabs.components.stateMachine
         private var _propertyBag:IPropertyBag = null;
 		private var _hasTicked : Boolean = false;
         
+		private var _pendingNotifications : Vector.<TransitionEvent> = new Vector.<TransitionEvent>();
+		
         /**
          * Virtual time at which we entered the state.
          */
@@ -61,6 +63,11 @@ package com.pblabs.components.stateMachine
         
         public function tick():void
         {
+			if(_pendingNotifications && _pendingNotifications.length > 0)
+			{
+				clearPendingNotifications();
+			}
+			
 			if(!_hasTicked)
 				_hasTicked = true;
 			
@@ -81,7 +88,36 @@ package com.pblabs.components.stateMachine
                 _previousState = _currentState;
             }
         }
-        
+		
+		private function clearPendingNotifications():void
+		{
+			if(!_propertyBag || !allObjectsInitialized())
+				return;
+			
+			var te : TransitionEvent = _pendingNotifications.shift();
+			_propertyBag.signalBus.dispatch(te);
+		}
+		
+		private function allObjectsInitialized():Boolean
+		{
+			var allInitialized : Boolean = true;
+			if(_propertyBag && _propertyBag is IEntity && (_propertyBag as IEntity).owningGroup)
+			{
+				var len : int = (_propertyBag as IEntity).owningGroup.length;
+				for(var i : int = 0; i < len; i++)
+				{
+					var object : IEntity = (_propertyBag as IEntity).owningGroup.getItem(i) as IEntity;
+					if(object && object.name != null && !object.owningGroup)
+					{
+						allInitialized = false;
+					}
+				}
+			}else{
+				allInitialized = false;
+			}
+			return allInitialized;
+		}
+		
         public function getCurrentState():IState
         {
             // DefaultState - we get it if no state is set.
@@ -176,7 +212,10 @@ package com.pblabs.components.stateMachine
                 te.newState = newState;
                 te.newStateName = getStateName(newState);
                 
-                _propertyBag.signalBus.dispatch(te);
+				if(!allObjectsInitialized())
+					_pendingNotifications.push( te );
+				else
+					_propertyBag.signalBus.dispatch(te);
             }
             
             return true;
