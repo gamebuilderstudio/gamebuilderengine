@@ -10,7 +10,9 @@ package com.pblabs.engine.core
 {
     import com.pblabs.engine.PBE;
     import com.pblabs.engine.PBUtil;
-    import com.pblabs.engine.debug.*;
+    import com.pblabs.engine.debug.ILogAppender;
+    import com.pblabs.engine.debug.Logger;
+    import com.pblabs.engine.debug.Profiler;
     import com.pblabs.engine.entity.IEntityComponent;
     import com.pblabs.engine.serialization.TypeUtility;
     
@@ -308,11 +310,12 @@ package com.pblabs.engine.core
          * @param method Function to call.
          * @param args Any arguments.
          */
-        public function callLater(method:Function, args:Array = null):void
+        public function callLater(method:Function, args:Array = null, ignoreTimeScale : Boolean = false):void
         {
             var dm:DeferredMethod = new DeferredMethod();
             dm.method = method;
             dm.args = args;
+			dm.ignoreTimeScale = ignoreTimeScale;
             deferredMethodQueue.push(dm);
         }
         
@@ -335,7 +338,7 @@ package com.pblabs.engine.core
             // If we are in a tick, defer the add.
             if(duringAdvance)
             {
-                PBE.callLater(addObject, [ object, priority, list]);
+				callLater(addObject, [ object, priority, list], ((object is ITickedObject || object is IAnimatedObject) ? object["ignoreTimeScale"] : false) );
                 return;
             }
             
@@ -455,8 +458,7 @@ package com.pblabs.engine.core
                 
                 // Process pending events at this tick.
                 // This is done in the loop to ensure the correct order of events.
-				if(_timeScale > 0)
-                	processScheduledObjects();
+            	processScheduledObjects();
                 
                 // Do the onTick callbacks, noting time in profiler appropriately.
                 Profiler.enter("Tick");
@@ -586,18 +588,18 @@ package com.pblabs.engine.core
                 
                 for(var j:int=0; j < queLen; j++)
                 {
-                    var curDM:DeferredMethod = oldDeferredMethodQueue[j];
-                    curDM.method.apply(null, curDM.args);
+                    var curDM:DeferredMethod = oldDeferredMethodQueue[0];
+					if((_timeScale <= 0 && curDM.ignoreTimeScale) || _timeScale > 0){
+	                    curDM.method.apply(null, curDM.args);
+						oldDeferredMethodQueue.shift();
+					}
                 }
                 
-                // Wipe the old array now we're done with it.
-                oldDeferredMethodQueue.length = 0;
-
                 Profiler.exit("callLater");      	
             }
 
             // Process any queued items.
-            if(thinkHeap.size)
+            if(thinkHeap.size && _timeScale > 0)
             {
                 Profiler.enter("Queue");
                 
@@ -662,6 +664,7 @@ final class ProcessObject
 
 final class DeferredMethod
 {
-    public var method:Function = null;;
+	public var ignoreTimeScale : Boolean = false;
+    public var method:Function = null;
     public var args:Array = null;
 }

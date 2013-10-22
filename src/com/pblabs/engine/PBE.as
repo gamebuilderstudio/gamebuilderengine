@@ -640,9 +640,9 @@ package com.pblabs.engine
          * @param method Method to call.
          * @param args Arguments, if any.
          */
-        public static function callLater(method:Function, args:Array = null):void
+        public static function callLater(method:Function, args:Array = null, ignoreTimeScale : Boolean = false):void
         {
-            PBE.processManager.callLater(method, args);
+            PBE.processManager.callLater(method, args, ignoreTimeScale);
         }
         
         /**
