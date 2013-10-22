@@ -227,7 +227,6 @@ package com.pblabs.engine.core
 				}
 
 				Serializer.instance.deserialize(entity, xml);
-				Serializer.instance.clearCurrentEntity();
 
                 // Don't forget to disable deferring.
 				if(!keepDeferred)
@@ -236,6 +235,7 @@ package com.pblabs.engine.core
 				if (!_inGroup)
 					Serializer.instance.reportMissingReferences();
 
+				Serializer.instance.clearCurrentEntity();
 				Profiler.exit("instantiateEntityFromXML");
 			}
 			catch (e:Error)

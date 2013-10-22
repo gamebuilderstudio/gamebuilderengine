@@ -27,6 +27,7 @@ package com.pblabs.triggers.actions
 		}
 
 		protected var _owner : ITriggerComponent;
+		[EditorData(ignore="true")]
 		public function get owner():ITriggerComponent { return _owner; }
 		public function set owner(value:ITriggerComponent):void
 		{

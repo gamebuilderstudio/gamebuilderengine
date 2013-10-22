@@ -340,7 +340,7 @@ package com.pblabs.engine.core
          }
          else
          {
-             var doUnload:Boolean = _isLevelLoaded && (_currentLevel != 0);
+             var doUnload:Boolean = _isLevelLoaded && (_currentLevel != -1);
              getLoadLists(doUnload ? _levelDescriptions[_currentLevel].files : null, _levelDescriptions[index].files, filesToLoad, filesToUnload);
              
              // find group differences between the levels
@@ -361,8 +361,10 @@ package com.pblabs.engine.core
          
          // load files - setting this to one ensures all files will be queued up before loading continues
          _pendingFiles = 1;
-         for each (var filename:String in filesToLoad)
-         {
+		 var len : int = filesToLoad.length;
+		 for(var i : int = 0; i < len; i++)
+		 {
+			 var filename:String = filesToLoad[i] as String;
             _pendingFiles++;
             if (_loadFileCallback != null)
                _loadFileCallback(filename, finishLoad)
@@ -395,8 +397,10 @@ package com.pblabs.engine.core
 		 dispatchEvent(new LevelEvent(LevelEvent.LEVEL_PRE_LOAD_EVENT, _currentLevel));
 		
          // load groups
-         for each (var groupName:String in _groupsToLoad)
-         {
+		 var len : int = _groupsToLoad.length;
+		 for(var i : int = 0; i < len; i++)
+		 {
+			 var groupName:String = _groupsToLoad[i] as String;
             if (_loadGroupCallback != null)
             {
                _loadGroupCallback(groupName);
@@ -459,31 +463,45 @@ package com.pblabs.engine.core
       
       private function unload(filesToUnload:Array, groupsToUnload:Array):void
       {
+		  var len : int = _loadedEntities.length;
+		  var i : int;
          // cleanup extra loaded stuff
-         for each (var extraEntity:IEntity in _loadedEntities)
+		 for(i = 0; i < len; i++) 
          {
-            extraEntity.eventDispatcher.removeEventListener("EntityDestroyed", onEntityDestroyed);
-            extraEntity.destroy();
+			var extraEntity:IEntity = _loadedEntities[i] as IEntity;
+			if(extraEntity){
+	            extraEntity.eventDispatcher.removeEventListener("EntityDestroyed", onEntityDestroyed);
+	            extraEntity.destroy();
+			}
          }
          
-         _loadedEntities.splice(0, _loadedEntities.length);
+         _loadedEntities.length = 0;
          
-         // unload groups
-         for each (var groupName:String in groupsToUnload)
+		 len = groupsToUnload.length;
+		 // unload groups
+		 for(i = 0; i < len; i++) 
          {
+		 	var groupName:String = groupsToUnload[i] as String;
             if (_unloadGroupCallback != null)
             {
                _unloadGroupCallback(groupName);
                continue;
             }
             
-            for each (var groupEntity:IEntity in _loadedGroups[groupName])
-            {
-               if (groupEntity) 
-               {
-                   groupEntity.destroy();
-               }
-            }
+			
+			if(_loadedGroups.hasOwnProperty(groupName)){
+				
+				var loadedGroupsLen : int = _loadedGroups[groupName].length;
+				// unload groups
+				for(var x : int = 0; x < loadedGroupsLen; x++) 
+				{
+					var groupEntity : IEntity = _loadedGroups[groupName][x] as IEntity;
+	               if (groupEntity) 
+	               {
+	                   groupEntity.destroy();
+	               }
+	            }
+			}
             
             //Destroy all created groups, except the root group:
 			if(groupName != PBE.rootGroup.name)
@@ -500,9 +518,11 @@ package com.pblabs.engine.core
             delete _loadedGroups[groupName];
          }
          
-         // unload files
-         for each (var filename:String in filesToUnload)
-         {
+		 len = filesToUnload.length;
+		 // unload files
+		 for(i = 0; i < len; i++) 
+		 {
+			 var filename:String = filesToUnload[i] as String;
             if (_unloadFileCallback != null)
             {
                _unloadFileCallback(filename);
