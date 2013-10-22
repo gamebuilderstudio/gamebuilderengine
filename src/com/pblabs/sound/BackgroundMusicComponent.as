@@ -67,9 +67,9 @@ package com.pblabs.sound
         
         override protected function onRemove() : void
         {
+			
+			stop();
             super.onRemove();
-            
-            stop();
         }
         
         override public function onTick(tickRate:Number) : void
