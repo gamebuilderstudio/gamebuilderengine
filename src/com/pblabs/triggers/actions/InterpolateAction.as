@@ -14,8 +14,6 @@ package com.pblabs.triggers.actions
 	
 	public class InterpolateAction extends BaseAction
 	{
-		[TypeHint(type="com.pblabs.triggers.actions.IAction")]
-		public var action : IAction;
 		/**
 		 * The property being tweened
 		 **/
@@ -52,6 +50,7 @@ package com.pblabs.triggers.actions
 		private var _repeat : Number;
 		private var _tween : Tween;
 		private var _propertyToTween : *;
+		private var _action : IAction;
 		
 		override public function execute():*
 		{
@@ -77,9 +76,9 @@ package com.pblabs.triggers.actions
 		
 		public function onComplete(tween : Tween):void
 		{
-			if(action){
-				action.owner = this.owner;
-				action.execute();
+			if(_action){
+				_action.owner = this.owner;
+				_action.execute();
 			}
 		}
 		
@@ -95,7 +94,7 @@ package com.pblabs.triggers.actions
 				_tween.dispose();
 			_tween = null;
 			
-			action = null;
+			_action = null;
 			
 			if(fromValueReference)
 				fromValueReference.destroy()
@@ -119,6 +118,19 @@ package com.pblabs.triggers.actions
 				if(value is IAnimatedObject)
 					_tween.ignoreTimeScale = (value as IAnimatedObject).ignoreTimeScale;
 			}
+			if(_action)
+				_action.owner = value;
+		}
+
+		/**
+		 * The action to execute each time the timer fires a tick signal
+		 **/
+		[TypeHint(type="com.pblabs.triggers.actions.IAction")]
+		public function get action():IAction { return _action; }
+		public function set action(value : IAction) : void
+		{
+			_action = value;
+			_action.owner = this.owner;
 		}
 	}
 }
