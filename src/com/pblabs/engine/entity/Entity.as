@@ -13,6 +13,7 @@ package com.pblabs.engine.entity
     import com.pblabs.engine.core.PBSet;
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.debug.Profiler;
+    import com.pblabs.engine.scripting.ExpressionReference;
     import com.pblabs.engine.serialization.Serializer;
     import com.pblabs.engine.serialization.TypeUtility;
     import com.pblabs.engine.util.DynamicObjectUtil;
@@ -33,28 +34,12 @@ package com.pblabs.engine.entity
      */
     internal class Entity extends PBObject implements IEntity
     {        
-		private const _selfObject : Object = new Object;
-		private var _entityDirty : Boolean = true;
+		private const _selfObject : Object = {};
 		/**
 		 * Used primarily with Expression References to pass this object as a reference to the scripting environment
 		 **/
 		public function get Self():Object
 		{
-			if(!_entityDirty)
-			{
-				return _selfObject;
-			}
-			DynamicObjectUtil.clearDynamicObject(_selfObject);
-			
-			var len : int = _components.length;
-			var component:IEntityComponent;
-			for(var i : int = 0; i < len; i++)
-			{
-				component = _components[i];
-				_selfObject[component.name] = component;   
-			}
-			_selfObject.name = _name ? _name : _alias;
-			_entityDirty = false;
 			return _selfObject;
 		}
 		
@@ -98,6 +83,11 @@ package com.pblabs.engine.entity
 		
 		override public function changeName(name : String):void
 		{
+			if(name && _name in ExpressionReference.GlobalExpEntities)
+			{
+				ExpressionReference.GlobalExpEntities[name] = _selfObject;
+				delete ExpressionReference.GlobalExpEntities[_name];
+			}
 			super.changeName(name);
 			_selfObject.name = name;
 		}
@@ -106,7 +96,10 @@ package com.pblabs.engine.entity
         {            
             // Pass control up.
             super.initialize(name, alias);
-
+			if(name)
+			{
+				ExpressionReference.GlobalExpEntities[name] = this.Self;
+			}
             // Resolve any pending components.
             deferring = false;
         }
@@ -139,6 +132,10 @@ package com.pblabs.engine.entity
 			
 			//Clear Dynamic Object Container
 			DynamicObjectUtil.clearDynamicObject( _selfObject );
+			if(name && name in ExpressionReference.GlobalExpEntities)
+			{
+				delete ExpressionReference.GlobalExpEntities[name];
+			}
 
             // Get out of the NameManager and other general cleanup stuff.
             super.destroy();
@@ -423,7 +420,7 @@ package com.pblabs.engine.entity
             component.owner = this;
 			component.name = componentName;
 			_components.push(component);
-			_entityDirty = true;
+			_selfObject[componentName] = component;
             return true;
         }
         
@@ -452,7 +449,9 @@ package com.pblabs.engine.entity
 			}     
 			if(index > -1)
 				_components.splice(index,1);
-			_entityDirty = true;
+			
+			if(component.name in _selfObject)
+				delete _selfObject[component.name];
             return true;
         }
         
@@ -476,7 +475,6 @@ package com.pblabs.engine.entity
 				component.reset();                
 			}            
 
-			_entityDirty = true;
             deferring = false;
         }
         

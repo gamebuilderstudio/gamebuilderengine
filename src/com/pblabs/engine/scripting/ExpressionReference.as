@@ -7,8 +7,12 @@ package com.pblabs.engine.scripting
 	import com.pblabs.engine.util.DynamicObjectUtil;
 	
 	import flash.geom.Point;
+	import flash.utils.Dictionary;
 	
-	import r1.deval.D;
+	import scripting.Parser;
+	import scripting.Scanner;
+	import scripting.VMSyntaxError;
+	import scripting.VirtualMachine;
 	
 	/**
 	 * ExpressionReference is the wrapper for the D.eval class to run expressions in PBE.
@@ -29,31 +33,35 @@ package com.pblabs.engine.scripting
 	 * 	//OR concatenate an evaluation
 	 * 	var newVal : Number = expression.eval( "cos( (Self.Spatial.position.y * 10) )" ).value;
 	 * 
- 	 * 	//VERY IMPORTANT
+	 * 	//VERY IMPORTANT
 	 * 	//Destory all expression references when finished using it.
 	 * 	expression.destroy();
 	 * </listing>
 	 **/
 	public class ExpressionReference implements ISerializable
 	{
-		public var cacheExpression : Boolean = false;
+		public static var GlobalExpEntities : Object = {};
 		
 		private var _value:*;
 		private var _dynamicThisObject : Object = new Object();
-		private var _thisObjectName : String;
 		private var _cachedProgram : *;
+		private var _byteCode : Array;
 		
+		private static var _scriptScanner : Scanner = new Scanner();
+		private static var _scriptParser : Parser = new Parser();
 		private static var _initialized : Boolean = false;
-
+		private static var _evm : VirtualMachine = new VirtualMachine();
+		private static var _globalGameObject : Object;
+		private static var _expressionCache : Vector.<ExpressionByteCode>;
+		
 		public function ExpressionReference(expression:Object="", selfContext : Object = null)
 		{
-			this.expression = String(expression);
-
-			DynamicObjectUtil.copyDynamicObject(PBE.GLOBAL_DYNAMIC_OBJECT, _dynamicThisObject);
-			
-			this.selfContext = selfContext;
 			if(!_initialized)
 				initialize();	
+
+			this.expression = String(expression);
+			
+			this.selfContext = selfContext;
 		}
 		
 		public function eval(str : String, context : Object = null, thisObject : * = null):ExpressionReference
@@ -79,8 +87,7 @@ package com.pblabs.engine.scripting
 		 */
 		public function deserialize(xml:XML):*
 		{
-			_expression = String(xml);
-			_thisObjectName = String(xml.@thisObjectName);
+			expression = String(xml);
 			return this;
 		}
 		
@@ -91,13 +98,17 @@ package com.pblabs.engine.scripting
 			_value = null;
 			_expression = null;
 			_cachedProgram = null;
+			var cachedExp : ExpressionByteCode = findCachedExpressionCode(_expression);
+			if(cachedExp)
+				cachedExp.referenceCount--;
 		}
-
+		
 		public static function getExpressionValue(expression : ExpressionReference, owner : IEntity):*
 		{
 			var value : *;
 			if(expression){
-				expression.selfContext = owner.Self;
+				if(!expression.selfContext)
+					expression.selfContext = owner.Self;
 				value = expression.value;
 				if(value == null || value == "null" || value == "undefined")
 					value = expression.expression;
@@ -113,52 +124,74 @@ package com.pblabs.engine.scripting
 				return;
 			if(thisObject == null){
 				thisObject = _dynamicThisObject;
-
+				
 				if(context)
 				{
 					thisObject.Self = context;
 				}
 			}
-			try{
-				if(cacheExpression){
-					_value = D.eval(_cachedProgram, context, thisObject);
-				}else{
-					_value = D.eval(_expression, context, thisObject);
+			if(_byteCode){
+				_globalGameObject.Self = thisObject.Self;
+				_evm.rewind();
+				_evm.setByteCode(_byteCode);
+				if(!_evm.execute())
+				{
+					_value = _evm.getGlobalObject().returnVal;
 				}
-			}catch(e : Error){
-				Logger.error(this, 'evaluateExpression', 'Failed expression ['+_expression+'] Msg = '+e.message);
 			}
-		}
-		
-		private function parseExpression():void
-		{
-			//TODO Pull Out PropertyReferences
 		}
 		
 		private function initialize():void
 		{
-			if(_initialized) return;
-			
-			D.importStaticMethods( Math );
-			D.importClass( Point );
-			D.importClass( PBE );
-			D.importFunction("setPoint", ExpressionUtils.setPoint);
-			D.importFunction("Entity", ExpressionUtils.getEntity);
-			D.importFunction("magnitudeOfPoint", ExpressionUtils.magnitudeOfPoint);
-			D.importFunction("magnitude", ExpressionUtils.magnitude);
-			D.importFunction("rotationOfAngle", ExpressionUtils.rotationOfAngle);
-			D.importFunction("distance", ExpressionUtils.distance);
-			D.importFunction("distanceOfPoint", ExpressionUtils.distanceOfPoint);
-			D.importFunction("randomRange", ExpressionUtils.randomRange);
-			D.importFunction("clampToRange", ExpressionUtils.clampToRange);
-			D.importFunction("percentOfRange", ExpressionUtils.percentOfRange);
-			D.importFunction("valueOfRangePercent", ExpressionUtils.valueOfRangePercent);
-			D.importFunction("roundTo", ExpressionUtils.roundTo);
-			D.importFunction("inchesToPixels", ExpressionUtils.inchesToPixels);
-			D.importFunction("mmToPixels", ExpressionUtils.mmToPixels);
-			
+			if(!_globalGameObject){
+				_globalGameObject = _evm.getGlobalObject();
+				_globalGameObject.Entity = ExpressionReference.GlobalExpEntities;
+				_globalGameObject.Point = Point;
+				_globalGameObject.PBE = PBE;
+				ExpressionUtils.importStaticMethods( _globalGameObject, Math );
+				ExpressionUtils.importFunction(_globalGameObject, "setPoint", ExpressionUtils.setPoint);
+				//ExpressionUtils.importFunction(_globalGameObject, "Entity", ExpressionUtils.getEntity);
+				ExpressionUtils.importFunction(_globalGameObject, "magnitudeOfPoint", ExpressionUtils.magnitudeOfPoint);
+				ExpressionUtils.importFunction(_globalGameObject, "magnitude", ExpressionUtils.magnitude);
+				ExpressionUtils.importFunction(_globalGameObject, "rotationOfAngle", ExpressionUtils.rotationOfAngle);
+				ExpressionUtils.importFunction(_globalGameObject, "distance", ExpressionUtils.distance);
+				ExpressionUtils.importFunction(_globalGameObject, "distanceOfPoint", ExpressionUtils.distanceOfPoint);
+				ExpressionUtils.importFunction(_globalGameObject, "randomRange", ExpressionUtils.randomRange);
+				ExpressionUtils.importFunction(_globalGameObject, "clampToRange", ExpressionUtils.clampToRange);
+				ExpressionUtils.importFunction(_globalGameObject, "percentOfRange", ExpressionUtils.percentOfRange);
+				ExpressionUtils.importFunction(_globalGameObject, "valueOfRangePercent", ExpressionUtils.valueOfRangePercent);
+				ExpressionUtils.importFunction(_globalGameObject, "roundTo", ExpressionUtils.roundTo);
+				ExpressionUtils.importFunction(_globalGameObject, "inchesToPixels", ExpressionUtils.inchesToPixels);
+				ExpressionUtils.importFunction(_globalGameObject, "mmToPixels", ExpressionUtils.mmToPixels);
+				
+				DynamicObjectUtil.copyDynamicObject(PBE.GLOBAL_DYNAMIC_OBJECT, _globalGameObject);
+			}
+			if(!_expressionCache)
+				_expressionCache = new Vector.<ExpressionByteCode>();
 			_initialized = true;
 		}
+		
+		private function findCachedExpressionCode(expression : String):ExpressionByteCode
+		{
+			var len : int = _expressionCache.length;
+			for(var i : int = 0; i < len; i++)
+			{
+				if(_expressionCache[i].expression == expression){
+					return _expressionCache[i];
+				}
+			}
+			return null;
+		}
+
+		private function parseExpression(rawExpression : String):String
+		{
+			if(rawExpression.substr(0, 1) == ".")
+				rawExpression = "0" + rawExpression;
+			if(rawExpression.indexOf(" .") > -1)
+				rawExpression = rawExpression.split(" .").join(" 0.");
+			return rawExpression;
+		}
+		
 		/*-----------------------------------------------------------------------------------------------------------
 		*                                          Getter & Setters
 		-------------------------------------------------------------------------------------------------------------*/
@@ -178,18 +211,33 @@ package com.pblabs.engine.scripting
 		public function get expression():String { return _expression; }
 		public function set expression(str:String):void
 		{
-			if(str == null || _expression == str) return;
+			if(str == null || _expression == str) 
+				return;
+			if(str == ""){ _expression = ""; return; }
 			
-			_expression = str;
-			if(cacheExpression){
-				_cachedProgram = D.parseProgram(_expression);
+			_expression = parseExpression(str);
+			var cachedExp : ExpressionByteCode = findCachedExpressionCode(_expression);
+			if(cachedExp){
+				_byteCode = cachedExp.byteCode;
+				cachedExp.referenceCount++;
 			}else{
-				_cachedProgram = null;
-			}
+				var tmpExp : String = "var returnVal = " +_expression;
+				if(tmpExp.substr(-1, 1) != ";")
+					tmpExp += ";";
 				
-			parseExpression();
+				_scriptScanner.source = tmpExp;
+				_scriptParser.scanner = _scriptScanner;
+				
+				_byteCode = _scriptParser.parse(_evm);
+				var expCacheEntry : ExpressionByteCode = new ExpressionByteCode();
+				expCacheEntry.byteCode = _byteCode;
+				expCacheEntry.expression = _expression;
+				expCacheEntry.referenceCount++;
+				_expressionCache.push( expCacheEntry );
+			}
 		}
 		
+		public function get selfContext():Object{ return _dynamicThisObject.Self; }
 		public function set selfContext(obj : Object):void
 		{
 			if(!obj) return;
@@ -205,8 +253,30 @@ import com.pblabs.engine.entity.IEntity;
 
 import flash.geom.Point;
 import flash.system.Capabilities;
+import flash.utils.describeType;
 
 class ExpressionUtils{
+	public static function importStaticMethods(globalObject : Object, staticClass : Class):void
+	{
+		var classDesc : XML = describeType(staticClass);
+		var curName : String;
+		for each(var constant : XML in classDesc.constant)
+		{
+			curName = String(constant.@name);
+			globalObject[curName] = staticClass[curName];
+		}
+		for each(var method : XML in classDesc.method)
+		{
+			curName = String(method.@name);
+			globalObject[curName] = staticClass[curName];
+		}
+	}
+	
+	public static function importFunction(globalObject : Object, funcName : String, func : Function):void
+	{
+		globalObject[funcName] = func;
+	}
+	
 	public static function inchesToPixels(inches:Number):Number
 	{
 		return Math.round(Capabilities.screenDPI * inches);
@@ -216,7 +286,7 @@ class ExpressionUtils{
 	{
 		return Math.round(Capabilities.screenDPI * (mm / 25.4));
 	}
-
+	
 	public static function roundTo(value:Number, decimals:int = 1):Number
 	{
 		var m:int = Math.pow(10, decimals);
@@ -229,39 +299,39 @@ class ExpressionUtils{
 			return ((( currentValue - min ) / ( max - min )) / 1 );
 		return ((( currentValue - min ) / ( max - min )) * 100 );
 	}
-
+	
 	public static function valueOfRangePercent(percentage : Number, min : Number, max : Number):Number
 	{
 		return ((( max - min ) / 100 ) * percentage ) + min;
 	}
-
+	
 	public static function clampToRange(value : Number, min : Number, max : Number):Number
 	{
 		return Math.max(min, Math.min(max, value));
 	}
-
+	
 	public static function randomRange(min : Number, max : Number):Number
 	{
 		return (Math.floor(Math.random() * (max - min + 1)) + min);
 	}
-
+	
 	public static function distanceOfPoint(pointA : Point, pointB : Point):Number
 	{
 		return distance(pointA.x, pointA.y, pointB.x, pointB.y);
 	}
-
+	
 	public static function distance(x1 : Number, y1 : Number, x2 : Number, y2 : Number):Number
 	{
 		var dx:Number = x1-x2;
 		var dy:Number = y1-y2;
 		return Math.sqrt(dx * dx + dy * dy);
 	}
-
+	
 	public static function magnitudeOfPoint(point : Point):Number
 	{
 		return magnitude(point.x, point.y);
 	}
-
+	
 	/**
 	 * Returns the distance/magnitude between two values
 	 **/
@@ -269,7 +339,7 @@ class ExpressionUtils{
 	{
 		return Math.sqrt( ((valA) * (valA)) + ((valB) * (valB)) );
 	}
-
+	
 	/**
 	 * Returns the rotation angle of two points in degress
 	 **/
@@ -277,15 +347,22 @@ class ExpressionUtils{
 	{
 		return Math.atan2((ptA.y - ptB.y), (ptA.x - ptB.x)) / Math.PI * 180;
 	}
-
+	
 	public static function setPoint(x : Number, y : Number):Point
 	{
 		return new Point(x,y);
 	}
-
+	
 	public static function getEntity(name : String):Object
 	{
 		var entity : Object = PBE.lookupEntity(name);
 		return entity ? entity.Self : null;
 	}
+}
+
+class ExpressionByteCode
+{
+	public var expression : String;
+	public var byteCode : Array;
+	public var referenceCount : int = 0;
 }
