@@ -316,7 +316,7 @@ package com.pblabs.engine.core
             dm.method = method;
             dm.args = args;
 			dm.ignoreTimeScale = ignoreTimeScale;
-            deferredMethodQueue.push(dm);
+            deferredMethodQueue[deferredMethodQueue.length] = dm;
         }
         
         /**
