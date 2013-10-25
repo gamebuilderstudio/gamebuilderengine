@@ -15,6 +15,7 @@ package com.pblabs.rendering2D.spritesheet
     
     import flash.geom.Point;
     import flash.geom.Rectangle;
+    import flash.utils.Dictionary;
     
     /**
      * Divide a spritesheet into cells based on the rect coordinates in the loaded Texture Packer Json-Array 
@@ -24,6 +25,7 @@ package com.pblabs.rendering2D.spritesheet
     {
 		private var _frames : Vector.<CoordinateDataVO>;
 
+		private var _frameCache : Dictionary = new Dictionary();
 		/**
 		 * Grab the frame area rectangle by the filename.
 		 */
@@ -37,7 +39,7 @@ package com.pblabs.rendering2D.spritesheet
 				if(resource && resource.isLoaded)
 				{
 					buildFrames();
-					getFrameByName(name);
+					return getFrameByName(name);
 				}
 				return new Rectangle(0, 0, 1, 1);
 			}
@@ -52,10 +54,10 @@ package com.pblabs.rendering2D.spritesheet
 		{
 			if(!_frames || _frames.length < 1)
 			{
-				if(resource && resource.isLoaded)
+				if(resource && resource.isLoaded && resource.jsonData)
 				{
 					buildFrames();
-					getFrameArea(index);
+					return getFrameArea(index);
 				}
 				return new Rectangle(0, 0, 1, 1);
 			}
@@ -86,22 +88,28 @@ package com.pblabs.rendering2D.spritesheet
 				return;
 			}
 			
-			if(!_frames) 
-				_frames = new Vector.<CoordinateDataVO>();
-			else
-				_frames.length = 0;
+			if(resource.filename in _frameCache){
+				_frames = _frameCache[resource.filename];
+			}else{
 			
-			//Building list of rectangles that point to frames
-			var objectData : Array = resource.jsonData.frames;
-			var dataLen : int = objectData.length;
-			for(var i : int = 0; i < dataLen; i++)
-			{
-				var frameData : Object = objectData[i];
-				_frames.push( new CoordinateDataVO(frameData.filename, new Rectangle( frameData.frame.x, frameData.frame.y, frameData.frame.w, frameData.frame.h),
-					new Point(frameData.sourceSize.w, frameData.sourceSize.h),
-					new Rectangle(frameData.spriteSourceSize.x, frameData.spriteSourceSize.y, frameData.spriteSourceSize.w, frameData.spriteSourceSize.h),
-					frameData.rotated,
-					frameData.trimmed, i) );
+				if(!_frames) 
+					_frames = new Vector.<CoordinateDataVO>();
+				else
+					_frames.length = 0;
+				
+				//Building list of rectangles that point to frames
+				var objectData : Array = resource.jsonData.frames;
+				var dataLen : int = objectData.length;
+				for(var i : int = 0; i < dataLen; i++)
+				{
+					var frameData : Object = objectData[i];
+					_frames.push( new CoordinateDataVO(frameData.filename, new Rectangle( frameData.frame.x, frameData.frame.y, frameData.frame.w, frameData.frame.h),
+						new Point(frameData.sourceSize.w, frameData.sourceSize.h),
+						new Rectangle(frameData.spriteSourceSize.x, frameData.spriteSourceSize.y, frameData.spriteSourceSize.w, frameData.spriteSourceSize.h),
+						frameData.rotated,
+						frameData.trimmed, i) );
+				}
+				_frameCache[resource.filename] = _frames;
 			}
 		}
 		

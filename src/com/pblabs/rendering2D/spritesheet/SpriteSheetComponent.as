@@ -56,6 +56,7 @@ package com.pblabs.rendering2D.spritesheet
 				var frameCache : CachedFramesData = getCachedFrames();
 				if(frameCache)
 					frameCache.released.remove(onCacheReleased);
+				deleteFrames();
 			}
 			_cached = val;
 		}
