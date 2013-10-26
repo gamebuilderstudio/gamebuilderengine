@@ -18,24 +18,20 @@ package com.pblabs.starling2D
 	import com.pblabs.rendering2D.ICachingLayer;
 	import com.pblabs.rendering2D.IDisplayObjectSceneLayer;
 	import com.pblabs.rendering2D.ILayerMouseHandler;
-	import com.pblabs.rendering2D.IScene2D;
 	import com.pblabs.rendering2D.SceneAlignment;
 	import com.pblabs.rendering2D.ui.IUITarget;
 	
-	import flash.display.DisplayObjectContainer;
 	import flash.events.Event;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.utils.Dictionary;
 	
-	import spark.effects.Animate;
-	
+	import starling.core.Starling;
 	import starling.display.DisplayObject;
-	import starling.display.DisplayObjectContainer;
 	import starling.display.Sprite;
 	
-	public class DisplayObjectSceneG2D extends AnimatedComponent implements IScene2D
+	public class DisplayObjectSceneG2D extends AnimatedComponent implements ISceneG2D
 	{
 		/**
 		 * Minimum allowed zoom level.
@@ -376,6 +372,27 @@ package com.pblabs.starling2D
 			return _rootSprite.localToGlobal(inPos);            
 		}
 		
+		/**
+		 * Takes the global flash stage position and transforms it into coordinates relative to the 2D GPU scene taking the viewport
+		 * into account.
+		 */
+		public function transformScreenToG2DWorld(globalPos:Point):Point
+		{
+			if(sceneView && sceneView is SceneViewG2D){
+				// move position into viewport bounds
+				var starlingInstance : Starling = (sceneView as SceneViewG2D).starlingInstance;
+				if(starlingInstance){
+					globalPos.x = starlingInstance.stage.stageWidth  * (globalPos.x - starlingInstance.viewPort.x) / starlingInstance.viewPort.width;
+					globalPos.y = starlingInstance.stage.stageHeight * (globalPos.y - starlingInstance.viewPort.y) / starlingInstance.viewPort.height;
+				}
+			}
+			globalPos = transformScreenToWorld(globalPos);
+			return globalPos;
+		}
+		
+		/**
+		 * Takes the global stage position and transforms it into coordinates relative to the scene
+		 */
 		public function transformScreenToWorld(inPos:Point):Point
 		{
 			updateTransform();

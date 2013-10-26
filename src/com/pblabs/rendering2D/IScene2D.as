@@ -181,6 +181,9 @@ package com.pblabs.rendering2D
         function transformScreenToScene(inPos:Point):Point;
         
         function transformWorldToScreen(inPos:Point):Point;
+		/**
+		 * Takes the global stage position and transforms it into coordinates relative to the scene
+		 */
         function transformScreenToWorld(inPos:Point):Point;
         
         function sortSpatials(array:Array):void;

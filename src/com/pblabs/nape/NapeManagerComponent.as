@@ -53,7 +53,7 @@ package com.pblabs.nape
 			return _space;
 		}
 		
-		[EditorData(defaultValue="30")]
+		[EditorData(defaultValue="1")]
 		public function get scale():Number
 		{
 			return _scale;
@@ -103,13 +103,15 @@ package com.pblabs.nape
 		public function set visualDebugging(value:Boolean):void
 		{
 			_visualDebugging = value;
-			if(!_shapeDebug) 
-				return;
-			
-			if(_visualDebugging)
+			if(_visualDebugging){
+				initDebugDraw();
 				_shapeDebug.draw(_space);
-			else
-				_shapeDebug.clear();
+			}else{
+				if(_shapeDebug){
+					_shapeDebug.clear();
+					_shapeDebug = null;
+				}
+			}
 		}
 		
 		public function get debugDrawer() : DisplayObject
@@ -351,7 +353,14 @@ package com.pblabs.nape
 			_space.listeners.add(new InteractionListener(CbEvent.BEGIN, InteractionType.SENSOR, _bodyCallbackType, _bodyCallbackType, beginCollisionCallback));
 			_space.listeners.add(new InteractionListener(CbEvent.END, InteractionType.SENSOR, _bodyCallbackType, _bodyCallbackType, endCollisionCallback));
 			//_space.listeners.add(new InteractionListener(CbEvent.ONGOING, InteractionType.SENSOR, _bodyCallbackType, _bodyCallbackType, ongoingCollisionCallback));
-
+			if(_visualDebugging)
+				initDebugDraw();
+		}
+		
+		private function initDebugDraw():void
+		{
+			if(_shapeDebug)
+				_shapeDebug.clear();
 			_shapeDebug = new ShapeDebug(PBUtil.clamp(PBE.mainClass.width, 10, 5000000), PBUtil.clamp(PBE.mainClass.height, 10, 5000000), 0x4D4D4D );
 			_shapeDebug.drawConstraints = true;
 			_shapeDebug.drawBodies = true;
