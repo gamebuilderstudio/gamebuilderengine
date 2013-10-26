@@ -1,6 +1,7 @@
 package com.pblabs.starling2D
 {
 	import com.pblabs.engine.debug.Logger;
+	import com.pblabs.engine.resource.ImageResource;
 	import com.pblabs.engine.resource.Resource;
 	
 	import flash.display.BitmapData;
@@ -59,54 +60,6 @@ package com.pblabs.starling2D
 			_textureReferenceCount = new Dictionary();
 		}
 		
-		public static function mapTextureToResource(texture : Texture, resource : Resource):void
-		{
-			if(!resource || !texture)
-				return;
-			
-			texture.disposed.addOnce(releaseTexture);
-			if(!_originTexturesMap[resource])
-				_originTexturesMap[resource] = new Vector.<Texture>();
-			_textureReferenceCount[texture] = 0;
-			_originTexturesMap[resource].push( texture );
-		}
-		
-		public static function mapTexturesToResource(textures : Vector.<Texture>, resource : Resource):void
-		{
-			if(!resource || !textures)
-				return;
-			
-			var len : int = textures.length;
-			for(var i : int = 0; i < len; i++)
-			{
-				_textureReferenceCount[textures[i]] = 0;
-				textures[i].disposed.addOnce(releaseTexture);
-			}
-			_originTexturesMap[resource] = textures;
-		}
-		
-		
-		public static function mapTextureAtlasToResource(atlas : TextureAtlas, resource : Resource):void
-		{
-			if(!resource || !atlas)
-				return;
-			
-			_textureReferenceCount[atlas] = 0;
-			_originTexturesMap[resource] = [ atlas ];
-		}
-		
-		public static function mapTextureWithKey(texture : Texture, key : String):void
-		{
-			if(!key || !texture)
-				return;
-			texture.disposed.addOnce(releaseTexture);
-			if(!_originTexturesMap[key])
-				_originTexturesMap[key] = new Vector.<Texture>();
-			
-			_textureReferenceCount[texture] = 0;
-			_originTexturesMap[key].push( texture );
-		}
-		
 		public static function getTextureForBitmapData(data : BitmapData, cacheKey : String = null):Texture
 		{
 			if(!data)
@@ -127,7 +80,7 @@ package com.pblabs.starling2D
 				_subTexturesMap[subtexture] = texture;
 				return subtexture;
 			}else{
-				texture = Texture.fromBitmapData(data, false);
+				texture = Texture.fromBitmapData(data, false, false, _scaleFactor);
 				texture.disposed.addOnce(releaseTexture);
 				_originTexturesMap[key] = new Vector.<Texture>();
 				_originTexturesMap[key].push( texture );
@@ -137,21 +90,36 @@ package com.pblabs.starling2D
 				_subTexturesMap[subtexture] = texture;
 				return subtexture;
 			}
+			return null;
 		}
 		
-		public static function getTextureForResource(resource : Resource):Texture
+		public static function getTextureForResource(resource : ImageResource):Texture
 		{
 			if(!resource)
 				return null;
 
-			if(_originTexturesMap[ resource ])
+			var subtexture : Texture;
+			var texture : Texture;
+			if(resource in _originTexturesMap && _originTexturesMap[ resource ] != null)
 			{
-				var texture : Texture = _originTexturesMap[resource][0] as Texture;
+				texture = _originTexturesMap[resource][0] as Texture;
 				_textureReferenceCount[texture]++;
-				var subtexture : Texture = Texture.fromTexture(texture);
+				subtexture = Texture.fromTexture(texture);
 				subtexture.disposed.addOnce(releaseTexture);
 				_subTexturesMap[subtexture] = texture;
 				return subtexture;
+			}else{
+				//TODO: Add support for ATFImageResources in the future
+				texture = Texture.fromBitmapData(resource.bitmapData, false, false, _scaleFactor);
+				texture.disposed.addOnce(releaseTexture);
+				_originTexturesMap[resource] = new Vector.<Texture>();
+				_originTexturesMap[resource].push( texture );
+				_textureReferenceCount[texture] = 1;
+				subtexture = Texture.fromTexture(texture);
+				subtexture.disposed.addOnce(releaseTexture);
+				_subTexturesMap[subtexture] = texture;
+				return subtexture;
+				
 			}
 			return null;
 		}
@@ -179,18 +147,20 @@ package com.pblabs.starling2D
 			return null;
 		}
 
-		public static function getTextureAtlasForResource(resource : Resource):TextureAtlas
+		public static function getTextureAtlasForResource(resource : ImageResource):TextureAtlas
 		{
 			if(!resource)
 				return null;
-			
-			if(_originTexturesMap[resource.filename])
+			var atlas : TextureAtlas;
+			if(resource in _originTexturesMap)
 			{
-				var atlas : TextureAtlas = _originTexturesMap[resource][0] as TextureAtlas;
+				atlas = _originTexturesMap[resource][0] as TextureAtlas;
 				//_textureReferenceCount[atlas]++;
-				return atlas;
+			}else{
+				var atlasTexture : Texture = getTextureForResource(resource);
+				atlas = new TextureAtlas(atlasTexture);
 			}
-			return null;
+			return atlas;
 		}
 		
 		public static function getTextureForAtlasRegion(atlas : TextureAtlas, regionName : String, region : Rectangle, frame : Rectangle = null):Texture
@@ -269,5 +239,11 @@ package com.pblabs.starling2D
 			}
 			
 		}
+
+		/** Textures that are created from Bitmaps or ATF files will have the scale factor 
+		 *  assigned here. */
+		private static var _scaleFactor : Number = 1;
+		public static function get scaleFactor():Number { return _scaleFactor; }
+		public static function set scaleFactor(value:Number):void { _scaleFactor = value; }
 	}
 }

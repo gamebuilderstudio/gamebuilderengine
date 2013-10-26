@@ -19,7 +19,6 @@ package com.pblabs.starling2D.spritesheet
 	import flash.geom.Rectangle;
 	
 	import starling.core.Starling;
-	import starling.textures.Texture;
 	
 	public class MultiImageSpriteSheetComponentG2D extends MultiImageSpriteSheetComponent implements ISpriteSheetG2D
 	{
@@ -52,14 +51,7 @@ package com.pblabs.starling2D.spritesheet
 			for (var i:int = 0; i < _images.length; i++)
 			{
 				var resource:ImageResource = _images[i];
-				var resourceTexture : Texture = ResourceTextureManagerG2D.getTextureForResource(resource);
-				if(!resourceTexture)
-				{
-					resourceTexture = Texture.fromBitmapData(resource.bitmapData, false);
-					ResourceTextureManagerG2D.mapTextureToResource(resourceTexture, resource);
-				}
-				_frames[i] = resourceTexture;
-				
+				_frames[i] = ResourceTextureManagerG2D.getTextureForResource(resource);
 				tmpBounds = resource.bitmapData.rect;
 				if(!_bounds){
 					_bounds = tmpBounds;

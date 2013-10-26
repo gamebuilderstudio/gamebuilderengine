@@ -78,18 +78,11 @@ package com.pblabs.starling2D.spritesheet
 			}
 			
 			var atlas : TextureAtlas = ResourceTextureManagerG2D.getTextureAtlasForResource(_image);
-			var atlasTexture : Texture;
-			if(!atlas){
-				atlasTexture = Texture.fromBitmapData(_image.bitmapData, false);
-				atlas = new TextureAtlas(atlasTexture);
-				//ResourceTextureManagerG2D.mapTextureToResource(atlasTexture, _image);
-				ResourceTextureManagerG2D.mapTextureAtlasToResource(atlas, _image);
-			}
 			// no divider means treat the image as a single frame
 			if (!_divider)
 			{
 				_frames = new Array(1);
-				_frames[0] = ResourceTextureManagerG2D.getTextureForAtlasRegion(atlas, "i_0", new Rectangle(0,0, atlasTexture.width, atlasTexture.height));
+				_frames[0] = ResourceTextureManagerG2D.getTextureForAtlasRegion(atlas, "i_0", new Rectangle(0,0, atlas.texture.width, atlas.texture.height));
 			}
 			else
 			{
