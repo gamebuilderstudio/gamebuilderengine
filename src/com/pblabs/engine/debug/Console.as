@@ -257,9 +257,14 @@ package com.pblabs.engine.debug
             
 			if(PBE.IN_EDITOR)
 			{
-				registerCommand("exit", _exitConsoleMethod,
-					"Exits console window while in the editor");
-			}else if(ExternalInterface.available) {
+				registerCommand("close", _closeConsoleMethod,
+					"Closes console window while in the editor");
+			}else{
+				registerCommand("close", _closeConsoleMethod,
+					"Closes console window while debugging game");
+			}
+				
+			if(ExternalInterface.available) {
                 registerCommand("exit", _exitMethod,
                     "Attempts to exit the application using ExternalInterface if avaliable");
             }
@@ -380,12 +385,12 @@ package com.pblabs.engine.debug
             }
         }
         
-		protected static function _exitConsoleMethod():void
+		protected static function _closeConsoleMethod():void
 		{
 			PBE.inputManager.simulateKeyDown( InputKey.TILDE.keyCode );
 		}
 
-		protected static function _exitMethod():void
+		protected static function _exitMethod():void 
         {
             if(ExternalInterface.available)
             {
