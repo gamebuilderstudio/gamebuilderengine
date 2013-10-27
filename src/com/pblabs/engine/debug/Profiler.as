@@ -43,7 +43,7 @@ package com.pblabs.engine.debug
        */
       public static function enter(blockName:String):void
       {
-		  if(PBE.IS_SHIPPING_BUILD)
+		  if(PBE.IS_SHIPPING_BUILD || PBE.IN_EDITOR)
 			  return;
          if(!_currentNode)
          {
@@ -107,7 +107,7 @@ package com.pblabs.engine.debug
        */
       public static function exit(blockName:String):void
       {
-		  if(PBE.IS_SHIPPING_BUILD)
+		  if(PBE.IS_SHIPPING_BUILD || PBE.IN_EDITOR)
 			  return;
          // Update stack depth and early out.
          _stackDepth--;
@@ -169,7 +169,7 @@ package com.pblabs.engine.debug
        */
       public static function ensureAtRoot():void
       {
-		  if(PBE.IS_SHIPPING_BUILD)
+		  if(PBE.IS_SHIPPING_BUILD || PBE.IN_EDITOR)
 			  return;
          if(_stackDepth){
             Logger.error(Profiler, 'ensureAtRoot', 'Not at root!');
