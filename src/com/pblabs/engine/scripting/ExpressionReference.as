@@ -216,24 +216,26 @@ package com.pblabs.engine.scripting
 			if(str == ""){ _expression = ""; return; }
 			
 			_expression = parseExpression(str);
-			var cachedExp : ExpressionByteCode = findCachedExpressionCode(_expression);
-			if(cachedExp){
-				_byteCode = cachedExp.byteCode;
-				cachedExp.referenceCount++;
-			}else{
-				var tmpExp : String = "var returnVal = " +_expression;
-				if(tmpExp.substr(-1, 1) != ";")
-					tmpExp += ";";
-				
-				_scriptScanner.source = tmpExp;
-				_scriptParser.scanner = _scriptScanner;
-				
-				_byteCode = _scriptParser.parse(_evm);
-				var expCacheEntry : ExpressionByteCode = new ExpressionByteCode();
-				expCacheEntry.byteCode = _byteCode;
-				expCacheEntry.expression = _expression;
-				expCacheEntry.referenceCount++;
-				_expressionCache.push( expCacheEntry );
+			if(!PBE.IN_EDITOR){
+				var cachedExp : ExpressionByteCode = findCachedExpressionCode(_expression);
+				if(cachedExp){
+					_byteCode = cachedExp.byteCode;
+					cachedExp.referenceCount++;
+				}else{
+					var tmpExp : String = "var returnVal = " +_expression;
+					if(tmpExp.substr(-1, 1) != ";")
+						tmpExp += ";";
+					
+					_scriptScanner.source = tmpExp;
+					_scriptParser.scanner = _scriptScanner;
+					
+					_byteCode = _scriptParser.parse(_evm);
+					var expCacheEntry : ExpressionByteCode = new ExpressionByteCode();
+					expCacheEntry.byteCode = _byteCode;
+					expCacheEntry.expression = _expression;
+					expCacheEntry.referenceCount++;
+					_expressionCache.push( expCacheEntry );
+				}
 			}
 		}
 		
