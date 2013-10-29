@@ -52,5 +52,7 @@ package com.pblabs.triggers.actions
 		 * Defines whether this action can be run continuously every tick.
 		 **/
 		function get type():ActionType;
+		
+		function get isDestroyed():Boolean
 	}
 }

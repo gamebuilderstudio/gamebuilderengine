@@ -5,6 +5,7 @@ package com.pblabs.triggers.actions
 	
 	public class BaseAction implements IAction
 	{
+		private var _destroyed : Boolean = false;
 		public function BaseAction()
 		{
 		}
@@ -19,6 +20,7 @@ package com.pblabs.triggers.actions
 		public function destroy():void
 		{
 			_owner = null;
+			_destroyed = true;
 		}
 		
 		public function getExpressionValue(expression : ExpressionReference):*
@@ -43,5 +45,7 @@ package com.pblabs.triggers.actions
 		
 		protected var _type : ActionType = ActionType.ONETIME;
 		public function get type():ActionType{ return _type; }
+
+		public function get isDestroyed():Boolean{ return _destroyed; }
 	}
 }

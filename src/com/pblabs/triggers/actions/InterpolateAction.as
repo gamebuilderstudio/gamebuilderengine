@@ -130,7 +130,8 @@ package com.pblabs.triggers.actions
 		public function set action(value : IAction) : void
 		{
 			_action = value;
-			_action.owner = this.owner;
+			if(_action)
+				_action.owner = this.owner;
 		}
 	}
 }

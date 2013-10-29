@@ -1,7 +1,7 @@
 package com.pblabs.triggers.actions
 {
-	import com.pblabs.triggers.ITriggerComponent;
 	import com.pblabs.engine.debug.Logger;
+	import com.pblabs.triggers.ITriggerComponent;
 	
 	import flash.events.Event;
 	import flash.utils.Dictionary;
@@ -46,6 +46,7 @@ package com.pblabs.triggers.actions
 		private var _type : ActionType = ActionType.ONETIME;
 		public function get type():ActionType{ return _type; }
 		
+		public function get isDestroyed():Boolean{ return _destroyed; }
 		//______________________________________ 
 		//	Public Methods
 		//______________________________________
@@ -80,11 +81,13 @@ package com.pblabs.triggers.actions
 				delete properties[key];
 			}
 			_owner = null;
+			_destroyed = true;
 		}
 		//______________________________________ 
 		//	Private Properties
 		//______________________________________
 		private var _owner:ITriggerComponent;
 		private var EventClass:Class = getDefinitionByName("flash.events.Event") as Class;
+		private var _destroyed : Boolean = false;
 	}
 }
