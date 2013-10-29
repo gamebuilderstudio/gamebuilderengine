@@ -447,9 +447,8 @@ package com.pblabs.nape
 				_shapeDebug.draw(_body);
 				_shapeDebug.flush();
 				if(_debugLayerSceneTracking && _spriteForPointChecks && _spriteForPointChecks.scene){
-					var stagePos : Point = _spriteForPointChecks.scene.transformWorldToScreen( _spriteForPointChecks.scene.position );
-					_shapeDebug.display.x = stagePos.x;
-					_shapeDebug.display.y = stagePos.y;
+					_shapeDebug.display.x = _spriteForPointChecks.scene.position.x;
+					_shapeDebug.display.y = _spriteForPointChecks.scene.position.y;
 				}
 			}
 		}
@@ -463,7 +462,7 @@ package com.pblabs.nape
 			setupBody();
 			attachRenderer();
 			
-			if(!PBE.IS_SHIPPING_BUILD){
+			if(!PBE.IS_SHIPPING_BUILD && _body){
 				
 				_shapeDebug = new ShapeDebug(PBUtil.clamp(_body.bounds.width, 10, 5000000), PBUtil.clamp(_body.bounds.height, 10, 5000000), 0x4D4D4D );
 				_shapeDebug.drawConstraints = true;
