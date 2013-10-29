@@ -13,7 +13,9 @@ package com.pblabs.triggers.actions
 
 		override public function execute():*
 		{
-			previousTimeScale = PBE.processManager.timeScale;
+			var curTimeScale : Number = PBE.processManager.timeScale;
+			if(curTimeScale > 0) 
+				previousTimeScale = curTimeScale;
 			PBE.processManager.timeScale = 0;
 			if(pauseSound){
 				previousVolume = PBE.soundManager.volume;
