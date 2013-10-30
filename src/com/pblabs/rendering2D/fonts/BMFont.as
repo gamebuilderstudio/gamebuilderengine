@@ -1,10 +1,10 @@
 package com.pblabs.rendering2D.fonts
 {
     import flash.display.BitmapData;
-    import flash.geom.Matrix;
+    import flash.geom.ColorTransform;
     import flash.geom.Point;
     import flash.geom.Rectangle;
-
+    
     /**
      * Represents a bitmapped font which can be drawn to a BitmapData.
      * 
@@ -19,24 +19,13 @@ package com.pblabs.rendering2D.fonts
      */
     public class BMFont
     {
+		public var fontScale : Number = 1;
         public var glyphMap:Array = new Array();
         public var sheets:Array = new Array();
-
-        /**
-         * Utility function to return a copy of a BitmapData flipped vertically. 
-         */
-        public static function flipVert(bd:BitmapData):BitmapData
-        {
-            var mat:Matrix = new Matrix();
-            mat.d = -1;
-            mat.ty = bd.height;
-            
-            var flip:BitmapData = new BitmapData(bd.width, bd.height, bd.transparent, 0x0);
-            flip.draw(bd, mat);
-
-            return flip;
-        }
-        
+		public var fontName : String;
+		
+		private var _colorTransform : ColorTransform = new ColorTransform();
+		
         /**
          * Draw a string to a BitmapData.
          *  
@@ -46,7 +35,7 @@ package com.pblabs.rendering2D.fonts
          * @param text String to draw.
          * 
          */
-        public function drawString(target:BitmapData, startX:int, startY:int, text:String):void
+        public function drawString(target:BitmapData, startX:int, startY:int, text:String, color : uint = -1):void
         {
             var curX:int = startX;
             var curY:int = startY;
@@ -69,87 +58,120 @@ package com.pblabs.rendering2D.fonts
                 // Update cursor position
                 curX += curGlyph.xadvance;
             }
+			if(color != -1){
+				
+				var colorMultiplier:Number = 0.00392;
+				_colorTransform.redOffset = 0;
+				_colorTransform.greenOffset = 0;
+				_colorTransform.blueOffset = 0;
+				_colorTransform.redMultiplier = (color >> 16) * colorMultiplier;
+				_colorTransform.greenMultiplier = (color >> 8 & 0xff) * colorMultiplier;
+				_colorTransform.blueMultiplier = (color & 0xff) * colorMultiplier;
+				
+				target.colorTransform(target.rect, _colorTransform);
+			}
         }
         
+		public function getAvailableChars():Array
+		{
+			var list : Array = [];
+			for each(var glyph : BMGlyph in glyphMap)
+			{
+				var str : String = String.fromCharCode(glyph.id);
+				if(str)
+					list.push( str );
+			}
+			return list;
+		}
+		
+		public function getStringBounds(text:String, resultBounds : Rectangle = null):Rectangle
+		{
+			var bounds : Rectangle;
+			if(resultBounds)
+				bounds = resultBounds;
+			else
+				bounds = new Rectangle();
+			
+			var curW:int = 0;
+			var curH:int = 0;
+			// Walk the string.
+			for(var curCharIdx:int = 0; curCharIdx < text.length; curCharIdx++)
+			{
+				// Identify the glyph.
+				var curChar:int = text.charCodeAt(curCharIdx);
+				var curGlyph:BMGlyph = glyphMap[curChar];
+				if(!curGlyph || !sheets[curGlyph.page]) 
+					continue;
+				
+				// Draw the glyph.
+				var increaseHeightBy : Number = (curGlyph.height + curGlyph.yoffset) > curH ? ((curGlyph.height + curGlyph.yoffset) - curH ) : 0;
+				curW += curGlyph.xoffset;
+				curW += curGlyph.width;
+				curH += increaseHeightBy;
+			}
+			bounds.setTo(0,0, curW, curH);
+			return bounds;
+		}
         /**
          * Add a bitmap sheet.
          */
-        public function addSheet(id:int, bits:BitmapData):void
+        public function addSheet(id:int, data:BitmapData):void
         {
             if(sheets[id] != null)
                 throw new Error("Overwriting sheet!");
-            sheets[id] = flipVert(bits);            
+            sheets[id] = data;            
         }
-        
-        /**
-         * Parse a BMFont textual font description.
-         */
-        public function parseFont(fontDesc:String):void
-        {
-            var fontLines:Array = fontDesc.split("\n");
-            
-            for(var i:int=0; i<fontLines.length; i++)
-            {
-                // Lines can be one of:
-                //  info
-                //  page
-                //  chars
-                //  char
-                //  common
-
-                var fontLine:Array = (fontLines[i] as String).split(" ");
-                var keyWord:String = (fontLine[0] as String).toLowerCase();
-                
-                if(keyWord == "char")
-                {
-                    parseChar(fontLine);
-                    continue;
-                }
-                
-                if(keyWord == "info")
-                {
-                    // Ignore.
-                    continue;
-                }
-                
-                if(keyWord == "page")
-                {
-                    // Ignore.
-                    continue;
-                }
-                
-                if(keyWord == "chars")
-                {
-                    // Ignore.
-                    continue;
-                }
-            }
-        }
-        
-        /**
-         * Helper function to parse and register a glyph from a BMFont 
-         * description..
-         */
-        protected function parseChar(charLine:Array):void
-        {
-            var g:BMGlyph = new BMGlyph();
-            
-            for(var i:int=1; i<charLine.length; i++)
-            {
-                // Parse to key value.
-                var charEntry:Array = (charLine[i] as String).split("=");
-                if(charEntry.length != 2)
-                    continue;
-                
-                var charKey:String = charEntry[0];
-                var charVal:String = charEntry[1];
-                
-                // Assign to glyph.
-                if(g.hasOwnProperty(charKey))
-                    g[charKey] = charVal;
-            }
-            
-            glyphMap[g.id] = g;
-        }
+		
+		/**
+		 * Parse a BMFont xml font description / coordinate data.
+		 */
+		public function parseFontXML(fontXml : XML):void
+		{
+			for each (var charElement:XML in fontXml.chars.char)
+			{
+				var id:int = parseInt(charElement.attribute("id"));
+				fontName = fontXml.info.attribute("face");
+				var glyph:BMGlyph = new BMGlyph();
+				glyph.id = id;
+				glyph.x = parseFloat(charElement.attribute("x")) / fontScale;
+				glyph.y = parseFloat(charElement.attribute("y")) / fontScale;
+				glyph.width = parseFloat(charElement.attribute("width")) / fontScale;
+				glyph.height = parseFloat(charElement.attribute("height")) / fontScale;
+				glyph.xoffset = parseFloat(charElement.attribute("xoffset")) / fontScale;
+				glyph.yoffset = parseFloat(charElement.attribute("yoffset")) / fontScale;
+				glyph.xadvance = parseFloat(charElement.attribute("xadvance")) / fontScale;
+				glyph.chnl = parseFloat(charElement.attribute("chnl"));
+				glyph.page = parseInt(charElement.attribute("page"));
+				
+				glyphMap[id] = glyph;
+			}
+		}
+		
+		/**
+		 * Color Helper method from the ColorUtil class used to extract the Red channel from a color hex value
+		 * #http://www.purplesquirrels.com.au/blogstuff/colouruint/ColourUtil.as
+		 */
+		private function extractRedFromHEX(c:uint):uint
+		{
+			return (( c >> 16 ) & 0xFF);
+		}
+		
+		/**
+		 * Color Helper method from the ColorUtil class used to extract the Green channel from a color hex value
+		 * #http://www.purplesquirrels.com.au/blogstuff/colouruint/ColourUtil.as
+		 */
+		private function extractGreenFromHEX(c:uint):uint
+		{
+			return ( (c >> 8) & 0xFF );
+		}
+		
+		/**
+		 * Color Helper method from the ColorUtil class used to extract the Blue channel from a color hex value
+		 * #http://www.purplesquirrels.com.au/blogstuff/colouruint/ColourUtil.as
+		 */
+		private function extractBlueFromHEX(c:uint):uint
+		{
+			return ( c & 0xFF );
+		}		
     }
 }

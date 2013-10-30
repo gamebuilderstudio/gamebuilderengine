@@ -5,7 +5,6 @@ package com.pblabs.rendering2D
 	import com.pblabs.engine.resource.DataResource;
 	import com.pblabs.engine.resource.ImageResource;
 	import com.pblabs.rendering2D.BitmapRenderer;
-	import com.pblabs.rendering2D.fonts.BMFont;
 	
 	import flash.display.BitmapData;
 	import flash.events.Event;
@@ -18,12 +17,15 @@ package com.pblabs.rendering2D
 	import flash.text.TextFieldType;
 	import flash.text.TextFormat;
 	
+	import pxBitmapFont.PxBitmapFont;
+	import pxBitmapFont.PxTextField;
+	
 	public class UITextRendererComponent extends BitmapRenderer implements ITextRenderer
 	{
 		[EditorData(ignore="true")]
 		public var textFormatter : TextFormat = new TextFormat("Arial", 30, 0xFFFFFF, true);
 		
-		protected var _bmFontObject : BMFont;
+		protected var _bmFontObject : PxTextField;
 		protected var _textDisplay : TextField = new TextField();
 		protected var _fontImage : ImageResource;
 		protected var _fontData : DataResource;
@@ -36,6 +38,7 @@ package com.pblabs.rendering2D
 		protected var _startMouseDownPos : Point = new Point();
 		protected var _wordWrap : Boolean = false; 
 		protected var _autoResize : Boolean = true;
+		protected var _worldScratchPoint : Point = new Point();
 		
 		public function UITextRendererComponent()
 		{
@@ -45,20 +48,7 @@ package com.pblabs.rendering2D
 		
 		override public function onFrame(elapsed:Number):void
 		{
-			buildFontObject();
-			
-			if(_textSizeDirty)
-			{
-				updateFontSize();
-			}
-			if(_textDirty == true){
-				paintTextToBitmap();
-			}
-			
-			if(_inputEnabled && _transformDirty)
-				hideInputField(null);
-			if(_inputEnabled && this._alpha != 0)
-				this.alpha = 0;
+			updateTextImage();
 			super.onFrame(elapsed);
 		}
 		
@@ -69,17 +59,11 @@ package com.pblabs.rendering2D
 			if(!_textDisplay)
 				_textDisplay = new TextField();
 			_textDisplay.wordWrap = _wordWrap;
-			_textDisplay.defaultTextFormat = textFormatter;
+			_textDisplay.setTextFormat(textFormatter);
 			_textDisplay.autoSize = TextFieldAutoSize.LEFT;
 
 			updateFontSize();
 			paintTextToBitmap();
-			
-			PBE.mainStage.addEventListener(MouseEvent.MOUSE_UP, onStageMouseUp, true);
-			PBE.mainStage.addEventListener(MouseEvent.MOUSE_DOWN, onStageMouseDown, true);
-			
-			_textDisplay.addEventListener(Event.CHANGE, inputChanged);
-			_textDisplay.addEventListener(FocusEvent.FOCUS_OUT, hideInputField);
 			
 			super.onAdd();
 		}
@@ -88,11 +72,13 @@ package com.pblabs.rendering2D
 		{
 			super.onRemove();
 			
-			PBE.mainStage.removeEventListener(MouseEvent.MOUSE_UP, onStageMouseUp, true)
-			PBE.mainStage.removeEventListener(MouseEvent.MOUSE_DOWN, onStageMouseDown, true);
+			if(_textInputType == TextFieldType.INPUT){
+				PBE.mainStage.removeEventListener(MouseEvent.MOUSE_UP, onStageMouseUp, true)
+				PBE.mainStage.removeEventListener(MouseEvent.MOUSE_DOWN, onStageMouseDown, true);
 
-			_textDisplay.removeEventListener(Event.CHANGE, inputChanged);
-			_textDisplay.removeEventListener(FocusEvent.FOCUS_OUT, hideInputField);
+				_textDisplay.removeEventListener(Event.CHANGE, inputChanged);
+				_textDisplay.removeEventListener(FocusEvent.FOCUS_OUT, hideInputField);
+			}
 		}
 		
 		protected function inputChanged(event : Event):void
@@ -117,14 +103,18 @@ package com.pblabs.rendering2D
 		protected function toggleInputDisplay():void
 		{
 			var localBounds : Rectangle = this.localBounds;
+			
+			//Add padding to bounds
 			localBounds.inflate( 10, 10 );
 			localBounds.x -= 10;
 			localBounds.y -= 10;
-			var localTextPoint : Point = scene ? this.transformWorldToObject( scene.transformScreenToWorld(_stagePoint) ) : new Point();
+			
+			var localTextPoint : Point = getLocalPointOfStage(_stagePoint);
 			if( localBounds.containsPoint( localTextPoint ) && scene && _textDisplay.type == TextFieldType.INPUT && !_inputEnabled)
 			{
 				_textDisplay.selectable = true;
-				var globalPoint : Point = scene.transformSceneToScreen( new Point(_transformMatrix.tx, _transformMatrix.ty) );
+				_worldScratchPoint.setTo(_transformMatrix.tx, _transformMatrix.ty);
+				var globalPoint : Point = scene.transformWorldToScreen( _worldScratchPoint );
 				PBE.mainStage.addChild(_textDisplay);
 				_textDisplay.x = globalPoint.x;
 				_textDisplay.y = globalPoint.y;
@@ -155,65 +145,106 @@ package com.pblabs.rendering2D
 			text = _textDisplay.text;
 		}
 		
+		protected function updateTextImage():void
+		{
+			buildFontObject();
+			
+			if(_textSizeDirty)
+			{
+				updateFontSize();
+			}
+			if(_textDirty == true){
+				paintTextToBitmap();
+			}
+			
+			if(_inputEnabled && _transformDirty)
+				hideInputField(null);
+			if(_inputEnabled && this._alpha != 0)
+				this.alpha = 0;
+		}
+		
+		protected function getLocalPointOfStage(stagePoint : Point):Point
+		{
+			var localTextPoint : Point = scene ? this.transformWorldToObject( scene.transformScreenToWorld(stagePoint) ) : new Point();
+			return localTextPoint;
+		}
+		
 		protected function buildFontObject():void
 		{
-			if(!_bmFontObject && _fontData && _fontData.isLoaded && _fontImage && _fontImage.isLoaded)
+			if(!_bmFontObject && isComposedTextData)
 			{
 				fontData.data.position = 0;
-				var fontDataStr : String = fontData.data.readUTFBytes(fontData.data.length);
-				_bmFontObject = new BMFont();
-				_bmFontObject.parseFont(fontDataStr);
+				var fontDataXMLStr : String = fontData.data.readUTFBytes(fontData.data.length);
+				var fontXML : XML = XML(fontDataXMLStr);
+				var fontName : String = fontXML.info.@face;
 				
-				_bmFontObject.addSheet(0, fontImage.bitmapData);
+				var font : PxBitmapFont = PxBitmapFont.fetch(fontName);
+				if(!font){
+					font = new PxBitmapFont().loadAngelCode(fontImage.bitmapData, fontXML);
+					PxBitmapFont.store(fontName, font);
+				}
+				_bmFontObject = new PxTextField();
+				_bmFontObject.text = _text;
+				_bmFontObject.color = textFormatter.color as uint;
+				_bmFontObject.fixedWidth = false;
+				_bmFontObject.wordWrap = false;
+				_bmFontObject.font = font;
 			}
 		}
 		
 		protected function paintTextToBitmap():void
 		{
+			var textBitmapData:BitmapData;
+			if(!_bmFontObject)
+				buildFontObject();
+			if(isComposedTextData && _bmFontObject)
+			{
+				_bmFontObject.update();
+				_newTextSize.setTo( _bmFontObject.width, _bmFontObject.height );
+				if(_autoResize)
+					updateFontSize();
+				textBitmapData = _bmFontObject.bitmapData;
+			}
 			if(!size || size.x == 0 || size.y == 0) {
 				this.bitmapData = new BitmapData(150,50);
 				return;
 			}
-			if(!_bmFontObject)
-				buildFontObject();
 			var clearedBitmap : Boolean = false;
-			var textBitmapData:BitmapData = originalBitmapData;
-			//var bounds : Rectangle = _textDisplay.getBounds(_textDisplay);
-			if(!this.bitmapData || this.bitmapData.width != size.x || this.bitmapData.height != size.y || _textSizeDirty || this.text == "")
+			if(!isComposedTextData)
 			{
-				if(bitmapData != textBitmapData)
-					textBitmapData.dispose();
-				if(bitmapData)
-					bitmapData.dispose();
-				
-				
-				var textSize : Point;
-				if(autoResize)
+				textBitmapData = originalBitmapData;
+				if(!this.bitmapData || this.bitmapData.width != size.x || this.bitmapData.height != size.y || _textSizeDirty || this.text == "")
 				{
-					textSize = this._size;
-				}else{
-					textSize = new Point();
-					textSize.setTo( this._size.x*this._scale.x, this._size.y*this._scale.y );
+					if(bitmapData != textBitmapData && textBitmapData)
+						textBitmapData.dispose();
+					
+					if(bitmapData)
+						bitmapData.dispose();
+					
+					
+					var textSize : Point;
+					if(autoResize)
+					{
+						textSize = this._size.clone();
+						textSize.setTo( textSize.x * this._scale.x, textSize.y * this._scale.y);
+					}else{
+						textSize = new Point();
+						textSize.setTo( this._size.x*this._scale.x, this._size.y*this._scale.y );
+					}
+					if(textSize.x < 2)
+						textSize.x = 2;
+					if(textSize.y < 2)
+						textSize.y = 2;
+					textBitmapData = new BitmapData(textSize.x, textSize.y, true, 0x0);
+					clearedBitmap = true;
 				}
-				if(textSize.x < 2)
-					textSize.x = 2;
-				if(textSize.y < 2)
-					textSize.y = 2;
-				textBitmapData = new BitmapData(textSize.x, textSize.y, true, 0x0);
-				clearedBitmap = true;
-			}
-			
-			if(textBitmapData && !clearedBitmap) 
-				textBitmapData.fillRect(textBitmapData.rect, 0);
-			textBitmapData.lock();
-			if(_bmFontObject && _fontData && _fontData.isLoaded )
-			{
-				// OK, draw some fonts!
-				_bmFontObject.drawString(textBitmapData, 0, 0, _textDisplay.text);
-			}else{
+				
+				if(textBitmapData && !clearedBitmap) 
+					textBitmapData.fillRect(textBitmapData.rect, 0);
+				textBitmapData.lock();
 				textBitmapData.draw(_textDisplay);
+				textBitmapData.unlock();
 			}
-			textBitmapData.unlock();
 			this.bitmapData = textBitmapData;
 			
 			_textDirty = false;
@@ -223,17 +254,12 @@ package com.pblabs.rendering2D
 		protected var _newTextSize : Point = new Point();
 		protected function updateFontSize():void
 		{
-			if(!_textDisplay) {
-				return;
-			}
-			if(!autoResize){
-				_textDisplay.width = this._size.x * this._scale.x;
-				_textDisplay.height = this._size.y * this._scale.y;
-			}
-			
 			if(autoResize){
-				var textSize : Rectangle = _textDisplay.getBounds(_textDisplay);
-				_newTextSize.setTo( textSize.width, textSize.height );
+				if(!isComposedTextData)
+				{
+					var textSize : Rectangle = _textDisplay.getBounds(_textDisplay);
+					_newTextSize.setTo( textSize.width, textSize.height );
+				}
 				if(sizeProperty && sizeProperty.property != "")
 				{
 					this._size = _newTextSize;
@@ -243,6 +269,9 @@ package com.pblabs.rendering2D
 					this._size = _newTextSize;
 				}
 				_transformDirty = true;
+			}else if(_textDisplay){
+				_textDisplay.width = this._size.x * this._scale.x;
+				_textDisplay.height = this._size.y * this._scale.y;
 			}
 		}
 
@@ -255,7 +284,6 @@ package com.pblabs.rendering2D
 				updateProperties();
 			
 			_transformMatrix.identity();
-			//_transformMatrix.scale(combinedScale.x, combinedScale.y);
 			_transformMatrix.translate(-_registrationPoint.x * combinedScale.x, -_registrationPoint.y * combinedScale.y);
 			_transformMatrix.rotate(PBUtil.getRadiansFromDegrees(_rotation) + _rotationOffset);
 			_transformMatrix.translate((_position.x + _positionOffset.x), (_position.y + _positionOffset.y));
@@ -268,47 +296,84 @@ package com.pblabs.rendering2D
 			_transformDirty = false;
 		}
 
+		protected function get isComposedTextData():Boolean {
+			if(_fontImage && _fontImage.isLoaded && _fontData && _fontData.isLoaded )
+			{
+				return true;
+			}
+			return false;
+		}
+
 		public function get fontImage():ImageResource{ return _fontImage; }
 		public function set fontImage(img : ImageResource):void{
 			_fontImage = img;
+			_textDirty = true;
+			_bmFontObject = null;
 		}
 
 		public function get fontData():DataResource{ return _fontData; }
 		public function set fontData(data : DataResource):void{
 			_fontData = data;
+			_textDirty = true;
+			_bmFontObject = null;
 		}
 
 		public function get fontColor():uint{ return uint(textFormatter.color); }
 		public function set fontColor(val : uint):void{
 			textFormatter.color = val;
-			_textDisplay.setTextFormat(textFormatter);
-			_textDisplay.autoSize = TextFieldAutoSize.LEFT;
+			if(_textDisplay){
+				_textDisplay.setTextFormat(textFormatter);
+				_textDisplay.autoSize = TextFieldAutoSize.LEFT;
+			}
+			if(_bmFontObject)
+				_bmFontObject.color = val;
 			_textDirty = true;
 		}
 		
 		public function get fontSize():Number{ return int(textFormatter.size); }
 		public function set fontSize(val : Number):void{
 			textFormatter.size = val;
-			_textDisplay.setTextFormat(textFormatter);
-			_textDisplay.autoSize = TextFieldAutoSize.LEFT;
+			if(_textDisplay){
+				_textDisplay.setTextFormat(textFormatter);
+				_textDisplay.autoSize = TextFieldAutoSize.LEFT;
+			}
 			
 			_textSizeDirty = true;
 			_textDirty = true;
 		}
 
-		private var _text : String;
-		public function get text():String{ return _textDisplay.text; }
+		public function get fontName():String{ return textFormatter.font; }
+		public function set fontName(val : String):void{
+			textFormatter.font = val;
+			if(_textDisplay){
+				_textDisplay.setTextFormat(textFormatter);
+			}
+			_textDirty = true;
+		}
+		
+		protected var _text : String;
+		public function get text():String{ return _text; }
 		public function set text(val : String):void{
 			if(!val || val == ""){
-				_textDisplay.text = "";
+				if(_textDisplay){
+					_textDisplay.text = _text = "";
+				}else{
+					_text = "";
+				}
 				_textDirty = true;
 			}else if(_text != val){
-				_textDisplay.text = _text = val;
-				_textDisplay.setTextFormat(textFormatter);
-				_textDisplay.autoSize = TextFieldAutoSize.LEFT;
+				if(_textDisplay){
+					_textDisplay.text = _text = val;
+					_textDisplay.setTextFormat(textFormatter);
+					_textDisplay.autoSize = TextFieldAutoSize.LEFT;
+				}else{
+					_text = val;
+				}
 				_textSizeDirty = true;
 				_textDirty = true;
 			}
+			if(_bmFontObject)
+				_bmFontObject.text = _text;
 		}
 
 		override public function set size(val : Point):void{
@@ -327,13 +392,32 @@ package com.pblabs.rendering2D
 			super.scale = val;
 		}
 
+		/**
+		 * Uses one of the constants from the TextFieldType class
+		 * i.e. TextFieldType.INPUT
+		 * #see flash.text.TextFieldType
+		 */
 		public function get type():String{ return _textInputType; }
 		public function set type(val : String):void{
 			if(_textInputType == val)
 				return;
+
+			if(val != TextFieldType.INPUT && _textInputType == TextFieldType.INPUT){
+				PBE.mainStage.removeEventListener(MouseEvent.MOUSE_UP, onStageMouseUp, true);
+				PBE.mainStage.removeEventListener(MouseEvent.MOUSE_DOWN, onStageMouseDown, true);
+				_textDisplay.removeEventListener(Event.CHANGE, inputChanged);
+				_textDisplay.removeEventListener(FocusEvent.FOCUS_OUT, hideInputField);
+			}
 			_textInputType = val;
 			_textDirty = true;
-			_textDisplay.type = _textInputType;
+			if(_textDisplay)
+				_textDisplay.type = _textInputType;
+			if(_textInputType == TextFieldType.INPUT){
+				PBE.mainStage.addEventListener(MouseEvent.MOUSE_UP, onStageMouseUp, true);
+				PBE.mainStage.addEventListener(MouseEvent.MOUSE_DOWN, onStageMouseDown, true);
+				_textDisplay.addEventListener(Event.CHANGE, inputChanged);
+				_textDisplay.addEventListener(FocusEvent.FOCUS_OUT, hideInputField);
+			}
 		}
 	
 		public function get wordWrap():Boolean{ return _wordWrap; }
@@ -343,6 +427,8 @@ package com.pblabs.rendering2D
 			_wordWrap = val;
 			if(_textDisplay)
 				_textDisplay.wordWrap = _wordWrap;
+			if(_bmFontObject)
+				_bmFontObject.wordWrap = false;
 			_textDirty = true;
 			_textSizeDirty = true;
 		}
@@ -365,5 +451,6 @@ package com.pblabs.rendering2D
 		}
 		
 		public function get nativeTextField():TextField{ return _textDisplay; }
+		public function get fontObjectData():PxTextField { return _bmFontObject; }
 	}
 }
