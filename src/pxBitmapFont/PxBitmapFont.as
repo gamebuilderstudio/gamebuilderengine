@@ -354,6 +354,8 @@ package pxBitmapFont
 			for (var i:int = 0; i < pText.length; i++) 
 			{
 				var charCode:int = pText.charCodeAt(i);
+				if(!(charCode in pFontData))
+					continue;
 				var xAdvance : int = pFontData[charCode].xadvance;
 				var xOffset : int = pFontData[charCode].xOffset;
 				var yOffset : int = pFontData[charCode].yOffset;
@@ -361,7 +363,7 @@ package pxBitmapFont
 				
 				if (glyph != null) 
 				{
-					curGlyphPoint.setTo( _point.x + xOffset + 2, _point.y );
+					curGlyphPoint.setTo( _point.x + xOffset, _point.y );
 					pBitmapData.copyPixels(glyph, glyph.rect, curGlyphPoint, null, null, true);
 					_point.x += xAdvance + pLetterSpacing;
 				}
@@ -387,11 +389,11 @@ package pxBitmapFont
 				var glyphData : Object = _glyphs[charCode];
 				if (glyphData != null) 
 				{
-					w += glyphData.xadvance + 2;
+					w += glyphData.xadvance;
 				}
 			}
 			
-			w = Math.round(w * pFontScale);
+			w = Math.round(w * pFontScale) + 4;
 			
 			if (textLength > 1)
 			{

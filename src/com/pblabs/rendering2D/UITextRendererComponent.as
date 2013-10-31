@@ -153,7 +153,7 @@ package com.pblabs.rendering2D
 			{
 				updateFontSize();
 			}
-			if(_textDirty == true){
+			if(_textDirty){
 				paintTextToBitmap();
 			}
 			
@@ -186,8 +186,8 @@ package com.pblabs.rendering2D
 				_bmFontObject = new PxTextField();
 				_bmFontObject.text = _text;
 				_bmFontObject.color = textFormatter.color as uint;
-				_bmFontObject.fixedWidth = false;
-				_bmFontObject.wordWrap = false;
+				_bmFontObject.fixedWidth = !_autoResize;
+				_bmFontObject.wordWrap = _wordWrap;
 				_bmFontObject.font = font;
 			}
 		}
@@ -200,7 +200,7 @@ package com.pblabs.rendering2D
 			if(isComposedTextData && _bmFontObject)
 			{
 				_bmFontObject.update();
-				_newTextSize.setTo( _bmFontObject.width, _bmFontObject.height );
+				_newTextSize.setTo( _bmFontObject.width, _bmFontObject.height);
 				if(_autoResize)
 					updateFontSize();
 				textBitmapData = _bmFontObject.bitmapData;
@@ -296,7 +296,7 @@ package com.pblabs.rendering2D
 			_transformDirty = false;
 		}
 
-		protected function get isComposedTextData():Boolean {
+		public function get isComposedTextData():Boolean {
 			if(_fontImage && _fontImage.isLoaded && _fontData && _fontData.isLoaded )
 			{
 				return true;
@@ -346,8 +346,10 @@ package com.pblabs.rendering2D
 		public function set fontName(val : String):void{
 			textFormatter.font = val;
 			if(_textDisplay){
+				_textDisplay.defaultTextFormat = textFormatter;
 				_textDisplay.setTextFormat(textFormatter);
 			}
+			_textSizeDirty = true;
 			_textDirty = true;
 		}
 		
@@ -428,7 +430,7 @@ package com.pblabs.rendering2D
 			if(_textDisplay)
 				_textDisplay.wordWrap = _wordWrap;
 			if(_bmFontObject)
-				_bmFontObject.wordWrap = false;
+				_bmFontObject.wordWrap = _wordWrap;
 			_textDirty = true;
 			_textSizeDirty = true;
 		}
@@ -436,6 +438,9 @@ package com.pblabs.rendering2D
 		public function get autoResize():Boolean{ return _autoResize; }
 		public function set autoResize(val : Boolean):void{
 			_autoResize = val;
+			
+			if(_bmFontObject)
+				_bmFontObject.fixedWidth = !_autoResize;
 			_textDirty = true;
 			_textSizeDirty = true;
 		}
@@ -451,6 +456,6 @@ package com.pblabs.rendering2D
 		}
 		
 		public function get nativeTextField():TextField{ return _textDisplay; }
-		public function get fontObjectData():PxTextField { return _bmFontObject; }
+		public function get bitmapTextField():PxTextField { return _bmFontObject; }
 	}
 }

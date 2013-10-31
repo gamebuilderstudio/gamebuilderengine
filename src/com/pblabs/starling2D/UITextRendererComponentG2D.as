@@ -92,7 +92,7 @@ package com.pblabs.starling2D
 				InitializationUtilG2D.initializeRenderers.add(buildG2DObject);
 				return;
 			}
-			if(!isComposedTextData)
+			if(!isComposedTextData && this.bitmap.bitmapData)
 			{
 			
 				if(!gpuObject){
@@ -227,47 +227,47 @@ package com.pblabs.starling2D
 		}
 
 		override public function get fontColor():uint{ 
-			if(gpuObject)
+			if(gpuObject && gpuObject is TextField)
 				return (gpuObject as TextField).color;
 			return uint(textFormatter.color);
 		}
 		override public function set fontColor(val : uint):void{
 			super.fontColor = val;
-			if(gpuObject)
+			if(gpuObject && gpuObject is TextField)
 				(gpuObject as TextField).color = val;
 		}
 
 		override public function get fontSize():Number{ 
-			if(gpuObject)
+			if(gpuObject && gpuObject is TextField)
 				return (gpuObject as TextField).fontSize;
 			return int(textFormatter.size); 
 		}
 		override public function set fontSize(val : Number):void{
 			super.fontSize = val;
-			if(gpuObject)
+			if(gpuObject && gpuObject is TextField)
 				(gpuObject as TextField).fontSize = val;
 		}
 		
 		override public function get fontName():String{ 
-			if(gpuObject)
+			if(gpuObject && gpuObject is TextField)
 				return (gpuObject as TextField).fontName;
 			return textFormatter.font; 
 		}
 		override public function set fontName(val : String):void{
 			super.fontName = val;
-			if(gpuObject)
+			if(gpuObject && gpuObject is TextField)
 				(gpuObject as TextField).fontName = val;
 		}
 		
 		override public function set text(val : String):void{
 			super.text = val;	
-			if(gpuObject)
+			if(gpuObject && gpuObject is TextField)
 				(gpuObject as TextField).text = _text;
 		}
 		
 		override public function set autoResize(val : Boolean):void{
 			super.autoResize = val;
-			if(gpuObject)
+			if(gpuObject && gpuObject is TextField)
 				(gpuObject as TextField).autoSize = _autoResize ? TextFieldAutoSize.BOTH_DIRECTIONS : TextFieldAutoSize.NONE;
 		}
 
