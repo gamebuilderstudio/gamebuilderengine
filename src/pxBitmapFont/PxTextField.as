@@ -329,7 +329,7 @@ package pxBitmapFont
 				}
 			}
 			
-			var finalWidth:int = calcFieldWidth + _padding * 2 + (_outline ? 2 : 0);
+			var finalWidth:int = calcFieldWidth + _padding * 2 + (_outline ? 2 : 0) + 4;
 			var finalHeight:int = Math.floor(_padding * 2 + Math.max(1, (rows.length * fontHeight + (_shadow ? 1 : 0)) + (_outline ? 2 : 0))) + ((rows.length >= 1) ? _lineSpacing * (rows.length - 1) : 0);
 			
 			if (bitmapData != null) 

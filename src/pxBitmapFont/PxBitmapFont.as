@@ -363,7 +363,7 @@ package pxBitmapFont
 				
 				if (glyph != null) 
 				{
-					curGlyphPoint.setTo( _point.x + xOffset, _point.y );
+					curGlyphPoint.setTo( _point.x, _point.y );
 					pBitmapData.copyPixels(glyph, glyph.rect, curGlyphPoint, null, null, true);
 					_point.x += xAdvance + pLetterSpacing;
 				}
