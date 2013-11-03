@@ -73,7 +73,7 @@ package com.pblabs.triggers.actions
 			}
 			catch(e:Error)
 			{
-				Logger.error(this,"execute","PropertySetter Failed: " + e.message);
+				Logger.error(this,"execute","PropertySetter on component ["+this.owner.name+"] and entity ("+this.owner.owner.name+") Failed: " + e.message);
 			}
 			
 			// Return a reference to the property
