@@ -45,6 +45,7 @@ package com.pblabs.engine.resource
          */
         public static var ExtensionTypes:Object = {
 			atf:"com.pblabs.engine.resource.DataResource",
+			fnt:"com.pblabs.engine.resource.DataResource",
             png:"com.pblabs.engine.resource.ImageResource",
             jpg:"com.pblabs.engine.resource.ImageResource",
             gif:"com.pblabs.engine.resource.ImageResource",
