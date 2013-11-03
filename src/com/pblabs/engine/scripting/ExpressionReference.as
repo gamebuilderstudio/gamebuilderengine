@@ -149,6 +149,9 @@ package com.pblabs.engine.scripting
 				_globalGameObject.Point = Point;
 				_globalGameObject.PBE = PBE;
 				ExpressionUtils.importStaticMethods( _globalGameObject, Math );
+				//Override slow math functions with faster bitwise versions
+				ExpressionUtils.importFunction(_globalGameObject, "abs", ExpressionUtils.fastAbs);
+				ExpressionUtils.importFunction(_globalGameObject, "floor", ExpressionUtils.fastFloor);
 				ExpressionUtils.importFunction(_globalGameObject, "setPoint", ExpressionUtils.setPoint);
 				//ExpressionUtils.importFunction(_globalGameObject, "Entity", ExpressionUtils.getEntity);
 				ExpressionUtils.importFunction(_globalGameObject, "magnitudeOfPoint", ExpressionUtils.magnitudeOfPoint);
@@ -359,6 +362,14 @@ class ExpressionUtils{
 	{
 		var entity : Object = PBE.lookupEntity(name);
 		return entity ? entity.Self : null;
+	}
+
+	public static function fastAbs(v:int) : int {
+		return (v ^ (v >> 31)) - (v >> 31);
+	}
+	
+	public static function fastFloor(v:Number) : int {
+		return int(v);
 	}
 }
 
