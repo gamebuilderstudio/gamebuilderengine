@@ -23,7 +23,7 @@ package com.pblabs.rendering2D
 	public class UITextRendererComponent extends BitmapRenderer implements ITextRenderer
 	{
 		[EditorData(ignore="true")]
-		public var textFormatter : TextFormat = new TextFormat("Arial", 30, 0xFFFFFF, true);
+		public var textFormatter : TextFormat = new TextFormat("Arial", 30, 0xFFFFFF, false);
 		
 		protected var _bmFontObject : PxTextField;
 		protected var _textDisplay : TextField = new TextField();
@@ -323,19 +323,26 @@ package com.pblabs.rendering2D
 			textFormatter.color = val;
 			if(_textDisplay){
 				_textDisplay.setTextFormat(textFormatter);
-				_textDisplay.autoSize = TextFieldAutoSize.LEFT;
 			}
 			if(_bmFontObject)
 				_bmFontObject.color = val;
 			_textDirty = true;
 		}
 		
+		public function get fontBold():Boolean{ return textFormatter.bold; }
+		public function set fontBold(val : Boolean):void{
+			textFormatter.bold = val;
+			if(_textDisplay){
+				_textDisplay.setTextFormat(textFormatter);
+			}
+			_textDirty = true;
+		}
+
 		public function get fontSize():Number{ return int(textFormatter.size); }
 		public function set fontSize(val : Number):void{
 			textFormatter.size = val;
 			if(_textDisplay){
 				_textDisplay.setTextFormat(textFormatter);
-				_textDisplay.autoSize = TextFieldAutoSize.LEFT;
 			}
 			
 			_textSizeDirty = true;
@@ -346,7 +353,6 @@ package com.pblabs.rendering2D
 		public function set fontName(val : String):void{
 			textFormatter.font = val;
 			if(_textDisplay){
-				_textDisplay.defaultTextFormat = textFormatter;
 				_textDisplay.setTextFormat(textFormatter);
 			}
 			_textSizeDirty = true;
