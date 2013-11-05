@@ -335,6 +335,17 @@ package com.pblabs.rendering2D
 			if(_textDisplay){
 				_textDisplay.setTextFormat(textFormatter);
 			}
+			_textSizeDirty = true;
+			_textDirty = true;
+		}
+
+		public function get fontItalic():Boolean{ return textFormatter.italic; }
+		public function set fontItalic(val : Boolean):void{
+			textFormatter.italic = val;
+			if(_textDisplay){
+				_textDisplay.setTextFormat(textFormatter);
+			}
+			_textSizeDirty = true;
 			_textDirty = true;
 		}
 
