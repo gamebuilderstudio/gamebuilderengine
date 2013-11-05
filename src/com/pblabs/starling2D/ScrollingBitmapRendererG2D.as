@@ -9,13 +9,14 @@
 package com.pblabs.starling2D
 {
 	import com.pblabs.engine.PBE;
-	import com.pblabs.engine.debug.Logger;
 	
 	import flash.display.BitmapData;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
+	import starling.core.Starling;
 	import starling.display.Image;
+	import starling.textures.Texture;
 	import starling.utils.getNextPowerOfTwo;
 
 	public class ScrollingBitmapRendererG2D extends SpriteRendererG2D
@@ -92,7 +93,12 @@ package com.pblabs.starling2D
 		
 		override protected function buildG2DObject():void
 		{
-			if(!this.bitmap || !this.bitmap.bitmapData)
+			if(!Starling.context){
+				InitializationUtilG2D.initializeRenderers.add(buildG2DObject);
+				return;
+			}
+			
+			if(!this.bitmap || !this.bitmap.bitmapData || !resource)
 				return;
 
 			var legalWidth:int  = getNextPowerOfTwo(bitmapData.width);
@@ -100,16 +106,44 @@ package com.pblabs.starling2D
 			if (autoCorrectImageSize && (legalWidth > bitmapData.width || legalHeight > bitmapData.height))
 			{
 				customBitmapCreated = true;
-				bitmapData = increaseBitmapByPowerOfTwo(bitmapData, legalWidth, legalHeight);
-				return;
+				bitmap.bitmapData = increaseBitmapByPowerOfTwo(bitmapData, legalWidth, legalHeight);
 			}else{
 				customBitmapCreated = false;
 			}
 			
-			super.buildG2DObject();
+			var texture : Texture = getTexture();
+			if(!gpuObject){
+				if(texture){
+					gpuObject = new Image(texture);
+				}else{
+					texture = getTexture();
+					if(!texture)
+						return;
+					gpuObject = new Image( texture );
+				}
+			}else{
+				if((gpuObject as Image).texture)
+					(gpuObject as Image).texture.dispose();
+				
+				if(texture){
+					(gpuObject as Image).texture = texture;
+				}else{
+					(gpuObject as Image).texture = getTexture();
+				}
+				( gpuObject as Image).readjustSize();
+			}
 			
+			smoothing = _smoothing;
+
 			if(gpuObject)
 			{
+				updateTransform(true);
+				
+				if(!_initialized){
+					addToScene()
+					_initialized = true;
+				}
+
 				textureWidth = (gpuObject as Image).texture.width;
 				textureHeight = (gpuObject as Image).texture.height;
 				if(hRatio == -1)
@@ -139,6 +173,14 @@ package com.pblabs.starling2D
 				originalBitmapData.dispose();
 				customBitmapCreated = false;
 			}
+		}
+		
+		protected function getTexture():Texture
+		{
+			if(customBitmapCreated){
+				return ResourceTextureManagerG2D.getTextureForBitmapData(originalBitmapData, null, bitmapData);
+			}
+			return ResourceTextureManagerG2D.getTextureForResource(resource);
 		}
 		
 		protected function increaseBitmapByPowerOfTwo(data : BitmapData, targetW : Number, targetH : Number):BitmapData

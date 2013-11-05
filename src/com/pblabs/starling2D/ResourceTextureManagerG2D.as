@@ -60,7 +60,7 @@ package com.pblabs.starling2D
 			_textureReferenceCount = new Dictionary();
 		}
 		
-		public static function getTextureForBitmapData(data : BitmapData, cacheKey : String = null):Texture
+		public static function getTextureForBitmapData(data : BitmapData, cacheKey : String = null, overrideBitmapData : BitmapData = null):Texture
 		{
 			if(!data)
 				return null;
@@ -80,7 +80,7 @@ package com.pblabs.starling2D
 				_subTexturesMap[subtexture] = texture;
 				return subtexture;
 			}else{
-				texture = Texture.fromBitmapData(data, false, false, _scaleFactor);
+				texture = Texture.fromBitmapData( (overrideBitmapData ? overrideBitmapData : data), false, false, _scaleFactor);
 				texture.disposed.addOnce(releaseTexture);
 				_originTexturesMap[key] = new Vector.<Texture>();
 				_originTexturesMap[key].push( texture );
