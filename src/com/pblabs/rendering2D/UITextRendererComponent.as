@@ -2,6 +2,7 @@ package com.pblabs.rendering2D
 {
 	import com.pblabs.engine.PBE;
 	import com.pblabs.engine.PBUtil;
+	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.resource.DataResource;
 	import com.pblabs.engine.resource.ImageResource;
 	import com.pblabs.rendering2D.BitmapRenderer;
@@ -106,8 +107,6 @@ package com.pblabs.rendering2D
 			
 			//Add padding to bounds
 			localBounds.inflate( 10, 10 );
-			localBounds.x -= 10;
-			localBounds.y -= 10;
 			
 			var localTextPoint : Point = getLocalPointOfStage(_stagePoint);
 			if( localBounds.containsPoint( localTextPoint ) && scene && _textDisplay.type == TextFieldType.INPUT && !_inputEnabled)
@@ -128,6 +127,7 @@ package com.pblabs.rendering2D
 				_previousAlpha = this._alpha;
 				_inputEnabled = true;
 			}else if(!localBounds.containsPoint( localTextPoint ) && _inputEnabled){
+				Logger.print(this, "Hiding Input Field...");
 				hideInputField(null);
 			}
 		}
@@ -149,6 +149,9 @@ package com.pblabs.rendering2D
 		{
 			buildFontObject();
 			
+			if(_inputEnabled && _transformDirty)
+				hideInputField(null);
+
 			if(_textSizeDirty)
 			{
 				updateFontSize();
@@ -157,8 +160,6 @@ package com.pblabs.rendering2D
 				paintTextToBitmap();
 			}
 			
-			if(_inputEnabled && _transformDirty)
-				hideInputField(null);
 			if(_inputEnabled && this._alpha != 0)
 				this.alpha = 0;
 		}
@@ -260,6 +261,8 @@ package com.pblabs.rendering2D
 					var textSize : Rectangle = _textDisplay.getBounds(_textDisplay);
 					_newTextSize.setTo( textSize.width, textSize.height );
 				}
+				if(!this._size.equals(_newTextSize ))
+					_transformDirty = true;
 				if(sizeProperty && sizeProperty.property != "")
 				{
 					this._size = _newTextSize;
@@ -268,7 +271,6 @@ package com.pblabs.rendering2D
 				}else{
 					this._size = _newTextSize;
 				}
-				_transformDirty = true;
 			}else if(_textDisplay){
 				_textDisplay.width = this._size.x * this._scale.x;
 				_textDisplay.height = this._size.y * this._scale.y;

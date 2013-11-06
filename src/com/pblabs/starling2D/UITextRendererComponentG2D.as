@@ -8,12 +8,14 @@
  ******************************************************************************/
 package com.pblabs.starling2D
 {
+	import com.pblabs.engine.PBE;
 	import com.pblabs.engine.PBUtil;
 	import com.pblabs.engine.core.ObjectType;
 	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.rendering2D.UITextRendererComponent;
 	
 	import flash.display.BitmapData;
+	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.text.TextFieldType;
@@ -31,6 +33,7 @@ package com.pblabs.starling2D
 	public class UITextRendererComponentG2D extends UITextRendererComponent
 	{
 		private var _gpuTextField : TextField;
+		private var _touchID : int = -1;
 		
 		public function UITextRendererComponentG2D()
 		{
@@ -111,13 +114,22 @@ package com.pblabs.starling2D
 		
 		protected function onStageTouch(event : TouchEvent):void
 		{
-			var touch : Touch = event.getTouch(Starling.current.stage, TouchPhase.BEGAN);
+			var touch : Touch = event.getTouch(Starling.current.stage, TouchPhase.ENDED, _touchID);
 			if(!touch)
 				return;
+			_touchID = touch.id;
 			_stagePoint.setTo( touch.globalX, touch.globalY );
 			toggleInputDisplay();
 		}
 		
+		override protected function onStageMouseDown(event : MouseEvent):void
+		{
+		}
+		
+		override protected function onStageMouseUp(event : MouseEvent):void
+		{
+		}
+
 		override protected function updateTextImage():void
 		{
 			if(!_fontData || !_fontImage){
@@ -178,6 +190,9 @@ package com.pblabs.starling2D
 				if(autoResize && gpuObject){
 					var textSize : Rectangle = _textDisplay.getBounds(_textDisplay);
 					_newTextSize.setTo( (gpuObject as TextField).width, (gpuObject as TextField).height );
+
+					if(!this._size.equals(_newTextSize ))
+						_transformDirty = true;
 					if(sizeProperty && sizeProperty.property != "")
 					{
 						this._size = _newTextSize;
@@ -186,7 +201,6 @@ package com.pblabs.starling2D
 					}else{
 						this._size = _newTextSize;
 					}
-					_transformDirty = true;
 				}
 			}
 		}
