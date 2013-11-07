@@ -115,14 +115,14 @@ package com.pblabs.starling2D {
 			if (!_allowZoom && !_allowRotation)
 			{
 				_aabbData.offsetX = _aabbData.offsetY = 0;
-				_aabbData.rect = new Rectangle(_ghostTarget.x, _ghostTarget.y, cameraLensWidth, cameraLensHeight);
+				(_aabbData.rect as Rectangle).setTo(_ghostTarget.x, _ghostTarget.y, cameraLensWidth, cameraLensHeight);
 				return;
 			}
 			
 			if (_allowZoom && !_allowRotation)
 			{
 				_aabbData.offsetX = _aabbData.offsetY = 0;
-				_aabbData.rect = new Rectangle(_ghostTarget.x, _ghostTarget.y, cameraLensWidth / _camProxy.scale, cameraLensHeight / _camProxy.scale);
+				(_aabbData.rect as Rectangle).setTo(_ghostTarget.x, _ghostTarget.y, cameraLensWidth / _camProxy.scale, cameraLensHeight / _camProxy.scale);
 				return;
 			}
 			
@@ -139,6 +139,11 @@ package com.pblabs.starling2D {
 			}
 		}
 		
+		private var _scratchAABBPos : Point = new Point();
+		private var _newGTPos : Point = new Point();
+		private var _newRotatedGTPos : Point = new Point();
+		private var _rotScaledOffset : Point = new Point();
+		private var _invRotTarget : Point = new Point();
 		override public function update():void
 		{
 			if (_allowRotation)
@@ -154,8 +159,6 @@ package com.pblabs.starling2D {
 				var velocityZoom:Number = diffZoom * zoomEasing;
 				_camProxy.scale += velocityZoom;
 			}
-			
-			var invRotTarget:Point;
 			
 			if (_target)
 			{
@@ -177,10 +180,12 @@ package com.pblabs.starling2D {
 				_ghostTarget.y = _manualPosition.y;
 			}
 			
-			invRotTarget = (_allowRotation) ? PBUtil.rotatePoint(new Point(_ghostTarget.x, _ghostTarget.y), -_camProxy.rotation) : new Point(_ghostTarget.x, _ghostTarget.y);
+			_invRotTarget.setTo(_ghostTarget.x, _ghostTarget.y);
+			if(_allowRotation) 
+				_invRotTarget = PBUtil.rotatePoint(_invRotTarget, -_camProxy.rotation);
 			
-			_camProxy.x = -invRotTarget.x * _camProxy.scale;
-			_camProxy.y = -invRotTarget.y * _camProxy.scale;
+			_camProxy.x = -_invRotTarget.x * _camProxy.scale;
+			_camProxy.y = -_invRotTarget.y * _camProxy.scale;
 			
 			_camProxy.offsetX = offset.x;
 			_camProxy.offsetY = offset.y;
@@ -202,43 +207,47 @@ package com.pblabs.starling2D {
 				
 			}
 			
-			var rotScaledOffset:Point;
-			
-			rotScaledOffset = (_allowRotation) ?
-				PBUtil.rotatePoint( new Point(offset.x / _camProxy.scale, offset.y / _camProxy.scale), _camProxy.rotation) :
-				new Point(offset.x / _camProxy.scale, offset.y / _camProxy.scale);
+			_rotScaledOffset.setTo(offset.x / _camProxy.scale, offset.y / _camProxy.scale);
+			if(_allowRotation){
+				_rotScaledOffset = PBUtil.rotatePoint( _rotScaledOffset, _camProxy.rotation);
+			}
 			
 			// move aabb
-			_aabbData.rect.x -= rotScaledOffset.x;
-			_aabbData.rect.y -= rotScaledOffset.y;
+			_aabbData.rect.x -= _rotScaledOffset.x;
+			_aabbData.rect.y -= _rotScaledOffset.y;
 			
 			if ( bounds && !bounds.containsRect(_aabbData.rect) )
 			{
 				
-				var newAABBPos:Point = new Point(_aabbData.rect.x,_aabbData.rect.y);
+				_scratchAABBPos.setTo(_aabbData.rect.x,_aabbData.rect.y);
 				
 				//x
 				if (_aabbData.rect.left <= bounds.left || _aabbData.rect.width >= bounds.width)
-					newAABBPos.x = bounds.left;
+					_scratchAABBPos.x = bounds.left;
 				else if (_aabbData.rect.right >= bounds.right)
-					newAABBPos.x = bounds.right - _aabbData.rect.width;
+					_scratchAABBPos.x = bounds.right - _aabbData.rect.width;
 				
 				//y
 				if (_aabbData.rect.top <= bounds.top || _aabbData.rect.height >= bounds.height)
-					newAABBPos.y = bounds.top;
+					_scratchAABBPos.y = bounds.top;
 				else if (_aabbData.rect.bottom >= bounds.bottom)
-					newAABBPos.y = bounds.bottom - _aabbData.rect.height;
+					_scratchAABBPos.y = bounds.bottom - _aabbData.rect.height;
 				
-				var newGTPos:Point = new Point(newAABBPos.x, newAABBPos.y);
+				_newGTPos.setTo(_scratchAABBPos.x, _scratchAABBPos.y);
 				
-				newGTPos.x -= _aabbData.offsetX;
-				newGTPos.y -= _aabbData.offsetY;
+				_newGTPos.x -= _aabbData.offsetX;
+				_newGTPos.y -= _aabbData.offsetY;
 				
-				newGTPos.x += rotScaledOffset.x;
-				newGTPos.y += rotScaledOffset.y;
+				_newGTPos.x += _rotScaledOffset.x;
+				_newGTPos.y += _rotScaledOffset.y;
 				
 				var invGT:Point;
-				invGT = (_allowRotation) ? PBUtil.rotatePoint(new Point(newGTPos.x, newGTPos.y), -_camProxy.rotation) : new Point(newGTPos.x, newGTPos.y);
+				if(_allowRotation){
+					_newRotatedGTPos.setTo(_newGTPos.x, _newGTPos.y);
+					invGT = PBUtil.rotatePoint(_newRotatedGTPos, -_camProxy.rotation);
+				}else{
+					invGT = _newGTPos;
+				}
 				_camProxy.x = -invGT.x * _camProxy.scale + _camProxy.offsetX;
 				_camProxy.y = -invGT.y * _camProxy.scale + _camProxy.offsetY;
 				
