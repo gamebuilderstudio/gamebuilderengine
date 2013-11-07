@@ -39,6 +39,11 @@ package com.pblabs.starling2D
 		protected var customBitmapCreated : Boolean = false;
 		protected var textureWidth : Number = 0;
 		protected var textureHeight : Number = 0;
+		
+		protected var textureCoordPt1 : Point = new Point();
+		protected var textureCoordPt2 : Point = new Point();
+		protected var textureCoordPt3 : Point = new Point();
+		protected var textureCoordPt4 : Point = new Point();
 
 		public function ScrollingBitmapRendererG2D()
 		{
@@ -67,10 +72,14 @@ package com.pblabs.starling2D
 			var imageText : Image = (gpuObject as Image);
 			xx = ((xx/textureWidth % 1)+1);
 			yy = ((yy/textureHeight % 1)+1);
-			imageText.setTexCoords(0, new Point(xx, yy));//top left
-			imageText.setTexCoords(1, new Point(xx+hRatio, yy));//top right
-			imageText.setTexCoords(2, new Point(xx, yy + vRatio));//bottom left
-			imageText.setTexCoords(3, new Point(xx+hRatio, yy + vRatio));//bottom right
+			textureCoordPt1.setTo(xx, yy);
+			textureCoordPt2.setTo(xx+hRatio, yy);
+			textureCoordPt3.setTo(xx, yy + vRatio);
+			textureCoordPt4.setTo(xx+hRatio, yy + vRatio);
+			imageText.setTexCoords(0, textureCoordPt1);//top left
+			imageText.setTexCoords(1, textureCoordPt2);//top right
+			imageText.setTexCoords(2, textureCoordPt3);//bottom left
+			imageText.setTexCoords(3, textureCoordPt4);//bottom right
 
 			if(_initialDraw)
 				_initialDraw = false;
@@ -153,10 +162,15 @@ package com.pblabs.starling2D
 				//var intialPosX : Number = scrollPosition.x / _size.x;
 				//var intialPosY : Number = scrollPosition.y / _size.y;
 				(gpuObject as Image).texture.repeat = true;
-				//(gpuObject as Image).setTexCoords(0, new Point(0, 0 ));
-				(gpuObject as Image).setTexCoords(1, new Point(hRatio, 0 ));
-				(gpuObject as Image).setTexCoords(2, new Point(0, vRatio));
-				(gpuObject as Image).setTexCoords(3, new Point(hRatio, vRatio));
+
+				textureCoordPt1.setTo(0, 0);
+				textureCoordPt2.setTo(hRatio, 0);
+				textureCoordPt3.setTo(0, vRatio);
+				textureCoordPt4.setTo(hRatio, vRatio);
+				(gpuObject as Image).setTexCoords(0, textureCoordPt1);
+				(gpuObject as Image).setTexCoords(1, textureCoordPt2);
+				(gpuObject as Image).setTexCoords(2, textureCoordPt3);
+				(gpuObject as Image).setTexCoords(3, textureCoordPt4);
 			}
 		}
 		
