@@ -9,6 +9,7 @@ package com.pblabs.engine.core
 		public var pressure : Number;
 		public var touchCount : int = 0;
 		public var phase : String = "";
+		public var id : int = -1;
 		
 		private static var _pool : Vector.<InputState> = new Vector.<InputState>();
 		
@@ -26,6 +27,12 @@ package com.pblabs.engine.core
 		public function dispose():void
 		{
 			value = false;
+			keyCode = -1;
+			touchCount = 0;
+			stageX = stageY = 0;
+			pressure = 0;
+			phase = "";
+			id = -1;
 			if(_pool.indexOf(this) == -1)
 				_pool.push(this);
 		}
