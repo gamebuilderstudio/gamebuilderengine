@@ -52,11 +52,11 @@ package com.pblabs.engine.core
 		{
 			var processManager : ProcessManager = PBE.processManager;
 			var levelManager : LevelManager = PBE.levelManager;
-			var mainStage : Stage = PBE.mainStage;
+			var inputManager : InputManager = PBE.inputManager;
 			
 			//Update mouse position for globally for expressions
-			objectContext.Game.Mouse.x = mainStage.mouseX;
-			objectContext.Game.Mouse.y = mainStage.mouseY;
+			objectContext.Game.Mouse.x = inputManager.stageMouseX;
+			objectContext.Game.Mouse.y = inputManager.stageMouseY;
 
 			for(var i : int = 1; i < 11; i++)
 			{
@@ -77,26 +77,7 @@ package com.pblabs.engine.core
 			objectContext.Game.Time.gameTime = processManager.platformTime;
 			objectContext.Game.Time.deltaTime = deltaTime;
 
-			//Screen Size
-			objectContext.Game.Screen.fullScreenScale = screenScale;
-			if(screenLayout == "landscape")
-				objectContext.Game.Screen.isLandscapeLayout = true;
-			else
-				objectContext.Game.Screen.isLandscapeLayout = false;
-			
-			if(screenLayout == "portrait")
-				objectContext.Game.Screen.isPortraitLayout = true;
-			else
-				objectContext.Game.Screen.isPortraitLayout = false;
-			
 			objectContext.Game.Screen.screenOrientation = screenOrientation;
-			
-			objectContext.Game.Screen.fullScreenWidth = mainStage.fullScreenWidth;
-			objectContext.Game.Screen.fullScreenHeight = mainStage.fullScreenHeight;
-			objectContext.Game.Screen.screenResolutionX = Capabilities.screenResolutionX;
-			objectContext.Game.Screen.screenResolutionY = Capabilities.screenResolutionY;
-			objectContext.Game.Screen.width = mainStage.stageWidth;
-			objectContext.Game.Screen.height = mainStage.stageHeight;
 
 			objectContext.Game.Level.currentLevel = levelManager.currentLevel;
 			objectContext.Game.Level.levelCount = levelManager.levelCount;
@@ -121,6 +102,8 @@ package com.pblabs.engine.core
 			if(!objectContext.Game.Level) objectContext.Game.Level = new DataComponent();
 			if(!objectContext.Game.Touch) objectContext.Game.Touch = new DataComponent();
 
+			calculateScreenSize();
+			
 			objectContext.Game.Level.currentLevel = PBE.levelManager.currentLevel;
 			calculateScreenSize();
 			screenOrientation = "right-sideup";
@@ -136,6 +119,15 @@ package com.pblabs.engine.core
 		
 		private function calculateScreenSize():void
 		{
+			if(objectContext){
+				objectContext.Game.Screen.screenResolutionX = Capabilities.screenResolutionX;
+				objectContext.Game.Screen.screenResolutionY = Capabilities.screenResolutionY;
+				objectContext.Game.Screen.fullScreenWidth = PBE.mainStage.fullScreenWidth;
+				objectContext.Game.Screen.fullScreenHeight = PBE.mainStage.fullScreenHeight;
+				objectContext.Game.Screen.width = PBE.mainStage.stageWidth;
+				objectContext.Game.Screen.height = PBE.mainStage.stageHeight;
+			}
+
 			var screenSize:Rectangle = new Rectangle(0, 0, PBE.mainStage.stageWidth, PBE.mainStage.stageHeight);
 			var deviceSize:Rectangle = new Rectangle(0, 0,
 				Math.max(PBE.mainStage.fullScreenWidth, PBE.mainStage.fullScreenHeight),
@@ -155,6 +147,21 @@ package com.pblabs.engine.core
 				screenLayout = "landscape";
 			if(deviceSize.height > deviceSize.width)
 				screenLayout = "portrait";
+			
+			if(objectContext){
+				//Screen Size
+				objectContext.Game.Screen.fullScreenScale = screenScale;
+				if(screenLayout == "landscape")
+					objectContext.Game.Screen.isLandscapeLayout = true;
+				else
+					objectContext.Game.Screen.isLandscapeLayout = false;
+				
+				if(screenLayout == "portrait")
+					objectContext.Game.Screen.isPortraitLayout = true;
+				else
+					objectContext.Game.Screen.isPortraitLayout = false;
+			}
+			
 		}
 		
 		private function onScreenResize(event : Event):void
