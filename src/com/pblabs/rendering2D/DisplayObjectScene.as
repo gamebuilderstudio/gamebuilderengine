@@ -16,7 +16,6 @@ package com.pblabs.rendering2D
     import com.pblabs.rendering2D.ui.IUITarget;
     
     import flash.display.DisplayObject;
-    import flash.display.DisplayObjectContainer;
     import flash.display.Sprite;
     import flash.events.Event;
     import flash.geom.*;
@@ -161,17 +160,9 @@ package com.pblabs.rendering2D
                 return null;
             
             // Allocate the layer.
-             _layers[index] = generateLayer(index);
+             _layers.splice(index, 0, generateLayer(index));
                         
-            // Order the layers. This is suboptimal but we are probably not going
-            // to be adding a lot of layers all the time.
-            while(_rootSprite.numChildren)
-                _rootSprite.removeChildAt(_rootSprite.numChildren-1);
-            for(var i:int=0; i<layerCount; i++)
-            {
-                if (_layers[i])
-                    _rootSprite.addChild(_layers[i]);
-            }
+			 _rootSprite.addChildAt(_layers[index], index);
             
             // Return new layer.
             return _layers[index] as IDisplayObjectSceneLayer;
@@ -478,8 +469,12 @@ package com.pblabs.rendering2D
             //PBE.pushStageQuality(StageQuality.LOW);
             
             // Give layers a chance to sort and update.
-            for each(var l:DisplayObjectSceneLayer in _layers)
-                l.onRender();
+			var len : int = _layers.length;
+			for(var i : int = 0; i < len; i++)
+			{
+				var l:DisplayObjectSceneLayer = _layers[i];
+				l.onRender();
+			}
 
             //PBE.pushStageQuality(StageQuality.HIGH);
         }
