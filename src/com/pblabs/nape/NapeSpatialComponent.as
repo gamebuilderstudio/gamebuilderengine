@@ -379,7 +379,7 @@ package com.pblabs.nape
 			return false;
 		}
 		
-		public function pointOccupied(pos:Point, mask:ObjectType, scene:IScene2D):Boolean
+		public function pointOccupied(pos:Point, mask:ObjectType, scene:IScene2D, convertFromStageCoordinates : Boolean = false):Boolean
 		{
 			// If no sprite then we just test our bounds.
 			if(!spriteForPointChecks && _size && _size.x > 0 && _size.y > 0)
@@ -387,6 +387,9 @@ package com.pblabs.nape
 			
 			if(!scene && spriteForPointChecks && spriteForPointChecks.scene)
 				scene = spriteForPointChecks.scene;
+			
+			if(scene && convertFromStageCoordinates)
+				pos = scene.transformScreenToWorld(pos);
 			
 			if(spriteForPointChecks && scene)
 				return spriteForPointChecks.pointOccupied(pos, mask);
@@ -594,18 +597,18 @@ package com.pblabs.nape
 			return null;
 		}
 		
-		private var _spatialManager:NapeManagerComponent;
-		private var _objectMask:ObjectType;
-		private var _body:Body;
-		private var _bodyType:BodyTypeEnum = BodyTypeEnum.DYNAMIC;
-		private var _collisionShapes:Array;
-		private var _canMove:Boolean = true;
-		private var _canRotate:Boolean = true;
-		private var _canSleep:Boolean = true;
-		private var _autoAlign:Boolean = true;
-		private var _collisionType:ObjectType = null;
-		private var _collidesWithTypes:ObjectType = null;
-		private var _collidesContinuously:Boolean = false;
+		protected var _spatialManager:NapeManagerComponent;
+		protected var _objectMask:ObjectType;
+		protected var _body:Body;
+		protected var _bodyType:BodyTypeEnum = BodyTypeEnum.DYNAMIC;
+		protected var _collisionShapes:Array;
+		protected var _canMove:Boolean = true;
+		protected var _canRotate:Boolean = true;
+		protected var _canSleep:Boolean = true;
+		protected var _autoAlign:Boolean = true;
+		protected var _collisionType:ObjectType = null;
+		protected var _collidesWithTypes:ObjectType = null;
+		protected var _collidesContinuously:Boolean = false;
 		protected var _gravity:Point = new Point(0,0);
 		
 		protected var _shapeDebug:ShapeDebug;
@@ -615,7 +618,5 @@ package com.pblabs.nape
 		protected var _position:Point = new Point();
 		protected var _rotation:Number = 0;
 		protected var _size:Point = new Point(1,1);
-		
-		
 	}
 }

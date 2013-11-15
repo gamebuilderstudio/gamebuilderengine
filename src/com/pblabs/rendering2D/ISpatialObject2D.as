@@ -43,8 +43,9 @@ package com.pblabs.rendering2D
          * @param pos Location in worldspace to check.
          * @param scene If we want to have the results line up with the view, we
          *              need access to the scene we're doing the check from.
+		 * @param convertFromStageCoordinates will use the scene object to convert the point passed in from global to local coordinates before performing check
          */
-        function pointOccupied(pos:Point, mask:ObjectType, scene:IScene2D):Boolean;
+        function pointOccupied(pos:Point, mask:ObjectType, scene:IScene2D, convertFromStageCoordinates : Boolean = false):Boolean;
 
 		
 		/**
