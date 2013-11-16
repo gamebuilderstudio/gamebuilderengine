@@ -85,21 +85,6 @@ package com.pblabs.starling2D
 				_initialDraw = false;
 		}
 		
-		/**
-		 * @inheritDoc
-		 */
-		override public function updateTransform(updateProps:Boolean = false):void
-		{
-			super.updateTransform(updateProps);
-
-			if(!gpuObject){
-				return;
-			}
-			gpuObject.width = _size.x;
-			gpuObject.height = _size.y;
-		}
-		
-		
 		override protected function buildG2DObject():void
 		{
 			if(!Starling.context){
@@ -107,7 +92,7 @@ package com.pblabs.starling2D
 				return;
 			}
 			
-			if(!this.bitmap || !this.bitmap.bitmapData || !resource)
+			if(!this.bitmap || !this.bitmap.bitmapData || !resource || !this.isRegistered || this._size.x == 0 || this._size.y == 0)
 				return;
 
 			var legalWidth:int  = getNextPowerOfTwo(bitmapData.width);
