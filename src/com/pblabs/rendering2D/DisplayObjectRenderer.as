@@ -535,7 +535,7 @@ package com.pblabs.rendering2D
                 return _tmpLocalBounds;
 			}
             
-            return displayObject.getBounds(displayObject);
+            return _displayObject.getBounds(_displayObject);
         }
         
 		[EditorData(referenceType="componentReference")]
@@ -672,6 +672,7 @@ package com.pblabs.rendering2D
             
             // Remove ourselves from the scene when we are removed.
             removeFromScene();
+			cleanUpPropertyReferences();
         }
         
         protected function removeFromScene():void
@@ -809,7 +810,54 @@ package com.pblabs.rendering2D
             }
         }
         
-        /**
+		/**
+		 * cleanUpPropertyReferences is an internal cleanup method to clear all propertyReferences when this object is removed
+		 **/
+		protected function cleanUpPropertyReferences() : void {
+			if(PBE.IN_EDITOR)
+				return;
+			// Sync our zIndex.
+			if (zIndexProperty) {
+				zIndexProperty.destroy();
+			}
+			
+			// Sync our layerIndex.
+			if (layerIndexProperty) {
+				layerIndexProperty.destroy();
+			}
+			
+			// Position.
+			if (positionProperty) {
+				positionProperty.destroy();
+			}
+			
+			// Scale.
+			if (scaleProperty) {
+				scaleProperty.destroy();
+			}
+			
+			// Rotation.
+			if (rotationProperty) {
+				rotationProperty.destroy();
+			}
+			
+			// Alpha.
+			if (alphaProperty) {
+				alphaProperty.destroy()
+			}
+			
+			// Blend Mode.
+			if (blendModeProperty) {
+				blendModeProperty.destroy();
+			}
+			
+			// Registration Point.
+			if (registrationPointProperty) {
+				registrationPointProperty.destroy()
+			}
+		}
+
+		/**
          * Update the object's transform based on its current state. Normally
          * called automatically, but in some cases you might have to force it
          * to update immediately.
@@ -823,9 +871,10 @@ package com.pblabs.rendering2D
             if(updateProps)
                 updateProperties();
             
+			var tmpScale : Point = combinedScale;
             _transformMatrix.identity();
-            _transformMatrix.scale(combinedScale.x, combinedScale.y);
-            _transformMatrix.translate(-_registrationPoint.x * combinedScale.x, -_registrationPoint.y * combinedScale.y);
+            _transformMatrix.scale(tmpScale.x, tmpScale.y);
+            _transformMatrix.translate(-_registrationPoint.x * tmpScale.x, -_registrationPoint.y * tmpScale.y);
 			_transformMatrix.rotate(PBUtil.getRadiansFromDegrees(_rotation) + _rotationOffset);
             _transformMatrix.translate((_position.x + _positionOffset.x), (_position.y + _positionOffset.y));
             

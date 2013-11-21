@@ -79,15 +79,14 @@ package com.pblabs.starling2D
 			if(updateProps)
 				updateProperties();
 			
+			var tmpScale : Point = combinedScale;
 			_transformMatrix.identity();
-			_transformMatrix.scale(combinedScale.x, combinedScale.y);
-			_transformMatrix.translate(-_registrationPoint.x * combinedScale.x, -_registrationPoint.y * combinedScale.y);
+			_transformMatrix.scale(tmpScale.x, tmpScale.y);
+			_transformMatrix.translate(-_registrationPoint.x * tmpScale.x, -_registrationPoint.y * tmpScale.y);
 			_transformMatrix.rotate(PBUtil.getRadiansFromDegrees(_rotation) + _rotationOffset);
 			_transformMatrix.translate((_position.x + _positionOffset.x), (_position.y + _positionOffset.y));
 			
 			gpuObject.transformationMatrix = _transformMatrix;
-			//gpuObject.pivotX = _registrationPoint.x;
-			//gpuObject.pivotY = _registrationPoint.y;
 			gpuObject.alpha = this._alpha;
 			gpuObject.blendMode = this._blendMode;
 			gpuObject.visible = (alpha > 0);
