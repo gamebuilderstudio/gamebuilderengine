@@ -35,7 +35,7 @@ package starling.events
      *  @see Event
      *  @see starling.display.DisplayObject DisplayObject
      */
-    public class EventDispatcher
+    public class EventDispatcher implements IEventDispatcher
     {
         private var mEventListeners:Dictionary;
         
@@ -47,7 +47,7 @@ package starling.events
         {  }
         
         /** Registers an event listener at a certain object. */
-        public function addEventListener(type:String, listener:Function):void
+        public function addEventListener(type:String, listener:Function, useCapture:Boolean=false, priority:int=0, useWeakReference:Boolean=false):void
         {
             if (mEventListeners == null)
                 mEventListeners = new Dictionary();
@@ -60,7 +60,7 @@ package starling.events
         }
         
         /** Removes an event listener from the object. */
-        public function removeEventListener(type:String, listener:Function):void
+        public function removeEventListener(type:String, listener:Function, useCapture:Boolean=false):void
         {
             if (mEventListeners)
             {
@@ -95,12 +95,12 @@ package starling.events
          *  If an event with enabled 'bubble' property is dispatched to a display object, it will 
          *  travel up along the line of parents, until it either hits the root object or someone
          *  stops its propagation manually. */
-        public function dispatchEvent(event:Event):void
+        public function dispatchEvent(event:Event):Boolean
         {
             var bubbles:Boolean = event.bubbles;
             
             if (!bubbles && (mEventListeners == null || !(event.type in mEventListeners)))
-                return; // no need to do anything
+                return false; // no need to do anything
             
             // we save the current target and restore it later;
             // this allows users to re-dispatch events without creating a clone.
@@ -111,7 +111,9 @@ package starling.events
             if (bubbles && this is DisplayObject) bubbleEvent(event);
             else                                  invokeEvent(event);
             
-            if (previousTarget) event.setTarget(previousTarget);
+            if (previousTarget) 
+				event.setTarget(previousTarget);
+			return true;
         }
         
         /** @private
@@ -199,5 +201,12 @@ package starling.events
                 mEventListeners[type] as Vector.<Function> : null;
             return listeners ? listeners.length != 0 : false;
         }
-    }
+		
+		public function willTrigger(type:String):Boolean
+		{
+			// TODO Auto Generated method stub
+			return false;
+		}
+		
+	}
 }
