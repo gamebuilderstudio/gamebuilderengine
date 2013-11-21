@@ -1,7 +1,5 @@
 package starling.display.materials
 {
-	import com.adobe.utils.AGALMiniAssembler;
-	
 	import flash.display3D.Context3D;
 	import flash.display3D.Context3DProgramType;
 	import flash.display3D.Context3DVertexBufferFormat;
@@ -36,6 +34,16 @@ package starling.display.materials
 		}
 		
 		public function dispose():void
+		{
+			if ( program )
+			{
+				Program3DCache.releaseProgram3D(program);
+				program = null;
+			}
+			textures = new Vector.<Texture>();
+		}
+		
+		public function restoreOnLostContext():void
 		{
 			if ( program )
 			{

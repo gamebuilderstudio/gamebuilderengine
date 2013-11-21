@@ -1,278 +1,191 @@
 package starling.display
 {
-	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.geom.Matrix;
 	
 	import starling.display.graphics.Fill;
+	import starling.display.graphics.Graphic;
 	import starling.display.graphics.NGon;
 	import starling.display.graphics.Plane;
+	import starling.display.graphics.RoundedRectangle;
 	import starling.display.graphics.Stroke;
+	import starling.display.graphics.StrokeVertex;
+
 	import starling.display.materials.IMaterial;
 	import starling.display.shaders.fragment.TextureFragmentShader;
-	import starling.display.shaders.fragment.TextureVertexColorFragmentShader;
 	import starling.display.util.CurveUtil;
 	import starling.textures.Texture;
 
 	public class Graphics
 	{
-		// Shared texture fragment shader used across all graphics drawn via graphics API.
-		private static var textureFragmentShader	:TextureFragmentShader = new TextureFragmentShader();
-		public static const BEZIER_ERROR:Number = 0.75;
-		private static const DEG_TO_RAD:Number = Math.PI / 180;
+		protected static const BEZIER_ERROR:Number = 0.75;
 		
-		private var _currentX				:Number;
-		private var _currentY				:Number;
-		private var _currentStroke			:Stroke;
-		private var _currentFill			:Fill;
+		// Shared texture fragment shader used across all child Graphic's drawn
+		// with a textured fill or stroke.
+		protected static var s_textureFragmentShader:TextureFragmentShader = new TextureFragmentShader();
 		
-		private var _fillColor				:uint;
-		private var _fillAlpha				:Number;
-		private var _strokeThickness		:Number
-		private var _strokeColor			:uint;
-		private var _strokeAlpha			:Number;
-		private var _strokeTexture			:Texture;
-		private var _strokeMaterial			:IMaterial;
 		
-		private var _container				:DisplayObjectContainer;
+		protected var _container				:DisplayObjectContainer; // The owner of this Graphics instance.
+		protected var _penPosX					:Number;
+		protected var _penPosY					:Number;
 		
-		public function Graphics(displayObjectContainer:DisplayObjectContainer)
+		// Fill state vars
+		protected var _currentFill				:Fill;
+		protected var _fillStyleSet				:Boolean;
+		protected var _fillColor				:uint;
+		protected var _fillAlpha				:Number;
+		protected var _fillTexture				:Texture;
+		protected var _fillMaterial				:IMaterial;
+		protected var _fillMatrix				:Matrix;
+		
+		// Stroke state vars
+		protected var _currentStroke			:Stroke;
+		protected var _strokeStyleSet			:Boolean;
+		protected var _strokeThickness			:Number;
+      	protected var _strokeColor				:uint;
+		protected var _strokeAlpha				:Number;
+		protected var _strokeTexture			:Texture;
+		protected var _strokeMaterial			:IMaterial;
+		protected var _strokeInterrupted		:Boolean;
+		
+     	protected var _precisionHitTest			:Boolean = false;
+		protected var _precisionHitTestDistance	:Number = 0; 
+		
+		
+        public function Graphics( displayObjectContainer:DisplayObjectContainer )
 		{
 			_container = displayObjectContainer;
 		}
+		
+		/////////////////////////////////////////////////////////////////////////////////////////
+		// PUBLIC
+		/////////////////////////////////////////////////////////////////////////////////////////
 		
 		public function clear():void
 		{
 			while ( _container.numChildren > 0 )
 			{
-				var child:DisplayObject = _container.getChildAt(0);
+				var child:DisplayObject = _container.getChildAt( 0 );
 				child.dispose();
-				_container.removeChildAt(0);
+				_container.removeChildAt( 0 );
 			}
-			_currentX = NaN;
-			_currentY = NaN;
-		}
+			
+			_penPosX = NaN;
+			_penPosY = NaN;
+			
+			endStroke();
+			endFill();
+        }
 		
-		public function beginFill(color:uint, alpha:Number = 1.0):void
+		////////////////////////////////////////
+		// Fill-style
+		////////////////////////////////////////
+		
+		public function beginFill( color:uint, alpha:Number = 1.0 ):void
 		{
-			_fillColor = color;
-			_fillAlpha = alpha;
+			endFill();
 			
-			_currentFill = new Fill();
-			_currentFill.material.color = color;
-			_currentFill.material.alpha = alpha;
-			_container.addChild(_currentFill);
+			_fillStyleSet 	= true;
+			_fillColor 		= color;
+			_fillAlpha 		= alpha;
+			_fillTexture 	= null;
+			_fillMaterial 	= null;
+			_fillMatrix 	= null;
 		}
-		
-		/**
-		 * Warning - this function will create a fresh texture for each bitmap.
-		 * It is reccomended to use beginTextureFill to ensure texture re-use.
-		 */
-		public function beginBitmapFill(bitmap:BitmapData, uvMatrix:Matrix = null):void
-		{
-			_fillColor = 0xFFFFFF;
-			_fillAlpha = 1;
-			
-			_currentFill = new Fill();
-			_currentFill.material.fragmentShader = textureFragmentShader;
-			var texture:Texture = Texture.fromBitmapData( bitmap, false );
-			_currentFill.material.textures[0] = texture;
-			
-			var m:Matrix;
-			if ( uvMatrix )
-			{
-				m = uvMatrix.clone();
-				m.invert();
-			}
-			else
-			{
-				m = new Matrix();
-			}
-			m.scale(1/texture.width, 1/texture.height);
-			_currentFill.uvMatrix = m;
-			
-			_container.addChild(_currentFill);
-		}
-		
+				
 		public function beginTextureFill( texture:Texture, uvMatrix:Matrix = null ):void
 		{
-			_fillColor = 0xFFFFFF;
-			_fillAlpha = 1;
+			endFill();
 			
-			_currentFill = new Fill();
-			_currentFill.material.fragmentShader = textureFragmentShader;
-			_currentFill.material.textures[0] = texture;
-			
-			var m:Matrix;
+			_fillStyleSet 	= true;
+			_fillColor 		= 0xFFFFFF;
+			_fillAlpha 		= 1;
+			_fillTexture 	= texture;
+			_fillMaterial 	= null;
+			_fillMatrix 	= new Matrix();
+			_fillMatrix.scale( 1 / texture.width, 1 / texture.height );
 			if ( uvMatrix )
 			{
-				m = uvMatrix.clone();
-				m.invert();
+				_fillMatrix.concat( uvMatrix );
 			}
-			else
-			{
-				m = new Matrix();
-			}
-			m.scale(1/texture.width, 1/texture.height);
-			_currentFill.uvMatrix = m;
-			
-			_container.addChild(_currentFill);
 		}
 		
 		public function beginMaterialFill( material:IMaterial, uvMatrix:Matrix = null ):void
 		{
-			_fillColor = 0xFFFFFF;
-			_fillAlpha = 1;
+			endFill();
 			
-			_currentFill = new Fill();
-			_currentFill.material = material;
-			
-			var m:Matrix;
+			_fillStyleSet 	= true;
+			_fillColor 		= 0xFFFFFF;
+			_fillAlpha 		= 1;
+			_fillTexture 	= null;
+			_fillMaterial 	= material;
 			if ( uvMatrix )
 			{
-				m = uvMatrix.clone();
-				m.invert();
+				_fillMatrix = uvMatrix.clone();
+				_fillMatrix.invert();
 			}
 			else
 			{
-				m = new Matrix();
+				_fillMatrix = new Matrix();
 			}
 			if ( material.textures.length > 0 )
 			{
-				m.scale(1/material.textures[0].width, 1/material.textures[0].height);
+				_fillMatrix.scale( 1 / material.textures[0].width, 1 / material.textures[0].height );
 			}
-			
-			_currentFill.uvMatrix = m;
-			
-			_container.addChild(_currentFill);
 		}
 		
 		public function endFill():void
 		{
-			if ( _currentFill && _currentFill.numVertices < 3 ) {
-				_container.removeChild(_currentFill);
-			}
+			_fillStyleSet 	= false;
+			_fillColor 		= NaN;
+			_fillAlpha 		= NaN;
+			_fillTexture 	= null;
+			_fillMaterial 	= null;
+			_fillMatrix 	= null;
 			
-			_fillColor 	= NaN;
-			_fillAlpha 	= NaN;
-			_currentFill= null;
-		}
-		
-		public function drawCircle(x:Number, y:Number, radius:Number):void
-		{
-			drawEllipse(x, y, radius, radius);
-		}
-		
-		public function drawEllipse(x:Number, y:Number, width:Number, height:Number):void
-		{
-			// Pretty crude, but works.
-			var numSides:int = Math.sqrt(width*width+height*height) * 0.5;
-			numSides = Math.max(numSides, 10);
-			
-			// Use an NGon primitive instead of fill to bypass triangulation.
-			var cachedFill:Fill = _currentFill;
-			if ( _currentFill )
+			// If we started drawing with a fill, but ended drawing
+			// before we did anything visible with it, dispose it here.
+			if ( _currentFill && _currentFill.numVertices < 3 ) 
 			{
-				var nGon:NGon = new NGon(width, numSides);
-				nGon.x = x;
-				nGon.y = y;
-				nGon.scaleY = height/width;
-				nGon.material = _currentFill.material;
-				nGon.material.color = _fillColor;
-				nGon.alpha = _fillAlpha;
-				var uvMatrix:Matrix = _currentFill.uvMatrix ? _currentFill.uvMatrix.clone() : new Matrix();
-				if ( _currentFill.material.textures.length > 0 )
-				{
-					var temp:Matrix = new Matrix(_currentFill.material.textures[0].width, 0, 0, _currentFill.material.textures[0].height)
-					temp.concat(uvMatrix);
-					uvMatrix = temp;
-				}
-				nGon.uvMatrix = uvMatrix;
-				
-				_container.addChild(nGon);
-				_currentFill = null;
+				_currentFill.dispose();
+				_container.removeChild( _currentFill );
 			}
-			
-			
-			// Draw the stroke
-			if ( isNaN(_strokeThickness) == false )
-			{
-				var anglePerSide:Number = (Math.PI * 2) / numSides;
-				var a:Number = Math.cos(anglePerSide);
-				var b:Number = Math.sin(anglePerSide);
-				var s:Number = 0.0;
-				var c:Number = 1.0;
-				
-				for ( var i:int = 0; i <= numSides; i++ )
-				{
-					var sx:Number = s * width + x;
-					var sy:Number = -c * height + y;
-					if ( i == 0 )
-					{
-						moveTo(sx,sy);
-					}
-					else
-					{
-						lineTo(sx,sy);
-					}
-					
-					const ns:Number = b*c + a*s;
-					const nc:Number = a*c - b*s;
-					c = nc;
-					s = ns;
-				}
-			}
-			
-			_currentFill = cachedFill;
+			_currentFill = null;
 		}
 		
+		////////////////////////////////////////
+		// Stroke-style
+		////////////////////////////////////////
 		
-		public function drawRect(x:Number, y:Number, width:Number, height:Number):void
+		public function lineStyle( thickness:Number = NaN, color:uint = 0, alpha:Number = 1.0 ):void
 		{
-			// Use a Plane primitive instead of fill to side-step triangulation.
-			var cachedFill:Fill = _currentFill;
-			if ( _currentFill )
-			{
-				var plane:Plane = new Plane(width, height);
-				plane.material = _currentFill.material;
-				
-				if ( _currentFill.uvMatrix )
-				{
-					plane.uvMatrix = _currentFill.uvMatrix.clone();
-				}
-				plane.x = x;
-				plane.y = y;
-				_container.addChild(plane);
-				_currentFill = null;
-			}
-			moveTo(x, y);
-			lineTo(x + width, y);
-			lineTo(x + width, y + height);
-			lineTo(x, y + height);
-			lineTo(x, y);
-			_currentFill = cachedFill;
-		}
-		
-		public function lineStyle(thickness:Number = NaN, color:uint = 0, alpha:Number = 1.0):void
-		{
+			endStroke();
+			
+			_strokeStyleSet			= !isNaN(thickness);
 			_strokeThickness		= thickness;
 			_strokeColor			= color;
 			_strokeAlpha			= alpha;
 			_strokeTexture 			= null;
-			_strokeMaterial				= null;
+			_strokeMaterial			= null;
 		}
 		
-		public function lineTexture(thickness:Number = NaN, texture:Texture = null):void
+		public function lineTexture( thickness:Number = NaN, texture:Texture = null ):void
 		{
-			_strokeThickness		= thickness;
+			endStroke();
+			
+			_strokeStyleSet			= !isNaN(thickness) && texture;
+         	_strokeThickness		= thickness;
 			_strokeColor			= 0xFFFFFF;
 			_strokeAlpha			= 1;
 			_strokeTexture 			= texture;
 			_strokeMaterial			= null;
 		}
 		
-		public function lineMaterial(thickness:Number = NaN, material:IMaterial = null):void
+		public function lineMaterial( thickness:Number = NaN, material:IMaterial = null ):void
 		{
+			endStroke();
+			
+			_strokeStyleSet			= !isNaN(thickness) && material;
 			_strokeThickness		= thickness;
 			_strokeColor			= 0xFFFFFF;
 			_strokeAlpha			= 1;
@@ -280,75 +193,94 @@ package starling.display
 			_strokeMaterial			= material;
 		}
 		
-		public function moveTo(x:Number, y:Number):void
+		protected function endStroke():void
 		{
-			if ( _strokeTexture ) 
+			_strokeStyleSet			= false;
+			_strokeThickness		= NaN;
+			_strokeColor			= NaN;
+			_strokeAlpha			= NaN;
+			_strokeTexture			= null;
+			_strokeMaterial			= null;
+			
+			// If we started drawing with a stroke, but ended drawing
+			// before we did anything visible with it, dispose it here.
+			if ( _currentStroke && _currentStroke.numVertices < 2 )
 			{
-				beginTextureStroke();
-			} 
-			else if ( _strokeMaterial )
-			{
-				beginMaterialStroke();
-			}
-			else if ( _strokeThickness > 0 )
-			{  	
-				beginStroke();
+				_currentStroke.dispose();
 			}
 			
-			if ( _currentStroke )
+			_currentStroke = null;
+		}
+		
+		
+		////////////////////////////////////////
+		// Draw commands
+		////////////////////////////////////////
+		
+		public function moveTo( x:Number, y:Number ):void
+		{
+			// Use degenerate methods for moveTo calls.
+			// Degenerates allow for better performance as they do not terminate
+			// the vertex buffer but instead use zero size polygons to translate
+			// from the end point of the last section of the stroke to the
+			// start of the new point.
+			if ( _strokeStyleSet && _currentStroke )
 			{
+				_currentStroke.addDegenerates( x, y );
+			}
+			
+			if ( _fillStyleSet && _currentFill ) 
+			{
+				_currentFill.addDegenerates( x, y );
+			}
+			
+			_penPosX = x;
+			_penPosY = y;
+			_strokeInterrupted = true;
+		}
+		
+		public function lineTo( x:Number, y:Number ):void
+		{
+			if ( isNaN( _penPosX ) )
+			{
+				moveTo( 0, 0 );
+			}
+			
+			if ( _strokeStyleSet  ) 
+			{
+				// Create a new stroke Graphic if this is the first
+				// time we've start drawing something with it.
+				if ( _currentStroke == null )
+				{
+					createStroke();
+				}
+				
+				if ( _strokeInterrupted || _currentStroke.numVertices == 0  )
+				{
+					_currentStroke.addVertex( _penPosX, _penPosY, _strokeThickness );
+					_strokeInterrupted  = false;
+				}
+				
 				_currentStroke.addVertex( x, y, _strokeThickness );
 			}
-			
-			if (_currentFill) 
+						
+			if ( _fillStyleSet ) 
 			{
+				if ( _currentFill == null )
+				{
+					createFill();
+				}
 				_currentFill.addVertex( x, y );
 			}
 			
-			_currentX = x;
-			_currentY = y;
+			_penPosX = x;
+			_penPosY = y;
 		}
 		
-		public function lineTo(x:Number, y:Number):void
+		public function curveTo( cx:Number, cy:Number, a2x:Number, a2y:Number, error:Number = BEZIER_ERROR ):void
 		{
-			if (!_currentStroke && _strokeThickness > 0) 
-			{
-				if (_strokeTexture) 
-				{
-					beginTextureStroke();
-				}
-				else if ( _strokeMaterial )
-				{
-					beginMaterialStroke();
-				}
-				else
-				{
-					beginStroke();
-				}
-			}
-			
-			if ( isNaN(_currentX) )
-			{
-				moveTo(0,0);
-			}
-			
-			if ( _currentStroke )
-			{
-				_currentStroke.addVertex( x, y, _strokeThickness );
-			}
-			
-			if (_currentFill) 
-			{
-				_currentFill.addVertex( x, y );
-			}
-			_currentX = x;
-			_currentY = y;
-		}
-		
-		public function curveTo(cx:Number, cy:Number, a2x:Number, a2y:Number, error:Number = BEZIER_ERROR ):void
-		{
-			var startX:Number = _currentX;
-			var startY:Number = _currentY;
+			var startX:Number = _penPosX;
+			var startY:Number = _penPosY;
 			
 			if ( isNaN(startX) )
 			{
@@ -356,32 +288,32 @@ package starling.display
 				startY = 0;
 			}
 			
-			var points:Vector.<Number> = CurveUtil.quadraticCurve(startX, startY, cx, cy, a2x, a2y, error);
-			
-			var L:int = points.length;
-			for ( var i:int = 0; i < L; i+=2 )
-			{
-				var x:Number = points[i];
-				var y:Number = points[i+1];
-				
-				if ( i == 0 && isNaN(_currentX) )
-				{
-					moveTo( x, y );
-				}
-				else
-				{
-					lineTo( x, y );
-				}
-			}
-			
-			_currentX = a2x;
-			_currentY = a2y;
+			var points:Vector.<Number> = CurveUtil.quadraticCurve( startX, startY, cx, cy, a2x, a2y, error );
+
+            var L:int = points.length;
+            for ( var i:int = 0; i < L; i+=2 )
+            {
+                var x:Number = points[i];
+                var y:Number = points[i+1];
+
+                if ( i == 0 && isNaN(_penPosX) )
+                {
+                    moveTo( x, y );
+                }
+                else
+                {
+                    lineTo( x, y );
+                }
+            }
+
+            _penPosX = a2x;
+			_penPosY = a2y;
 		}
 		
-		public function cubicCurveTo(c1x:Number, c1y:Number, c2x:Number, c2y:Number, a2x:Number, a2y:Number, error:Number = BEZIER_ERROR ):void
+		public function cubicCurveTo( c1x:Number, c1y:Number, c2x:Number, c2y:Number, a2x:Number, a2y:Number, error:Number = BEZIER_ERROR ):void
 		{
-			var startX:Number = _currentX;
-			var startY:Number = _currentY;
+			var startX:Number = _penPosX;
+			var startY:Number = _penPosY;
 			
 			if ( isNaN(startX) )
 			{
@@ -389,71 +321,347 @@ package starling.display
 				startY = 0;
 			}
 			
-			var points:Vector.<Number> = CurveUtil.cubicCurve(startX, startY, c1x, c1y, c2x, c2y, a2x, a2y, error);
+			var points:Vector.<Number> = CurveUtil.cubicCurve( startX, startY, c1x, c1y, c2x, c2y, a2x, a2y, error );
 			
 			var L:int = points.length;
-			for ( var i:int = 0; i < L; i+=2 )
-			{
-				var x:Number = points[i];
-				var y:Number = points[i+1];
+            for ( var i:int = 0; i < L; i+=2 )
+    		{
+	    		var x:Number = points[i];
+		    	var y:Number = points[i+1];
 				
-				if ( i == 0 && isNaN(_currentX) )
-				{
-					moveTo( x, y );
-				}
-				else
-				{
-					lineTo( x, y );
-				}
+			   	if ( i == 0 && isNaN(_penPosX) )
+			    {
+				    moveTo( x, y );
+			    }
+			    else
+			    {
+                    lineTo( x, y );
+                }
 			}
-			_currentX = a2x;
-			_currentY = a2y;
+
+			_penPosX = a2x;
+			_penPosY = a2y;
 		}
 		
-		////////////////////////////////////////
-		// PRIVATE
-		////////////////////////////////////////
-		
-		private function beginStroke():void
+		public function drawCircle( x:Number, y:Number, radius:Number ):void
 		{
-			if ( _currentStroke && _currentStroke.numVertices < 2 ) {
-				_container.removeChild(_currentStroke);
-			}
+			drawEllipse( x, y, radius*2, radius*2 );
+		}
+		
+		public function drawEllipse( x:Number, y:Number, width:Number, height:Number ):void
+		{
+			// Calculate num-sides based on a blend between circumference of width and circumference of height.
+			// Should provide good results for ellipses with similar widths/heights.
+			// Will look bad on very thin ellipses.
+			var numSides:int = Math.PI * ( width * 0.5  + height * 0.5 ) * 0.25;
+			numSides = numSides < 6 ? 6 : numSides;
 			
-			_currentStroke = new Stroke();
-			_currentStroke.material.color = _strokeColor;
-			_currentStroke.material.alpha = _strokeAlpha;
-			_container.addChild(_currentStroke);
-		}
-		
-		private function beginTextureStroke():void
-		{
-			if ( _currentStroke && _currentStroke.numVertices < 2 ) {
-				_container.removeChild(_currentStroke);
-			}
-			
-			_currentStroke = new Stroke();
-			_currentStroke.material.fragmentShader = textureFragmentShader;
-			_currentStroke.material.textures[0] = _strokeTexture;
-			_currentStroke.material.color = _strokeColor;
-			_currentStroke.material.alpha = _strokeAlpha;
-			_container.addChild(_currentStroke);
-		}
-		
-		private function beginMaterialStroke():void
-		{
-			if ( _currentStroke && _currentStroke.numVertices < 2 ) 
+			// Use an NGon primitive instead of fill to bypass triangulation.
+			if ( _fillStyleSet )
 			{
-				_container.removeChild(_currentStroke);
+				var nGon:NGon = new NGon( width * 0.5, numSides );
+				nGon.x = x;
+				nGon.y = y;
+				nGon.scaleY = height / width;
+				
+				applyFillStyleToGraphic(nGon);
+				
+				var m:Matrix = new Matrix();
+				m.scale( width, height );
+				if ( _fillMatrix )
+				{
+					m.concat( _fillMatrix );
+				}
+				nGon.uvMatrix = m;
+				
+				_container.addChild(nGon);
 			}
 			
-			_currentStroke = new Stroke();
-			_currentStroke.material = _strokeMaterial;
+			// Draw the stroke
+			if ( _strokeStyleSet )
+			{
+				// Null the currentFill after storing it in a local var.
+				// This ensures the moveTo/lineTo calls for the stroke below don't
+				// end up adding any points to a current fill (as we've already done
+				// this in a more efficient manner above).
+				var storedFill:Fill = _currentFill;
+				_currentFill = null;
+				
+				var halfWidth:Number = width*0.5;
+				var halfHeight:Number = height*0.5;
+				var anglePerSide:Number = ( Math.PI * 2 ) / numSides;
+				var a:Number = Math.cos( anglePerSide );
+				var b:Number = Math.sin( anglePerSide );
+				var s:Number = 0.0;
+				var c:Number = 1.0;
+				
+				for ( var i:int = 0; i <= numSides; i++ )
+				{
+					var sx:Number = s * halfWidth + x;
+					var sy:Number = -c * halfHeight + y;
+					if ( i == 0 )
+					{
+						moveTo( sx,sy );
+					}
+					else
+					{
+						lineTo( sx,sy );
+					}
+					
+					const ns:Number = b*c + a*s;
+					const nc:Number = a*c - b*s;
+					c = nc;
+					s = ns;
+				}
+				
+				// Reinstate the fill
+				_currentFill = storedFill;
+			}
+		}
+		
+		
+		public function drawRect( x:Number, y:Number, width:Number, height:Number ):void
+		{
+			// Use a Plane primitive instead of fill to side-step triangulation.
+			if ( _fillStyleSet )
+			{
+				var plane:Plane = new Plane( width, height );
+				
+				applyFillStyleToGraphic(plane);
+				
+				var m:Matrix = new Matrix();
+				m.scale( width, height );
+				if ( _fillMatrix )
+				{
+					m.concat( _fillMatrix );
+				}
+				plane.uvMatrix = m;
+				plane.x = x;
+				plane.y = y;
+				_container.addChild( plane );
+			}
+			
+			// Draw the stroke
+			if ( _strokeStyleSet )
+			{
+				// Null the currentFill after storing it in a local var.
+				// This ensures the moveTo/lineTo calls for the stroke below don't
+				// end up adding any points to a current fill (as we've already done
+				// this in a more efficient manner above).
+				var storedFill:Fill = _currentFill;
+				_currentFill = null;
+				
+				moveTo( x, y );
+				lineTo( x + width, y );
+				lineTo( x + width, y + height );
+				lineTo( x, y + height );
+				lineTo( x, y );
+				
+				_currentFill = storedFill;
+			}
+		}
+		
+		public function drawRoundRect( x:Number, y:Number, width:Number, height:Number, radius:Number ):void
+		{
+			drawRoundRectComplex( x, y, width, height, radius, radius, radius, radius );
+		}
+		
+		public function drawRoundRectComplex( x:Number, y:Number, width:Number, height:Number, 
+											  topLeftRadius:Number, topRightRadius:Number, 
+											  bottomLeftRadius:Number, bottomRightRadius:Number ):void
+		{
+			// Early-out if not fill or stroke style set.
+			if ( !_fillStyleSet && !_strokeStyleSet )
+			{
+				return;
+			}
+			
+			var roundedRect:RoundedRectangle = new RoundedRectangle( width, height, topLeftRadius, 
+																	 topRightRadius, bottomLeftRadius,
+																	 bottomRightRadius );
+			
+			// Draw fill
+			if ( _fillStyleSet )
+			{
+				applyFillStyleToGraphic( roundedRect );
+				
+				var m:Matrix = new Matrix();
+				m.scale(width, height);
+				if ( _fillMatrix )
+				{
+					m.concat( _fillMatrix );
+				}
+				roundedRect.uvMatrix = m;
+				roundedRect.x = x;
+				roundedRect.y = y;
+				_container.addChild(roundedRect);
+			}
+			_currentFill = storedFill;
+			
+			if ( _strokeStyleSet )
+			{
+				// Null the currentFill after storing it in a local var.
+				// This ensures the moveTo/lineTo calls for the stroke below don't
+				// end up adding any points to a current fill (as we've already done
+				// this in a more efficient manner above).
+				var storedFill:Fill = _currentFill;
+				_currentFill = null;
+				
+				var strokePoints:Vector.<Number> = roundedRect.getStrokePoints();
+				for ( var i:int = 0; i < strokePoints.length; i+=2 )
+				{
+					if ( i == 0 )
+					{
+						moveTo(x + strokePoints[i], y + strokePoints[i + 1]);
+					}
+					else
+					{
+						lineTo(x + strokePoints[i], y + strokePoints[i + 1]);
+					}
+				}
+				
+				_currentFill = storedFill;
+			}
+		}
+		
+		
+		/**
+		 * Used for geometry level hit tests. 
+		 * False gives boundingbox results, True gives geometry level results.
+		 * True is a lot more exact, but also slower. 
+		 */
+		public function set precisionHitTest(value:Boolean):void
+		{
+			_precisionHitTest = value;
+			if ( _currentFill )
+			{
+				_currentFill.precisionHitTest = value;
+			}
+			if ( _currentStroke )
+			{
+				_currentStroke.precisionHitTest = value;
+			}
+		}
+		
+		public function get precisionHitTest():Boolean 
+		{
+			return _precisionHitTest;
+		}
+		
+		public function set precisionHitTestDistance(value:Number):void
+		{
+			_precisionHitTestDistance = value;
+			if ( _currentFill )
+			{
+				_currentFill.precisionHitTestDistance = value;
+			}
+			if ( _currentStroke )
+			{
+				_currentStroke.precisionHitTestDistance = value;
+			}
+		
+		}
+		
+		public function get precisionHitTestDistance() : Number
+		{
+			return _precisionHitTestDistance;
+		}
+		
+		
+		/////////////////////////////////////////////////////////////////////////////////////////
+		// PROTECTED
+		/////////////////////////////////////////////////////////////////////////////////////////
+		
+		////////////////////////////////////////
+		// Overridable functions for custom
+		// Fill/Stroke types
+		////////////////////////////////////////
+		
+		protected function getStrokeInstance():Stroke
+		{
+			return new Stroke();
+		}
+		
+		protected function getFillInstance():Fill
+		{
+			return new Fill();
+		}
+		
+		/**
+		 * Creates a Stroke instance and inits its material based on the
+		 * currently set stroke style.
+		 * Result is stored in _currentStroke.
+		 */
+		protected function createStroke():void
+		{
+			if ( _currentStroke != null )
+			{
+				throw( new Error( "Current stroke should be disposed via endStroke() first." ) );
+			}
+			
+			_currentStroke = getStrokeInstance();
+			_currentStroke.precisionHitTest = _precisionHitTest;
+			_currentStroke.precisionHitTestDistance = _precisionHitTestDistance;
+			
+			applyStrokeStyleToGraphic(_currentStroke);
+						
 			_container.addChild(_currentStroke);
 		}
 		
-		private function deg2rad (deg:Number):Number {
-			return deg * Math.PI / 180;
+		/**
+		 * Creates a Fill instance and inits its material based on the
+		 * currently set fill style.
+		 * Result is stored in _currentFill.
+		 */
+		protected function createFill():void
+		{
+			if ( _currentFill != null )
+			{
+				throw( new Error( "Current stroke should be disposed via endFill() first." ) );
+			}
+			
+			_currentFill = getFillInstance();
+			_currentFill.precisionHitTest = _precisionHitTest;
+			_currentFill.precisionHitTestDistance = _precisionHitTestDistance;
+			applyFillStyleToGraphic( _currentFill );
+			
+			_container.addChild(_currentFill);
 		}
-	}
+		
+		protected function applyStrokeStyleToGraphic( graphic:Graphic ):void
+		{
+			if ( _strokeMaterial )
+			{
+				graphic.material = _strokeMaterial;
+			}
+			else if ( _strokeTexture )
+			{
+				graphic.material.fragmentShader = s_textureFragmentShader;
+				graphic.material.textures[0] = _strokeTexture;
+			}
+			graphic.material.color = _strokeColor;
+			graphic.material.alpha = _strokeAlpha;
+		}
+		
+		protected function applyFillStyleToGraphic( graphic:Graphic ):void
+		{
+			if ( _fillMaterial )
+			{
+				graphic.material = _fillMaterial;
+			}
+			else if ( _fillTexture )
+			{
+				graphic.material.fragmentShader = s_textureFragmentShader;
+				graphic.material.textures[0] = _fillTexture;
+			}
+			graphic.material.color = _fillColor;
+			graphic.material.alpha = _fillAlpha;
+		}
+		
+		////////////////////////////////////////
+		// Graphics command functions
+		////////////////////////////////////////
+		
+		
+    }
 }
