@@ -8,7 +8,6 @@
  ******************************************************************************/
 package com.pblabs.rendering2D.ui
 {
-    import flash.display.DisplayObject;
     import flash.events.IEventDispatcher;
     
     /**

@@ -68,45 +68,49 @@ package com.pblabs.starling2D
 			_transformDirty = false;
 		}
 
-		override protected function buildG2DObject():void
+		override protected function buildG2DObject(skipCreation : Boolean = false):void
 		{
-			if(!Starling.context){
+			if(!Starling.context && !skipCreation){
 				InitializationUtilG2D.initializeRenderers.add(buildG2DObject);
 				return;
 			}
-			var texture : Texture;
-			if(!_resource){
-				return;
-			}
-			if(!bitmapData)
-			{
-				texture = ResourceTextureManagerG2D.getTextureByKey( getTextureCacheKey() );
-				if(texture)
-					texture.dispose();
-				return;
-			}
 			
-			texture = ResourceTextureManagerG2D.getTextureByKey( getTextureCacheKey() );
-			if(!gpuObject){
-				if(texture)
-				{
-					gpuObject = new Image(texture);
-				}else{
-					//Create GPU Renderer Object
-					gpuObject = new Image(ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmap.bitmapData, getTextureCacheKey() ));
+			if(!skipCreation){
+				var texture : Texture;
+				if(!_resource){
+					return;
 				}
-			}else{
-				if(( gpuObject as Image).texture)
-					( gpuObject as Image).texture.dispose();
+				if(!bitmapData)
+				{
+					texture = ResourceTextureManagerG2D.getTextureByKey( getTextureCacheKey() );
+					if(texture)
+						texture.dispose();
+					return;
+				}
 				
-				if(!texture)
-					texture = ResourceTextureManagerG2D.getTextureForBitmapData(this.bitmap.bitmapData, getTextureCacheKey());
-				
-				(gpuObject as Image).texture = texture;
-				( gpuObject as Image).readjustSize();
+				texture = ResourceTextureManagerG2D.getTextureByKey( getTextureCacheKey() );
+				if(!gpuObject){
+					if(texture)
+					{
+						gpuObject = new Image(texture);
+					}else{
+						//Create GPU Renderer Object
+						gpuObject = new Image(ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmap.bitmapData, getTextureCacheKey() ));
+					}
+				}else{
+					if(( gpuObject as Image).texture)
+						( gpuObject as Image).texture.dispose();
+					
+					if(!texture)
+						texture = ResourceTextureManagerG2D.getTextureForBitmapData(this.bitmap.bitmapData, getTextureCacheKey());
+					
+					(gpuObject as Image).texture = texture;
+					( gpuObject as Image).readjustSize();
+				}
+				smoothing = _smoothing;
+				skipCreation = true;
 			}
-			smoothing = _smoothing;
-			super.buildG2DObject();
+			super.buildG2DObject(skipCreation);
 		}
 		
 		override protected function onRemove():void

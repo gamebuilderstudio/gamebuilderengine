@@ -11,7 +11,6 @@ package com.pblabs.rendering2D
     import com.pblabs.engine.core.ObjectType;
     import com.pblabs.rendering2D.ui.IUITarget;
     
-    import flash.display.DisplayObjectContainer;
     import flash.geom.Point;
     import flash.geom.Rectangle;
     

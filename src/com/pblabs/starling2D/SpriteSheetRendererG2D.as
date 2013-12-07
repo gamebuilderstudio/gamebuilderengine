@@ -153,31 +153,25 @@ package com.pblabs.starling2D
 			buildG2DObject();
 		}
 
-		override protected function buildG2DObject():void
+		override protected function buildG2DObject(skipCreation : Boolean = false):void
 		{
-			if(!Starling.context){
+			if(!Starling.context && !skipCreation){
 				InitializationUtilG2D.initializeRenderers.add(buildG2DObject);
 				return;
 			}
-			currentTexture = getCurrentTexture();
-			if(!gpuObject && currentTexture){
-				//Create GPU Renderer Object
-				gpuObject = new Image(currentTexture);
-			}else if(gpuObject && currentTexture){
-				(gpuObject as Image).texture = currentTexture;
-				( gpuObject as Image).readjustSize();
-			}
-			
-			if(gpuObject){
-				if(!_initialized){
-					addToScene();
-					_initialized = true;
+			if(!skipCreation){
+				currentTexture = getCurrentTexture();
+				if(!gpuObject && currentTexture){
+					//Create GPU Renderer Object
+					gpuObject = new Image(currentTexture);
+				}else if(gpuObject && currentTexture){
+					(gpuObject as Image).texture = currentTexture;
+					( gpuObject as Image).readjustSize();
 				}
+				smoothing = _smoothing;
+				skipCreation = true;
 			}
-			
-			smoothing = _smoothing;
-			/*if(gpuObject && currentTexture)
-				super.buildG2DObject();*/
+			super.buildG2DObject(skipCreation);
 		}
 		
 	}

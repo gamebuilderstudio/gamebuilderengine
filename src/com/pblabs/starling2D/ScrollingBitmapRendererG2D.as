@@ -85,59 +85,51 @@ package com.pblabs.starling2D
 				_initialDraw = false;
 		}
 		
-		override protected function buildG2DObject():void
+		override protected function buildG2DObject(skipCreation : Boolean = false):void
 		{
-			if(!Starling.context){
+			if(!Starling.context && !skipCreation){
 				InitializationUtilG2D.initializeRenderers.add(buildG2DObject);
 				return;
 			}
 			
-			if(!this.bitmap || !this.bitmap.bitmapData || !resource || !this.isRegistered || this._size.x == 0 || this._size.y == 0)
-				return;
-
-			var legalWidth:int  = getNextPowerOfTwo(bitmapData.width);
-			var legalHeight:int = getNextPowerOfTwo(bitmapData.height);
-			if (autoCorrectImageSize && (legalWidth > bitmapData.width || legalHeight > bitmapData.height))
-			{
-				customBitmapCreated = true;
-				bitmap.bitmapData = increaseBitmapByPowerOfTwo(bitmapData, legalWidth, legalHeight);
-			}else{
-				customBitmapCreated = false;
-			}
-			
-			var texture : Texture = getTexture();
-			if(!gpuObject){
-				if(texture){
-					gpuObject = new Image(texture);
+			if(!skipCreation){
+				if(!this.bitmap || !this.bitmap.bitmapData || !resource || !this.isRegistered || this._size.x == 0 || this._size.y == 0)
+					return;
+	
+				var legalWidth:int  = getNextPowerOfTwo(bitmapData.width);
+				var legalHeight:int = getNextPowerOfTwo(bitmapData.height);
+				if (autoCorrectImageSize && (legalWidth > bitmapData.width || legalHeight > bitmapData.height))
+				{
+					customBitmapCreated = true;
+					bitmap.bitmapData = increaseBitmapByPowerOfTwo(bitmapData, legalWidth, legalHeight);
 				}else{
-					texture = getTexture();
-					if(!texture)
-						return;
-					gpuObject = new Image( texture );
+					customBitmapCreated = false;
 				}
-			}else{
-				if((gpuObject as Image).texture)
-					(gpuObject as Image).texture.dispose();
 				
-				if(texture){
-					(gpuObject as Image).texture = texture;
+				var texture : Texture = getTexture();
+				if(!gpuObject){
+					if(texture){
+						gpuObject = new Image(texture);
+					}else{
+						texture = getTexture();
+						if(!texture)
+							return;
+						gpuObject = new Image( texture );
+					}
 				}else{
-					(gpuObject as Image).texture = getTexture();
+					if((gpuObject as Image).texture)
+						(gpuObject as Image).texture.dispose();
+					
+					if(texture){
+						(gpuObject as Image).texture = texture;
+					}else{
+						(gpuObject as Image).texture = getTexture();
+					}
+					( gpuObject as Image).readjustSize();
 				}
-				( gpuObject as Image).readjustSize();
-			}
-			
-			smoothing = _smoothing;
-
-			if(gpuObject)
-			{
-				updateTransform(true);
 				
-				if(!_initialized){
-					addToScene()
-					_initialized = true;
-				}
-
+				smoothing = _smoothing;
+				
 				textureWidth = (gpuObject as Image).texture.width;
 				textureHeight = (gpuObject as Image).texture.height;
 				if(hRatio == -1)
@@ -147,7 +139,7 @@ package com.pblabs.starling2D
 				//var intialPosX : Number = scrollPosition.x / _size.x;
 				//var intialPosY : Number = scrollPosition.y / _size.y;
 				(gpuObject as Image).texture.repeat = true;
-
+				
 				textureCoordPt1.setTo(0, 0);
 				textureCoordPt2.setTo(hRatio, 0);
 				textureCoordPt3.setTo(0, vRatio);
@@ -156,7 +148,11 @@ package com.pblabs.starling2D
 				(gpuObject as Image).setTexCoords(1, textureCoordPt2);
 				(gpuObject as Image).setTexCoords(2, textureCoordPt3);
 				(gpuObject as Image).setTexCoords(3, textureCoordPt4);
+				
+				skipCreation = true;
 			}
+
+			super.buildG2DObject(skipCreation);
 		}
 		
 		override protected function onAdd():void

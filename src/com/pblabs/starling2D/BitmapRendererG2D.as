@@ -35,23 +35,26 @@ package com.pblabs.starling2D
 			return gpuObject.hitTest(localPos) ? true : false;
 		}
 
-		override protected function buildG2DObject():void
+		override protected function buildG2DObject(skipCreation : Boolean = false):void
 		{
-			if(!Starling.context){
+			if(!Starling.context && !skipCreation){
 				InitializationUtilG2D.initializeRenderers.add(buildG2DObject);
 				return;
 			}
-			if(!gpuObject){
-				//Create GPU Renderer Object
-				gpuObject = new Image( ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmap.bitmapData ) );
-			}else{
-				if(( gpuObject as Image).texture)
-					( gpuObject as Image).texture.dispose();
-				( gpuObject as Image).texture = ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmap.bitmapData );
-				( gpuObject as Image).readjustSize();
+			if(!skipCreation){
+				if(!gpuObject){
+					//Create GPU Renderer Object
+					gpuObject = new Image( ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmap.bitmapData ) );
+				}else{
+					if(( gpuObject as Image).texture)
+						( gpuObject as Image).texture.dispose();
+					( gpuObject as Image).texture = ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmap.bitmapData );
+					( gpuObject as Image).readjustSize();
+				}
+				smoothing = _smoothing;
+				skipCreation = true;
 			}
-			smoothing = _smoothing;
-			super.buildG2DObject();
+			super.buildG2DObject(skipCreation);
 		}
 		
 		protected function modifyTexture(data:Texture):Texture

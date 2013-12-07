@@ -8,8 +8,6 @@
  ******************************************************************************/
 package com.pblabs.starling2D
 {
-	import avmplus.INCLUDE_METHODS;
-	
 	import com.pblabs.engine.PBE;
 	import com.pblabs.engine.resource.ImageResource;
 	
@@ -37,52 +35,47 @@ package com.pblabs.starling2D
 			_smoothing = false;
 		}
 
-		override protected function buildG2DObject():void
+		override protected function buildG2DObject(skipCreation : Boolean = false):void
 		{
-			if(!Starling.context){
+			if(!Starling.context && !skipCreation){
 				InitializationUtilG2D.initializeRenderers.add(buildG2DObject);
 				return;
 			}
 			
-			if(!this.bitmap || !this.bitmap.bitmapData)
-				return;
-			
-			if(!resource){
-				super.buildG2DObject();
-				return;
-			}
-			var texture : Texture = ResourceTextureManagerG2D.getTextureForResource(resource);
-			if(!gpuObject){
-				if(texture){
-					gpuObject = new Image(texture);
-				}else{
-					texture = ResourceTextureManagerG2D.getTextureForResource(resource);
-					if(!texture)
-						return;
-					gpuObject = new Image( texture );
-				}
-			}else{
-				if((gpuObject as Image).texture)
-					(gpuObject as Image).texture.dispose();
+			if(!skipCreation){
+				if(!this.bitmap || !this.bitmap.bitmapData)
+					return;
 				
-				if(texture){
-					(gpuObject as Image).texture = texture;
+				if(!resource){
+					super.buildG2DObject();
+					return;
+				}
+				var texture : Texture = ResourceTextureManagerG2D.getTextureForResource(resource);
+				if(!gpuObject){
+					if(texture){
+						gpuObject = new Image(texture);
+					}else{
+						texture = ResourceTextureManagerG2D.getTextureForResource(resource);
+						if(!texture)
+							return;
+						gpuObject = new Image( texture );
+					}
 				}else{
-					(gpuObject as Image).texture = ResourceTextureManagerG2D.getTextureForResource(resource);
+					if((gpuObject as Image).texture)
+						(gpuObject as Image).texture.dispose();
+					
+					if(texture){
+						(gpuObject as Image).texture = texture;
+					}else{
+						(gpuObject as Image).texture = ResourceTextureManagerG2D.getTextureForResource(resource);
+					}
+					( gpuObject as Image).readjustSize();
 				}
-				( gpuObject as Image).readjustSize();
-			}
-			
-			smoothing = _smoothing;
-			if(gpuObject){
-				updateTransform(true);
 				
-				if(!_initialized){
-					addToScene()
-					_initialized = true;
-				}
+				smoothing = _smoothing;
+				skipCreation = true;
 			}
-			//super.buildG2DObject();
+			super.buildG2DObject(skipCreation);
 		}
 		
 		//----------------------------------------------------------

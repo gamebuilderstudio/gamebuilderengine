@@ -41,43 +41,45 @@ package com.pblabs.starling2D
 			return gpuObject.hitTest(localPos) ? true : false;
 		}
 
-		override protected function buildG2DObject():void
+		override protected function buildG2DObject(skipCreation : Boolean = false):void
 		{
-			if(!Starling.context){
+			if(!Starling.context && !skipCreation){
 				InitializationUtilG2D.initializeRenderers.add(buildG2DObject);
 				return;
 			}
 
-			var texture : Texture = ResourceTextureManagerG2D.getTextureByKey( getTextureCacheKey() );
-			try{
-				if((!bitmap || !bitmap.bitmapData) && !texture)
-				{
+			if(!skipCreation){
+				var texture : Texture = ResourceTextureManagerG2D.getTextureByKey( getTextureCacheKey() );
+				try{
+					if((!bitmap || !bitmap.bitmapData) && !texture)
+					{
+						return;
+					}
+				}catch(e : Error){
 					return;
 				}
-			}catch(e : Error){
-				return;
-			}
-			
-			if(!gpuObject){
-				if(texture)
-				{
-					gpuObject = new Image(texture);
+				
+				if(!gpuObject){
+					if(texture)
+					{
+						gpuObject = new Image(texture);
+					}else{
+						//Create GPU Renderer Object
+						gpuObject = new Image(ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmap.bitmapData, getTextureCacheKey() ));
+					}
 				}else{
-					//Create GPU Renderer Object
-					gpuObject = new Image(ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmap.bitmapData, getTextureCacheKey() ));
+					if(( gpuObject as Image).texture)
+						( gpuObject as Image).texture.dispose();
+					if(!texture)
+					{
+						(gpuObject as Image).texture = texture = ResourceTextureManagerG2D.getTextureForBitmapData(this.bitmap.bitmapData, getTextureCacheKey());
+					}else{
+						(gpuObject as Image).texture = texture;
+					}
+					( gpuObject as Image).readjustSize();
 				}
-			}else{
-				if(( gpuObject as Image).texture)
-					( gpuObject as Image).texture.dispose();
-				if(!texture)
-				{
-					(gpuObject as Image).texture = texture = ResourceTextureManagerG2D.getTextureForBitmapData(this.bitmap.bitmapData, getTextureCacheKey());
-				}else{
-					(gpuObject as Image).texture = texture;
-				}
-				( gpuObject as Image).readjustSize();
+				smoothing = _smoothing;
 			}
-			smoothing = _smoothing;
 			super.buildG2DObject();
 		}
 		

@@ -89,27 +89,30 @@ package com.pblabs.starling2D
 				Starling.current.stage.removeEventListener(TouchEvent.TOUCH, onStageTouch);
 		}
 
-		override protected function buildG2DObject():void
+		override protected function buildG2DObject(skipCreation : Boolean = false):void
 		{
-			if(!Starling.context){
+			if(!Starling.context && !skipCreation){
 				InitializationUtilG2D.initializeRenderers.add(buildG2DObject);
 				return;
 			}
-			if(!isComposedTextData && this.bitmap.bitmapData)
-			{
-			
-				if(!gpuObject){
-					//Create GPU Renderer Object
-					gpuObject = new Image( ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmap.bitmapData ) );
-				}else{
-					if(( gpuObject as Image).texture)
-						( gpuObject as Image).texture.dispose();
-					( gpuObject as Image).texture = ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmap.bitmapData );
-					( gpuObject as Image).readjustSize();
+			if(!skipCreation){
+				if(!isComposedTextData && this.bitmap.bitmapData)
+				{
+				
+					if(!gpuObject){
+						//Create GPU Renderer Object
+						gpuObject = new Image( ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmap.bitmapData ) );
+					}else{
+						if(( gpuObject as Image).texture)
+							( gpuObject as Image).texture.dispose();
+						( gpuObject as Image).texture = ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmap.bitmapData );
+						( gpuObject as Image).readjustSize();
+					}
 				}
+				smoothing = _smoothing;
+				skipCreation = true;
 			}
-			smoothing = _smoothing;
-			super.buildG2DObject();
+			super.buildG2DObject(skipCreation);
 		}
 		
 		protected function onStageTouch(event : TouchEvent):void

@@ -20,13 +20,13 @@ package com.pblabs.starling2D
 	import starling.display.DisplayObject;
 	
 	/**
-	 * Base renderer for Rendering Starling GPU 2D DisplayObjects. It wraps a starling DisplayObject, allows it
+	 * Abstract base renderer for Rendering Starling GPU 2D DisplayObjects. It wraps a starling DisplayObject, allows it
 	 * to be controlled by PropertyReferences, and hooks it into a PBE scene.
 	 *
-	 * <p>The various other renderers like BitmapRenderer inherit from DisplayObjectRendererG2D,
+	 * <p>The various other renderers like BitmapRendererG2D inherit from DisplayObjectRendererG2D,
 	 * and rely on it for basic GPU functionality.</p>
 	 *
-	 * <p>Normally, the DisplayObjectRenderer tries to update itself
+	 * <p>Normally, the DisplayObjectRendererG2D tries to update itself
 	 * every frame. However, you can suppress this by setting
 	 * registerForUpdates to false, in which case you will have to
 	 * call onFrame()/updateTransform() manually if you change
@@ -152,12 +152,15 @@ package com.pblabs.starling2D
 		}
 		
 
-		protected function buildG2DObject():void
+		protected function buildG2DObject(skipCreation : Boolean = false):void
 		{
-			if(!Starling.context){
+			if(!Starling.context && !skipCreation){
 				InitializationUtilG2D.initializeRenderers.add(buildG2DObject);
 				return;
 			}
+			
+			//Subclasses should create gpuObject Here
+			//If(!skipCreation){ //Creation Code }
 			
 			if(gpuObject)
 			{
