@@ -13,6 +13,8 @@ package com.pblabs.starling2D
     
     import flash.display.StageAlign;
     import flash.display.StageScaleMode;
+    import flash.display3D.Context3DProfile;
+    import flash.display3D.Context3DRenderMode;
     import flash.events.Event;
     import flash.geom.Rectangle;
     import flash.utils.Dictionary;
@@ -42,7 +44,7 @@ package com.pblabs.starling2D
 		private static var _starlingViewMap : Dictionary = new Dictionary();
 		private static var _stage3DIndex : int = -1;
 		
-		public function SceneViewG2D()
+		public function SceneViewG2D(renderMode : String = Context3DRenderMode.AUTO, profile : String = Context3DProfile.BASELINE_CONSTRAINED)
 		{
 			if(PBE.mainStage)
 			{
@@ -62,7 +64,7 @@ package com.pblabs.starling2D
 				_stage3DIndex = _stage3DIndex + 1;
 				if(PBE.mainStage.stage3Ds[_stage3DIndex].context3D)
 					PBE.mainStage.stage3Ds[_stage3DIndex].context3D.clear();
-				_starlingInstance = new Starling(Sprite, PBE.mainStage.stage, new Rectangle(0,0, width, height), PBE.mainStage.stage3Ds[_stage3DIndex], "auto", "baselineConstrained", true);
+				_starlingInstance = new Starling(Sprite, PBE.mainStage.stage, new Rectangle(0,0, width, height), PBE.mainStage.stage3Ds[_stage3DIndex], renderMode, profile, true);
 				_starlingInstance.addEventListener("context3DCreate", onContextCreated);
 				_starlingInstance.addEventListener("rootCreated", onRootInitialized);
 				if(!PBE.IS_SHIPPING_BUILD){
