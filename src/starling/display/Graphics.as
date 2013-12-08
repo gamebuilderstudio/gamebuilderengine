@@ -10,7 +10,6 @@ package starling.display
 	import starling.display.graphics.RoundedRectangle;
 	import starling.display.graphics.Stroke;
 	import starling.display.graphics.StrokeVertex;
-
 	import starling.display.materials.IMaterial;
 	import starling.display.shaders.fragment.TextureFragmentShader;
 	import starling.display.util.CurveUtil;
@@ -51,6 +50,8 @@ package starling.display
      	protected var _precisionHitTest			:Boolean = false;
 		protected var _precisionHitTestDistance	:Number = 0; 
 		
+		protected var _graphicChildren : Vector.<DisplayObject> = new Vector.<DisplayObject>();
+		
 		
         public function Graphics( displayObjectContainer:DisplayObjectContainer )
 		{
@@ -63,13 +64,14 @@ package starling.display
 		
 		public function clear():void
 		{
-			while ( _container.numChildren > 0 )
+			var len : int = _graphicChildren.length;
+			for(var i : int = 0; i < len; i++)
 			{
-				var child:DisplayObject = _container.getChildAt( 0 );
+				var child : DisplayObject = _graphicChildren.splice( i, 1)[0];
 				child.dispose();
-				_container.removeChildAt( 0 );
+				if(_container.contains(child))
+					_container.removeChild(child)
 			}
-			
 			_penPosX = NaN;
 			_penPosY = NaN;
 			
@@ -149,6 +151,10 @@ package starling.display
 			{
 				_currentFill.dispose();
 				_container.removeChild( _currentFill );
+				var childIndex : int = _graphicChildren.indexOf(_currentFill);
+				if(childIndex != -1)
+					_graphicChildren.splice( childIndex, 1);
+
 			}
 			_currentFill = null;
 		}
@@ -375,6 +381,7 @@ package starling.display
 				nGon.uvMatrix = m;
 				
 				_container.addChild(nGon);
+				_graphicChildren.push(nGon);
 			}
 			
 			// Draw the stroke
@@ -439,6 +446,7 @@ package starling.display
 				plane.x = x;
 				plane.y = y;
 				_container.addChild( plane );
+				_graphicChildren.push( plane );
 			}
 			
 			// Draw the stroke
@@ -495,6 +503,7 @@ package starling.display
 				roundedRect.x = x;
 				roundedRect.y = y;
 				_container.addChild(roundedRect);
+				_graphicChildren.push(roundedRect);
 			}
 			_currentFill = storedFill;
 			
@@ -606,6 +615,7 @@ package starling.display
 			applyStrokeStyleToGraphic(_currentStroke);
 						
 			_container.addChild(_currentStroke);
+			_graphicChildren.push(_currentStroke);
 		}
 		
 		/**
@@ -626,6 +636,7 @@ package starling.display
 			applyFillStyleToGraphic( _currentFill );
 			
 			_container.addChild(_currentFill);
+			_graphicChildren.push(_currentFill);
 		}
 		
 		protected function applyStrokeStyleToGraphic( graphic:Graphic ):void
