@@ -378,7 +378,6 @@ package com.pblabs.starling2D
 					globalPos.y = starlingInstance.stage.stageHeight * (globalPos.y - starlingInstance.viewPort.y) / starlingInstance.viewPort.height;
 				}
 			}
-			globalPos = transformScreenToWorld(globalPos);
 			return globalPos;
 		}
 		
