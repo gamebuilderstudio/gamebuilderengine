@@ -101,6 +101,7 @@ package com.pblabs.engine.core
 			if(!objectContext.Game.Screen) objectContext.Game.Screen = new DataComponent();
 			if(!objectContext.Game.Level) objectContext.Game.Level = new DataComponent();
 			if(!objectContext.Game.Touch) objectContext.Game.Touch = new DataComponent();
+			if(!objectContext.Game.Controllers) objectContext.Game.Controllers = new DataComponent();
 
 			calculateScreenSize();
 			
@@ -115,6 +116,44 @@ package com.pblabs.engine.core
 			globalExpressionEntity.addComponent(objectContext.Game.Screen, "Screen");
 			globalExpressionEntity.addComponent(objectContext.Game.Level, "Level");
 			globalExpressionEntity.addComponent(objectContext.Game.Touch, "Touch");
+			globalExpressionEntity.addComponent(objectContext.Game.Controllers, "Controllers");
+			
+			objectContext.Game.Controllers.deviceCount = 0;
+			objectContext.Game.Controllers.isSupported = false;
+			for(var i : int = 1; i <= 4; i++){
+				objectContext.Game.Controllers["Controller"+i] = {active: false, ready: false, removed: false, id:"", name:""};
+				//Ouya Support
+				objectContext.Game.Controllers["Controller"+i].O = {value:0};
+				objectContext.Game.Controllers["Controller"+i].U = {value:0};
+				objectContext.Game.Controllers["Controller"+i].Y = {value:0};
+				objectContext.Game.Controllers["Controller"+i].A = {value:0};
+
+				//PS3/PS4 Support
+				objectContext.Game.Controllers["Controller"+i].Triangle = {value:0};
+				objectContext.Game.Controllers["Controller"+i].Square = {value:0};
+				objectContext.Game.Controllers["Controller"+i].Circle = {value:0};
+				objectContext.Game.Controllers["Controller"+i].Cross = {value:0};
+
+				//Xbox360 Support
+				objectContext.Game.Controllers["Controller"+i].A = {value:0};
+				objectContext.Game.Controllers["Controller"+i].B = {value:0};
+				objectContext.Game.Controllers["Controller"+i].X = {value:0};
+				objectContext.Game.Controllers["Controller"+i].Y = {value:0};
+
+				objectContext.Game.Controllers["Controller"+i].Left_Trigger = {distance:0};
+				objectContext.Game.Controllers["Controller"+i].Right_Trigger = {distance:0};
+				objectContext.Game.Controllers["Controller"+i].Left_Stick = {value:0, x:0, y:0, angle:0, distance:0};
+				objectContext.Game.Controllers["Controller"+i].Right_Stick = {value:0, x:0, y:0, angle:0, distance:0};
+				objectContext.Game.Controllers["Controller"+i].Left_Button = {value:0};
+				objectContext.Game.Controllers["Controller"+i].Right_Button = {value:0};
+				objectContext.Game.Controllers["Controller"+i].DPAD_Up = {value:0};
+				objectContext.Game.Controllers["Controller"+i].DPAD_Down = {value:0};
+				objectContext.Game.Controllers["Controller"+i].DPAD_Left = {value:0};
+				objectContext.Game.Controllers["Controller"+i].DPAD_Right = {value:0};
+
+				objectContext.Game.Controllers["Controller"+i].START = {value:0};
+				objectContext.Game.Controllers["Controller"+i].BACK = {value:0};
+			}
 		}
 		
 		private function calculateScreenSize():void
