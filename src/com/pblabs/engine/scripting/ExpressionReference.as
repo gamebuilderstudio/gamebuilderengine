@@ -317,7 +317,7 @@ class ExpressionUtils{
 	
 	public static function randomRange(min : Number, max : Number):Number
 	{
-		return (Math.floor(Math.random() * (max - min + 1)) + min);
+		return (fastFloor(Math.random() * (max - min + 1)) + min);
 	}
 	
 	public static function distanceOfPoint(pointA : Point, pointB : Point):Number
