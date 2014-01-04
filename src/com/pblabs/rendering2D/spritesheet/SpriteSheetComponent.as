@@ -232,6 +232,8 @@ package com.pblabs.rendering2D.spritesheet
 				return cachedFrames.frames;
 			}
 
+			if(_divider && _divider.frameCount == 0)
+				return null;
 			// no divider means treat the image as a single frame
             if (!_divider)
             {

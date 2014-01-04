@@ -11,8 +11,6 @@ package com.pblabs.starling2D.spritesheet
 	import com.pblabs.rendering2D.spritesheet.FrameNote;
 	import com.pblabs.rendering2D.spritesheet.SpriteContainerComponent;
 	
-	import flash.display.BitmapData;
-	
 	import starling.textures.Texture;
 	
 	public class SpriteContainerComponentG2D extends SpriteContainerComponent
@@ -21,8 +19,6 @@ package com.pblabs.starling2D.spritesheet
 		{
 			super();
 		}
-		
-		override public function getFrame(index:int, direction:Number=0.0):BitmapData{ return super.getFrame(index, direction); }
 		
 		/**
 		 * Gets the Starling Texture for a frame at a specified index.
@@ -81,7 +77,6 @@ package com.pblabs.starling2D.spritesheet
 			return null;
 		}
 		
-		override protected function getRawFrame(index:int):BitmapData{ return super.getRawFrame(index); }
 		/**
 		 * Gets the frame Texture at the specified index. This does not take direction into
 		 * account.

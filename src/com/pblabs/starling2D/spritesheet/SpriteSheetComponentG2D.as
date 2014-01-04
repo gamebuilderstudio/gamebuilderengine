@@ -49,8 +49,6 @@ package com.pblabs.starling2D.spritesheet
 		
 		override public function getFrame(index:int, direction:Number=0.0):BitmapData{ return null; }
 
-		override protected function getRawFrame(index:int):BitmapData{ return super.getRawFrame(index); }
-
 		override protected function getSourceFrames() : Array
 		{
 			if(!Starling.context){
@@ -64,7 +62,7 @@ package com.pblabs.starling2D.spritesheet
 			var _frames:Array;
 			
 			// image isn't loaded, can't do anything yet
-			if (!_image || !_image.bitmapData)
+			if (!_image || !_image.bitmapData || (_divider && _divider.frameCount == 0))
 				return null;
 			
 			var cachedFrames : CachedFramesData = getCachedFrames();

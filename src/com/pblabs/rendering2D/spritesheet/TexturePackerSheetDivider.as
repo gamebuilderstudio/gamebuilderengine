@@ -8,7 +8,6 @@
  ******************************************************************************/
 package com.pblabs.rendering2D.spritesheet
 {
-    import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.resource.JSONResource;
     import com.pblabs.engine.resource.ResourceEvent;
     import com.pblabs.rendering2D.spritesheet.ISpriteSheet;
@@ -25,7 +24,7 @@ package com.pblabs.rendering2D.spritesheet
     {
 		private var _frames : Vector.<CoordinateDataVO>;
 
-		private var _frameCache : Dictionary = new Dictionary();
+		private static var _frameCache : Dictionary = new Dictionary();
 		/**
 		 * Grab the frame area rectangle by the filename.
 		 */
