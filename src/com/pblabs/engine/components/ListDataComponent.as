@@ -40,8 +40,7 @@ package com.pblabs.engine.components
 	   
 	   public function deserialize(xml:XML):*
 	   {
-		   var newData : Array = new Array();
-		   source = Serializer.instance.deserialize( newData, xml.source[0]);
+		   source = Serializer.instance.deserialize( [], xml.source[0]);
 		   return this;
 	   }
 	   
@@ -114,6 +113,13 @@ package com.pblabs.engine.components
 		   }
 	   }
 	   
+	   public function get count():int { return _data.length; }
+	   public function set count(val : int):void{}
+
+	   private var _tempEmptyObject : Object = {};
+	   public function get lastEntry():Object { return _data && _data.length > 0 ? _data[_data.length-1] : _tempEmptyObject; }
+	   public function set lastEntry(val : Object):void{}
+
 	   override protected function onAdd():void
 	   {
 		   super.onAdd();
