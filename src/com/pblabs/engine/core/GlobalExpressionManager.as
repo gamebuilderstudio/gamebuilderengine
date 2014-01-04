@@ -121,7 +121,7 @@ package com.pblabs.engine.core
 			objectContext.Game.Controllers.deviceCount = 0;
 			objectContext.Game.Controllers.isSupported = false;
 			for(var i : int = 1; i <= 4; i++){
-				objectContext.Game.Controllers["Controller"+i] = {active: false, ready: false, removed: false, id:"", name:""};
+				objectContext.Game.Controllers["Controller"+i] = {active: 0, ready: 0, removed: 0, id:"", name:""};
 				//Ouya Support
 				objectContext.Game.Controllers["Controller"+i].O = {value:0};
 				objectContext.Game.Controllers["Controller"+i].U = {value:0};
@@ -138,7 +138,6 @@ package com.pblabs.engine.core
 				objectContext.Game.Controllers["Controller"+i].A = {value:0};
 				objectContext.Game.Controllers["Controller"+i].B = {value:0};
 				objectContext.Game.Controllers["Controller"+i].X = {value:0};
-				objectContext.Game.Controllers["Controller"+i].Y = {value:0};
 
 				objectContext.Game.Controllers["Controller"+i].Left_Trigger = {distance:0};
 				objectContext.Game.Controllers["Controller"+i].Right_Trigger = {distance:0};
