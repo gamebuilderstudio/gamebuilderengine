@@ -9,6 +9,8 @@
 package com.pblabs.rendering2D
 {
 	import com.pblabs.engine.PBE;
+	import com.pblabs.engine.PBUtil;
+	
 	import flash.display.BitmapData;
 	import flash.display.Sprite;
 	import flash.geom.Matrix;
@@ -54,9 +56,11 @@ package com.pblabs.rendering2D
 		override public function set bitmapData(value:BitmapData):void
 		{
 			super.bitmapData = value;
+			if(!PBE.IN_EDITOR && _displayObject && bitmap)
+				bitmap.visible = false;
 			_painted = false;
 		}
-
+		
 		public override function isPixelPathActive(objectToScreen:Matrix):Boolean
 		{
 			return false;
@@ -102,32 +106,51 @@ package com.pblabs.rendering2D
 			// determine the right drawing rectangle area of the bitmapData object with all display info 
 			// for the copyPixel command
 			// determine x offset of rectangle draw area 
-			var dx:Number = _scratchPosition.x - (Math.floor(_scratchPosition.x/originalBitmapData.width)*originalBitmapData.width);
+			var dx:Number = x - (Math.floor(x/bitmapData.width)*bitmapData.width);
 			//if(!_painted)
 			//dx += scrollPosition.x;
 			scrollRect.x = dx;
-			if((int(dx) % originalBitmapData.width) == 0)
+			if((int(dx) % bitmapData.width) == 0)
 				scrollRect.x = 0;
 			// determine y offset of rectangle draw area 
-			var dy:Number = _scratchPosition.y - (Math.floor((_scratchPosition.y)/originalBitmapData.height)*originalBitmapData.height);
+			var dy:Number = y - (Math.floor((y)/bitmapData.height)*bitmapData.height);
 			//if(!_painted)
 			//dy += scrollPosition.y;
 			scrollRect.y = dy;			
-			if((int(dy) % originalBitmapData.height) == 0)
+			if((int(dy) % bitmapData.height) == 0)
 				scrollRect.y = 0;
 			
 			_m.identity();
 			_m.translate(scrollRect.x, scrollRect.y);
 			// Position to match scene view.
 			(_displayObject as Sprite).graphics.clear();
-			(_displayObject as Sprite).graphics.beginBitmapFill(originalBitmapData, _m, true, true); 
-			(_displayObject as Sprite).graphics.drawRect(0,0, size.x, size.y);
+			(_displayObject as Sprite).graphics.beginBitmapFill(bitmapData, _m, true, true); 
+			(_displayObject as Sprite).graphics.drawRect(0,0, _size.x, _size.y);
 			(_displayObject as Sprite).graphics.endFill();
+			_displayObject.scaleX = _scale.x;
+			_displayObject.scaleY = _scale.y;
 			
 			if(!_painted)
 			{
 				_painted = true;
 			}
 		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function updateTransform(updateProps:Boolean = false):void
+		{
+			if(!displayObject || !bitmapData)
+				return;
+			
+			super.updateTransform(updateProps);
+			
+			_displayObject.scaleX = _scale.x;
+			_displayObject.scaleY = _scale.y;
+			
+			_transformDirty = false;
+		}
+
 	}
 }
