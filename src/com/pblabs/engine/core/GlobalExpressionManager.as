@@ -133,9 +133,9 @@ package com.pblabs.engine.core
 				objectContext.Game.Controllers["Controller"+i].Square = {value:0};
 				objectContext.Game.Controllers["Controller"+i].Circle = {value:0};
 				objectContext.Game.Controllers["Controller"+i].Cross = {value:0};
+				objectContext.Game.Controllers["Controller"+i].Select = {value:0};
 
 				//Xbox360 Support
-				objectContext.Game.Controllers["Controller"+i].A = {value:0};
 				objectContext.Game.Controllers["Controller"+i].B = {value:0};
 				objectContext.Game.Controllers["Controller"+i].X = {value:0};
 
@@ -150,8 +150,8 @@ package com.pblabs.engine.core
 				objectContext.Game.Controllers["Controller"+i].DPAD_Left = {value:0};
 				objectContext.Game.Controllers["Controller"+i].DPAD_Right = {value:0};
 
-				objectContext.Game.Controllers["Controller"+i].START = {value:0};
-				objectContext.Game.Controllers["Controller"+i].BACK = {value:0};
+				objectContext.Game.Controllers["Controller"+i].Start = {value:0};
+				objectContext.Game.Controllers["Controller"+i].Back = {value:0};
 			}
 		}
 		
