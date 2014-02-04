@@ -40,11 +40,12 @@ package com.pblabs.starling2D
 		private var _gpuCanvasContainer : Sprite;
 		
 		private var _delayedCalls : Vector.<Object> = new Vector.<Object>();
+		private var _displayObjectList : Vector.<DisplayObject> = new Vector.<DisplayObject>();
 		
 		private static var _starlingViewMap : Dictionary = new Dictionary();
 		private static var _stage3DIndex : int = -1;
 		
-		public function SceneViewG2D(renderMode : String = Context3DRenderMode.AUTO, profile : String = Context3DProfile.BASELINE_CONSTRAINED)
+		public function SceneViewG2D(renderMode : String = Context3DRenderMode.AUTO, profile : String = Context3DProfile.BASELINE_CONSTRAINED, forceNewInstanceCreation : Boolean = false)
 		{
 			if(PBE.mainStage)
 			{
@@ -61,12 +62,23 @@ package com.pblabs.starling2D
 				Starling.multitouchEnabled = true; // useful on mobile devices
 				Starling.handleLostContext = true; // deactivate on mobile devices (to save memory)
 				
-				_stage3DIndex = _stage3DIndex + 1;
-				if(PBE.mainStage.stage3Ds[_stage3DIndex].context3D)
-					PBE.mainStage.stage3Ds[_stage3DIndex].context3D.clear();
-				_starlingInstance = new Starling(Sprite, PBE.mainStage.stage, new Rectangle(0,0, width, height), PBE.mainStage.stage3Ds[_stage3DIndex], renderMode, profile, true);
-				_starlingInstance.addEventListener("context3DCreate", onContextCreated);
-				_starlingInstance.addEventListener("rootCreated", onRootInitialized);
+				if(Starling.current && !forceNewInstanceCreation){
+					_starlingInstance = Starling.current;
+					onContextCreated();
+					onRootInitialized();
+					_stage3DIndex = PBE.mainStage.stage3Ds.indexOf(_starlingInstance.context);
+				}else{
+					if(!Starling.current || forceNewInstanceCreation){
+						_stage3DIndex = _stage3DIndex + 1;
+						if(PBE.mainStage.stage3Ds[_stage3DIndex].context3D)
+							PBE.mainStage.stage3Ds[_stage3DIndex].context3D.clear();
+						
+						_starlingInstance = new Starling(Sprite, PBE.mainStage.stage, new Rectangle(0,0, width, height), PBE.mainStage.stage3Ds[_stage3DIndex], renderMode, profile, true);
+						_starlingInstance.addEventListener("context3DCreate", onContextCreated);
+						_starlingInstance.addEventListener("rootCreated", onRootInitialized);
+					}
+				}
+				
 				if(!PBE.IS_SHIPPING_BUILD){
 					_starlingInstance.enableErrorChecking = true;
 					_starlingInstance.simulateMultitouch = true;
@@ -92,7 +104,7 @@ package com.pblabs.starling2D
 				_delayedCalls.push( {func : addDisplayObject, params: [dObj] } );
 				return;
 			}
-				
+			_displayObjectList.push( dObj as DisplayObject );	
 			_gpuCanvasContainer.addChild( dObj as DisplayObject );
 		}
 		
@@ -103,7 +115,12 @@ package com.pblabs.starling2D
 				return;
 			}
 
-			_gpuCanvasContainer.removeChildren(0);
+			var len : int = _displayObjectList.length;
+			for(var i : int = 0; i < len; i++)
+			{
+				if(_gpuCanvasContainer.contains(_displayObjectList[i]))
+					_gpuCanvasContainer.removeChild( _displayObjectList[i] );
+			}
 		}
 		
 		public function removeDisplayObject(dObj:Object):void
@@ -115,13 +132,17 @@ package com.pblabs.starling2D
 
 			if(_gpuCanvasContainer.contains(dObj as DisplayObject))
 				_gpuCanvasContainer.removeChild( dObj as DisplayObject );
+			
+			var dIndex : int = _displayObjectList.indexOf(dObj as DisplayObject);
+			if(dIndex != -1)
+				_displayObjectList.splice(dIndex,1);	
 		}
 		
 		public function getDisplayObjectIndex(dObj:Object):int
 		{
 			if(!_gpuCanvasContainer) 
 				return -1;
-			return _gpuCanvasContainer.getChildIndex( dObj as DisplayObject );
+			return _displayObjectList.indexOf(dObj as DisplayObject);
 		}
 
 		public function setDisplayObjectIndex(dObj:Object, index:int):void
@@ -143,6 +164,7 @@ package com.pblabs.starling2D
 						var tmpData : Object = _pendingDisplayObjectAdditions[i];
 						if(_gpuCanvasContainer.numChildren >= tmpData.position){
 							_gpuCanvasContainer.addChildAt(tmpData.displayObject as DisplayObject, tmpData.position);
+							_displayObjectList.splice(tmpData.position, 0, tmpData.displayObject as DisplayObject);
 							_pendingDisplayObjectAdditions.splice(0, 1);
 						}else{
 							tmpList.push(_pendingDisplayObjectAdditions.splice(0, 1));
@@ -196,8 +218,8 @@ package com.pblabs.starling2D
 			
 		}
 		
-		private function onRootInitialized(event : * ):void{
-			_gpuCanvasContainer = event.data as Sprite;
+		private function onRootInitialized(event : * = null):void{
+			_gpuCanvasContainer = _starlingInstance.root as Sprite;
 			for each(var calls : Object in _delayedCalls)
 			{
 				(calls.func as Function).apply(this, calls.params);
@@ -218,10 +240,10 @@ package com.pblabs.starling2D
 			PBE.inputManager.simulateTouch(_touches);
 		}
 		
-		private function onContextCreated(event : *):void{
+		private function onContextCreated(event : * = null):void{
 			// set framerate to 32 in software mode
-			if (Starling.context.driverInfo.toLowerCase().indexOf("software") != -1) {
-				Starling.current.nativeStage.frameRate = 32;
+			if (_starlingInstance.context.driverInfo.toLowerCase().indexOf("software") != -1) {
+				_starlingInstance.nativeStage.frameRate = 32;
 			}
 		}
 		
