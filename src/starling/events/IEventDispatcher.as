@@ -7,7 +7,7 @@ package starling.events
 	public interface IEventDispatcher
 	{
 		
-		function addEventListener (type:String, listener:Function, useCapture:Boolean=false, priority:int=0, useWeakReference:Boolean=false) : void;
+		function addEventListener (type:String, listener:Function) : void;
 
 		/**
 		 * Dispatches an event into the event flow. The event target is the
@@ -19,7 +19,7 @@ package starling.events
 		 * @playerversion	Flash 9
 		 * @playerversion	Lite 4
 		 */
-		function dispatchEvent (event:Event) : Boolean;
+		function dispatchEvent (event:Event) : void;
 
 		/**
 		 * Checks whether the EventDispatcher object has any listeners registered for a specific type 
@@ -44,7 +44,7 @@ package starling.events
 		 * @playerversion	Flash 9
 		 * @playerversion	Lite 4
 		 */
-		function removeEventListener (type:String, listener:Function, useCapture:Boolean=false) : void;
+		function removeEventListener (type:String, listener:Function) : void;
 
 		/**
 		 * Checks whether an event listener is registered with this EventDispatcher object or any of its ancestors for the specified event type. This method returns true if an event listener is triggered during any phase of the event flow when an event of the specified type is dispatched to this EventDispatcher object or any of its descendants.
@@ -55,6 +55,6 @@ package starling.events
 		 * @playerversion	Flash 9
 		 * @playerversion	Lite 4
 		 */
-		function willTrigger (type:String) : Boolean;
+		//function willTrigger (type:String) : Boolean;
 	}
 }

@@ -391,7 +391,7 @@ package starling.display
         // part of the stage, (b) it must not cause memory leaks when the user forgets to call
         // dispose and (c) there might be multiple listeners for this event.
         
-        public override function addEventListener(type:String, listener:Function, useCapture:Boolean=false, priority:int=0, useWeakReference:Boolean=false):void
+        public override function addEventListener(type:String, listener:Function):void
         {
             if (type == Event.ENTER_FRAME && !hasEventListener(type))
             {
@@ -403,7 +403,7 @@ package starling.display
             super.addEventListener(type, listener);
         }
         
-        public override function removeEventListener(type:String, listener:Function, useCapture:Boolean=false):void
+        public override function removeEventListener(type:String, listener:Function):void
         {
             super.removeEventListener(type, listener);
             
