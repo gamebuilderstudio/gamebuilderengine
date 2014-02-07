@@ -59,9 +59,6 @@ package com.pblabs.starling2D
 				PBE.mainStage.scaleMode = StageScaleMode.NO_SCALE;
 				PBE.mainStage.align = StageAlign.TOP_LEFT;
 				
-				Starling.multitouchEnabled = true; // useful on mobile devices
-				Starling.handleLostContext = true; // deactivate on mobile devices (to save memory)
-				
 				if(Starling.current && !forceNewInstanceCreation){
 					_starlingInstance = Starling.current;
 					onContextCreated();
@@ -69,6 +66,9 @@ package com.pblabs.starling2D
 					_stage3DIndex = PBE.mainStage.stage3Ds.indexOf(_starlingInstance.context);
 				}else{
 					if(!Starling.current || forceNewInstanceCreation){
+						Starling.multitouchEnabled = true; // useful on mobile devices
+						Starling.handleLostContext = true; // deactivate on mobile devices (to save memory)
+						
 						_stage3DIndex = _stage3DIndex + 1;
 						if(PBE.mainStage.stage3Ds[_stage3DIndex].context3D)
 							PBE.mainStage.stage3Ds[_stage3DIndex].context3D.clear();
