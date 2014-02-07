@@ -228,7 +228,7 @@ package starling.core
             mNativeStage.addChild(mNativeOverlay);
             mNativeStageContentScaleFactor = 1.0;
             mTouchProcessor = new TouchProcessor(mStage);
-            //mJuggler = new Juggler();
+            mJuggler = new Juggler();
             mAntiAliasing = 0;
             mSimulateMultitouch = false;
             mEnableErrorChecking = false;
@@ -379,7 +379,7 @@ package starling.core
             
             mTouchProcessor.advanceTime(passedTime);
             mStage.advanceTime(passedTime);
-            //mJuggler.advanceTime(passedTime);
+            mJuggler.advanceTime(passedTime);
         }
         
         /** Renders the complete display list. Before rendering, the context is cleared; afterwards,
