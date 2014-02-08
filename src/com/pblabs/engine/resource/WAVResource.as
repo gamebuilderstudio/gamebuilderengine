@@ -8,16 +8,10 @@
  ******************************************************************************/
 package com.pblabs.engine.resource
 {
-    import com.pblabs.engine.debug.Logger;
-    
-    import flash.events.Event;
-    import flash.events.IOErrorEvent;
     import flash.media.Sound;
-    import flash.net.URLRequest;
     import flash.utils.ByteArray;
     
     import org.as3wavsound.WavSound;
-    import org.as3wavsound.sazameki.core.AudioSetting;
     
     [EditorData(extensions="wav")]
     
@@ -37,38 +31,12 @@ package com.pblabs.engine.resource
 			if(data is WavSound)
 			{
 				_soundObject = data as WavSound;
-				onLoadComplete(null);
 			}else if(data is ByteArray){
 				_soundObject = new WavSound(data as ByteArray);
-				onLoadComplete(null);
 			}
+			processLoadedContent(_soundObject);
 		}
 		
-		override protected function onLoadComplete(event:Event = null):void
-		{
-			try
-			{
-				if (onContentReady(null))
-				{
-					_isLoaded = true;
-					dispatchEvent(new ResourceEvent(ResourceEvent.LOADED_EVENT, this));
-					return;
-				}
-				else
-				{
-					onFailed("Got false from onContentReady - the data wasn't accepted.");
-					return;
-				}
-			}
-			catch(e:Error)
-			{
-				Logger.error(this, "Load", "Failed to load! " + e.toString());
-			}
-			
-			onFailed("The resource type does not match the loaded content.");
-			return;
-		}
-
 		override public function dispose():void
 		{
 			_soundObject = null;
@@ -95,7 +63,7 @@ package com.pblabs.engine.resource
          */
         override protected function onContentReady(content:*):Boolean 
         {
-            return soundWAVObject != null;
+            return _soundObject != null;
         }
     }
 }

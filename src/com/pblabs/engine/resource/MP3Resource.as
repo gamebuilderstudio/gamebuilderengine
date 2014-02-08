@@ -8,12 +8,7 @@
  ******************************************************************************/
 package com.pblabs.engine.resource
 {
-    import flash.events.Event;
-    import flash.events.IOErrorEvent;
     import flash.media.Sound;
-    import flash.net.URLRequest;
-    
-    import org.audiofx.mp3.MP3SoundEvent;
     
     [EditorData(extensions="mp3")]
     

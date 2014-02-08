@@ -44,31 +44,11 @@ package com.pblabs.engine.resource
 
 		override protected function onLoadComplete(event:Event = null):void
 		{
-			try
-			{
-				if (onContentReady(event ? (event as MP3SoundEvent).sound : null))
-				{
-					_isLoaded = true;
-					if(_soundLoader){
-						_soundLoader.removeEventListener(MP3SoundEvent.COMPLETE, onLoadComplete);
-						_soundLoader = null;
-					}
-					dispatchEvent(new ResourceEvent(ResourceEvent.LOADED_EVENT, this));
-					return;
-				}
-				else
-				{
-					onFailed("Got false from onContentReady - the data wasn't accepted.");
-					return;
-				}
+			processLoadedContent((event ? (event as MP3SoundEvent).sound : null));
+			if(_soundLoader){
+				_soundLoader.removeEventListener(MP3SoundEvent.COMPLETE, onLoadComplete);
+				_soundLoader = null;
 			}
-			catch(e:Error)
-			{
-				Logger.error(this, "Load", "Failed to load! " + e.toString());
-			}
-			
-			onFailed("The resource type does not match the loaded content.");
-			return;
 		}
 
 		/**

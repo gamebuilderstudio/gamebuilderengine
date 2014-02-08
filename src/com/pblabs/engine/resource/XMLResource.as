@@ -43,14 +43,13 @@ package com.pblabs.engine.resource
          try
          {
             _xml = new XML(data);
+			processLoadedContent(_xml);
          }
          catch (e:TypeError)
          {
             Logger.print(this, "Got type error parsing XML: " + e.toString());
             _valid = false;
          }
-         
-         onLoadComplete();
       }
       
       /**

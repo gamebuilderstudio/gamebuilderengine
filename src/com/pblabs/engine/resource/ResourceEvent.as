@@ -20,7 +20,14 @@ package com.pblabs.engine.resource
     */
    public class ResourceEvent extends Event
    {
-      /**
+	   /**
+		* This event is dispatched by a resource when the internal data has been changed or updated.
+		* 
+		* @eventType UPDATED_EVENT
+		*/
+	   public static const UPDATED_EVENT:String = "UPDATED_EVENT";
+
+	   /**
        * This event is dispatched by a resource upon successful load of the resource's
        * data.
        * 

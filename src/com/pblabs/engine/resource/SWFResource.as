@@ -10,8 +10,7 @@ package com.pblabs.engine.resource
 {
     import com.pblabs.engine.PBE;
     
-    import flash.display.*;
-    import flash.geom.*;
+    import flash.display.MovieClip;
     import flash.system.ApplicationDomain;
 
     [EditorData(extensions="swf")]
@@ -116,8 +115,7 @@ package com.pblabs.engine.resource
             // Directly load embedded resources if they gave us a MovieClip.
             if(data is MovieClip)
             {
-                onContentReady(data);
-                onLoadComplete();
+                processLoadedContent(data);
                 return;
             }
             
@@ -130,7 +128,7 @@ package com.pblabs.engine.resource
          */
         override protected function onContentReady(content:*):Boolean 
         {
-            if(content)
+            if(content && content is MovieClip)
                 _clip = content as MovieClip;
 
             // Get the app domain...

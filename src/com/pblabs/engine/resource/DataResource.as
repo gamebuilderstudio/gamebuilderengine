@@ -8,6 +8,8 @@
  ******************************************************************************/
 package com.pblabs.engine.resource
 {
+   import com.pblabs.engine.debug.Logger;
+   
    import flash.utils.ByteArray;
    
    /**
@@ -28,11 +30,7 @@ package com.pblabs.engine.resource
        */
       override public function initialize(data:*):void
       {
-         if(!(data is ByteArray))
-            throw new Error("DataResource can only handle ByteArrays.");
-            
-         _data = data;
-         onLoadComplete();
+         processLoadedContent(data);
       }
       
       /**
@@ -40,7 +38,15 @@ package com.pblabs.engine.resource
        */
       override protected function onContentReady(content:*):Boolean 
       {
-         return _data != null;
+		 if(_data)
+			 _data.clear();
+		 
+		 if(!(content is ByteArray)){
+			 Logger.error(this, "onContentReady", "DataResource can only handle ByteArrays.");
+			 return false
+		 }
+		 _data = content as ByteArray;
+         return true;
       }
       
       private var _data:ByteArray = null;

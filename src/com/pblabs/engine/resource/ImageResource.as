@@ -64,15 +64,13 @@ package com.pblabs.engine.resource
             if (data is Bitmap)
             {
                 // Directly load embedded resources if they gave us a Bitmap.
-                onContentReady(data.bitmapData);
-                onLoadComplete();
+				processLoadedContent(data.bitmapData);
                 return;
             }
             else if (data is BitmapData)
             {
                 // If they gave us a BitmapData object create a new Bitmap from that
-                onContentReady(data as BitmapData);
-                onLoadComplete();  
+				processLoadedContent(data);
                 return;          	
             }
             else if (data is DisplayObject)
@@ -98,11 +96,9 @@ package com.pblabs.engine.resource
                 bmd.draw(dObj, m);
                 
                 // Use the BitmapData to create a new Bitmap for this ImageResource 
-                onContentReady(bmd);
-                onLoadComplete();
+				processLoadedContent(bmd);
                 return;            	
             }
-            
             // Otherwise it must be a ByteArray, pass it over to the normal path.
             super.initialize(data);
         }
@@ -112,14 +108,15 @@ package com.pblabs.engine.resource
          */
         override protected function onContentReady(content:*):Boolean 
         {
-            if (content is BitmapData)
+			if(_bitmapData)
+				_bitmapData.dispose();
+			
+            if (content is BitmapData){
                 _bitmapData = content as BitmapData;
-            else if (content is Bitmap)
-            {
+			}else if (content is Bitmap){
                 // a .png is initialized as a ByteArray and will be provided
                 // through the super(). Resource class as a Bitmap
                 _bitmapData = (content as Bitmap).bitmapData;
-                content = null;
             }
             return _bitmapData != null;
         }

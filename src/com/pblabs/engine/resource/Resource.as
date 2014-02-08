@@ -26,7 +26,12 @@ package com.pblabs.engine.resource
      */
     [Event(name="LOADED_EVENT", type="com.pblabs.engine.resource.ResourceEvent")]
     
-    /**
+	/**
+	 * @eventType com.pblabs.engine.resource.ResourceEvent.LOADED_EVENT
+	 */
+	[Event(name="UPDATED_EVENT", type="com.pblabs.engine.resource.ResourceEvent")]
+
+	/**
      * @eventType com.pblabs.engine.resource.ResourceEvent.FAILED_EVENT
      */
     [Event(name="FAILED_EVENT", type="com.pblabs.engine.resource.ResourceEvent")]
@@ -223,30 +228,49 @@ package com.pblabs.engine.resource
          */
         protected function onLoadComplete(event:Event = null):void
         {
-            try
-            {
-                if (onContentReady(event ? event.target.content : null))
-                {
-                    _isLoaded = true;
-                    _urlLoader = null;
-                    _loader = null;
-                    dispatchEvent(new ResourceEvent(ResourceEvent.LOADED_EVENT, this));
-                    return;
-                }
-                else
-                {
-                    onFailed("Got false from onContentReady - the data wasn't accepted.");
-                    return;
-                }
-            }
-            catch(e:Error)
-            {
-                Logger.error(this, "Load", "Failed to load! " + e.toString());
-            }
-            
-            onFailed("The resource type does not match the loaded content.");
-            return;
+			
+			processLoadedContent((event ? event.target.content : null));
         }
+		
+		/**
+		 * Should be called whenever the loaded content is ready to be parsed. This method should evaluate if the content
+		 * is officially loaded or updated.
+		 * 
+		 * @param content This can be of any object
+		 */
+		protected function processLoadedContent(content : *):void
+		{
+			try
+			{
+				if (onContentReady(content))
+				{
+					var updated : Boolean = _isLoaded;
+					_isLoaded = true;
+					_urlLoader = null;
+					_loader = null;
+					
+					if(updated)
+					{
+						onUpdated();
+					}else{
+						dispatchEvent(new ResourceEvent(ResourceEvent.LOADED_EVENT, this));
+					}
+					return;
+				}
+				else
+				{
+					onFailed("Got false from onContentReady - the data wasn't accepted.");
+					return;
+				}
+			}
+			catch(e:Error)
+			{
+				Logger.error(this, "Load", "Failed to load! " + e.toString());
+			}
+			
+			onFailed("The resource type does not match the loaded content.");
+			return;
+		}
         
         private function onDownloadComplete(event:Event):void
         {
@@ -266,7 +290,7 @@ package com.pblabs.engine.resource
         
         protected function onFailed(message:String):void
         {
-            _isLoaded = true;
+            _isLoaded = false;
             _didFail = true;
             Logger.error(this, "Load", "Resource " + _filename + " failed to load with error: " + message);
             dispatchEvent(new ResourceEvent(ResourceEvent.FAILED_EVENT, this));
@@ -275,6 +299,11 @@ package com.pblabs.engine.resource
             _loader = null;
         }
         
+		protected function onUpdated():void
+		{
+			dispatchEvent(new ResourceEvent(ResourceEvent.UPDATED_EVENT, this));
+		}
+		
         protected var _filename:String = null;
         protected var _isLoaded:Boolean = false;
         private var _didFail:Boolean = false;

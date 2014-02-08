@@ -59,15 +59,14 @@ package com.pblabs.engine.resource
 			 }else{
 				_jsonObject = JSONAS3.decode(_jsonString);
 			 }
-
+			 
+			 processLoadedContent(_jsonObject);
          }
          catch (e:TypeError)
          {
             Logger.print(this, "Got type error parsing JSON Object: " + e.toString());
             _valid = false;
          }
-         
-         onLoadComplete();
       }
       
       /**
