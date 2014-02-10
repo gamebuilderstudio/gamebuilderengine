@@ -10,9 +10,8 @@ package com.pblabs.rendering2D
 {
     import com.pblabs.engine.PBE;
     import com.pblabs.engine.resource.ImageResource;
+    import com.pblabs.engine.resource.ResourceEvent;
     
-    import flash.geom.Point;
-	
    /**
     * Render Component that will load and render a ImageResource as a Sprite
     */ 
@@ -35,20 +34,17 @@ package com.pblabs.rendering2D
 		{
 			if (fileName!=value)
 			{
-				if (_resource)
-				{
-					//PBE.resourceManager.unload(_resource.filename, ImageResource);
-					_resource = null;
-				}            
 				_fileName = value;
 				if(_fileName){
 					_loading = true;
 					// Tell the ResourceManager to load the ImageResource
-					var resource : ImageResource = PBE.resourceManager.load(fileName,ImageResource,imageLoadCompleted,imageLoadFailed,false) as ImageResource;	
- 					if(resource && resource.bitmapData)
+					var resource : ImageResource = PBE.resourceManager.load(fileName,ImageResource,imageLoadCompleted,imageLoadFailed,false) as ImageResource;
+ 					if(resource && resource.isLoaded && resource.bitmapData)
 						imageLoadCompleted(resource);
 				}else{
 					_loading = false;
+					if(_resource)
+						_resource.removeEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
 					_resource = null;
 					if(bitmapData)
 						bitmapData = null;
@@ -108,31 +104,35 @@ package com.pblabs.rendering2D
 		// private methods 
 		//----------------------------------------------------------
 
+		
    	    /**
         * This function will be called if the ImageResource has been loaded correctly 
         */ 
 		private function imageLoadCompleted(res:ImageResource):void
 		{
-			if(_resource) return;
-				
+			if(_resource){
+				_resource.removeEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
+			}
+
 			_loading = false;
 			_loaded = true;
 			_failed = false;
 			_resource = res;
+			_resource.addEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
 			// set the registration (alignment) point to the sprite's center
 			//if(registrationPoint.x == 0 && registrationPoint.y == 0)
 				//registrationPoint = new Point(res.image.bitmapData.width/2,res.image.bitmapData.height/2);				
 			// set the bitmapData of this render object
-			bitmapData = res.image.bitmapData;	
+			bitmapData = _resource.bitmapData;	
 		}
 		
-		protected override function dataModified():void
+		private function onResourceUpdated(event:ResourceEvent):void
 		{
-			// set the registration (alignment) point to the sprite's center
-			//if(registrationPoint.x == 0 && registrationPoint.y == 0)
-				//registrationPoint = new Point(bitmapData.width/2,bitmapData.height/2);							
+			imageLoadCompleted(event.resourceObject as ImageResource);
+			if(this.owner)
+				this.owner.reset();
 		}
-
+		
    	    /**
         * This function will be called if the ImageResource has failed loading 
         */ 
@@ -142,6 +142,13 @@ package com.pblabs.rendering2D
 			_failed = true;					
 		}
 		
+		protected override function dataModified():void
+		{
+			// set the registration (alignment) point to the sprite's center
+			//if(registrationPoint.x == 0 && registrationPoint.y == 0)
+			//registrationPoint = new Point(bitmapData.width/2,bitmapData.height/2);							
+		}
+		
 		protected override function onAdd():void
 		{
 			super.onAdd();
@@ -149,7 +156,7 @@ package com.pblabs.rendering2D
 			{
 				_loading = true;
 				// Tell the ResourceManager to load the ImageResource
-				PBE.resourceManager.load(fileName,ImageResource,imageLoadCompleted,imageLoadFailed,false);				
+				PBE.resourceManager.load(fileName,ImageResource,imageLoadCompleted,imageLoadFailed,false);
 			}
 		}
 
@@ -157,6 +164,7 @@ package com.pblabs.rendering2D
 		{
 			if (_resource)
 			{
+				_resource.removeEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
 				//PBE.resourceManager.unload(_resource.filename, ImageResource);
 				_resource = null;
 				_loaded = false;

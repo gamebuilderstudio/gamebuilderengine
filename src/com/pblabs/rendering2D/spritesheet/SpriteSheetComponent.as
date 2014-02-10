@@ -87,7 +87,7 @@ package com.pblabs.rendering2D.spritesheet
 				// Tell the ResourceManager to load the ImageResource
 				var resource : Resource = PBE.resourceManager.load(value, ImageResource, onImageLoaded, onImageFailed);
 				if(resource && resource.isLoaded)
-					image = resource as ImageResource;
+					onImageLoaded(resource as ImageResource);
 			}
 		}
 		
@@ -132,18 +132,32 @@ package com.pblabs.rendering2D.spritesheet
 		 */
 		public function set image(value:ImageResource):void
 		{
+			if(_image)
+			{
+				_image.removeEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
+			}
 			if(!value)
 				return;
 			
 			_loaded = value.isLoaded;
 			if(!_loaded){
 				value.addEventListener(ResourceEvent.LOADED_EVENT, onResourceLoaded);
+				value.addEventListener(ResourceEvent.FAILED_EVENT, onResourceLoadFailed);
+				_imageListenersAttached = true;
 				_loading = true;
+				return;
 			}
 			_failed = false;
 			
 			_image = value;
-			if(_image) _imageFilename = _image.filename;
+			if(_imageListenersAttached){
+				_image.removeEventListener(ResourceEvent.LOADED_EVENT, onResourceLoaded);
+				_image.removeEventListener(ResourceEvent.FAILED_EVENT, onResourceLoadFailed);
+				_imageListenersAttached = false;
+			}
+			_image.addEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
+			if(_image) 
+				_imageFilename = _image.filename;
 			deleteFrames();
 		}
 		
@@ -226,8 +240,7 @@ package com.pblabs.rendering2D.spritesheet
 			{
 				cachedFrames.released.addOnce(onCacheReleased);
 				cachedFrames.referenceCount += 1;
-				if(_divider)
-					cachedFrames.divider.copy( _divider );
+				_divider = cachedFrames.divider ? cachedFrames.divider.copy(_divider) : _divider;
 				_bounds = cachedFrames.bounds ? cachedFrames.bounds : _bounds;
 				return cachedFrames.frames;
 			}
@@ -329,8 +342,12 @@ package com.pblabs.rendering2D.spritesheet
 			}*/
 
 			if(_imageData) _imageData = null;
+
+			if(_image){
+				_image.removeEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
+			}
 			image = null;
-			
+			_loaded = false;
 			_destroyed = true;
 		}
 		
@@ -370,12 +387,6 @@ package com.pblabs.rendering2D.spritesheet
 		
 		override protected function onRemove():void
 		{
-			if (_image)
-			{
-				//PBE.resourceManager.unload(_image.filename, ImageResource);
-				_image = null;
-				_loaded = false;
-			}  
 			destroy();
 			super.onRemove();         			
 		}
@@ -387,6 +398,15 @@ package com.pblabs.rendering2D.spritesheet
 			super.buildFrames();
 		}
 		
+		protected function onResourceUpdated(event : ResourceEvent):void
+		{
+			if(cached)
+				releaseCache(false);
+			onImageLoaded(event.resourceObject as ImageResource);
+			buildFrames();
+			if(this.owner)
+				this.owner.reset();
+		}
 		protected function onResourceLoaded(event : ResourceEvent):void
 		{
 			onImageLoaded(event.resourceObject as ImageResource);
@@ -444,5 +464,6 @@ package com.pblabs.rendering2D.spritesheet
 		protected var _forcedBitmaps:Array = null;
 		protected var _destroyed:Boolean = false;
 		protected var _cached:Boolean = true;
+		protected var _imageListenersAttached : Boolean = false;
     }
 }

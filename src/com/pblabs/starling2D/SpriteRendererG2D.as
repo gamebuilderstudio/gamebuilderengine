@@ -10,6 +10,7 @@ package com.pblabs.starling2D
 {
 	import com.pblabs.engine.PBE;
 	import com.pblabs.engine.resource.ImageResource;
+	import com.pblabs.engine.resource.ResourceEvent;
 	
 	import starling.core.Starling;
 	import starling.display.Image;
@@ -97,6 +98,7 @@ package com.pblabs.starling2D
 		{
 			if (_resource)
 			{
+				_resource.removeEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
 				//PBE.resourceManager.unload(_resource.filename, ImageResource);
 				_resource = null;
 				_loaded = false;
@@ -105,6 +107,13 @@ package com.pblabs.starling2D
 			super.onRemove();
 
 			InitializationUtilG2D.initializeRenderers.remove(buildG2DObject);
+		}
+		
+		protected function onResourceUpdated(event : ResourceEvent):void
+		{
+			imageLoadCompleted(event.resourceObject as ImageResource);
+			if(this.owner)
+				this.owner.reset();
 		}
 		
 		/**
@@ -121,17 +130,20 @@ package com.pblabs.starling2D
 		 */ 
 		private function imageLoadCompleted(res:ImageResource):void
 		{
-			if(_resource) return;
+			if(_resource){
+				_resource.removeEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
+			}
 			
 			_loading = false;
 			_loaded = true;
 			_failed = false;
 			_resource = res;
+			_resource.addEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
 			// set the registration (alignment) point to the sprite's center
 			//if(registrationPoint.x == 0 && registrationPoint.y == 0)
 			//registrationPoint = new Point(res.image.bitmapData.width/2,res.image.bitmapData.height/2);				
 			// set the bitmapData of this render object
-			bitmapData = res.image.bitmapData;	
+			bitmapData = _resource.bitmapData;	
 		}
 		
 		//----------------------------------------------------------
@@ -150,21 +162,18 @@ package com.pblabs.starling2D
 		{
 			if (fileName!=value)
 			{
-				if (_resource)
-				{
-					//PBE.resourceManager.unload(_resource.filename, ImageResource);
-					_resource = null;
-				}            
 				_fileName = value;
 				if(_fileName){
 					_loading = true;
 					// Tell the ResourceManager to load the ImageResource
-					var resource : ImageResource = PBE.resourceManager.load(fileName,ImageResource,imageLoadCompleted,imageLoadFailed,false) as ImageResource;	
-					if(resource && resource.bitmapData)
-						imageLoadCompleted(resource);
+					var imageResource : ImageResource = PBE.resourceManager.load(fileName,ImageResource,imageLoadCompleted,imageLoadFailed,false) as ImageResource;	
+					if(imageResource && imageResource.bitmapData)
+						imageLoadCompleted(imageResource);
 				}else{
 					_loading = false;
 					_failed = true;
+					if(_resource)
+						_resource.removeEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
 					_resource = null;
 					if(bitmapData)
 						bitmapData = null;

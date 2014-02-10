@@ -8,6 +8,7 @@
  ******************************************************************************/
 package com.pblabs.rendering2D.spritesheet
 {
+    import com.pblabs.engine.entity.IEntityComponent;
     import com.pblabs.engine.resource.JSONResource;
     import com.pblabs.engine.resource.ResourceEvent;
     import com.pblabs.rendering2D.spritesheet.ISpriteSheet;
@@ -78,17 +79,17 @@ package com.pblabs.rendering2D.spritesheet
 
 		protected function buildFrames():void
 		{
-			if(!resource){
+			if(!_resource){
 				return;
 			}
-			if(resource && !resource.isLoaded){
-				if(!resource.hasEventListener(ResourceEvent.LOADED_EVENT))
-					resource.addEventListener(ResourceEvent.LOADED_EVENT, onResourceReady);
+			if(_resource && !_resource.isLoaded){
+				if(!_resource.hasEventListener(ResourceEvent.LOADED_EVENT))
+					_resource.addEventListener(ResourceEvent.LOADED_EVENT, onResourceReady);
 				return;
 			}
 			
-			if(resource.filename in _frameCache){
-				_frames = _frameCache[resource.filename];
+			if(_resource.filename in _frameCache){
+				_frames = _frameCache[_resource.filename];
 			}else{
 			
 				if(!_frames) 
@@ -97,7 +98,7 @@ package com.pblabs.rendering2D.spritesheet
 					_frames.length = 0;
 				
 				//Building list of rectangles that point to frames
-				var objectData : Array = resource.jsonData.frames;
+				var objectData : Array = _resource.jsonData.frames;
 				var dataLen : int = objectData.length;
 				for(var i : int = 0; i < dataLen; i++)
 				{
@@ -108,7 +109,7 @@ package com.pblabs.rendering2D.spritesheet
 						frameData.rotated,
 						frameData.trimmed, i) );
 				}
-				_frameCache[resource.filename] = _frames;
+				_frameCache[_resource.filename] = _frames;
 			}
 		}
 		
@@ -117,7 +118,21 @@ package com.pblabs.rendering2D.spritesheet
 			buildFrames();
 			if(_owningSheet)
 				_owningSheet.divider = this;
-			resource.removeEventListener(ResourceEvent.LOADED_EVENT, onResourceReady);
+			_resource.removeEventListener(ResourceEvent.LOADED_EVENT, onResourceReady);
+			_resource.addEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
+		}
+		
+		protected function onResourceUpdated(resoure : ResourceEvent):void
+		{
+			delete _frameCache[_resource.filename];
+			_frames = null;
+			buildFrames();
+			if(_owningSheet && _owningSheet is IEntityComponent && (_owningSheet as IEntityComponent).owner){
+				if(_owningSheet.cached)
+					_owningSheet.releaseCache(false);
+				_owningSheet.divider = this;
+				(_owningSheet as IEntityComponent).owner.reset();
+			}
 		}
 		
 		protected function findFrameIndex(name : String):int
@@ -146,7 +161,7 @@ package com.pblabs.rendering2D.spritesheet
          */
         public function get frameCount():int
         {
-			if(!_frames) return 0;
+			if(!_frames || !_resource) return 0;
             return _frames.length;
         }
         
@@ -156,9 +171,13 @@ package com.pblabs.rendering2D.spritesheet
 		private var _resource:JSONResource;
 		public function get resource():JSONResource { return _resource; }
 		public function set resource(obj : JSONResource):void { 
+			if(_resource)
+				_resource.removeEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
 			_resource = obj; 
-			buildFrames();
-			//if(_owningSheet) _owningSheet.divider = this;
+			if(_resource){
+				_resource.addEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
+				buildFrames();
+			}
 		}
 
 		/**
@@ -189,6 +208,8 @@ package com.pblabs.rendering2D.spritesheet
 		public function destroy():void
 		{
 			_owningSheet = null;
+			if(_resource)
+				_resource.removeEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
 			_resource = null;
 			_frames = null;
 		}

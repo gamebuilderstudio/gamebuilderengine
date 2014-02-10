@@ -19,6 +19,7 @@ package com.pblabs.starling2D.spritesheet
 	import flash.geom.Rectangle;
 	
 	import starling.core.Starling;
+	import starling.textures.SubTexture;
 	
 	public class MultiImageSpriteSheetComponentG2D extends MultiImageSpriteSheetComponent implements ISpriteSheetG2D
 	{
@@ -103,6 +104,16 @@ package com.pblabs.starling2D.spritesheet
 			
 			if (_defaultCenter)
 				_center = new Point(frames[0].width * 0.5, frames[0].height * 0.5);
+		}
+		
+		override protected function deleteFrames():void
+		{
+			for (var i:int = 0; i < frames.length; i++)
+			{
+				if(frames[i] is SubTexture)
+					(frames[i] as SubTexture).dispose();
+			}
+			super.deleteFrames();
 		}
 
 		override public function set imageData(data : BitmapData):void

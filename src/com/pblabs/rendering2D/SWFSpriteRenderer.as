@@ -16,11 +16,8 @@ package com.pblabs.rendering2D
 	import com.pblabs.engine.util.ImageFrameData;
 	import com.pblabs.engine.util.MCUtil;
 	
-	import flash.display.BitmapData;
 	import flash.display.DisplayObject;
 	import flash.display.MovieClip;
-	import flash.events.Event;
-	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.utils.getDefinitionByName;
@@ -42,12 +39,20 @@ package com.pblabs.rendering2D
 			super();
 		}
 		
+		protected function onResourceUpdated(event : ResourceEvent):void
+		{
+			onResourceLoaded(event.resourceObject as SWFResource);
+			(this.owner)
+				this.owner.reset();
+		}
+		
 		/**
 		 * This function will be called if the SWFResource has been loaded
 		 */ 
 		protected function onResourceLoaded(resource:SWFResource):void
 		{
-			if(_resource) return;
+			if(_resource)
+				_resource.removeEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
 			
 			if(resource.hasEventListener(ResourceEvent.LOADED_EVENT))
 				resource.removeEventListener(ResourceEvent.LOADED_EVENT, resourceLoadedHandler );
@@ -56,20 +61,21 @@ package com.pblabs.rendering2D
 
 			_loaded = true;
 			_resource = resource;
+			_resource.addEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
 			_fileName = _resource.filename;
 
 			if(!containingObjectName) {
 				var swfClass : Class;
-				if(resource.appDomain)
+				if(_resource.appDomain)
 				{
-					swfClass = resource.appDomain.getDefinition( getQualifiedClassName(resource.clip) ) as Class;
+					swfClass = _resource.appDomain.getDefinition( getQualifiedClassName(_resource.clip) ) as Class;
 				}else{
-					swfClass = getDefinitionByName( getQualifiedClassName(resource.clip) ) as Class;
+					swfClass = getDefinitionByName( getQualifiedClassName(_resource.clip) ) as Class;
 				}
 				paintMovieClipToBitmap( new swfClass() );
 				//Logger.error(this, 'resourceContent', 'A SWF resource requires that the containingObjectName be populated');
-			}else if(resource.appDomain){
-				paintMovieClipToBitmap( resource.getExportedAsset(_containingObjectName) as DisplayObject );
+			}else if(_resource.appDomain){
+				paintMovieClipToBitmap( _resource.getExportedAsset(_containingObjectName) as DisplayObject );
 			}else{
 				Logger.error(this, 'onResourceLoaded', 'The SWF resource is missing domain information, so it can not be extracted.');
 			}
@@ -143,6 +149,13 @@ package com.pblabs.rendering2D
 
 		protected override function onRemove():void
 		{
+			if(_resource){
+				if(_resource.hasEventListener(ResourceEvent.LOADED_EVENT))
+					_resource.removeEventListener(ResourceEvent.LOADED_EVENT, resourceLoadedHandler );
+				if(_resource.hasEventListener(ResourceEvent.FAILED_EVENT))
+					_resource.removeEventListener(ResourceEvent.FAILED_EVENT, resourceFailedLoadingHandler );
+				_resource.removeEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
+			}
 			_resource = null;
 			_classInstance = null
 			
@@ -178,7 +191,7 @@ package com.pblabs.rendering2D
 
 		private function resourceFailedLoadingHandler(event : ResourceEvent):void
 		{
-			onResourceLoaded(event.resourceObject as SWFResource);
+			onResourceLoadFailed(event.resourceObject as SWFResource);
 		}
 
 		override public function get combinedScale():Point{ 
@@ -233,9 +246,6 @@ package com.pblabs.rendering2D
 		public function get swfResource():SWFResource { return _resource; }
 		public function set swfResource(resource : SWFResource):void
 		{
-			if(resource){
-				this.fileName = resource.filename;
-			}
 			if(!resource.isLoaded)
 			{
 				//This is possibly a memory leak
@@ -256,10 +266,6 @@ package com.pblabs.rendering2D
 		{
 			if (fileName!=value)
 			{
-				if (_resource)
-				{
-					_resource = null;
-				}            
 				_fileName = value;
 				if(_fileName){
 					// Tell the ResourceManager to load the ImageResource
@@ -269,7 +275,10 @@ package com.pblabs.rendering2D
 				}else{
 					_loaded = false;
 					_failed = true;
+					if(_resource)
+						_resource.removeEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
 					_resource = null;
+					_classInstance = null;
 					bitmapData = null;
 				}
 			}	

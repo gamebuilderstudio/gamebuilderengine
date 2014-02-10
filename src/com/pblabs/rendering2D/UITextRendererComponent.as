@@ -5,6 +5,7 @@ package com.pblabs.rendering2D
 	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.resource.DataResource;
 	import com.pblabs.engine.resource.ImageResource;
+	import com.pblabs.engine.resource.ResourceEvent;
 	import com.pblabs.rendering2D.BitmapRenderer;
 	
 	import flash.display.BitmapData;
@@ -73,6 +74,13 @@ package com.pblabs.rendering2D
 		{
 			super.onRemove();
 			
+			if(_fontData)
+				_fontData.removeEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
+			if(_fontImage)
+				_fontImage.removeEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
+
+			if(_bmFontObject)
+				_bmFontObject.destroy();
 			if(_textInputType == TextFieldType.INPUT){
 				PBE.mainStage.removeEventListener(MouseEvent.MOUSE_UP, onStageMouseUp, true)
 				PBE.mainStage.removeEventListener(MouseEvent.MOUSE_DOWN, onStageMouseDown, true);
@@ -147,8 +155,6 @@ package com.pblabs.rendering2D
 		
 		protected function updateTextImage():void
 		{
-			buildFontObject();
-			
 			if(_inputEnabled && _transformDirty)
 				hideInputField(null);
 
@@ -172,16 +178,16 @@ package com.pblabs.rendering2D
 		
 		protected function buildFontObject():void
 		{
-			if(!_bmFontObject && isComposedTextData)
+			if(!_bmFontObject && isComposedTextData && _fontData.isLoaded && _fontImage.isLoaded)
 			{
-				fontData.data.position = 0;
-				var fontDataXMLStr : String = fontData.data.readUTFBytes(fontData.data.length);
+				_fontData.data.position = 0;
+				var fontDataXMLStr : String = _fontData.data.readUTFBytes(_fontData.data.length);
 				var fontXML : XML = XML(fontDataXMLStr);
 				var fontName : String = fontXML.info.@face;
 				
 				var font : PxBitmapFont = PxBitmapFont.fetch(fontName);
 				if(!font){
-					font = new PxBitmapFont().loadAngelCode(fontImage.bitmapData, fontXML);
+					font = new PxBitmapFont().loadAngelCode(_fontImage.bitmapData, fontXML);
 					PxBitmapFont.store(fontName, font);
 				}
 				_bmFontObject = new PxTextField();
@@ -190,14 +196,17 @@ package com.pblabs.rendering2D
 				_bmFontObject.fixedWidth = !_autoResize;
 				_bmFontObject.wordWrap = _wordWrap;
 				_bmFontObject.font = font;
+				this.fontName = fontName;
 			}
 		}
 		
 		protected function paintTextToBitmap():void
 		{
 			var textBitmapData:BitmapData;
+			
 			if(!_bmFontObject)
 				buildFontObject();
+			
 			if(isComposedTextData && _bmFontObject)
 			{
 				_bmFontObject.update();
@@ -276,6 +285,19 @@ package com.pblabs.rendering2D
 				_textDisplay.height = this._size.y * this._scale.y;
 			}
 		}
+		
+		protected function onResourceUpdated(event : ResourceEvent):void
+		{
+			if(_bmFontObject){
+				_bmFontObject.destroy();
+				_bmFontObject = null;
+				PxBitmapFont.remove(fontName);
+			}
+			_textDirty = true;
+			paintTextToBitmap();
+			if(this.owner)
+				this.owner.reset();
+		}
 
 		override public function updateTransform(updateProps:Boolean = false):void
 		{
@@ -299,7 +321,7 @@ package com.pblabs.rendering2D
 		}
 
 		public function get isComposedTextData():Boolean {
-			if(_fontImage && _fontImage.isLoaded && _fontData && _fontData.isLoaded )
+			if(_fontImage && _fontData )
 			{
 				return true;
 			}
@@ -308,15 +330,27 @@ package com.pblabs.rendering2D
 
 		public function get fontImage():ImageResource{ return _fontImage; }
 		public function set fontImage(img : ImageResource):void{
+			if(_fontImage)
+				_fontImage.removeEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
 			_fontImage = img;
+			_fontImage.addEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
+			
 			_textDirty = true;
+			if(_bmFontObject)
+				_bmFontObject.destroy();
 			_bmFontObject = null;
 		}
 
 		public function get fontData():DataResource{ return _fontData; }
 		public function set fontData(data : DataResource):void{
+			if(_fontData)
+				_fontData.removeEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
 			_fontData = data;
+			_fontData.addEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
+			
 			_textDirty = true;
+			if(_bmFontObject)
+				_bmFontObject.destroy();
 			_bmFontObject = null;
 		}
 

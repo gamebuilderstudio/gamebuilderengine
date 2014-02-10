@@ -87,8 +87,18 @@ package com.pblabs.rendering2D.spritesheet
 		 */
 		public function set images(value : Vector.<ImageResource>):void
 		{
-			if(!value)
+			if(_images){
+				for(var x : int = 0; x < _images.length; x++)
+				{
+					_images[x].removeEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
+				}
+			}
+			if(!value){
+				deleteFrames();
+				_images = null;
+				_loaded = false;
 				return;
+			}
 			
 			_imageFilename = "";
 			var len : int = value.length;
@@ -100,6 +110,7 @@ package com.pblabs.rendering2D.spritesheet
 					value[i].addEventListener(ResourceEvent.LOADED_EVENT, onResourceLoaded);
 					_loading = true;
 				}
+				value[i].addEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
 				_imageFilename +=  value[i].filename + "|";
 			}
 			_loaded = loaded;
@@ -241,6 +252,14 @@ package com.pblabs.rendering2D.spritesheet
 			_destroyed = true;
 		}
 		
+		protected function onResourceUpdated(event : ResourceEvent):void
+		{
+			this.deleteFrames();
+			buildFrames();
+			if(this.owner)
+				this.owner.reset();
+		}
+		
 		protected function onImageLoaded(resource:ImageResource):void
 		{
 			var loaded : Boolean = true;
@@ -281,10 +300,12 @@ package com.pblabs.rendering2D.spritesheet
 		
 		protected function onResourceLoaded(event : ResourceEvent):void
 		{
+			event.resourceObject.removeEventListener(ResourceEvent.LOADED_EVENT, onResourceLoaded);
 			onImageLoaded(event.resourceObject as ImageResource);
 		}
 		protected function onResourceLoadFailed(event : ResourceEvent):void
 		{
+			event.resourceObject.removeEventListener(ResourceEvent.FAILED_EVENT, onResourceLoadFailed);
 			onImageFailed(event.resourceObject as ImageResource);
 		}
 		

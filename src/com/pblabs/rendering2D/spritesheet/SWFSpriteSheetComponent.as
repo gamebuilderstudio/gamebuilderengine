@@ -9,8 +9,8 @@
 package com.pblabs.rendering2D.spritesheet
 {
     import com.pblabs.engine.PBE;
-    import com.pblabs.engine.PBUtil;
     import com.pblabs.engine.debug.Logger;
+    import com.pblabs.engine.resource.ResourceEvent;
     import com.pblabs.engine.resource.SWFResource;
     import com.pblabs.engine.util.ImageFrameData;
     import com.pblabs.engine.util.MCUtil;
@@ -65,10 +65,15 @@ package com.pblabs.rendering2D.spritesheet
 
         public function set swf(value:SWFResource):void
         {
+			if(_resource)
+				_resource.removeEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
+			
 			var changed : Boolean = false;
 			if(_resource != value)
 				changed = true;
             _resource = value;
+			_resource.addEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
+			
             frames = null;
             _clip = null;
 			if(_cached && changed){
@@ -227,6 +232,8 @@ package com.pblabs.rendering2D.spritesheet
 			}
 			this.deleteFrames();
 
+			if(_resource)
+				_resource.removeEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
 			_resource = null;
 			_bounds = null;
 			_clip = null;
@@ -297,6 +304,17 @@ package com.pblabs.rendering2D.spritesheet
 			if(this.owner)
 				this.owner.reset();
 		}
+		
+		protected function onResourceUpdated(event : ResourceEvent):void
+		{
+			if(_cached){
+				releaseCache(false);
+			}
+			deleteFrames();
+			buildFrames();
+			if(owner)
+				owner.reset();
+		}
 
 		/**
          * Rasterizes the clip into an Array of BitmapData objects.
@@ -304,7 +322,8 @@ package com.pblabs.rendering2D.spritesheet
          */
         protected function rasterize():void
         {
-            if (!_resource || !_resource.isLoaded || _resource.didFail) return;
+            if (!_resource || !_resource.isLoaded || _resource.didFail) 
+				return;
 
             var cacheData:CachedFramesDataMC = getCachedFrames() as CachedFramesDataMC;
             if (_cached && cacheData)
@@ -322,6 +341,8 @@ package com.pblabs.rendering2D.spritesheet
 			}
 
 			_clip = getMovieClip();
+			if(!_clip)
+				return;
             frames = onRasterize(_clip);
 			_center = new Point(-_bounds.x, -_bounds.y);
 			

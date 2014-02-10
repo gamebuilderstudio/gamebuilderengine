@@ -8,10 +8,10 @@
  ******************************************************************************/
 package com.pblabs.starling2D
 {
-	import com.pblabs.engine.PBE;
 	import com.pblabs.engine.PBUtil;
 	import com.pblabs.engine.core.ObjectType;
 	import com.pblabs.engine.debug.Logger;
+	import com.pblabs.engine.resource.ResourceEvent;
 	import com.pblabs.rendering2D.UITextRendererComponent;
 	
 	import flash.display.BitmapData;
@@ -150,7 +150,8 @@ package com.pblabs.starling2D
 		
 		override protected function buildFontObject():void
 		{
-			if(isComposedTextData){
+			if(isComposedTextData && _fontData.isLoaded && _fontImage.isLoaded)
+			{
 				var currentFontName : String = fontName;
 				if(currentFontName)
 				{
@@ -160,22 +161,21 @@ package com.pblabs.starling2D
 						try{
 							_fontData.data.position = 0;
 							var fontDataXML : XML = XML(_fontData.data.readUTFBytes( _fontData.data.length ));
-							if(String(fontDataXML.info.@face) != currentFontName)
+							var fontFace : String = String(fontDataXML.info.@face);
+							if(fontFace != currentFontName)
 							{
-								this.fontName = currentFontName = String(fontDataXML.info.@face);
+								this.fontName = currentFontName = fontFace;
 							}
 							var fontTexture : Texture = ResourceTextureManagerG2D.getTextureForResource(_fontImage);
-							var font : BitmapFont = new BitmapFont(fontTexture, fontDataXML);
-							TextField.registerBitmapFont(font, currentFontName);
-							if(!gpuObject){
-								gpuObject = new TextField(_size.x, _size.y, _text, currentFontName, font.size, this.fontColor, this.textFormatter.bold);
-							}else{
-								(gpuObject as TextField).fontName = currentFontName;
-							}
-							(gpuObject as TextField).autoSize = _autoResize ? TextFieldAutoSize.BOTH_DIRECTIONS : TextFieldAutoSize.NONE;
+							bitmapFont = new BitmapFont(fontTexture, fontDataXML);
+							TextField.registerBitmapFont(bitmapFont, currentFontName);
 						}catch(e : Error){
 							Logger.error(this, "buildFondObject", "Font creation and registration failed for ("+currentFontName+")!");
 						}
+					}
+					if(!gpuObject){
+						gpuObject = new TextField(_size.x, _size.y, _text, currentFontName, bitmapFont.size, this.fontColor, this.textFormatter.bold);
+						(gpuObject as TextField).autoSize = _autoResize ? TextFieldAutoSize.BOTH_DIRECTIONS : TextFieldAutoSize.NONE;
 					}
 				}
 			}
@@ -215,6 +215,23 @@ package com.pblabs.starling2D
 				super.paintTextToBitmap();
 		}
 
+		override protected function onResourceUpdated(event : ResourceEvent):void
+		{
+			var currentFontName : String = fontName;
+			if(currentFontName && _bmFontObject && TextField.getBitmapFont(currentFontName))
+			{
+				TextField.unregisterBitmapFont(currentFontName, true);
+			}
+			if(gpuObject){
+				_bmFontObject.destroy();
+				_bmFontObject = null;
+			}
+			_textDirty = true;
+			buildFontObject();
+			if(this.owner)
+				this.owner.reset();
+		}
+		
 		override public function set bitmapData(value:BitmapData):void
 		{
 			if (value === bitmap.bitmapData)

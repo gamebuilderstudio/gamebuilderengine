@@ -10,7 +10,6 @@ package com.pblabs.starling2D
 {
 	import com.pblabs.engine.PBUtil;
 	import com.pblabs.engine.core.ObjectType;
-	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.rendering2D.SWFSpriteRenderer;
 	
 	import flash.display.BitmapData;

@@ -432,6 +432,21 @@ package pxBitmapFont
 		}
 		
 		/**
+		 * Stores a font for global use using an identifier.
+		 * @param	pHandle	String identifer for the font.
+		 * @param	pFont	Font to store.
+		 */
+		public static function remove(pHandle:String):void 
+		{
+			if(pHandle in _storedFonts)
+			{
+				var f:PxBitmapFont = _storedFonts[pHandle];
+				f.dispose();
+				delete _storedFonts[pHandle];
+			}
+		}
+
+		/**
 		 * Retrieves a font previously stored.
 		 * @param	pHandle	Identifier of font to fetch.
 		 * @return	Stored font, or null if no font was found.
