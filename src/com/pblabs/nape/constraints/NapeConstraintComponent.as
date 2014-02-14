@@ -270,8 +270,8 @@ package com.pblabs.nape.constraints
 		protected var _damping:Number = 0.5;
 		protected var _breakUnderMaxForce:Boolean = false;
 		protected var _breakUnderError:Boolean = false;
-		protected var _maxForce : Number = 0;
-		protected var _maxError : Number = 0;
+		protected var _maxForce : Number = Number.POSITIVE_INFINITY;
+		protected var _maxError : Number = Number.POSITIVE_INFINITY;
 		private var _delayedConstruction : Boolean = false;
 		
 	}

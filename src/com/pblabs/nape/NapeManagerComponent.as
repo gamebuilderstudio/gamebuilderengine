@@ -81,6 +81,26 @@ package com.pblabs.nape
 				_space.gravity.setxy(_gravity.x, _gravity.y);
 		}
 		
+		public function get velocityIterations():int
+		{
+			return _velocityIterations;
+		}
+		
+		public function set velocityIterations(value:int):void
+		{
+			_velocityIterations = value;
+		}
+
+		public function get positionIterations():int
+		{
+			return _positionIterations;
+		}
+		
+		public function set positionIterations(value:int):void
+		{
+			_positionIterations = value;
+		}
+
 		public function get materialManager():NapeMaterialManager
 		{
 			if(!_materialManager)
@@ -160,7 +180,7 @@ package com.pblabs.nape
 		public function onFrame(dt:Number):void
 		{
 			if(_space && !PBE.IN_EDITOR)
-				_space.step(dt);
+				_space.step(dt, _velocityIterations, _positionIterations);
 			if(_space && _shapeDebug && _visualDebugging){
 				_shapeDebug.clear();
 				_shapeDebug.draw(_space);
@@ -432,6 +452,8 @@ package com.pblabs.nape
 		protected var _scale:Number = 1;
 		protected var _space:Space;
 		protected var _shapeDebug:ShapeDebug;
+		protected var _velocityIterations:int = 10;
+		protected var _positionIterations:int = 10;
 		protected var _gravity:Point = new Point(0, 600);
 		protected var _otherItems:BasicSpatialManager2D = new BasicSpatialManager2D();
 		protected var _materialManager:NapeMaterialManager;
