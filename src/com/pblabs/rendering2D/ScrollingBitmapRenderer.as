@@ -56,8 +56,7 @@ package com.pblabs.rendering2D
 		override public function set bitmapData(value:BitmapData):void
 		{
 			super.bitmapData = value;
-			if(!PBE.IN_EDITOR && _displayObject && bitmap)
-				bitmap.visible = false;
+			bitmap.visible = false;
 			_painted = false;
 		}
 		
