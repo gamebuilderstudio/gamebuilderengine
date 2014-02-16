@@ -117,7 +117,7 @@ package com.pblabs.starling2D
 		
 		protected function onStageTouch(event : TouchEvent):void
 		{
-			var touch : Touch = event.getTouch(Starling.current.stage, TouchPhase.ENDED, _touchID);
+			var touch : Touch = event.getTouch(Starling.current.stage, TouchPhase.BEGAN, _touchID);
 			if(!touch)
 				return;
 			_touchID = touch.id;
@@ -125,14 +125,6 @@ package com.pblabs.starling2D
 			toggleInputDisplay();
 		}
 		
-		override protected function onStageMouseDown(event : MouseEvent):void
-		{
-		}
-		
-		override protected function onStageMouseUp(event : MouseEvent):void
-		{
-		}
-
 		override protected function updateTextImage():void
 		{
 			if(!_fontData || !_fontImage){
@@ -144,7 +136,7 @@ package com.pblabs.starling2D
 		
 		override protected function getLocalPointOfStage(stagePoint : Point):Point
 		{
-			var localTextPoint : Point = scene ? this.transformWorldToObject( (scene as ISceneG2D).transformScreenToG2DWorld(stagePoint) ) : new Point();
+			var localTextPoint : Point = this.gpuObject ? this.gpuObject.globalToLocal(stagePoint, stagePoint) : new Point();
 			return localTextPoint;
 		}
 		
