@@ -464,7 +464,7 @@ package com.pblabs.nape
 		private var _visualDebugging:Boolean = false;
 		private var _visualDebuggingPending:Boolean = false;
 		private var _bodyCallbackType:CbType;
-		private var _ignoreTimeScale : Boolean = false;
+		private var _ignoreTimeScale : Boolean = true;
 		
 	}
 }
