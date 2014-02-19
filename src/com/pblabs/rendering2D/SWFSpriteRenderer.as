@@ -143,7 +143,9 @@ package com.pblabs.rendering2D
 			if (!_resource && fileName!=null && fileName!="" && !_loaded)
 			{
 				// Tell the ResourceManager to load the ImageResource
-				PBE.resourceManager.load(fileName,SWFResource,onResourceLoaded,onResourceLoadFailed,false);
+				var resource : SWFResource = PBE.resourceManager.load(fileName,SWFResource,onResourceLoaded,onResourceLoadFailed,false) as SWFResource;	
+				if(resource && resource.isLoaded)
+					onResourceLoaded(resource);
 			}
 		}
 

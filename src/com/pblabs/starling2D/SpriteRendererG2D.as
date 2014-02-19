@@ -90,7 +90,9 @@ package com.pblabs.starling2D
 			{
 				_loading = true;
 				// Tell the ResourceManager to load the ImageResource
-				PBE.resourceManager.load(fileName,ImageResource,imageLoadCompleted,imageLoadFailed,false);				
+				var resource : ImageResource = PBE.resourceManager.load(fileName,ImageResource,imageLoadCompleted,imageLoadFailed,false) as ImageResource;
+				if(resource && resource.isLoaded)
+					imageLoadCompleted(resource);
 			}
 		}
 		

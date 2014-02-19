@@ -10,6 +10,7 @@ package com.pblabs.rendering2D
 {
     import com.pblabs.engine.PBE;
     import com.pblabs.engine.resource.ImageResource;
+    import com.pblabs.engine.resource.Resource;
     import com.pblabs.engine.resource.ResourceEvent;
     
    /**
@@ -152,11 +153,13 @@ package com.pblabs.rendering2D
 		protected override function onAdd():void
 		{
 			super.onAdd();
-			if (!_resource && fileName!=null && fileName!="" && !loading)
+			if (!_resource && _fileName!=null && _fileName!="" && !loading)
 			{
 				_loading = true;
 				// Tell the ResourceManager to load the ImageResource
-				PBE.resourceManager.load(fileName,ImageResource,imageLoadCompleted,imageLoadFailed,false);
+				var resource : ImageResource = PBE.resourceManager.load(fileName,ImageResource,imageLoadCompleted,imageLoadFailed,false) as ImageResource;
+				if(resource && resource.isLoaded)
+					imageLoadCompleted(resource);
 			}
 		}
 

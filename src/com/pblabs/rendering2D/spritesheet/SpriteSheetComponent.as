@@ -377,10 +377,12 @@ package com.pblabs.rendering2D.spritesheet
 		override protected function onAdd():void
 		{
 			super.onAdd();
-			if (!_image && imageFilename!=null && imageFilename!="" && !loading)
+			if (!_image && _imageFilename!=null && _imageFilename!="" && !loading)
 			{
 				_loading = true;
-				PBE.resourceManager.load(imageFilename, ImageResource, onImageLoaded, onImageFailed);
+				var resource : ImageResource = PBE.resourceManager.load(imageFilename, ImageResource, onImageLoaded, onImageFailed) as ImageResource;
+				if(resource && resource.isLoaded)
+					onImageLoaded(resource);
 			}
 			_destroyed = false;
 		}

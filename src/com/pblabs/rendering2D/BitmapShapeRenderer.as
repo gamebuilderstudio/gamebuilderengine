@@ -57,14 +57,6 @@ package com.pblabs.rendering2D
 			return bitmap.bitmapData.hitTest(zeroPoint, 0x01, localPos);
 		}
 		
-		override protected function onAdd():void
-		{
-			super.onAdd();
-			if(bitmap && !bitmap.bitmapData){
-				redraw();
-			}
-		}
-
 		override protected function onRemove():void
 		{
 			if(bitmap && bitmap.bitmapData){
