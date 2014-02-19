@@ -446,13 +446,13 @@ package com.pblabs.nape
 			
 			if(_debugDisplayEnabled && _shapeDebug && _spatialManager && !PBE.IS_SHIPPING_BUILD){
 				_shapeDebug.clear();
-				_shapeDebug.transform.setAs(_spatialManager.scale, 0, 0, _spatialManager.scale, 0, 0);
+				if(_debugLayerSceneTracking && _spriteForPointChecks && _spriteForPointChecks.scene){
+					_shapeDebug.transform.setAs(1, 0, 0, 1, _spriteForPointChecks.scene.position.x, _spriteForPointChecks.scene.position.y);
+				}else{
+					_shapeDebug.transform.setAs(1, 0, 0, 1, 0, 0);
+				}
 				_shapeDebug.draw(_body);
 				_shapeDebug.flush();
-				if(_debugLayerSceneTracking && _spriteForPointChecks && _spriteForPointChecks.scene){
-					_shapeDebug.display.x = _spriteForPointChecks.scene.position.x;
-					_shapeDebug.display.y = _spriteForPointChecks.scene.position.y;
-				}
 			}
 		}
 		
@@ -467,7 +467,7 @@ package com.pblabs.nape
 			
 			if(!PBE.IS_SHIPPING_BUILD && _body){
 				
-				_shapeDebug = new ShapeDebug(PBUtil.clamp(_body.bounds.width, 10, 5000000), PBUtil.clamp(_body.bounds.height, 10, 5000000), 0x4D4D4D );
+				_shapeDebug = new ShapeDebug(PBUtil.clamp(PBE.mainStage.stageWidth, 10, 5000000), PBUtil.clamp(PBE.mainStage.stageHeight, 10, 5000000), 0x4D4D4D );
 				_shapeDebug.drawConstraints = true;
 				_shapeDebug.drawBodies = true;
 				

@@ -179,8 +179,15 @@ package com.pblabs.nape
 
 		public function onFrame(dt:Number):void
 		{
-			if(_space && !PBE.IN_EDITOR)
-				_space.step(dt, _velocityIterations, _positionIterations);
+			if(_space && !PBE.IN_EDITOR){
+				_simulationTime += dt;
+				// Keep on stepping forward by fixed time step until amount of time
+				// needed has been simulated.
+				while (space.elapsedTime < _simulationTime) {
+					_space.step(1 / PBE.mainStage.frameRate, _velocityIterations, _positionIterations);
+				}
+				
+			}
 			if(_space && _shapeDebug && _visualDebugging){
 				_shapeDebug.clear();
 				_shapeDebug.draw(_space);
@@ -381,9 +388,10 @@ package com.pblabs.nape
 		{
 			if(_shapeDebug)
 				_shapeDebug.clear();
-			_shapeDebug = new ShapeDebug(PBUtil.clamp(PBE.mainClass.width, 10, 5000000), PBUtil.clamp(PBE.mainClass.height, 10, 5000000), 0x4D4D4D );
+			_shapeDebug = new ShapeDebug(PBUtil.clamp(PBE.mainStage.stageWidth, 10, 5000000), PBUtil.clamp(PBE.mainStage.stageHeight, 10, 5000000), 0x4D4D4D );
 			_shapeDebug.drawConstraints = true;
 			_shapeDebug.drawBodies = true;
+			PBE.mainStage.addChild( _shapeDebug.display );
 		}
 		
 		private function freeSpace():void
@@ -443,9 +451,9 @@ package com.pblabs.nape
 			}else if( isSensorTrigger ){
 				ce = new CollisionEvent(eventType, spatial1, spatial2, new Point(), null, null);
 			}
-			if ( spatial1.owner && (!isSensorTrigger || (isSensorTrigger && arbiter.shape1.sensorEnabled)))
+			if ( spatial1.owner)
 				spatial1.owner.eventDispatcher.dispatchEvent(ce);
-			if ( spatial2.owner && (!isSensorTrigger || (isSensorTrigger && arbiter.shape2.sensorEnabled)))
+			if ( spatial2.owner)
 				spatial2.owner.eventDispatcher.dispatchEvent(ce);
 		}
 		
@@ -460,11 +468,12 @@ package com.pblabs.nape
 		protected var _allowSleep : Boolean = true;
 		protected var _worldBounds:Rectangle = new Rectangle(-5000, -5000, 10000, 10000);
 		protected var _queryInteraction:InteractionFilter = new InteractionFilter();
+		protected var _simulationTime : Number = 0;
 		
 		private var _visualDebugging:Boolean = false;
 		private var _visualDebuggingPending:Boolean = false;
 		private var _bodyCallbackType:CbType;
-		private var _ignoreTimeScale : Boolean = true;
+		private var _ignoreTimeScale : Boolean = false;
 		
 	}
 }
