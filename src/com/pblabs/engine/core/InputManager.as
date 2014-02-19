@@ -9,7 +9,6 @@
 package com.pblabs.engine.core
 {
     import com.pblabs.engine.PBE;
-    import com.pblabs.engine.debug.Logger;
     
     import flash.events.EventDispatcher;
     import flash.events.KeyboardEvent;
@@ -32,8 +31,8 @@ package com.pblabs.engine.core
      */
     public class InputManager extends EventDispatcher implements ITickedObject
     {
-		public var stageMouseX : Number;
-		public var stageMouseY : Number;
+		public var stageMouseX : Number = 0;
+		public var stageMouseY : Number = 0;
 		
         public function InputManager()
         {
