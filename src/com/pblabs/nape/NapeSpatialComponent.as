@@ -35,11 +35,6 @@ package com.pblabs.nape
 		public function get debugDisplayEnabled():Boolean { return _debugDisplayEnabled; }
 		public function set debugDisplayEnabled(value:Boolean):void
 		{
-			if(_debugDisplayEnabled && !value && _shapeDebug)
-			{
-				if(PBE.mainStage.contains(_shapeDebug.display))
-					PBE.mainStage.removeChild( _shapeDebug.display );
-			}
 			_debugDisplayEnabled = value;
 		}
 
@@ -130,9 +125,6 @@ package com.pblabs.nape
 			_position.setTo(value.x, value.y);
 			if ( _body )
 				_body.position.setxy(_position.x*_spatialManager.inverseScale, _position.y*_spatialManager.inverseScale);
-			
-			if(_shapeDebug && _body)
-				_shapeDebug.transform.transform(_body.position.copy(true));
 		}
 		
 		[EditorData(ignore="true", inspectable="true")]
@@ -141,9 +133,6 @@ package com.pblabs.nape
 			_position.setTo(value, _position.y);
 			if ( _body )
 				_body.position.setxy(_position.x*_spatialManager.inverseScale, _position.y*_spatialManager.inverseScale);
-			
-			if(_shapeDebug && _body)
-				_shapeDebug.transform.transform(_body.position.copy(true));
 		}
 		
 		public function get x():Number
@@ -161,9 +150,6 @@ package com.pblabs.nape
 			_position.setTo(_position.x, value);
 			if ( _body )
 				_body.position.setxy(_position.x*_spatialManager.inverseScale, _position.y*_spatialManager.inverseScale);
-			
-			if(_shapeDebug && _body)
-				_shapeDebug.transform.transform(_body.position.copy(true));
 		}
 		
 		public function get y():Number
@@ -347,18 +333,16 @@ package com.pblabs.nape
 		
 		public function set spatialManager(value:ISpatialManager2D):void
 		{
-			if (!isRegistered)
-			{
-				_spatialManager = value as NapeManagerComponent;
-				return;
-			}
+			destroyBody();
 			
-			if (_spatialManager){
-				destroyBody();
-			}
+			if (_spatialManager)
+				_spatialManager.removeSpatialObject(this);
 			
 			_spatialManager = value as NapeManagerComponent;
-			debugDisplayEnabled = (_spatialManager && _spatialManager.visualDebugging) ? false : true;
+			
+			if (_spatialManager)
+				_spatialManager.addSpatialObject(this);
+			
 			setupBody();
 		}
 		
@@ -444,15 +428,10 @@ package com.pblabs.nape
 		{
 			super.onTick(deltaTime);
 			
-			if(_debugDisplayEnabled && _shapeDebug && _spatialManager && !PBE.IS_SHIPPING_BUILD){
-				_shapeDebug.clear();
-				if(_debugLayerSceneTracking && _spriteForPointChecks && _spriteForPointChecks.scene){
-					_shapeDebug.transform.setAs(1, 0, 0, 1, _spriteForPointChecks.scene.position.x, _spriteForPointChecks.scene.position.y);
-				}else{
-					_shapeDebug.transform.setAs(1, 0, 0, 1, 0, 0);
-				}
-				_shapeDebug.draw(_body);
-				_shapeDebug.flush();
+			if(_spatialManager && _spatialManager.visualDebugging && _spatialManager.shapeDebugger && _spriteForPointChecks && _spriteForPointChecks.scene){
+				
+				//_spriteForPointChecks.scene.transformWorldToScreen(
+				//_spatialManager.shapeDebugger
 			}
 		}
 		
@@ -463,24 +442,16 @@ package com.pblabs.nape
 				_collisionShapes = [ new CircleCollisionShape() ];
 			}
 			setupBody();
+			if (_spatialManager)
+				_spatialManager.addSpatialObject(this);
 			attachRenderer();
-			
-			if(!PBE.IS_SHIPPING_BUILD && _body){
-				
-				_shapeDebug = new ShapeDebug(PBUtil.clamp(PBE.mainStage.stageWidth, 10, 5000000), PBUtil.clamp(PBE.mainStage.stageHeight, 10, 5000000), 0x4D4D4D );
-				_shapeDebug.drawConstraints = true;
-				_shapeDebug.drawBodies = true;
-				
-				if(_spatialManager)
-					debugDisplayEnabled = _spatialManager.visualDebugging ? false : true;
-				if(debugDisplayEnabled)
-					PBE.mainStage.addChild( _shapeDebug.display );
-			}
 		}
 		
 		override protected function onRemove():void
 		{
 			super.onRemove();
+			if (_spatialManager)
+				_spatialManager.removeSpatialObject(this);
 			destroyBody();
 		}
 		
@@ -509,13 +480,6 @@ package com.pblabs.nape
 				}
 				_body.space = null;
 				_body = null;
-			}
-			if(_shapeDebug && _shapeDebug.display)
-			{
-				if(PBE.mainStage.contains(_shapeDebug.display))
-					PBE.mainStage.removeChild( _shapeDebug.display );
-				_shapeDebug.clear();
-				_shapeDebug = null;
 			}
 		}
 		
