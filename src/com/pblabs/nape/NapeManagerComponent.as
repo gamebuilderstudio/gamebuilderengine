@@ -202,7 +202,7 @@ package com.pblabs.nape
 				for(var i : int = 0; i < len; i++)
 				{
 					//Try to convert object body positions to global coordinate space
-					if(_shapeDebug.transform.tx == 0 && _shapeDebug.transform.ty == 0 && _physicsObjectList[i].spriteForPointChecks && _physicsObjectList[i].spriteForPointChecks.scene && "trackObject" in _physicsObjectList[i].spriteForPointChecks.scene && _physicsObjectList[i].spriteForPointChecks.scene["trackObject"] )
+					if(_physicsObjectList[i].spriteForPointChecks && _physicsObjectList[i].spriteForPointChecks.scene && "trackObject" in _physicsObjectList[i].spriteForPointChecks.scene && _physicsObjectList[i].spriteForPointChecks.scene["trackObject"] )
 					{
 						_shapeDebug.transform.setAs(1,0,0,1, _physicsObjectList[i].spriteForPointChecks.scene.position.x, _physicsObjectList[i].spriteForPointChecks.scene.position.y);
 					}
