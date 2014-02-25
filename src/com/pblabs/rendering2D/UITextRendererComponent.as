@@ -333,12 +333,16 @@ package com.pblabs.rendering2D
 			if(_fontImage)
 				_fontImage.removeEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
 			_fontImage = img;
-			_fontImage.addEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
+			if(_fontImage)
+				_fontImage.addEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
 			
 			_textDirty = true;
-			if(_bmFontObject)
+			if(_bmFontObject){
 				_bmFontObject.destroy();
-			_bmFontObject = null;
+				bitmap.bitmapData = null;
+				originalBitmapData = null;
+				_bmFontObject = null;
+			}
 		}
 
 		public function get fontData():DataResource{ return _fontData; }
@@ -346,12 +350,16 @@ package com.pblabs.rendering2D
 			if(_fontData)
 				_fontData.removeEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
 			_fontData = data;
-			_fontData.addEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
+			if(_fontData)
+				_fontData.addEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
 			
 			_textDirty = true;
-			if(_bmFontObject)
+			if(_bmFontObject){
 				_bmFontObject.destroy();
-			_bmFontObject = null;
+				bitmap.bitmapData = null;
+				originalBitmapData = null;
+				_bmFontObject = null;
+			}
 		}
 
 		public function get fontColor():uint{ return uint(textFormatter.color); }
