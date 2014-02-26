@@ -6,9 +6,11 @@ package com.pblabs.engine.core
 	
 	import flash.display.Stage;
 	import flash.display.StageOrientation;
+	import flash.events.AccelerometerEvent;
 	import flash.events.Event;
 	import flash.events.StageOrientationEvent;
 	import flash.geom.Rectangle;
+	import flash.sensors.Accelerometer;
 	import flash.system.ApplicationDomain;
 	import flash.system.Capabilities;
 
@@ -89,6 +91,8 @@ package com.pblabs.engine.core
 				throw new Error("Game engine has to be started first!");
 			
 			PBE.mainStage.addEventListener(Event.RESIZE, onScreenResize);
+			
+			
 			if(ApplicationDomain.currentDomain.hasDefinition("flash.events.StageOrientationEvent")){
 				if(Stage.supportsOrientationChange)
 					PBE.mainStage.addEventListener(StageOrientationEvent.ORIENTATION_CHANGE, orientationChange);
@@ -102,7 +106,18 @@ package com.pblabs.engine.core
 			if(!objectContext.Game.Level) objectContext.Game.Level = new DataComponent();
 			if(!objectContext.Game.Touch) objectContext.Game.Touch = new DataComponent();
 			if(!objectContext.Game.Controllers) objectContext.Game.Controllers = new DataComponent();
+			if(!objectContext.Game.Accelerometer) objectContext.Game.Accelerometer = new DataComponent();
 
+			if(Accelerometer.isSupported)
+			{
+				var accel : Accelerometer = new Accelerometer();
+				accel.addEventListener(AccelerometerEvent.UPDATE, onAccelerometerUpdated);
+				objectContext.Game.Accelerometer.x = 0;
+				objectContext.Game.Accelerometer.y = 0;
+				objectContext.Game.Accelerometer.z = 0;
+				objectContext.Game.Accelerometer.timestamp = 0;
+			}
+			
 			calculateScreenSize();
 			
 			objectContext.Game.Level.currentLevel = PBE.levelManager.currentLevel;
@@ -117,6 +132,7 @@ package com.pblabs.engine.core
 			globalExpressionEntity.addComponent(objectContext.Game.Level, "Level");
 			globalExpressionEntity.addComponent(objectContext.Game.Touch, "Touch");
 			globalExpressionEntity.addComponent(objectContext.Game.Controllers, "Controllers");
+			globalExpressionEntity.addComponent(objectContext.Game.Accelerometer, "Accelerometer");
 			
 			objectContext.Game.Controllers.deviceCount = 0;
 			objectContext.Game.Controllers.isSupported = false;
@@ -200,6 +216,16 @@ package com.pblabs.engine.core
 					objectContext.Game.Screen.isPortraitLayout = false;
 			}
 			
+		}
+		
+		private function onAccelerometerUpdated(event : AccelerometerEvent):void
+		{
+			if(objectContext.Game.Accelerometer){
+				objectContext.Game.Accelerometer.x = event.accelerationX;
+				objectContext.Game.Accelerometer.y = event.accelerationY;
+				objectContext.Game.Accelerometer.z = event.accelerationZ;
+				objectContext.Game.Accelerometer.timestamp = event.timestamp;
+			}
 		}
 		
 		private function onScreenResize(event : Event):void
