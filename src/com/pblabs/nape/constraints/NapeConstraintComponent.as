@@ -1,7 +1,6 @@
 package com.pblabs.nape.constraints
 {
 	import com.pblabs.engine.PBE;
-	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.entity.EntityComponent;
 	import com.pblabs.nape.INape2DSpatialComponent;
 	import com.pblabs.nape.NapeManagerComponent;
@@ -29,7 +28,9 @@ package com.pblabs.nape.constraints
 		public function get spatialManager():IPhysics2DManager{ return _spatialManager; }
 		public function set spatialManager(value:IPhysics2DManager):void
 		{
+			destroyConstraint();
 			_spatialManager = value;
+			constructConstraint();
 		}
 		
 		[EditorData(referenceType="componentReference")]
@@ -72,8 +73,10 @@ package com.pblabs.nape.constraints
 
 		public function get active():Boolean
 		{
-			if ( _constraint )
-				_active = _constraint.active;
+			//This has to re-set the constraint because nape for some reason is
+			//turning off active status in-editor.
+			if ( _constraint && !PBE.IN_EDITOR )
+				_constraint.active = _active;
 			return _active;
 		}
 		
