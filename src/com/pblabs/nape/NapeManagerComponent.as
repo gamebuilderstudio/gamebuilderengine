@@ -184,8 +184,13 @@ package com.pblabs.nape
 
 		public function onFrame(dt:Number):void
 		{
-			if(_physicsObjectList.length < 1)
+			if(_physicsObjectList.length < 1){
+				if(_space && _shapeDebug && _visualDebugging)
+				{
+					_shapeDebug.clear();
+				}
 				return;
+			}
 			
 			if(_space && !PBE.IN_EDITOR){
 				_simulationTime += dt;
