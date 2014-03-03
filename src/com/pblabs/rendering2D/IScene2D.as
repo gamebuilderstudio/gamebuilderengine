@@ -170,6 +170,11 @@ package com.pblabs.rendering2D
 		 */
 		function get sceneContainer():Object;
 
+		/**
+		 * @private
+		 */
+		function get layers():Array;
+
 		function get layerIndex():int;
 		function set layerIndex(val : int):void;
 

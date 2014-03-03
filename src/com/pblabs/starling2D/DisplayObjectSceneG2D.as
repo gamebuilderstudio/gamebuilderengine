@@ -72,16 +72,6 @@ package com.pblabs.starling2D
 		}
 		
 		/**
-		 * Holds DisplayObjectSceneLayer instances to use for various layers.
-		 * That is, if index 3 of layers[] holds an instance of DisplayObjectSceneLayer
-		 * or a subclass, then that instance will be used for layer #3.
-		 * 
-		 * Note this is only considered at layer setup time. Use getLayer() to
-		 * get a layer that is being actively used.
-		 */
-		public var layers:Array = [];
-		
-		/**
 		 * If set, the scene will follow the exact position of the trackedObject
 		 * It will also account for the offset position.
 		 */
@@ -215,10 +205,6 @@ package com.pblabs.starling2D
 		protected function generateLayer(layerIndex:int):DisplayObjectSceneLayerG2D
 		{
 			var outLayer:DisplayObjectSceneLayerG2D;
-			
-			// Do we have that layer already specified?
-			if (layers && layers[layerIndex])
-				outLayer = layers[layerIndex] as DisplayObjectSceneLayerG2D;
 			
 			// Go with default.
 			if (!outLayer)
@@ -607,6 +593,19 @@ package com.pblabs.starling2D
 			return _rootSprite;
 		}
 		
+		/**
+		 * Holds DisplayObjectSceneLayerG2D instances to use for various layers.
+		 * That is, if index 3 of layers[] holds an instance of DisplayObjectSceneLayerG2D
+		 * or a subclass, then that instance will be used for layer #3.
+		 * 
+		 * Note this is only considered at layer setup time. Use getLayer() to
+		 * get a layer that is being actively used.
+		 */
+		public function get layers():Array
+		{
+			return _layers;
+		}
+
 		/**
 		 * The position that this scene should be added to the scene view
 		 **/

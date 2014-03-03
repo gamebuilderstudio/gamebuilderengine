@@ -66,16 +66,6 @@ package com.pblabs.rendering2D
             return _sceneAlignment;
         }
         
-        /**
-         * Holds DisplayObjectSceneLayer instances to use for various layers.
-         * That is, if index 3 of layers[] holds an instance of DisplayObjectSceneLayer
-         * or a subclass, then that instance will be used for layer #3.
-         * 
-         * Note this is only considered at layer setup time. Use getLayer() to
-         * get a layer that is being actively used.
-         */
-        public var layers:Array = [];
-        
 		/**
 		 * If set, the scene will follow the exact position of the trackedObject
 		 * It will also account for the offset position.
@@ -206,12 +196,8 @@ package com.pblabs.rendering2D
          */
         protected function generateLayer(layerIndex:int):DisplayObjectSceneLayer
         {
-            var outLayer:DisplayObjectSceneLayer;
+            var outLayer:DisplayObjectSceneLayer; 
             
-            // Do we have that layer already specified?
-            if (layers && layers[layerIndex])
-                outLayer = layers[layerIndex] as DisplayObjectSceneLayer;
-
             // Go with default.
             if (!outLayer)
                 outLayer = new DisplayObjectSceneLayer();
@@ -614,6 +600,19 @@ package com.pblabs.rendering2D
 			if(_sceneView){
 				sceneView = _sceneView;
 			}
+		}
+
+		/**
+		 * Holds DisplayObjectSceneLayer instances to use for various layers.
+		 * That is, if index 3 of layers[] holds an instance of DisplayObjectSceneLayer
+		 * or a subclass, then that instance will be used for layer #3.
+		 * 
+		 * Note this is only considered at layer setup time. Use getLayer() to
+		 * get a layer that is being actively used.
+		 */
+		public function get layers():Array
+		{
+			return _layers;
 		}
 
 		public function sortSpatials(array:Array):void
