@@ -686,7 +686,7 @@ package com.pblabs.rendering2D
         
         protected function addToScene():void
         {
-            if(_scene && _displayObject && !_inScene)
+            if(_scene && _displayObject && !_inScene && _layerIndex != -1)
             {                
                 _scene.add(this);
                 _inScene = true;
@@ -724,7 +724,7 @@ package com.pblabs.rendering2D
                 layerIndex = owner.getProperty(layerIndexProperty, layerIndex);
             
             // Maybe we were in the right layer, but have the wrong zIndex.
-            if (_zIndexDirty && _scene)
+            if (_zIndexDirty && _scene && _layerIndex != -1)
             {
                 _scene.getLayer(_layerIndex, true).markDirty();
                 _zIndexDirty = false;

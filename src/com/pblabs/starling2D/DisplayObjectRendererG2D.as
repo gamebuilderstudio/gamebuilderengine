@@ -138,7 +138,7 @@ package com.pblabs.starling2D
 		
 		override protected function addToScene():void
 		{
-			if(_scene && !_inScene && gpuObject)
+			if(_scene && !_inScene && gpuObject && _layerIndex != -1)
 			{                
 				updateTransform();
 				_scene.add(this);
