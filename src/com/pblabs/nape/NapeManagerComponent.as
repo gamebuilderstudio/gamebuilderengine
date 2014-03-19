@@ -182,6 +182,21 @@ package com.pblabs.nape
 			_worldBounds = value;
 		}
 
+		public function get debugLayerPosition():Point
+		{
+			return _debugLayerPosition;
+		}
+		
+		public function set debugLayerPosition(value:Point):void
+		{
+			_debugLayerPosition = value;
+		}
+
+		public function get spatialObjectList():Vector.<INape2DSpatialComponent>
+		{
+			return _physicsObjectList.concat();
+		}
+
 		public function onFrame(dt:Number):void
 		{
 			if(_physicsObjectList.length < 1){
@@ -204,14 +219,20 @@ package com.pblabs.nape
 			if(_space && _shapeDebug && _visualDebugging){
 				_shapeDebug.clear();
 				var len : int = _physicsObjectList.length;
+				var trakedObjectFound : Boolean = false;
 				for(var i : int = 0; i < len; i++)
 				{
 					//Try to convert object body positions to global coordinate space
 					if(_physicsObjectList[i].spriteForPointChecks && _physicsObjectList[i].spriteForPointChecks.scene && "trackObject" in _physicsObjectList[i].spriteForPointChecks.scene && _physicsObjectList[i].spriteForPointChecks.scene["trackObject"] )
 					{
-						_shapeDebug.transform.setAs(1,0,0,1, _physicsObjectList[i].spriteForPointChecks.scene.position.x, _physicsObjectList[i].spriteForPointChecks.scene.position.y);
+						trakedObjectFound = true;
+						_debugLayerPosition.copyFrom(_physicsObjectList[i].spriteForPointChecks.scene.position);
+						_shapeDebug.transform.setAs(1,0,0,1, _debugLayerPosition.x, _debugLayerPosition.y);
+						break;
 					}
 				}
+				if(!trakedObjectFound && !PBE.IN_EDITOR)
+					_shapeDebug.transform.setAs(1,0,0,1, _debugLayerPosition.x, _debugLayerPosition.y);
 				_shapeDebug.draw(_space);
 				_shapeDebug.flush();
 			}
@@ -499,6 +520,7 @@ package com.pblabs.nape
 		protected var _queryInteraction:InteractionFilter = new InteractionFilter();
 		protected var _physicsObjectList:Vector.<INape2DSpatialComponent> = new Vector.<INape2DSpatialComponent>();
 		protected var _simulationTime : Number = 0;
+		protected var _debugLayerPosition:Point = new Point(0, 0);
 		
 		private var _visualDebugging:Boolean = false;
 		private var _visualDebuggingPending:Boolean = false;

@@ -4,24 +4,21 @@ package com.pblabs.nape.constraints
 	import com.pblabs.engine.core.ITickedObject;
 	import com.pblabs.engine.core.InputKey;
 	import com.pblabs.engine.debug.Logger;
-	import com.pblabs.engine.entity.IEntityComponent;
 	import com.pblabs.nape.INape2DSpatialComponent;
 	import com.pblabs.nape.NapeManagerComponent;
-	import com.pblabs.nape.NapeSpatialComponent;
 	import com.pblabs.physics.IPhysics2DSpatial;
 	
 	import flash.geom.Point;
-	import flash.ui.Keyboard;
 	
 	import nape.constraint.Constraint;
 	import nape.constraint.PivotJoint;
 	import nape.geom.Vec2;
 	import nape.phys.Body;
-	import nape.phys.BodyList;
 
 	public class NapeMouseConstraintComponent extends NapePivotJointComponent implements ITickedObject
 	{
 		private var _bodyList:Array = [];
+		private var _stagePoint : Point = new Point();
 		private var _worldPoint : Point = new Point();
 		private var _ignoreTimeScale : Boolean = false;
 		
@@ -40,9 +37,10 @@ package com.pblabs.nape.constraints
 			if(!_constraint || !_spatialManager)
 				return;
 
-			_worldPoint.setTo(PBE.mainStage.mouseX, PBE.mainStage.mouseY);
+			_stagePoint.setTo(PBE.mainStage.mouseX, PBE.mainStage.mouseY);
 			if(PBE.inputManager.keyJustPressed(InputKey.MOUSE_BUTTON.keyCode))
 			{
+				_worldPoint.setTo( _stagePoint.x - _spatialManager.debugLayerPosition.x, _stagePoint.y - _spatialManager.debugLayerPosition.y );
 				_spatialManager.getObjectsUnderPoint(_worldPoint, _bodyList);
 				var wp:Vec2 = Vec2.get(_worldPoint.x, _worldPoint.y);
 				for (var i:int = 0; i < _bodyList.length; i++) {
@@ -65,6 +63,7 @@ package com.pblabs.nape.constraints
 				disableConstraint();
 			}
 			if(_constraint && _constraint.active && (_constraint as PivotJoint).body2 && (_constraint as PivotJoint).body2.space){
+				_worldPoint.setTo( _stagePoint.x - _spatialManager.debugLayerPosition.x, _stagePoint.y - _spatialManager.debugLayerPosition.y );
 				(_constraint as PivotJoint).anchor1.setxy(_worldPoint.x, _worldPoint.y);
 				//(_constraint as PivotJoint).body2.angularVel *= 0.9;
 			}else{

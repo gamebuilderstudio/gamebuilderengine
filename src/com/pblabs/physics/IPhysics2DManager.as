@@ -20,5 +20,7 @@ package com.pblabs.physics
 		function get visualDebugging():Boolean;
 		function set visualDebugging(value:Boolean):void;
 		function get debugDrawer() : DisplayObject;
+		function get debugLayerPosition():Point;
+		function set debugLayerPosition(value:Point):void;
 	}
 }
