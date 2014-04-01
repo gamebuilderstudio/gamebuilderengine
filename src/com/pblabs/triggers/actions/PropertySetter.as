@@ -68,8 +68,11 @@ package com.pblabs.triggers.actions
 					case PROPERTYTYPES_UINT:
 						newPropValue = uint(newPropValue);
 						break;
+					case PROPERTYTYPES_STRING:
+						newPropValue = String(newPropValue);
+						break;
 				}
-				_owner.owner.setProperty(property,newPropValue);
+				_owner.owner.setProperty(property, newPropValue);
 			}
 			catch(e:Error)
 			{
