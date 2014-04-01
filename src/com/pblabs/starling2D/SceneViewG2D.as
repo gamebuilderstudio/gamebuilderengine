@@ -17,6 +17,7 @@ package com.pblabs.starling2D
     import flash.display3D.Context3DRenderMode;
     import flash.events.Event;
     import flash.geom.Rectangle;
+    import flash.system.Capabilities;
     import flash.utils.Dictionary;
     
     import starling.core.Starling;
@@ -86,7 +87,8 @@ package com.pblabs.starling2D
 				_starlingInstance.start();
 				name = "SceneView_"+_stage3DIndex;
 			
-				PBE.mainStage.addEventListener(Event.DEACTIVATE, stage_deactivateHandler, false, 0, true);
+				if(Capabilities.os.toLowerCase().indexOf("mac") == -1 && Capabilities.os.toLowerCase().indexOf("windows") == -1)
+					PBE.mainStage.addEventListener(Event.DEACTIVATE, stage_deactivateHandler, false, 0, true);
 			}
 			this.addEventListener("removedFromStage", onRemoved);
 		}
