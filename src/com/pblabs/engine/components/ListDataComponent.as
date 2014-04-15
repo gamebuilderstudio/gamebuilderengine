@@ -8,6 +8,7 @@
  ******************************************************************************/
 package com.pblabs.engine.components
 {
+   import com.pblabs.engine.debug.Logger;
    import com.pblabs.engine.entity.EntityComponent;
    import com.pblabs.engine.serialization.ISerializable;
    import com.pblabs.engine.serialization.Serializer;
@@ -80,6 +81,7 @@ package com.pblabs.engine.components
 	   {
 		   this["item"+_data.length] = item;
 		   _data.push(item);
+		   Logger.print(this, "Pushing - " + item);
 		   refresh();
 	   }
 	   
@@ -90,6 +92,7 @@ package com.pblabs.engine.components
 		   {
 			   delete this["item"+i];
 		   }
+		   _data.length = 0;
 		   if(callRefresh)
 		       refresh();
 	   }
@@ -113,6 +116,7 @@ package com.pblabs.engine.components
 		   }
 	   }
 	   
+	   [EditorData(ignore="true")]
 	   public function get count():int { return _data.length; }
 	   public function set count(val : int):void{}
 
