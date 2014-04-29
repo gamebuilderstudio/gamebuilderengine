@@ -37,12 +37,12 @@ package com.pblabs.engine.resource
          if (data is ByteArray)
          {
          	// convert ByteArray data to a string
-         	data = (data as ByteArray).readUTFBytes((data as ByteArray).length);
+         	var xmlString : String = (data as ByteArray).readUTFBytes((data as ByteArray).length);
          }
             
          try
          {
-            _xml = new XML(data);
+            _xml = new XML(xmlString);
 			processLoadedContent(_xml);
          }
          catch (e:TypeError)

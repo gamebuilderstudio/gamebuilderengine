@@ -15,7 +15,6 @@ package com.pblabs.starling2D
 	import com.pblabs.rendering2D.UITextRendererComponent;
 	
 	import flash.display.BitmapData;
-	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.text.TextFieldType;
