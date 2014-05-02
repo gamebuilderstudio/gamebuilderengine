@@ -163,27 +163,20 @@ package com.pblabs.engine.core
 		public function instantiateEntityFromCallBack(name:String, alias:String, initialize : Boolean = true):IEntity
 		{
 			Profiler.enter("instantiateEntityFromCallBack");
-			try
+			// Check for a callback.
+			if (_things["CB_"+name])
 			{
-				// Check for a callback.
-				if (_things["CB_"+name])
+				if (_things["CB_"+name].groupCallback)
+					throw new Error("Thing '" + name + "' is a group callback!");
+				
+				if (_things["CB_"+name].entityCallback)
 				{
-					if (_things["CB_"+name].groupCallback)
-						throw new Error("Thing '" + name + "' is a group callback!");
-					
-					if (_things["CB_"+name].entityCallback)
-					{
-						var instantiated:IEntity=_things["CB_"+name].entityCallback( !alias ? name : null, alias, initialize);
-						Profiler.exit("instantiateEntityFromCallBack");
-						return instantiated;
-					}
+					var instantiated:IEntity=_things["CB_"+name].entityCallback( !alias ? name : null, alias, initialize);
+					Profiler.exit("instantiateEntityFromCallBack");
+					return instantiated;
 				}
 			}
-			catch (e:Error)
-			{
-				Logger.error(this, "instantiateEntityFromCallBack", "Failed instantiating '" + name + "' due to: " + e.toString() + "\n" + e.getStackTrace());
-				Profiler.exit("instantiateEntityFromCallBack");
-			}
+			Profiler.exit("instantiateEntityFromCallBack");
 			
 			return instantiateEntity(name, !initialize);
 		}
