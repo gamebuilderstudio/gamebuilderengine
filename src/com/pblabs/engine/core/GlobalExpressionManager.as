@@ -171,6 +171,8 @@ package com.pblabs.engine.core
 			}
 		}
 		
+		private var screenSize:Rectangle = new Rectangle();
+		private var deviceSize:Rectangle = new Rectangle();
 		private function calculateScreenSize():void
 		{
 			if(objectContext){
@@ -182,12 +184,8 @@ package com.pblabs.engine.core
 				objectContext.Game.Screen.height = PBE.mainStage.stageHeight;
 			}
 
-			var screenSize:Rectangle = new Rectangle(0, 0, PBE.mainStage.stageWidth, PBE.mainStage.stageHeight);
-			var deviceSize:Rectangle = new Rectangle(0, 0,
-				Math.max(PBE.mainStage.fullScreenWidth, PBE.mainStage.fullScreenHeight),
-				Math.min(PBE.mainStage.fullScreenWidth, PBE.mainStage.fullScreenHeight));
-			
-			var appSize:Rectangle = screenSize.clone();
+			screenSize.setTo(0,0, objectContext.Game.Screen.width, objectContext.Game.Screen.height);
+			deviceSize.setTo(0,0, Math.max(PBE.mainStage.fullScreenWidth, PBE.mainStage.fullScreenHeight), Math.min(PBE.mainStage.fullScreenWidth, PBE.mainStage.fullScreenHeight));
 			
 			// if device is wider than GUI's aspect ratio, height determines scale
 			if ((deviceSize.width/deviceSize.height) > (screenSize.width/screenSize.height)) {
