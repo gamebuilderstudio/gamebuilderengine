@@ -18,6 +18,7 @@ package com.pblabs.rendering2D
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFieldType;
 	import flash.text.TextFormat;
+	import flash.text.TextInteractionMode;
 	
 	import pxBitmapFont.PxBitmapFont;
 	import pxBitmapFont.PxTextField;
@@ -65,6 +66,7 @@ package com.pblabs.rendering2D
 			_textDisplay.wordWrap = _wordWrap;
 			_textDisplay.setTextFormat(textFormatter);
 			_textDisplay.autoSize = TextFieldAutoSize.LEFT;
+			_textDisplay.mouseEnabled = true;
 
 			updateFontSize();
 			paintTextToBitmap();
@@ -136,9 +138,12 @@ package com.pblabs.rendering2D
 				
 				_previousAlpha = this._alpha;
 				_inputEnabled = true;
+				PBE.mainStage.focus = _textDisplay;
+				_textDisplay.requestSoftKeyboard();
 			}else if(!localBounds.containsPoint( localTextPoint ) && _inputEnabled){
 				Logger.print(this, "Hiding Input Field...");
 				hideInputField(null);
+				PBE.mainStage.focus = null;
 			}
 		}
 		

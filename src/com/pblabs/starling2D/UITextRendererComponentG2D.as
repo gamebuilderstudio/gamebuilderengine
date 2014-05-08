@@ -33,6 +33,7 @@ package com.pblabs.starling2D
 	{
 		private var _gpuTextField : TextField;
 		private var _touchID : int = -1;
+		private var _listeningToTouch : Boolean = false;
 		
 		public function UITextRendererComponentG2D()
 		{
@@ -76,15 +77,10 @@ package com.pblabs.starling2D
 			return gpuObject.hitTest(localPos) ? true : false;
 		}
 
-		override protected function onAdd():void
-		{
-			super.onAdd();
-		}
-
 		override protected function onRemove():void
 		{
 			super.onRemove();
-			if(_textInputType == TextFieldType.INPUT)
+			if(_textInputType == TextFieldType.INPUT && Starling.current != null && Starling.current.stage != null)
 				Starling.current.stage.removeEventListener(TouchEvent.TOUCH, onStageTouch);
 		}
 
@@ -93,6 +89,12 @@ package com.pblabs.starling2D
 			if(!Starling.context && !skipCreation){
 				InitializationUtilG2D.initializeRenderers.add(buildG2DObject);
 				return;
+			}else if(!_listeningToTouch && _textInputType == TextFieldType.INPUT && type != TextFieldType.INPUT){
+				if(Starling.current != null && Starling.current.stage != null){
+					Starling.current.stage.addEventListener(TouchEvent.TOUCH, onStageTouch);
+					_listeningToTouch = true;
+					Logger.print(this, "Attaching Touch Listener");
+				}
 			}
 			if(!skipCreation){
 				if(!isComposedTextData && this.bitmap.bitmapData)
@@ -116,8 +118,8 @@ package com.pblabs.starling2D
 		
 		protected function onStageTouch(event : TouchEvent):void
 		{
-			var touch : Touch = event.getTouch(Starling.current.stage, TouchPhase.BEGAN, _touchID);
-			if(!touch)
+			var touch : Touch = event.getTouch(Starling.current.stage, TouchPhase.ENDED, _touchID);
+			if(!touch || touch.phase != TouchPhase.ENDED)
 				return;
 			_touchID = touch.id;
 			_stagePoint.setTo( touch.globalX, touch.globalY );
@@ -135,7 +137,7 @@ package com.pblabs.starling2D
 		
 		override protected function getLocalPointOfStage(stagePoint : Point):Point
 		{
-			var localTextPoint : Point = this.gpuObject ? this.gpuObject.globalToLocal(stagePoint, stagePoint) : new Point();
+			var localTextPoint : Point = this.gpuObject ? this.gpuObject.globalToLocal(stagePoint) : stagePoint;
 			return localTextPoint;
 		}
 		
@@ -294,12 +296,12 @@ package com.pblabs.starling2D
 		}
 
 		override public function set type(val : String):void{
-			if(_textInputType == TextFieldType.INPUT && val != TextFieldType.INPUT)
+			if(_textInputType == TextFieldType.INPUT && val != TextFieldType.INPUT && Starling.current != null && Starling.current.stage != null)
 			{
 				Starling.current.stage.removeEventListener(TouchEvent.TOUCH, onStageTouch);
 			}
 			super.type = val;
-			if(_textInputType == TextFieldType.INPUT)
+			if(_textInputType == TextFieldType.INPUT && Starling.current != null && Starling.current.stage != null)
 			{
 				Starling.current.stage.addEventListener(TouchEvent.TOUCH, onStageTouch);
 			}
