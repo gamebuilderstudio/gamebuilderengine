@@ -149,20 +149,16 @@ package com.pblabs.starling2D
 					var bitmapFont : BitmapFont = TextField.getBitmapFont( currentFontName );
 					if(!bitmapFont)
 					{
-						try{
-							_fontData.data.position = 0;
-							var fontDataXML : XML = XML(_fontData.data.readUTFBytes( _fontData.data.length ));
-							var fontFace : String = String(fontDataXML.info.@face);
-							if(fontFace != currentFontName)
-							{
-								this.fontName = currentFontName = fontFace;
-							}
-							var fontTexture : Texture = ResourceTextureManagerG2D.getTextureForResource(_fontImage);
-							bitmapFont = new BitmapFont(fontTexture, fontDataXML);
-							TextField.registerBitmapFont(bitmapFont, currentFontName);
-						}catch(e : Error){
-							Logger.error(this, "buildFondObject", "Font creation and registration failed for ("+currentFontName+")!");
+						_fontData.data.position = 0;
+						var fontDataXML : XML = XML(_fontData.data.readUTFBytes( _fontData.data.length ));
+						var fontFace : String = String(fontDataXML.info.@face);
+						if(fontFace != currentFontName)
+						{
+							this.fontName = currentFontName = fontFace;
 						}
+						var fontTexture : Texture = ResourceTextureManagerG2D.getTextureForResource(_fontImage);
+						bitmapFont = new BitmapFont(fontTexture, fontDataXML);
+						TextField.registerBitmapFont(bitmapFont, currentFontName);
 					}
 					if(!gpuObject){
 						gpuObject = new TextField(_size.x, _size.y, _text, currentFontName, bitmapFont.size, this.fontColor, this.textFormatter.bold);
@@ -225,8 +221,9 @@ package com.pblabs.starling2D
 		
 		override public function set bitmapData(value:BitmapData):void
 		{
-			if (value === bitmap.bitmapData)
+			if (value === bitmap.bitmapData){
 				return;
+			}
 			// store orginal BitmapData so that modifiers can be re-implemented 
 			// when assigned modifiers attribute later on.
 			originalBitmapData = value;

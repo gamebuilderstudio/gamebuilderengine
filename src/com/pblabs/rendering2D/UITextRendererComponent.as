@@ -41,6 +41,8 @@ package com.pblabs.rendering2D
 		protected var _wordWrap : Boolean = false; 
 		protected var _autoResize : Boolean = true;
 		protected var _worldScratchPoint : Point = new Point();
+
+		private var _textSize : Point = new Point();
 		
 		public function UITextRendererComponent()
 		{
@@ -223,7 +225,7 @@ package com.pblabs.rendering2D
 			if(!isComposedTextData)
 			{
 				textBitmapData = originalBitmapData;
-				if(!this.bitmapData || this.bitmapData.width != size.x || this.bitmapData.height != size.y || _textSizeDirty || this.text == "")
+				if(!this.bitmapData || _textSizeDirty || this.text == "")
 				{
 					if(bitmapData != textBitmapData && textBitmapData)
 						textBitmapData.dispose();
@@ -231,26 +233,24 @@ package com.pblabs.rendering2D
 					if(bitmapData)
 						bitmapData.dispose();
 					
-					
-					var textSize : Point;
 					if(autoResize)
 					{
-						textSize = this._size.clone();
-						textSize.setTo( textSize.x * this._scale.x, textSize.y * this._scale.y);
+						_textSize = this._size.clone();
+						_textSize.setTo( _textSize.x * this._scale.x, _textSize.y * this._scale.y);
 					}else{
-						textSize = new Point();
-						textSize.setTo( this._size.x*this._scale.x, this._size.y*this._scale.y );
+						_textSize.setTo( this._size.x*this._scale.x, this._size.y*this._scale.y );
 					}
-					if(textSize.x < 2)
-						textSize.x = 2;
-					if(textSize.y < 2)
-						textSize.y = 2;
-					textBitmapData = new BitmapData(textSize.x, textSize.y, true, 0x0);
+					if(_textSize.x < 2)
+						_textSize.x = 2;
+					if(_textSize.y < 2)
+						_textSize.y = 2;
+					
+					textBitmapData = new BitmapData(_textSize.x, _textSize.y, true, 0x0);
 					clearedBitmap = true;
 				}
 				
 				if(textBitmapData && !clearedBitmap) 
-					textBitmapData.fillRect(textBitmapData.rect, 0);
+					textBitmapData.fillRect(textBitmapData.rect, 0x0);
 				textBitmapData.lock();
 				textBitmapData.draw(_textDisplay);
 				textBitmapData.unlock();
@@ -366,6 +366,7 @@ package com.pblabs.rendering2D
 		public function set fontColor(val : uint):void{
 			textFormatter.color = val;
 			if(_textDisplay){
+				_textDisplay.textColor = val;
 				_textDisplay.setTextFormat(textFormatter);
 			}
 			if(_bmFontObject)
