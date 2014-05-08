@@ -35,6 +35,7 @@ package com.pblabs.rendering2D.ui
 {
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
+	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.FocusEvent;
@@ -245,6 +246,7 @@ package com.pblabs.rendering2D.ui
 			this.st.softKeyboardType = softKeyboardType;
 		}
 		
+		public function get text():String { return this.st.text; }
 		public function set text(text:String):void
 		{
 			this.st.text = text;
@@ -265,6 +267,11 @@ package com.pblabs.rendering2D.ui
 		{
 			return this.st.multiline;
 		}
+
+		public function get fontImage():BitmapData
+		{
+			return this._bmd;
+		}
 		
 		public function assignFocus():void
 		{
@@ -277,16 +284,16 @@ package com.pblabs.rendering2D.ui
 		}
 		
 		//// Additional functions ////
-		
+		private var _bmd : BitmapData;
 		public function freeze():void
 		{
 			var viewPortRectangle:Rectangle = this.getViewPortRectangle();
 			var border:Sprite = new Sprite();
 			this.drawBorder(border);
-			var bmd:BitmapData = new BitmapData(this.st.viewPort.width, this.st.viewPort.height);
-			this.st.drawViewPortToBitmapData(bmd);
-			bmd.draw(border, new Matrix(1, 0, 0, 1, this.x - viewPortRectangle.x, this.y - viewPortRectangle.y));
-			this.snapshot = new Bitmap(bmd);
+			_bmd = new BitmapData(this.st.viewPort.width, this.st.viewPort.height);
+			this.st.drawViewPortToBitmapData(_bmd);
+			_bmd.draw(border, new Matrix(1, 0, 0, 1, this.x - viewPortRectangle.x, this.y - viewPortRectangle.y));
+			this.snapshot = new Bitmap(_bmd);
 			this.snapshot.x = viewPortRectangle.x - this.x;
 			this.snapshot.y = viewPortRectangle.y - this.y;
 			this.addChild(this.snapshot);
@@ -303,6 +310,10 @@ package com.pblabs.rendering2D.ui
 			}
 		}
 		
+		override public function getBounds(targetSpace : DisplayObject):Rectangle
+		{
+			return getViewPortRectangle();
+		}
 		//// Functions that must be overridden to make this work ///
 		
 		public override function set width(width:Number):void
@@ -338,6 +349,11 @@ package com.pblabs.rendering2D.ui
 		{
 			super.y = y;
 			this.render();
+		}
+		
+		public function get stageText() : StageText
+		{
+			return this.st;
 		}
 
 		private function render():void
