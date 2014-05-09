@@ -2,7 +2,6 @@ package com.pblabs.rendering2D
 {
 	import com.pblabs.engine.PBE;
 	import com.pblabs.engine.PBUtil;
-	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.resource.DataResource;
 	import com.pblabs.engine.resource.ImageResource;
 	import com.pblabs.engine.resource.ResourceEvent;
@@ -18,7 +17,6 @@ package com.pblabs.rendering2D
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFieldType;
 	import flash.text.TextFormat;
-	import flash.text.TextInteractionMode;
 	
 	import pxBitmapFont.PxBitmapFont;
 	import pxBitmapFont.PxTextField;
@@ -141,7 +139,6 @@ package com.pblabs.rendering2D
 				PBE.mainStage.focus = _textDisplay;
 				_textDisplay.requestSoftKeyboard();
 			}else if(!localBounds.containsPoint( localTextPoint ) && _inputEnabled){
-				Logger.print(this, "Hiding Input Field...");
 				hideInputField(null);
 				PBE.mainStage.focus = null;
 			}
@@ -230,11 +227,8 @@ package com.pblabs.rendering2D
 			if(!isComposedTextData)
 			{
 				textBitmapData = originalBitmapData;
-				if(!this.bitmapData || _textSizeDirty || this.text == "")
+				if(!textBitmapData || _textSizeDirty || this.text == "")
 				{
-					if(bitmapData != textBitmapData && textBitmapData)
-						textBitmapData.dispose();
-					
 					if(bitmapData)
 						bitmapData.dispose();
 					
@@ -253,7 +247,6 @@ package com.pblabs.rendering2D
 					textBitmapData = new BitmapData(_textSize.x, _textSize.y, true, 0x0);
 					clearedBitmap = true;
 				}
-				
 				if(textBitmapData && !clearedBitmap) 
 					textBitmapData.fillRect(textBitmapData.rect, 0x0);
 				textBitmapData.lock();
@@ -369,6 +362,9 @@ package com.pblabs.rendering2D
 
 		public function get fontColor():uint{ return uint(textFormatter.color); }
 		public function set fontColor(val : uint):void{
+			if(textFormatter.color != val)
+				_textDirty = true;
+
 			textFormatter.color = val;
 			if(_textDisplay){
 				_textDisplay.textColor = val;
@@ -376,48 +372,55 @@ package com.pblabs.rendering2D
 			}
 			if(_bmFontObject)
 				_bmFontObject.color = val;
-			_textDirty = true;
 		}
 		
 		public function get fontBold():Boolean{ return textFormatter.bold; }
 		public function set fontBold(val : Boolean):void{
+			if(textFormatter.bold != val){
+				_textDirty = true;
+				_textSizeDirty = true;
+			}
+
 			textFormatter.bold = val;
 			if(_textDisplay){
 				_textDisplay.setTextFormat(textFormatter);
 			}
-			_textSizeDirty = true;
-			_textDirty = true;
 		}
 
 		public function get fontItalic():Boolean{ return textFormatter.italic; }
 		public function set fontItalic(val : Boolean):void{
+			if(textFormatter.italic != val){
+				_textDirty = true;
+				_textSizeDirty = true;
+			}
 			textFormatter.italic = val;
 			if(_textDisplay){
 				_textDisplay.setTextFormat(textFormatter);
 			}
-			_textSizeDirty = true;
-			_textDirty = true;
 		}
 
 		public function get fontSize():Number{ return int(textFormatter.size); }
 		public function set fontSize(val : Number):void{
+			if(textFormatter.size != val){
+				_textDirty = true;
+				_textSizeDirty = true;
+			}
 			textFormatter.size = val;
 			if(_textDisplay){
 				_textDisplay.setTextFormat(textFormatter);
 			}
-			
-			_textSizeDirty = true;
-			_textDirty = true;
 		}
 
 		public function get fontName():String{ return textFormatter.font; }
 		public function set fontName(val : String):void{
+			if(textFormatter.font != val){
+				_textDirty = true;
+				_textSizeDirty = true;
+			}
 			textFormatter.font = val;
 			if(_textDisplay){
 				_textDisplay.setTextFormat(textFormatter);
 			}
-			_textSizeDirty = true;
-			_textDirty = true;
 		}
 		
 		protected var _text : String;
@@ -511,17 +514,6 @@ package com.pblabs.rendering2D
 			_textDirty = true;
 			_textSizeDirty = true;
 		}
-		
-		/**
-		 * @inheritDocs
-		 */
-		override public function set alpha(value:Number):void
-		{
-			if(value != _alpha)
-				_textDirty = true;
-			super.alpha = value;
-		}
-		
 		public function get nativeTextField():TextField{ return _textDisplay; }
 		public function get bitmapTextField():PxTextField { return _bmFontObject; }
 	}

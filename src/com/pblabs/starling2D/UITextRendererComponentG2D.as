@@ -10,7 +10,6 @@ package com.pblabs.starling2D
 {
 	import com.pblabs.engine.PBUtil;
 	import com.pblabs.engine.core.ObjectType;
-	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.resource.ResourceEvent;
 	import com.pblabs.rendering2D.UITextRendererComponent;
 	
@@ -93,7 +92,6 @@ package com.pblabs.starling2D
 				if(Starling.current != null && Starling.current.stage != null){
 					Starling.current.stage.addEventListener(TouchEvent.TOUCH, onStageTouch);
 					_listeningToTouch = true;
-					Logger.print(this, "Attaching Touch Listener");
 				}
 			}
 			if(!skipCreation){
@@ -102,11 +100,11 @@ package com.pblabs.starling2D
 				
 					if(!gpuObject){
 						//Create GPU Renderer Object
-						gpuObject = new Image( ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmap.bitmapData ) );
+						gpuObject = new Image( ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmap.bitmapData, getTextureCacheKey() ) );
 					}else{
 						if(( gpuObject as Image).texture)
 							( gpuObject as Image).texture.dispose();
-						( gpuObject as Image).texture = ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmap.bitmapData );
+						( gpuObject as Image).texture = ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmap.bitmapData, getTextureCacheKey() );
 						( gpuObject as Image).readjustSize();
 					}
 				}
@@ -128,7 +126,7 @@ package com.pblabs.starling2D
 		
 		override protected function updateTextImage():void
 		{
-			if(!_fontData || !_fontImage){
+			if(!isComposedTextData){
 				super.updateTextImage();
 			}else{
 				buildFontObject();
@@ -197,13 +195,6 @@ package com.pblabs.starling2D
 			}
 		}
 		
-		override protected function paintTextToBitmap():void
-		{
-			//Clear Functionality
-			if(!_fontData || !_fontImage)
-				super.paintTextToBitmap();
-		}
-
 		override protected function onResourceUpdated(event : ResourceEvent):void
 		{
 			var currentFontName : String = fontName;
@@ -223,9 +214,6 @@ package com.pblabs.starling2D
 		
 		override public function set bitmapData(value:BitmapData):void
 		{
-			if (value === bitmap.bitmapData){
-				return;
-			}
 			// store orginal BitmapData so that modifiers can be re-implemented 
 			// when assigned modifiers attribute later on.
 			originalBitmapData = value;
@@ -306,6 +294,11 @@ package com.pblabs.starling2D
 				Starling.current.stage.addEventListener(TouchEvent.TOUCH, onStageTouch);
 			}
 		}
+		
+		protected function getTextureCacheKey():String{
+			return this.fontBold + ":" + this.fontColor + ":" + this.fontItalic + ":" + this.fontName + ":" + this.fontSize + ":" + "_"+_size.x +","+_size.y+ "_:_"+_scale.x +","+_scale.y+ "_";
+		}
+
 		/**
 		 * @see Bitmap.smoothing 
 		 */
