@@ -65,6 +65,9 @@ package com.pblabs.triggers.actions
 					case PROPERTYTYPES_NUMBER:
 						newPropValue = Number(newPropValue);
 						break;
+					case PROPERTYTYPES_COLOR:
+						newPropValue = uint(newPropValue);
+						break;
 					case PROPERTYTYPES_UINT:
 						newPropValue = uint(newPropValue);
 						break;
