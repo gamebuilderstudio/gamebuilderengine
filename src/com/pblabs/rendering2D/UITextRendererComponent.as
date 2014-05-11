@@ -74,6 +74,9 @@ package com.pblabs.rendering2D
 		
 		override protected function onRemove():void
 		{
+			if(!isComposedTextData && this.bitmapData)
+				this.bitmapData.dispose();
+
 			super.onRemove();
 			
 			if(_fontData)
