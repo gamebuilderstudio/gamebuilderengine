@@ -146,7 +146,7 @@ package com.pblabs.starling2D
 		
 		override protected function buildFontObject():void
 		{
-			if(isComposedTextData && _fontData.isLoaded && _fontImage.isLoaded)
+			if(Starling.context && isComposedTextData && _fontData.isLoaded && _fontImage.isLoaded)
 			{
 				var currentFontName : String = fontName;
 				if(currentFontName)
@@ -170,9 +170,7 @@ package com.pblabs.starling2D
 						(gpuObject as TextField).autoSize = _autoResize ? TextFieldAutoSize.BOTH_DIRECTIONS : TextFieldAutoSize.NONE;
 					}
 				}
-			}
-			if(!gpuObject)
-			{
+			}else if(!isComposedTextData && !gpuObject){
 				buildG2DObject();
 			}
 		}
