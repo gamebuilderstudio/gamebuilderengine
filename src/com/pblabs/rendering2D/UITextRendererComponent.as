@@ -204,9 +204,9 @@ package com.pblabs.rendering2D
 			}
 		}
 		
-		protected function paintTextToBitmap():void
+		protected function paintTextToBitmap(reuseBitmap : Boolean = true):void
 		{
-			var textBitmapData:BitmapData;
+			var textBitmapData:BitmapData = bitmapData;
 			
 			if(!_bmFontObject)
 				buildFontObject();
@@ -226,11 +226,10 @@ package com.pblabs.rendering2D
 			var clearedBitmap : Boolean = false;
 			if(!isComposedTextData)
 			{
-				textBitmapData = originalBitmapData;
-				if(!textBitmapData || _textSizeDirty || this.text == "")
+				if(!textBitmapData || _textSizeDirty || this.text == "" || !reuseBitmap)
 				{
-					if(bitmapData)
-						bitmapData.dispose();
+					if(textBitmapData)
+						textBitmapData.dispose();
 					
 					if(autoResize)
 					{
@@ -246,9 +245,9 @@ package com.pblabs.rendering2D
 					
 					textBitmapData = new BitmapData(_textSize.x, _textSize.y, true, 0x0);
 					clearedBitmap = true;
-				}
-				if(textBitmapData && !clearedBitmap) 
+				}else if(reuseBitmap && textBitmapData && !clearedBitmap){
 					textBitmapData.fillRect(textBitmapData.rect, 0x0);
+				}
 				textBitmapData.lock();
 				textBitmapData.draw(_textDisplay);
 				textBitmapData.unlock();

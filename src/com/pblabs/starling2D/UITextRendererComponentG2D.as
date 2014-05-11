@@ -100,11 +100,11 @@ package com.pblabs.starling2D
 				
 					if(!gpuObject){
 						//Create GPU Renderer Object
-						gpuObject = new Image( ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmap.bitmapData, getTextureCacheKey() ) );
+						gpuObject = new Image( ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmap.bitmapData) );
 					}else{
 						if(( gpuObject as Image).texture)
 							( gpuObject as Image).texture.dispose();
-						( gpuObject as Image).texture = ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmap.bitmapData, getTextureCacheKey() );
+						( gpuObject as Image).texture = ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmap.bitmapData);
 						( gpuObject as Image).readjustSize();
 					}
 				}
@@ -131,6 +131,11 @@ package com.pblabs.starling2D
 			}else{
 				buildFontObject();
 			}
+		}
+		
+		override protected function paintTextToBitmap(reuseBitmap:Boolean=true):void
+		{
+			super.paintTextToBitmap(false);
 		}
 		
 		override protected function getLocalPointOfStage(stagePoint : Point):Point
@@ -295,10 +300,6 @@ package com.pblabs.starling2D
 			}
 		}
 		
-		protected function getTextureCacheKey():String{
-			return this.fontBold + ":" + this.fontColor + ":" + this.fontItalic + ":" + this.fontName + ":" + this.fontSize + ":" + "_"+_size.x +","+_size.y+ "_:_"+_scale.x +","+_scale.y+ "_";
-		}
-
 		/**
 		 * @see Bitmap.smoothing 
 		 */
