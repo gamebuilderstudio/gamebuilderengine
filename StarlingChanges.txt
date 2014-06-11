@@ -6,3 +6,4 @@
 	- Added disposed getter
 	
 -Added getObjectsUnderPoint method to DisplayObjectContainer.as
+-Add  implements IEventDispatcher to EventDispatcher

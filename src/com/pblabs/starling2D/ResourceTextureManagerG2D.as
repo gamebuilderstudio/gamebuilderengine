@@ -60,7 +60,7 @@ package com.pblabs.starling2D
 			_textureReferenceCount = new Dictionary();
 		}
 		
-		public static function getTextureForBitmapData(data : BitmapData, cacheKey : String = null, overrideBitmapData : BitmapData = null):Texture
+		public static function getTextureForBitmapData(data : BitmapData, cacheKey : String = null, overrideBitmapData : BitmapData = null, repeat : Boolean = false):Texture
 		{
 			if(!data)
 				return null;
@@ -80,7 +80,7 @@ package com.pblabs.starling2D
 				_subTexturesMap[subtexture] = texture;
 				return subtexture;
 			}else{
-				texture = Texture.fromBitmapData( (overrideBitmapData ? overrideBitmapData : data), false, false, _scaleFactor);
+				texture = Texture.fromBitmapData( (overrideBitmapData ? overrideBitmapData : data), false, false, _scaleFactor, "bgra", repeat);
 				texture.disposed.addOnce(releaseTexture);
 				_originTexturesMap[key] = new Vector.<Texture>();
 				_originTexturesMap[key].push( texture );
@@ -93,7 +93,7 @@ package com.pblabs.starling2D
 			return null;
 		}
 		
-		public static function getTextureForResource(resource : ImageResource):Texture
+		public static function getTextureForResource(resource : ImageResource, repeat : Boolean = false):Texture
 		{
 			if(!resource)
 				return null;
@@ -110,7 +110,7 @@ package com.pblabs.starling2D
 				return subtexture;
 			}else{
 				//TODO: Add support for ATFImageResources in the future
-				texture = Texture.fromBitmapData(resource.bitmapData, false, false, _scaleFactor);
+				texture = Texture.fromBitmapData(resource.bitmapData, false, false, _scaleFactor, "bgra", repeat);
 				texture.disposed.addOnce(releaseTexture);
 				_originTexturesMap[resource] = new Vector.<Texture>();
 				_originTexturesMap[resource].push( texture );
@@ -159,6 +159,8 @@ package com.pblabs.starling2D
 			}else{
 				var atlasTexture : Texture = getTextureForResource(resource);
 				atlas = new TextureAtlas(atlasTexture);
+				_originTexturesMap[resource] = new Vector.<TextureAtlas>();
+				_originTexturesMap[resource].push( atlas );
 			}
 			return atlas;
 		}
@@ -166,12 +168,10 @@ package com.pblabs.starling2D
 		public static function getTextureForAtlasRegion(atlas : TextureAtlas, regionName : String, region : Rectangle, frame : Rectangle = null):Texture
 		{
 			var subtexture : Texture
-			if(atlas.getRegion(regionName)){
-				subtexture = atlas.getTexture(regionName);
-			}else{
+			if(atlas.getRegion(regionName) == null){
 				atlas.addRegion(regionName, region, frame);
-				subtexture = atlas.getTexture(regionName);
 			}
+			subtexture = atlas.getTexture(regionName);
 			subtexture.disposed.addOnce(releaseTexture);
 			_subTexturesMap[subtexture] = atlas;
 			_textureReferenceCount[atlas]++;

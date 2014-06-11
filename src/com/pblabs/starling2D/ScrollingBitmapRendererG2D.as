@@ -66,9 +66,6 @@ package com.pblabs.starling2D
 			if(!gpuObject || (!_initialDraw && PBE.IN_EDITOR))
 				return;
 			
-			if(!(gpuObject as Image).texture.repeat)
-				(gpuObject as Image).texture.repeat = true;
-			
 			var imageText : Image = (gpuObject as Image);
 			xx = ((xx/textureWidth % 1)+1);
 			yy = ((yy/textureHeight % 1)+1);
@@ -138,7 +135,6 @@ package com.pblabs.starling2D
 					vRatio = Math.round(_size.y / textureHeight);
 				//var intialPosX : Number = scrollPosition.x / _size.x;
 				//var intialPosY : Number = scrollPosition.y / _size.y;
-				(gpuObject as Image).texture.repeat = true;
 				
 				textureCoordPt1.setTo(0, 0);
 				textureCoordPt2.setTo(hRatio, 0);
@@ -173,9 +169,8 @@ package com.pblabs.starling2D
 		protected function getTexture():Texture
 		{
 			if(customBitmapCreated){
-				return ResourceTextureManagerG2D.getTextureForBitmapData(originalBitmapData, null, bitmapData);
 			}
-			return ResourceTextureManagerG2D.getTextureForResource(resource);
+			return ResourceTextureManagerG2D.getTextureForResource(resource, true);
 		}
 		
 		protected function increaseBitmapByPowerOfTwo(data : BitmapData, targetW : Number, targetH : Number):BitmapData
