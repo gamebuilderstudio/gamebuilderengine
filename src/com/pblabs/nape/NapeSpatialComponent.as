@@ -177,7 +177,7 @@ package com.pblabs.nape
 		
 		public function get linearVelocity():Point
 		{
-			if (_body)
+			if (_body && !PBE.IN_EDITOR)
 			{
 				var scale:Number = _spatialManager.scale;
 				_linearVelocity.setTo(_body.velocity.x*scale, _body.velocity.y*scale);
@@ -199,7 +199,7 @@ package com.pblabs.nape
 		
 		public function get angularVelocity():Number
 		{
-			if (_body)
+			if (_body && !PBE.IN_EDITOR)
 			{
 				var velocity:Number = _body.angularVel;
 				_angularVelocity = PBUtil.getDegreesFromRadians(velocity);
