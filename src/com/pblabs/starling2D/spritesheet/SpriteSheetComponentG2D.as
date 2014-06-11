@@ -8,10 +8,10 @@
  ******************************************************************************/
 package com.pblabs.starling2D.spritesheet
 {
-	import com.pblabs.engine.PBE;
 	import com.pblabs.engine.PBUtil;
 	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.rendering2D.spritesheet.CachedFramesData;
+	import com.pblabs.rendering2D.spritesheet.ISpriteSheetNamedFramesDivider;
 	import com.pblabs.rendering2D.spritesheet.SpriteSheetComponent;
 	import com.pblabs.starling2D.InitializationUtilG2D;
 	import com.pblabs.starling2D.ResourceTextureManagerG2D;
@@ -30,6 +30,7 @@ package com.pblabs.starling2D.spritesheet
 		public function SpriteSheetComponentG2D()
 		{
 			super();
+			InitializationUtilG2D.initializeRenderers.addOnce(onContextReady);
 			InitializationUtilG2D.disposed.add(releaseTextures);
 		}
 		
@@ -47,6 +48,11 @@ package com.pblabs.starling2D.spritesheet
 			InitializationUtilG2D.disposed.remove(releaseTextures);
 		}
 		
+		override public function get isLoaded():Boolean
+		{
+			return (Starling.context && (imageData != null || _forcedBitmaps))
+		}
+
 		override public function getFrame(index:int, direction:Number=0.0):BitmapData{ return null; }
 
 		override protected function getSourceFrames() : Array
@@ -89,7 +95,10 @@ package com.pblabs.starling2D.spritesheet
 				for (var i:int = 0; i < _divider.frameCount; i++)
 				{
 					var area:Rectangle = _divider.getFrameArea(i);
-					var regionSubTexture : Texture = ResourceTextureManagerG2D.getTextureForAtlasRegion(atlas, "i_"+i, area);
+					var frameName : String = "i_"+i;
+					if(_divider is ISpriteSheetNamedFramesDivider)
+						frameName = (_divider as ISpriteSheetNamedFramesDivider).getFrameNameByIndex(i);
+					var regionSubTexture : Texture = ResourceTextureManagerG2D.getTextureForAtlasRegion(atlas, frameName, area);
 					_frames[i] = regionSubTexture;
 					
 					tmpBounds = area;
@@ -153,6 +162,11 @@ package com.pblabs.starling2D.spritesheet
 				_center = new Point(frames[0].width * 0.5, frames[0].height * 0.5);
 		}
 
+		protected function onContextReady():void
+		{
+			buildFrames();
+		}
+		
 		override public function set imageData(data : BitmapData):void
 		{
 			Logger.error(this, "set imageData", "You can't set the BitmapData of a GPU SpriteSheetComponent. You must use an ImageResource.");

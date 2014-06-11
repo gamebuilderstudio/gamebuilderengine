@@ -14,7 +14,6 @@ package com.pblabs.rendering2D.spritesheet
     import com.pblabs.engine.resource.ImageResource;
     import com.pblabs.engine.resource.Resource;
     import com.pblabs.engine.resource.ResourceEvent;
-    import com.pblabs.rendering2D.spritesheet.ISpriteSheet;
     import com.pblabs.starling2D.spritesheet.SpriteContainerComponentG2D;
     
     import flash.display.BitmapData;
@@ -40,7 +39,7 @@ package com.pblabs.rendering2D.spritesheet
      * <p>Be aware that Flash implements an upper limit on image size - going over
      * 2048 pixels in any dimension will lead to problems.</p>
      */ 
-    public class SpriteSheetComponent extends SpriteContainerComponentG2D implements ISpriteSheet
+    public class SpriteSheetComponent extends SpriteContainerComponentG2D implements IImageSpriteSheet
     {
 						
 		public function get isDestroyed():Boolean{ return _destroyed; }

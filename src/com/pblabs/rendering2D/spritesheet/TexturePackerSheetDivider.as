@@ -21,7 +21,7 @@ package com.pblabs.rendering2D.spritesheet
      * Divide a spritesheet into cells based on the rect coordinates in the loaded Texture Packer Json-Array 
 	 * JSONResource data.
      */
-    public class TexturePackerSheetDivider implements ISpriteSheetDivider
+    public class TexturePackerSheetDivider implements ISpriteSheetNamedFramesDivider
     {
 		private var _frames : Vector.<CoordinateDataVO>;
 
@@ -34,16 +34,19 @@ package com.pblabs.rendering2D.spritesheet
 			if (!name)
 				throw new Error("Name can not be null");
 			
+			//Strip any file extension from name
+			name = removeFileExtension(name);
+
 			if(!_frames || _frames.length < 1)
 			{
 				if(resource && resource.isLoaded)
 				{
 					buildFrames();
-					return getFrameByName(name);
+				}else{
+					return null;
 				}
-				return new Rectangle(0, 0, 1, 1);
 			}
-			var frameIndex : int = findFrameIndex(name);
+			var frameIndex : int = getFrameIndexByName(name);
 			return frameIndex >= 0 ? _frames[frameIndex].frameBounds : null;
 		}
 
@@ -77,6 +80,19 @@ package com.pblabs.rendering2D.spritesheet
 			return _frames[index].name;
 		}
 
+		public function getFrameIndexByName(name : String):int
+		{
+			//Strip any file extension from name
+			name = removeFileExtension(name);
+			var len : int = _frames.length;
+			for(var i : int = 0; i < len; i++)
+			{
+				if(_frames[i].name == name)
+					return i;
+			}
+			return -1;
+		}
+
 		protected function buildFrames():void
 		{
 			if(!_resource){
@@ -103,7 +119,7 @@ package com.pblabs.rendering2D.spritesheet
 				for(var i : int = 0; i < dataLen; i++)
 				{
 					var frameData : Object = objectData[i];
-					_frames.push( new CoordinateDataVO(frameData.filename, new Rectangle( frameData.frame.x, frameData.frame.y, frameData.frame.w, frameData.frame.h),
+					_frames.push( new CoordinateDataVO(removeFileExtension(frameData.filename), new Rectangle( frameData.frame.x, frameData.frame.y, frameData.frame.w, frameData.frame.h),
 						new Point(frameData.sourceSize.w, frameData.sourceSize.h),
 						new Rectangle(frameData.spriteSourceSize.x, frameData.spriteSourceSize.y, frameData.spriteSourceSize.w, frameData.spriteSourceSize.h),
 						frameData.rotated,
@@ -135,15 +151,12 @@ package com.pblabs.rendering2D.spritesheet
 			}
 		}
 		
-		protected function findFrameIndex(name : String):int
+		private function removeFileExtension(val : String):String
 		{
-			var len : int = _frames.length;
-			for(var i : int = 0; i < len; i++)
-			{
-				if(_frames[i].name == name)
-					return i;
-			}
-			return -1;
+			//Strip any file extension from name
+			if(val.indexOf(".", -1) != -1)
+				val = val.split(".")[0];
+			return val;
 		}
 
 		/**
