@@ -55,7 +55,8 @@ package com.pblabs.engine.resource
             swf:"com.pblabs.engine.resource.SWFResource",
             mp3:"com.pblabs.engine.resource.MP3Resource",
 			wav:"com.pblabs.engine.resource.WAVResource",
-			json:"com.pblabs.engine.resource.JSONResource"
+			json:"com.pblabs.engine.resource.JSONResource",
+			skel:"com.pblabs.engine.resource.JSONResource"
         };
         
         /**
