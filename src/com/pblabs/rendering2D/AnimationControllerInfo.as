@@ -88,12 +88,12 @@ package com.pblabs.rendering2D
 		
 		public function get frameCount():int
 		{
-			if(customFrames)
+			if(customFrameList)
 			{
-				if(!customFrameList) return 0;
 				return customFrameList.length;
 			}
-			if(!spriteSheet) return 0;
+			if(!spriteSheet) 
+				return 0;
 			return spriteSheet.frameCount;
 		}
     }
