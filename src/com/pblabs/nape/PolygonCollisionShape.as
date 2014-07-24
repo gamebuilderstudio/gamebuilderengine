@@ -4,6 +4,7 @@ package com.pblabs.nape
 	
 	import nape.geom.GeomPoly;
 	import nape.geom.Vec2;
+	import nape.geom.Vec2List;
 	import nape.shape.Polygon;
 	import nape.shape.Shape;
 
@@ -33,12 +34,25 @@ package com.pblabs.nape
 		{
 			var invScale:Number = (_parent.spatialManager as NapeManagerComponent).inverseScale;
 
-			if(!_vertices) generateBox(_parent.size.x/2, _parent.size.y/2);
-			var poly:GeomPoly = new GeomPoly();
-			for (var i:int = 0; i < _vertices.length; i++)
-				poly.push(new Vec2((_vertices[i].x * shapeScale.x) * invScale, (_vertices[i].y * shapeScale.y) * invScale));
-
-			var polygon : Polygon = new Polygon(poly);
+			if(!_vertices) 
+				generateBox(_parent.size.x/2, _parent.size.y/2);
+			
+			for (var i:int = 0; i < _napeVertList.length; i++)
+				_napeVertList[i].dispose();
+			
+			_napeVertList.length = 0;
+			for (i = 0; i < _vertices.length; i++)
+				_napeVertList.push( Vec2.weak(((_vertices[i].x * shapeScale.x) * invScale), ((_vertices[i].y * shapeScale.y) * invScale)) );
+			
+			var polygon : Polygon;
+			/*if(_shape)
+			{
+				polygon = _shape as Polygon;
+				polygon.localVerts.clear()
+				polygon.localVerts.merge( Vec2List.fromVector(_napeVertList) );
+			}else{*/
+				polygon = new Polygon(_napeVertList);
+			//}
 			return polygon;
 		}
 		
@@ -51,5 +65,6 @@ package com.pblabs.nape
 		}
 		
 		private var _vertices:Array;
+		private var _napeVertList : Vector.<Vec2> = new Vector.<Vec2>();
 	}
 }

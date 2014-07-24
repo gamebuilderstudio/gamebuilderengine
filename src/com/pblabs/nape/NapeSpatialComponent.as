@@ -22,7 +22,6 @@ package com.pblabs.nape
 	import nape.shape.Shape;
 	import nape.shape.ShapeList;
 	import nape.space.Space;
-	import nape.util.ShapeDebug;
 	
 	public class NapeSpatialComponent extends TickedComponent implements INape2DSpatialComponent
 	{
@@ -31,6 +30,28 @@ package com.pblabs.nape
 			super();
 		}
 		
+		public function get collisionShapeScale():Point { 
+			if(_collisionShapes && _collisionShapes.length > 0)
+			{
+				return (_collisionShapes[0] as CollisionShape).shapeScale;
+			}
+			return _collisionShapeScale; 
+		}
+		public function set collisionShapeScale(val : Point):void
+		{
+			_collisionShapeScale = val;
+			_shapeScaleDirty = true;
+			if(_collisionShapes && _collisionShapes.length > 0)
+			{
+				for(var i : int = 0; i < _collisionShapes.length; i++)
+				{
+					(_collisionShapes[i] as CollisionShape).shapeScale.setTo(_collisionShapeScale.x, _collisionShapeScale.y);
+				}
+				if(_body)
+					buildCollisionShapes();
+			}
+		}
+
 		private var _debugDisplayEnabled : Boolean = false;
 		public function get debugDisplayEnabled():Boolean { return _debugDisplayEnabled; }
 		public function set debugDisplayEnabled(value:Boolean):void
@@ -422,24 +443,15 @@ package com.pblabs.nape
 			
 			if ( _spatialManager && _spatialManager.space && _body.space != _spatialManager.space)
 				_body.space = _spatialManager.space;
-		}
-		
-		override public function onTick(deltaTime:Number):void
-		{
-			super.onTick(deltaTime);
 			
-			if(_spatialManager && _spatialManager.visualDebugging && _spatialManager.shapeDebugger && _spriteForPointChecks && _spriteForPointChecks.scene){
-				
-				//_spriteForPointChecks.scene.transformWorldToScreen(
-				//_spatialManager.shapeDebugger
-			}
+			_shapeScaleDirty = false;
 		}
 		
 		override protected function onAdd():void
 		{
 			super.onAdd();
 			if(! _collisionShapes){
-				_collisionShapes = [ new CircleCollisionShape() ];
+				_collisionShapes = [ ];
 			}
 			setupBody();
 			if (_spatialManager)
@@ -465,7 +477,7 @@ package com.pblabs.nape
 			attachRenderer();
 		}
 
-		private function destroyBody():void
+		protected function destroyBody():void
 		{
 			if ( _body )
 			{
@@ -483,8 +495,11 @@ package com.pblabs.nape
 			}
 		}
 		
-		private function clearShapesFromBody():void
+		protected function clearShapesFromBody():void
 		{
+			if(!_body.shapes || _body.shapes.length < 1)
+				return;
+			
 			var bodyTypeChanged : Boolean = false;
 			if ( _bodyType == BodyTypeEnum.STATIC )
 			{
@@ -502,7 +517,7 @@ package com.pblabs.nape
 				_body.type = napeBodyType;
 		}
 		
-		private function setupBody():void
+		protected function setupBody():void
 		{
 			if((_spatialManager == null) || (_spatialManager != null && _body != null))
 				return;
@@ -524,7 +539,7 @@ package com.pblabs.nape
 			buildCollisionShapes();
 		}
 		
-		private function attachRenderer():void
+		protected function attachRenderer():void
 		{
 			if(!spriteForPointChecks){
 				var renderer : DisplayObjectRenderer = owner.lookupComponentByType( DisplayObjectRenderer) as DisplayObjectRenderer;
@@ -575,12 +590,13 @@ package com.pblabs.nape
 		protected var _collidesContinuously:Boolean = false;
 		protected var _gravity:Point = new Point(0,0);
 		
-		protected var _shapeDebug:ShapeDebug;
 		protected var _debugLayerSceneTracking:Boolean = true;
 		protected var _linearVelocity:Point = new Point(0, 0);
 		protected var _angularVelocity:Number = 0.0;
 		protected var _position:Point = new Point();
 		protected var _rotation:Number = 0;
 		protected var _size:Point = new Point(1,1);
+		protected var _collisionShapeScale:Point = new Point(1,1);
+		protected var _shapeScaleDirty : Boolean = false;
 	}
 }

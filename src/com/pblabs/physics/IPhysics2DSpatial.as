@@ -31,5 +31,7 @@ package com.pblabs.physics
 		function get gravity():Point; 
 		function set gravity(val : Point):void;
 		
+		function get collisionShapeScale():Point;
+		function set collisionShapeScale(val : Point):void;
 	}
 }

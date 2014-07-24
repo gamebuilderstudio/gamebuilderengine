@@ -5,7 +5,6 @@ package com.pblabs.nape
 	import flash.geom.Point;
 	
 	import nape.callbacks.CbType;
-	import nape.dynamics.InteractionFilter;
 	import nape.phys.Material;
 	import nape.shape.Shape;
 
@@ -110,10 +109,10 @@ package com.pblabs.nape
 				_parent.buildCollisionShapes();
 		}
 
-		public function createShape(parent:NapeSpatialComponent, createNewInstance : Boolean = true):Shape
+		public function createShape(parent:NapeSpatialComponent, overwriteWithNewInstance : Boolean = true):Shape
 		{
 			_parent = parent;
-			if(!_shape || createNewInstance)
+			if(!_shape || overwriteWithNewInstance)
 				_shape = doCreateShape();
 			var materialObj:Material;
 			if(!_material || _material == ""){
@@ -141,10 +140,17 @@ package com.pblabs.nape
 			return _shape;
 		}
 		
+		public function clearParent():void
+		{
+			_parent = null;
+		}
+		
 		protected function doCreateShape():Shape
 		{
 			return new Shape();
 		}
+		
+		public function get internalShape():Shape { return _shape; }
 		
 		public function get internalMaterial():Material
 		{
@@ -163,6 +169,7 @@ package com.pblabs.nape
 		public static var SENSORS : CbType = new CbType();
 
 		protected var _parent:NapeSpatialComponent = null;
+		protected var _shape : Shape;
 		
 		private var _material:String;
 		private var _internalMaterial:Material;
@@ -172,6 +179,5 @@ package com.pblabs.nape
 		private var _restitution:Number = 0.0;
 		private var _shapeScale : Point = new Point(1,1);
 		private var _isTrigger:Boolean = false;
-		private var _shape : Shape;
 	}
 }
