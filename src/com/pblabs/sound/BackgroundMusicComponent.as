@@ -53,9 +53,22 @@ package com.pblabs.sound
             if (handle)
             {
                 handle.stop();
-                handle = null;
             }
         }
+		
+		public function pause():void
+		{
+			_playing = false;
+			if (handle)
+			{
+				handle.pause();
+			}
+		}
+
+		public function play():void
+		{
+			start();
+		}
         
         override protected function onAdd() : void
         {
@@ -69,6 +82,7 @@ package com.pblabs.sound
         {
 			
 			stop();
+			handle = null;
             super.onRemove();
         }
         
