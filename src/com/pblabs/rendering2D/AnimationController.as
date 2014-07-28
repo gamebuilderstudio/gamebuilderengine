@@ -279,8 +279,8 @@ package com.pblabs.rendering2D
             // Update our duration information.
             if (currentAnimationDurationReference && currentAnimationDurationReference.property != "")
                 _currentAnimationDuration = owner.getProperty(currentAnimationDurationReference) * ProcessManager.TICK_RATE_MS;
-            else if(_currentAnimation && _currentAnimation.spriteSheet)
-                _currentAnimationDuration = _currentAnimation.spriteSheet.frameCount * (1000/_currentAnimation.frameRate);
+            else if(_currentAnimation)
+                _currentAnimationDuration = _currentAnimation.frameCount * (1000/_currentAnimation.frameRate);
 			else
 				_currentAnimationDuration = 0;
         }
