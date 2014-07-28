@@ -29,8 +29,6 @@ package com.pblabs.sound
         
         public function start():void
         {
-            _playing = true;
-            
             if (!handle && (!music || !music.isLoaded) && !musicUrl)
                 return;
             
@@ -45,6 +43,8 @@ package com.pblabs.sound
             {
                 handle.resume();
             }
+
+			_playing = true;
         }
         
         public function stop():void
@@ -53,6 +53,7 @@ package com.pblabs.sound
             if (handle)
             {
                 handle.stop();
+				handle = null;
             }
         }
 		
@@ -80,9 +81,7 @@ package com.pblabs.sound
         
         override protected function onRemove() : void
         {
-			
 			stop();
-			handle = null;
             super.onRemove();
         }
         
