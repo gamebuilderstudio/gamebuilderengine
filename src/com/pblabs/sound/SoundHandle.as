@@ -82,6 +82,8 @@ package com.pblabs.sound
         {
 			if(channel){
             	pausedPosition = channel.position;
+				if(pausedPosition >= sound.length)
+					pausedPosition = 0;
            		channel.stop();
 			}
             playing = false;
@@ -90,6 +92,10 @@ package com.pblabs.sound
         public function resume(intialSoundTransform : SoundTransform = null):void
         {
             Profiler.enter("SoundHandle.resume");
+			if(channel){
+				channel.stop();
+				channel.removeEventListener(Event.SOUND_COMPLETE, onSoundComplete);
+			}
             
             dirty = true;
             
@@ -97,7 +103,9 @@ package com.pblabs.sound
             // For now, the ability to "pause" should be avoided.
             try
             {
-                channel = sound.play(pausedPosition, loopCount, intialSoundTransform);
+				//NOTE: Had to set loopCount to 0 here because it was causing playback issues. Also was not 
+				//needed because loopCount is being handled externally anyway in the onSoundComplete handler -> @lavonw
+                channel = sound.play(pausedPosition, 0, intialSoundTransform);
                 playing = true;                
 
                 // notify when this sound is done (all loops completed)
@@ -118,6 +126,9 @@ package com.pblabs.sound
          */
         private function onSoundComplete(e:Event):void
         {
+			if(channel)
+				channel.removeEventListener(Event.SOUND_COMPLETE, onSoundComplete);
+
             // since we're tracking the number of loops, decrement the count
             loopCount -= 1;
 
@@ -142,6 +153,8 @@ package com.pblabs.sound
                 // Remove from the manager.
                 manager.removeSoundHandle(this);
             }
+			if(channel)
+				channel.removeEventListener(Event.SOUND_COMPLETE, onSoundComplete);
         }
         
         public function get isPlaying():Boolean
@@ -157,7 +170,7 @@ package com.pblabs.sound
         internal var sound:Sound;
         internal var channel:SoundChannel;
 
-        protected var pausedPosition:Number = 0;
+        protected var pausedPosition:int = 0;
         protected var loopCount:int = 0;
         protected var _volume:Number = 1;
         protected var _pan:Number = 0;
