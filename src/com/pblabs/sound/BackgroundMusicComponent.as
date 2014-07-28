@@ -75,7 +75,7 @@ package com.pblabs.sound
         {
             super.onAdd();
             
-            if(autoStart)
+            if(autoStart && !PBE.IN_EDITOR)
                 start();
         }
         
