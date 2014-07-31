@@ -53,6 +53,7 @@ package com.pblabs.engine.scripting
 		private static var _evm : VirtualMachine = new VirtualMachine();
 		private static var _globalGameObject : Object;
 		private static var _expressionCache : Vector.<ExpressionByteCode>;
+		private var _fatalError : Boolean = false;
 		
 		public function ExpressionReference(expression:Object="", selfContext : Object = null)
 		{
@@ -203,7 +204,19 @@ package com.pblabs.engine.scripting
 		 */
 		public function get value():*
 		{
-			evaluateExpression();
+			if(_fatalError)
+				return null;
+			
+			if(!PBE.IS_SHIPPING_BUILD){
+				try{
+					evaluateExpression();
+				}catch(e : Error){
+					_fatalError = true;
+					Logger.error(this, "ExpressionValue", "Expression Fatal Error: [ "+_expression+" ] exiting...");
+				}
+			}else{
+				evaluateExpression();
+			}
 			return _value;
 		}
 		
