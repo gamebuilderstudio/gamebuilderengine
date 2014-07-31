@@ -613,6 +613,12 @@ package com.pblabs.rendering2D
             _rotationOffset = PBUtil.unwrapRadian(PBUtil.getRadiansFromDegrees(value));
         }
         
+		
+		public function get transformationMatrix():Matrix
+		{
+			return _transformMatrix;
+		}
+		
         /**
          * Transform a point from world space to object space. 
          */
