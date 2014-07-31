@@ -41,9 +41,7 @@ package com.pblabs.triggers.actions
 			// If our source is a properyreference
 			if(source is ExpressionReference)
 			{
-				if(!(source as ExpressionReference).selfContext)
-					(source as ExpressionReference).selfContext = _owner.owner.Self;
-				newPropValue = (source as ExpressionReference).value;
+				newPropValue = getExpressionValue((source as ExpressionReference));
 				
 			}else if(source is PropertyReference && passReferences) {
 				
