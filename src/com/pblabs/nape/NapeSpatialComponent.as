@@ -396,8 +396,8 @@ package com.pblabs.nape
 			if(scene && convertFromStageCoordinates)
 				pos = scene.transformScreenToWorld(pos);
 			
-			if(spriteForPointChecks && scene)
-				return spriteForPointChecks.pointOccupied(pos, mask);
+			if(spriteForPointChecks && scene && spriteForPointChecks.pointOccupied(pos, mask))
+				return true;
 			
 			//Check Nape body
 			if(_body && scene){
