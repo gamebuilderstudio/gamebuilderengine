@@ -192,6 +192,11 @@ package com.pblabs.rendering2D.spritesheet
 				buildFrames();
 			}
 		}
+		
+		public function isLoaded():Boolean
+		{
+			return _resource ? _resource.isLoaded : false;
+		}
 
 		/**
          * @inheritDoc
