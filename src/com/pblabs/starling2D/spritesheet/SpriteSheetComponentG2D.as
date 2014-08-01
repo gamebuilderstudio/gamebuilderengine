@@ -103,7 +103,7 @@ package com.pblabs.starling2D.spritesheet
 					
 					tmpBounds = area;
 					if(!_bounds){
-						_bounds = tmpBounds;
+						_bounds = tmpBounds.clone();
 					}else{
 						var difX : Number = PBUtil.clamp( tmpBounds.width - _bounds.width, 0, 99999999);
 						var difY : Number = PBUtil.clamp( tmpBounds.height - _bounds.height, 0, 99999999);

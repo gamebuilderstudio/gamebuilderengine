@@ -263,7 +263,7 @@ package com.pblabs.rendering2D.spritesheet
 					_frames[i].copyPixels(imageData, area, new Point(0, 0));
 					tmpBounds = new Rectangle(0,0,_frames[i].width, _frames[i].height);
 					if(!_bounds){
-						_bounds = tmpBounds;
+						_bounds = tmpBounds.clone();
 					}else{
 						var difX : Number = PBUtil.clamp( tmpBounds.width - _bounds.width, 0, 99999999);
 						var difY : Number = PBUtil.clamp( tmpBounds.height - _bounds.height, 0, 99999999);
