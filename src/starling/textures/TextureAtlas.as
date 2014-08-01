@@ -12,6 +12,8 @@ package starling.textures
 {
     import flash.geom.Rectangle;
     import flash.utils.Dictionary;
+    
+    import starling.utils.cleanMasterString;
 
     /** A texture atlas is a collection of many smaller textures in one big image. This class
      *  is used to access textures from such an atlas.
@@ -71,6 +73,7 @@ package starling.textures
     {
         private var mAtlasTexture:Texture;
         private var mTextureInfos:Dictionary;
+        private var mTextureNames:Vector.<String>;
         
         /** helper objects */
         private static var sNames:Vector.<String> = new <String>[];
@@ -100,16 +103,16 @@ package starling.textures
             
             for each (var subTexture:XML in atlasXml.SubTexture)
             {
-                var name:String        = subTexture.attribute("name");
-                var x:Number           = parseFloat(subTexture.attribute("x")) / scale;
-                var y:Number           = parseFloat(subTexture.attribute("y")) / scale;
-                var width:Number       = parseFloat(subTexture.attribute("width")) / scale;
-                var height:Number      = parseFloat(subTexture.attribute("height")) / scale;
-                var frameX:Number      = parseFloat(subTexture.attribute("frameX")) / scale;
-                var frameY:Number      = parseFloat(subTexture.attribute("frameY")) / scale;
-                var frameWidth:Number  = parseFloat(subTexture.attribute("frameWidth")) / scale;
-                var frameHeight:Number = parseFloat(subTexture.attribute("frameHeight")) / scale;
-                var rotated:Boolean    = parseBool(subTexture.attribute("rotated"));
+                var name:String        = cleanMasterString(subTexture.@name);
+                var x:Number           = parseFloat(subTexture.@x) / scale;
+                var y:Number           = parseFloat(subTexture.@y) / scale;
+                var width:Number       = parseFloat(subTexture.@width)  / scale;
+                var height:Number      = parseFloat(subTexture.@height) / scale;
+                var frameX:Number      = parseFloat(subTexture.@frameX) / scale;
+                var frameY:Number      = parseFloat(subTexture.@frameY) / scale;
+                var frameWidth:Number  = parseFloat(subTexture.@frameWidth)  / scale;
+                var frameHeight:Number = parseFloat(subTexture.@frameHeight) / scale;
+                var rotated:Boolean    = parseBool( subTexture.@rotated);
                 
                 var region:Rectangle = new Rectangle(x, y, width, height);
                 var frame:Rectangle  = frameWidth > 0 && frameHeight > 0 ?
@@ -144,13 +147,21 @@ package starling.textures
         /** Returns all texture names that start with a certain string, sorted alphabetically. */
         public function getNames(prefix:String="", result:Vector.<String>=null):Vector.<String>
         {
+            var name:String;
             if (result == null) result = new <String>[];
             
-            for (var name:String in mTextureInfos)
+            if (mTextureNames == null)
+            {
+                // optimization: store sorted list of texture names
+                mTextureNames = new <String>[];
+                for (name in mTextureInfos) mTextureNames[mTextureNames.length] = name;
+                mTextureNames.sort(Array.CASEINSENSITIVE);
+            }
+
+            for each (name in mTextureNames)
                 if (name.indexOf(prefix) == 0)
-                    result.push(name);
+                    result[result.length] = name;
             
-            result.sort(Array.CASEINSENSITIVE);
             return result;
         }
         
@@ -183,12 +194,14 @@ package starling.textures
                                   rotated:Boolean=false):void
         {
             mTextureInfos[name] = new TextureInfo(region, frame, rotated);
+            mTextureNames = null;
         }
         
         /** Removes a region with a certain name. */
         public function removeRegion(name:String):void
         {
             delete mTextureInfos[name];
+            mTextureNames = null;
         }
         
         /** The base texture that makes up the atlas. */
@@ -204,7 +217,6 @@ package starling.textures
 }
 
 import flash.geom.Rectangle;
-import starling.textures.Texture;
 
 class TextureInfo
 {

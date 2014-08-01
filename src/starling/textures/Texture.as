@@ -347,19 +347,16 @@ package starling.textures
             
             if (context == null) throw new MissingContextError();
             
-            var origWidth:int  = width  * scale;
-            var origHeight:int = height * scale;
-            var potWidth:int   = getNextPowerOfTwo(origWidth);
-            var potHeight:int  = getNextPowerOfTwo(origHeight);
-            var isPot:Boolean  = (origWidth == potWidth && origHeight == potHeight);
+            var origWidth:Number  = width  * scale;
+            var origHeight:Number = height * scale;
             var useRectTexture:Boolean = !mipMapping && !repeat &&
                 Starling.current.profile != "baselineConstrained" &&
                 "createRectangleTexture" in context && format.indexOf("compressed") == -1;
             
             if (useRectTexture)
             {
-                actualWidth  = origWidth;
-                actualHeight = origHeight;
+                actualWidth  = Math.ceil(origWidth  - 0.000000001); // avoid floating point errors
+                actualHeight = Math.ceil(origHeight - 0.000000001);
                 
                 // Rectangle Textures are supported beginning with AIR 3.8. By calling the new
                 // methods only through those lookups, we stay compatible with older SDKs.
@@ -368,8 +365,8 @@ package starling.textures
             }
             else
             {
-                actualWidth  = potWidth;
-                actualHeight = potHeight;
+                actualWidth  = getNextPowerOfTwo(origWidth);
+                actualHeight = getNextPowerOfTwo(origHeight);
                 
                 nativeTexture = context.createTexture(actualWidth, actualHeight, format,
                                                       optimizeForRenderToTexture);
@@ -381,14 +378,23 @@ package starling.textures
             
             concreteTexture.onRestore = concreteTexture.clear;
             
-            if (isPot || useRectTexture)
+            if (actualWidth - origWidth < 0.001 && actualHeight - origHeight < 0.001)
                 return concreteTexture;
             else
                 return new SubTexture(concreteTexture, new Rectangle(0, 0, width, height), true);
         }
         
         /** Creates a texture that contains a region (in pixels) of another texture. The new
-         *  texture will reference the base texture; no data is duplicated. */
+         *  texture will reference the base texture; no data is duplicated.
+         *
+         *  @param texture: The texture you want to create a SubTexture from.
+         *  @param region:  The region of the parent texture that the SubTexture will show
+         *                  (in points).
+         *  @param frame:   If the texture was trimmed, the frame rectangle can be used to restore
+         *                  the trimmed area.
+         *  @param rotated: If true, the SubTexture will show the parent region rotated by
+         *                  90 degrees (CCW).
+         */
         public static function fromTexture(texture:Texture, region:Rectangle=null,
                                            frame:Rectangle=null, rotated:Boolean=false):Texture
         {
@@ -466,8 +472,7 @@ package starling.textures
         
         /** Indicates if the alpha values are premultiplied into the RGB values. */
         public function get premultipliedAlpha():Boolean { return false; }
-		
+
 		private var _disposed : Signal = new Signal(Texture);
-		public function get disposed():Signal{ return _disposed; }
-    }
+		public function get disposed():Signal{ return _disposed; }	}
 }
