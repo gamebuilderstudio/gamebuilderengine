@@ -53,8 +53,11 @@ package com.pblabs.rendering2D.spritesheet
 			if(_cached && !val)
 			{
 				var frameCache : CachedFramesData = getCachedFrames();
-				if(frameCache)
+				if(frameCache){
+					frameCache.referenceCount--;
 					frameCache.released.remove(onCacheReleased);
+				}
+				releaseCache();
 				deleteFrames();
 			}
 			_cached = val;
@@ -230,9 +233,9 @@ package com.pblabs.rendering2D.spritesheet
             
             var _frames:Array;
             
+			if(!imageData || !_image.bitmapData || (_divider && _divider.frameCount == 0) || (_divider && _divider is ISpriteSheetNamedFramesDivider && !(_divider as ISpriteSheetNamedFramesDivider).isLoaded()))
+				return null;
             // image isn't loaded, can't do anything yet
-            if (!imageData)
-                return null;
             
 			var cachedFrames : CachedFramesData = getCachedFrames();
 			if (_cached && cachedFrames)
@@ -244,8 +247,6 @@ package com.pblabs.rendering2D.spritesheet
 				return cachedFrames.frames;
 			}
 
-			if(_divider && _divider.frameCount == 0)
-				return null;
 			// no divider means treat the image as a single frame
             if (!_divider)
             {
@@ -304,12 +305,10 @@ package com.pblabs.rendering2D.spritesheet
 				var frameCache : CachedFramesData = getCachedFrames();
 				
 				if(frameCache && frameCache.referenceCount > 0){
-					frameCache.referenceCount -= 1;
+					frameCache.referenceCount--;
 					frameCache.released.remove(onCacheReleased);
 				}
-				if(_divider){
-					_divider.destroy();
-				}
+				releaseCache();					
 			}else{
 				var len : int = frames.length;
 				for(var i : int = 0; i < len; i++)
@@ -326,13 +325,13 @@ package com.pblabs.rendering2D.spritesheet
 					}
 					_forcedBitmaps = null;
 				}
-				if(_divider){
-					_divider.destroy();
-				}
 			}
 		
 			this.deleteFrames();
 			
+			if(_divider){
+				_divider.destroy();
+			}
 			_divider = null;
 			_bounds = null;
 			//TODO Add reference count check here to decide if we want to delete cache

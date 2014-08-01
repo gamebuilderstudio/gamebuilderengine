@@ -31,10 +31,10 @@ package com.pblabs.starling2D.spritesheet
 		{
 			super();
 			InitializationUtilG2D.initializeRenderers.addOnce(onContextReady);
-			InitializationUtilG2D.disposed.add(releaseTextures);
+			InitializationUtilG2D.disposed.add(releaseAllTextures);
 		}
 		
-		public static function releaseTextures():void
+		public function releaseAllTextures():void
 		{
 			for(var key : String in _frameCache)
 			{
@@ -45,7 +45,6 @@ package com.pblabs.starling2D.spritesheet
 				}
 			}
 			_frameCache = new Dictionary(true);
-			InitializationUtilG2D.disposed.remove(releaseTextures);
 		}
 		
 		override public function get isLoaded():Boolean
@@ -68,7 +67,7 @@ package com.pblabs.starling2D.spritesheet
 			var _frames:Array;
 			
 			// image isn't loaded, can't do anything yet
-			if (!_image || !_image.bitmapData || (_divider && _divider.frameCount == 0))
+			if(!imageData || !_image.bitmapData || (_divider && _divider.frameCount == 0) || (_divider && _divider is ISpriteSheetNamedFramesDivider && !(_divider as ISpriteSheetNamedFramesDivider).isLoaded()))
 				return null;
 			
 			var cachedFrames : CachedFramesData = getCachedFrames();
