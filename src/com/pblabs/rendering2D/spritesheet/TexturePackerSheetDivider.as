@@ -69,15 +69,17 @@ package com.pblabs.rendering2D.spritesheet
 		}
 		
 		/**
-		 * Grab the file name of the frame or image that was packed into the sheet
+		 * Grab the file name of the frame or image that was packed into the sheet.
+		 * You can also include file extension in the name returned
 		 */
-		public function getFrameNameByIndex(index:int):String
+		public function getFrameNameByIndex(index:int, includeFileExtension : Boolean = false):String
 		{
 			if(!_frames || _frames.length < 1)
 			{
 				return null;
 			}
-			return _frames[index].name;
+			
+			return includeFileExtension ? _resource.jsonData.frames[index].filename : _frames[index].name;
 		}
 
 		public function getFrameIndexByName(name : String):int
