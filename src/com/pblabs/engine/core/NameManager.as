@@ -50,8 +50,13 @@ package com.pblabs.engine.core
             if(isNameValid)
                 _objects[object.name] = object;
             
-            if(isAliasValid)
-                _objects[object.alias] = object;
+            if(isAliasValid){
+				if(!isNameValid)
+                	_objects[object.alias] = object;
+				if(!_similarObjects[object.alias])
+					_similarObjects[object.alias] = new Vector.<IPBObject>();
+				_similarObjects[object.alias].push(object);
+			}
         }
         
         /**
@@ -61,15 +66,30 @@ package com.pblabs.engine.core
          */
         public function remove(object:IPBObject):void
         {
-            // Unregister its alias, if it has one and the alias points to us.
-            if (object.alias != null && object.alias != "" && _objects[object.alias] == object)
+			var isNameValid:Boolean = (object.name != null && object.name != "");
+
+			// Unregister its alias, if it has one and the alias points to us.
+            if (object.alias != null && object.alias != "")
             {
-                _objects[object.alias] = null;
-                delete _objects[object.alias];                  
+				var similarObjects : Vector.<IPBObject> = _similarObjects[object.alias] as Vector.<IPBObject>;
+				if(similarObjects.indexOf(object) != -1)
+					similarObjects.splice( similarObjects.indexOf(object), 1 );
+				
+				if(_similarObjects[object.alias].length <= 0){
+					if(!isNameValid && (object.alias in _objects) && _objects[object.alias] == object){
+						_objects[object.alias] = null;
+						delete _objects[object.alias];                  
+					}
+					_similarObjects[object.alias] = null;
+					delete _similarObjects[object.alias];
+				}else{
+					if(!isNameValid && (object.alias in _objects) && _objects[object.alias] == object)
+						_objects[object.alias] = similarObjects[similarObjects.length-1];
+				}
             }
             
             // And the normal name, if it is us.
-            if(object.name != null && object.name != "" && _objects[object.name] == object )
+            if(isNameValid && (object.name in _objects) && _objects[object.name] == object )
             {
                 _objects[object.name] = null;
                 delete _objects[object.name];
@@ -88,7 +108,21 @@ package com.pblabs.engine.core
             return _objects[name];
         }
         
-        /**
+		/**
+		 * Looks up a list of similar PBObject with the specified name as their alias.
+		 * 
+		 * @param name The alias of the objects to look up.
+		 * 
+		 * @return A typed list of objects with the specified alias, or null if it wasn't found.
+		 */
+		public function lookupByAlias(name:String):Vector.<IPBObject>
+		{
+			if(name in _similarObjects)
+				return _similarObjects[name];
+			return null;
+		}
+
+		/**
          * Turns a potentially used name and returns a related unused name. The
          * given name will have a number appended, with the number continually
          * incremented until an unused name is found.
@@ -165,5 +199,6 @@ package com.pblabs.engine.core
         }
         
         private var _objects:Dictionary = new Dictionary();
+		private var _similarObjects:Dictionary = new Dictionary();
     }
 }

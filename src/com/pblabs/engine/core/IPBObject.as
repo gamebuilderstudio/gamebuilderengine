@@ -84,5 +84,13 @@ package com.pblabs.engine.core
 		 * @param entityName The new name of the current entity.
 		 */ 
 		function changeName(name:String):void;
+
+		/**
+		 * Changes the entities' alias. This will unregister the old object and register the object with the new alias with 
+		 * the NameManager as well.
+		 * 
+		 * @param entityAlias The new alias of the current entity.
+		 */ 
+		function changeAlias(name:String):void;
 	}
 }

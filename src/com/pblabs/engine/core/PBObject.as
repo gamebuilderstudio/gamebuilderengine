@@ -119,6 +119,18 @@ package com.pblabs.engine.core
 			}
 		}
 		
+		public function changeAlias(alias : String):void
+		{
+			// Remove from the name manager.
+			PBE.nameManager.remove(this);
+			
+			// Change the name.
+			_alias = alias;
+			
+			// Register with the name manager.
+			PBE.nameManager.add(this);
+		}
+
 		public function get destroyed():Boolean { return _destroyed; }
     }
 }
