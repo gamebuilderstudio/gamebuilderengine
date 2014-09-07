@@ -15,6 +15,9 @@ package com.pblabs.triggers.actions
 			return null;
 		}
 		
+		public function updateGlobalExpressionProperty():void { }
+		public function clearGlobalExpressionProperty():void { }
+		
 		public function stop():void { }
 		
 		public function destroy():void

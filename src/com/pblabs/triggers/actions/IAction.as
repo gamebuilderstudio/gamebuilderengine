@@ -22,6 +22,16 @@ package com.pblabs.triggers.actions
 		function execute():*;
 		
 		/**
+		 * Set any global property pertaining to the current action on the new CurrentActionData property holder. Used to make expressions context aware pertaining to the next action that gets executed.
+		 */
+		function updateGlobalExpressionProperty():void;
+		
+		/**
+		 * Clean up any global property set on CurrentActionData property holder
+		 */
+		function clearGlobalExpressionProperty():void;
+		
+		/**
 		 * Stop the current action. Mostly persistent actions use this to be notified if it needs to stop running.
 		 */		
 		function stop():void;

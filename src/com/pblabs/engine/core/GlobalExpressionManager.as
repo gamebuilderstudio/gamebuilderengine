@@ -107,6 +107,7 @@ package com.pblabs.engine.core
 			if(!objectContext.Game.Touch) objectContext.Game.Touch = new DataComponent();
 			if(!objectContext.Game.Controllers) objectContext.Game.Controllers = new DataComponent();
 			if(!objectContext.Game.Accelerometer) objectContext.Game.Accelerometer = new DataComponent();
+			if(!objectContext.Game.CurrentActionData) objectContext.Game.CurrentActionData = new DataComponent();
 
 			if(Accelerometer.isSupported)
 			{
@@ -133,6 +134,7 @@ package com.pblabs.engine.core
 			globalExpressionEntity.addComponent(objectContext.Game.Touch, "Touch");
 			globalExpressionEntity.addComponent(objectContext.Game.Controllers, "Controllers");
 			globalExpressionEntity.addComponent(objectContext.Game.Accelerometer, "Accelerometer");
+			globalExpressionEntity.addComponent(objectContext.Game.CurrentActionData, "CurrentActionData");
 			
 			objectContext.Game.Controllers.deviceCount = 0;
 			objectContext.Game.Controllers.isSupported = false;

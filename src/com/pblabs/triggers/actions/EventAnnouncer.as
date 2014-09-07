@@ -72,6 +72,9 @@ package com.pblabs.triggers.actions
 			return event;
 		}
 		
+		public function updateGlobalExpressionProperty():void { }
+		public function clearGlobalExpressionProperty():void { }
+
 		public function stop():void { }
 
 		public function destroy():void
