@@ -51,7 +51,7 @@ package com.pblabs.engine.core
                 _objects[object.name] = object;
             
             if(isAliasValid){
-				if(!isNameValid)
+				if(!isNameValid && !(object.alias in _objects))
                 	_objects[object.alias] = object;
 				if(!_similarObjects[object.alias])
 					_similarObjects[object.alias] = new Vector.<IPBObject>();
