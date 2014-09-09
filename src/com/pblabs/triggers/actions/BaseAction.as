@@ -6,6 +6,8 @@ package com.pblabs.triggers.actions
 	public class BaseAction implements IAction
 	{
 		private var _destroyed : Boolean = false;
+		private var _stoped:Boolean = false;
+
 		public function BaseAction()
 		{
 		}
@@ -18,7 +20,7 @@ package com.pblabs.triggers.actions
 		public function updateGlobalExpressionProperty():void { }
 		public function clearGlobalExpressionProperty():void { }
 		
-		public function stop():void { }
+		public function stop():void { _stoped = true; }
 		
 		public function destroy():void
 		{
@@ -50,5 +52,6 @@ package com.pblabs.triggers.actions
 		public function get type():ActionType{ return _type; }
 
 		public function get isDestroyed():Boolean{ return _destroyed; }
+		public function get isStopped():Boolean{ return _stoped; }
 	}
 }
