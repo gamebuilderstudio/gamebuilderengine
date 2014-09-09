@@ -108,6 +108,21 @@ package com.pblabs.engine.core
 			if(!objectContext.Game.Controllers) objectContext.Game.Controllers = new DataComponent();
 			if(!objectContext.Game.Accelerometer) objectContext.Game.Accelerometer = new DataComponent();
 			if(!objectContext.Game.CurrentActionData) objectContext.Game.CurrentActionData = new DataComponent();
+			if(!objectContext.Game.System) objectContext.Game.System = new DataComponent();
+			
+			var _os:String = Capabilities.os.toLowerCase();
+			if(_os.indexOf("win") > -1)
+			{
+				objectContext.Game.System.Platform = "windows";
+			}else if(_os.indexOf("mac") > -1){
+				objectContext.Game.System.Platform = "mac";
+			}else if(_os.indexOf("iphone") > -1 || _os.indexOf("ipad") > -1){
+				objectContext.Game.System.Platform = "ios";
+			}else if(_os.indexOf("android") > -1 || _os.indexOf("linux") > -1){
+				objectContext.Game.System.Platform = "android";
+			}else{
+				objectContext.Game.System.Platform = "web";
+			}
 
 			if(Accelerometer.isSupported)
 			{
