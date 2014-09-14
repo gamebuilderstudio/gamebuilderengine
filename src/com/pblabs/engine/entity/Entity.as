@@ -360,7 +360,7 @@ package com.pblabs.engine.entity
 				return defaultVal;
             // Look up the property.
 			var info:PropertyInfo;
-			if(property.cachedInfo && (((property.cachedInfo.propertyParent is IEntityComponent) && (property.cachedInfo.propertyParent as IEntityComponent).isRegistered) || ((property.cachedInfo.propertyParent is IEntity) && !(property.cachedInfo.propertyParent as IEntity).destroyed)) && !PBE.IN_EDITOR){
+			if(property.cachedInfo && property.property.indexOf("#Game") == -1 &&  (((property.cachedInfo.propertyParent is IEntityComponent) && (property.cachedInfo.propertyParent as IEntityComponent).isRegistered) || ((property.cachedInfo.propertyParent is IEntity) && !(property.cachedInfo.propertyParent as IEntity).destroyed)) && !PBE.IN_EDITOR){
 				info = property.cachedInfo;
 			}else{
 				if(property.cachedInfo){
