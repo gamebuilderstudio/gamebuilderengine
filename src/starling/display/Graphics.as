@@ -67,11 +67,12 @@ package starling.display
 			var len : int = _graphicChildren.length;
 			for(var i : int = 0; i < len; i++)
 			{
-				var child : DisplayObject = _graphicChildren.splice( i, 1)[0];
+				var child : DisplayObject = _graphicChildren[i];
 				child.dispose();
 				if(_container.contains(child))
 					_container.removeChild(child)
 			}
+			_graphicChildren.length = 0;
 			_penPosX = NaN;
 			_penPosY = NaN;
 			
