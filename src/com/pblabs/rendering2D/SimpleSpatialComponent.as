@@ -250,7 +250,7 @@ package com.pblabs.rendering2D
          * Not currently implemented.
          * @inheritDoc
          */
-        public function castRay(start:Point, end:Point, mask:ObjectType, info:RayHitInfo, maxDistance : Number = 1000):Boolean
+        public function castRay(start:Point, end:Point, mask:ObjectType, info:RayHitInfo):Boolean
         {
             return false;
         }
