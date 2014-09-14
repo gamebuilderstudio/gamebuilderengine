@@ -15,8 +15,6 @@ package com.pblabs.physics
 		function set collidesWithTypes(type : ObjectType):void;
 		function get collisionShapes():Array;
 		function set collisionShapes(shapes : Array):void;
-		function get angularVelocity():Number;
-		function set angularVelocity(val : Number):void;
 		
 		function get canMove():Boolean;
 		function set canMove(val : Boolean):void;

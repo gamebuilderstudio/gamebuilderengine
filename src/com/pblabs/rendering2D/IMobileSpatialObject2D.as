@@ -74,5 +74,15 @@ package com.pblabs.rendering2D
 	   * linearVelocity setter.
 	   */
 	  function set linearVelocity(value:Point):void;
+
+	  /**
+	   * angularVelocity getter.
+	   */
+	  function get angularVelocity():Number;
+	  
+	  /**
+	   * angularVelocity setter.
+	   */
+	  function set angularVelocity(value:Number):void;
    }
 }

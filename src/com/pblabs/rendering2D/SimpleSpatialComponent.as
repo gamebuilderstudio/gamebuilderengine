@@ -31,6 +31,16 @@ package com.pblabs.rendering2D
 			_linearVelocity = value;
 		}
 
+		public function get angularVelocity():Number
+		{
+			return _angularVelocity;
+		}
+		
+		public function set angularVelocity(value:Number):void
+		{
+			_angularVelocity = value;
+		}
+
 		public function get size():Point
         {
             return _size;
@@ -150,7 +160,7 @@ package com.pblabs.rendering2D
         /**
          * The angular linearVelocity of the object in degrees per second.
          */
-        public var angularVelocity:Number = 0;
+        private var _angularVelocity:Number = 0;
         
         /**
          * @inheritDoc
@@ -240,7 +250,7 @@ package com.pblabs.rendering2D
          * Not currently implemented.
          * @inheritDoc
          */
-        public function castRay(start:Point, end:Point, mask:ObjectType, info:RayHitInfo):Boolean
+        public function castRay(start:Point, end:Point, mask:ObjectType, info:RayHitInfo, maxDistance : Number = 1000):Boolean
         {
             return false;
         }
