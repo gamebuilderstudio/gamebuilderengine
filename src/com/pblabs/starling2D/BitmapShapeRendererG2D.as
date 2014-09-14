@@ -11,8 +11,14 @@ package com.pblabs.starling2D
 	import com.pblabs.engine.core.ObjectType;
 	import com.pblabs.rendering2D.BitmapShapeRenderer;
 	
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
+	import flash.display.Graphics;
 	import flash.display.PixelSnapping;
+	import flash.display.Sprite;
+	import flash.geom.Matrix;
 	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	
 	import starling.core.Starling;
 	import starling.display.Image;
@@ -23,11 +29,7 @@ package com.pblabs.starling2D
 	{
 		public function BitmapShapeRendererG2D()
 		{
-			_displayObject = null;
-
 			_smoothing = false;
-			bitmap.pixelSnapping = PixelSnapping.AUTO;
-			
 			_lineSize = 0;
 			_lineAlpha = 0;
 		}
@@ -49,7 +51,7 @@ package com.pblabs.starling2D
 			}
 
 			if(!skipCreation){
-				var texture : Texture = ResourceTextureManagerG2D.getTextureByKey( getTextureCacheKey() );
+				var texture : Texture = ResourceTextureManagerG2D.getTextureByKey( textureCacheKey );
 				try{
 					if((!bitmap || !bitmap.bitmapData) && !texture)
 					{
@@ -65,14 +67,14 @@ package com.pblabs.starling2D
 						gpuObject = new Image(texture);
 					}else{
 						//Create GPU Renderer Object
-						gpuObject = new Image(ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmap.bitmapData, getTextureCacheKey() ));
+						gpuObject = new Image(ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmap.bitmapData, textureCacheKey ));
 					}
 				}else{
 					if(( gpuObject as Image).texture)
 						( gpuObject as Image).texture.dispose();
 					if(!texture)
 					{
-						(gpuObject as Image).texture = texture = ResourceTextureManagerG2D.getTextureForBitmapData(this.bitmap.bitmapData, getTextureCacheKey());
+						(gpuObject as Image).texture = texture = ResourceTextureManagerG2D.getTextureForBitmapData(this.bitmap.bitmapData, textureCacheKey);
 					}else{
 						(gpuObject as Image).texture = texture;
 					}
@@ -91,17 +93,71 @@ package com.pblabs.starling2D
 		
 		override public function redraw():void
 		{
-			var texture : Texture = ResourceTextureManagerG2D.getTextureByKey( getTextureCacheKey() );
-			if(!texture){
-				if(!this.isRegistered || !_size || _size.x == 0 || _size.y == 0) 
-					return;
-				super.redraw();
+			if(!this.isRegistered || !_size || _size.x == 0 || _size.y == 0 || (!isCircle && !isSquare) ) {
+				return;
 			}
-			buildG2DObject();
+
+			var texture : Texture = ResourceTextureManagerG2D.getTextureByKey( textureCacheKey );
+			if(!texture){
+
+				if(bitmap){
+					if(bitmap.bitmapData)
+						bitmap.bitmapData.dispose();
+					bitmap.bitmapData = null;
+				}
+				
+				if(!_shape)
+					_shape = new Sprite();
+				
+				// Get references.
+				var s:Sprite = _shape;
+				if(!s)
+					throw new Error("displayObject null or not a Sprite!");
+				var g:Graphics = s.graphics;
+				
+				// Don't forget to clear.
+				g.clear();
+				
+				// Prep line/fill settings.
+				g.lineStyle(lineSize, lineColor, lineAlpha);
+				g.beginFill(fillColor, fillAlpha);
+				
+				// Draw one or both shapes.
+				if(isSquare)
+					g.drawRect(0, 0, size.x, size.y);
+				
+				if(isCircle){
+					var radiansX : Number = 180 * (Math.PI/180);
+					var radiansY : Number = -90 * (Math.PI/180);
+					var x : int = radius * Math.cos(radiansX);
+					var y : int = radius * Math.sin(radiansY);
+					g.drawCircle(-x, -y, radius);
+				}
+				
+				g.endFill();
+				
+				if(!bitmap){
+					bitmap = new Bitmap();
+					bitmap.pixelSnapping = PixelSnapping.AUTO;
+					bitmap.blendMode = this._blendMode;
+				}
+				
+				if(isCircle || isSquare){
+					var bounds : Rectangle = s.getBounds( s );
+					var m : Matrix = new Matrix();
+					//_registrationPoint = new Point(-bounds.topLeft.x, -bounds.topLeft.y);
+					bitmap.bitmapData = new BitmapData(bounds.width, bounds.height, true, 0x000000);
+					bitmap.bitmapData.draw(s,m, s.transform.colorTransform, s.blendMode );
+					bitmap.smoothing = this._smoothing;
+				}
+			}
+			_shapeDirty = false;
+			
+			this.buildG2DObject();
 		}
 		
-		protected function getTextureCacheKey():String{
-			return _isSquare + ":" + _isCircle + ":" + _radius + ":" + _fillColor + ":" + _fillAlpha + ":" + _lineColor + ":" + _lineSize + ":" + _lineAlpha + ":" + "_"+_size.x +","+_size.y+ "_:_"+_scale.x +","+_scale.y+ "_";
+		protected function get textureCacheKey():String{
+			return _isSquare + ":" + _isCircle + ":" + _radius + ":" + _fillColor + ":" + _fillAlpha + ":" + _lineColor + ":" + _lineSize + ":" + _lineAlpha + ":" + "_"+_size.x +","+_size.y+"_";
 		}
 		
 		/**

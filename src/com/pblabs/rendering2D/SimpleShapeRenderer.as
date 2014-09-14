@@ -22,12 +22,6 @@ package com.pblabs.rendering2D
         public function SimpleShapeRenderer()
         {
             super();
-            
-            // Initialize displayObject to be a Sprite.
-			_displayObject = new Sprite();
-            
-            // Initial draw.
-            redraw();
         }
 
 		protected var _isSquare:Boolean = false;
@@ -38,6 +32,8 @@ package com.pblabs.rendering2D
 		protected var _lineColor:uint = 0x00FF00;
 		protected var _lineSize:Number = 0.5;
 		protected var _lineAlpha:Number = 1;
+		protected var _shape:Sprite;
+		protected var _shapeDirty:Boolean = true;
 
         public function get lineAlpha():Number
         {
@@ -52,7 +48,7 @@ package com.pblabs.rendering2D
 			if(_lineAlpha == value)
 				return;
             _lineAlpha = value;
-            redraw();
+            _shapeDirty = true;
         }
 
         public function get lineSize():Number
@@ -68,7 +64,7 @@ package com.pblabs.rendering2D
 			if(_lineSize == value)
 				return;
             _lineSize = value;
-            redraw();
+            _shapeDirty = true;
         }
 
         public function get lineColor():uint
@@ -84,7 +80,7 @@ package com.pblabs.rendering2D
 			if(_lineColor == value)
 				return;
             _lineColor = value;
-            redraw();
+            _shapeDirty = true;
         }
 
         public function get fillAlpha():Number
@@ -100,7 +96,7 @@ package com.pblabs.rendering2D
 			if(_fillAlpha == value)
 				return;
             _fillAlpha = value;
-            redraw();
+            _shapeDirty = true;
         }
 
         public function get fillColor():uint
@@ -116,7 +112,7 @@ package com.pblabs.rendering2D
 			if(_fillColor == value)
 				return;
             _fillColor = value;
-            redraw();
+            _shapeDirty = true;
         }
 
         public function get isCircle():Boolean
@@ -132,7 +128,7 @@ package com.pblabs.rendering2D
 			if(_isCircle == value)
 				return;
             _isCircle = value;
-            redraw();
+            _shapeDirty = true;
         }
 
         public function get isSquare():Boolean
@@ -148,7 +144,7 @@ package com.pblabs.rendering2D
 			if(_isSquare == value)
 				return;
             _isSquare = value;
-            redraw();
+            _shapeDirty = true;
         }
 
         public function get radius():Number
@@ -164,7 +160,7 @@ package com.pblabs.rendering2D
 			if(_radius == value)
 				return;
             _radius = value;
-            redraw();
+            _shapeDirty = true;
         }
 
         /**
@@ -173,8 +169,12 @@ package com.pblabs.rendering2D
          */
         public function redraw():void
         {
+			// Initialize displayObject to be a Sprite.
+			if(!_shape)
+				_shape = new Sprite();
+			
             // Get references.
-            var s:Sprite = displayObject as Sprite;
+            var s:Sprite = _shape;
             if(!s)
                 throw new Error("displayObject null or not a Sprite!");
             var g:Graphics = s.graphics;
@@ -199,13 +199,25 @@ package com.pblabs.rendering2D
             if(!isCircle && !isSquare)
             {
                 Logger.error(this, "redraw", "Neither square nor circle, what am I?");
-            }               
+            }  
+			if(!displayObject)
+				displayObject = _shape;
+			_shapeDirty = false;
         }
+		
+		override public function onFrame(elapsed:Number):void
+		{
+			super.onFrame(elapsed);
+			
+			if(_shapeDirty)
+				redraw();
+
+		}
 		
 		override protected function onAdd():void
 		{
-			super.onAdd();
 			redraw();
+			super.onAdd();
 		}
     }
 }

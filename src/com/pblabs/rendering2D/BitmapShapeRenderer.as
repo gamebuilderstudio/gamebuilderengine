@@ -16,18 +16,13 @@ package com.pblabs.rendering2D
 	{
 		static protected const zeroPoint:Point = new Point();
 
-		protected var bitmap:Bitmap = new Bitmap();
+		protected var bitmap:Bitmap;
 		protected var _smoothing:Boolean = false;
-		protected var _shape:Sprite = new Sprite();
 		
 		public function BitmapShapeRenderer()
 		{
 			super();
 			_smoothing = true;
-			bitmap.pixelSnapping = PixelSnapping.AUTO;
-			if(_displayObject)
-				(_displayObject as Sprite).addChild(bitmap);	
-			
 			_lineSize = 0;
 			_lineAlpha = 0;
 			_size = new Point(100,100);
@@ -67,12 +62,17 @@ package com.pblabs.rendering2D
 		
 		override public function redraw():void
 		{
-			if(!_size || _size.x == 0 || _size.y == 0 || (!isCircle && !isSquare) ) {
+			if(bitmap){
 				if(bitmap.bitmapData)
 					bitmap.bitmapData.dispose();
 				bitmap.bitmapData = null;
+			}
+			if(!_size || _size.x == 0 || _size.y == 0 || (!isCircle && !isSquare) ) {
 				return;
 			}
+			
+			if(!_shape)
+				_shape = new Sprite();
 
 			// Get references.
 			var s:Sprite = _shape;
@@ -101,44 +101,41 @@ package com.pblabs.rendering2D
 			
 			g.endFill();
 			
-			if(!bitmap)
+			if(!bitmap){
 				bitmap = new Bitmap();
-			bitmap.blendMode = this._blendMode;
-			if(bitmap.bitmapData){
-				bitmap.bitmapData.dispose();
-				bitmap.bitmapData = null;
+				bitmap.pixelSnapping = PixelSnapping.AUTO;
+				bitmap.blendMode = this._blendMode;
 			}
+			
 			if(isCircle || isSquare){
 				var bounds : Rectangle = s.getBounds( s );
 				var m : Matrix = new Matrix();
 				//_registrationPoint = new Point(-bounds.topLeft.x, -bounds.topLeft.y);
 				bitmap.bitmapData = new BitmapData(bounds.width, bounds.height, true, 0x000000);
 				bitmap.bitmapData.draw(s,m, s.transform.colorTransform, s.blendMode );
-				
 				bitmap.smoothing = this._smoothing;
 			}
+			if(displayObject != bitmap)
+				displayObject = bitmap;
+			_shapeDirty = false;
 		}
 		
 		override public function set scale(value:Point):void
 		{
-			var callRedraw : Boolean = false;
 			if(this._scale.x != value.x || this._scale.y != value.y){
-				callRedraw = true;
+				_shapeDirty = true;
 			}
 			super.scale = value;
-			if(callRedraw) redraw();
 		}
 
 		override public function set size(value:Point):void
 		{
-			var callRedraw : Boolean = false;
 			if(this._size.x != value.x || this._size.y != value.y){
-				callRedraw = true;
+				_shapeDirty = true;
 			}
 			super.size = value;
-			if(callRedraw){
+			if(_shapeDirty){
 				_radius = 0.5 * Math.sqrt(_size.x * _size.y);
-				redraw();
 			}
 		}
 		
