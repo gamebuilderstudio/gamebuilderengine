@@ -5,8 +5,8 @@ package com.pblabs.triggers.actions
 	
 	public class BaseAction implements IAction
 	{
-		private var _destroyed : Boolean = false;
-		private var _stoped:Boolean = false;
+		protected var _stoped:Boolean = false;
+		protected var _destroyed : Boolean = false;
 
 		public function BaseAction()
 		{
