@@ -187,16 +187,19 @@ package com.pblabs.rendering2D
        */
       public function castRay(start:Point, end:Point, mask:ObjectType, result:RayHitInfo):Boolean
       {
+		  return false;
+		  
          // We want to return the first hit among all our items. We'll be very lazy,
          // and simply check against every potential match, taking the closest hit.
          // This will suck for long raycasts, but most of them are quite short.
          var results:Array = new Array();
-         var boundingRect:Rectangle = new Rectangle(
-                            Math.min(start.x, end.x) - 0.5, 
-                            Math.min(start.y, end.y) - 0.5, 
-                            Math.abs(end.x - start.x) + 1, 
-                            Math.abs(end.y - start.y) + 1);
-         if (!queryRectangle(boundingRect, mask, results))
+		 _scratchRect.setTo(
+			 Math.min(start.x, end.x) - 0.5,
+			 Math.min(start.y, end.y) - 0.5, 
+			 Math.abs(end.x - start.x) + 1, 
+			 Math.abs(end.y - start.y) + 1);
+			 
+         if (!queryRectangle(_scratchRect, mask, results))
             return false;
          
          var bestInfo:RayHitInfo = null;

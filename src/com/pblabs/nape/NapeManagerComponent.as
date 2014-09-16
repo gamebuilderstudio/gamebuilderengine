@@ -334,8 +334,8 @@ package com.pblabs.nape
 		public function castRay(start:Point, end:Point, mask:ObjectType, result:RayHitInfo):Boolean
 		{
 			if(_space){
-				var startVec : Vec2 = Vec2.get(start.x*inverseScale, start.y*inverseScale);
-				var endVec : Vec2 = Vec2.get(end.x*inverseScale, end.y*inverseScale);
+				var startVec : Vec2 = Vec2.get(start.x*inverseScale, start.y*inverseScale, true);
+				var endVec : Vec2 = Vec2.get(end.x*inverseScale, end.y*inverseScale, true);
 				
 				var ray:Ray = Ray.fromSegment(startVec, endVec);
 				_queryInteraction.collisionGroup = -1;
