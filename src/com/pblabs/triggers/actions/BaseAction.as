@@ -1,11 +1,12 @@
 package com.pblabs.triggers.actions
 {
+	import com.pblabs.engine.entity.PropertyReference;
 	import com.pblabs.engine.scripting.ExpressionReference;
 	import com.pblabs.triggers.ITriggerComponent;
 	
 	public class BaseAction implements IAction
 	{
-		protected var _stoped:Boolean = false;
+		protected var _stopped:Boolean = false;
 		protected var _destroyed : Boolean = false;
 
 		public function BaseAction()
@@ -20,7 +21,7 @@ package com.pblabs.triggers.actions
 		public function updateGlobalExpressionProperty():void { }
 		public function clearGlobalExpressionProperty():void { }
 		
-		public function stop():void { _stoped = true; }
+		public function stop():void { _stopped = true; }
 		
 		public function destroy():void
 		{
@@ -28,6 +29,13 @@ package com.pblabs.triggers.actions
 			_destroyed = true;
 		}
 		
+		public function getPropertyReferenceValue(property : PropertyReference, defaultValue : * = null):String
+		{
+			if(property && (property.property.indexOf("@") != -1 || property.property.indexOf("#") != -1 || property.property.indexOf("!") != -1))
+				return this.owner.owner.getProperty(property, defaultValue);
+			return property.property;
+		}
+
 		public function getExpressionValue(expression : ExpressionReference):*
 		{
 			return ExpressionReference.getExpressionValue(expression, _owner.owner);
@@ -52,6 +60,6 @@ package com.pblabs.triggers.actions
 		public function get type():ActionType{ return _type; }
 
 		public function get isDestroyed():Boolean{ return _destroyed; }
-		public function get isStopped():Boolean{ return _stoped; }
+		public function get isStopped():Boolean{ return _stopped; }
 	}
 }
