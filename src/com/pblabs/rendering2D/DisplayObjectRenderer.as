@@ -674,11 +674,10 @@ package com.pblabs.rendering2D
         
         override protected function onRemove() : void
         {
-            super.onRemove();
-            
             // Remove ourselves from the scene when we are removed.
             removeFromScene();
 			cleanUpPropertyReferences();
+			super.onRemove();
         }
         
         protected function removeFromScene():void

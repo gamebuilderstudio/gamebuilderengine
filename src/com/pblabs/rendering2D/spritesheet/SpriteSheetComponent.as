@@ -168,7 +168,10 @@ package com.pblabs.rendering2D.spritesheet
          */
         public override function get isLoaded():Boolean
         {
-            return (imageData != null || _forcedBitmaps)
+            var _loaded : Boolean = (imageData != null || _forcedBitmaps);
+			if(_loaded && !frames)
+				buildFrames();
+			return _loaded;
         }
         
         /**
@@ -233,7 +236,7 @@ package com.pblabs.rendering2D.spritesheet
             
             var _frames:Array;
             
-			if(!imageData || !_image.bitmapData || (_divider && _divider.frameCount == 0) || (_divider && _divider is ISpriteSheetNamedFramesDivider && !(_divider as ISpriteSheetNamedFramesDivider).isLoaded()))
+			if(!imageData || !_image.bitmapData || (_divider && (_divider is ISpriteSheetNamedFramesDivider) && !(_divider as ISpriteSheetNamedFramesDivider).isLoaded) || (_divider && _divider.frameCount == 0))
 				return null;
             // image isn't loaded, can't do anything yet
             

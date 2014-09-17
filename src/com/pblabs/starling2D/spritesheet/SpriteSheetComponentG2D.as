@@ -67,7 +67,7 @@ package com.pblabs.starling2D.spritesheet
 			var _frames:Array;
 			
 			// image isn't loaded, can't do anything yet
-			if(!imageData || !_image.bitmapData || (_divider && _divider.frameCount == 0) || (_divider && _divider is ISpriteSheetNamedFramesDivider && !(_divider as ISpriteSheetNamedFramesDivider).isLoaded()))
+			if(!imageData || !_image.bitmapData || (_divider && _divider is ISpriteSheetNamedFramesDivider && !(_divider as ISpriteSheetNamedFramesDivider).isLoaded) || (_divider && _divider.frameCount == 0))
 				return null;
 			
 			var cachedFrames : CachedFramesData = getCachedFrames();

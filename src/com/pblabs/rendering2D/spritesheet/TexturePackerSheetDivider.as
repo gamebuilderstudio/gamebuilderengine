@@ -55,6 +55,8 @@ package com.pblabs.rendering2D.spritesheet
 		 */
 		public function getFrameArea(index:int):Rectangle
 		{
+			if(index < 0)
+				index = 0;
 			if(!_frames || _frames.length < 1)
 			{
 				if(resource && resource.isLoaded && resource.jsonData)
@@ -84,6 +86,15 @@ package com.pblabs.rendering2D.spritesheet
 
 		public function getFrameIndexByName(name : String):int
 		{
+			if(_frames == null)
+			{
+				if(resource && resource.isLoaded && resource.jsonData)
+				{
+					buildFrames();
+					return 0;
+				}
+				return 0;
+			}
 			//Strip any file extension from name
 			name = removeFileExtension(name);
 			var len : int = _frames.length;
@@ -92,7 +103,7 @@ package com.pblabs.rendering2D.spritesheet
 				if(_frames[i].name == name)
 					return i;
 			}
-			return -1;
+			return 0;
 		}
 
 		protected function buildFrames():void
@@ -195,9 +206,12 @@ package com.pblabs.rendering2D.spritesheet
 			}
 		}
 		
-		public function isLoaded():Boolean
+		public function get isLoaded():Boolean
 		{
-			return _resource ? _resource.isLoaded : false;
+			var _loaded : Boolean = _resource ? _resource.isLoaded : false;
+			if(_loaded && !_frames)
+				buildFrames();
+			return _loaded;
 		}
 
 		/**

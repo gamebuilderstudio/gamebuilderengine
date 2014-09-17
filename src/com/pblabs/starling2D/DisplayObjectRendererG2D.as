@@ -112,7 +112,6 @@ package com.pblabs.starling2D
 		override protected function onRemove() : void
 		{
 			super.onRemove();
-			
 			if(gpuObject) {
 				if(gpuObject.hasOwnProperty("texture"))
 				{
@@ -120,8 +119,9 @@ package com.pblabs.starling2D
 				}
 				if(gpuObject.parent)
 					gpuObject.parent.removeChild(gpuObject, true);
-				gpuObject = null;
 			}
+
+			gpuObject = null;
 			InitializationUtilG2D.initializeRenderers.remove(buildG2DObject);
 		}
 		

@@ -18,6 +18,6 @@ package com.pblabs.rendering2D.spritesheet
 		function getFrameNameByIndex(index:int, includeFileExtension : Boolean = false):String;
 		function getFrameByName(name:String):Rectangle;
 		function getFrameIndexByName(name:String):int;
-		function isLoaded():Boolean;
+		function get isLoaded():Boolean;
 	}
 }
