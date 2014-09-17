@@ -112,7 +112,7 @@ package com.pblabs.engine.scripting
 					expression.selfContext = owner.Self;
 				value = expression.value;
 				if(value == null || value == "null" || value == "undefined")
-					value = expression.expression;
+					value = null;
 			}
 			return value;
 		}

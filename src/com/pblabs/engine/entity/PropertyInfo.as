@@ -22,8 +22,6 @@ package com.pblabs.engine.entity
         {
             if(propertyParent && propertyName && propertyName in propertyParent)
                 return propertyParent[propertyName];
-            else if(propertyParent)
-                return propertyParent;
 			return null;
         }
         
