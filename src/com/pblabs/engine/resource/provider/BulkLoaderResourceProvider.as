@@ -8,16 +8,17 @@
  ******************************************************************************/
 package com.pblabs.engine.resource.provider
 {
-    import br.com.stimuli.loading.BulkLoader;
-    import br.com.stimuli.loading.BulkProgressEvent;
-    import br.com.stimuli.loading.loadingtypes.LoadingItem;
-    
+    import com.pblabs.engine.resource.ImageResource;
     import com.pblabs.engine.resource.MP3Resource;
     import com.pblabs.engine.resource.Resource;
     
     import flash.display.Bitmap;
     import flash.events.ErrorEvent;
     import flash.events.Event;
+    
+    import br.com.stimuli.loading.BulkLoader;
+    import br.com.stimuli.loading.BulkProgressEvent;
+    import br.com.stimuli.loading.loadingtypes.LoadingItem;
     
     /**
      * The BulkLoaderResourceProvider  provides the ResourceManager with resources
@@ -68,7 +69,12 @@ package com.pblabs.engine.resource.provider
             
             // the resource has to be loaded so add to BulkLoader
             // Special case so that MP3Resource gets a sound like it wants.
-            loader.add(uri, { id : resourceIdentifier, type: type == MP3Resource ? "sound" : "binary"  } );
+			var loaderType : String = "binary";
+			if(type == MP3Resource)
+				loaderType = "sound";
+			else if(type == ImageResource)
+				loaderType = "image";
+            loader.add(uri, { id : resourceIdentifier, type: loaderType} );
             if (!loader.isRunning) loader.start();	
             
             // let BulkLoader give a notification when this resource has been

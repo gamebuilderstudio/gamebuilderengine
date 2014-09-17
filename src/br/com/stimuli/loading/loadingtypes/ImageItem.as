@@ -1,11 +1,18 @@
 package br.com.stimuli.loading.loadingtypes {
 	
-	import br.com.stimuli.loading.BulkLoader;
+	import flash.display.Loader;
+	import flash.events.ErrorEvent;
+	import flash.events.Event;
+	import flash.events.HTTPStatusEvent;
+	import flash.events.IOErrorEvent;
+	import flash.events.ProgressEvent;
+	import flash.events.SecurityErrorEvent;
+	import flash.net.URLRequest;
+	import flash.system.ImageDecodingPolicy;
+	import flash.system.LoaderContext;
 	
-	import flash.display.*;
-	import flash.events.*;
-	import flash.net.*;
-	import flash.utils.*;
+	import br.com.stimuli.loading.BulkLoader;
+
     /** @private */
 	public class ImageItem extends LoadingItem {
         public var loader : Loader;
@@ -33,6 +40,12 @@ package br.com.stimuli.loading.loadingtypes {
             loader.contentLoaderInfo.addEventListener(HTTPStatusEvent.HTTP_STATUS, super.onHttpStatusHandler, false, 0, true);
             try{
             	// TODO: test for security error thown.
+				if(!_context){
+					_context = new LoaderContext();
+				}
+				//Load the image in the background thread
+				if(_context is LoaderContext)
+					(_context as LoaderContext).imageDecodingPolicy = ImageDecodingPolicy.ON_LOAD;
             	loader.load(url, _context);
             }catch( e : SecurityError){
             	onSecurityErrorHandler(_createErrorEvent(e));
