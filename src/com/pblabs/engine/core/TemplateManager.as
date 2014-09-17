@@ -579,8 +579,12 @@ package com.pblabs.engine.core
 			var thingCount:int=0;
 			for each (var xml:XML in resource.XMLData.*)
 			{
-				thingCount++;
-				addXML(xml, resource.filename, version);
+				var nodeName : String = xml.localName();
+				if(nodeName == "sceneView" || nodeName == "entity" || nodeName == "template" || nodeName == "group" || nodeName == "objectReference" || nodeName == "file")
+				{
+					thingCount++;
+					addXML(xml, resource.filename, version);
+				}
 			}
 
 			Logger.print(this, "Loaded " + thingCount + " from " + resource.filename);

@@ -360,7 +360,7 @@ package com.pblabs.engine.core
          _isLevelLoaded = true;
          
          // load files - setting this to one ensures all files will be queued up before loading continues
-         _pendingFiles = 1;
+         _pendingFiles = 0;
 		 var len : int = filesToLoad.length;
 		 for(var i : int = 0; i < len; i++)
 		 {
@@ -372,7 +372,7 @@ package com.pblabs.engine.core
                PBE.templateManager.loadFile(filename, force);
          }
          
-         finishLoad();
+         //finishLoad();
       }
       
       private function onFileLoaded(event:Event):void
