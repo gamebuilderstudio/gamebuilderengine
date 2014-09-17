@@ -161,6 +161,7 @@ package com.pblabs.rendering2D.spritesheet
 			if(_image) 
 				_imageFilename = _image.filename;
 			deleteFrames();
+			buildFrames();
 		}
 		
 		/**
@@ -226,6 +227,7 @@ package com.pblabs.rendering2D.spritesheet
 			}
 				
             deleteFrames();
+			buildFrames();
         }
 		
         protected override function getSourceFrames() : Array
