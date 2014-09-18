@@ -154,7 +154,8 @@ package com.pblabs.rendering2D
 		public function set smoothing(value:Boolean):void
 		{
 			_smoothing = value;
-			bitmap.smoothing = value;
+			if(bitmap)
+				bitmap.smoothing = value;
 		}
 		
 		public function get smoothing():Boolean
