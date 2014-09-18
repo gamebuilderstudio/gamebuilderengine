@@ -204,7 +204,7 @@ package com.pblabs.rendering2D
 		{
 			super.onReset();
 			
-			if(spriteForPointChecks && (spriteForPointChecks.owner == null || spriteForPointChecks.owner != this.owner))
+			if(this.isRegistered && (spriteForPointChecks && !spriteForPointChecks.isRegistered) && PBE.IN_EDITOR)
 				_spriteForPointChecks = null;
 			
 			attachRenderer();

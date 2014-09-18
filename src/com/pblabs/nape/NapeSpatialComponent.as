@@ -471,7 +471,7 @@ package com.pblabs.nape
 		{
 			super.onReset();
 			
-			if(spriteForPointChecks && (spriteForPointChecks.owner == null || spriteForPointChecks.owner != this.owner))
+			if(this.isRegistered && (spriteForPointChecks && !spriteForPointChecks.isRegistered) && PBE.IN_EDITOR)
 				_spriteForPointChecks = null;
 			
 			attachRenderer();
@@ -541,7 +541,7 @@ package com.pblabs.nape
 		
 		protected function attachRenderer():void
 		{
-			if(!spriteForPointChecks){
+			if(!spriteForPointChecks && this.isRegistered){
 				var renderer : DisplayObjectRenderer = owner.lookupComponentByType( DisplayObjectRenderer) as DisplayObjectRenderer;
 				if(renderer && (!renderer.positionProperty || renderer.positionProperty.property == "" || (renderer.positionProperty && renderer.positionProperty.property.split(".")[0].indexOf("@"+this.name) != -1)))
 					spriteForPointChecks = renderer;
