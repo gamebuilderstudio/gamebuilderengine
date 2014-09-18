@@ -53,9 +53,13 @@ package com.pblabs.starling2D
 		
 		override public function onFrame(elapsed:Number) : void
 		{
-			// Update the Starling object
-			buildG2DObject();
-
+			// Update the bitmapData.
+			var newTexture:Texture = getCurrentTexture();
+			if(newTexture != null && currentTexture != newTexture){
+				currentTexture = newTexture;
+				buildG2DObject();
+			}
+			
 			if (currentTexture!=null)
 				super.onFrame(elapsed);
 			
@@ -67,12 +71,13 @@ package com.pblabs.starling2D
 				return null;
 			
 			
+			var tempTexture : Texture;
 			if(directionReference)
-				currentTexture = modifyTexture(_spriteSheet.getTexture(_spriteIndex, owner.getProperty(directionReference) as Number));
+				tempTexture = modifyTexture(_spriteSheet.getTexture(_spriteIndex, owner.getProperty(directionReference) as Number));
 			else
-				currentTexture = modifyTexture(_spriteSheet.getTexture(_spriteIndex));
+				tempTexture = modifyTexture(_spriteSheet.getTexture(_spriteIndex));
 			
-			if(!currentTexture)
+			if(!tempTexture)
 				return null;
 			
 			// Our registration point is the center of a frame as specified by the spritesheet
@@ -82,10 +87,10 @@ package com.pblabs.starling2D
 				registrationPoint = _scrachPoint;					
 			}
 			if (_spriteSheet.centered)
-				registrationPoint = new Point(currentTexture.width/2,currentTexture.height/2);
-			if(currentTexture && this.size && this.sizeProperty && _overrideSizePerFrame && (this.size.x != currentTexture.width || this.size.y != currentTexture.height))
+				registrationPoint = new Point(tempTexture.width/2,tempTexture.height/2);
+			if(tempTexture && this.size && this.sizeProperty && _overrideSizePerFrame && (this.size.x != tempTexture.width || this.size.y != tempTexture.height))
 			{
-				var newSize : Point = new Point(currentTexture.width, currentTexture.height);
+				var newSize : Point = new Point(tempTexture.width, tempTexture.height);
 				this.size = newSize;
 				
 				if(!currentSpatialName || this.sizeProperty.property.indexOf( currentSpatialName ) == -1){
@@ -103,11 +108,11 @@ package com.pblabs.starling2D
 				if(spatial && spatial.spriteForPointChecks == this){
 					this.owner.setProperty( this.sizeProperty, newSize);
 				}
-			}else if(_overrideSizePerFrame && (this.size.x != currentTexture.width || this.size.y != currentTexture.height)){
-				this.size =  new Point(currentTexture.width, currentTexture.height);
+			}else if(_overrideSizePerFrame && (this.size.x != tempTexture.width || this.size.y != tempTexture.height)){
+				this.size =  new Point(tempTexture.width, tempTexture.height);
 			}
 			
-			return currentTexture;
+			return tempTexture;
 			
 		}
 		
@@ -150,6 +155,7 @@ package com.pblabs.starling2D
 				spriteSheet = this.owner.getProperty( spriteSheetProperty ) as ISpriteSheet;
 			if(spriteSheet && spriteSheet.isDestroyed)
 				spriteSheet = null;
+			currentTexture = getCurrentTexture();
 			buildG2DObject();
 		}
 
@@ -160,7 +166,6 @@ package com.pblabs.starling2D
 				return;
 			}
 			if(!skipCreation){
-				currentTexture = getCurrentTexture();
 				if(!gpuObject && currentTexture){
 					//Create GPU Renderer Object
 					gpuObject = new Image(currentTexture);

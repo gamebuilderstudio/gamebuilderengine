@@ -169,6 +169,8 @@ package com.pblabs.starling2D
 					_initialized = true;
 				}
 			}
+			
+			updateTransform(true);
 		}
 		
 		public function get displayObjectG2D():DisplayObject
