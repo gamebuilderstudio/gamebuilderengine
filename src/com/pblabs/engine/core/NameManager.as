@@ -55,7 +55,8 @@ package com.pblabs.engine.core
                 	_objects[object.alias] = object;
 				if(!_similarObjects[object.alias])
 					_similarObjects[object.alias] = new Vector.<IPBObject>();
-				_similarObjects[object.alias].push(object);
+				if(_similarObjects[object.alias].indexOf(object) == -1)
+					_similarObjects[object.alias].push(object);
 			}
         }
         
@@ -83,7 +84,7 @@ package com.pblabs.engine.core
 					_similarObjects[object.alias] = null;
 					delete _similarObjects[object.alias];
 				}else{
-					if(!isNameValid && (object.alias in _objects) && _objects[object.alias] == object)
+					if((object.alias in _objects) && _objects[object.alias] == object)
 						_objects[object.alias] = similarObjects[similarObjects.length-1];
 				}
             }

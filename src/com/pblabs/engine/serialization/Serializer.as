@@ -567,13 +567,13 @@ package com.pblabs.engine.serialization
          */ 
         private function getChildReference(object:*, fieldName:String, xml:XML):Boolean
         {
-            var nameReference:String = xml.attribute("nameReference");
-            var componentReference:String = xml.attribute("componentReference");
-            if(!componentReference)
-                componentReference = xml.attribute("entityName");
+            var nameReference:String = "@nameReference" in xml ? xml.@nameReference : "";
+            var componentReference:String = "@componentReference" in xml ? xml.@componentReference : "";
+            if(!componentReference && "@entityName" in xml)
+                componentReference = xml.@entityName;
             
-            var componentName:String = xml.attribute("componentName");
-            var objectReference:String = xml.attribute("objectReference");
+            var componentName:String = "@componentName" in xml ? xml.@componentName : "";
+            var objectReference:String = "@objectReference" in xml ? xml.@objectReference : "";
             
             if (nameReference != "" || componentReference != "" || componentName != "" || objectReference != "")
             {
