@@ -131,15 +131,17 @@ package com.pblabs.engine.core
          */
         public function serialize(xml:XML):void
         {
-            var typeNames:Array = typeNames;
-            if (typeNames.length == 1)
+            var types:Array = this.typeNames;
+            if (types.length == 1)
             {
-                xml.appendChild(typeNames[0]);
+                xml.appendChild(types[0]);
                 return;
             }
             
-            for each (var typeName:String in typeNames)
-                xml.appendChild(<type>{typeName}</type>);
+			var typeNamesXML : XML = new XML("<typeNames type=\"Array\" childType=\"String\"/>");
+			xml.appendChild(typeNamesXML);
+            for each (var typeName:String in types)
+				typeNamesXML.appendChild(<_>{typeName}</_>);
         }
         
         /**
@@ -158,7 +160,7 @@ package com.pblabs.engine.core
             }
             
             _bits = 0;
-            for each (var childXML:XML in xml.*)
+            for each (var childXML:XML in xml.typeNames.*)
                 _bits |= PBE.objectTypeManager.getType(String(childXML));
             
             return this;
