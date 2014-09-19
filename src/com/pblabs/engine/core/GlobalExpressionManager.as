@@ -113,15 +113,15 @@ package com.pblabs.engine.core
 			var _os:String = Capabilities.os.toLowerCase();
 			if(_os.indexOf("win") > -1)
 			{
-				objectContext.Game.System.Platform = "windows";
+				objectContext.Game.System.Environment = "windows";
 			}else if(_os.indexOf("mac") > -1){
-				objectContext.Game.System.Platform = "mac";
+				objectContext.Game.System.Environment = "mac";
 			}else if(_os.indexOf("iphone") > -1 || _os.indexOf("ipad") > -1){
-				objectContext.Game.System.Platform = "ios";
+				objectContext.Game.System.Environment = "ios";
 			}else if(_os.indexOf("android") > -1 || _os.indexOf("linux") > -1){
-				objectContext.Game.System.Platform = "android";
+				objectContext.Game.System.Environment = "android";
 			}else{
-				objectContext.Game.System.Platform = "web";
+				objectContext.Game.System.Environment = "web";
 			}
 
 			if(Accelerometer.isSupported)
