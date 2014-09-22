@@ -193,6 +193,7 @@ package com.pblabs.starling2D
 		protected function generateRootSprite():Sprite
 		{
 			var s:Sprite = new Sprite();
+			s.touchable = false;
 			//TODO: set any properties we want for our root host sprite
 			s.name = "DisplayObjectSceneG2DRoot";
 			return s;

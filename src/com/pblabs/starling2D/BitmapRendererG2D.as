@@ -67,7 +67,7 @@ package com.pblabs.starling2D
 			_mouseEnabled = value;
 			
 			if(!gpuObject) return;
-			gpuObject.touchable = _mouseEnabled;
+				gpuObject.touchable = _mouseEnabled;
 		}
 
 		override public function set bitmapData(value:BitmapData):void

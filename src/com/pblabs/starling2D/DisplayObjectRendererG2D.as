@@ -44,7 +44,7 @@ package com.pblabs.starling2D
 		
 		protected var gpuObject : DisplayObject;
 		protected var gpuObjectDirty : Boolean = false;
-		protected var _mouseEnabled:Boolean = true;
+		protected var _mouseEnabled:Boolean = false;
 		internal var _initialized : Boolean = false;
 
 		/**
