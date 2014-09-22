@@ -85,6 +85,7 @@ package com.pblabs.rendering2D.spritesheet
 			}else if(changed){
 				deleteFrames();
 			}
+			buildFrames();
         }
 
         /**
@@ -111,6 +112,7 @@ package com.pblabs.rendering2D.spritesheet
 			}else if(changed){
 				deleteFrames();
 			}
+			buildFrames();
         }
 
         /**
