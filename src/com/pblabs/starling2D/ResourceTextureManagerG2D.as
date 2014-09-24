@@ -199,7 +199,7 @@ package com.pblabs.starling2D
 		{
 			try{
 				var originObject : Object;
-				if(_subTexturesMap[texture])
+				if(texture in _subTexturesMap)
 				{
 					originObject = _subTexturesMap[texture];
 					_textureReferenceCount[originObject]--;
@@ -207,14 +207,14 @@ package com.pblabs.starling2D
 						delete _subTexturesMap[texture];
 						return;
 					}
-				}else if(!_originTexturesMap[texture]){
+				}else if(!(texture in _originTexturesMap)){
 					return;
 				}else{
 					originObject = texture;
 				}
 				
 				//Release original parent texture if it is no longer referenced anywhere in the engine
-				/*for(var key : * in _originTexturesMap)
+				for(var key : * in _originTexturesMap)
 				{
 					var len : int = _originTexturesMap[key].length;
 					for(var i : int = 0; i < len; i++)
@@ -233,7 +233,7 @@ package com.pblabs.starling2D
 							return;
 						}
 					}
-				}*/
+				}
 			}catch(e : Error){
 				Logger.error(null, "releaseTexture", "Error releasing texture");
 			}
