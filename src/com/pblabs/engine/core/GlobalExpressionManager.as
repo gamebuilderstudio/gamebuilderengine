@@ -9,6 +9,7 @@ package com.pblabs.engine.core
 	import flash.events.AccelerometerEvent;
 	import flash.events.Event;
 	import flash.events.StageOrientationEvent;
+	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.sensors.Accelerometer;
 	import flash.system.ApplicationDomain;
@@ -16,6 +17,7 @@ package com.pblabs.engine.core
 
 	public final class GlobalExpressionManager implements ITickedObject
 	{
+		public var baseScreenSize : Point = new Point();
 		public var screenScale : Number = 1;
 		public var screenLayout : String = "Portrait";
 		public var screenOrientation : String = "Portrait";
@@ -116,7 +118,7 @@ package com.pblabs.engine.core
 				objectContext.Game.System.Environment = "windows";
 			}else if(_os.indexOf("mac") > -1){
 				objectContext.Game.System.Environment = "mac";
-			}else if(_os.indexOf("iphone") > -1 || _os.indexOf("ipad") > -1){
+			}else if(_os.indexOf("iphone") > -1 || _os.indexOf("ipad") > -1 || _os.indexOf("ipod") > -1){
 				objectContext.Game.System.Environment = "ios";
 			}else if(_os.indexOf("android") > -1 || _os.indexOf("linux") > -1){
 				objectContext.Game.System.Environment = "android";
@@ -188,9 +190,8 @@ package com.pblabs.engine.core
 			}
 		}
 		
-		private var screenSize:Rectangle = new Rectangle();
 		private var deviceSize:Rectangle = new Rectangle();
-		private function calculateScreenSize():void
+		public function calculateScreenSize():void
 		{
 			if(objectContext){
 				objectContext.Game.Screen.screenResolutionX = Capabilities.screenResolutionX;
@@ -199,18 +200,25 @@ package com.pblabs.engine.core
 				objectContext.Game.Screen.fullScreenHeight = PBE.mainStage.fullScreenHeight;
 				objectContext.Game.Screen.width = PBE.mainStage.stageWidth;
 				objectContext.Game.Screen.height = PBE.mainStage.stageHeight;
+				objectContext.Game.Screen.baseScreenWidth = baseScreenSize.x;
+				objectContext.Game.Screen.baseScreenHeight = baseScreenSize.y;
 			}
 
-			screenSize.setTo(0,0, objectContext.Game.Screen.width, objectContext.Game.Screen.height);
-			deviceSize.setTo(0,0, Math.max(PBE.mainStage.fullScreenWidth, PBE.mainStage.fullScreenHeight), Math.min(PBE.mainStage.fullScreenWidth, PBE.mainStage.fullScreenHeight));
+			deviceSize.setTo(0,0, 
+				Math.max(PBE.mainStage.fullScreenWidth, PBE.mainStage.fullScreenHeight), 
+				Math.min(PBE.mainStage.fullScreenWidth, PBE.mainStage.fullScreenHeight));
 			
+			var screenLeftOffset : Number = 0;
 			// if device is wider than GUI's aspect ratio, height determines scale
-			if ((deviceSize.width/deviceSize.height) > (screenSize.width/screenSize.height)) {
-				screenScale = deviceSize.height / screenSize.height;
+			if ((deviceSize.width/deviceSize.height) > (baseScreenSize.x/baseScreenSize.y)) {
+				screenScale = deviceSize.height / baseScreenSize.y;
+				var appWidth : Number = deviceSize.width / screenScale;
+				screenLeftOffset = Math.round((appWidth - baseScreenSize.x) / 2);
 			} 
 				// if device is taller than GUI's aspect ratio, width determines scale
 			else {
-				screenScale = deviceSize.width / screenSize.width;
+				screenScale = deviceSize.width / baseScreenSize.x;
+				screenLeftOffset = 0;
 			}
 			if(deviceSize.width > deviceSize.height)
 				screenLayout = "landscape";
@@ -218,6 +226,9 @@ package com.pblabs.engine.core
 				screenLayout = "portrait";
 			
 			if(objectContext){
+
+				objectContext.Game.Screen.screenLeftOffset = screenLeftOffset;
+				
 				//Screen Size
 				objectContext.Game.Screen.fullScreenScale = screenScale;
 				if(screenLayout == "landscape")

@@ -7,11 +7,9 @@ package com.pblabs.engine.scripting
 	import com.pblabs.engine.util.DynamicObjectUtil;
 	
 	import flash.geom.Point;
-	import flash.utils.Dictionary;
 	
 	import scripting.Parser;
 	import scripting.Scanner;
-	import scripting.VMSyntaxError;
 	import scripting.VirtualMachine;
 	
 	/**
