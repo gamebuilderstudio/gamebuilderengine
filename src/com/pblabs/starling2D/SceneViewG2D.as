@@ -276,12 +276,14 @@ package com.pblabs.starling2D
         override public function set width(value:Number):void
         {
             _width = value;
+			/*
 			var newViewPort : Rectangle = _starlingInstance.viewPort;
 			newViewPort.width = _width;
 			newViewPort.height = _height;
 			_starlingInstance.stage.stageWidth = _width;
 			_starlingInstance.stage.stageHeight = _height;
 			_starlingInstance.viewPort = newViewPort;
+			*/
         }
         
         override public function get height():Number
@@ -291,13 +293,15 @@ package com.pblabs.starling2D
         
         override public function set height(value:Number):void
         {
-            _height = value;
+           _height = value;
+		   /* 
 			var newViewPort : Rectangle = _starlingInstance.viewPort;
 			newViewPort.width = _width;
 			newViewPort.height = _height;
 			_starlingInstance.stage.stageWidth = _width;
 			_starlingInstance.stage.stageHeight = _height;
 			_starlingInstance.viewPort = newViewPort;
+		   */
         }
         
 		public function get canvasContainerG2D():DisplayObjectContainer{ return _gpuCanvasContainer; }
