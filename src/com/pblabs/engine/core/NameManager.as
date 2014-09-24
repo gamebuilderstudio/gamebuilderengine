@@ -73,19 +73,22 @@ package com.pblabs.engine.core
             if (object.alias != null && object.alias != "")
             {
 				var similarObjects : Vector.<IPBObject> = _similarObjects[object.alias] as Vector.<IPBObject>;
-				if(similarObjects.indexOf(object) != -1)
-					similarObjects.splice( similarObjects.indexOf(object), 1 );
-				
-				if(_similarObjects[object.alias].length <= 0){
-					if(!isNameValid && (object.alias in _objects) && _objects[object.alias] == object){
-						_objects[object.alias] = null;
-						delete _objects[object.alias];                  
+				if(object.alias in _similarObjects && similarObjects)
+				{
+					if(similarObjects.indexOf(object) != -1)
+						similarObjects.splice( similarObjects.indexOf(object), 1 );
+					
+					if(_similarObjects[object.alias].length <= 0){
+						if(!isNameValid && (object.alias in _objects) && _objects[object.alias] == object){
+							_objects[object.alias] = null;
+							delete _objects[object.alias];                  
+						}
+						_similarObjects[object.alias] = null;
+						delete _similarObjects[object.alias];
+					}else{
+						if((object.alias in _objects) && _objects[object.alias] == object)
+							_objects[object.alias] = similarObjects[similarObjects.length-1];
 					}
-					_similarObjects[object.alias] = null;
-					delete _similarObjects[object.alias];
-				}else{
-					if((object.alias in _objects) && _objects[object.alias] == object)
-						_objects[object.alias] = similarObjects[similarObjects.length-1];
 				}
             }
             
