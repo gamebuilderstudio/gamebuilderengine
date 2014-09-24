@@ -98,7 +98,9 @@ package com.pblabs.starling2D
 			}
 
 			var texture : Texture = ResourceTextureManagerG2D.getTextureByKey( textureCacheKey );
-			if(!texture){
+			if(!texture || _shapeDirty){
+				if(texture)
+					texture.dispose();
 
 				if(bitmap){
 					if(bitmap.bitmapData)

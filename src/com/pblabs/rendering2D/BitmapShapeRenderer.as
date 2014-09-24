@@ -120,14 +120,6 @@ package com.pblabs.rendering2D
 			_shapeDirty = false;
 		}
 		
-		override public function set scale(value:Point):void
-		{
-			if(this._scale.x != value.x || this._scale.y != value.y){
-				_shapeDirty = true;
-			}
-			super.scale = value;
-		}
-
 		override public function set size(value:Point):void
 		{
 			if(this._size.x != value.x || this._size.y != value.y){
