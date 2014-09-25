@@ -51,26 +51,17 @@ package com.pblabs.starling2D
 					super.buildG2DObject();
 					return;
 				}
-				var texture : Texture = ResourceTextureManagerG2D.getTextureForResource(resource);
 				if(!gpuObject){
+					var texture : Texture = ResourceTextureManagerG2D.getTextureForResource(resource);
 					if(texture){
 						gpuObject = new Image(texture);
-					}else{
-						texture = ResourceTextureManagerG2D.getTextureForResource(resource);
-						if(!texture)
-							return;
-						gpuObject = new Image( texture );
 					}
-				}else{
+				}else if(_imageDataDirty){
 					if((gpuObject as Image).texture)
 						(gpuObject as Image).texture.dispose();
 					
-					if(texture){
-						(gpuObject as Image).texture = texture;
-					}else{
-						(gpuObject as Image).texture = ResourceTextureManagerG2D.getTextureForResource(resource);
-					}
-					( gpuObject as Image).readjustSize();
+					(gpuObject as Image).texture = ResourceTextureManagerG2D.getTextureForResource(resource);
+					(gpuObject as Image).readjustSize();
 				}
 				
 				smoothing = _smoothing;

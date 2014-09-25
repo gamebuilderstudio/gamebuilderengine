@@ -87,24 +87,21 @@ package com.pblabs.starling2D
 					return;
 				}
 				
-				texture = ResourceTextureManagerG2D.getTextureByKey( getTextureCacheKey() );
 				if(!gpuObject){
+					texture = ResourceTextureManagerG2D.getTextureByKey( getTextureCacheKey() );
 					if(texture)
 					{
 						gpuObject = new Image(texture);
 					}else{
 						//Create GPU Renderer Object
-						gpuObject = new Image(ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmap.bitmapData, getTextureCacheKey() ));
+						gpuObject = new Image(ResourceTextureManagerG2D.getTextureForBitmapData( bitmapData, getTextureCacheKey() ));
 					}
-				}else{
-					if(( gpuObject as Image).texture)
-						( gpuObject as Image).texture.dispose();
+				}else if(_imageDataDirty){
+					if((gpuObject as Image).texture)
+						(gpuObject as Image).texture.dispose();
 					
-					if(!texture)
-						texture = ResourceTextureManagerG2D.getTextureForBitmapData(this.bitmap.bitmapData, getTextureCacheKey());
-					
-					(gpuObject as Image).texture = texture;
-					( gpuObject as Image).readjustSize();
+					(gpuObject as Image).texture = ResourceTextureManagerG2D.getTextureForBitmapData(bitmapData, getTextureCacheKey());;
+					(gpuObject as Image).readjustSize();
 				}
 				smoothing = _smoothing;
 				skipCreation = true;

@@ -81,8 +81,8 @@ package com.pblabs.starling2D
 				}
 				
 				if(!PBE.IS_SHIPPING_BUILD){
-					_starlingInstance.enableErrorChecking = true;
-					_starlingInstance.simulateMultitouch = true;
+					//_starlingInstance.enableErrorChecking = true;
+					//_starlingInstance.simulateMultitouch = true;
 				}
 				_starlingInstance.start();
 				name = "SceneView_"+_stage3DIndex;

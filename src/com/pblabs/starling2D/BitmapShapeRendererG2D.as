@@ -51,7 +51,6 @@ package com.pblabs.starling2D
 			}
 
 			if(!skipCreation){
-				var texture : Texture = ResourceTextureManagerG2D.getTextureByKey( textureCacheKey );
 				try{
 					if((!bitmap || !bitmap.bitmapData) && !texture)
 					{
@@ -62,6 +61,7 @@ package com.pblabs.starling2D
 				}
 				
 				if(!gpuObject){
+					var texture : Texture = ResourceTextureManagerG2D.getTextureByKey( textureCacheKey );
 					if(texture)
 					{
 						gpuObject = new Image(texture);
@@ -69,16 +69,12 @@ package com.pblabs.starling2D
 						//Create GPU Renderer Object
 						gpuObject = new Image(ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmap.bitmapData, textureCacheKey ));
 					}
-				}else{
-					if(( gpuObject as Image).texture)
+				}else if(_shapeDirty){
+					if((gpuObject as Image).texture)
 						( gpuObject as Image).texture.dispose();
-					if(!texture)
-					{
-						(gpuObject as Image).texture = texture = ResourceTextureManagerG2D.getTextureForBitmapData(this.bitmap.bitmapData, textureCacheKey);
-					}else{
-						(gpuObject as Image).texture = texture;
-					}
-					( gpuObject as Image).readjustSize();
+				
+					(gpuObject as Image).texture = texture = ResourceTextureManagerG2D.getTextureForBitmapData(this.bitmap.bitmapData, textureCacheKey);
+					(gpuObject as Image).readjustSize();
 				}
 				smoothing = _smoothing;
 			}
@@ -153,9 +149,8 @@ package com.pblabs.starling2D
 					bitmap.smoothing = this._smoothing;
 				}
 			}
-			_shapeDirty = false;
-			
 			this.buildG2DObject();
+			_shapeDirty = false;
 		}
 		
 		protected function get textureCacheKey():String{

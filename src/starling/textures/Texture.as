@@ -121,6 +121,8 @@ package starling.textures
         public function dispose():void
         { 
             // override in subclasses
+			if(_disposed)
+				_disposed.dispatch(this);
         }
         
         /** Creates a texture object from any of the supported data types, using the specified

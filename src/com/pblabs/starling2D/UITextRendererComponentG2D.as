@@ -10,6 +10,7 @@ package com.pblabs.starling2D
 {
 	import com.pblabs.engine.PBUtil;
 	import com.pblabs.engine.core.ObjectType;
+	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.resource.ResourceEvent;
 	import com.pblabs.rendering2D.UITextRendererComponent;
 	
@@ -95,17 +96,18 @@ package com.pblabs.starling2D
 				}
 			}
 			if(!skipCreation){
-				if(!isComposedTextData && this.bitmap.bitmapData)
+				Logger.print(this, "Building Text Renderer...");
+				if(!isComposedTextData && this.bitmapData)
 				{
 				
 					if(!gpuObject){
 						//Create GPU Renderer Object
-						gpuObject = new Image( ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmap.bitmapData) );
-					}else{
-						if(( gpuObject as Image).texture)
-							( gpuObject as Image).texture.dispose();
-						( gpuObject as Image).texture = ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmap.bitmapData);
-						( gpuObject as Image).readjustSize();
+						gpuObject = new Image( ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmapData) );
+					}else if(_textDirty || _textSizeDirty){
+						if((gpuObject as Image).texture)
+							(gpuObject as Image).texture.dispose();
+						(gpuObject as Image).texture = ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmapData );
+						(gpuObject as Image).readjustSize();
 					}
 				}
 				smoothing = _smoothing;
@@ -170,7 +172,7 @@ package com.pblabs.starling2D
 						(gpuObject as TextField).autoSize = _autoResize ? TextFieldAutoSize.BOTH_DIRECTIONS : TextFieldAutoSize.NONE;
 					}
 				}
-			}else if(!isComposedTextData && !gpuObject){
+			}else if(Starling.context && !isComposedTextData && !gpuObject){
 				buildG2DObject();
 			}
 		}
@@ -236,9 +238,8 @@ package com.pblabs.starling2D
 			// Due to a bug, this has to be reset after setting bitmapData.
 			smoothing = _smoothing;
 			
-			buildG2DObject();
-			
 			_transformDirty = true;
+			buildG2DObject();
 		}
 
 		override public function get fontColor():uint{ 

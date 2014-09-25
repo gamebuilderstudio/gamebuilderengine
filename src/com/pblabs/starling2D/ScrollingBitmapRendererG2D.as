@@ -98,31 +98,23 @@ package com.pblabs.starling2D
 				if (autoCorrectImageSize && (legalWidth > bitmapData.width || legalHeight > bitmapData.height))
 				{
 					customBitmapCreated = true;
-					bitmap.bitmapData = increaseBitmapByPowerOfTwo(bitmapData, legalWidth, legalHeight);
+					bitmapData = increaseBitmapByPowerOfTwo(bitmapData, legalWidth, legalHeight);
+					return;
 				}else{
 					customBitmapCreated = false;
 				}
 				
-				var texture : Texture = getTexture();
 				if(!gpuObject){
+					var texture : Texture = ResourceTextureManagerG2D.getTextureForResource(resource, true);
 					if(texture){
 						gpuObject = new Image(texture);
-					}else{
-						texture = getTexture();
-						if(!texture)
-							return;
-						gpuObject = new Image( texture );
 					}
-				}else{
+				}else if(_imageDataDirty){
 					if((gpuObject as Image).texture)
 						(gpuObject as Image).texture.dispose();
 					
-					if(texture){
-						(gpuObject as Image).texture = texture;
-					}else{
-						(gpuObject as Image).texture = getTexture();
-					}
-					( gpuObject as Image).readjustSize();
+					(gpuObject as Image).texture = ResourceTextureManagerG2D.getTextureForResource(resource, true);
+					(gpuObject as Image).readjustSize();
 				}
 				
 				smoothing = _smoothing;
@@ -164,13 +156,6 @@ package com.pblabs.starling2D
 				originalBitmapData.dispose();
 				customBitmapCreated = false;
 			}
-		}
-		
-		protected function getTexture():Texture
-		{
-			if(customBitmapCreated){
-			}
-			return ResourceTextureManagerG2D.getTextureForResource(resource, true);
 		}
 		
 		protected function increaseBitmapByPowerOfTwo(data : BitmapData, targetW : Number, targetH : Number):BitmapData

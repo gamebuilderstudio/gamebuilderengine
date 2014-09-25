@@ -45,7 +45,7 @@ package com.pblabs.starling2D
 				if(!gpuObject){
 					//Create GPU Renderer Object
 					gpuObject = new Image( ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmap.bitmapData ) );
-				}else{
+				}else if(_imageDataDirty){
 					if(( gpuObject as Image).texture)
 						( gpuObject as Image).texture.dispose();
 					( gpuObject as Image).texture = ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmap.bitmapData );
@@ -75,9 +75,13 @@ package com.pblabs.starling2D
 			if (value === bitmap.bitmapData)
 				return;
 			
-			// store orginal BitmapData so that modifiers can be re-implemented 
-			// when assigned modifiers attribute later on.
-			originalBitmapData = value;
+			if(value != originalBitmapData){
+				// store orginal BitmapData so that modifiers can be re-implemented 
+				// when assigned modifiers attribute later on.
+				originalBitmapData = value;
+				_imageDataDirty = true;
+			}
+
 			
 			// check if we should do modification
 			/*
@@ -93,10 +97,8 @@ package com.pblabs.starling2D
 			
 			// Due to a bug, this has to be reset after setting bitmapData.
 			smoothing = _smoothing;
-			
-			buildG2DObject();
-			
 			_transformDirty = true;
+			buildG2DObject();
 		}
 		
 		/**

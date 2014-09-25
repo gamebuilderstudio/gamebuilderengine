@@ -23,6 +23,7 @@ package com.pblabs.rendering2D
     {
         protected var bitmap:Bitmap = new Bitmap();
         protected var _smoothing:Boolean = false;
+		protected var _imageDataDirty : Boolean = false;
         
         public function BitmapRenderer()
         {
@@ -122,6 +123,7 @@ package com.pblabs.rendering2D
             bitmap.smoothing = this._smoothing;
 			bitmap.blendMode = this._blendMode;
             _transformDirty = true;
+			_imageDataDirty = true;
         }
         
 		override public function set blendMode(value:String):void

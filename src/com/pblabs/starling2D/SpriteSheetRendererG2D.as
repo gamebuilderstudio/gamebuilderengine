@@ -171,7 +171,7 @@ package com.pblabs.starling2D
 					gpuObject = new Image(currentTexture);
 				}else if(gpuObject && currentTexture){
 					(gpuObject as Image).texture = currentTexture;
-					( gpuObject as Image).readjustSize();
+					(gpuObject as Image).readjustSize();
 				}
 				smoothing = _smoothing;
 				skipCreation = true;
