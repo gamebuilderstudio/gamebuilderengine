@@ -49,7 +49,7 @@ package com.pblabs.starling2D.spritesheet
 		
 		override public function get isLoaded():Boolean
 		{
-			return (Starling.context && (imageData != null || _forcedBitmaps))
+			return (Starling.context && (imageData != null || _forcedBitmaps) && _divider != null)
 		}
 
 		override public function getFrame(index:int, direction:Number=0.0):BitmapData{ return null; }
@@ -67,7 +67,7 @@ package com.pblabs.starling2D.spritesheet
 			var _frames:Array;
 			
 			// image isn't loaded, can't do anything yet
-			if(!imageData || !_image.bitmapData || (_divider && _divider is ISpriteSheetNamedFramesDivider && !(_divider as ISpriteSheetNamedFramesDivider).isLoaded) || (_divider && _divider.frameCount == 0))
+			if(!imageData || !_image.bitmapData || !_divider || (_divider is ISpriteSheetNamedFramesDivider && !(_divider as ISpriteSheetNamedFramesDivider).isLoaded) || _divider.frameCount == 0)
 				return null;
 			
 			var cachedFrames : CachedFramesData = getCachedFrames();
@@ -82,12 +82,7 @@ package com.pblabs.starling2D.spritesheet
 			
 			var atlas : TextureAtlas = ResourceTextureManagerG2D.getTextureAtlasForResource(_image);
 			// no divider means treat the image as a single frame
-			if (!_divider)
-			{
-				_frames = new Array(1);
-				_frames[0] = ResourceTextureManagerG2D.getTextureForAtlasRegion(atlas, "i_0", new Rectangle(0,0, atlas.texture.width, atlas.texture.height));
-			}
-			else
+			if (atlas)
 			{
 				_frames = new Array(_divider.frameCount);
 				var tmpBounds : Rectangle;

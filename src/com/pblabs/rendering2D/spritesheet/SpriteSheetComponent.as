@@ -169,7 +169,7 @@ package com.pblabs.rendering2D.spritesheet
          */
         public override function get isLoaded():Boolean
         {
-            var _loaded : Boolean = (imageData != null || _forcedBitmaps);
+            var _loaded : Boolean = ((imageData != null || _forcedBitmaps) && _divider != null);
 			if(_loaded && !frames)
 				buildFrames();
 			return _loaded;
@@ -238,7 +238,7 @@ package com.pblabs.rendering2D.spritesheet
             
             var _frames:Array;
             
-			if(!imageData || !_image.bitmapData || (_divider && (_divider is ISpriteSheetNamedFramesDivider) && !(_divider as ISpriteSheetNamedFramesDivider).isLoaded) || (_divider && _divider.frameCount == 0))
+			if(!imageData || !_image.bitmapData || !_divider || (_divider && (_divider is ISpriteSheetNamedFramesDivider) && !(_divider as ISpriteSheetNamedFramesDivider).isLoaded) || (_divider && _divider.frameCount == 0))
 				return null;
             // image isn't loaded, can't do anything yet
             
@@ -253,38 +253,31 @@ package com.pblabs.rendering2D.spritesheet
 			}
 
 			// no divider means treat the image as a single frame
-            if (!_divider)
+			_frames = new Array(_divider.frameCount);
+			var tmpBounds : Rectangle;
+            for (var i:int = 0; i < _divider.frameCount; i++)
             {
-				_frames = new Array(1);
-				_frames[0] = imageData.clone();
-            }
-            else
-            {
-				_frames = new Array(_divider.frameCount);
-				var tmpBounds : Rectangle;
-                for (var i:int = 0; i < _divider.frameCount; i++)
-                {
-                    var area:Rectangle = _divider.getFrameArea(i);										
-					_frames[i] = new BitmapData(area.width, area.height, true);
-					_frames[i].copyPixels(imageData, area, new Point(0, 0));
-					tmpBounds = new Rectangle(0,0,_frames[i].width, _frames[i].height);
-					if(!_bounds){
-						_bounds = tmpBounds.clone();
-					}else{
-						var difX : Number = PBUtil.clamp( tmpBounds.width - _bounds.width, 0, 99999999);
-						var difY : Number = PBUtil.clamp( tmpBounds.height - _bounds.height, 0, 99999999);
-						_bounds.inflate(difX, difY);
-					}
+                var area:Rectangle = _divider.getFrameArea(i);										
+				_frames[i] = new BitmapData(area.width, area.height, true);
+				_frames[i].copyPixels(imageData, area, new Point(0, 0));
+				tmpBounds = new Rectangle(0,0,_frames[i].width, _frames[i].height);
+				if(!_bounds){
+					_bounds = tmpBounds.clone();
+				}else{
+					var difX : Number = PBUtil.clamp( tmpBounds.width - _bounds.width, 0, 99999999);
+					var difY : Number = PBUtil.clamp( tmpBounds.height - _bounds.height, 0, 99999999);
+					_bounds.inflate(difX, difY);
+				}
 
-                }				
-            }		
-			
+            }				
+
 			if(_cached){
 				var frameCache : CachedFramesData = new CachedFramesData(_frames, imageFilename, _divider, _bounds);
 				frameCache.released.addOnce(onCacheReleased);
 				frameCache.referenceCount += 1;
 				setCachedFrames(frameCache);
 			}
+			
             return _frames;
         }
         
