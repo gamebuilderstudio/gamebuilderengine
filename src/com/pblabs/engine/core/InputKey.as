@@ -8,9 +8,9 @@
  ******************************************************************************/
 package com.pblabs.engine.core
 {
-    import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.serialization.Enumerable;
-
+    
+    import flash.ui.Keyboard;
     import flash.utils.Dictionary;
 
     /**
@@ -21,6 +21,8 @@ package com.pblabs.engine.core
     {
         public static const INVALID:InputKey = new InputKey(0);
 
+		public static const BACKBUTTON:InputKey = new InputKey(Keyboard.BACK);
+		
         public static const BACKSPACE:InputKey = new InputKey(8);
         public static const TAB:InputKey = new InputKey(9);
         public static const ENTER:InputKey = new InputKey(13);
@@ -158,6 +160,7 @@ package com.pblabs.engine.core
             if (!_typeMap)
             {
                 _typeMap = new Dictionary();
+				_typeMap["BACKBUTTON"] = BACKBUTTON;
                 _typeMap["BACKSPACE"] = BACKSPACE;
                 _typeMap["TAB"] = TAB;
                 _typeMap["ENTER"] = ENTER;
