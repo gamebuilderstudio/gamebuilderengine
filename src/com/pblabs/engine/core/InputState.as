@@ -2,6 +2,7 @@ package com.pblabs.engine.core
 {
 	public final class InputState
 	{
+		public var preventDefaultBehaviour : Boolean = false;
 		public var value : Boolean = false;
 		public var keyCode : int = -1;
 		public var stageX : Number;
@@ -26,6 +27,7 @@ package com.pblabs.engine.core
 		
 		public function dispose():void
 		{
+			preventDefaultBehaviour = false;
 			value = false;
 			keyCode = -1;
 			touchCount = 0;

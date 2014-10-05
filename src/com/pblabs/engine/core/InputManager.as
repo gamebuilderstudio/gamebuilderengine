@@ -281,13 +281,25 @@ package com.pblabs.engine.core
 
 		private function onKeyDown(event:KeyboardEvent):void
         {
-			findKeyState(event.keyCode, _keyState).value = true;
-            dispatchEvent(event);
+			var state : InputState = findKeyState(event.keyCode, _keyState);
+			state.value = true;
+			if(state.preventDefaultBehaviour)
+			{
+				event.preventDefault();
+				event.stopImmediatePropagation();
+			}
+			dispatchEvent(event);
         }
 
         private function onKeyUp(event:KeyboardEvent):void
         {
-			findKeyState(event.keyCode, _keyState).value = false;
+			var state : InputState = findKeyState(event.keyCode, _keyState);
+			state.value = false;
+			if(state.preventDefaultBehaviour)
+			{
+				event.preventDefault();
+				event.stopImmediatePropagation();
+			}
             dispatchEvent(event);
         }
 
@@ -299,6 +311,11 @@ package com.pblabs.engine.core
 			keyData.stageY = PBE.mainStage.mouseY;
 			if(event.hasOwnProperty("clickCount"))
 				keyData.touchCount = event.clickCount;
+			if(keyData.preventDefaultBehaviour)
+			{
+				event.preventDefault();
+				event.stopImmediatePropagation();
+			}
             dispatchEvent(event);
         }
 
@@ -310,6 +327,11 @@ package com.pblabs.engine.core
 			keyData.stageY = PBE.mainStage.mouseY;
 			if(event.hasOwnProperty("clickCount"))
 				keyData.touchCount = event.clickCount;
+			if(keyData.preventDefaultBehaviour)
+			{
+				event.preventDefault();
+				event.stopImmediatePropagation();
+			}
             dispatchEvent(event);
         }
 
