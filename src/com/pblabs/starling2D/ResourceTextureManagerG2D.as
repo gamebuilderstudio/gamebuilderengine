@@ -208,7 +208,6 @@ package com.pblabs.starling2D
 		{
 			if(texture.root in _originTextureToBitmapDataMap)
 			{
-				Logger.print(ResourceTextureManagerG2D, "Restoring Texture - " + texture.width.toString());
 				texture.root.uploadBitmapData( _originTextureToBitmapDataMap[texture.root] as BitmapData );
 			}
 		}
@@ -255,7 +254,7 @@ package com.pblabs.starling2D
 					}
 				}
 			}catch(e : Error){
-				Logger.error(null, "releaseTexture", "Error releasing texture");
+				Logger.error(ResourceTextureManagerG2D, "releaseTexture", "Error releasing texture: " + e.getStackTrace());
 			}
 			
 		}
