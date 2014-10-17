@@ -10,7 +10,6 @@ package com.pblabs.starling2D
 {
 	import com.pblabs.engine.PBUtil;
 	import com.pblabs.engine.core.ObjectType;
-	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.resource.ResourceEvent;
 	import com.pblabs.rendering2D.UITextRendererComponent;
 	
@@ -96,7 +95,6 @@ package com.pblabs.starling2D
 				}
 			}
 			if(!skipCreation){
-				Logger.print(this, "Building Text Renderer...");
 				if(!isComposedTextData && this.bitmapData)
 				{
 				
