@@ -39,7 +39,7 @@ package com.pblabs.starling2D
 						delete _originTexturesMap[key];
 					
 					delete _textureReferenceCount[originTexture];
-					if(originTexture.root in _originTextureToBitmapDataMap)
+					if(originTexture is Texture && "root" in originTexture && originTexture.root in _originTextureToBitmapDataMap)
 						delete _originTextureToBitmapDataMap[originTexture.root];
 					if("disposed" in originTexture && originTexture.disposed && originTexture.disposed is Signal)
 					{
@@ -242,13 +242,13 @@ package com.pblabs.starling2D
 								delete _originTexturesMap[key];
 							
 							delete _textureReferenceCount[originTexture];
-							if(originTexture.root in _originTextureToBitmapDataMap)
+							if(originTexture is Texture && "root" in originTexture && originTexture.root in _originTextureToBitmapDataMap)
 								delete _originTextureToBitmapDataMap[originTexture.root];
-							if(originTexture["disposed"] && originTexture["dispose"] != null )
+							if("disposed" in originTexture && originTexture["dispose"] != null )
 							{
 								originTexture.disposed.remove(releaseTexture);
-								originTexture.dispose();
 							}
+							originTexture.dispose();
 							return;
 						}
 					}
