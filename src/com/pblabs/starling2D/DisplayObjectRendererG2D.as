@@ -113,7 +113,7 @@ package com.pblabs.starling2D
 		{
 			super.onRemove();
 			if(gpuObject) {
-				if(gpuObject.hasOwnProperty("texture"))
+				if("texture" in gpuObject)
 				{
 					gpuObject['texture'].dispose();
 				}

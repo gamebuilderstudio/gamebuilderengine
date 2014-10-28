@@ -92,7 +92,8 @@ package com.pblabs.starling2D
                 var d:DisplayObject = rendererList[i].displayObjectG2D;
                 if(getChildAt(i) == d)
                     continue;
-                
+                if(!this.contains(d))
+					continue;
                 updated++;
                 setChildIndex(d, i);
             }
