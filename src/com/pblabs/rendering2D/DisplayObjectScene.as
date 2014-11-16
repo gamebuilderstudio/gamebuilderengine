@@ -18,7 +18,9 @@ package com.pblabs.rendering2D
     import flash.display.DisplayObject;
     import flash.display.Sprite;
     import flash.events.Event;
-    import flash.geom.*;
+    import flash.geom.Matrix;
+    import flash.geom.Point;
+    import flash.geom.Rectangle;
     import flash.utils.Dictionary;
     
     /**
@@ -149,15 +151,10 @@ package com.pblabs.rendering2D
             if(allocateIfAbsent == false)
                 return null;
             
-            // Allocate the layer.
-             _layers.splice(index, 0, generateLayer(index));
-                        
-			 _rootSprite.addChildAt(_layers[index], index);
-            
             // Return new layer.
-            return _layers[index] as IDisplayObjectSceneLayer;
+            return expandLayersToLayerIndex(index) as IDisplayObjectSceneLayer;
         }
-        
+		
         public function invalidate(dirtyRenderer:DisplayObjectRenderer):void
         {
             var layerToDirty:IDisplayObjectSceneLayer = getLayer(dirtyRenderer.layerIndex);
@@ -503,6 +500,15 @@ package com.pblabs.rendering2D
 
 		}
                 
+		protected function expandLayersToLayerIndex (layerIndex:int) : DisplayObjectSceneLayer {
+			if (layerIndex < _layers.length) return _layers[layerIndex];
+			for(var i : int = _layers.length; i <= layerIndex; i++){
+				_layers[i] = generateLayer(_layers.length);
+				_rootSprite.addChildAt(_layers[i], i);
+			}
+			return _layers[layerIndex];
+		}
+		
         public function setWorldCenter(pos:Point):void
         {
             if (!sceneView)

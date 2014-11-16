@@ -15,6 +15,7 @@ package com.pblabs.starling2D
 	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.rendering2D.Camera;
 	import com.pblabs.rendering2D.DisplayObjectRenderer;
+	import com.pblabs.rendering2D.DisplayObjectSceneLayer;
 	import com.pblabs.rendering2D.ICachingLayer;
 	import com.pblabs.rendering2D.IDisplayObjectSceneLayer;
 	import com.pblabs.rendering2D.ILayerMouseHandler;
@@ -159,13 +160,8 @@ package com.pblabs.starling2D
 			if(allocateIfAbsent == false)
 				return null;
 			
-			// Allocate the layer.
-			_layers.splice(index, 0, generateLayer(index));
-			
-			_rootSprite.addChildAt(_layers[index], index);
-			
 			// Return new layer.
-			return _layers[index] as IDisplayObjectSceneLayer;
+			return expandLayersToLayerIndex(index) as IDisplayObjectSceneLayer;
 		}
 		
 		public function invalidate(dirtyRenderer:DisplayObjectRenderer):void
@@ -519,6 +515,15 @@ package com.pblabs.starling2D
 			}
 		}
 		
+		protected function expandLayersToLayerIndex (layerIndex:int) : DisplayObjectSceneLayerG2D {
+			if (layerIndex < _layers.length) return _layers[layerIndex];
+			for(var i : int = _layers.length; i <= layerIndex; i++){
+				_layers[i] = generateLayer(_layers.length);
+				_rootSprite.addChildAt(_layers[i], i);
+			}
+			return _layers[layerIndex];
+		}
+
 		public function setWorldCenter(pos:Point):void
 		{
 			if (!sceneView)
