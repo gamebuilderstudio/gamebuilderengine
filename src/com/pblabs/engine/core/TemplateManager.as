@@ -13,14 +13,14 @@ package com.pblabs.engine.core
 	import com.pblabs.engine.debug.Profiler;
 	import com.pblabs.engine.entity.IEntity;
 	import com.pblabs.engine.entity.allocateEntity;
-	import com.pblabs.engine.resource.ResourceManager;
+	import com.pblabs.engine.resource.ResourceBundle;
 	import com.pblabs.engine.resource.XMLResource;
 	import com.pblabs.engine.serialization.Serializer;
-	import com.pblabs.engine.serialization.TypeUtility;
 	
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.utils.Dictionary;
+	import flash.utils.getDefinitionByName;
 
 	/**
 	 * @eventType com.pblabs.engine.core.TemplateEvent.GROUP_LOADED
@@ -94,7 +94,10 @@ package com.pblabs.engine.core
 		public function unloadFile(filename:String):void
 		{
 			removeXML(filename);
-			PBE.resourceManager.unload(filename, XMLResource);
+			var extArray:Array = filename.split(".");
+			var ext:String = (extArray[extArray.length-1] as String).toLowerCase();
+			var resourceType : String = ResourceBundle.ExtensionTypes[ext];
+			PBE.resourceManager.unload(filename, getDefinitionByName(resourceType) as Class);
 		}
 
 		/**

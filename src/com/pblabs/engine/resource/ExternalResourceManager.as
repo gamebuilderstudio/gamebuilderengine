@@ -80,7 +80,7 @@ package com.pblabs.engine.resource
        * 
        * @see Resource
        */
-      public function load(filename:String, onLoaded:Function = null, onFailed:Function = null, forceReload:Boolean = false):Object
+      public function load(filename:String, onLoaded:Function = null, onFailed:Function = null, forceReload:Boolean = false, useRootDomain : Boolean = false):Object
       {
          // Can only load one resource file at a time
          if (_currentFileName)
@@ -113,7 +113,7 @@ package com.pblabs.engine.resource
          // If it wasn't loaded...
          if (!externalResource)
          {
-            externalResource = new ExternalResourceFile();
+            externalResource = new ExternalResourceFile(!useRootDomain);
             
             // Store it in the resource dictionary.
             _resources[resourceIdentifier] = externalResource;
@@ -134,10 +134,10 @@ package com.pblabs.engine.resource
          {
             // Still in process, so just hook up to its events.
             if (onLoaded != null)
-               externalResource.addEventListener(ResourceEvent.LOADED_EVENT, function (event:Event):void { onLoaded(); _currentFileName = null; } );
+               externalResource.addEventListener(ResourceEvent.LOADED_EVENT, function (event:Event):void {  _currentFileName = null; onLoaded(externalResource); } );
             
             if (onFailed != null)
-               externalResource.addEventListener(ResourceEvent.FAILED_EVENT, function (event:Event):void { onFailed(); _currentFileName = null; } );
+               externalResource.addEventListener(ResourceEvent.FAILED_EVENT, function (event:Event):void {  _currentFileName = null; onFailed(externalResource); } );
          }
          
          return externalResource.loader.contentLoaderInfo;
@@ -160,18 +160,18 @@ package com.pblabs.engine.resource
          }
          
          // Loop through each external resource associated with this file
-         for each(var obj:Object in _resourceMap[filename])
-         {
+		 for(var i : int = 0; i < _resourceMap[filename].length; i++)
+		 {
+         	var obj:Object = _resourceMap[filename][i];
             // Unload using PBE library. The unload function must be changed to allow forced unload.
             PBE.resourceManager.unload(obj.source, obj.resType);
          }
-         
          // Clear the resource map
          _resourceMap[filename] = null;
          delete _resourceMap[filename];
          
          // Unload and clear the external SWF file
-         _resources[filename].unload();
+         (_resources[filename] as ExternalResourceFile).unload();
          _resources[filename] = null;
          delete _resources[filename];
       }
@@ -189,6 +189,8 @@ package com.pblabs.engine.resource
          
          return (_resources[resourceIdentifier] as ExternalResourceFile).isLoaded;                
       }
+	  
+	  public function get isLoadingBundle():Boolean { return !_currentFileName ? false : true; }
       
       /**
        * Properly mark a resource as failed-to-load.

@@ -200,7 +200,12 @@ package com.pblabs.engine.resource
                 
                 // Everything so far is hunky-dory -- go ahead and register the embedded resource with
                 // the embedded resource provider!
-                EmbeddedResourceProvider.instance.registerResource( resSource, resType, new res() );
+				var resourceData:*;
+				if(res is Class)
+					resourceData = new res();
+				else 
+					resourceData = res;
+                EmbeddedResourceProvider.instance.registerResource( resSource, resType, resourceData );
             }
         }                  
     }

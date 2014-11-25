@@ -1,8 +1,7 @@
 package com.pblabs.engine.resource 
 {
-   import com.pblabs.engine.PBE;
    import com.pblabs.engine.resource.ResourceEvent;
-   import flash.display.Bitmap;
+   
    import flash.display.Loader;
    import flash.events.Event;
    import flash.events.EventDispatcher;
@@ -20,6 +19,7 @@ package com.pblabs.engine.resource
       private var _appContext:LoaderContext;
       
       private var _fileName:String;
+	  private var _resourceBundle : ExternalResourceBundle;
       
       /**
        * loader gett and set
@@ -79,10 +79,8 @@ package com.pblabs.engine.resource
       
       private function completeHandler(e:Event):void 
       {
-         PBE.callLater(function():void
-         {
-            dispatchEvent(new ResourceEvent(ResourceEvent.LOADED_EVENT, null));
-         }, []);
+		_resourceBundle = new ExternalResourceBundle(_loader.content);
+        dispatchEvent(new ResourceEvent(ResourceEvent.LOADED_EVENT, null));
       }
       
       public function load(request:URLRequest):void
@@ -95,9 +93,10 @@ package com.pblabs.engine.resource
       {
          _loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, completeHandler);
          _loader.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, failHandler);
-         _loader.unload();
+         _loader.unloadAndStop(true);
          _loader = null;
          _appContext = null;
+		 _resourceBundle = null;
       }
    }
 

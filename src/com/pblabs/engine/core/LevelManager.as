@@ -11,6 +11,10 @@ package com.pblabs.engine.core
    import com.pblabs.engine.PBE;
    import com.pblabs.engine.debug.Logger;
    import com.pblabs.engine.entity.IEntity;
+   import com.pblabs.engine.resource.ExternalResourceFile;
+   import com.pblabs.engine.resource.ExternalResourceManager;
+   import com.pblabs.engine.resource.Resource;
+   import com.pblabs.engine.resource.ResourceBundle;
    import com.pblabs.engine.resource.ResourceManager;
    import com.pblabs.engine.resource.XMLResource;
    import com.pblabs.engine.serialization.ISerializable;
@@ -19,6 +23,9 @@ package com.pblabs.engine.core
    import flash.events.Event;
    import flash.events.EventDispatcher;
    import flash.utils.Dictionary;
+   import flash.utils.getDefinitionByName;
+   
+   import avmplus.getQualifiedClassName;
 
    /**
     * @eventType com.pblabs.engine.core.LevelEvent.READY_EVENT
@@ -229,11 +236,17 @@ package com.pblabs.engine.core
             levelXML.@index = levelDescription.index;
             levelXML.@name = levelDescription.name;
             
-            for each (var filename:String in levelDescription.files)
+            for each (var filename:String in levelDescription.files){
                levelXML.appendChild(<file filename={filename}/>);
+			}
             
-            for each (var groupName:String in levelDescription.groups)
+			for each (var resourceDesc:ResourceDescription in levelDescription.resources){
+			   levelXML.appendChild(<resource filename={resourceDesc.fileName} type={getQualifiedClassName(resourceDesc.resourceClassType)} external={resourceDesc.externalBundle}/>);
+			}
+			
+            for each (var groupName:String in levelDescription.groups){
                levelXML.appendChild(<group name={groupName}/>);
+			}
                
             xml.appendChild(levelXML);
          }
@@ -255,12 +268,23 @@ package com.pblabs.engine.core
             
             for each (var itemXML:XML in levelDescriptionXML.*)
             {
-               if (itemXML.name() == "file")
+               if (itemXML.name() == "file"){
                   addFileReference(index, itemXML.@filename);
-               else if (itemXML.name() == "group")
+			   }else if (itemXML.name() == "group"){
                   addGroupReference(index, itemXML.@name);
-               else
+			   }else if (itemXML.name() == "resource"){
+				   var type : String;
+				   if(!("@type" in itemXML)){
+					   var extArray:Array = String(itemXML.@filename).split(".");
+					   var ext:String = (extArray[extArray.length-1] as String).toLowerCase();
+					   type = ResourceBundle.ExtensionTypes[ext];
+				   }else{
+					   type = String(itemXML.@type);
+				   }
+				   addResourceFileReference(index, itemXML.@filename, getDefinitionByName( type ) as Class, (( !("@external" in itemXML) || String(itemXML.@external) == "false" )? false : true ) );
+			   }else{
                   Logger.error(this, "Load", "Encountered unknown tag " + itemXML.name() + " in level description.");
+			   }
             }
          }
          
@@ -324,26 +348,44 @@ package com.pblabs.engine.core
 		 
          // find file differences between the levels
          var filesToLoad:Array = new Array();
+		 var resourceFilesToLoad:Array = new Array();
          var filesToUnload:Array = new Array();
          var groupsToUnload:Array = new Array();
          
-         if (force)
+		 var currentLevelResourceFileList : Array
+		 var nextLevelResourceFileList : Array = [];
+		 for(var ri : int = 0; ri < _levelDescriptions[index].resources.length; ri++)
+		 {
+			 nextLevelResourceFileList.push( (_levelDescriptions[index] as LevelDescription).resources[ri].fileName );
+		 }
+		 if(currentLevel > -1 && _levelDescriptions[_currentLevel]){
+			 currentLevelResourceFileList = [];
+			 for(ri = 0; ri < _levelDescriptions[currentLevel].resources.length; ri++)
+			 {
+				 currentLevelResourceFileList.push( (_levelDescriptions[currentLevel] as LevelDescription).resources[ri].fileName );
+			 }
+		  }
+		 
+		 //Don't force resource files to unload if they are used in the next level
+		 getLoadLists(currentLevelResourceFileList, nextLevelResourceFileList, resourceFilesToLoad, filesToUnload);
+
+		 if (force)
          {
              filesToLoad = _levelDescriptions[index].files;
              _groupsToLoad = _levelDescriptions[index].groups;
 
              if (_currentLevel > -1 && _levelDescriptions[_currentLevel]) {
-                 filesToUnload = _levelDescriptions[_currentLevel].files;
+                 filesToUnload = filesToUnload.concat( _levelDescriptions[_currentLevel].files as Array );
                  groupsToUnload = _levelDescriptions[_currentLevel].groups;
              }
-             
          }
          else
          {
              var doUnload:Boolean = _isLevelLoaded && (_currentLevel != -1);
-             getLoadLists(doUnload ? _levelDescriptions[_currentLevel].files : null, _levelDescriptions[index].files, filesToLoad, filesToUnload);
+
+			 getLoadLists(doUnload ? _levelDescriptions[_currentLevel].files : null, _levelDescriptions[index].files, filesToLoad, filesToUnload);
              
-             // find group differences between the levels
+			 // find group differences between the levels
              _groupsToLoad = new Array();
              
              getLoadLists(doUnload ? _levelDescriptions[_currentLevel].groups : null, _levelDescriptions[index].groups, _groupsToLoad, groupsToUnload);
@@ -359,25 +401,80 @@ package com.pblabs.engine.core
          _currentLevel = index;
          _isLevelLoaded = true;
          
-         // load files - setting this to one ensures all files will be queued up before loading continues
+         // Load resource Files first
+		 var filename:String;
          _pendingFiles = 0;
-		 var len : int = filesToLoad.length;
+		 var len : int = resourceFilesToLoad.length;
 		 for(var i : int = 0; i < len; i++)
 		 {
-			 var filename:String = filesToLoad[i] as String;
+			filename = resourceFilesToLoad[i] as String;
             _pendingFiles++;
-            if (_loadFileCallback != null)
+            if (_loadFileCallback != null){
                _loadFileCallback(filename, finishLoad)
-            else
-               PBE.templateManager.loadFile(filename, force);
+			}else{
+			   var resourceDesc : ResourceDescription = (_levelDescriptions[index] as LevelDescription).getResourceDescription(filename);
+			   if(resourceDesc.externalBundle)
+			   {
+				   if(!ExternalResourceManager.instance.isLoadingBundle)
+				   		ExternalResourceManager.instance.load(filename, onExternalResourceBundleLoaded, onExternalResourceBundleFailedToLoad, true, true);
+				   _pendingExternalResourceFiles.push(resourceDesc);
+			   }else{
+				   PBE.resourceManager.load(filename, resourceDesc.resourceClassType, onResourceLoaded, onResourceFailedToLoad);
+			   }
+			}
          }
          
+		 //Load Level data files
+		 len = filesToLoad.length;
+		 for(i = 0; i < len; i++)
+		 {
+			 filename = filesToLoad[i] as String;
+			 _pendingFiles++;
+			 if (_loadFileCallback != null){
+				 _loadFileCallback(filename, finishLoad)
+			 }else{
+				 PBE.templateManager.loadFile(filename, force);
+			 }
+		 }
          //finishLoad();
       }
+	  
+	  private function onExternalResourceBundleLoaded(resource : ExternalResourceFile):void
+	  {
+		  for(var ri : int = 0; ri < _pendingExternalResourceFiles.length; ri++)
+		  {
+			  if(_pendingExternalResourceFiles[ri].fileName == resource.fileName)
+			  {
+				  _pendingExternalResourceFiles.splice(ri,1);
+				  break;
+			  }
+		  }
+		  if(_pendingExternalResourceFiles.length > 0)
+		  {
+			  if(!ExternalResourceManager.instance.isLoadingBundle)
+				  ExternalResourceManager.instance.load(_pendingExternalResourceFiles[0].fileName, onExternalResourceBundleLoaded, onExternalResourceBundleFailedToLoad, false, true);
+		  }
+		  finishLoad();
+	  }
+
+	  private function onExternalResourceBundleFailedToLoad(resource : ExternalResourceFile):void
+	  {
+		  onFileLoadFailed(null);
+	  }
+
+	  private function onResourceLoaded(resource : Resource):void
+	  {
+		  finishLoad();
+	  }
       
-      private function onFileLoaded(event:Event):void
+	  private function onResourceFailedToLoad(resource : Resource):void
+	  {
+		  onFileLoadFailed(null);
+	  }
+
+	  private function onFileLoaded(event:Event):void
       {
-         finishLoad();
+		  finishLoad();
       }
       
       private function onFileLoadFailed(event:Event):void
@@ -448,7 +545,15 @@ package com.pblabs.engine.core
          var filesToUnload:Array = new Array();
          getLoadLists(_levelDescriptions[_currentLevel].files, null, null, filesToUnload);
          
-         var groupsToUnload:Array = new Array();
+		 var loadedResourceFileList : Array = [];
+		 for(var ri : int = 0; ri < _levelDescriptions[_currentLevel].resources.length; ri++)
+		 {
+			 loadedResourceFileList.push( (_levelDescriptions[_currentLevel] as LevelDescription).resources[ri].fileName );
+		 }
+		 if(loadedResourceFileList.length > 0)
+		 	getLoadLists(loadedResourceFileList, null, null, filesToUnload);
+
+		 var groupsToUnload:Array = new Array();
          getLoadLists(_levelDescriptions[_currentLevel].groups, null, null, groupsToUnload);
          
 		 dispatchEvent(new LevelEvent(LevelEvent.LEVEL_PRE_UNLOAD_EVENT, _currentLevel));
@@ -529,7 +634,20 @@ package com.pblabs.engine.core
                continue;
             }
             
-            PBE.templateManager.unloadFile(filename);
+			if(_levelDescriptions[_currentLevel].files.indexOf(filename) > -1){
+				PBE.templateManager.unloadFile(filename);
+			}else{
+				for(var ri : int = 0; ri < _levelDescriptions[_currentLevel].resources.length; ri++)
+				{
+					if((_levelDescriptions[_currentLevel] as LevelDescription).resources[ri].fileName == filename)
+					{
+						if((_levelDescriptions[_currentLevel] as LevelDescription).resources[ri].externalBundle)
+							ExternalResourceManager.instance.unload(filename);
+						else
+							PBE.resourceManager.unload(filename, (_levelDescriptions[_currentLevel] as LevelDescription).resources[ri].resourceClassType);			
+					}
+				}
+			}
             _loadedFiles[filename] = null;
             delete _loadedFiles[filename];
          }
@@ -565,8 +683,56 @@ package com.pblabs.engine.core
       private function onEntityDestroyed(event:Event):void
       {
       }
+	  
+	  /**
+	   * Register a resource file with a level number. The same resource can be registered with several levels.
+	   * 
+	   * @param index The level to register with
+	   * @param filename The file to register
+	   * @param externalResource Flag to indicate external resource bundle loading
+	   */
+	  public function addResourceFileReference(index:int, filename:String, resourceClassType : Class, externalResource : Boolean = false):void
+	  {
+		  if (_isLevelLoaded && (_currentLevel == index))
+		  {
+			  Logger.error(this, "addResourceFileReference", "Cannot add level information to a level that is already loaded.");
+			  return;
+		  }
+		  
+		  var levelDescription:LevelDescription = getLevelDescription(index);
+		  levelDescription.resources.push( new ResourceDescription(filename, resourceClassType, externalResource) );
+	  }
       
-      /**
+	  /**
+	   * Remove a resource file from a level number.
+	   * 
+	   * @param index The level to remove from
+	   * @param filename The file to remove
+	   */
+	  public function removeResourceFileReference(index:int, filename:String):void
+	  {
+		  if (!hasLevelData(index))
+		  {
+			  Logger.error(this, "RemoveResourceFileReference", "No level data exists for level " + index + ".");
+			  return;
+		  }
+		  
+		  var levelDescription:LevelDescription = getLevelDescription(index);
+
+		  for(var i : int = 0; i < levelDescription.resources.length; i++)
+		  {
+			  var resourceDesc : ResourceDescription = levelDescription.resources[i];
+			  if( resourceDesc.fileName == filename )
+			  {
+				  levelDescription.resources.splice(i, 1);
+				  return;
+			  }
+		  }
+		  
+		  Logger.error(this, "RemoveResourceFileReference", "The resource file " + filename + " was not found in the level " + index + ".");
+	  }
+
+	  /**
        * Register a file with a level number. The same file can be registered with several levels.
        * 
        * @param index The level to register with
@@ -598,15 +764,15 @@ package com.pblabs.engine.core
             return;
          }
          
-         var levelIndex:int = levelDescription.files.indexOf(filename);
-         if (levelIndex == -1)
+		 var levelDescription:LevelDescription = getLevelDescription(index);
+         var fileIndex:int = levelDescription.files.indexOf(filename);
+         if (fileIndex == -1)
          {
             Logger.error(this, "RemoveFileReference", "The file " + filename + " was not found in the level " + index + ".");
             return;
          }
          
-         var levelDescription:LevelDescription = getLevelDescription(index);
-         levelDescription.files.splice(levelIndex, 1);
+         levelDescription.files.splice(fileIndex, 1);
       }
       
       /**
@@ -641,6 +807,7 @@ package com.pblabs.engine.core
             return;
          }
          
+		 var levelDescription:LevelDescription = getLevelDescription(index);
          var groupIndex:int = levelDescription.groups.indexOf(name);
          if (groupIndex == -1)
          {
@@ -648,7 +815,6 @@ package com.pblabs.engine.core
             return;
          }
          
-         var levelDescription:LevelDescription = getLevelDescription(index);
          levelDescription.groups.splice(groupIndex, 1);
       }
       
@@ -694,6 +860,7 @@ package com.pblabs.engine.core
       private var _levelDescriptions:Array = new Array();
       
       private var _pendingFiles:int = 0;
+	  private var _pendingExternalResourceFiles : Vector.<ResourceDescription> = new Vector.<ResourceDescription>();
       private var _groupsToLoad:Array;
       
       // array of filenames
@@ -717,6 +884,33 @@ class LevelDescription
    public var name:String = "";
    public var index:int = 0;
    
+   public var resources:Vector.<ResourceDescription> = new Vector.<ResourceDescription>();
    public var files:Array = new Array();
    public var groups:Array = new Array();
+   
+   public function getResourceDescription(filename : String):ResourceDescription
+   {
+	   for(var ri : int = 0; ri < this.resources.length; ri++)
+	   {
+		   if(this.resources[ri].fileName == filename)
+		   {
+			   return this.resources[ri];
+		   }
+	   }
+	   return null;
+   }
+}
+
+class ResourceDescription
+{
+	public var fileName : String;
+	public var resourceClassType : Class;
+	public var externalBundle : Boolean = false;
+	
+	public function ResourceDescription(fileName : String, resourceClass : Class, externalBundle : Boolean = false ):void
+	{
+		this.fileName = fileName;
+		this.resourceClassType = resourceClass;
+		this.externalBundle = externalBundle;
+	}
 }
