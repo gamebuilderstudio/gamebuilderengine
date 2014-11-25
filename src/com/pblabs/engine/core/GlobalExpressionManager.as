@@ -130,6 +130,8 @@ package com.pblabs.engine.core
 			{
 				var accel : Accelerometer = new Accelerometer();
 				accel.addEventListener(AccelerometerEvent.UPDATE, onAccelerometerUpdated);
+				objectContext.Game.Accelerometer.isSupported = true;
+				objectContext.Game.Accelerometer.isMuted = accel.muted;
 				objectContext.Game.Accelerometer.x = 0;
 				objectContext.Game.Accelerometer.y = 0;
 				objectContext.Game.Accelerometer.z = 0;
