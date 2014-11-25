@@ -65,14 +65,7 @@ package com.pblabs.rendering2D
 			_fileName = _resource.filename;
 
 			if(!containingObjectName) {
-				var swfClass : Class;
-				if(_resource.appDomain)
-				{
-					swfClass = _resource.appDomain.getDefinition( getQualifiedClassName(_resource.clip) ) as Class;
-				}else{
-					swfClass = getDefinitionByName( getQualifiedClassName(_resource.clip) ) as Class;
-				}
-				paintMovieClipToBitmap( new swfClass() );
+				paintMovieClipToBitmap( _resource.clip );
 				//Logger.error(this, 'resourceContent', 'A SWF resource requires that the containingObjectName be populated');
 			}else if(_resource.appDomain){
 				paintMovieClipToBitmap( _resource.getExportedAsset(_containingObjectName) as DisplayObject );

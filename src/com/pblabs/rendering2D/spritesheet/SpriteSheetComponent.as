@@ -332,10 +332,6 @@ package com.pblabs.rendering2D.spritesheet
 			}
 			_divider = null;
 			_bounds = null;
-			//TODO Add reference count check here to decide if we want to delete cache
-			/*if(getCachedFrames() && getCachedFrames().referenceCount <= 0){
-				Logger.print(this, "Deleting SpriteSheet With Key ["+getFramesCacheKey()+"]");
-			}*/
 
 			if(_imageData) _imageData = null;
 

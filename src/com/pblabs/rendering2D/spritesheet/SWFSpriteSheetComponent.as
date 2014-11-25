@@ -149,8 +149,10 @@ package com.pblabs.rendering2D.spritesheet
         }
         public function set scale(value:Point):void
         {
+			if(!value) return;
+				
 			var newScale : Boolean = false;
-			if(!value.equals( _scale ))
+			if(!_scale.equals(value))
 				newScale = true;
 			if(value.x < .1) value.x = .1;
 			if(value.y < .1) value.y = .1;
@@ -225,6 +227,7 @@ package com.pblabs.rendering2D.spritesheet
 					frameCache.referenceCount -= 1;
 					frameCache.released.remove(onCacheReleased);
 				}
+				releaseCache();
 			}else{
 				var len : int = frames.length;
 				for(var i : int = 0; i < len; i++)
@@ -248,8 +251,8 @@ package com.pblabs.rendering2D.spritesheet
 			if(!frameCache || (checkReferenceCount && frameCache && frameCache.referenceCount > 0)){
 				return;
 			}
-			delete _frameCache[getFramesCacheKey()];
 			frameCache.destroy();
+			delete _frameCache[getFramesCacheKey()];
 		}
 
 		override public function getFrame(index:int, direction:Number=0.0):BitmapData
