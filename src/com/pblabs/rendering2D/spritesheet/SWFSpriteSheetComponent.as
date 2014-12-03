@@ -48,11 +48,15 @@ package com.pblabs.rendering2D.spritesheet
 			if(_cached && !val)
 			{
 				var frameCache : CachedFramesData = getCachedFrames();
-				frameCache.released.remove(onCacheReleased);
-			}else if(!_cached && val){
-				deleteFrames();
+				if(frameCache){
+					frameCache.referenceCount--;
+					frameCache.released.remove(onCacheReleased);
+				}
+				releaseCache();
 			}
 			_cached = val;
+			deleteFrames();
+			buildFrames();
 		}
 
         /**
@@ -67,25 +71,13 @@ package com.pblabs.rendering2D.spritesheet
         {
 			if(_resource)
 				_resource.removeEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
-			
-			var changed : Boolean = false;
-			if(_resource != value)
-				changed = true;
+			if(_resource == value)
+				return;
             _resource = value;
 			_resource.addEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
 			
-            frames = null;
-            _clip = null;
-			if(_cached && changed){
-				var cacheData:CachedFramesDataMC = getCachedFrames() as CachedFramesDataMC;
-				if(cacheData){
-					cacheData.clip = getMovieClip();
-					releaseCache(false);
-				}
-			}else if(changed){
+           if(frames)
 				deleteFrames();
-			}
-			buildFrames();
         }
 
         /**
@@ -99,20 +91,11 @@ package com.pblabs.rendering2D.spritesheet
 
         public function set clipName(value:String):void
         {
-			var changed : Boolean = false;
-			if(_clipName != value)
-				changed = true;
+			if(_clipName == value)
+				return;
             _clipName = value;
-			if(_cached && changed){
-				var cacheData:CachedFramesDataMC = getCachedFrames() as CachedFramesDataMC;
-				if(cacheData){
-					cacheData.clip = getMovieClip();
-					releaseCache(false);
-				}
-			}else if(changed){
+			if(frames)
 				deleteFrames();
-			}
-			buildFrames();
         }
 
         /**
@@ -149,22 +132,23 @@ package com.pblabs.rendering2D.spritesheet
         }
         public function set scale(value:Point):void
         {
-			if(!value) return;
-				
-			var newScale : Boolean = false;
-			if(!_scale.equals(value))
-				newScale = true;
+			if(!value || _scale.equals(value))
+				return;
+			
 			if(value.x < .1) value.x = .1;
 			if(value.y < .1) value.y = .1;
-			
-            _scale.copyFrom( value );
-			if(_cached && newScale){
-				var cacheData:CachedFramesDataMC = getCachedFrames() as CachedFramesDataMC;
-				if(cacheData){
-					releaseCache(false);
+			var cacheKey : String = getFramesCacheKey();
+			_scale.copyFrom( value );
+			if(_cached){
+				if(cacheKey in _frameCache){
+					var cacheData:CachedFramesDataMC = _frameCache[cacheKey] as CachedFramesDataMC;
+					delete _frameCache[cacheKey];
+					cacheData.destroy();
 				}
-			}else if(newScale){
+			}
+			if(!_cached){
 				deleteFrames();
+				buildFrames();
 			}
         }
         
@@ -174,7 +158,7 @@ package com.pblabs.rendering2D.spritesheet
                 return false;
 
             if (!frames) 
-                rasterize();
+                buildFrames();
 
             return frames != null;
         }
@@ -251,8 +235,8 @@ package com.pblabs.rendering2D.spritesheet
 			if(!frameCache || (checkReferenceCount && frameCache && frameCache.referenceCount > 0)){
 				return;
 			}
-			frameCache.destroy();
 			delete _frameCache[getFramesCacheKey()];
+			frameCache.destroy();
 		}
 
 		override public function getFrame(index:int, direction:Number=0.0):BitmapData
@@ -300,7 +284,7 @@ package com.pblabs.rendering2D.spritesheet
 
         protected function getFramesCacheKey():String
         {
-            return _resource.filename + ":" + (clipName ? clipName : "") + (_smoothing ? ":1" : ":0");
+            return _resource.filename + ":" + (clipName ? clipName : "_") + (_smoothing ? ":1" : ":0") + ":" + _scale.x + ":" +  _scale.y;
         }
 
 		protected function onCacheReleased(cache : CachedFramesData):void
