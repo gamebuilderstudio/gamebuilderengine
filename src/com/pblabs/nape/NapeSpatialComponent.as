@@ -550,18 +550,23 @@ package com.pblabs.nape
 
 		private function get napeBodyType():BodyType
 		{
-			switch(_bodyType)
+			var _bodyTypeVal : * = _bodyType;
+			if(_bodyType is String) _bodyTypeVal = (_bodyType as String).toLowerCase();
+			switch(_bodyTypeVal)
 			{
+				case "dynamic":
 				case BodyTypeEnum.DYNAMIC:
 				{
 					return BodyType.DYNAMIC;
 				}
 					
+				case "kinematic":
 				case BodyTypeEnum.KINEMATIC:
 				{
 					return BodyType.KINEMATIC;
 				}
 					
+				case "static":
 				case BodyTypeEnum.STATIC:
 				{
 					return BodyType.STATIC;
