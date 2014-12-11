@@ -104,7 +104,7 @@ package com.pblabs.rendering2D.spritesheet
          */
         public function get bounds():Rectangle
         {
-            return _bounds.clone();
+            return _bounds ? _bounds.clone() : new Rectangle();
         }
 
         /**
