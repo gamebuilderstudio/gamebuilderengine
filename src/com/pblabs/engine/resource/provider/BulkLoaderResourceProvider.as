@@ -54,8 +54,10 @@ package com.pblabs.engine.resource.provider
         /**
          * This method will request a resource from this ResourceProvider
          */
-        public override function getResource(uri:String, type:Class, forceReload:Boolean = false):Resource
+        public override function getResource(uri:String, type:Class, forceReload:Boolean = false, url : String = null):Resource
         {
+			if(!url)
+				url = uri;
             var resourceIdentifier:String = uri.toLowerCase() + type;
             
             // if resource is known return it.
@@ -74,7 +76,7 @@ package com.pblabs.engine.resource.provider
 				loaderType = "sound";
 			else if(type == ImageResource)
 				loaderType = "image";
-            loader.add(uri, { id : resourceIdentifier, type: loaderType} );
+            loader.add(url, { id : resourceIdentifier, type: loaderType} );
             if (!loader.isRunning) loader.start();	
             
             // let BulkLoader give a notification when this resource has been

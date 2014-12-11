@@ -3,6 +3,7 @@ package com.pblabs.starling2D
 	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.resource.ImageResource;
 	import com.pblabs.engine.resource.Resource;
+	import com.pblabs.engine.resource.ResourceManager;
 	
 	import flash.display.BitmapData;
 	import flash.geom.Rectangle;
@@ -85,7 +86,7 @@ package com.pblabs.starling2D
 				_subTexturesMap[subtexture] = texture;
 				return subtexture;
 			}else{
-				texture = Texture.fromBitmapData( sourceBitmapData, false, false, _scaleFactor, "bgra", repeat);
+				texture = Texture.fromBitmapData( sourceBitmapData, false, false, scaleFactor, "bgra", repeat);
 				texture.disposed.addOnce(releaseTexture);
 				texture.root.onRestore = onTextureRestored;
 				_originTextureToBitmapDataMap[texture.root] = sourceBitmapData;
@@ -117,7 +118,7 @@ package com.pblabs.starling2D
 				return subtexture;
 			}else{
 				//TODO: Add support for ATFImageResources in the future
-				texture = Texture.fromBitmapData(resource.bitmapData, false, false, _scaleFactor, "bgra", repeat);
+				texture = Texture.fromBitmapData(resource.bitmapData, false, false, scaleFactor, "bgra", repeat);
 				texture.disposed.addOnce(releaseTexture);
 				texture.root.onRestore = onTextureRestored;
 				_originTextureToBitmapDataMap[texture.root] = resource.bitmapData;
@@ -261,8 +262,6 @@ package com.pblabs.starling2D
 
 		/** Textures that are created from Bitmaps or ATF files will have the scale factor 
 		 *  assigned here. */
-		private static var _scaleFactor : Number = 1;
-		public static function get scaleFactor():Number { return _scaleFactor; }
-		public static function set scaleFactor(value:Number):void { _scaleFactor = value; }
+		public static function get scaleFactor():Number { return ResourceManager.scaleFactor; }
 	}
 }

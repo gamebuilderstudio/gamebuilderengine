@@ -10,7 +10,6 @@ package com.pblabs.engine.resource.provider
 {
     import com.pblabs.engine.PBE;
     import com.pblabs.engine.resource.Resource;
-    import com.pblabs.engine.resource.ResourceManager;
     
     import flash.utils.Dictionary;
     
@@ -48,7 +47,7 @@ package com.pblabs.engine.resource.provider
         /**
          * This method will request a resource from this ResourceProvider
          */
-        public function getResource(uri:String, type:Class, forceReload:Boolean = false):Resource
+        public function getResource(uri:String, type:Class, forceReload:Boolean = false, url : String = null):Resource
         {
             var resourceIdentifier:String = uri.toLowerCase() + type;
             return resources[resourceIdentifier];

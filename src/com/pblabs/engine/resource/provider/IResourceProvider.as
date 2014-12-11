@@ -27,7 +27,7 @@ package com.pblabs.engine.resource.provider
          * This method is called when the ResourceManager requests a known
          * resource from a ResourceProvider
          */
-        function getResource(uri:String, type:Class, forceReload:Boolean = false):Resource;
+        function getResource(uri:String, type:Class, forceReload:Boolean = false, url : String = null):Resource;
 		
 		/**
 		 * This method is called when the ResourceManager has no references to a specific resource

@@ -15,7 +15,6 @@ package com.pblabs.engine.core
    import com.pblabs.engine.resource.ExternalResourceManager;
    import com.pblabs.engine.resource.Resource;
    import com.pblabs.engine.resource.ResourceBundle;
-   import com.pblabs.engine.resource.ResourceManager;
    import com.pblabs.engine.resource.XMLResource;
    import com.pblabs.engine.serialization.ISerializable;
    import com.pblabs.engine.serialization.Serializer;
@@ -56,7 +55,7 @@ package com.pblabs.engine.core
     */
    public class LevelManager extends EventDispatcher implements ISerializable
    {
-      /**
+	   /**
        * The singleton LevelManager instance.
        */
       public static function get instance():LevelManager
@@ -80,7 +79,7 @@ package com.pblabs.engine.core
          return -1;
       }
       
-      /**
+	  /**
        * Returns the number of levels the LevelManager has data for.
        */
       public function get levelCount():int
@@ -241,7 +240,7 @@ package com.pblabs.engine.core
 			}
             
 			for each (var resourceDesc:ResourceDescription in levelDescription.resources){
-			   levelXML.appendChild(<resource filename={resourceDesc.fileName} type={getQualifiedClassName(resourceDesc.resourceClassType)} external={resourceDesc.externalBundle}/>);
+			   levelXML.appendChild(<resource filename={resourceDesc.fileName} filelocation={resourceDesc.fileLocation} type={getQualifiedClassName(resourceDesc.resourceClassType)} external={resourceDesc.externalBundle}/>);
 			}
 			
             for each (var groupName:String in levelDescription.groups){
@@ -281,7 +280,8 @@ package com.pblabs.engine.core
 				   }else{
 					   type = String(itemXML.@type);
 				   }
-				   addResourceFileReference(index, itemXML.@filename, getDefinitionByName( type ) as Class, (( !("@external" in itemXML) || String(itemXML.@external) == "false" )? false : true ) );
+				   var filelocation : String = ("@filelocation" in itemXML) ? String(itemXML.@filelocation) : String(itemXML.@filename);
+				   addResourceFileReference(index, String(itemXML.@filename), filelocation, getDefinitionByName( type ) as Class, (( !("@external" in itemXML) || String(itemXML.@external) == "false" )? false : true ) );
 			   }else{
                   Logger.error(this, "Load", "Encountered unknown tag " + itemXML.name() + " in level description.");
 			   }
@@ -419,7 +419,7 @@ package com.pblabs.engine.core
 				   		ExternalResourceManager.instance.load(filename, onExternalResourceBundleLoaded, onExternalResourceBundleFailedToLoad, true, true);
 				   _pendingExternalResourceFiles.push(resourceDesc);
 			   }else{
-				   PBE.resourceManager.load(filename, resourceDesc.resourceClassType, onResourceLoaded, onResourceFailedToLoad);
+				   PBE.resourceManager.load(filename, resourceDesc.resourceClassType, onResourceLoaded, onResourceFailedToLoad, false, resourceDesc.fileLocation);
 			   }
 			}
          }
@@ -691,7 +691,7 @@ package com.pblabs.engine.core
 	   * @param filename The file to register
 	   * @param externalResource Flag to indicate external resource bundle loading
 	   */
-	  public function addResourceFileReference(index:int, filename:String, resourceClassType : Class, externalResource : Boolean = false):void
+	  public function addResourceFileReference(index:int, filename:String, filelocation : String, resourceClassType : Class, externalResource : Boolean = false):void
 	  {
 		  if (_isLevelLoaded && (_currentLevel == index))
 		  {
@@ -700,7 +700,7 @@ package com.pblabs.engine.core
 		  }
 		  
 		  var levelDescription:LevelDescription = getLevelDescription(index);
-		  levelDescription.resources.push( new ResourceDescription(filename, resourceClassType, externalResource) );
+		  levelDescription.resources.push( new ResourceDescription(filename, filelocation, resourceClassType, externalResource) );
 	  }
       
 	  /**
@@ -876,6 +876,8 @@ package com.pblabs.engine.core
       private var _unloadFileCallback:Function = null;
       private var _loadGroupCallback:Function = null;
       private var _unloadGroupCallback:Function = null;
+      
+	  private static var _imageResourceResolutionScaleFactor:Number = 1.0;
    }
 }
 
@@ -904,13 +906,15 @@ class LevelDescription
 class ResourceDescription
 {
 	public var fileName : String;
+	public var fileLocation : String;
 	public var resourceClassType : Class;
 	public var externalBundle : Boolean = false;
 	
-	public function ResourceDescription(fileName : String, resourceClass : Class, externalBundle : Boolean = false ):void
+	public function ResourceDescription(fileName : String, fileLocation : String, resourceClass : Class, externalBundle : Boolean = false):void
 	{
 		this.fileName = fileName;
 		this.resourceClassType = resourceClass;
 		this.externalBundle = externalBundle;
+		this.fileLocation = fileLocation;
 	}
 }

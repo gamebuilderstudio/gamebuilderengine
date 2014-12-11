@@ -579,7 +579,7 @@ bulkLoader.start(3)
             _additionIndex ++;
             item  = new _typeClasses[type] (url, type , _instancesCreated + "_" + String(_additionIndex));
             if (!props["id"] && _allowsAutoIDFromFileName){
-                props["id"] = getFileName(url.url);
+                props["id"] = ("url" in url) ? getFileName(url.url) : getFileName(url);
                 log("Adding automatic id from file name for item:", item , "( id= " + props["id"] + " )");
             }
             var errors : Array = item._parseOptions(props);

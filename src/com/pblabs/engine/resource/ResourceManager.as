@@ -62,10 +62,12 @@ package com.pblabs.engine.resource
          * parameter. The resource passed to the function will be invalid, but the filename
          * property will be correct.
          * @param forceReload Always reload the resource, even if it has already been loaded.
+         * @param fileLocation Can be used to speicify the actual location of the file if the filename needs to be different and 
+		 * used as the resourceIdentifier. If filename and location are the same this property is not needed.
          * 
          * @see Resource
          */
-        public function load(filename:String, resourceType:Class, onLoaded:Function = null, onFailed:Function = null, forceReload:Boolean = false):Resource
+        public function load(filename:String, resourceType:Class, onLoaded:Function = null, onFailed:Function = null, forceReload:Boolean = false, fileLocation:String = null, compression : String = "none"):Resource
         {
             // Sanity!
             if(filename == null || filename == "")
@@ -73,9 +75,17 @@ package com.pblabs.engine.resource
                 Logger.error(this, "load", "Cannot load a " + resourceType + " with empty filename.");
                 return null;
             }
+			
+			if(!fileLocation)
+				fileLocation = filename;
+			
+			//Check for multi-resolution location indicator.
+			var resIndicator : String = "{@}";
+			fileLocation = (scaleFactor == 1 && fileLocation.indexOf(resIndicator) != -1) ? fileLocation.replace(fileLocation.substr(fileLocation.indexOf(resIndicator), resIndicator.length+1), "") : fileLocation.replace(resIndicator, "@x"+scaleFactor);
+			filename = filename.indexOf(resIndicator) != -1 ? filename.replace(filename.substr(filename.indexOf(resIndicator), resIndicator.length+1), "") : filename;
             
 			// Hack for MP3 and WAV files. TODO: Generalize this for arbitrary formats.
-			var fileExtension:String = PBUtil.getFileExtension(filename).toLocaleLowerCase();
+			var fileExtension:String = PBUtil.getFileExtension(fileLocation).toLocaleLowerCase();
 			if(resourceType == SoundResource && (fileExtension == "mp3"))
 				resourceType = MP3Resource;
 			else if(resourceType == SoundResource && (fileExtension == "wav"))
@@ -112,12 +122,12 @@ package com.pblabs.engine.resource
                 for (var rp:int = 0; rp < resourceProviders.length; rp++)
                 {
                     if ((resourceProviders[rp] as IResourceProvider).isResourceKnown(filename, resourceType))
-                        resource  = (resourceProviders[rp] as IResourceProvider).getResource(filename, resourceType, forceReload);
+                        resource  = (resourceProviders[rp] as IResourceProvider).getResource(filename, resourceType, forceReload, fileLocation);
                 }
                 
                 // If we couldn't find a match, fall back to the default provider.
                 if (!resource)
-                    resource = FallbackResourceProvider.instance.getResource(filename, resourceType, forceReload);
+                    resource = FallbackResourceProvider.instance.getResource(filename, resourceType, forceReload, fileLocation);
                 
                 // Make sure the filename is set.
                 if(!resource.filename)
@@ -291,5 +301,19 @@ package com.pblabs.engine.resource
 			}
 			return _resourceList;
 		}
+		
+		private static var _scaleFactor:Number = 1;
+		/**
+		 * This is used to append the resolution scale to the image file path being loaded
+		 */
+		public static function get scaleFactor():Number
+		{
+			return _scaleFactor;
+		}
+		public static function set scaleFactor(val : Number):void
+		{
+			_scaleFactor = val;
+		}
+		
 	}
 }
