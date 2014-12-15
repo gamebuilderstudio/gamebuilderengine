@@ -175,11 +175,11 @@ package com.pblabs.starling2D
 			return atlas;
 		}
 		
-		public static function getTextureForAtlasRegion(atlas : TextureAtlas, regionName : String, region : Rectangle, frame : Rectangle = null):Texture
+		public static function getTextureForAtlasRegion(atlas : TextureAtlas, regionName : String, region : Rectangle, frame : Rectangle = null, rotated : Boolean = false, trimmed : Boolean = false):Texture
 		{
 			var subtexture : Texture
 			if(atlas.getRegion(regionName) == null){
-				atlas.addRegion(regionName, region, frame);
+				atlas.addRegion(regionName, region, frame, rotated);
 			}
 			subtexture = atlas.getTexture(regionName);
 			subtexture.disposed.addOnce(releaseTexture);

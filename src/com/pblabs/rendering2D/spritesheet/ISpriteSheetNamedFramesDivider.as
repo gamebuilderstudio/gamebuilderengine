@@ -16,8 +16,10 @@ package com.pblabs.rendering2D.spritesheet
 	public interface ISpriteSheetNamedFramesDivider extends ISpriteSheetDivider
 	{
 		function getFrameNameByIndex(index:int, includeFileExtension : Boolean = false):String;
+		function getFrameAreaUnTrimmed(val:int):Rectangle;
 		function getFrameByName(name:String):Rectangle;
 		function getFrameIndexByName(name:String):int;
+		function isFrameAreaRotated(val:int):Boolean;
 		function get isLoaded():Boolean;
 	}
 }

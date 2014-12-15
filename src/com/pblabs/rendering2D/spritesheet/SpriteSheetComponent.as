@@ -17,6 +17,7 @@ package com.pblabs.rendering2D.spritesheet
     import com.pblabs.starling2D.spritesheet.SpriteContainerComponentG2D;
     
     import flash.display.BitmapData;
+    import flash.geom.Matrix;
     import flash.geom.Point;
     import flash.geom.Rectangle;
     import flash.utils.Dictionary;
@@ -258,9 +259,26 @@ package com.pblabs.rendering2D.spritesheet
             for (var i:int = 0; i < _divider.frameCount; i++)
             {
                 var area:Rectangle = _divider.getFrameArea(i);										
-				_frames[i] = new BitmapData(area.width, area.height, true);
-				_frames[i].copyPixels(imageData, area, new Point(0, 0));
-				tmpBounds = new Rectangle(0,0,_frames[i].width, _frames[i].height);
+				var isRotated : Boolean = false;
+				if(_divider is ISpriteSheetNamedFramesDivider){
+					isRotated = (_divider as ISpriteSheetNamedFramesDivider).isFrameAreaRotated(i);
+				}
+				var frameBitmapData : BitmapData = new BitmapData(area.width, area.height, true, 0x0);
+				frameBitmapData.copyPixels(imageData, area, new Point(0, 0));
+
+				if(isRotated){
+					var rotatedBitmapData : BitmapData = new BitmapData(area.height, area.width, true, 0x0);
+					var matrix:Matrix = new Matrix();
+					matrix.rotate( -90 * Math.PI / 180 );
+					matrix.translate(0, frameBitmapData.width);
+					rotatedBitmapData.draw(frameBitmapData, matrix);
+					frameBitmapData.dispose();
+					frameBitmapData = rotatedBitmapData;
+				}
+
+				tmpBounds = new Rectangle(0,0,frameBitmapData.width, frameBitmapData.height);
+				_frames[i] = frameBitmapData;
+				
 				if(!_bounds){
 					_bounds = tmpBounds.clone();
 				}else{
@@ -281,6 +299,25 @@ package com.pblabs.rendering2D.spritesheet
             return _frames;
         }
         
+		private function rotateBitmapData( bitmapData:BitmapData, degree:int = 0 ) :BitmapData
+		{
+			var newBitmap:BitmapData = new BitmapData( bitmapData.height, bitmapData.width, true, 0x0 );
+			var matrix:Matrix = new Matrix();
+			matrix.rotate( degree * Math.PI / 180 );
+			
+			if ( degree == 90 ) {
+				matrix.translate( bitmapData.height, 0 );
+			} else if ( degree == -90 || degree == 270 ) {
+				matrix.translate( 0, bitmapData.width );
+			} else if ( degree == 180 ) {
+				newBitmap = new BitmapData( bitmapData.width, bitmapData.height, true, 0x0 );
+				matrix.translate( bitmapData.width, bitmapData.height );
+			}
+			
+			newBitmap.draw( bitmapData, matrix, null, null, null, true )
+			return newBitmap;
+		}
+		
         /**
          * From an array of BitmapDatas, initialize the sprite sheet, ignoring
          * divider + filename.

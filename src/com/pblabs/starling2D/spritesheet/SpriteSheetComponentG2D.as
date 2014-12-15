@@ -88,14 +88,19 @@ package com.pblabs.starling2D.spritesheet
 				var tmpBounds : Rectangle;
 				for (var i:int = 0; i < _divider.frameCount; i++)
 				{
-					var area:Rectangle = _divider.getFrameArea(i);
+					var frame:Rectangle = _divider.getFrameArea(i);
 					var frameName : String = "i_"+i;
-					if(_divider is ISpriteSheetNamedFramesDivider)
+					var isRotated : Boolean = false;
+					var untrimmedFrame:Rectangle;
+					if(_divider is ISpriteSheetNamedFramesDivider){
 						frameName = (_divider as ISpriteSheetNamedFramesDivider).getFrameNameByIndex(i);
-					var regionSubTexture : Texture = ResourceTextureManagerG2D.getTextureForAtlasRegion(atlas, frameName, area);
+						untrimmedFrame = (_divider as ISpriteSheetNamedFramesDivider).getFrameAreaUnTrimmed(i);
+						isRotated = (_divider as ISpriteSheetNamedFramesDivider).isFrameAreaRotated(i);
+					}
+					var regionSubTexture : Texture = ResourceTextureManagerG2D.getTextureForAtlasRegion(atlas, frameName, frame, untrimmedFrame, isRotated);
 					_frames[i] = regionSubTexture;
 					
-					tmpBounds = area;
+					tmpBounds = isRotated ? new Rectangle(0,0,frame.height, frame.width) : frame;
 					if(!_bounds){
 						_bounds = tmpBounds.clone();
 					}else{

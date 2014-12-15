@@ -9,7 +9,6 @@
 package com.pblabs.rendering2D
 {
 	import com.pblabs.engine.PBE;
-	import com.pblabs.engine.PBUtil;
 	
 	import flash.display.BitmapData;
 	import flash.display.Sprite;

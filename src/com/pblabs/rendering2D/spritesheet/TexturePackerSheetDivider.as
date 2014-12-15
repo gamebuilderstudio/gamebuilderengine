@@ -70,6 +70,23 @@ package com.pblabs.rendering2D.spritesheet
 			return _frames[index].frameBounds;
 		}
 		
+		public function getFrameAreaUnTrimmed(index:int):Rectangle
+		{
+			if(index < 0)
+				index = 0;
+			if(!_frames || _frames.length < 1)
+			{
+				if(resource && resource.isLoaded && resource.jsonData)
+				{
+					buildFrames();
+					return getFrameAreaUnTrimmed(index);
+				}
+				return new Rectangle(0, 0, 1, 1);
+			}
+			
+			return _frames[index].frameUnTrimmedBounds;
+		}
+		
 		/**
 		 * Grab the file name of the frame or image that was packed into the sheet.
 		 * You can also include file extension in the name returned
@@ -106,6 +123,13 @@ package com.pblabs.rendering2D.spritesheet
 			return 0;
 		}
 
+		public function isFrameAreaRotated(index : int):Boolean
+		{
+			if(!_frames || index < 0  || index > _frames.length)
+				return false;
+			return _frames[index].rotated;
+		}
+
 		protected function buildFrames():void
 		{
 			if(!_resource){
@@ -136,7 +160,10 @@ package com.pblabs.rendering2D.spritesheet
 						new Point(frameData.sourceSize.w, frameData.sourceSize.h),
 						new Rectangle(frameData.spriteSourceSize.x, frameData.spriteSourceSize.y, frameData.spriteSourceSize.w, frameData.spriteSourceSize.h),
 						frameData.rotated,
-						frameData.trimmed, i) );
+						frameData.trimmed, 
+						i, 
+						(("untrimmedSize" in frameData) ? new Rectangle( 0, 0, frameData.untrimmedSize.w, frameData.untrimmedSize.h) : null) )
+					);
 				}
 				_frameCache[_resource.filename] = _frames;
 			}
@@ -259,13 +286,14 @@ final class CoordinateDataVO
 {
 	public var name : String;
 	public var frameBounds:Rectangle;
+	public var frameUnTrimmedBounds:Rectangle;
 	public var originalFrameSize:Point;
 	public var originalFrameTrimmedBounds:Rectangle;
 	public var rotated:Boolean;
 	public var trimmed:Boolean;
 	public var index:int;
 	
-	public function CoordinateDataVO(name : String, frameBounds:Rectangle, originalFrameSize:Point, originalFrameTrimmedBounds:Rectangle, rotated:Boolean, trimmed:Boolean, index : int):void
+	public function CoordinateDataVO(name : String, frameBounds:Rectangle, originalFrameSize:Point, originalFrameTrimmedBounds:Rectangle, rotated:Boolean, trimmed:Boolean, index : int, frameUnTrimmedBounds : Rectangle = null):void
 	{
 		if(name.indexOf("."))
 			name = name.split(".")[0];
@@ -276,5 +304,6 @@ final class CoordinateDataVO
 		this.rotated = rotated;
 		this.trimmed = trimmed;
 		this.index = index;
+		this.frameUnTrimmedBounds = frameUnTrimmedBounds;
 	}
 }
