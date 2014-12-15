@@ -129,7 +129,8 @@ package com.pblabs.nape
 			}else{
 				if(_shapeDebug){
 					_shapeDebug.clear();
-					_shapeDebug = null;
+					if(!PBE.IN_EDITOR)
+						_shapeDebug = null;
 				}
 			}
 		}
@@ -447,7 +448,8 @@ package com.pblabs.nape
 		{
 			if(_shapeDebug)
 				_shapeDebug.clear();
-			_shapeDebug = new ShapeDebug(PBUtil.clamp(PBE.mainStage.stageWidth*2, 10, 5000000), PBUtil.clamp(PBE.mainStage.stageHeight*2, 10, 5000000), 0x4D4D4D );
+			else
+				_shapeDebug = new ShapeDebug(PBUtil.clamp(PBE.mainStage.stageWidth*2, 10, 5000000), PBUtil.clamp(PBE.mainStage.stageHeight*2, 10, 5000000), 0x4D4D4D );
 			_shapeDebug.drawConstraints = true;
 			_shapeDebug.drawBodies = true;
 			_shapeDebug.thickness = 1;
