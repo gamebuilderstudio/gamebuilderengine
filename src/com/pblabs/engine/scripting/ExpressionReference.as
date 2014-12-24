@@ -7,6 +7,7 @@ package com.pblabs.engine.scripting
 	import com.pblabs.engine.util.DynamicObjectUtil;
 	
 	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	
 	import scripting.Parser;
 	import scripting.Scanner;
@@ -146,12 +147,14 @@ package com.pblabs.engine.scripting
 				_globalGameObject = _evm.getGlobalObject();
 				_globalGameObject.Entity = ExpressionReference.GlobalExpEntities;
 				_globalGameObject.Point = Point;
+				_globalGameObject.Rectangle = Rectangle;
 				_globalGameObject.PBE = PBE;
 				ExpressionUtils.importStaticMethods( _globalGameObject, Math );
 				//Override slow math functions with faster bitwise versions
 				ExpressionUtils.importFunction(_globalGameObject, "abs", ExpressionUtils.fastAbs);
 				ExpressionUtils.importFunction(_globalGameObject, "floor", ExpressionUtils.fastFloor);
 				ExpressionUtils.importFunction(_globalGameObject, "setPoint", ExpressionUtils.setPoint);
+				ExpressionUtils.importFunction(_globalGameObject, "setRectangle", ExpressionUtils.setRectangle);
 				//ExpressionUtils.importFunction(_globalGameObject, "Entity", ExpressionUtils.getEntity);
 				ExpressionUtils.importFunction(_globalGameObject, "magnitudeOfPoint", ExpressionUtils.magnitudeOfPoint);
 				ExpressionUtils.importFunction(_globalGameObject, "magnitude", ExpressionUtils.magnitude);
@@ -268,6 +271,7 @@ import com.pblabs.engine.PBE;
 import com.pblabs.engine.entity.IEntity;
 
 import flash.geom.Point;
+import flash.geom.Rectangle;
 import flash.system.Capabilities;
 import flash.utils.describeType;
 
@@ -369,6 +373,11 @@ class ExpressionUtils{
 		return new Point(x,y);
 	}
 	
+	public static function setRectangle(x : Number, y : Number, w : Number, h : Number):Rectangle
+	{
+		return new Rectangle(x,y, w,h);
+	}
+
 	public static function getEntity(name : String):Object
 	{
 		var entity : Object = PBE.lookupEntity(name);
