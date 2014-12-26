@@ -83,7 +83,7 @@ package com.pblabs.starling2D
 			_transformMatrix.identity();
 			_transformMatrix.scale(tmpScale.x, tmpScale.y);
 			_transformMatrix.translate(-_registrationPoint.x * tmpScale.x, -_registrationPoint.y * tmpScale.y);
-			_transformMatrix.rotate(PBUtil.getRadiansFromDegrees(_rotation) + _rotationOffset);
+			_transformMatrix.rotate(PBUtil.getRadiansFromDegrees(_rotation + _rotationOffset));
 			_transformMatrix.translate((_position.x + _positionOffset.x), (_position.y + _positionOffset.y));
 			
 			gpuObject.transformationMatrix = _transformMatrix;

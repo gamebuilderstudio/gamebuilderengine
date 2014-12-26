@@ -10,7 +10,6 @@ package com.pblabs.rendering2D
 {
     import com.pblabs.engine.PBE;
     import com.pblabs.engine.resource.ImageResource;
-    import com.pblabs.engine.resource.Resource;
     import com.pblabs.engine.resource.ResourceEvent;
     
    /**
