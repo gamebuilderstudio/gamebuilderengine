@@ -464,7 +464,7 @@ package com.pblabs.nape
 			
 			if(_shapeDebug)
 				_shapeDebug.clear();
-			
+			_shapeDebug = null;
 			_materialManager = null;
 		}
 		
