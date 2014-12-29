@@ -27,6 +27,13 @@ package com.pblabs.rendering2D
 		protected var _spriteIndex:int = 0;
 		protected var _overrideSizePerFrame : Boolean = true;
 
+		override public function set registrationPoint(value:Point):void
+		{
+			super.registrationPoint = value;
+			if(_spriteSheet)
+				_spriteSheet.center = _registrationPoint;
+		}
+		
 		public function get spriteSheet():ISpriteSheet { return _spriteSheet; }
 		public function set spriteSheet(val : ISpriteSheet):void { 
 			_spriteSheet = val; 

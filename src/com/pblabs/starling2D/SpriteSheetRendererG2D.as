@@ -42,6 +42,13 @@ package com.pblabs.starling2D
 			super();
 		}
 
+		override public function set registrationPoint(value:Point):void
+		{
+			super.registrationPoint = value;
+			if(_spriteSheet)
+				_spriteSheet.center = _registrationPoint;
+		}
+
 		public function get spriteSheet():ISpriteSheet { return _spriteSheet; }
 		public function set spriteSheet(obj : ISpriteSheet):void { _spriteSheet = obj as ISpriteSheetG2D; }
 		
@@ -62,7 +69,6 @@ package com.pblabs.starling2D
 			
 			if (currentTexture!=null)
 				super.onFrame(elapsed);
-			
 		}
 
 		protected function getCurrentTexture():Texture
