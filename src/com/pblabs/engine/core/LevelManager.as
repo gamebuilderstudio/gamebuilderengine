@@ -271,7 +271,7 @@ package com.pblabs.engine.core
                   addFileReference(index, itemXML.@filename);
 			   }else if (itemXML.name() == "group"){
                   addGroupReference(index, itemXML.@name);
-			   }else if (itemXML.name() == "resource"){
+			   }else if (itemXML.name() == "resource" && ("@filename" in itemXML)){
 				   var type : String;
 				   if(!("@type" in itemXML)){
 					   var extArray:Array = String(itemXML.@filename).split(".");
