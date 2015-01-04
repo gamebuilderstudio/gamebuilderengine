@@ -79,7 +79,7 @@ package com.pblabs.rendering2D
 			var tmpScale : Point = combinedScale;
 			_transformMatrix.identity();
 			//_transformMatrix.scale(_scale.x, _scale.y);
-			_transformMatrix.translate(-_registrationPoint.x * _scale.x, -_registrationPoint.y * _scale.y);
+			_transformMatrix.translate(-_registrationPoint.x, -_registrationPoint.y);
 			_transformMatrix.rotate(PBUtil.getRadiansFromDegrees(_rotation + _rotationOffset));
 			_transformMatrix.translate((_position.x + _positionOffset.x), (_position.y + _positionOffset.y));
 			
