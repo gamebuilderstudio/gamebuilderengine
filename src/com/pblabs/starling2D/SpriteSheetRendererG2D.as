@@ -25,12 +25,12 @@ package com.pblabs.starling2D
 	 */ 
 	public class SpriteSheetRendererG2D extends BitmapRendererG2D implements ISpriteSheetRenderer
 	{
-		public var spriteSheetProperty : PropertyReference;
 		public var directionReference:PropertyReference;
 		
 		protected var currentSpatialName : String;
 		protected var currentSpatialRef : PropertyReference;
 		protected var currentTexture : Texture;
+		protected var _spriteSheetProperty : PropertyReference;
 		protected var _spriteSheet:ISpriteSheetG2D;
 		protected var _spriteIndex:int = 0;
 		protected var _overrideSizePerFrame : Boolean = true;
@@ -47,6 +47,11 @@ package com.pblabs.starling2D
 			super.registrationPoint = value;
 			if(_spriteSheet)
 				_spriteSheet.center = _registrationPoint;
+		}
+
+		public function get spriteSheetProperty():PropertyReference { return _spriteSheetProperty; }
+		public function set spriteSheetProperty(val : PropertyReference):void { 
+			_spriteSheetProperty = val; 
 		}
 
 		public function get spriteSheet():ISpriteSheet { return _spriteSheet; }

@@ -18,11 +18,11 @@ package com.pblabs.rendering2D
     
 	public class SpriteSheetRenderer extends BitmapRenderer implements ISpriteSheetRenderer
 	{		
-		public var spriteSheetProperty : PropertyReference;
 		public var directionReference:PropertyReference;
 
 		protected var currentSpatialName : String;
 		protected var currentSpatialRef : PropertyReference;
+		protected var _spriteSheetProperty : PropertyReference;
 		protected var _spriteSheet:ISpriteSheet;
 		protected var _spriteIndex:int = 0;
 		protected var _overrideSizePerFrame : Boolean = true;
@@ -32,6 +32,11 @@ package com.pblabs.rendering2D
 			super.registrationPoint = value;
 			if(_spriteSheet)
 				_spriteSheet.center = _registrationPoint;
+		}
+
+		public function get spriteSheetProperty():PropertyReference { return _spriteSheetProperty; }
+		public function set spriteSheetProperty(val : PropertyReference):void { 
+			_spriteSheetProperty = val; 
 		}
 		
 		public function get spriteSheet():ISpriteSheet { return _spriteSheet; }
@@ -62,8 +67,8 @@ package com.pblabs.rendering2D
 		override protected function onReset():void
 		{
 			super.onReset();
-			if(spriteSheetProperty && !spriteSheet)
-				spriteSheet = this.owner.getProperty( spriteSheetProperty ) as ISpriteSheet;
+			if(_spriteSheetProperty && !spriteSheet)
+				spriteSheet = this.owner.getProperty( _spriteSheetProperty ) as ISpriteSheet;
 			if(spriteSheet && spriteSheet.isDestroyed)
 				spriteSheet = null;
 			bitmapData = getCurrentFrame();
