@@ -27,6 +27,8 @@ package com.pblabs.starling2D
 	import starling.text.TextField;
 	import starling.text.TextFieldAutoSize;
 	import starling.textures.Texture;
+	import starling.utils.HAlign;
+	import starling.utils.VAlign;
 	
 	public class UITextRendererComponentG2D extends UITextRendererComponent
 	{
@@ -53,8 +55,7 @@ package com.pblabs.starling2D
 				updateProperties();
 			
 			_transformMatrix.identity();
-			//_transformMatrix.scale(combinedScale.x, combinedScale.y);
-			_transformMatrix.translate(-_registrationPoint.x * combinedScale.x, -_registrationPoint.y * combinedScale.y);
+			_transformMatrix.translate(-_registrationPoint.x, -_registrationPoint.y);
 			_transformMatrix.rotate(PBUtil.getRadiansFromDegrees(_rotation + _rotationOffset));
 			_transformMatrix.translate((_position.x + _positionOffset.x), (_position.y + _positionOffset.y));
 			
@@ -129,7 +130,12 @@ package com.pblabs.starling2D
 			if(!isComposedTextData){
 				super.updateTextImage();
 			}else{
-				buildFontObject();
+				if(_textSizeDirty) {
+					updateFontSize();
+				}
+				if(_textDirty){
+					buildFontObject();
+				}
 			}
 		}
 		
@@ -166,9 +172,13 @@ package com.pblabs.starling2D
 						TextField.registerBitmapFont(bitmapFont, currentFontName);
 					}
 					if(!gpuObject){
-						gpuObject = new TextField(_size.x, _size.y, _text, currentFontName, bitmapFont.size, this.fontColor, this.textFormatter.bold);
+						gpuObject = new TextField(_size.x * _scale.x, _size.y * _scale.y, _text, currentFontName, bitmapFont.size, this.fontColor, this.textFormatter.bold);
 						(gpuObject as TextField).autoSize = _autoResize ? TextFieldAutoSize.BOTH_DIRECTIONS : TextFieldAutoSize.NONE;
+						(gpuObject as TextField).hAlign = HAlign.LEFT;
+						(gpuObject as TextField).vAlign = VAlign.TOP;
 					}
+					_textDirty = false;
+					_textSizeDirty = false;
 				}
 			}else if(Starling.context && !isComposedTextData && !gpuObject){
 				buildG2DObject();
@@ -194,6 +204,9 @@ package com.pblabs.starling2D
 					}else{
 						this._size = _newTextSize;
 					}
+				}else if(!autoResize && gpuObject){
+					(gpuObject as TextField).width = this._size.x * this._scale.x;					
+					(gpuObject as TextField).height = this._size.y * this._scale.y;					
 				}
 			}
 		}
@@ -205,7 +218,7 @@ package com.pblabs.starling2D
 			{
 				TextField.unregisterBitmapFont(currentFontName, true);
 			}
-			if(gpuObject){
+			if(gpuObject && _bmFontObject){
 				_bmFontObject.destroy();
 				_bmFontObject = null;
 			}

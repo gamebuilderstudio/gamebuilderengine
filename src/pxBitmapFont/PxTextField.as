@@ -159,7 +159,7 @@ package pxBitmapFont
 		 */
 		private function updateBitmapData():void 
 		{
-			if (_font == null)
+			if (_font == null || !_text)
 			{
 				return;
 			}
@@ -300,7 +300,7 @@ package pxBitmapFont
 								}
 								else
 								{
-									txt += word + "";
+									txt += word + " ";
 									wordPos++;
 								}
 							}
@@ -334,7 +334,7 @@ package pxBitmapFont
 			
 			if (bitmapData != null) 
 			{
-				if (finalWidth != bitmapData.width || finalHeight != bitmapData.height) 
+				if ((_fixedWidth && (this.width != bitmapData.width || this.height != bitmapData.height)) || (!_fixedWidth && (finalWidth != bitmapData.width || finalHeight != bitmapData.height))) 
 				{
 					bitmapData.dispose();
 					bitmapData = null;
@@ -343,6 +343,11 @@ package pxBitmapFont
 			
 			if (bitmapData == null) 
 			{
+				if(_fixedWidth)
+				{
+					if(this.width < finalWidth) finalWidth = this.width;
+					if(this.height < finalHeight) finalHeight = this.height;
+				}
 				bitmapData = new BitmapData(finalWidth, finalHeight, !_background, _backgroundColor);
 			} 
 			else 

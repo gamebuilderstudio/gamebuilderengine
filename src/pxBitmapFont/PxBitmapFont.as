@@ -131,8 +131,17 @@ package pxBitmapFont
 					bd.copyPixels(pBitmapData, rect, point, null, null, true);
 					
 					// store glyph
-					setGlyph(char.@id, {image: bd, xadvance: xadvance, xOffset: int(char.@xoffset), yOffset: int(char.@yoffset)});
+					setGlyph(char.@id, {image: bd, xadvance: xadvance, xOffset: int(char.@xoffset), yOffset: int(char.@yoffset), kernings: new Dictionary()});
 				}
+				
+				for each (var kerningElement:XML in pXMLData.kernings.kerning)
+				{
+					var first:int  = parseInt(kerningElement.@first);
+					var second:int = parseInt(kerningElement.@second);
+					var amount:Number = parseFloat(kerningElement.@amount);
+					if (second in _glyphs) _glyphs[second].kernings[first] = amount;
+				}
+				
 			}
 			
 			return this;
@@ -344,13 +353,14 @@ package pxBitmapFont
 		 * @param	pOffsetX	X position of thext output.
 		 * @param	pOffsetY	Y position of thext output.
 		 */
-		public function render(pBitmapData:BitmapData, pFontData:Array, pText:String, pColor:uint, pOffsetX:int, pOffsetY:int, pLetterSpacing:int, pAngle:Number = 0):void 
+		public function render(pBitmapData:BitmapData, pFontData:Array, pText:String, pColor:uint, pOffsetX:int, pOffsetY:int, pLetterSpacing:int, pAngle:Number = 0, kerning : Boolean = true):void 
 		{
 			_point.x = pOffsetX;
 			_point.y = pOffsetY;
 			var glyph:BitmapData;
 			var curGlyphPoint : Point = new Point();
 			
+			var lastCharID:int = -1;
 			for (var i:int = 0; i < pText.length; i++) 
 			{
 				var charCode:int = pText.charCodeAt(i);
@@ -361,12 +371,16 @@ package pxBitmapFont
 				var yOffset : int = pFontData[charCode].yOffset;
 				glyph = pFontData[charCode].image;
 				
+				if(kerning) _point.x += (lastCharID in pFontData[charCode].kernings ? pFontData[charCode].kernings[lastCharID] : 0);
+				
 				if (glyph != null) 
 				{
 					curGlyphPoint.setTo( _point.x, _point.y );
 					pBitmapData.copyPixels(glyph, glyph.rect, curGlyphPoint, null, null, true);
+
 					_point.x += xAdvance + pLetterSpacing;
 				}
+				lastCharID = charCode;
 			}
 		}
 		
@@ -377,11 +391,12 @@ package pxBitmapFont
 		 * @param	pFontScale	"size" of the font
 		 * @return	Width in pixels.
 		 */
-		public function getTextWidth(pText:String, pLetterSpacing:int = 0, pFontScale:Number = 1.0):int 
+		public function getTextWidth(pText:String, pLetterSpacing:int = 0, pFontScale:Number = 1.0, kerning : Boolean = true):int 
 		{
 			var w:int = 0;
 			
 			var textLength:int = pText.length;
+			var lastCharID:int = -1;
 			for (var i:int = 0; i < textLength; i++) 
 			{
 				var charCode:int = pText.charCodeAt(i);
@@ -389,8 +404,10 @@ package pxBitmapFont
 				var glyphData : Object = _glyphs[charCode];
 				if (glyphData != null) 
 				{
+					if(kerning && "kernings" in glyphData) w += (lastCharID in glyphData.kernings ? glyphData.kernings[lastCharID] : 0);
 					w += glyphData.xadvance;
 				}
+				lastCharID = charCode;
 			}
 			
 			w = Math.round(w * pFontScale) + 4;

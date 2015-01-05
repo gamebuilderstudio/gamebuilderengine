@@ -30,8 +30,8 @@ package com.pblabs.rendering2D
 		protected var _textDisplay : TextField = new TextField();
 		protected var _fontImage : ImageResource;
 		protected var _fontData : DataResource;
-		protected var _textDirty : Boolean = false;
-		protected var _textSizeDirty : Boolean = false;
+		protected var _textDirty : Boolean = true;
+		protected var _textSizeDirty : Boolean = true;
 		protected var _textInputType : String = TextFieldType.DYNAMIC;
 		protected var _stagePoint : Point = new Point();
 		protected var _previousAlpha : Number = 0;
@@ -62,6 +62,7 @@ package com.pblabs.rendering2D
 			if(!_textDisplay)
 				_textDisplay = new TextField();
 			_textDisplay.wordWrap = _wordWrap;
+			_textDisplay.multiline = _wordWrap;
 			_textDisplay.setTextFormat(textFormatter);
 			_textDisplay.autoSize = TextFieldAutoSize.LEFT;
 			_textDisplay.mouseEnabled = true;
@@ -202,7 +203,9 @@ package com.pblabs.rendering2D
 				_bmFontObject.color = textFormatter.color as uint;
 				_bmFontObject.fixedWidth = !_autoResize;
 				_bmFontObject.wordWrap = _wordWrap;
+				_bmFontObject.multiLine = _wordWrap;
 				_bmFontObject.font = font;
+				//_bmFontObject.lineSpacing = 2;
 				this.fontName = fontName;
 			}
 		}
@@ -210,51 +213,38 @@ package com.pblabs.rendering2D
 		protected function paintTextToBitmap(reuseBitmap : Boolean = true):void
 		{
 			var textBitmapData:BitmapData = bitmapData;
+			var clearedBitmap : Boolean = false;
 			
+			if(!size || size.x < 1 || size.y < 1) {
+				this.bitmapData = new BitmapData(150,50);
+				return;
+			}
+
 			if(!_bmFontObject)
 				buildFontObject();
 			
 			if(isComposedTextData && _bmFontObject)
 			{
 				_bmFontObject.update();
-				_newTextSize.setTo( _bmFontObject.width, _bmFontObject.height);
-				if(_autoResize)
-					updateFontSize();
 				textBitmapData = _bmFontObject.bitmapData;
-			}
-			if(!size || size.x == 0 || size.y == 0) {
-				this.bitmapData = new BitmapData(150,50);
-				return;
-			}
-			var clearedBitmap : Boolean = false;
-			if(!isComposedTextData)
-			{
+			}else if(!isComposedTextData) {
 				if(!textBitmapData || _textSizeDirty || this.text == "" || !reuseBitmap)
 				{
 					if(textBitmapData)
 						textBitmapData.dispose();
 					
-					if(autoResize)
-					{
-						_textSize = this._size.clone();
-						_textSize.setTo( _textSize.x * this._scale.x, _textSize.y * this._scale.y);
-					}else{
-						_textSize.setTo( this._size.x*this._scale.x, this._size.y*this._scale.y );
-					}
-					if(_textSize.x < 2)
-						_textSize.x = 2;
-					if(_textSize.y < 2)
-						_textSize.y = 2;
-					
-					textBitmapData = new BitmapData(_textSize.x, _textSize.y, true, 0x0);
+					textBitmapData = new BitmapData(this._size.x * this._scale.x, this._size.y * this._scale.y, true, 0x0);
 					clearedBitmap = true;
-				}else if(reuseBitmap && textBitmapData && !clearedBitmap){
+				}
+				if(reuseBitmap && textBitmapData && !clearedBitmap){
 					textBitmapData.fillRect(textBitmapData.rect, 0x0);
 				}
 				textBitmapData.lock();
 				textBitmapData.draw(_textDisplay);
 				textBitmapData.unlock();
 			}
+			if(!textBitmapData) return;
+			
 			this.bitmapData = textBitmapData;
 			
 			_textDirty = false;
@@ -264,25 +254,40 @@ package com.pblabs.rendering2D
 		protected var _newTextSize : Point = new Point();
 		protected function updateFontSize():void
 		{
+			if(!_bmFontObject)
+				buildFontObject();
+
 			if(autoResize){
 				if(!isComposedTextData)
 				{
+					_textDisplay.width = this._size.x * this._scale.x;
+					_textDisplay.height = this._size.y * this._scale.y;
+
 					var textSize : Rectangle = _textDisplay.getBounds(_textDisplay);
-					_newTextSize.setTo( textSize.width, textSize.height );
+					_newTextSize.setTo(textSize.width, textSize.height);
+					//_newTextSize.setTo( Math.max(textSize.width, this._size.x), Math.max(textSize.height, this._size.y) );
+				}else if(isComposedTextData && _bmFontObject) {
+					_bmFontObject.update();
+					_newTextSize.setTo( _bmFontObject.width, _bmFontObject.height );
 				}
 				if(!this._size.equals(_newTextSize ))
 					_transformDirty = true;
+				
 				if(sizeProperty && sizeProperty.property != "")
 				{
-					this._size = _newTextSize;
+					this._size = _newTextSize.clone();
 					if(owner && sizeProperty)
 						this.owner.setProperty( sizeProperty, _newTextSize.clone() )
 				}else{
-					this._size = _newTextSize;
+					this._size = _newTextSize.clone();
 				}
-			}else if(_textDisplay){
+			}
+			if(!isComposedTextData && _textDisplay){
 				_textDisplay.width = this._size.x * this._scale.x;
 				_textDisplay.height = this._size.y * this._scale.y;
+			}else if(!autoResize && isComposedTextData && _bmFontObject){
+				_bmFontObject.width = this._size.x * this._scale.x;
+				_bmFontObject.height = this._size.y * this._scale.y;
 			}
 		}
 		
@@ -308,7 +313,7 @@ package com.pblabs.rendering2D
 				updateProperties();
 			
 			_transformMatrix.identity();
-			_transformMatrix.translate(-_registrationPoint.x * combinedScale.x, -_registrationPoint.y * combinedScale.y);
+			_transformMatrix.translate(-_registrationPoint.x, -_registrationPoint.y);
 			_transformMatrix.rotate(PBUtil.getRadiansFromDegrees(_rotation + _rotationOffset));
 			_transformMatrix.translate((_position.x + _positionOffset.x), (_position.y + _positionOffset.y));
 			
@@ -337,6 +342,7 @@ package com.pblabs.rendering2D
 				_fontImage.addEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
 			
 			_textDirty = true;
+			_textSizeDirty = true;
 			if(_bmFontObject){
 				_bmFontObject.destroy();
 				bitmap.bitmapData = null;
@@ -354,6 +360,7 @@ package com.pblabs.rendering2D
 				_fontData.addEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
 			
 			_textDirty = true;
+			_textSizeDirty = true;
 			if(_bmFontObject){
 				_bmFontObject.destroy();
 				bitmap.bitmapData = null;
@@ -463,6 +470,10 @@ package com.pblabs.rendering2D
 				_textDirty = true;
 				_textSizeDirty = true;
 			}
+			if(_autoResize && val){
+				val.x = 1;
+				val.y = 1;
+			}
 			super.scale = val;
 		}
 
@@ -501,8 +512,10 @@ package com.pblabs.rendering2D
 			_wordWrap = val;
 			if(_textDisplay)
 				_textDisplay.wordWrap = _wordWrap;
-			if(_bmFontObject)
+			if(_bmFontObject){
 				_bmFontObject.wordWrap = _wordWrap;
+				_bmFontObject.multiLine = _wordWrap;
+			}
 			_textDirty = true;
 			_textSizeDirty = true;
 		}
@@ -516,6 +529,7 @@ package com.pblabs.rendering2D
 			_textDirty = true;
 			_textSizeDirty = true;
 		}
+
 		public function get nativeTextField():TextField{ return _textDisplay; }
 		public function get bitmapTextField():PxTextField { return _bmFontObject; }
 	}
