@@ -118,10 +118,16 @@ package com.pblabs.starling2D
 				return subtexture;
 			}else{
 				//TODO: Add support for ATFImageResources in the future
-				texture = Texture.fromBitmapData(resource.bitmapData, false, false, scaleFactor, "bgra", repeat);
-				texture.disposed.addOnce(releaseTexture);
-				texture.root.onRestore = onTextureRestored;
-				_originTextureToBitmapDataMap[texture.root] = resource.bitmapData;
+				if(resource.embeddedClass){
+					texture = Texture.fromEmbeddedAsset(resource.embeddedClass, false, false, scaleFactor, "bgra", repeat);
+					texture.disposed.addOnce(releaseTexture);
+					resource.dispose();
+				}else{
+					texture = Texture.fromBitmapData(resource.bitmapData, false, false, scaleFactor, "bgra", repeat);
+					texture.disposed.addOnce(releaseTexture);
+					texture.root.onRestore = onTextureRestored;
+					_originTextureToBitmapDataMap[texture.root] = resource.bitmapData;
+				}
 				_originTexturesMap[resource] = new Vector.<Texture>();
 				_originTexturesMap[resource].push( texture );
 				_textureReferenceCount[texture] = 1;

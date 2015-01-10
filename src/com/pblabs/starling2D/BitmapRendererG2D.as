@@ -44,11 +44,11 @@ package com.pblabs.starling2D
 			if(!skipCreation){
 				if(!gpuObject){
 					//Create GPU Renderer Object
-					gpuObject = new Image( ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmap.bitmapData ) );
+					gpuObject = new Image( ResourceTextureManagerG2D.getTextureForBitmapData( originalBitmapData ) );
 				}else if(_imageDataDirty){
 					if(( gpuObject as Image).texture)
 						( gpuObject as Image).texture.dispose();
-					( gpuObject as Image).texture = ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmap.bitmapData );
+					( gpuObject as Image).texture = ResourceTextureManagerG2D.getTextureForBitmapData( originalBitmapData );
 					( gpuObject as Image).readjustSize();
 				}
 				smoothing = _smoothing;

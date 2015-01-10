@@ -20,6 +20,7 @@ package com.pblabs.starling2D.spritesheet
 	
 	import starling.core.Starling;
 	import starling.textures.SubTexture;
+	import starling.textures.Texture;
 	
 	public class MultiImageSpriteSheetComponentG2D extends MultiImageSpriteSheetComponent implements ISpriteSheetG2D
 	{
@@ -52,8 +53,9 @@ package com.pblabs.starling2D.spritesheet
 			for (var i:int = 0; i < _images.length; i++)
 			{
 				var resource:ImageResource = _images[i];
-				_frames[i] = ResourceTextureManagerG2D.getTextureForResource(resource);
-				tmpBounds = resource.bitmapData.rect;
+				var texture : Texture = ResourceTextureManagerG2D.getTextureForResource(resource);
+				_frames[i] = texture;
+				tmpBounds = new Rectangle(0,0, texture.width, texture.height);
 				if(!_bounds){
 					_bounds = tmpBounds;
 				}else{

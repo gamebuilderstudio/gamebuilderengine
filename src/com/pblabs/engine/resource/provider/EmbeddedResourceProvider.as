@@ -57,7 +57,7 @@ package com.pblabs.engine.resource.provider
         * This method is used by the ResourceBundle and ResourceBinding Class to
         * register the existance of a specific embedded resource
         */
-		public function registerResource(filename:String, resourceType:Class, data:*):void
+		public function registerResource(filename:String, resourceType:Class, data:*, dataClassInstance : Class):void
         {
         	// create a unique identifier for this resource
             var resourceIdentifier:String = filename.toLowerCase() + resourceType;
@@ -73,6 +73,7 @@ package com.pblabs.engine.resource.provider
             try
             {
                 var resource:Resource = new resourceType();
+				resource.embeddedClass = dataClassInstance;
                 resource.filename = filename;
                 resource.initialize(data);
                 

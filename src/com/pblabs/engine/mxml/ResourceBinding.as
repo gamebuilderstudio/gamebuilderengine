@@ -84,7 +84,7 @@ package com.pblabs.engine.mxml
             //return;
          } */
          
-         EmbeddedResourceProvider.instance.registerResource(filename, resourceType, item);
+         EmbeddedResourceProvider.instance.registerResource(filename, resourceType, item, (resourceClass is Class ? resourceClass as Class : null));
       }
    }
 }

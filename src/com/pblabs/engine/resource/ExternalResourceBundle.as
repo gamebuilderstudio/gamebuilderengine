@@ -178,7 +178,7 @@ package com.pblabs.engine.resource
 					resource = new res();
 				else 
 					resource = res;
-			   EmbeddedResourceProvider.instance.registerResource(resSource, resType, resource);
+			   EmbeddedResourceProvider.instance.registerResource(resSource, resType, resource, (res is Class ? res as Class : null));
                
                // Registers the resource into ExternalResourceManager.
                // This will allow us to unload the resources when the module is unloaded.

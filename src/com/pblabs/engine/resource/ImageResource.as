@@ -56,7 +56,8 @@ package com.pblabs.engine.resource
 			{
 				bitmapData.dispose();
 				_bitmapData = null;
-			}	
+			}
+			super.dispose();
 		}
 		
 		override public function initialize(data:*):void

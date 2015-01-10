@@ -51,7 +51,29 @@ package com.pblabs.engine.resource
      */
     public class Resource extends EventDispatcher
     {
-        /**
+		/**
+		 * The embeddedClass is the embedded class instance used to create instances of this object.
+		 */
+		public function get embeddedClass():Class
+		{
+			return _embeddedClass;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set embeddedClass(value:Class):void
+		{
+			if (_embeddedClass != null)
+			{
+				Logger.warn(this, "set EmbeddedClass", "Can't change the embeddedClass object once it has been set.");
+				return;
+			}
+			
+			_embeddedClass = value;
+		}
+
+		/**
          * The filename the resource data was loaded from.
          */
         public function get filename():String
@@ -310,5 +332,6 @@ package com.pblabs.engine.resource
         private var _urlLoader:URLLoader;
         private var _loader:Loader;
         private var _referenceCount:int = 0;
+        private var _embeddedClass:Class;
     }
 }

@@ -83,9 +83,6 @@ package com.pblabs.starling2D
 			}
 			
 			if(!skipCreation){
-				if(!this.bitmap || !this.bitmap.bitmapData)
-					return;
-				
 				if(!resource){
 					super.buildG2DObject();
 					return;

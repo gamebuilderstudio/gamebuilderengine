@@ -10,14 +10,12 @@ package com.pblabs.starling2D
 {
 	import com.pblabs.engine.PBE;
 	
-	import flash.display.BitmapData;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
 	import starling.core.Starling;
 	import starling.display.Image;
 	import starling.textures.Texture;
-	import starling.utils.getNextPowerOfTwo;
 
 	public class ScrollingBitmapRendererG2D extends SpriteRendererG2D
 	{
@@ -90,20 +88,9 @@ package com.pblabs.starling2D
 			}
 			
 			if(!skipCreation){
-				if(!this.bitmap || !this.bitmap.bitmapData || !resource || !this.isRegistered || this._size.x == 0 || this._size.y == 0)
+				if(!resource || !this.isRegistered || this._size.x == 0 || this._size.y == 0)
 					return;
 	
-				var legalWidth:int  = getNextPowerOfTwo(bitmapData.width);
-				var legalHeight:int = getNextPowerOfTwo(bitmapData.height);
-				if (autoCorrectImageSize && (legalWidth > bitmapData.width || legalHeight > bitmapData.height))
-				{
-					customBitmapCreated = true;
-					bitmapData = increaseBitmapByPowerOfTwo(bitmapData, legalWidth, legalHeight);
-					return;
-				}else{
-					customBitmapCreated = false;
-				}
-				
 				if(!gpuObject){
 					var texture : Texture = ResourceTextureManagerG2D.getTextureForResource(resource, true);
 					if(texture){
@@ -138,6 +125,7 @@ package com.pblabs.starling2D
 				(gpuObject as Image).setTexCoords(3, textureCoordPt4);
 				
 				skipCreation = true;
+				_imageDataDirty = false;
 			}
 
 			super.buildG2DObject(skipCreation);
@@ -157,28 +145,5 @@ package com.pblabs.starling2D
 				customBitmapCreated = false;
 			}
 		}
-		
-		protected function increaseBitmapByPowerOfTwo(data : BitmapData, targetW : Number, targetH : Number):BitmapData
-		{
-			if(!data) 
-				return null;
-			
-			// determine how many times the bitmap has to be drawn horizontal and vertical
-			// to fill the scrolling bitmap.
-			// We add an aditional so that we have enough display to scroll in any direction			
-			var cx:int = Math.ceil(targetW/data.width);
-			var cy:int = Math.ceil(targetH/data.height);
-			
-			var newBitmapData : BitmapData = new BitmapData(targetW, targetH, true, 0x00000000);
-			// fill the bitmapData object with all display info with the provided bitmap 
-			for (var ix:int = 0; ix<cx; ix++){
-				for (var iy:int = 0; iy<cy; iy++)
-				{
-					newBitmapData.copyPixels(data,data.rect, new Point(ix*data.width,iy*data.height));
-				}
-			}
-			return newBitmapData;
-		}		
-		
 	}
 }

@@ -49,7 +49,7 @@ package com.pblabs.starling2D.spritesheet
 		
 		override public function get isLoaded():Boolean
 		{
-			return (Starling.context && (imageData != null || _forcedBitmaps) && _divider != null)
+			return (Starling.context && (_image != null || _forcedBitmaps) && _divider != null)
 		}
 
 		override public function getFrame(index:int, direction:Number=0.0):BitmapData{ return null; }
@@ -67,7 +67,7 @@ package com.pblabs.starling2D.spritesheet
 			var _frames:Array;
 			
 			// image isn't loaded, can't do anything yet
-			if(!imageData || !_image.bitmapData || !_divider || (_divider is ISpriteSheetNamedFramesDivider && !(_divider as ISpriteSheetNamedFramesDivider).isLoaded) || _divider.frameCount == 0)
+			if(!_image || !_image.isLoaded || !_divider || (_divider is ISpriteSheetNamedFramesDivider && !(_divider as ISpriteSheetNamedFramesDivider).isLoaded) || _divider.frameCount == 0)
 				return null;
 			
 			var cachedFrames : CachedFramesData = getCachedFrames();

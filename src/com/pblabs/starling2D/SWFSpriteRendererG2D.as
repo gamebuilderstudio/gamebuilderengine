@@ -105,6 +105,7 @@ package com.pblabs.starling2D
 				}
 				smoothing = _smoothing;
 				skipCreation = true;
+				_imageDataDirty = false;
 			}
 			super.buildG2DObject(skipCreation);
 		}
@@ -167,9 +168,9 @@ package com.pblabs.starling2D
 			// Due to a bug, this has to be reset after setting bitmapData.
 			smoothing = _smoothing;
 			
-			buildG2DObject();
-			
+			_imageDataDirty = true;
 			_transformDirty = true;
+			buildG2DObject();
 		}
 		
 		/**

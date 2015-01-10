@@ -205,7 +205,7 @@ package com.pblabs.engine.resource
 					resourceData = new res();
 				else 
 					resourceData = res;
-                EmbeddedResourceProvider.instance.registerResource( resSource, resType, resourceData );
+                EmbeddedResourceProvider.instance.registerResource( resSource, resType, resourceData, (res is Class ? res as Class : null) );
             }
         }                  
     }

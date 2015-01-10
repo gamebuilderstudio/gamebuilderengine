@@ -44,9 +44,6 @@ package com.pblabs.starling2D
 			}
 			
 			if(!skipCreation){
-				if(!this.bitmap || !this.bitmap.bitmapData)
-					return;
-				
 				if(!resource){
 					super.buildG2DObject();
 					return;
@@ -66,6 +63,7 @@ package com.pblabs.starling2D
 				
 				smoothing = _smoothing;
 				skipCreation = true;
+				_imageDataDirty = false;
 			}
 			super.buildG2DObject(skipCreation);
 		}
@@ -132,11 +130,8 @@ package com.pblabs.starling2D
 			_failed = false;
 			_resource = res;
 			_resource.addEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
-			// set the registration (alignment) point to the sprite's center
-			//if(registrationPoint.x == 0 && registrationPoint.y == 0)
-			//registrationPoint = new Point(res.image.bitmapData.width/2,res.image.bitmapData.height/2);				
-			// set the bitmapData of this render object
-			bitmapData = _resource.bitmapData;	
+			_imageDataDirty = true;
+			buildG2DObject();
 		}
 		
 		//----------------------------------------------------------
@@ -160,7 +155,7 @@ package com.pblabs.starling2D
 					_loading = true;
 					// Tell the ResourceManager to load the ImageResource
 					var imageResource : ImageResource = PBE.resourceManager.load(fileName,ImageResource,imageLoadCompleted,imageLoadFailed,false) as ImageResource;	
-					if(imageResource && imageResource.bitmapData)
+					if(imageResource && imageResource.isLoaded)
 						imageLoadCompleted(imageResource);
 				}else{
 					_loading = false;
