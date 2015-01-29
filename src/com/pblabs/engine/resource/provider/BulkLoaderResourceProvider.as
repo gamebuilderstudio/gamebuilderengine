@@ -74,7 +74,7 @@ package com.pblabs.engine.resource.provider
 			var loaderType : String = "binary";
 			if(type == MP3Resource)
 				loaderType = "sound";
-			else if(type == ImageResource)
+			else if(type == ImageResource && url.indexOf(".atf") == -1)
 				loaderType = "image";
             loader.add(url, { id : resourceIdentifier, type: loaderType} );
             if (!loader.isRunning) loader.start();	

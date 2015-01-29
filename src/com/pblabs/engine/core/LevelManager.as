@@ -274,7 +274,7 @@ package com.pblabs.engine.core
 			   }else if (itemXML.name() == "resource" && ("@filename" in itemXML)){
 				   var type : String;
 				   if(!("@type" in itemXML)){
-					   var extArray:Array = String(itemXML.@filename).split(".");
+					   var extArray:Array = ("@filelocation" in itemXML) ? String(itemXML.@filelocation).split(".") : String(itemXML.@filename).split(".");
 					   var ext:String = (extArray[extArray.length-1] as String).toLowerCase();
 					   type = ResourceBundle.ExtensionTypes[ext];
 				   }else{
@@ -335,6 +335,10 @@ package com.pblabs.engine.core
        */
       public function loadLevel(index:int, force:Boolean = false):void
       {
+		  _levelFileLoadingStarted = false;
+		  
+		  _forceUnload = force;
+		  
           if(!_isReady)
           {
               Logger.warn(this, "loadLevel", "Warning: trying to loadLevel() without having first called start()! This probably won't work." );
@@ -347,7 +351,7 @@ package com.pblabs.engine.core
          }
 		 
          // find file differences between the levels
-         var filesToLoad:Array = new Array();
+         _filesToLoad = new Array();
 		 var resourceFilesToLoad:Array = new Array();
          var filesToUnload:Array = new Array();
          var groupsToUnload:Array = new Array();
@@ -369,9 +373,9 @@ package com.pblabs.engine.core
 		 //Don't force resource files to unload if they are used in the next level
 		 getLoadLists(currentLevelResourceFileList, nextLevelResourceFileList, resourceFilesToLoad, filesToUnload);
 
-		 if (force)
+		 if (_forceUnload)
          {
-             filesToLoad = _levelDescriptions[index].files;
+             _filesToLoad = _levelDescriptions[index].files;
              _groupsToLoad = _levelDescriptions[index].groups;
 
              if (_currentLevel > -1 && _levelDescriptions[_currentLevel]) {
@@ -383,7 +387,7 @@ package com.pblabs.engine.core
          {
              var doUnload:Boolean = _isLevelLoaded && (_currentLevel != -1);
 
-			 getLoadLists(doUnload ? _levelDescriptions[_currentLevel].files : null, _levelDescriptions[index].files, filesToLoad, filesToUnload);
+			 getLoadLists(doUnload ? _levelDescriptions[_currentLevel].files : null, _levelDescriptions[index].files, _filesToLoad, filesToUnload);
              
 			 // find group differences between the levels
              _groupsToLoad = new Array();
@@ -401,43 +405,90 @@ package com.pblabs.engine.core
          _currentLevel = index;
          _isLevelLoaded = true;
          
-         // Load resource Files first
-		 var filename:String;
-         _pendingFiles = 0;
+		 _pendingFiles = 0;
+		 
+		 var resourceHandle : Resource;
+		 var filename : String;
+		 
+		 len = _filesToLoad.length;
+		 for(i = 0; i < len; i++)
+		 {
+			 filename = _filesToLoad[i] as String;
+			 if(_loadFileCallback != null || !PBE.resourceManager.isLoaded(filename, XMLResource))
+			 	_pendingFiles++;
+		 }
+
+		 // Load resource Files first
 		 var len : int = resourceFilesToLoad.length;
 		 for(var i : int = 0; i < len; i++)
 		 {
 			filename = resourceFilesToLoad[i] as String;
             _pendingFiles++;
+			
             if (_loadFileCallback != null){
                _loadFileCallback(filename, finishLoad)
 			}else{
 			   var resourceDesc : ResourceDescription = (_levelDescriptions[index] as LevelDescription).getResourceDescription(filename);
+			   
 			   if(resourceDesc.externalBundle)
 			   {
+				   if(ExternalResourceManager.instance.isLoaded(filename))
+				   {
+					   _pendingFiles--;
+					   continue;
+				   }
 				   if(!ExternalResourceManager.instance.isLoadingBundle)
 				   		ExternalResourceManager.instance.load(filename, onExternalResourceBundleLoaded, onExternalResourceBundleFailedToLoad, true, true);
+				   else
 				   _pendingExternalResourceFiles.push(resourceDesc);
 			   }else{
+				   
+				   resourceHandle = PBE.resourceManager.getResource(filename, resourceDesc.resourceClassType);
+				   if(resourceHandle && resourceHandle.isLoaded)
+				   {
+					   _pendingFiles--;
+					   continue;
+				   }
+
+				   //Simultaneous Resource Loading ----------------------------------
 				   PBE.resourceManager.load(filename, resourceDesc.resourceClassType, onResourceLoaded, onResourceFailedToLoad, false, resourceDesc.fileLocation);
+				   
+				   //Sequential Resource Loading ----------------------------------
+				   /*
+				   if(!_pendingResourceLoad){
+					   PBE.resourceManager.load(filename, resourceDesc.resourceClassType, onResourceLoaded, onResourceFailedToLoad, false, resourceDesc.fileLocation);
+					   _pendingResourceLoad = true;
+				   }else{
+					   if(!resourceHandle || !resourceHandle.isLoaded){
+					   		_pendingResourceFiles.push(resourceDesc);
+					   }
+				   }
+				   */
 			   }
 			}
          }
          
-		 //Load Level data files
-		 len = filesToLoad.length;
-		 for(i = 0; i < len; i++)
-		 {
-			 filename = filesToLoad[i] as String;
-			 _pendingFiles++;
-			 if (_loadFileCallback != null){
-				 _loadFileCallback(filename, finishLoad)
-			 }else{
-				 PBE.templateManager.loadFile(filename, force);
-			 }
-		 }
-         //finishLoad();
+		 if(_pendingExternalResourceFiles.length == 0 && _pendingResourceFiles.length == 0 && !_levelFileLoadingStarted)
+			 performLevelFilesLoading();
       }
+	  
+	  private function performLevelFilesLoading():void
+	  {
+		  if(_levelFileLoadingStarted) return;
+		  
+		  _levelFileLoadingStarted = true;
+		  //Load Level data files
+		  var len : int = _filesToLoad.length;
+		  for(var i  : int = 0; i < len; i++)
+		  {
+			  var filename : String = _filesToLoad[i] as String;
+			  if (_loadFileCallback != null){
+				  _loadFileCallback(filename, finishLoad)
+			  }else if(!PBE.resourceManager.isLoaded(filename, XMLResource)){
+				  PBE.templateManager.loadFile(filename, _forceUnload);
+			  }
+		  }
+	  }
 	  
 	  private function onExternalResourceBundleLoaded(resource : ExternalResourceFile):void
 	  {
@@ -464,12 +515,28 @@ package com.pblabs.engine.core
 
 	  private function onResourceLoaded(resource : Resource):void
 	  {
+		  for(var ri : int = 0; ri < _pendingResourceFiles.length; ri++)
+		  {
+			  if(_pendingResourceFiles[ri].fileName == resource.filename)
+			  {
+				  _pendingResourceFiles.splice(ri,1);
+				  break;
+			  }
+		  }
+		  _pendingResourceLoad = false;
+		  if(_pendingResourceFiles.length > 0)
+		  {
+			  var resourceDesc : ResourceDescription = _pendingResourceFiles[0];
+			  PBE.resourceManager.load(resourceDesc.fileName, resourceDesc.resourceClassType, onResourceLoaded, onResourceFailedToLoad, false, resourceDesc.fileLocation);
+			  _pendingResourceLoad = true;
+		  }
 		  finishLoad();
 	  }
       
 	  private function onResourceFailedToLoad(resource : Resource):void
 	  {
 		  onFileLoadFailed(null);
+		  _pendingResourceLoad = false;
 	  }
 
 	  private function onFileLoaded(event:Event):void
@@ -487,6 +554,9 @@ package com.pblabs.engine.core
       
       private function finishLoad():void
       {
+		 if(_pendingExternalResourceFiles.length == 0 && _pendingResourceFiles.length == 0 && !_levelFileLoadingStarted)
+		 	performLevelFilesLoading();
+		 
          _pendingFiles--;
          if (_pendingFiles > 0)
             return;
@@ -643,8 +713,8 @@ package com.pblabs.engine.core
 					{
 						if((_levelDescriptions[_currentLevel] as LevelDescription).resources[ri].externalBundle)
 							ExternalResourceManager.instance.unload(filename);
-						else
-							PBE.resourceManager.unload(filename, (_levelDescriptions[_currentLevel] as LevelDescription).resources[ri].resourceClassType);			
+						//else
+							//PBE.resourceManager.unload(filename, (_levelDescriptions[_currentLevel] as LevelDescription).resources[ri].resourceClassType);			
 					}
 				}
 			}
@@ -861,7 +931,11 @@ package com.pblabs.engine.core
       
       private var _pendingFiles:int = 0;
 	  private var _pendingExternalResourceFiles : Vector.<ResourceDescription> = new Vector.<ResourceDescription>();
+	  private var _pendingResourceFiles : Vector.<ResourceDescription> = new Vector.<ResourceDescription>();
       private var _groupsToLoad:Array;
+	  private var _filesToLoad:Array;
+	  private var _forceUnload:Boolean = false;
+	  private var _levelFileLoadingStarted:Boolean = false;
       
       // array of filenames
       private var _loadedFiles:Array = new Array();
@@ -876,6 +950,7 @@ package com.pblabs.engine.core
       private var _unloadFileCallback:Function = null;
       private var _loadGroupCallback:Function = null;
       private var _unloadGroupCallback:Function = null;
+	  private var _pendingResourceLoad:Boolean = false;
       
 	  private static var _imageResourceResolutionScaleFactor:Number = 1.0;
    }

@@ -274,7 +274,7 @@ package starling.textures
          *  asynchronously. It can only be used when the callback has been executed. This is the
          *  expected function definition: <code>function(texture:Texture):void;</code></p> */
         public static function fromAtfData(data:ByteArray, scale:Number=1, useMipMaps:Boolean=true, 
-                                           async:Function=null, repeat:Boolean=false):Texture
+                                           async:*=null, repeat:Boolean=false):Texture
         {
             var context:Context3D = Starling.context;
             if (context == null) throw new MissingContextError();

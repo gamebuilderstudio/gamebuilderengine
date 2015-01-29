@@ -15,8 +15,11 @@ package com.pblabs.engine.resource
     import flash.display.DisplayObject;
     import flash.geom.Matrix;
     import flash.geom.Rectangle;
+    import flash.utils.ByteArray;
     
-    [EditorData(extensions="jpg,png,gif")]
+    import starling.textures.ConcreteTexture;
+    
+    [EditorData(extensions="jpg,png,gif,atf")]
     
     /**
      * This is a Resource subclass for image data. It allows you to load an image
@@ -25,6 +28,8 @@ package com.pblabs.engine.resource
      */
     public class ImageResource extends Resource
     {
+		public var isAtfImage : Boolean = false;
+		
         /**
          * Once the resource has succesfully loaded, this contains a Bitmap representing
          * the loaded image. Because Bitmaps cannot be shared, this makes a new
@@ -46,6 +51,13 @@ package com.pblabs.engine.resource
             return _bitmapData;
         }
         
+		/**
+		 * Get the raw GPU Ready image data that was loaded.
+		 */
+		public function  get atfData():ByteArray
+		{
+			return _atfData;
+		}
 
 		/**
 		 * Disposes the bitmapData object of this ImageResource
@@ -57,6 +69,11 @@ package com.pblabs.engine.resource
 				bitmapData.dispose();
 				_bitmapData = null;
 			}
+			if(_atfData != null && _atfData.bytesAvailable > 0)
+			{
+				_atfData.clear();
+			}
+			_atfTexture = null;
 			super.dispose();
 		}
 		
@@ -99,11 +116,15 @@ package com.pblabs.engine.resource
                 // Use the BitmapData to create a new Bitmap for this ImageResource 
 				processLoadedContent(bmd);
                 return;            	
-            }
+            }else if(data is ByteArray && isAtfImage){
+				
+				processLoadedContent(data as ByteArray);
+				return;
+			}
             // Otherwise it must be a ByteArray, pass it over to the normal path.
             super.initialize(data);
         }
-        
+		
         /**
          * @inheritDoc
          */
@@ -112,7 +133,10 @@ package com.pblabs.engine.resource
 			if(_bitmapData)
 				_bitmapData.dispose();
 			
-            if (content is BitmapData){
+			if (content is ByteArray){
+				_atfData = content as ByteArray;
+				return true;
+			}else if (content is BitmapData){
                 _bitmapData = content as BitmapData;
 			}else if (content is Bitmap){
                 // a .png is initialized as a ByteArray and will be provided
@@ -123,5 +147,8 @@ package com.pblabs.engine.resource
         }
         
         protected var _bitmapData:BitmapData = null;
+		protected var _atfData:ByteArray = null;
+		protected var _atfCallback : Function;
+		protected var _atfTexture:ConcreteTexture = null;
     }
 }

@@ -132,6 +132,8 @@ package com.pblabs.engine.resource
                 // Make sure the filename is set.
                 if(!resource.filename)
                     resource.filename = filename;
+				
+				if(fileLocation.indexOf(".atf") != -1) (resource as ImageResource).isAtfImage = true;
                 
                 // Store it in the resource dictionary.
                 _resources[resourceIdentifier] = resource;

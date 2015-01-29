@@ -11,8 +11,6 @@ package com.pblabs.engine.resource.provider
 	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.resource.Resource;
 	
-	import flash.utils.Dictionary;
-	
     /**
      * The EmbeddedResourceProvider provides the ResourceManager with the embedded
      * resources that were loaded from ResourceBundle and ResourceBinding classes

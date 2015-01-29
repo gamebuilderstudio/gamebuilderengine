@@ -7,6 +7,7 @@ package com.pblabs.starling2D
 	
 	import flash.display.BitmapData;
 	import flash.geom.Rectangle;
+	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 	
 	import org.osflash.signals.Signal;
@@ -18,6 +19,7 @@ package com.pblabs.starling2D
 	{
 		private static var _originTextureToBitmapDataMap : Dictionary = new Dictionary(true);
 		private static var _originTexturesMap : Dictionary = new Dictionary();
+		private static var _originAtlasMap : Dictionary = new Dictionary(true);
 		private static var _subTexturesMap : Dictionary = new Dictionary();
 		private static var _textureAtlasMap : Dictionary = new Dictionary();
 		private static var _textureReferenceCount : Dictionary = new Dictionary();
@@ -122,6 +124,11 @@ package com.pblabs.starling2D
 					texture = Texture.fromEmbeddedAsset(resource.embeddedClass, false, false, scaleFactor, "bgra", repeat);
 					texture.disposed.addOnce(releaseTexture);
 					resource.dispose();
+				}else if(resource.isAtfImage && resource.atfData){
+					texture = Texture.fromAtfData(resource.atfData, scaleFactor, false, true, repeat);
+					texture.disposed.addOnce(releaseTexture);
+					texture.root.onRestore = onTextureRestored;
+					_originTextureToBitmapDataMap[texture.root] = resource.atfData;
 				}else{
 					texture = Texture.fromBitmapData(resource.bitmapData, false, false, scaleFactor, "bgra", repeat);
 					texture.disposed.addOnce(releaseTexture);
@@ -168,15 +175,15 @@ package com.pblabs.starling2D
 			if(!resource)
 				return null;
 			var atlas : TextureAtlas;
-			if(resource in _originTexturesMap)
+			if(resource in _originAtlasMap)
 			{
-				atlas = _originTexturesMap[resource][0] as TextureAtlas;
+				atlas = _originAtlasMap[resource][0] as TextureAtlas;
 				//_textureReferenceCount[atlas]++;
 			}else{
 				var atlasTexture : Texture = getTextureForResource(resource);
 				atlas = new TextureAtlas(atlasTexture);
-				_originTexturesMap[resource] = new Vector.<TextureAtlas>();
-				_originTexturesMap[resource].push( atlas );
+				_originAtlasMap[resource] = new Vector.<TextureAtlas>();
+				_originAtlasMap[resource].push( atlas );
 			}
 			return atlas;
 		}
@@ -213,9 +220,11 @@ package com.pblabs.starling2D
 
 		private static function onTextureRestored(texture : Texture):void
 		{
-			if(texture.root in _originTextureToBitmapDataMap)
+			if(texture.root in _originTextureToBitmapDataMap && _originTextureToBitmapDataMap[texture.root] is BitmapData)
 			{
 				texture.root.uploadBitmapData( _originTextureToBitmapDataMap[texture.root] as BitmapData );
+			}else if(texture.root in _originTextureToBitmapDataMap && _originTextureToBitmapDataMap[texture.root] is ByteArray){
+				texture.root.uploadAtfData( _originTextureToBitmapDataMap[texture.root] as ByteArray );
 			}
 		}
 		
@@ -238,8 +247,10 @@ package com.pblabs.starling2D
 				}
 				
 				//Release original parent texture if it is no longer referenced anywhere in the engine
+				/*
 				for(var key : * in _originTexturesMap)
 				{
+					if(!(key is BitmapData)) continue;
 					var len : int = _originTexturesMap[key].length;
 					for(var i : int = 0; i < len; i++)
 					{
@@ -260,6 +271,7 @@ package com.pblabs.starling2D
 						}
 					}
 				}
+				*/
 			}catch(e : Error){
 				Logger.error(ResourceTextureManagerG2D, "releaseTexture", "Error releasing texture: " + e.getStackTrace());
 			}

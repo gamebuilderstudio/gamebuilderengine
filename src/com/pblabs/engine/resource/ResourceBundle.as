@@ -44,7 +44,7 @@ package com.pblabs.engine.resource
          *  ResourceBundle.ExtensionTypes.mycustomext = "com.mydomain.customresource"
          */
         public static var ExtensionTypes:Object = {
-			atf:"com.pblabs.engine.resource.DataResource",
+			atf:"com.pblabs.engine.resource.ImageResource",
 			fnt:"com.pblabs.engine.resource.DataResource",
             png:"com.pblabs.engine.resource.ImageResource",
             jpg:"com.pblabs.engine.resource.ImageResource",
