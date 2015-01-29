@@ -24,6 +24,7 @@ package com.pblabs.engine.core
 		public var globalExpressionEntity : IEntity;
 		
 		private var objectContext : Object;
+		private var _touchKeyStates : Vector.<InputState>;
 		
 		public function GlobalExpressionManager(clazz : Privatizer)
 		{
@@ -66,7 +67,17 @@ package com.pblabs.engine.core
 			{
 				if(!objectContext.Game.Touch["TouchPoint"+i]) 
 					objectContext.Game.Touch["TouchPoint"+i] = new Object();
-				var touchData : InputState = PBE.inputManager.getKeyData(InputKey["TOUCH_"+i].keyCode);
+
+				if(!_touchKeyStates) _touchKeyStates = new Vector.<InputState>();
+				
+				var touchData : InputState;
+				if(_touchKeyStates.length < i){
+					touchData = PBE.inputManager.getKeyData(InputKey["TOUCH_"+i].keyCode);
+					_touchKeyStates.push(touchData);
+				}else{
+					touchData = _touchKeyStates[i-1];
+				}
+
 				if(touchData)
 				{
 					objectContext.Game.Touch["TouchPoint"+i].isTouching = touchData.value;

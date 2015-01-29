@@ -21,10 +21,10 @@ package com.pblabs.components.stateMachine
       
       override public function evaluate(fsm:IMachine):Boolean
       {
-         if(!fsm.propertyBag)
+         if(!fsm || !fsm.propertyBag || !property)
             return false;
          
-         return fsm.propertyBag.getProperty(property).toString() == value;
+         return String(fsm.propertyBag.getProperty(property)) == value;
       }
    }
 }

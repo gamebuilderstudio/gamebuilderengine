@@ -459,8 +459,10 @@ package com.pblabs.nape
 		
 		private function freeSpace():void
 		{
-			_space.listeners.clear();
-			_space.clear();
+			if(_space){
+				_space.listeners.clear();
+				_space.clear();
+			}
 			
 			if(_shapeDebug)
 				_shapeDebug.clear();

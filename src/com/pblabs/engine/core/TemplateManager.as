@@ -62,6 +62,8 @@ package com.pblabs.engine.core
 		 */
 		public static var VERBOSE_LOGGING:Boolean=false;
 
+		public static var CreateEntitiesUsingCallbacks : Boolean = false;
+
         /**
          * Allow specifying an alternate class to use for IEntity.
          */
@@ -138,7 +140,7 @@ package com.pblabs.engine.core
 					return null;
 				}
 
-				var entity:IEntity=instantiateEntityFromXML(xml, keepDeferred);
+				var entity:IEntity = CreateEntitiesUsingCallbacks && String("CB_"+name) in _things ? PBE.templateManager.instantiateEntityFromCallBack(name, null, !keepDeferred) : instantiateEntityFromXML(xml, keepDeferred);
 				Profiler.exit("instantiateEntity");
 			}
 			catch (e:Error)

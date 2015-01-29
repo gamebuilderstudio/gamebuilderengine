@@ -134,13 +134,15 @@ package com.pblabs.engine.core
 		 */
 		public function isTouching(keyCode : int = -1):Boolean
 		{
-			var len : int = _keyState.length;
 			for(var i : int = 1; i < 11; i++)
 			{
 				var inputState : InputState = findKeyState(InputKey["TOUCH_"+i].keyCode, _keyState);
-				if(inputState.phase != TouchPhase.HOVER && inputState.value && (keyCode == -1 || (keyCode != -1 && inputState.keyCode == keyCode)))
+				if(inputState.phase != TouchPhase.HOVER)
 				{
-					return true;
+					if(keyCode != -1 && inputState.keyCode == keyCode)
+						return inputState.value;
+					else if(keyCode == -1 && inputState.value)
+						return true;
 				}
 			}
 			return false;
@@ -226,41 +228,35 @@ package com.pblabs.engine.core
 			for(var i : int = 0; i < len; i++)
 			{
 				var touch : Touch = touches[i];
-				var inputData : InputState;
-				for(var x : int = 1; x < 11; x++)
-				{
-					var tmpInputData : InputState = findKeyState(InputKey["TOUCH_"+x].keyCode, _keyState);
-					if(tmpInputData.id == touch.id){
-						inputData = tmpInputData;
-						tmpInputData = null;
-						break;
-					}
-				}
-				if(!inputData){
-					inputData = findKeyState(InputKey["TOUCH_"+(i+1)].keyCode, _keyState);
+				if(touch.phase == TouchPhase.HOVER || touch.phase == TouchPhase.STATIONARY){
+					continue;
 				}
 				
+				var inputData : InputState = findKeyState(InputKey["TOUCH_"+(i+1)].keyCode, _keyState);
+				
 				if(inputData){
-					if(touch.phase == TouchPhase.BEGAN || touch.phase == TouchPhase.STATIONARY || touch.phase == TouchPhase.MOVED){
-						if(i == 0 && touch.phase == TouchPhase.BEGAN)
-							simulateMouseDown();
-	
-						inputData.value = true;
-						inputData.stageX = touch.globalX;
-						inputData.stageY = touch.globalY;
+					inputData.stageX = touch.globalX;
+					inputData.stageY = touch.globalY;
 
+					if(touch.phase == TouchPhase.BEGAN || touch.phase == TouchPhase.MOVED){
+						inputData.value = true;
+	
 						if(touch.phase == TouchPhase.BEGAN){
 							inputData.id = touch.id;					
 						}
 						
 					}else if(touch.phase == TouchPhase.ENDED){// || touch.phase == TouchPhase.STATIONARY
-						if(i == 0)
-							simulateMouseUp();
 						inputData.value = false;
 					}
-					inputData.touchCount = touch.tapCount;
-					inputData.phase = touch.phase;
+					if(i == 0){
+						if(touch.phase == TouchPhase.BEGAN)
+							simulateMouseDown();
+						else if(touch.phase == TouchPhase.ENDED)
+							simulateMouseUp();
+					}
 				}
+				inputData.touchCount = touch.tapCount;
+				inputData.phase = touch.phase;
 				inputData = null;
 				touch = null;
 			}
@@ -309,7 +305,7 @@ package com.pblabs.engine.core
 			keyData.value = true;
 			keyData.stageX = PBE.mainStage.mouseX;
 			keyData.stageY = PBE.mainStage.mouseY;
-			if(event.hasOwnProperty("clickCount"))
+			if("clickCount" in event)
 				keyData.touchCount = event.clickCount;
 			if(keyData.preventDefaultBehaviour)
 			{
@@ -325,7 +321,7 @@ package com.pblabs.engine.core
 			keyData.value = false;
 			keyData.stageX = PBE.mainStage.mouseX;
 			keyData.stageY = PBE.mainStage.mouseY;
-			if(event.hasOwnProperty("clickCount"))
+			if("clickCount" in event)
 				keyData.touchCount = event.clickCount;
 			if(keyData.preventDefaultBehaviour)
 			{

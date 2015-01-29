@@ -74,8 +74,8 @@ package com.pblabs.rendering2D
 			updateProperties();
 			
 			// adjust scroll offset using the scrollSpeed
-			_scratchPosition.x += (scrollSpeed.x * deltaTime); 
-			_scratchPosition.y += (scrollSpeed.y * deltaTime);	
+			_scratchPosition.x += (scrollSpeed.x); 
+			_scratchPosition.y += (scrollSpeed.y);	
 			
 			if(PBE.IN_EDITOR) 
 				_scratchPosition.x = _scratchPosition.y = 0;
