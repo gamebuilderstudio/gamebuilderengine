@@ -53,8 +53,8 @@ package com.pblabs.starling2D
 			// call onFrame of the extended BitmapRenderer
 			super.onFrame(deltaTime);
 			
-			_scratchPoint.x -= (scrollSpeed.x); 
-			_scratchPoint.y -= (scrollSpeed.y);	
+			_scratchPoint.x -= (scrollSpeed.x * deltaTime); 
+			_scratchPoint.y -= (scrollSpeed.y * deltaTime);	
 			
 			offsetTexture(_scratchPoint.x, _scratchPoint.y);
 		}
@@ -65,8 +65,8 @@ package com.pblabs.starling2D
 				return;
 			
 			var imageText : Image = (gpuObject as Image);
-			xx = Number((xx/textureWidth % 1)+1);
-			yy = Number((yy/textureHeight % 1)+1);
+			xx = ((xx/textureWidth % 1));
+			yy = ((yy/textureHeight % 1));
 			textureCoordPt1.setTo(xx, yy);
 			textureCoordPt2.setTo(xx+hRatio, yy);
 			textureCoordPt3.setTo(xx, yy + vRatio);
