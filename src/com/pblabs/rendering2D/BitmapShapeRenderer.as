@@ -11,18 +11,22 @@ package com.pblabs.rendering2D
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
-
+	
 	public class BitmapShapeRenderer extends SimpleShapeRenderer implements ICopyPixelsRenderer
 	{
 		static protected const zeroPoint:Point = new Point();
-
-		protected var bitmap:Bitmap;
+		
+		protected var bitmap:Bitmap = new Bitmap();
 		protected var _smoothing:Boolean = false;
 		
 		public function BitmapShapeRenderer()
 		{
 			super();
 			_smoothing = true;
+			bitmap.pixelSnapping = PixelSnapping.AUTO;
+			if(_displayObject)
+				(_displayObject as Sprite).addChild(bitmap);	
+			
 			_lineSize = 0;
 			_lineAlpha = 0;
 			_size = new Point(100,100);
@@ -41,7 +45,7 @@ package com.pblabs.rendering2D
 				renderTarget.copyPixels(bitmap.bitmapData, bitmap.bitmapData.rect, objectToScreen.transformPoint(zeroPoint), null, null, true);
 			}
 		}
-
+		
 		override public function pointOccupied(worldPosition:Point, mask:ObjectType):Boolean
 		{
 			if(!bitmap || !bitmap.bitmapData || !scene)
@@ -62,18 +66,16 @@ package com.pblabs.rendering2D
 		
 		override public function redraw():void
 		{
-			if(bitmap){
+			if(!_size || _size.x == 0 || _size.y == 0 || (!isCircle && !isSquare) ) {
 				if(bitmap.bitmapData)
 					bitmap.bitmapData.dispose();
 				bitmap.bitmapData = null;
-			}
-			if(!_size || _size.x == 0 || _size.y == 0 || (!isCircle && !isSquare) ) {
 				return;
 			}
 			
 			if(!_shape)
 				_shape = new Sprite();
-
+			
 			// Get references.
 			var s:Sprite = _shape;
 			if(!s)
@@ -90,7 +92,7 @@ package com.pblabs.rendering2D
 			// Draw one or both shapes.
 			if(isSquare)
 				g.drawRect(0, 0, size.x, size.y);
-
+			
 			if(isCircle){
 				var radiansX : Number = 180 * (Math.PI/180);
 				var radiansY : Number = -90 * (Math.PI/180);
@@ -107,17 +109,34 @@ package com.pblabs.rendering2D
 				bitmap.blendMode = this._blendMode;
 			}
 			
+			if(bitmap.bitmapData){
+				bitmap.bitmapData.dispose();
+				bitmap.bitmapData = null;
+			}
 			if(isCircle || isSquare){
 				var bounds : Rectangle = s.getBounds( s );
 				var m : Matrix = new Matrix();
 				//_registrationPoint = new Point(-bounds.topLeft.x, -bounds.topLeft.y);
 				bitmap.bitmapData = new BitmapData(bounds.width, bounds.height, true, 0x000000);
 				bitmap.bitmapData.draw(s,m, s.transform.colorTransform, s.blendMode );
+				
 				bitmap.smoothing = this._smoothing;
 			}
-			if(displayObject != bitmap)
-				displayObject = bitmap;
+			
+			if(!_displayObject){
+				_shape.addChild(bitmap);	
+				displayObject = _shape;
+			}
 			_shapeDirty = false;
+		}
+		
+		override public function set scale(value:Point):void
+		{
+			if(this._scale.x != value.x || this._scale.y != value.y){
+				_shapeDirty = true;
+			}
+			super.scale = value;
+			if(_shapeDirty && isRegistered) redraw();
 		}
 		
 		override public function set size(value:Point):void
@@ -128,6 +147,7 @@ package com.pblabs.rendering2D
 			super.size = value;
 			if(_shapeDirty){
 				_radius = 0.5 * Math.sqrt(_size.x * _size.y);
+				if(isRegistered) redraw();
 			}
 		}
 		
@@ -138,7 +158,7 @@ package com.pblabs.rendering2D
 			if(bitmap)
 				bitmap.blendMode = this._blendMode;
 		}
-
+		
 		/**
 		 * @see Bitmap.smoothing 
 		 */
@@ -146,8 +166,7 @@ package com.pblabs.rendering2D
 		public function set smoothing(value:Boolean):void
 		{
 			_smoothing = value;
-			if(bitmap)
-				bitmap.smoothing = value;
+			bitmap.smoothing = value;
 		}
 		
 		public function get smoothing():Boolean
