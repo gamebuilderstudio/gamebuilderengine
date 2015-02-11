@@ -2,6 +2,7 @@ package com.pblabs.engine.core
 {
 	import com.pblabs.engine.PBE;
 	import com.pblabs.engine.components.DataComponent;
+	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.entity.IEntity;
 	
 	import flash.display.Stage;
@@ -25,6 +26,7 @@ package com.pblabs.engine.core
 		
 		private var objectContext : Object;
 		private var _touchKeyStates : Vector.<InputState>;
+		private var _defaultOrientation : String;
 		
 		public function GlobalExpressionManager(clazz : Privatizer)
 		{
@@ -105,6 +107,8 @@ package com.pblabs.engine.core
 			
 			PBE.mainStage.addEventListener(Event.RESIZE, onScreenResize);
 			
+			if("orientation" in PBE.mainStage)
+				_defaultOrientation = PBE.mainStage.orientation;
 			
 			if(ApplicationDomain.currentDomain.hasDefinition("flash.events.StageOrientationEvent")){
 				if(Stage.supportsOrientationChange)
@@ -274,6 +278,14 @@ package com.pblabs.engine.core
 		
 		private function orientationChange(event : Event):void
 		{
+			Logger.debug(this, "orientationChange", "Auto Orients? = " + PBE.mainStage.autoOrients);
+			Logger.debug(this, "orientationChange", "Supports Orientation Changes? = " + Stage.supportsOrientationChange);
+			Logger.debug(this, "orientationChange", "Orientation Changed To = " + (event as StageOrientationEvent).afterOrientation + " | From = " + (event as StageOrientationEvent).beforeOrientation);
+			
+			if( !PBE.mainStage.autoOrients && PBE.mainStage.orientation != _defaultOrientation ){
+				PBE.mainStage.setOrientation(_defaultOrientation);
+			}
+			
 			switch ((event as StageOrientationEvent).afterOrientation) { 
 				case StageOrientation.DEFAULT: 
 					// re-orient display objects based on 
