@@ -232,15 +232,27 @@ package com.pblabs.engine.core
 					continue;
 				}
 				
-				var inputData : InputState = findKeyState(InputKey["TOUCH_"+(i+1)].keyCode, _keyState);
+				var inputData : InputState;
+				for(var x : int = 1; x < 11; x++)
+				{
+					var tmpInputData : InputState = findKeyState(InputKey["TOUCH_"+x].keyCode, _keyState);
+					if(tmpInputData.id == touch.id){
+						inputData = tmpInputData;
+						tmpInputData = null;
+						break;
+					}
+				}
+				if(!inputData){
+					inputData = findKeyState(InputKey["TOUCH_"+(i+1)].keyCode, _keyState);
+				}
 				
 				if(inputData){
 					inputData.stageX = touch.globalX;
 					inputData.stageY = touch.globalY;
-
+					
 					if(touch.phase == TouchPhase.BEGAN || touch.phase == TouchPhase.MOVED){
 						inputData.value = true;
-	
+						
 						if(touch.phase == TouchPhase.BEGAN){
 							inputData.id = touch.id;					
 						}
