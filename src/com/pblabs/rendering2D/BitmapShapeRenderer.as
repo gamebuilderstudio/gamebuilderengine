@@ -46,6 +46,7 @@ package com.pblabs.rendering2D
 			}
 		}
 		
+		
 		override public function pointOccupied(worldPosition:Point, mask:ObjectType):Boolean
 		{
 			if(!bitmap || !bitmap.bitmapData || !scene)
@@ -136,7 +137,6 @@ package com.pblabs.rendering2D
 				_shapeDirty = true;
 			}
 			super.scale = value;
-			if(_shapeDirty && isRegistered) redraw();
 		}
 		
 		override public function set size(value:Point):void
@@ -147,7 +147,6 @@ package com.pblabs.rendering2D
 			super.size = value;
 			if(_shapeDirty){
 				_radius = 0.5 * Math.sqrt(_size.x * _size.y);
-				if(isRegistered) redraw();
 			}
 		}
 		
