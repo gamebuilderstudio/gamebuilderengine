@@ -1,5 +1,6 @@
 package com.pblabs.rendering2D
 {
+	import com.pblabs.engine.PBE;
 	import com.pblabs.engine.core.ObjectType;
 	
 	import flash.display.Bitmap;
@@ -137,6 +138,7 @@ package com.pblabs.rendering2D
 				_shapeDirty = true;
 			}
 			super.scale = value;
+			if(PBE.IN_EDITOR && isRegistered && _shapeDirty) redraw();
 		}
 		
 		override public function set size(value:Point):void
@@ -147,6 +149,7 @@ package com.pblabs.rendering2D
 			super.size = value;
 			if(_shapeDirty){
 				_radius = 0.5 * Math.sqrt(_size.x * _size.y);
+				if(PBE.IN_EDITOR && isRegistered) redraw();
 			}
 		}
 		
@@ -165,7 +168,7 @@ package com.pblabs.rendering2D
 		public function set smoothing(value:Boolean):void
 		{
 			_smoothing = value;
-			bitmap.smoothing = value;
+			if(bitmap) bitmap.smoothing = value;
 		}
 		
 		public function get smoothing():Boolean
