@@ -647,13 +647,22 @@ package com.pblabs.engine
 		 * Rotates a flash Point around Origin (like MathVector.rotate() )
 		 * @param	p flash.geom.Point
 		 * @param	a angle in radians
-		 * @return	returns a new rotated point.
+		 * @param	out a point object to store the result
+		 * @return	returns a rotated point.
 		 */
-		public static  function rotatePoint(p:Point, a:Number):Point
+		public static  function rotatePoint(p:Point, a:Number, out : Point = null):Point
 		{
 			var c:Number = Math.cos(a);
 			var s:Number = Math.sin(a);
-			return new Point(p.x * c + p.y * s, -p.x * s + p.y * c);
+			var ox:Number   = p.x * c - p.y * s;
+			var oy:Number   = p.x * s + p.y * c;
+			
+			// we use ox and oy in case out is one of our points
+			if ( out == null )
+				out = new Point;
+			out.x = ox;
+			out.y = oy;
+			return out;
 		}
     }
 }
