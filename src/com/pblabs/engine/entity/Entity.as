@@ -102,6 +102,7 @@ package com.pblabs.engine.entity
 			}
             // Resolve any pending components.
             deferring = false;
+			_selfObject.name = name;
         }
         
         
