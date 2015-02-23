@@ -14,6 +14,7 @@ package com.pblabs.triggers.actions
 		public static const PROPERTYTYPES_INT : String = "int";
 		public static const PROPERTYTYPES_NUMBER : String = "Number";
 		public static const PROPERTYTYPES_UINT : String = "uint";
+		public static const PROPERTYTYPES_BOOLEAN : String = "Boolean";
 		
 		//______________________________________ 
 		//	Public Properties
@@ -71,6 +72,9 @@ package com.pblabs.triggers.actions
 						break;
 					case PROPERTYTYPES_STRING:
 						newPropValue = String(newPropValue);
+						break;
+					case PROPERTYTYPES_BOOLEAN:
+						newPropValue = Boolean(newPropValue);
 						break;
 				}
 				_owner.owner.setProperty(property, newPropValue);
