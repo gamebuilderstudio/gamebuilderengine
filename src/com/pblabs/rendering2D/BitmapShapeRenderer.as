@@ -108,7 +108,7 @@ package com.pblabs.rendering2D
 			if(!bitmap){
 				bitmap = new Bitmap();
 				bitmap.pixelSnapping = PixelSnapping.AUTO;
-				bitmap.blendMode = this._blendMode;
+				bitmap.blendMode = (this._blendMode != "none" && this._blendMode != "shader") ? _blendMode : "normal";
 			}
 			
 			if(bitmap.bitmapData){
@@ -158,7 +158,7 @@ package com.pblabs.rendering2D
 		{
 			super.blendMode = value;
 			if(bitmap)
-				bitmap.blendMode = this._blendMode;
+				bitmap.blendMode = (this._blendMode != "none" && this._blendMode != "shader") ? _blendMode : "normal";
 		}
 		
 		/**

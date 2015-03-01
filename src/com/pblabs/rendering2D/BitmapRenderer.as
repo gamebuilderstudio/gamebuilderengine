@@ -121,7 +121,7 @@ package com.pblabs.rendering2D
 			
             // Due to a bug, this has to be reset after setting bitmapData.
             bitmap.smoothing = this._smoothing;
-			bitmap.blendMode = this._blendMode;
+			bitmap.blendMode = (this._blendMode != "none" && this._blendMode != "shader") ? _blendMode : "normal";
             _transformDirty = true;
 			_imageDataDirty = true;
         }
@@ -129,7 +129,7 @@ package com.pblabs.rendering2D
 		override public function set blendMode(value:String):void
 		{
 			super.blendMode = value;
-			if(bitmap)
+			if(bitmap && (this._blendMode != "none" && this._blendMode != "shader"))
 				bitmap.blendMode = this._blendMode;
 		}
 

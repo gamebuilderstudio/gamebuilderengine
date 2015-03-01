@@ -182,7 +182,7 @@ package com.pblabs.rendering2D
 			
 			displayObject.transform.matrix = _transformMatrix;
 			displayObject.alpha = _alpha;
-			displayObject.blendMode = _blendMode;
+			displayObject.blendMode = (this._blendMode != "none" && this._blendMode != "shader") ? _blendMode : "normal";
 			displayObject.visible = (alpha > 0);
 			
 			_transformDirty = false;

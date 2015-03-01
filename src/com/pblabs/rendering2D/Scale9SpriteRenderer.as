@@ -89,7 +89,7 @@ package com.pblabs.rendering2D
 				(bitmap as Scale9Bitmap).height = (this._size.y * _scale.y);
 			}
 			displayObject.alpha = _alpha;
-			displayObject.blendMode = _blendMode;
+			displayObject.blendMode = (this._blendMode != "none" && this._blendMode != "shader") ? _blendMode : "normal";
 			displayObject.visible = (alpha > 0);
 			
 			_transformDirty = false;
