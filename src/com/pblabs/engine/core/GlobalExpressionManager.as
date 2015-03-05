@@ -4,6 +4,7 @@ package com.pblabs.engine.core
 	import com.pblabs.engine.components.DataComponent;
 	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.entity.IEntity;
+	import com.pblabs.engine.resource.ResourceManager;
 	
 	import flash.display.Stage;
 	import flash.display.StageOrientation;
@@ -170,6 +171,9 @@ package com.pblabs.engine.core
 			globalExpressionEntity.addComponent(objectContext.Game.Accelerometer, "Accelerometer");
 			globalExpressionEntity.addComponent(objectContext.Game.CurrentActionData, "CurrentActionData");
 			globalExpressionEntity.addComponent(objectContext.Game.System, "System");
+			
+			
+			objectContext.Game.Screen.contentScaleFactor = ResourceManager.scaleFactor;
 			
 			objectContext.Game.Controllers.deviceCount = 0;
 			objectContext.Game.Controllers.isSupported = false;
