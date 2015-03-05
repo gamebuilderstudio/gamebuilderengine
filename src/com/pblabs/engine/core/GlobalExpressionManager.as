@@ -169,6 +169,7 @@ package com.pblabs.engine.core
 			globalExpressionEntity.addComponent(objectContext.Game.Controllers, "Controllers");
 			globalExpressionEntity.addComponent(objectContext.Game.Accelerometer, "Accelerometer");
 			globalExpressionEntity.addComponent(objectContext.Game.CurrentActionData, "CurrentActionData");
+			globalExpressionEntity.addComponent(objectContext.Game.System, "System");
 			
 			objectContext.Game.Controllers.deviceCount = 0;
 			objectContext.Game.Controllers.isSupported = false;
