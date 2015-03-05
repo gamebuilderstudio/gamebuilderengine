@@ -10,6 +10,7 @@ package com.pblabs.rendering2D.spritesheet
 {
     import com.pblabs.engine.PBE;
     import com.pblabs.engine.debug.Logger;
+    import com.pblabs.engine.resource.ResourceManager;
     import com.pblabs.rendering2D.spritesheet.ISpriteSheet;
     
     import flash.geom.Rectangle;
@@ -63,7 +64,7 @@ package com.pblabs.rendering2D.spritesheet
             if (!_owningSheet)
                 throw new Error("OwningSheet must be set before calling this!");
             
-            return Math.floor(_owningSheet.imageData.width / width) * Math.floor(_owningSheet.imageData.height / height);
+            return Math.floor((_owningSheet.imageData.width / ResourceManager.scaleFactor) / width) * Math.floor((_owningSheet.imageData.height / ResourceManager.scaleFactor) / height);
         }
         
         /**
@@ -74,8 +75,8 @@ package com.pblabs.rendering2D.spritesheet
             if (!_owningSheet)
                 throw new Error("OwningSheet must be set before calling this!");
             
-            var x:int = index % Math.floor(_owningSheet.imageData.width / width);
-            var y:int = Math.floor(index / Math.floor(_owningSheet.imageData.width / width));
+            var x:int = index % Math.floor((_owningSheet.imageData.width / ResourceManager.scaleFactor) / width);
+            var y:int = Math.floor(index / Math.floor((_owningSheet.imageData.width / ResourceManager.scaleFactor) / width));
             
             return new Rectangle(x * (width + horizontalSpacing), y * (height + verticalSpacing), width, height);
         }

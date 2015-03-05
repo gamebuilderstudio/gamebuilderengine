@@ -10,6 +10,7 @@ package com.pblabs.rendering2D.spritesheet
 {
     import com.pblabs.engine.PBE;
     import com.pblabs.engine.debug.Logger;
+    import com.pblabs.engine.resource.ResourceManager;
     import com.pblabs.rendering2D.spritesheet.ISpriteSheet;
     
     import flash.geom.Rectangle;
@@ -59,8 +60,8 @@ package com.pblabs.rendering2D.spritesheet
             if (!_owningSheet && !PBE.IN_EDITOR)
                 throw new Error("OwningSheet must be set before calling this!");
             
-            var imageWidth:int = _owningSheet.imageData.width;
-            var imageHeight:int = _owningSheet.imageData.height;
+            var imageWidth:int = _owningSheet.imageData.width / ResourceManager.scaleFactor;
+            var imageHeight:int = _owningSheet.imageData.height / ResourceManager.scaleFactor;
             
             var width:int = imageWidth / xCount;
             var height:int = imageHeight / yCount;
