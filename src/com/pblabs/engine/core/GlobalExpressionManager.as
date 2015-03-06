@@ -157,7 +157,6 @@ package com.pblabs.engine.core
 			calculateScreenSize();
 			
 			objectContext.Game.Level.currentLevel = PBE.levelManager.currentLevel;
-			calculateScreenSize();
 			screenOrientation = "right-sideup";
 			
 			globalExpressionEntity = PBE.allocateEntity();
@@ -171,9 +170,6 @@ package com.pblabs.engine.core
 			globalExpressionEntity.addComponent(objectContext.Game.Accelerometer, "Accelerometer");
 			globalExpressionEntity.addComponent(objectContext.Game.CurrentActionData, "CurrentActionData");
 			globalExpressionEntity.addComponent(objectContext.Game.System, "System");
-			
-			
-			objectContext.Game.Screen.contentScaleFactor = ResourceManager.scaleFactor;
 			
 			objectContext.Game.Controllers.deviceCount = 0;
 			objectContext.Game.Controllers.isSupported = false;
@@ -224,6 +220,7 @@ package com.pblabs.engine.core
 				objectContext.Game.Screen.height = PBE.mainStage.stageHeight;
 				objectContext.Game.Screen.baseScreenWidth = baseScreenSize.x;
 				objectContext.Game.Screen.baseScreenHeight = baseScreenSize.y;
+				objectContext.Game.Screen.contentScaleFactor = ResourceManager.scaleFactor;
 			}
 
 			deviceSize.setTo(0,0, 
@@ -263,7 +260,6 @@ package com.pblabs.engine.core
 				else
 					objectContext.Game.Screen.isPortraitLayout = false;
 			}
-			
 		}
 		
 		private function onAccelerometerUpdated(event : AccelerometerEvent):void
