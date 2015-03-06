@@ -53,7 +53,7 @@ package com.pblabs.starling2D
 					if(texture){
 						gpuObject = new Image(texture);
 					}
-				}else if(_imageDataDirty){
+				}else{
 					if((gpuObject as Image).texture)
 						(gpuObject as Image).texture.dispose();
 					

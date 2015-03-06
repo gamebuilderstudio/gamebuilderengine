@@ -45,7 +45,7 @@ package com.pblabs.starling2D
 				if(!gpuObject){
 					//Create GPU Renderer Object
 					gpuObject = new Image( ResourceTextureManagerG2D.getTextureForBitmapData( originalBitmapData ) );
-				}else if(_imageDataDirty){
+				}else{
 					if(( gpuObject as Image).texture)
 						( gpuObject as Image).texture.dispose();
 					( gpuObject as Image).texture = ResourceTextureManagerG2D.getTextureForBitmapData( originalBitmapData );
@@ -55,6 +55,7 @@ package com.pblabs.starling2D
 				skipCreation = true;
 			}
 			super.buildG2DObject(skipCreation);
+			_imageDataDirty = false;
 		}
 		
 		protected function modifyTexture(data:Texture):Texture

@@ -86,8 +86,7 @@ package com.pblabs.starling2D
 				if(!resource){
 					super.buildG2DObject();
 					return;
-				}
-				if(!gpuObject || _imageDataDirty){
+				}else{
 					var texture : Texture = ResourceTextureManagerG2D.getTextureForResource(resource);
 					if(texture){
 						if(_scale9Textures) {
@@ -100,7 +99,6 @@ package com.pblabs.starling2D
 							(gpuObject as Scale9Image).textures = _scale9Textures;
 					}
 				}
-				
 				smoothing = _smoothing;
 				skipCreation = true;
 				_imageDataDirty = false;
