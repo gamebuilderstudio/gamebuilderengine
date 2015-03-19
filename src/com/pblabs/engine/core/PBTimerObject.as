@@ -112,8 +112,6 @@ package com.pblabs.engine.core
 		public function stop():void
 		{
 			_running = false;
-			PBE.processManager.removeTickedObject(this);
-			_addedToProcessManager = false;
 		}
 		
 		public function get running():Boolean
