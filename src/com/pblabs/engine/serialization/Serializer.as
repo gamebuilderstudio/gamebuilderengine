@@ -13,7 +13,6 @@ package com.pblabs.engine.serialization
     import com.pblabs.engine.entity.IEntity;
     import com.pblabs.engine.entity.IEntityComponent;
     
-    import flash.geom.Point;
     import flash.utils.Dictionary;
     import flash.utils.getDefinitionByName;
     import flash.utils.getQualifiedClassName;
@@ -41,7 +40,11 @@ package com.pblabs.engine.serialization
         
         private static var _instance:Serializer = null;
         
-        public function Serializer()
+		private static function isVector(obj:Object):Boolean {
+			return (getQualifiedClassName(obj).indexOf('__AS3__.vec::Vector') == 0);
+		}
+		
+		public function Serializer()
         {
             // initialize our default Serializers. Note "special" cases get a double
             // colon so there can be no overlap w/ any real type.
@@ -445,8 +448,8 @@ package com.pblabs.engine.serialization
 
                 // If the value is the same as the defaultValue, ignore it
                 // TODO: Handle simple arrays or structures like Points
-                var defaultValue:XMLList = data ? data.arg.(@key == "defaultValue") : null;
-                if (defaultValue && object[propertyName].toString() == defaultValue.@value.toString())
+                var defaultValue:XMLList = data && data.descendants( "arg" ).(hasOwnProperty("@key") && @key == "defaultValue") ? data.arg.(@key == "defaultValue") : null;
+                if (defaultValue != null && defaultValue.length() > 0 && object[propertyName].toString() == defaultValue.@value.toString())
                     return null;
             }
             
@@ -629,10 +632,10 @@ package com.pblabs.engine.serialization
         {
             // Get the child object, if it is present.
             var childObject:* = object[fieldName];
-			if(childObject is Array || childObject is OrderedArray || childObject is Vector){
+			if(childObject is Array || childObject is OrderedArray || (childObject && ("fixed" in childObject) && isVector(childObject))){
 				if(childObject && childObject is OrderedArray){
 					childObject = new OrderedArray();
-				}else if(childObject){
+				}else if(childObject && (!("fixed" in childObject) || childObject["fixed"] == false) ){
 					childObject.length = 0;
 				}
 			}
