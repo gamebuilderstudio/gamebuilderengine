@@ -640,6 +640,14 @@ package com.pblabs.engine.serialization
 				}
 			}
 			
+			if(childObject is Dictionary || (childObject is Object && TypeUtility.isDynamic(childObject)))
+			{
+				for(var key:String in childObject)
+				{
+					delete childObject[key];
+				}
+			}
+			
 			//If typeName is a wildcard we need to handle this special case
 			if(typeName == '*')
 			{
