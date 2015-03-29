@@ -105,6 +105,7 @@ package com.pblabs.engine.components
 		   updated.dispatch(this);
 	   }
 	   
+	   [EditorData(inspectable="false")]
 	   public function get source():Array { return _data; }
 	   public function set source(data : Array):void{
 		   clearAll();
@@ -116,11 +117,12 @@ package com.pblabs.engine.components
 		   }
 	   }
 	   
-	   [EditorData(ignore="true")]
-	   public function get count():int { return _data.length; }
-	   public function set count(val : int):void{}
+	   [EditorData(ignore="true", inspectable="true")]
+	   public function get length():int { return _data.length; }
+	   public function set length(val : int):void{}
 
 	   private var _tempEmptyObject : Object = {};
+	   [EditorData(ignore="true", inspectable="true")]
 	   public function get lastEntry():Object { return _data && _data.length > 0 ? _data[_data.length-1] : _tempEmptyObject; }
 	   public function set lastEntry(val : Object):void{}
 
