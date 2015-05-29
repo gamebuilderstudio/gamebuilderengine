@@ -17,7 +17,6 @@ package com.pblabs.engine.components
 	import com.pblabs.engine.util.DynamicObjectUtil;
 	import com.pblabs.rendering2D.DisplayObjectRenderer;
 	import com.pblabs.rendering2D.IMobileSpatialObject2D;
-	import com.pblabs.starling2D.DisplayObjectRendererG2D;
 	
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
@@ -90,7 +89,8 @@ package com.pblabs.engine.components
 		public function destroy():void
 		{
 			clearList();
-			_listData.updated.remove(onDataSourceChanged);
+			if(_listData)
+				_listData.updated.remove(onDataSourceChanged);
 		}
 		
 		public function getListData():void
@@ -152,7 +152,6 @@ package com.pblabs.engine.components
 				}else{
 					entity = _listItems[i];
 				}
-				entity.initialize(null, itemEntityName);
 				
 				var spatial : IMobileSpatialObject2D = entity.getProperty(itemSpatialReference) as IMobileSpatialObject2D;
 				var currentPos : Point = spatial.position;
@@ -176,6 +175,7 @@ package com.pblabs.engine.components
 					}
 				}
 				
+				entity.initialize(null, itemEntityName);
 			}
 		}
 		
