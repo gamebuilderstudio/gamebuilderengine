@@ -89,8 +89,10 @@ package com.pblabs.engine.components
 		public function destroy():void
 		{
 			clearList();
-			if(_listData)
+			if(_listData && _listData.updated){
 				_listData.updated.remove(onDataSourceChanged);
+				_listData = null;
+			}
 		}
 		
 		public function getListData():void
@@ -121,8 +123,10 @@ package com.pblabs.engine.components
 				var len : int = _listItems.length;
 				for(var i : int = 0; i < len; i++)
 				{
-					var entity : IEntity = _listItems.shift();
-					entity.destroy();
+					if(_listItems.length > 0){
+						var entity : IEntity = _listItems.shift();
+						if(entity) entity.destroy();
+					}
 				}
 			}
 		}
