@@ -10,11 +10,15 @@ package com.pblabs.starling2D
 {
 	import com.pblabs.engine.PBUtil;
 	import com.pblabs.engine.core.ObjectType;
+	import com.pblabs.engine.resource.ResourceEvent;
+	import com.pblabs.engine.util.MCUtil;
 	import com.pblabs.rendering2D.SWFSpriteRenderer;
 	
 	import flash.display.BitmapData;
 	import flash.display.DisplayObject;
+	import flash.display.MovieClip;
 	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	
 	import starling.core.Starling;
 	import starling.display.Image;
@@ -79,30 +83,23 @@ package com.pblabs.starling2D
 				if(!_resource){
 					return;
 				}
-				if(!bitmapData)
-				{
-					texture = ResourceTextureManagerG2D.getTextureByKey( getTextureCacheKey() );
-					if(texture)
-						texture.dispose();
-					return;
-				}
-				
 				if(!gpuObject){
 					texture = ResourceTextureManagerG2D.getTextureByKey( getTextureCacheKey() );
 					if(texture)
 					{
 						gpuObject = new Image(texture);
-					}else{
+					}else if(bitmapData){
 						//Create GPU Renderer Object
 						gpuObject = new Image(ResourceTextureManagerG2D.getTextureForBitmapData( bitmapData, getTextureCacheKey() ));
 					}
-				}else{
+				}else if(bitmapData){
 					if((gpuObject as Image).texture)
 						(gpuObject as Image).texture.dispose();
 					
 					(gpuObject as Image).texture = ResourceTextureManagerG2D.getTextureForBitmapData(bitmapData, getTextureCacheKey());
 					(gpuObject as Image).readjustSize();
 				}
+				if(!bitmapData) return;
 				smoothing = _smoothing;
 				skipCreation = true;
 				_imageDataDirty = false;
@@ -118,11 +115,20 @@ package com.pblabs.starling2D
 
 		override protected function paintMovieClipToBitmap(instance : DisplayObject):void
 		{
-			var texture : Texture = ResourceTextureManagerG2D.getTextureByKey( getTextureCacheKey() );
-			if(!texture){
-				super.paintMovieClipToBitmap(instance);
+			if(ResourceTextureManagerG2D.isATextureCachedWithKey( getTextureCacheKey() ) && gpuObject){
+				ResourceTextureManagerG2D.releaseTexture( (gpuObject as Image).texture );
 			}
+			super.paintMovieClipToBitmap(instance);
 		}
+		
+		override protected function onResourceUpdated(event : ResourceEvent):void
+		{
+			if(ResourceTextureManagerG2D.isATextureCachedWithKey( getTextureCacheKey() ) && gpuObject){
+				ResourceTextureManagerG2D.releaseTexture( (gpuObject as Image).texture );
+			}
+			super.onResourceUpdated(event);
+		}
+		
 
 		protected function modifyTexture(data:Texture):Texture
 		{
@@ -132,7 +138,7 @@ package com.pblabs.starling2D
 		protected function getTextureCacheKey():String{
 			if(!_resource)
 				return null;
-			return _fileName + ":" + _containingObjectName + ":" + _size.toString() + ":" + _scale.toString();
+			return _fileName + ":" + _containingObjectName + ":" + _scale.toString();
 		}
 
 		override public function set mouseEnabled(value:Boolean):void

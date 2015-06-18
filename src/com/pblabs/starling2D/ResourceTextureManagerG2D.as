@@ -31,34 +31,45 @@ package com.pblabs.starling2D
 		public static function releaseTextures():void
 		{
 			//Release original parent texture if it is no longer referenced anywhere in the engine
-			for(var key : * in _originTexturesMap)
-			{
-				var len : int = _originTexturesMap[key].length;
-				for(var i : int = 0; i < len; i++)
-				{
-					var originTexture : Object = _originTexturesMap[key][i]
-					_originTexturesMap[key].splice(i, 1);
-					if(!_originTexturesMap[key] || _originTexturesMap[key].length < 1)
-						delete _originTexturesMap[key];
-					
-					delete _textureReferenceCount[originTexture];
-					if(originTexture is Texture && "root" in originTexture && originTexture.root in _originTextureToBitmapDataMap)
-						delete _originTextureToBitmapDataMap[originTexture.root];
-					if("disposed" in originTexture && originTexture.disposed && originTexture.disposed is Signal)
-					{
-						originTexture.disposed.remove(releaseTexture);
-					}
-					originTexture.dispose();
-				}
-			}
 			for(key in _subTexturesMap)
 			{
 				if("disposed" in _subTexturesMap[key] && _subTexturesMap[key].disposed && _subTexturesMap[key].disposed is Signal)
 				{
 					_subTexturesMap[key].disposed.remove(releaseTexture);
 				}
-				_subTexturesMap[key].dispose();
+				if(key is Texture)
+					(key as Texture).dispose();
+				else if (key is TextureAtlas)
+					(key as TextureAtlas).dispose();
 				delete _subTexturesMap[key];
+			}
+
+			for(var key : * in _originTexturesMap)
+			{
+				var len : int = _originTexturesMap[key].length;
+				for(var i : int = 0; i < len; i++)
+				{
+					var originTexture : Object = _originTexturesMap[key][i]
+					if(_originTexturesMap[key][i] == originTexture){
+						
+						_originTexturesMap[key].splice(i, 1);
+						
+						if(!_originTexturesMap[key] || _originTexturesMap[key].length < 1){
+							delete _originTexturesMap[key];
+						}
+						if(originTexture in _textureReferenceCount){
+							delete _textureReferenceCount[originTexture];
+						}
+							
+						if(originTexture is Texture && "root" in originTexture && originTexture.root in _originTextureToBitmapDataMap)
+							delete _originTextureToBitmapDataMap[originTexture.root];
+						if("disposed" in originTexture && originTexture.disposed && originTexture.disposed is Signal)
+						{
+							originTexture.disposed.remove(releaseTexture);
+						}
+						originTexture.dispose();
+					}
+				}
 			}
 			_originTexturesMap = new Dictionary();
 			_subTexturesMap = new Dictionary();
@@ -201,12 +212,17 @@ package com.pblabs.starling2D
 			return subtexture;
 		}
 		
+		public static function isATextureCachedWithKey(key : *):Boolean
+		{
+			return key in _originTexturesMap;
+		}
+		
 		public static function getTextureByKey(key : String):Texture
 		{
 			if(!key)
 				return null;
 			
-			if(_originTexturesMap[ key ])
+			if(key in _originTexturesMap)
 			{
 				var texture : Texture = _originTexturesMap[key][0] as Texture;
 				_textureReferenceCount[texture]++;
@@ -228,18 +244,25 @@ package com.pblabs.starling2D
 			}
 		}
 		
-		private static function releaseTexture(texture : Texture):void
+		public static function releaseTexture(texture : Texture):void
 		{
 			try{
 				var originTexture : Object;
 				if(texture in _subTexturesMap)
 				{
-					originTexture = _subTexturesMap[texture];
-					_textureReferenceCount[originTexture]--;
-					if(_textureReferenceCount[originTexture] > 0){
-						delete _subTexturesMap[texture];
-						return;
+					if("disposed" in _subTexturesMap[texture] && _subTexturesMap[texture].disposed && _subTexturesMap[texture].disposed is Signal)
+					{
+						_subTexturesMap[texture].disposed.remove(releaseTexture);
 					}
+					texture.dispose();
+					originTexture = _subTexturesMap[texture];
+					delete _subTexturesMap[texture];
+
+					//Reduce Count on Origin Texture
+					if(originTexture in _textureReferenceCount){
+						_textureReferenceCount[originTexture] =  _textureReferenceCount[originTexture] - 1;
+					}
+					
 				}else if(!(texture in _originTexturesMap)){
 					return;
 				}else{
@@ -247,22 +270,24 @@ package com.pblabs.starling2D
 				}
 				
 				//Release original parent texture if it is no longer referenced anywhere in the engine
-				/*
+				///*
 				for(var key : * in _originTexturesMap)
 				{
-					if(!(key is BitmapData)) continue;
 					var len : int = _originTexturesMap[key].length;
 					for(var i : int = 0; i < len; i++)
 					{
-						if(_originTexturesMap[key][i] == originTexture){
-							_originTexturesMap[key].splice(i, 1);
-							if(!_originTexturesMap[key] || _originTexturesMap[key].length < 1)
-								delete _originTexturesMap[key];
+						if(_originTexturesMap[key][i] == originTexture && originTexture in _textureReferenceCount && _textureReferenceCount[originTexture] < 1){
 							
+							_originTexturesMap[key].splice(i, 1);
+							if(!_originTexturesMap[key] || _originTexturesMap[key].length < 1){
+								delete _originTexturesMap[key];
+							}
+
 							delete _textureReferenceCount[originTexture];
+							
 							if(originTexture is Texture && "root" in originTexture && originTexture.root in _originTextureToBitmapDataMap)
 								delete _originTextureToBitmapDataMap[originTexture.root];
-							if("disposed" in originTexture && originTexture["dispose"] != null )
+							if("disposed" in originTexture && originTexture.disposed && originTexture.disposed is Signal)
 							{
 								originTexture.disposed.remove(releaseTexture);
 							}
@@ -271,7 +296,7 @@ package com.pblabs.starling2D
 						}
 					}
 				}
-				*/
+				//*/
 			}catch(e : Error){
 				Logger.error(ResourceTextureManagerG2D, "releaseTexture", "Error releasing texture: " + e.getStackTrace());
 			}

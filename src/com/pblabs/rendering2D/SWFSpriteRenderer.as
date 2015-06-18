@@ -20,8 +20,6 @@ package com.pblabs.rendering2D
 	import flash.display.MovieClip;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
-	import flash.utils.getDefinitionByName;
-	import flash.utils.getQualifiedClassName;
 
 	/**
 	 * Render Component that will load and render a SWFResource to a bitmap
@@ -33,10 +31,19 @@ package com.pblabs.rendering2D
 		protected var _classInstance:DisplayObject = null;
 		protected var _origSize : Point;
 		protected var _parentMC : MovieClip = new MovieClip();
-
+		protected var _swfRenderingDirty : Boolean = false;
+		
 		public function SWFSpriteRenderer()
 		{
 			super();
+		}
+		
+		override public function onFrame(elapsed:Number):void
+		{
+			super.onFrame(elapsed);
+			
+			if(_swfRenderingDirty && _classInstance)
+				paintMovieClipToBitmap(_classInstance);
 		}
 		
 		protected function onResourceUpdated(event : ResourceEvent):void
@@ -59,27 +66,30 @@ package com.pblabs.rendering2D
 			if(resource.hasEventListener(ResourceEvent.FAILED_EVENT))
 				resource.removeEventListener(ResourceEvent.FAILED_EVENT, resourceFailedLoadingHandler );
 
+			_classInstance = null;
 			_loaded = true;
 			_resource = resource;
 			_resource.addEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
 			_fileName = _resource.filename;
 
 			if(!containingObjectName) {
-				//A new instance of the movie clip is created here so 
-				//that multiple swf instances can be rendered
-				var swfClass : Class;
-				if(_resource.appDomain)
-				{
-					swfClass = _resource.appDomain.getDefinition( getQualifiedClassName(_resource.clip) ) as Class;
-				}else{
-					swfClass = getDefinitionByName( getQualifiedClassName(_resource.clip) ) as Class;
-				}
-				paintMovieClipToBitmap( new swfClass() );
-				//Logger.error(this, 'resourceContent', 'A SWF resource requires that the containingObjectName be populated');
+				_classInstance = _resource.clip;
 			}else if(_resource.appDomain){
-				paintMovieClipToBitmap( _resource.getExportedAsset(_containingObjectName) as DisplayObject );
+				_classInstance = _resource.getExportedAsset(_containingObjectName) as DisplayObject;
 			}else{
 				Logger.error(this, 'onResourceLoaded', 'The SWF resource is missing domain information, so it can not be extracted.');
+			}
+			if(_classInstance){
+				var localDimensions:Rectangle = MCUtil.getRealBounds(_classInstance);
+				_origSize = localDimensions.size;
+				
+				// set the registration (alignment) point to the sprite's center
+				if(!bitmapData && _registrationPoint.x == 0 && _registrationPoint.y == 0){
+					_registrationPoint = MCUtil.getRegistrationPoint( _classInstance );
+					if(_registrationPoint.x < 0) _registrationPoint.x *= -1;
+					if(_registrationPoint.y < 0) _registrationPoint.y *= -1;
+				}
+				_swfRenderingDirty = true;
 			}
 		}
 		
@@ -112,21 +122,6 @@ package com.pblabs.rendering2D
 			MCUtil.stopMovieClips( instance as MovieClip);
 
 			var localDimensions:Rectangle = MCUtil.getRealBounds(instance);
-
-			//Set original size if this movie clip is new
-			if(!_classInstance || _classInstance != instance)
-			{
-				_origSize = localDimensions.size;
-			}
-			_classInstance = instance;
-			
-			// set the registration (alignment) point to the sprite's center
-			if(!bitmapData && _registrationPoint.x == 0 && _registrationPoint.y == 0){
-				_registrationPoint = MCUtil.getRegistrationPoint( _classInstance );
-				if(_registrationPoint.x < 0) _registrationPoint.x *= -1;
-				if(_registrationPoint.y < 0) _registrationPoint.y *= -1;
-			}
-			
 			var frameData : ImageFrameData = MCUtil.getBitmapDataByDisplay(instance, scale, instance.transform.colorTransform, localDimensions);
 
 			//Clean up hack
@@ -134,7 +129,7 @@ package com.pblabs.rendering2D
 				PBE.mainStage.removeChild(_parentMC);
 				_parentMC.removeChild( instance );
 			}
-
+			_swfRenderingDirty = false;
 			// set the bitmapData of this render object
 			bitmapData = frameData.bitmapData;	
 		}
@@ -218,7 +213,7 @@ package com.pblabs.rendering2D
 				rePaint = true;
 			super.size = value;
 			if(_classInstance && rePaint)
-				paintMovieClipToBitmap(_classInstance);
+				_swfRenderingDirty = true;
 		}
 
 		override public function set scale(value:Point):void
@@ -228,7 +223,7 @@ package com.pblabs.rendering2D
 				rePaint = true;
 			super.scale = value;
 			if(_classInstance && rePaint)
-				paintMovieClipToBitmap(_classInstance);
+				_swfRenderingDirty = true;
 		}
 
 		protected var _containingObjectName : String;
