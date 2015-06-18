@@ -144,6 +144,9 @@ package com.pblabs.rendering2D
 				if(resource && resource.isLoaded)
 					onResourceLoaded(resource);
 			}
+			
+			if(_swfRenderingDirty && _classInstance)
+				paintMovieClipToBitmap(_classInstance);
 		}
 
 		protected override function onRemove():void
