@@ -370,41 +370,10 @@ package com.pblabs.rendering2D.spritesheet
             var rasterized:Array = new Array(maxFrames);
 			_frameCenters = new Array(maxFrames);
 
-			// Scaling if needed (including filters)
-			/*if (_scale.x != 1 || _scale.y != 1)
-			{
-				
-				mc.scaleX *= _scale.x;
-				mc.scaleY *= _scale.y;
-				
-				if (mc.filters.length > 0)
-				{
-					var filters:Array = mc.filters;
-					var filtersLen:int = mc.filters.length;
-					var filter:Object;
-					for (var j:uint = 0; j < filtersLen; j++)
-					{
-						filter = filters[j];
-						
-						if (filter.hasOwnProperty("blurX"))
-						{
-							filter.blurX *= _scale.x;
-							filter.blurY *= _scale.y;
-						}
-						if (filter.hasOwnProperty("distance"))
-						{
-							filter.distance *= (_scale.x+_scale.y)/2;
-						}
-					}
-					mc.filters = filters;
-				}
-			}*/
-			
 			//Hack required so that the movie clip animation is drawn correctly
 			//Ridiculous Adobe!!!
-			if(PBE.mainStage && !_parentMC.parent){
-				PBE.mainStage.addChild(_parentMC);
-				_parentMC.addChild( mc );
+			if(PBE.mainStage){
+				PBE.mainStage.addChild(mc);
 			}
 			
 			var tmpBounds : Rectangle;
@@ -434,9 +403,8 @@ package com.pblabs.rendering2D.spritesheet
 			}
 			
 			//Clean up hack
-			if(PBE.mainStage && _parentMC.parent && PBE.mainStage.contains(_parentMC)){
-				PBE.mainStage.removeChild(_parentMC);
-				_parentMC.removeChild( mc );
+			if(PBE.mainStage && PBE.mainStage.contains(mc)){
+				PBE.mainStage.removeChild(mc);
 			}
 
             return rasterized;
@@ -477,7 +445,6 @@ package com.pblabs.rendering2D.spritesheet
 		protected var _clip:MovieClip;
 		protected var _bounds:Rectangle;
 		protected var _cached:Boolean = true;
-		protected static var _parentMC : MovieClip = new MovieClip();
 		protected var _destroyed : Boolean = false;
     }
 }

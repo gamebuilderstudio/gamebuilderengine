@@ -32,6 +32,7 @@ package com.pblabs.rendering2D
 		protected var _origSize : Point;
 		protected var _parentMC : MovieClip = new MovieClip();
 		protected var _swfRenderingDirty : Boolean = false;
+		protected var _swfFrameData : ImageFrameData = new ImageFrameData(null,null);
 		
 		public function SWFSpriteRenderer()
 		{
@@ -115,23 +116,21 @@ package com.pblabs.rendering2D
 			//Hack required so that the movie clip animation is drawn correctly
 			//Ridiculous Adobe!!!
 			if(PBE.mainStage){
-				PBE.mainStage.addChild(_parentMC);
-				_parentMC.addChild( instance );
+				PBE.mainStage.addChild(instance);
 			}
 
 			MCUtil.stopMovieClips( instance as MovieClip);
 
 			var localDimensions:Rectangle = MCUtil.getRealBounds(instance);
-			var frameData : ImageFrameData = MCUtil.getBitmapDataByDisplay(instance, scale, instance.transform.colorTransform, localDimensions);
+			_swfFrameData = MCUtil.getBitmapDataByDisplay(instance, scale, instance.transform.colorTransform, localDimensions, _swfFrameData);
 
 			//Clean up hack
-			if(PBE.mainStage){
-				PBE.mainStage.removeChild(_parentMC);
-				_parentMC.removeChild( instance );
+			if(PBE.mainStage && PBE.mainStage.contains(instance)){
+				PBE.mainStage.removeChild(instance);
 			}
 			_swfRenderingDirty = false;
 			// set the bitmapData of this render object
-			bitmapData = frameData.bitmapData;	
+			bitmapData = _swfFrameData.bitmapData;	
 		}
 
 		protected override function onAdd():void
@@ -172,11 +171,15 @@ package com.pblabs.rendering2D
 			if(updateProps)
 				updateProperties();
 			
+			var tmpScale : Point = combinedScale;
 			_transformMatrix.identity();
-			//_transformMatrix.scale(combinedScale.x, combinedScale.y);
-			_transformMatrix.translate(-_registrationPoint.x * combinedScale.x, -_registrationPoint.y * combinedScale.y);
+			_transformMatrix.scale(tmpScale.x, tmpScale.y);
+			_transformMatrix.translate(-_registrationPoint.x * tmpScale.x, -_registrationPoint.y * tmpScale.y);
 			_transformMatrix.rotate(PBUtil.getRadiansFromDegrees(_rotation + _rotationOffset));
 			_transformMatrix.translate(_position.x + _positionOffset.x, _position.y + _positionOffset.y);
+			
+			//bitmap.scaleX = combinedScale.x;
+			//bitmap.scaleY = combinedScale.y;
 			
 			displayObject.transform.matrix = _transformMatrix;
 			displayObject.alpha = _alpha;
@@ -201,8 +204,8 @@ package com.pblabs.rendering2D
 			var tmpScaleY:Number = _scale.y;
 			if(_size && (_size.x > 0 || _size.y > 0))
 			{
-				tmpScaleX = _scale.x * (_size.x / _origSize.x);
-				tmpScaleY = _scale.y * (_size.y / _origSize.y);
+				tmpScaleX = _scale.x * (_size.x / Math.abs(_origSize.x*tmpScaleX));
+				tmpScaleY = _scale.y * (_size.y / Math.abs(_origSize.y*tmpScaleY));
 			}
 			_tmpCombinedScale.x = tmpScaleX;
 			_tmpCombinedScale.y = tmpScaleY;

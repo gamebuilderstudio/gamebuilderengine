@@ -1,5 +1,7 @@
 package com.pblabs.engine.util
 {
+	import com.pblabs.engine.PBUtil;
+	
 	import flash.display.BitmapData;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
@@ -131,24 +133,30 @@ package com.pblabs.engine.util
 			return realBounds;
 		}
 		
-		public static function getBitmapDataByDisplay(clip:DisplayObject, scaleFactor : Point, clipColorTransform:ColorTransform = null, frameBounds:Rectangle=null):ImageFrameData
+		public static function getBitmapDataByDisplay(clip:DisplayObject, scaleFactor : Point, clipColorTransform:ColorTransform = null, frameBounds:Rectangle=null, frameDataInstance : ImageFrameData = null):ImageFrameData
 		{
 			if(!scaleFactor)
 				scaleFactor = new Point(1,1);
 			var realBounds:Rectangle = getRealBounds(clip);
-			
-			var bdData : BitmapData = new BitmapData((realBounds.width*scaleFactor.x), (realBounds.height*scaleFactor.y), true, 0);
+			var bW : Number = Math.abs(realBounds.width*scaleFactor.x);
+			var bH : Number = Math.abs(realBounds.height*scaleFactor.y);
+			if(bW == 0) bW = 1;
+			if(bH == 0) bH = 1;
+			if(scaleFactor.x == 0) scaleFactor.x = .1;
+			if(scaleFactor.y == 0) scaleFactor.y = .1;
+			var bdData : BitmapData = new BitmapData(PBUtil.clamp(bW, 2, Number.MAX_VALUE), PBUtil.clamp(bH, 2, Number.MAX_VALUE), true, 0);
 			var _mat : Matrix = clip.transform.matrix;
 			_mat.translate(-realBounds.x, -realBounds.y);
-			_mat.scale(scaleFactor.x, scaleFactor.y);
-			
+			_mat.scale(Math.abs(scaleFactor.x), Math.abs(scaleFactor.y));
 			bdData.draw(clip, _mat, clipColorTransform);
 			
-			var item:ImageFrameData = new ImageFrameData(bdData, realBounds);
-			
-			bdData = null;
-			
-			return item;
+			if(frameDataInstance){
+				frameDataInstance.bitmapData = bdData;
+				frameDataInstance.bounds = realBounds;
+			}else{
+				frameDataInstance = new ImageFrameData(bdData, realBounds);
+			}
+			return frameDataInstance;
 		}
 		
 	}

@@ -11,14 +11,11 @@ package com.pblabs.starling2D
 	import com.pblabs.engine.PBUtil;
 	import com.pblabs.engine.core.ObjectType;
 	import com.pblabs.engine.resource.ResourceEvent;
-	import com.pblabs.engine.util.MCUtil;
 	import com.pblabs.rendering2D.SWFSpriteRenderer;
 	
 	import flash.display.BitmapData;
 	import flash.display.DisplayObject;
-	import flash.display.MovieClip;
 	import flash.geom.Point;
-	import flash.geom.Rectangle;
 	
 	import starling.core.Starling;
 	import starling.display.Image;
@@ -54,9 +51,10 @@ package com.pblabs.starling2D
 			if(updateProps)
 				updateProperties();
 			
+			var tmpScale : Point = combinedScale;
 			_transformMatrix.identity();
-			//_transformMatrix.scale(combinedScale.x, combinedScale.y);
-			_transformMatrix.translate(-_registrationPoint.x * combinedScale.x, -_registrationPoint.y * combinedScale.y);
+			_transformMatrix.scale(tmpScale.x, tmpScale.y);
+			_transformMatrix.translate(-_registrationPoint.x * tmpScale.x, -_registrationPoint.y * tmpScale.y);
 			_transformMatrix.rotate(PBUtil.getRadiansFromDegrees(_rotation + _rotationOffset));
 			_transformMatrix.translate((_position.x + _positionOffset.x), (_position.y + _positionOffset.y));
 			
