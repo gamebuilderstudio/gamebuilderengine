@@ -616,6 +616,7 @@ package com.pblabs.rendering2D
 		 * Note this is only considered at layer setup time. Use getLayer() to
 		 * get a layer that is being actively used.
 		 */
+		[EditorData(ignore="true")]
 		public function get layers():Array
 		{
 			return _layers;

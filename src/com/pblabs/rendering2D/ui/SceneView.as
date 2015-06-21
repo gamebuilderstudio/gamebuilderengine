@@ -12,6 +12,8 @@ package com.pblabs.rendering2D.ui
     
     import flash.display.DisplayObject;
     import flash.display.Sprite;
+    import flash.geom.Transform;
+    import flash.media.SoundTransform;
     
     /**
      * This class can be set as the SceneView on the BaseSceneComponent class and is used
@@ -57,8 +59,22 @@ package com.pblabs.rendering2D.ui
         {
             _height = value;
         }
+		
+		[EditorData(ignore="true")]
+		override public function set transform(value:Transform):void
+		{
+			super.transform = value;
+		}
+		override public function get transform():Transform{ return super.transform; }
         
-        public function addDisplayObject(dobj:Object):void
+		[EditorData(ignore="true")]
+		override public function set soundTransform(value:SoundTransform):void
+		{
+			super.soundTransform = value;
+		}
+		override public function get soundTransform():SoundTransform{ return super.soundTransform; }
+
+		public function addDisplayObject(dobj:Object):void
         {
             addChild(dobj as DisplayObject);
         }
