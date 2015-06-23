@@ -136,14 +136,12 @@ package com.pblabs.starling2D
 					texture.disposed.addOnce(releaseTexture);
 					resource.dispose();
 				}else if(resource.isAtfImage && resource.atfData){
-					texture = Texture.fromAtfData(resource.atfData, scaleFactor, false, true, repeat);
+					texture = Texture.fromAtfData(resource.atfData, scaleFactor, false, false, repeat, onTextureRestored);
 					texture.disposed.addOnce(releaseTexture);
-					texture.root.onRestore = onTextureRestored;
 					_originTextureToBitmapDataMap[texture.root] = resource.atfData;
 				}else{
-					texture = Texture.fromBitmapData(resource.bitmapData, false, false, scaleFactor, "bgra", repeat);
+					texture = Texture.fromBitmapData(resource.bitmapData, false, false, scaleFactor, "bgra", repeat, onTextureRestored);
 					texture.disposed.addOnce(releaseTexture);
-					texture.root.onRestore = onTextureRestored;
 					_originTextureToBitmapDataMap[texture.root] = resource.bitmapData;
 				}
 				_originTexturesMap[resource] = new Vector.<Texture>();

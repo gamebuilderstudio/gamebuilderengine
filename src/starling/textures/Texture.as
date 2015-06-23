@@ -226,10 +226,10 @@ package starling.textures
         public static function fromBitmap(bitmap:Bitmap, generateMipMaps:Boolean=true,
                                           optimizeForRenderToTexture:Boolean=false,
                                           scale:Number=1, format:String="bgra",
-                                          repeat:Boolean=false):Texture
+                                          repeat:Boolean=false, restoreFunction : Function = null):Texture
         {
             return fromBitmapData(bitmap.bitmapData, generateMipMaps, optimizeForRenderToTexture, 
-                                  scale, format, repeat);
+                                  scale, format, repeat, restoreFunction);
         }
         
         /** Creates a texture object from bitmap data.
@@ -250,17 +250,21 @@ package starling.textures
         public static function fromBitmapData(data:BitmapData, generateMipMaps:Boolean=true,
                                               optimizeForRenderToTexture:Boolean=false,
                                               scale:Number=1, format:String="bgra",
-                                              repeat:Boolean=false):Texture
+                                              repeat:Boolean=false, restoreFunction : Function = null):Texture
         {
             var texture:Texture = Texture.empty(data.width / scale, data.height / scale, true, 
                                                 generateMipMaps, optimizeForRenderToTexture, scale,
                                                 format, repeat);
             
             texture.root.uploadBitmapData(data);
-            texture.root.onRestore = function():void
-            {
-                texture.root.uploadBitmapData(data);
-            };
+			if(restoreFunction == null){
+	            texture.root.onRestore = function():void
+	            {
+	                texture.root.uploadBitmapData(data);
+	            };
+			}else{
+				texture.root.onRestore = restoreFunction;
+			}
             
             return texture;
         }
@@ -274,7 +278,7 @@ package starling.textures
          *  asynchronously. It can only be used when the callback has been executed. This is the
          *  expected function definition: <code>function(texture:Texture):void;</code></p> */
         public static function fromAtfData(data:ByteArray, scale:Number=1, useMipMaps:Boolean=true, 
-                                           async:*=null, repeat:Boolean=false):Texture
+                                           async:*=null, repeat:Boolean=false, restoreFunction : Function = null):Texture
         {
             var context:Context3D = Starling.context;
             if (context == null) throw new MissingContextError();
@@ -287,10 +291,14 @@ package starling.textures
                 false, false, scale, repeat);
             
             concreteTexture.uploadAtfData(data, 0, async);
-            concreteTexture.onRestore = function():void
-            {
-                concreteTexture.uploadAtfData(data, 0);
-            };
+			if(restoreFunction == null){
+	            concreteTexture.onRestore = function():void
+	            {
+	                concreteTexture.uploadAtfData(data, 0);
+	            };
+			}else{
+				concreteTexture.onRestore = restoreFunction;
+			}
             
             return concreteTexture;
         }
