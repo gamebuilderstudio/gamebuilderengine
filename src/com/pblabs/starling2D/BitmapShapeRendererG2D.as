@@ -9,6 +9,7 @@
 package com.pblabs.starling2D
 {
 	import com.pblabs.engine.core.ObjectType;
+	import com.pblabs.engine.resource.ResourceManager;
 	import com.pblabs.rendering2D.BitmapShapeRenderer;
 	
 	import flash.display.Bitmap;
@@ -93,11 +94,8 @@ package com.pblabs.starling2D
 				return;
 			}
 
-			var texture : Texture = ResourceTextureManagerG2D.getTextureByKey( textureCacheKey );
-			if(!texture || _shapeDirty){
-				if(texture)
-					texture.dispose();
-
+			if(!ResourceTextureManagerG2D.isATextureCachedWithKey( textureCacheKey ) || _shapeDirty){
+				
 				if(bitmap){
 					if(bitmap.bitmapData)
 						bitmap.bitmapData.dispose();
@@ -122,14 +120,14 @@ package com.pblabs.starling2D
 				
 				// Draw one or both shapes.
 				if(isSquare)
-					g.drawRect(0, 0, size.x, size.y);
+					g.drawRect(0, 0, size.x*ResourceManager.scaleFactor, size.y*ResourceManager.scaleFactor);
 				
 				if(isCircle){
 					var radiansX : Number = 180 * (Math.PI/180);
 					var radiansY : Number = -90 * (Math.PI/180);
 					var x : int = radius * Math.cos(radiansX);
 					var y : int = radius * Math.sin(radiansY);
-					g.drawCircle(-x, -y, radius);
+					g.drawCircle(-x*ResourceManager.scaleFactor, -y*ResourceManager.scaleFactor, radius*ResourceManager.scaleFactor);
 				}
 				
 				g.endFill();

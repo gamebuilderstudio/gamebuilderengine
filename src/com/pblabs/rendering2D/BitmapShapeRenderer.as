@@ -2,6 +2,7 @@ package com.pblabs.rendering2D
 {
 	import com.pblabs.engine.PBE;
 	import com.pblabs.engine.core.ObjectType;
+	import com.pblabs.engine.resource.ResourceManager;
 	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -100,7 +101,7 @@ package com.pblabs.rendering2D
 				var radiansY : Number = -90 * (Math.PI/180);
 				var x : int = radius * Math.cos(radiansX);
 				var y : int = radius * Math.sin(radiansY);
-				g.drawCircle(-x, -y, radius);
+				g.drawCircle(-x*ResourceManager.scaleFactor, -y*ResourceManager.scaleFactor, radius*ResourceManager.scaleFactor);
 			}
 			
 			g.endFill();
