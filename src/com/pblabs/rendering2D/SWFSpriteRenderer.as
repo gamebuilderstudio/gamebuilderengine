@@ -182,9 +182,6 @@ package com.pblabs.rendering2D
 			_transformMatrix.rotate(PBUtil.getRadiansFromDegrees(_rotation + _rotationOffset));
 			_transformMatrix.translate(_position.x + _positionOffset.x, _position.y + _positionOffset.y);
 			
-			//bitmap.scaleX = combinedScale.x;
-			//bitmap.scaleY = combinedScale.y;
-			
 			displayObject.transform.matrix = _transformMatrix;
 			displayObject.alpha = _alpha;
 			displayObject.blendMode = (this._blendMode != "none" && this._blendMode != "shader") ? _blendMode : "normal";

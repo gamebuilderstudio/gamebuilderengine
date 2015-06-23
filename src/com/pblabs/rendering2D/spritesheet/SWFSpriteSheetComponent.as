@@ -11,6 +11,7 @@ package com.pblabs.rendering2D.spritesheet
     import com.pblabs.engine.PBE;
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.resource.ResourceEvent;
+    import com.pblabs.engine.resource.ResourceManager;
     import com.pblabs.engine.resource.SWFResource;
     import com.pblabs.engine.util.ImageFrameData;
     import com.pblabs.engine.util.MCUtil;
@@ -415,7 +416,10 @@ package com.pblabs.rendering2D.spritesheet
             if (mc.totalFrames >= frameIndex)
                 mc.gotoAndStop(frameIndex);
 
-			var frameData : ImageFrameData = MCUtil.getBitmapDataByDisplay(mc, _scale, mc.transform.colorTransform, _bounds);
+			var tmp : Point = _scale.clone();
+			tmp.x = tmp.x * ResourceManager.scaleFactor;
+			tmp.y = tmp.y * ResourceManager.scaleFactor;
+			var frameData : ImageFrameData = MCUtil.getBitmapDataByDisplay(mc, tmp, mc.transform.colorTransform, _bounds);
 			_frameCenters[frameIndex-1] = new Point(-(frameData.bounds.x*_scale.x), -(frameData.bounds.y*_scale.y));
 			var bd:BitmapData = frameData.bitmapData;
             return bd;
