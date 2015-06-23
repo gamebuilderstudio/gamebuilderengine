@@ -5,6 +5,7 @@ package com.pblabs.rendering2D
 	import com.pblabs.engine.resource.DataResource;
 	import com.pblabs.engine.resource.ImageResource;
 	import com.pblabs.engine.resource.ResourceEvent;
+	import com.pblabs.engine.resource.ResourceManager;
 	import com.pblabs.rendering2D.BitmapRenderer;
 	
 	import flash.display.BitmapData;
@@ -233,7 +234,7 @@ package com.pblabs.rendering2D
 					if(textBitmapData)
 						textBitmapData.dispose();
 					
-					textBitmapData = new BitmapData(this._size.x * this._scale.x, this._size.y * this._scale.y, true, 0x0);
+					textBitmapData = new BitmapData(this._size.x * (this._scale.x * ResourceManager.scaleFactor), this._size.y * (this._scale.y * ResourceManager.scaleFactor), true, 0x0);
 					clearedBitmap = true;
 				}
 				if(reuseBitmap && textBitmapData && !clearedBitmap){
@@ -260,12 +261,13 @@ package com.pblabs.rendering2D
 			if(autoResize){
 				if(!isComposedTextData)
 				{
-					_textDisplay.width = this._size.x * this._scale.x;
-					_textDisplay.height = this._size.y * this._scale.y;
+					_textDisplay.width = this._size.x;
+					_textDisplay.height = this._size.y;
+					_textDisplay.scaleX = this._scale.x * ResourceManager.scaleFactor;
+					_textDisplay.scaleY = this._scale.y * ResourceManager.scaleFactor;
 
 					var textSize : Rectangle = _textDisplay.getBounds(_textDisplay);
 					_newTextSize.setTo(textSize.width, textSize.height);
-					//_newTextSize.setTo( Math.max(textSize.width, this._size.x), Math.max(textSize.height, this._size.y) );
 				}else if(isComposedTextData && _bmFontObject) {
 					_bmFontObject.update();
 					_newTextSize.setTo( _bmFontObject.width, _bmFontObject.height );
@@ -283,8 +285,10 @@ package com.pblabs.rendering2D
 				}
 			}
 			if(!isComposedTextData && _textDisplay){
-				_textDisplay.width = this._size.x * this._scale.x;
-				_textDisplay.height = this._size.y * this._scale.y;
+				_textDisplay.width = this._size.x;
+				_textDisplay.height = this._size.y;
+				_textDisplay.scaleX = this._scale.x * ResourceManager.scaleFactor;
+				_textDisplay.scaleY = this._scale.y * ResourceManager.scaleFactor;
 			}else if(!autoResize && isComposedTextData && _bmFontObject){
 				_bmFontObject.width = this._size.x * this._scale.x;
 				_bmFontObject.height = this._size.y * this._scale.y;

@@ -12,6 +12,7 @@ package com.pblabs.rendering2D
 	import com.pblabs.engine.PBUtil;
 	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.resource.ResourceEvent;
+	import com.pblabs.engine.resource.ResourceManager;
 	import com.pblabs.engine.resource.SWFResource;
 	import com.pblabs.engine.util.ImageFrameData;
 	import com.pblabs.engine.util.MCUtil;
@@ -122,7 +123,10 @@ package com.pblabs.rendering2D
 			MCUtil.stopMovieClips( instance as MovieClip);
 
 			var localDimensions:Rectangle = MCUtil.getRealBounds(instance);
-			_swfFrameData = MCUtil.getBitmapDataByDisplay(instance, scale, instance.transform.colorTransform, localDimensions, _swfFrameData);
+			var tmp : Point = _scale.clone();
+			tmp.x = tmp.x * ResourceManager.scaleFactor;
+			tmp.y = tmp.y * ResourceManager.scaleFactor;
+			_swfFrameData = MCUtil.getBitmapDataByDisplay(instance, tmp, instance.transform.colorTransform, localDimensions, _swfFrameData);
 
 			//Clean up hack
 			if(PBE.mainStage && PBE.mainStage.contains(instance)){
