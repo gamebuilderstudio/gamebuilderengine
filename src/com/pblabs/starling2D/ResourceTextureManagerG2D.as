@@ -204,9 +204,9 @@ package com.pblabs.starling2D
 				atlas.addRegion(regionName, region, frame, rotated);
 			}
 			subtexture = atlas.getTexture(regionName);
-			subtexture.disposed.addOnce(releaseTexture);
-			_subTextureToOriginTextureMap[subtexture] = atlas.texture.root;
-			_textureReferenceCount[atlas.texture.root]++;
+			//subtexture.disposed.addOnce(releaseTexture);
+			//_subTextureToOriginTextureMap[subtexture] = atlas.texture.root;
+			//_textureReferenceCount[atlas.texture.root]++;
 			return subtexture;
 		}
 		
