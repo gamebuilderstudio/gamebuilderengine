@@ -20,8 +20,7 @@ package com.pblabs.starling2D
 		private static var _originTextureToBitmapDataMap : Dictionary = new Dictionary(true);
 		private static var _originTexturesMap : Dictionary = new Dictionary();
 		private static var _originAtlasMap : Dictionary = new Dictionary(true);
-		private static var _subTexturesMap : Dictionary = new Dictionary();
-		private static var _textureAtlasMap : Dictionary = new Dictionary();
+		private static var _subTextureToOriginTextureMap : Dictionary = new Dictionary();
 		private static var _textureReferenceCount : Dictionary = new Dictionary();
 		
 		public function ResourceTextureManagerG2D()
@@ -31,21 +30,20 @@ package com.pblabs.starling2D
 		public static function releaseTextures():void
 		{
 			//Release original parent texture if it is no longer referenced anywhere in the engine
-			for(key in _subTexturesMap)
+			for(var subTexture : * in _subTextureToOriginTextureMap)
 			{
-				if("disposed" in _subTexturesMap[key] && _subTexturesMap[key].disposed && _subTexturesMap[key].disposed is Signal)
+				if("disposed" in subTexture && subTexture.disposed && subTexture.disposed is Signal)
 				{
-					_subTexturesMap[key].disposed.remove(releaseTexture);
+					subTexture.disposed.remove(releaseTexture);
 				}
-				if(key is Texture)
-					(key as Texture).dispose();
-				else if (key is TextureAtlas)
-					(key as TextureAtlas).dispose();
-				delete _subTexturesMap[key];
+				if(subTexture is Texture)
+					(subTexture as Texture).dispose();
+				delete _subTextureToOriginTextureMap[subTexture];
 			}
 
 			for(var key : * in _originTexturesMap)
 			{
+				var deletedOriginTexture : Boolean = false;
 				var len : int = _originTexturesMap[key].length;
 				for(var i : int = 0; i < len; i++)
 				{
@@ -56,6 +54,7 @@ package com.pblabs.starling2D
 						
 						if(!_originTexturesMap[key] || _originTexturesMap[key].length < 1){
 							delete _originTexturesMap[key];
+							deletedOriginTexture = true;
 						}
 						if(originTexture in _textureReferenceCount){
 							delete _textureReferenceCount[originTexture];
@@ -70,10 +69,11 @@ package com.pblabs.starling2D
 						originTexture.dispose();
 					}
 				}
+				if(deletedOriginTexture && key in _originAtlasMap)
+					delete _originAtlasMap[key];
 			}
 			_originTexturesMap = new Dictionary();
-			_subTexturesMap = new Dictionary();
-			_textureAtlasMap = new Dictionary();
+			_subTextureToOriginTextureMap = new Dictionary();
 			_textureReferenceCount = new Dictionary();
 		}
 		
@@ -96,7 +96,7 @@ package com.pblabs.starling2D
 				_textureReferenceCount[texture]++;
 				subtexture = Texture.fromTexture(texture);
 				subtexture.disposed.addOnce(releaseTexture);
-				_subTexturesMap[subtexture] = texture;
+				_subTextureToOriginTextureMap[subtexture] = texture;
 				return subtexture;
 			}else{
 				texture = Texture.fromBitmapData( sourceBitmapData, false, false, scaleFactor, "bgra", repeat);
@@ -108,7 +108,7 @@ package com.pblabs.starling2D
 				_textureReferenceCount[texture] = 1;
 				subtexture = Texture.fromTexture(texture);
 				subtexture.disposed.addOnce(releaseTexture);
-				_subTexturesMap[subtexture] = texture;
+				_subTextureToOriginTextureMap[subtexture] = texture;
 				return subtexture;
 			}
 			return null;
@@ -127,7 +127,7 @@ package com.pblabs.starling2D
 				_textureReferenceCount[texture]++;
 				subtexture = Texture.fromTexture(texture);
 				subtexture.disposed.addOnce(releaseTexture);
-				_subTexturesMap[subtexture] = texture;
+				_subTextureToOriginTextureMap[subtexture] = texture;
 				return subtexture;
 			}else{
 				//TODO: Add support for ATFImageResources in the future
@@ -149,7 +149,7 @@ package com.pblabs.starling2D
 				_textureReferenceCount[texture] = 1;
 				subtexture = Texture.fromTexture(texture);
 				subtexture.disposed.addOnce(releaseTexture);
-				_subTexturesMap[subtexture] = texture;
+				_subTextureToOriginTextureMap[subtexture] = texture;
 				return subtexture;
 				
 			}
@@ -171,7 +171,7 @@ package com.pblabs.starling2D
 					_textureReferenceCount[texture]++;
 					var subtexture : Texture = Texture.fromTexture(texture);
 					subtexture.disposed.addOnce(releaseTexture);
-					_subTexturesMap[subtexture] = texture;
+					_subTextureToOriginTextureMap[subtexture] = texture;
 					newTextureList.push(subtexture);
 				}
 				return newTextureList;
@@ -205,8 +205,8 @@ package com.pblabs.starling2D
 			}
 			subtexture = atlas.getTexture(regionName);
 			subtexture.disposed.addOnce(releaseTexture);
-			_subTexturesMap[subtexture] = atlas;
-			_textureReferenceCount[atlas]++;
+			_subTextureToOriginTextureMap[subtexture] = atlas.texture.root;
+			_textureReferenceCount[atlas.texture.root]++;
 			return subtexture;
 		}
 		
@@ -226,7 +226,7 @@ package com.pblabs.starling2D
 				_textureReferenceCount[texture]++;
 				var subtexture : Texture = Texture.fromTexture(texture);
 				subtexture.disposed.addOnce(releaseTexture);
-				_subTexturesMap[subtexture] = texture;
+				_subTextureToOriginTextureMap[subtexture] = texture;
 				return subtexture;
 			}
 			return null;
@@ -242,35 +242,36 @@ package com.pblabs.starling2D
 			}
 		}
 		
-		public static function releaseTexture(texture : Texture):void
+		public static function releaseTexture(subTexture : Texture):void
 		{
 			try{
 				var originTexture : Object;
-				if(texture in _subTexturesMap)
+				if(subTexture in _subTextureToOriginTextureMap)
 				{
-					if("disposed" in _subTexturesMap[texture] && _subTexturesMap[texture].disposed && _subTexturesMap[texture].disposed is Signal)
+					if("disposed" in subTexture && subTexture.disposed && subTexture.disposed is Signal)
 					{
-						_subTexturesMap[texture].disposed.remove(releaseTexture);
+						subTexture.disposed.remove(releaseTexture);
 					}
-					texture.dispose();
-					originTexture = _subTexturesMap[texture];
-					delete _subTexturesMap[texture];
+					subTexture.dispose();
+					originTexture = _subTextureToOriginTextureMap[subTexture];
+					delete _subTextureToOriginTextureMap[subTexture];
 
 					//Reduce Count on Origin Texture
 					if(originTexture in _textureReferenceCount){
 						_textureReferenceCount[originTexture] =  _textureReferenceCount[originTexture] - 1;
 					}
 					
-				}else if(!(texture in _originTexturesMap)){
+				}else if(!(subTexture in _originTexturesMap)){
 					return;
 				}else{
-					originTexture = texture;
+					originTexture = subTexture;
 				}
 				
 				//Release original parent texture if it is no longer referenced anywhere in the engine
 				///*
 				for(var key : * in _originTexturesMap)
 				{
+					var deletedOriginTexture : Boolean = false;
 					var len : int = _originTexturesMap[key].length;
 					for(var i : int = 0; i < len; i++)
 					{
@@ -279,9 +280,11 @@ package com.pblabs.starling2D
 							_originTexturesMap[key].splice(i, 1);
 							if(!_originTexturesMap[key] || _originTexturesMap[key].length < 1){
 								delete _originTexturesMap[key];
+								deletedOriginTexture = true;
 							}
 
-							delete _textureReferenceCount[originTexture];
+							if(originTexture in _textureReferenceCount)
+								delete _textureReferenceCount[originTexture];
 							
 							if(originTexture is Texture && "root" in originTexture && originTexture.root in _originTextureToBitmapDataMap)
 								delete _originTextureToBitmapDataMap[originTexture.root];
@@ -290,6 +293,8 @@ package com.pblabs.starling2D
 								originTexture.disposed.remove(releaseTexture);
 							}
 							originTexture.dispose();
+							if(deletedOriginTexture && key in _originAtlasMap)
+								delete _originAtlasMap[key];
 							return;
 						}
 					}

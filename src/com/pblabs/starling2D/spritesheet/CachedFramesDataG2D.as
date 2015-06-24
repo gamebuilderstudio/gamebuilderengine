@@ -5,7 +5,6 @@ package com.pblabs.starling2D.spritesheet
 	
 	import flash.geom.Rectangle;
 	
-	import starling.textures.Texture;
 	import starling.textures.TextureAtlas;
 	
 	public class CachedFramesDataG2D extends CachedFramesData
