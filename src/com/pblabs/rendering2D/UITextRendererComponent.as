@@ -261,10 +261,10 @@ package com.pblabs.rendering2D
 			if(autoResize){
 				if(!isComposedTextData)
 				{
-					_textDisplay.width = this._size.x;
-					_textDisplay.height = this._size.y;
-					_textDisplay.scaleX = this._scale.x * ResourceManager.scaleFactor;
-					_textDisplay.scaleY = this._scale.y * ResourceManager.scaleFactor;
+					_textDisplay.width = this._size.x * this._scale.x;
+					_textDisplay.height = this._size.y * this._scale.y;
+					_textDisplay.scaleX = ResourceManager.scaleFactor;
+					_textDisplay.scaleY = ResourceManager.scaleFactor;
 
 					var textSize : Rectangle = _textDisplay.getBounds(_textDisplay);
 					_newTextSize.setTo(textSize.width, textSize.height);
@@ -285,10 +285,10 @@ package com.pblabs.rendering2D
 				}
 			}
 			if(!isComposedTextData && _textDisplay){
-				_textDisplay.width = this._size.x;
-				_textDisplay.height = this._size.y;
-				_textDisplay.scaleX = this._scale.x * ResourceManager.scaleFactor;
-				_textDisplay.scaleY = this._scale.y * ResourceManager.scaleFactor;
+				_textDisplay.width = this._size.x * this._scale.x;
+				_textDisplay.height = this._size.y * this._scale.y;
+				_textDisplay.scaleX = ResourceManager.scaleFactor;
+				_textDisplay.scaleY = ResourceManager.scaleFactor;
 			}else if(!autoResize && isComposedTextData && _bmFontObject){
 				_bmFontObject.width = this._size.x * this._scale.x;
 				_bmFontObject.height = this._size.y * this._scale.y;
@@ -464,8 +464,7 @@ package com.pblabs.rendering2D
 		override public function set size(val : Point):void{
 			if(!val.equals(this._size)){
 				_textDirty = true;
-				if(!autoResize)
-					_textSizeDirty = true;
+				_textSizeDirty = true;
 			}
 			super.size = val;
 		}
