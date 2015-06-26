@@ -123,6 +123,8 @@ package com.pblabs.starling2D
 			_touchID = touch.id;
 			_stagePoint.setTo( touch.globalX, touch.globalY );
 			toggleInputDisplay();
+			if(_inputEnabled && gpuObject)
+				gpuObject.visible = false;
 		}
 		
 		override protected function updateTextImage():void
