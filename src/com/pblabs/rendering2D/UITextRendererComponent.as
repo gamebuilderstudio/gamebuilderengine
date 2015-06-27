@@ -233,8 +233,9 @@ package com.pblabs.rendering2D
 				{
 					if(textBitmapData)
 						textBitmapData.dispose();
-					
-					textBitmapData = new BitmapData(this._size.x * (this._scale.x * ResourceManager.scaleFactor), this._size.y * (this._scale.y * ResourceManager.scaleFactor), true, 0x0);
+					var bw : Number = this._size.x * (this._scale.x * ResourceManager.scaleFactor);
+					var bh : Number = this._size.y * (this._scale.y * ResourceManager.scaleFactor);
+					textBitmapData = new BitmapData(PBUtil.clamp(bw, 10, Number.MAX_VALUE), PBUtil.clamp(bh, 10, Number.MAX_VALUE), true, 0x0);
 					clearedBitmap = true;
 				}
 				if(reuseBitmap && textBitmapData && !clearedBitmap){
