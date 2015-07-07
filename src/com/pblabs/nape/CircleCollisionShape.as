@@ -44,7 +44,7 @@ package com.pblabs.nape
 		{
 			var invScale:Number = NapeManagerComponent(_parent.spatialManager).inverseScale;
 			
-			var nPos:Vec2 = new Vec2(_position.x * invScale, _position.y * invScale);
+			var nPos:Vec2 = new Vec2((_position.x*shapeScale.x) * invScale, (_position.y*shapeScale.y) * invScale);
 			
 			return new Circle( ((_radius * Math.sqrt(shapeScale.x * shapeScale.y)) * invScale) , nPos);
 		}
