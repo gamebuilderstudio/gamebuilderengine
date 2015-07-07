@@ -240,8 +240,11 @@ package com.pblabs.rendering2D
          */
         public function get worldExtents():Rectangle
         {
-			if(spriteForPointChecks && spriteForPointChecks.displayObject)
-				return spriteForPointChecks.sceneBounds;
+			if(spriteForPointChecks){
+				var sceneBounds : Rectangle = spriteForPointChecks.sceneBounds;
+				if(sceneBounds)
+					return sceneBounds;
+			}
 			_worldExtents.setTo(position.x - (size.x * 0.5), position.y - (size.y * 0.5), size.x, size.y);
 			return _worldExtents;         
         }

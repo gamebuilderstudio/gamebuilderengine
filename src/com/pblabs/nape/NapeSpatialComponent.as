@@ -341,10 +341,15 @@ package com.pblabs.nape
 		
 		public function get worldExtents():Rectangle
 		{
-			if(spriteForPointChecks && spriteForPointChecks.displayObject)
-				return spriteForPointChecks.sceneBounds;
+			if(spriteForPointChecks){
+				var sceneBounds : Rectangle = spriteForPointChecks.sceneBounds;
+				if(sceneBounds)
+					return sceneBounds.union(_body.bounds.toRect());
+				else if(_body)
+					return _body.bounds.toRect();
+			}
 			
-			return new Rectangle(position.x - (size.x * 0.5), position.y - (size.y * 0.5), size.x, size.y);         
+			return _body ? _body.bounds.toRect() : new Rectangle(position.x - (size.x * 0.5), position.y - (size.y * 0.5), size.x, size.y);         
 		}
 		
 		public function get spatialManager():ISpatialManager2D
