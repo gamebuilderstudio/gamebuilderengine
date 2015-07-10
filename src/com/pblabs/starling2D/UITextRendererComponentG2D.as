@@ -13,13 +13,11 @@ package com.pblabs.starling2D
 	import com.pblabs.engine.resource.ResourceEvent;
 	import com.pblabs.rendering2D.UITextRendererComponent;
 	
-	import flash.display.BitmapData;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.text.TextFieldType;
 	
 	import starling.core.Starling;
-	import starling.display.Image;
 	import starling.events.Touch;
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
@@ -96,18 +94,13 @@ package com.pblabs.starling2D
 				}
 			}
 			if(!skipCreation){
-				if(!isComposedTextData && this.bitmapData)
+				if(!isComposedTextData && !gpuObject)
 				{
-				
-					if(!gpuObject){
-						//Create GPU Renderer Object
-						gpuObject = new Image( ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmapData) );
-					}else{
-						if((gpuObject as Image).texture)
-							(gpuObject as Image).texture.dispose();
-						(gpuObject as Image).texture = ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmapData );
-						(gpuObject as Image).readjustSize();
-					}
+					gpuObject = new TextField((_size.x+2) * _scale.x, _size.y * _scale.y, _text, textFormatter.font, int(textFormatter.size), uint(textFormatter.color), Boolean(textFormatter.bold));
+					(gpuObject as TextField).italic = Boolean(textFormatter.italic);
+					(gpuObject as TextField).autoSize = TextFieldAutoSize.VERTICAL;
+					(gpuObject as TextField).hAlign = HAlign.LEFT;
+					(gpuObject as TextField).vAlign = VAlign.TOP;
 				}
 				smoothing = _smoothing;
 				skipCreation = true;
@@ -120,9 +113,11 @@ package com.pblabs.starling2D
 			var touch : Touch = event.getTouch(Starling.current.stage, TouchPhase.ENDED, _touchID);
 			if(!touch || touch.phase != TouchPhase.ENDED)
 				return;
+			
 			_touchID = touch.id;
 			_stagePoint.setTo( touch.globalX, touch.globalY );
 			toggleInputDisplay();
+			
 			if(_inputEnabled && gpuObject)
 				gpuObject.visible = false;
 		}
@@ -143,7 +138,7 @@ package com.pblabs.starling2D
 		
 		override protected function paintTextToBitmap(reuseBitmap:Boolean=true):void
 		{
-			super.paintTextToBitmap(false);
+			buildFontObject();
 		}
 		
 		override protected function getLocalPointOfStage(stagePoint : Point):Point
@@ -174,8 +169,8 @@ package com.pblabs.starling2D
 						TextField.registerBitmapFont(bitmapFont, currentFontName);
 					}
 					if(!gpuObject){
-						gpuObject = new TextField(_size.x * _scale.x, _size.y * _scale.y, _text, currentFontName, bitmapFont.size, this.fontColor, this.textFormatter.bold);
-						(gpuObject as TextField).autoSize = _autoResize ? TextFieldAutoSize.BOTH_DIRECTIONS : TextFieldAutoSize.NONE;
+						gpuObject = new TextField((_size.x+2) * _scale.x, _size.y * _scale.y, _text, currentFontName, bitmapFont.size, uint(textFormatter.color));
+						(gpuObject as TextField).autoSize = TextFieldAutoSize.VERTICAL;
 						(gpuObject as TextField).hAlign = HAlign.LEFT;
 						(gpuObject as TextField).vAlign = VAlign.TOP;
 					}
@@ -189,27 +184,23 @@ package com.pblabs.starling2D
 		
 		override protected function updateFontSize():void
 		{
-			if(!_fontData || !_fontImage){
-				super.updateFontSize();
-			}else{
-				if(autoResize && gpuObject){
-					var textSize : Rectangle = _textDisplay.getBounds(_textDisplay);
-					_newTextSize.setTo( (gpuObject as TextField).width, (gpuObject as TextField).height );
+			if(autoResize && gpuObject){
+				var textSize : Rectangle = _textDisplay.getBounds(_textDisplay);
+				_newTextSize.setTo( (gpuObject as TextField).width, (gpuObject as TextField).height );
 
-					if(!this._size.equals(_newTextSize ))
-						_transformDirty = true;
-					if(sizeProperty && sizeProperty.property != "")
-					{
-						this._size = _newTextSize;
-						if(owner && sizeProperty)
-							this.owner.setProperty( sizeProperty, _newTextSize.clone() )
-					}else{
-						this._size = _newTextSize;
-					}
-				}else if(!autoResize && gpuObject){
-					(gpuObject as TextField).width = this._size.x * this._scale.x;					
-					(gpuObject as TextField).height = this._size.y * this._scale.y;					
+				if(!this._size.equals(_newTextSize ))
+					_transformDirty = true;
+				if(sizeProperty && sizeProperty.property != "")
+				{
+					this._size = _newTextSize;
+					if(owner && sizeProperty)
+						this.owner.setProperty( sizeProperty, _newTextSize.clone() )
+				}else{
+					this._size = _newTextSize;
 				}
+			}else if(!autoResize && gpuObject){
+				(gpuObject as TextField).width = (this._size.x+2) * this._scale.x;					
+				(gpuObject as TextField).height = this._size.y * this._scale.y;					
 			}
 		}
 		
@@ -224,37 +215,17 @@ package com.pblabs.starling2D
 				_bmFontObject.destroy();
 				_bmFontObject = null;
 			}
+			if(gpuObject){
+				removeFromScene();
+				gpuObject.dispose();
+				gpuObject = null;
+			}
 			_textDirty = true;
 			buildFontObject();
 			if(this.owner)
 				this.owner.reset();
 		}
 		
-		override public function set bitmapData(value:BitmapData):void
-		{
-			// store orginal BitmapData so that modifiers can be re-implemented 
-			// when assigned modifiers attribute later on.
-			originalBitmapData = value;
-			
-			// check if we should do modification
-			/*
-			if (modifiers.length>0)
-			{
-			// apply all bitmapData modifiers
-			bitmap.bitmapData = modify(originalBitmapData.clone());
-			dataModified();			
-			}	
-			else	
-			*/					
-			bitmap.bitmapData = value;
-			
-			// Due to a bug, this has to be reset after setting bitmapData.
-			smoothing = _smoothing;
-			
-			_transformDirty = true;
-			buildG2DObject();
-		}
-
 		override public function get fontColor():uint{ 
 			if(gpuObject && gpuObject is TextField)
 				return (gpuObject as TextField).color;
@@ -264,6 +235,28 @@ package com.pblabs.starling2D
 			super.fontColor = val;
 			if(gpuObject && gpuObject is TextField)
 				(gpuObject as TextField).color = val;
+		}
+
+		override public function get fontBold():Boolean{ 
+			if(gpuObject && gpuObject is TextField)
+				return (gpuObject as TextField).bold;
+			return Boolean(textFormatter.bold);
+		}
+		override public function set fontBold(val : Boolean):void{
+			super.fontBold = val;
+			if(gpuObject && gpuObject is TextField)
+				(gpuObject as TextField).bold = val;
+		}
+
+		override public function get fontItalic():Boolean{ 
+			if(gpuObject && gpuObject is TextField)
+				return (gpuObject as TextField).italic;
+			return Boolean(textFormatter.italic);
+		}
+		override public function set fontItalic(val : Boolean):void{
+			super.fontItalic = val;
+			if(gpuObject && gpuObject is TextField)
+				(gpuObject as TextField).italic = val;
 		}
 
 		override public function get fontSize():Number{ 
@@ -297,7 +290,7 @@ package com.pblabs.starling2D
 		override public function set autoResize(val : Boolean):void{
 			super.autoResize = val;
 			if(gpuObject && gpuObject is TextField)
-				(gpuObject as TextField).autoSize = _autoResize ? TextFieldAutoSize.BOTH_DIRECTIONS : TextFieldAutoSize.NONE;
+				(gpuObject as TextField).autoSize = _autoResize ? TextFieldAutoSize.VERTICAL : TextFieldAutoSize.NONE;
 		}
 
 		override public function set type(val : String):void{

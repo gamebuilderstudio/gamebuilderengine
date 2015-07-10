@@ -45,7 +45,6 @@ package com.pblabs.starling2D
 		protected var gpuObject : DisplayObject;
 		protected var gpuObjectDirty : Boolean = false;
 		protected var _mouseEnabled:Boolean = false;
-		internal var _initialized : Boolean = false;
 
 		/**
 		 * @inheritDoc
@@ -164,10 +163,7 @@ package com.pblabs.starling2D
 			
 			if(gpuObject)
 			{
-				if(!_initialized){
-					addToScene();
-					_initialized = true;
-				}
+				addToScene();
 			}
 			
 			updateTransform(true);

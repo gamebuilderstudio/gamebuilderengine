@@ -65,8 +65,8 @@ package com.pblabs.rendering2D
 			_textDisplay.wordWrap = _wordWrap;
 			_textDisplay.multiline = _wordWrap;
 			_textDisplay.setTextFormat(textFormatter);
-			_textDisplay.autoSize = TextFieldAutoSize.LEFT;
 			_textDisplay.mouseEnabled = true;
+			_textDisplay.autoSize = TextFieldAutoSize.LEFT;
 
 			updateFontSize();
 			paintTextToBitmap();
@@ -264,9 +264,6 @@ package com.pblabs.rendering2D
 				{
 					_textDisplay.width = this._size.x * this._scale.x;
 					_textDisplay.height = this._size.y * this._scale.y;
-					_textDisplay.scaleX = ResourceManager.scaleFactor;
-					_textDisplay.scaleY = ResourceManager.scaleFactor;
-
 					var textSize : Rectangle = _textDisplay.getBounds(_textDisplay);
 					_newTextSize.setTo(textSize.width, textSize.height);
 				}else if(isComposedTextData && _bmFontObject) {
@@ -288,8 +285,6 @@ package com.pblabs.rendering2D
 			if(!isComposedTextData && _textDisplay){
 				_textDisplay.width = this._size.x * this._scale.x;
 				_textDisplay.height = this._size.y * this._scale.y;
-				_textDisplay.scaleX = ResourceManager.scaleFactor;
-				_textDisplay.scaleY = ResourceManager.scaleFactor;
 			}else if(!autoResize && isComposedTextData && _bmFontObject){
 				_bmFontObject.width = this._size.x * this._scale.x;
 				_bmFontObject.height = this._size.y * this._scale.y;
@@ -419,7 +414,7 @@ package com.pblabs.rendering2D
 				_textDirty = true;
 				_textSizeDirty = true;
 			}
-			textFormatter.size = val;
+			textFormatter.size = val * ResourceManager.scaleFactor;
 			if(_textDisplay){
 				_textDisplay.setTextFormat(textFormatter);
 			}
@@ -451,7 +446,6 @@ package com.pblabs.rendering2D
 				if(_textDisplay){
 					_textDisplay.text = _text = val;
 					_textDisplay.setTextFormat(textFormatter);
-					_textDisplay.autoSize = TextFieldAutoSize.LEFT;
 				}else{
 					_text = val;
 				}
@@ -473,10 +467,6 @@ package com.pblabs.rendering2D
 			if(!val.equals(this._scale)){
 				_textDirty = true;
 				_textSizeDirty = true;
-			}
-			if(_autoResize && val){
-				val.x = 1;
-				val.y = 1;
 			}
 			super.scale = val;
 		}
@@ -514,8 +504,10 @@ package com.pblabs.rendering2D
 			if(_wordWrap == val)
 				return;
 			_wordWrap = val;
-			if(_textDisplay)
+			if(_textDisplay){
 				_textDisplay.wordWrap = _wordWrap;
+				_textDisplay.multiline = _wordWrap;
+			}
 			if(_bmFontObject){
 				_bmFontObject.wordWrap = _wordWrap;
 				_bmFontObject.multiLine = _wordWrap;
