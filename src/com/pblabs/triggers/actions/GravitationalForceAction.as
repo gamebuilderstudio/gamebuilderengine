@@ -1,13 +1,9 @@
 package com.pblabs.triggers.actions
 {
-	import com.pblabs.engine.PBE;
-	import com.pblabs.engine.core.ITickedObject;
 	import com.pblabs.engine.entity.PropertyReference;
 	import com.pblabs.engine.scripting.ExpressionReference;
 	import com.pblabs.nape.INape2DSpatialComponent;
 	import com.pblabs.nape.NapeManagerComponent;
-	
-	import flash.geom.Point;
 	
 	import nape.geom.Geom;
 	import nape.geom.Vec2;
@@ -15,7 +11,7 @@ package com.pblabs.triggers.actions
 	import nape.shape.Circle;
 	import nape.space.Space;
 	
-	public class GravitationalForceAction extends BaseAction implements ITickedObject
+	public class GravitationalForceAction extends BaseAction
 	{
 		/**
 		 * The reference to the physics spatial that will be affected.  
@@ -37,36 +33,16 @@ package com.pblabs.triggers.actions
 		private var _spatial : INape2DSpatialComponent;
 		private var _force : Vec2 = Vec2.get();
 		private var _samplePoint : Body;
-		private var _ignoreTimeScale : Boolean = false;
-		private var _initialized : Boolean = false;
 		
 		public function GravitationalForceAction(){
 			super();
+			_type = ActionType.PERSISTANT;
 		}
 		
-		override public function execute():*
+		override public function onTick(deltaTime:Number):void
 		{
-			if(!spatialReference || !gravitationalForceExp)
-				return;
+			execute();
 			
-			if(!_initialized){
-				
-				if(!_samplePoint){
-					_samplePoint = new Body();
-					_samplePoint.shapes.add(new Circle(0.001));
-				}
-				
-				if(!_spatial)
-					_spatial = this.owner.owner.getProperty( spatialReference ) as INape2DSpatialComponent;
-				
-				PBE.processManager.addTickedObject(this);
-				_initialized = true;
-			}
-			return;
-		}
-		
-		public function onTick(deltaTime : Number):void
-		{
 			if(_spatial && _spatial.body && _spatial.spatialManager && (_spatial.spatialManager as NapeManagerComponent).space)
 			{
 				var physicsSpace : Space = (_spatial.spatialManager as NapeManagerComponent).space;
@@ -104,36 +80,42 @@ package com.pblabs.triggers.actions
 			}
 		}
 		
+		override public function execute():*
+		{
+			if(!spatialReference || !gravitationalForceExp)
+				return;
+			
+			if(!_samplePoint){
+				_samplePoint = new Body();
+				_samplePoint.shapes.add(new Circle(0.001));
+			}
+			
+			if(!_spatial)
+				_spatial = this.owner.owner.getProperty( spatialReference ) as INape2DSpatialComponent;
+
+			super.execute();
+		}
+		
 		override public function stop():void
 		{
-			if(_initialized){
-				PBE.processManager.removeTickedObject(this);
-				_initialized = false;
-			}
+			_spatial = null;
 			super.stop();
 		}
+		
 		override public function destroy():void
 		{
-			gravitationalForceExp.destroy();
+			if(gravitationalForceExp)
+				gravitationalForceExp.destroy();
 			gravitationalForceExp = null;
-			maxDistanceExp.destroy();
+			if(maxDistanceExp)
+				maxDistanceExp.destroy();
 			maxDistanceExp = null;
+			if(spatialReference)
+				spatialReference.destroy();
+			spatialReference = null;
 			_spatial = null;
 			
-			if(_initialized)
-			{
-				PBE.processManager.removeTickedObject(this);
-			}
 			super.destroy();
-		}
-
-		/**
-		 * @inheritDoc
-		 */
-		public function get ignoreTimeScale():Boolean { return _ignoreTimeScale; }
-		public function set ignoreTimeScale(val:Boolean):void
-		{
-			_ignoreTimeScale = val;
 		}
 	}
 }

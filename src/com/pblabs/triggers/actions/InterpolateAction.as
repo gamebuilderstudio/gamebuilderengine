@@ -71,7 +71,7 @@ package com.pblabs.triggers.actions
 					ignoreTimeScale = (this.owner as IAnimatedObject).ignoreTimeScale;
 			}
 			_tween = new Tween(this.owner ? this.owner.owner : null, propertyReference, _duration, ( (getExpressionValue(fromValueReference) is Point) ? getExpressionValue(fromValueReference) as Point : Number(getExpressionValue(fromValueReference)) ), ( (getExpressionValue(valueReference) is Point) ? getExpressionValue(valueReference) as Point : Number(getExpressionValue(valueReference)) ), easeClazz[easingFunction], onComplete, _delay, pingpong, _repeat, 0, 0, ignoreTimeScale);
-			return;
+			super.execute();
 		}
 		
 		public function onComplete(tween : Tween):void
@@ -86,6 +86,7 @@ package com.pblabs.triggers.actions
 		{
 			if(_tween && !runtoCompletion)
 				_tween.stop();
+			super.stop();
 		}
 		
 		override public function destroy():void

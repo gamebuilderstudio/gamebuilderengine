@@ -84,6 +84,7 @@ package com.pblabs.triggers.actions
 				Logger.error(this,"execute","PropertySetter on component ["+this.owner.name+"] and entity ("+this.owner.owner.name+") Failed: " + e.message);
 			}
 			
+			super.execute();
 			// Return a reference to the property
 			return _owner.owner.getProperty(property);
 		}

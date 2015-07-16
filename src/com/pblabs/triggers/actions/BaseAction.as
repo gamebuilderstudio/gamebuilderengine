@@ -1,30 +1,55 @@
 package com.pblabs.triggers.actions
 {
+	import com.pblabs.engine.PBE;
+	import com.pblabs.engine.core.ITickedObject;
 	import com.pblabs.engine.entity.PropertyReference;
 	import com.pblabs.engine.scripting.ExpressionReference;
 	import com.pblabs.triggers.ITriggerComponent;
 	
-	public class BaseAction implements IAction
+	public class BaseAction implements IAction, ITickedObject
 	{
 		protected var _stopped:Boolean = false;
 		protected var _destroyed : Boolean = false;
+		protected var _ignoreTimeScale:Boolean = false;
+		protected var _addedToProcessManager : Boolean = false;
 
 		public function BaseAction()
 		{
 		}
 		
+		public function onTick(deltaTime:Number):void
+		{
+			if(_addedToProcessManager)
+				execute();
+		}
+		
 		public function execute():*
 		{
+			if(_type == ActionType.PERSISTANT && !_addedToProcessManager){
+				_addedToProcessManager = true;
+				PBE.processManager.addTickedObject(this);
+			}
+			_stopped = false;
 			return null;
 		}
 		
 		public function updateGlobalExpressionProperty():void { }
 		public function clearGlobalExpressionProperty():void { }
 		
-		public function stop():void { _stopped = true; }
+		public function stop():void { 
+			if(_type == ActionType.PERSISTANT && _addedToProcessManager){
+				_addedToProcessManager = false;
+				PBE.processManager.removeTickedObject(this);
+			}
+			_stopped = true; 
+		}
 		
 		public function destroy():void
 		{
+			if(_type == ActionType.PERSISTANT && _addedToProcessManager){
+				_addedToProcessManager = false;
+				PBE.processManager.removeTickedObject(this);
+			}
 			_owner = null;
 			_destroyed = true;
 		}
@@ -40,6 +65,11 @@ package com.pblabs.triggers.actions
 		{
 			return ExpressionReference.getExpressionValue(expression, _owner.owner);
 		}
+		
+		public function get ignoreTimeScale():Boolean { return _ignoreTimeScale; }
+		public function set ignoreTimeScale(val : Boolean):void{
+			_ignoreTimeScale = val;
+		}
 
 		protected var _owner : ITriggerComponent;
 		[EditorData(ignore="true")]
@@ -47,6 +77,9 @@ package com.pblabs.triggers.actions
 		public function set owner(value:ITriggerComponent):void
 		{
 			_owner=value;
+			if(_owner is ITickedObject){
+				this.ignoreTimeScale = (_owner as ITickedObject).ignoreTimeScale;
+			}
 		}
 		
 		protected var _label : String
