@@ -47,7 +47,7 @@ package com.pblabs.nape.constraints
 					if(!(_bodyList[i] is IPhysics2DSpatial))
 						continue;
 					var body:Body = _bodyList[i].body;
-					if (body.isDynamic()) {
+					if (body.isDynamic() || body.isKinematic()) {
 						(_constraint as PivotJoint).body2 = body;
 						(_constraint as PivotJoint).anchor2.set( body.worldPointToLocal(wp, true) );
 						(_constraint as PivotJoint).active = true;
@@ -80,7 +80,7 @@ package com.pblabs.nape.constraints
 		public function get ignoreTimeScale():Boolean { return _ignoreTimeScale; }
 		public function set ignoreTimeScale(val:Boolean):void
 		{
-			_ignoreTimeScale = true;
+			_ignoreTimeScale = val;
 		}
 		
 		[EditorData(referenceType="componentReference")]
@@ -153,6 +153,11 @@ package com.pblabs.nape.constraints
 		{
 			PBE.processManager.removeTickedObject(this);
 			super.onRemove();
+		}
+		
+		override protected function drawConstraint():void
+		{
+			
 		}
 	}
 }
