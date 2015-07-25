@@ -96,9 +96,10 @@ package com.pblabs.starling2D
 			if(!skipCreation){
 				if(!isComposedTextData && !gpuObject)
 				{
-					gpuObject = new TextField((_size.x+2) * _scale.x, _size.y * _scale.y, _text, textFormatter.font, int(textFormatter.size), uint(textFormatter.color), Boolean(textFormatter.bold));
+					gpuObject = new TextField(_size.x * _scale.x, _size.y * _scale.y, _text, textFormatter.font, int(textFormatter.size), uint(textFormatter.color), Boolean(textFormatter.bold));
 					(gpuObject as TextField).italic = Boolean(textFormatter.italic);
-					(gpuObject as TextField).autoSize = TextFieldAutoSize.VERTICAL;
+					(gpuObject as TextField).wordWrap = _wordWrap;
+					(gpuObject as TextField).autoSize = _autoResizeDirection;
 					(gpuObject as TextField).hAlign = HAlign.LEFT;
 					(gpuObject as TextField).vAlign = VAlign.TOP;
 				}
@@ -169,8 +170,9 @@ package com.pblabs.starling2D
 						TextField.registerBitmapFont(bitmapFont, currentFontName);
 					}
 					if(!gpuObject){
-						gpuObject = new TextField((_size.x+2) * _scale.x, _size.y * _scale.y, _text, currentFontName, bitmapFont.size, uint(textFormatter.color));
-						(gpuObject as TextField).autoSize = TextFieldAutoSize.VERTICAL;
+						gpuObject = new TextField(_size.x * _scale.x, _size.y * _scale.y, _text, currentFontName, bitmapFont.size, uint(textFormatter.color));
+						(gpuObject as TextField).wordWrap = _wordWrap;
+						(gpuObject as TextField).autoSize = _autoResizeDirection;
 						(gpuObject as TextField).hAlign = HAlign.LEFT;
 						(gpuObject as TextField).vAlign = VAlign.TOP;
 					}
@@ -185,7 +187,8 @@ package com.pblabs.starling2D
 		override protected function updateFontSize():void
 		{
 			if(autoResize && gpuObject){
-				var textSize : Rectangle = _textDisplay.getBounds(_textDisplay);
+				(gpuObject as TextField).text = null;
+				(gpuObject as TextField).text = _text;
 				_newTextSize.setTo( (gpuObject as TextField).width, (gpuObject as TextField).height );
 
 				if(!this._size.equals(_newTextSize ))
@@ -199,7 +202,7 @@ package com.pblabs.starling2D
 					this._size = _newTextSize;
 				}
 			}else if(!autoResize && gpuObject){
-				(gpuObject as TextField).width = (this._size.x+2) * this._scale.x;					
+				(gpuObject as TextField).width = this._size.x * this._scale.x;					
 				(gpuObject as TextField).height = this._size.y * this._scale.y;					
 			}
 		}
@@ -287,10 +290,22 @@ package com.pblabs.starling2D
 				(gpuObject as TextField).text = _text;
 		}
 		
+		override public function set wordWrap(val : Boolean):void{
+			super.wordWrap = val;
+			if(gpuObject && gpuObject is TextField)
+				(gpuObject as TextField).wordWrap = _wordWrap;
+		}
+
+		override public function set autoResizeDirection(val:String):void{
+			super.autoResizeDirection = val;
+			if(gpuObject && gpuObject is TextField)
+				(gpuObject as TextField).autoSize = (_autoResize ? _autoResizeDirection : TextFieldAutoSize.NONE);
+		}
+		
 		override public function set autoResize(val : Boolean):void{
 			super.autoResize = val;
 			if(gpuObject && gpuObject is TextField)
-				(gpuObject as TextField).autoSize = _autoResize ? TextFieldAutoSize.VERTICAL : TextFieldAutoSize.NONE;
+				(gpuObject as TextField).autoSize = (_autoResize ? _autoResizeDirection : TextFieldAutoSize.NONE);
 		}
 
 		override public function set type(val : String):void{

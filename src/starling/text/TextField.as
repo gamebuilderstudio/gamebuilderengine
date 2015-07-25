@@ -100,6 +100,7 @@ package starling.text
         private var mAutoScale:Boolean;
         private var mAutoSize:String;
         private var mKerning:Boolean;
+		private var mWordWrap:Boolean;
         private var mNativeFilters:Array;
         private var mRequiresRedraw:Boolean;
         private var mIsRenderedText:Boolean;
@@ -258,8 +259,8 @@ package starling.text
             sNativeTextField.height = height;
             sNativeTextField.antiAliasType = AntiAliasType.ADVANCED;
             sNativeTextField.selectable = false;            
-            sNativeTextField.multiline = true;            
-            sNativeTextField.wordWrap = true;            
+            sNativeTextField.multiline = mWordWrap;            
+            sNativeTextField.wordWrap = mWordWrap;            
             sNativeTextField.text = mText;
             sNativeTextField.embedFonts = true;
             sNativeTextField.filters = mNativeFilters;
@@ -694,7 +695,18 @@ package starling.text
             }
         }
         
-        /** Indicates if TextField should be batched on rendering. This works only with bitmap
+		/** Specifies the boolean value of wordwrapping on the TextField. */
+		public function get wordWrap():Boolean { return mWordWrap; }
+		public function set wordWrap(value:Boolean):void
+		{
+			if (mWordWrap != value)
+			{
+				mWordWrap = value;
+				mRequiresRedraw = true;
+			}
+		}
+
+		/** Indicates if TextField should be batched on rendering. This works only with bitmap
          *  fonts, and it makes sense only for TextFields with no more than 10-15 characters.
          *  Otherwise, the CPU costs will exceed any gains you get from avoiding the additional
          *  draw call. @default false */

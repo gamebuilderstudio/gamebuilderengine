@@ -41,6 +41,8 @@ package com.pblabs.rendering2D
 		protected var _wordWrap : Boolean = false; 
 		protected var _autoResize : Boolean = true;
 		protected var _worldScratchPoint : Point = new Point();
+		protected var _text : String;
+		protected var _autoResizeDirection:String;
 
 		private var _textSize : Point = new Point();
 		
@@ -71,6 +73,11 @@ package com.pblabs.rendering2D
 			updateFontSize();
 			paintTextToBitmap();
 			
+			if(!_autoResizeDirection && _autoResize){
+				_autoResizeDirection = "horizontal";
+			}else{
+				_autoResizeDirection = "vertical";
+			}
 			super.onAdd();
 		}
 		
@@ -262,13 +269,13 @@ package com.pblabs.rendering2D
 			if(autoResize){
 				if(!isComposedTextData)
 				{
-					_textDisplay.width = this._size.x * this._scale.x;
-					_textDisplay.height = this._size.y * this._scale.y;
 					var textSize : Rectangle = _textDisplay.getBounds(_textDisplay);
 					_newTextSize.setTo(textSize.width, textSize.height);
 				}else if(isComposedTextData && _bmFontObject) {
+					_bmFontObject.text = null;
+					_bmFontObject.text = _text;
 					_bmFontObject.update();
-					_newTextSize.setTo( _bmFontObject.width, _bmFontObject.height );
+					_newTextSize.setTo( _bmFontObject.width-4, _bmFontObject.height );
 				}
 				if(!this._size.equals(_newTextSize ))
 					_transformDirty = true;
@@ -281,13 +288,14 @@ package com.pblabs.rendering2D
 				}else{
 					this._size = _newTextSize.clone();
 				}
-			}
-			if(!isComposedTextData && _textDisplay){
-				_textDisplay.width = this._size.x * this._scale.x;
-				_textDisplay.height = this._size.y * this._scale.y;
-			}else if(!autoResize && isComposedTextData && _bmFontObject){
-				_bmFontObject.width = this._size.x * this._scale.x;
-				_bmFontObject.height = this._size.y * this._scale.y;
+			}else{
+				if(!isComposedTextData && _textDisplay){
+					_textDisplay.width = this._size.x * this._scale.x;
+					_textDisplay.height = this._size.y * this._scale.y;
+				}else if(!autoResize && isComposedTextData && _bmFontObject){
+					_bmFontObject.width = this._size.x * this._scale.x;
+					_bmFontObject.height = this._size.y * this._scale.y;
+				}
 			}
 		}
 		
@@ -432,7 +440,6 @@ package com.pblabs.rendering2D
 			}
 		}
 		
-		protected var _text : String;
 		public function get text():String{ return _text; }
 		public function set text(val : String):void{
 			if(!val || val == ""){
@@ -522,6 +529,14 @@ package com.pblabs.rendering2D
 			
 			if(_bmFontObject)
 				_bmFontObject.fixedWidth = !_autoResize;
+			_textDirty = true;
+			_textSizeDirty = true;
+		}
+
+		public function get autoResizeDirection():String{ return _autoResizeDirection; }
+		public function set autoResizeDirection(val : String):void{
+			_autoResizeDirection = val;
+			
 			_textDirty = true;
 			_textSizeDirty = true;
 		}
