@@ -230,6 +230,8 @@ package com.pblabs.nape.constraints
 			if(_spatialManager && _spatialManager is NapeManagerComponent)
 				_constraint.space = (_spatialManager as NapeManagerComponent).space;
 			_delayedConstruction = false;
+			
+			drawConstraint();
 		}
 		
 		protected function destroyConstraint():void
@@ -258,6 +260,11 @@ package com.pblabs.nape.constraints
 		{
 			destroyConstraint();
 			super.onRemove();
+		}
+		
+		protected function drawConstraint():void
+		{
+			
 		}
 		
 		protected var _constraint:Constraint;
