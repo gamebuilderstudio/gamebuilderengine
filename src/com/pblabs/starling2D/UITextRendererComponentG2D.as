@@ -94,14 +94,55 @@ package com.pblabs.starling2D
 				}
 			}
 			if(!skipCreation){
-				if(!isComposedTextData && !gpuObject)
+				if(!gpuObject && !isComposedTextData)
 				{
-					gpuObject = new TextField(_size.x * _scale.x, _size.y * _scale.y, _text, textFormatter.font, int(textFormatter.size), uint(textFormatter.color), Boolean(textFormatter.bold));
+					var fontSize : int = int(textFormatter.size);
+					if(ResourceTextureManagerG2D.actualScaleFactor != ResourceTextureManagerG2D.scaleFactor)
+					{
+						fontSize *= ResourceTextureManagerG2D.actualScaleFactor;
+					}
+					gpuObject = new TextField(_size.x * _scale.x, _size.y * _scale.y, _text, textFormatter.font, fontSize, uint(textFormatter.color), Boolean(textFormatter.bold));
+					(gpuObject as TextField).customScaleFactor = ResourceTextureManagerG2D.actualScaleFactor;
 					(gpuObject as TextField).italic = Boolean(textFormatter.italic);
+					(gpuObject as TextField).autoSize = _autoResize ? _autoResizeDirection : "none";
 					(gpuObject as TextField).wordWrap = _wordWrap;
-					(gpuObject as TextField).autoSize = _autoResizeDirection;
 					(gpuObject as TextField).hAlign = HAlign.LEFT;
 					(gpuObject as TextField).vAlign = VAlign.TOP;
+					_textDirty = false;
+					_textSizeDirty = false;
+				}else if(!gpuObject && isComposedTextData && _fontData.isLoaded && _fontImage.isLoaded) {
+					var currentFontName : String = fontName;
+					if(currentFontName)
+					{
+						var bitmapFont : BitmapFont = TextField.getBitmapFont( currentFontName );
+						if(!bitmapFont || (bitmapFont && bitmapFont.texture.isDisposed))
+						{
+							if(bitmapFont && bitmapFont.texture.isDisposed){
+								ResourceTextureManagerG2D.releaseTexture(bitmapFont.texture);
+								TextField.unregisterBitmapFont(currentFontName);
+							}
+							
+							_fontData.data.position = 0;
+							var fontDataXML : XML = XML(_fontData.data.readUTFBytes( _fontData.data.length ));
+							var fontFace : String = String(fontDataXML.info.@face);
+							if(fontFace != currentFontName)
+							{
+								this.fontName = currentFontName = fontFace;
+							}
+							var fontTexture : Texture = ResourceTextureManagerG2D.getTextureForResource(_fontImage);
+							bitmapFont = new BitmapFont(fontTexture, fontDataXML);
+							TextField.registerBitmapFont(bitmapFont, currentFontName);
+						}
+						gpuObject = new TextField(_size.x * _scale.x, _size.y * _scale.y, _text, currentFontName, bitmapFont.size, uint(textFormatter.color));
+						(gpuObject as TextField).autoSize = _autoResize ? _autoResizeDirection : "none";
+						(gpuObject as TextField).autoScale = _autoResize;
+						(gpuObject as TextField).wordWrap = _wordWrap;
+						(gpuObject as TextField).hAlign = HAlign.LEFT;
+						(gpuObject as TextField).vAlign = VAlign.TOP;
+						
+						_textDirty = false;
+						_textSizeDirty = false;
+					}
 				}
 				smoothing = _smoothing;
 				skipCreation = true;
@@ -123,23 +164,10 @@ package com.pblabs.starling2D
 				gpuObject.visible = false;
 		}
 		
-		override protected function updateTextImage():void
-		{
-			if(!isComposedTextData){
-				super.updateTextImage();
-			}else{
-				if(_textSizeDirty) {
-					updateFontSize();
-				}
-				if(_textDirty){
-					buildFontObject();
-				}
-			}
-		}
-		
 		override protected function paintTextToBitmap(reuseBitmap:Boolean=true):void
 		{
-			buildFontObject();
+			if(!gpuObject)
+				buildFontObject();
 		}
 		
 		override protected function getLocalPointOfStage(stagePoint : Point):Point
@@ -150,46 +178,31 @@ package com.pblabs.starling2D
 		
 		override protected function buildFontObject():void
 		{
-			if(Starling.context && isComposedTextData && _fontData.isLoaded && _fontImage.isLoaded)
-			{
-				var currentFontName : String = fontName;
-				if(currentFontName)
-				{
-					var bitmapFont : BitmapFont = TextField.getBitmapFont( currentFontName );
-					if(!bitmapFont)
-					{
-						_fontData.data.position = 0;
-						var fontDataXML : XML = XML(_fontData.data.readUTFBytes( _fontData.data.length ));
-						var fontFace : String = String(fontDataXML.info.@face);
-						if(fontFace != currentFontName)
-						{
-							this.fontName = currentFontName = fontFace;
-						}
-						var fontTexture : Texture = ResourceTextureManagerG2D.getTextureForResource(_fontImage);
-						bitmapFont = new BitmapFont(fontTexture, fontDataXML);
-						TextField.registerBitmapFont(bitmapFont, currentFontName);
-					}
-					if(!gpuObject){
-						gpuObject = new TextField(_size.x * _scale.x, _size.y * _scale.y, _text, currentFontName, bitmapFont.size, uint(textFormatter.color));
-						(gpuObject as TextField).wordWrap = _wordWrap;
-						(gpuObject as TextField).autoSize = _autoResizeDirection;
-						(gpuObject as TextField).hAlign = HAlign.LEFT;
-						(gpuObject as TextField).vAlign = VAlign.TOP;
-					}
-					_textDirty = false;
-					_textSizeDirty = false;
-				}
-			}else if(Starling.context && !isComposedTextData && !gpuObject){
-				buildG2DObject();
-			}
+			buildG2DObject();
 		}
 		
 		override protected function updateFontSize():void
 		{
+			if(!gpuObject)
+				buildFontObject();
+
 			if(autoResize && gpuObject){
-				(gpuObject as TextField).text = null;
-				(gpuObject as TextField).text = _text;
-				_newTextSize.setTo( (gpuObject as TextField).width, (gpuObject as TextField).height );
+				var textSize : Rectangle = (gpuObject as TextField).getBounds(gpuObject);
+				_newTextSize.setTo(textSize.width, textSize.height);
+				
+				if(_newTextSize.x == 0 || _newTextSize.y == 0) 
+					return;
+
+				//Passing changed size through instead of auto size changes
+				if(_transformDirty){
+					_newTextSize.x = this._size.x;
+					_newTextSize.y = this._size.y;
+					(gpuObject as TextField).width = this._size.x * _scale.x;					
+					(gpuObject as TextField).height = this._size.y * _scale.y;					
+				}
+				
+				if(isComposedTextData)
+					_scale.x = _scale.y = 1;
 
 				if(!this._size.equals(_newTextSize ))
 					_transformDirty = true;
@@ -201,9 +214,9 @@ package com.pblabs.starling2D
 				}else{
 					this._size = _newTextSize;
 				}
-			}else if(!autoResize && gpuObject){
-				(gpuObject as TextField).width = this._size.x * this._scale.x;					
-				(gpuObject as TextField).height = this._size.y * this._scale.y;					
+			}else if(gpuObject){
+				(gpuObject as TextField).width = this._size.x * _scale.x;					
+				(gpuObject as TextField).height = this._size.y * _scale.y;					
 			}
 		}
 		
@@ -224,7 +237,7 @@ package com.pblabs.starling2D
 				gpuObject = null;
 			}
 			_textDirty = true;
-			buildFontObject();
+			_textSizeDirty = true;
 			if(this.owner)
 				this.owner.reset();
 		}
@@ -290,22 +303,16 @@ package com.pblabs.starling2D
 				(gpuObject as TextField).text = _text;
 		}
 		
-		override public function set wordWrap(val : Boolean):void{
-			super.wordWrap = val;
-			if(gpuObject && gpuObject is TextField)
-				(gpuObject as TextField).wordWrap = _wordWrap;
-		}
-
-		override public function set autoResizeDirection(val:String):void{
-			super.autoResizeDirection = val;
-			if(gpuObject && gpuObject is TextField)
-				(gpuObject as TextField).autoSize = (_autoResize ? _autoResizeDirection : TextFieldAutoSize.NONE);
-		}
-		
 		override public function set autoResize(val : Boolean):void{
 			super.autoResize = val;
 			if(gpuObject && gpuObject is TextField)
 				(gpuObject as TextField).autoSize = (_autoResize ? _autoResizeDirection : TextFieldAutoSize.NONE);
+		}
+
+		override public function set wordWrap(val : Boolean):void{
+			super.wordWrap = val;
+			if(gpuObject && gpuObject is TextField)
+				(gpuObject as TextField).wordWrap = _wordWrap;
 		}
 
 		override public function set type(val : String):void{

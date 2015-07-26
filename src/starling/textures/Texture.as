@@ -123,6 +123,7 @@ package starling.textures
             // override in subclasses
 			if(_disposed)
 				_disposed.dispatch(this);
+			_isDisposed = true;
         }
         
         /** Creates a texture object from any of the supported data types, using the specified
@@ -484,5 +485,8 @@ package starling.textures
         public function get premultipliedAlpha():Boolean { return false; }
 
 		private var _disposed : Signal = new Signal(Texture);
-		public function get disposed():Signal{ return _disposed; }	}
+		private var _isDisposed : Boolean = false;
+		public function get disposed():Signal{ return _disposed; }
+		public function get isDisposed():Boolean{ return _isDisposed; }
+	}
 }

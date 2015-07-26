@@ -309,5 +309,10 @@ package com.pblabs.starling2D
 		/** Textures that are created from Bitmaps or ATF files will have the scale factor 
 		 *  assigned here. */
 		public static function get scaleFactor():Number { return ResourceManager.scaleFactor; }
+
+		/**
+		 * The actual scaleFactor not just the currently supported scaleFactor which could be different if all assets do not support the actual scaleFactor.
+		 */
+		public static function get actualScaleFactor():Number { return ResourceManager.actualScaleFactor; }
 	}
 }

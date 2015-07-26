@@ -317,5 +317,17 @@ package com.pblabs.engine.resource
 			_scaleFactor = val;
 		}
 		
+		private static var _actualScaleFactor:Number = 1;
+		/**
+		 * This is used as the actual calculated scaleFactor. Not just the current app wide supported scaleFactor. 
+		 */
+		public static function get actualScaleFactor():Number
+		{
+			return _actualScaleFactor;
+		}
+		public static function set actualScaleFactor(val : Number):void
+		{
+			_actualScaleFactor = val;
+		}
 	}
 }

@@ -121,6 +121,9 @@ package com.pblabs.starling2D
 		 */ 
 		private function imageLoadCompleted(res:ImageResource):void
 		{
+			if(_resource == res)
+				return;
+			
 			if(_resource){
 				_resource.removeEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
 			}

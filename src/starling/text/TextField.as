@@ -109,6 +109,7 @@ package starling.text
         
         private var mHitArea:Rectangle;
         private var mBorder:DisplayObjectContainer;
+		private var mCustomScaleFactor : Number = -1;
         
         private var mImage:Image;
         private var mQuadBatch:QuadBatch;
@@ -128,6 +129,7 @@ package starling.text
             mVAlign = VAlign.CENTER;
             mBorder = null;
             mKerning = true;
+			mWordWrap = true;
             mBold = bold;
             mAutoSize = TextFieldAutoSize.NONE;
             mHitArea = new Rectangle(0, 0, width, height);
@@ -185,7 +187,7 @@ package starling.text
                 mTextBounds = new Rectangle();
             
             var texture:Texture;
-            var scale:Number = Starling.contentScaleFactor;
+            var scale:Number = mCustomScaleFactor != -1 ? mCustomScaleFactor : Starling.contentScaleFactor;
             var bitmapData:BitmapData = renderText(scale, mTextBounds);
             var format:String = sDefaultTextureFormat;
             
@@ -251,12 +253,14 @@ package starling.text
             }
             
             var textFormat:TextFormat = new TextFormat(mFontName, 
-                mFontSize * scale, mColor, mBold, mItalic, mUnderline, null, null, hAlign);
+                mFontSize, mColor, mBold, mItalic, mUnderline, null, null, hAlign);
             textFormat.kerning = mKerning;
             
             sNativeTextField.defaultTextFormat = textFormat;
             sNativeTextField.width = width;
             sNativeTextField.height = height;
+			sNativeTextField.scaleX = scale;
+			sNativeTextField.scaleY = scale;
             sNativeTextField.antiAliasType = AntiAliasType.ADVANCED;
             sNativeTextField.selectable = false;            
             sNativeTextField.multiline = mWordWrap;            
@@ -669,7 +673,18 @@ package starling.text
             }
         }
         
-        /** Indicates whether the font size is scaled down so that the complete text fits
+		/** Indicates whether the native text field should wrap to the next line. @default true */
+		public function get wordWrap():Boolean { return mWordWrap; }
+		public function set wordWrap(value:Boolean):void
+		{
+			if (mWordWrap != value)
+			{
+				mWordWrap = value;
+				mRequiresRedraw = true;
+			}
+		}
+
+		/** Indicates whether the font size is scaled down so that the complete text fits
          *  into the text field. @default false */
         public function get autoScale():Boolean { return mAutoScale; }
         public function set autoScale(value:Boolean):void
@@ -695,18 +710,7 @@ package starling.text
             }
         }
         
-		/** Specifies the boolean value of wordwrapping on the TextField. */
-		public function get wordWrap():Boolean { return mWordWrap; }
-		public function set wordWrap(value:Boolean):void
-		{
-			if (mWordWrap != value)
-			{
-				mWordWrap = value;
-				mRequiresRedraw = true;
-			}
-		}
-
-		/** Indicates if TextField should be batched on rendering. This works only with bitmap
+        /** Indicates if TextField should be batched on rendering. This works only with bitmap
          *  fonts, and it makes sense only for TextFields with no more than 10-15 characters.
          *  Otherwise, the CPU costs will exceed any gains you get from avoiding the additional
          *  draw call. @default false */
@@ -717,7 +721,19 @@ package starling.text
             if (mQuadBatch) mQuadBatch.batchable = value;
         }
 
-        /** The native Flash BitmapFilters to apply to this TextField. 
+		/** Custom scale factor override. If different than global scaleFactor.
+		 *  @default -1 */
+		public function get customScaleFactor():Number { return mCustomScaleFactor; }
+		public function set customScaleFactor(value:Number):void
+		{ 
+			if (mCustomScaleFactor != value)
+			{
+				mCustomScaleFactor = value;
+				mRequiresRedraw = true;
+			}
+		}
+
+		/** The native Flash BitmapFilters to apply to this TextField. 
          *  Only available when using standard (TrueType) fonts! */
         public function get nativeFilters():Array { return mNativeFilters; }
         public function set nativeFilters(value:Array) : void

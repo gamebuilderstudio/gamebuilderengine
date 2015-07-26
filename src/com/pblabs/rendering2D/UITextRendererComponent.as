@@ -43,8 +43,9 @@ package com.pblabs.rendering2D
 		protected var _worldScratchPoint : Point = new Point();
 		protected var _text : String;
 		protected var _autoResizeDirection:String;
-
+		
 		private var _textSize : Point = new Point();
+		private var _minimumTextHeight : Number = 14;
 		
 		public function UITextRendererComponent()
 		{
@@ -60,8 +61,10 @@ package com.pblabs.rendering2D
 		
 		override protected function onAdd():void
 		{
-			/*if(!_textDisplay.text || _textDisplay.text == "") 
-				text = "[EMPTY]";*/
+			if(!_autoResizeDirection){
+				_autoResizeDirection = _autoResize ? "vertical" : "horizontal";
+			}
+			
 			if(!_textDisplay)
 				_textDisplay = new TextField();
 			_textDisplay.wordWrap = _wordWrap;
@@ -69,15 +72,10 @@ package com.pblabs.rendering2D
 			_textDisplay.setTextFormat(textFormatter);
 			_textDisplay.mouseEnabled = true;
 			_textDisplay.autoSize = TextFieldAutoSize.LEFT;
-
+			
 			updateFontSize();
 			paintTextToBitmap();
 			
-			if(!_autoResizeDirection && _autoResize){
-				_autoResizeDirection = "horizontal";
-			}else{
-				_autoResizeDirection = "vertical";
-			}
 			super.onAdd();
 		}
 		
@@ -85,20 +83,20 @@ package com.pblabs.rendering2D
 		{
 			if(!isComposedTextData && this.bitmapData)
 				this.bitmapData.dispose();
-
+			
 			super.onRemove();
 			
 			if(_fontData)
 				_fontData.removeEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
 			if(_fontImage)
 				_fontImage.removeEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
-
+			
 			if(_bmFontObject)
 				_bmFontObject.destroy();
 			if(_textInputType == TextFieldType.INPUT){
 				PBE.mainStage.removeEventListener(MouseEvent.MOUSE_UP, onStageMouseUp, true)
 				PBE.mainStage.removeEventListener(MouseEvent.MOUSE_DOWN, onStageMouseDown, true);
-
+				
 				_textDisplay.removeEventListener(Event.CHANGE, inputChanged);
 				_textDisplay.removeEventListener(FocusEvent.FOCUS_OUT, hideInputField);
 			}
@@ -163,7 +161,7 @@ package com.pblabs.rendering2D
 			_textDisplay.selectable = false;
 			if(PBE.mainStage.contains(_textDisplay))
 				PBE.mainStage.removeChild(_textDisplay);
-
+			
 			this.alpha = _previousAlpha;
 			_inputEnabled = false;
 			text = _textDisplay.text;
@@ -173,7 +171,7 @@ package com.pblabs.rendering2D
 		{
 			if(_inputEnabled && _transformDirty)
 				hideInputField(null);
-
+			
 			if(_textSizeDirty)
 			{
 				updateFontSize();
@@ -200,6 +198,7 @@ package com.pblabs.rendering2D
 				var fontDataXMLStr : String = _fontData.data.readUTFBytes(_fontData.data.length);
 				var fontXML : XML = XML(fontDataXMLStr);
 				var fontName : String = fontXML.info.@face;
+				_minimumTextHeight = Number(fontXML.common.@lineHeight);
 				
 				var font : PxBitmapFont = PxBitmapFont.fetch(fontName);
 				if(!font){
@@ -213,7 +212,6 @@ package com.pblabs.rendering2D
 				_bmFontObject.wordWrap = _wordWrap;
 				_bmFontObject.multiLine = _wordWrap;
 				_bmFontObject.font = font;
-				//_bmFontObject.lineSpacing = 2;
 				this.fontName = fontName;
 			}
 		}
@@ -227,7 +225,7 @@ package com.pblabs.rendering2D
 				this.bitmapData = new BitmapData(150,50);
 				return;
 			}
-
+			
 			if(!_bmFontObject)
 				buildFontObject();
 			
@@ -240,8 +238,8 @@ package com.pblabs.rendering2D
 				{
 					if(textBitmapData)
 						textBitmapData.dispose();
-					var bw : Number = this._size.x * (this._scale.x * ResourceManager.scaleFactor);
-					var bh : Number = this._size.y * (this._scale.y * ResourceManager.scaleFactor);
+					var bw : Number = this._size.x * this._scale.x;
+					var bh : Number = this._size.y * this._scale.y;
 					textBitmapData = new BitmapData(PBUtil.clamp(bw, 10, Number.MAX_VALUE), PBUtil.clamp(bh, 10, Number.MAX_VALUE), true, 0x0);
 					clearedBitmap = true;
 				}
@@ -265,18 +263,34 @@ package com.pblabs.rendering2D
 		{
 			if(!_bmFontObject)
 				buildFontObject();
-
+			
 			if(autoResize){
 				if(!isComposedTextData)
 				{
 					var textSize : Rectangle = _textDisplay.getBounds(_textDisplay);
 					_newTextSize.setTo(textSize.width, textSize.height);
 				}else if(isComposedTextData && _bmFontObject) {
-					_bmFontObject.text = null;
-					_bmFontObject.text = _text;
 					_bmFontObject.update();
-					_newTextSize.setTo( _bmFontObject.width-4, _bmFontObject.height );
+					_newTextSize.setTo( _bmFontObject.width, _bmFontObject.height );
 				}
+				
+				//Passing changed size through instead of auto size changes
+				if(_transformDirty){
+					_newTextSize.x = this._size.x;
+					_newTextSize.y = this._size.y;
+					if(!isComposedTextData) {
+						_textDisplay.width = this._size.x * this._scale.x;
+						_textDisplay.height = this._size.y * this._scale.y;
+					}
+				}
+				
+				if(isComposedTextData){
+					_scale.x = _scale.y = 1;
+
+					if(_newTextSize.y < _minimumTextHeight)
+						_newTextSize.y = _minimumTextHeight;
+				}
+
 				if(!this._size.equals(_newTextSize ))
 					_transformDirty = true;
 				
@@ -288,14 +302,14 @@ package com.pblabs.rendering2D
 				}else{
 					this._size = _newTextSize.clone();
 				}
-			}else{
-				if(!isComposedTextData && _textDisplay){
-					_textDisplay.width = this._size.x * this._scale.x;
-					_textDisplay.height = this._size.y * this._scale.y;
-				}else if(!autoResize && isComposedTextData && _bmFontObject){
-					_bmFontObject.width = this._size.x * this._scale.x;
-					_bmFontObject.height = this._size.y * this._scale.y;
-				}
+			}
+			
+			if(!isComposedTextData && _textDisplay){
+				_textDisplay.width = this._size.x * this._scale.x;
+				_textDisplay.height = this._size.y * this._scale.y;
+			}else if(!autoResize && isComposedTextData && _bmFontObject){
+				_bmFontObject.width = this._size.x * this._scale.x;
+				_bmFontObject.height = this._size.y * this._scale.y;
 			}
 		}
 		
@@ -311,7 +325,7 @@ package com.pblabs.rendering2D
 			if(this.owner)
 				this.owner.reset();
 		}
-
+		
 		override public function updateTransform(updateProps:Boolean = false):void
 		{
 			if(!displayObject)
@@ -332,7 +346,7 @@ package com.pblabs.rendering2D
 			
 			_transformDirty = false;
 		}
-
+		
 		public function get isComposedTextData():Boolean {
 			if(_fontImage && _fontData )
 			{
@@ -340,7 +354,7 @@ package com.pblabs.rendering2D
 			}
 			return false;
 		}
-
+		
 		public function get fontImage():ImageResource{ return _fontImage; }
 		public function set fontImage(img : ImageResource):void{
 			if(_fontImage)
@@ -358,7 +372,7 @@ package com.pblabs.rendering2D
 				_bmFontObject = null;
 			}
 		}
-
+		
 		public function get fontData():DataResource{ return _fontData; }
 		public function set fontData(data : DataResource):void{
 			if(_fontData)
@@ -376,12 +390,12 @@ package com.pblabs.rendering2D
 				_bmFontObject = null;
 			}
 		}
-
+		
 		public function get fontColor():uint{ return uint(textFormatter.color); }
 		public function set fontColor(val : uint):void{
 			if(textFormatter.color != val)
 				_textDirty = true;
-
+			
 			textFormatter.color = val;
 			if(_textDisplay){
 				_textDisplay.textColor = val;
@@ -397,13 +411,13 @@ package com.pblabs.rendering2D
 				_textDirty = true;
 				_textSizeDirty = true;
 			}
-
+			
 			textFormatter.bold = val;
 			if(_textDisplay){
 				_textDisplay.setTextFormat(textFormatter);
 			}
 		}
-
+		
 		public function get fontItalic():Boolean{ return textFormatter.italic; }
 		public function set fontItalic(val : Boolean):void{
 			if(textFormatter.italic != val){
@@ -415,7 +429,7 @@ package com.pblabs.rendering2D
 				_textDisplay.setTextFormat(textFormatter);
 			}
 		}
-
+		
 		public function get fontSize():Number{ return int(textFormatter.size); }
 		public function set fontSize(val : Number):void{
 			if(textFormatter.size != val){
@@ -427,7 +441,7 @@ package com.pblabs.rendering2D
 				_textDisplay.setTextFormat(textFormatter);
 			}
 		}
-
+		
 		public function get fontName():String{ return textFormatter.font; }
 		public function set fontName(val : String):void{
 			if(textFormatter.font != val){
@@ -462,7 +476,7 @@ package com.pblabs.rendering2D
 			if(_bmFontObject)
 				_bmFontObject.text = _text;
 		}
-
+		
 		override public function set size(val : Point):void{
 			if(!val.equals(this._size)){
 				_textDirty = true;
@@ -477,7 +491,7 @@ package com.pblabs.rendering2D
 			}
 			super.scale = val;
 		}
-
+		
 		/**
 		 * Uses one of the constants from the TextFieldType class
 		 * i.e. TextFieldType.INPUT
@@ -487,7 +501,7 @@ package com.pblabs.rendering2D
 		public function set type(val : String):void{
 			if(_textInputType == val)
 				return;
-
+			
 			if(val != TextFieldType.INPUT && _textInputType == TextFieldType.INPUT){
 				PBE.mainStage.removeEventListener(MouseEvent.MOUSE_UP, onStageMouseUp, true);
 				PBE.mainStage.removeEventListener(MouseEvent.MOUSE_DOWN, onStageMouseDown, true);
@@ -505,7 +519,7 @@ package com.pblabs.rendering2D
 				_textDisplay.addEventListener(FocusEvent.FOCUS_OUT, hideInputField);
 			}
 		}
-	
+		
 		public function get wordWrap():Boolean{ return _wordWrap; }
 		public function set wordWrap(val : Boolean):void{
 			if(_wordWrap == val)
@@ -522,7 +536,7 @@ package com.pblabs.rendering2D
 			_textDirty = true;
 			_textSizeDirty = true;
 		}
-
+		
 		public function get autoResize():Boolean{ return _autoResize; }
 		public function set autoResize(val : Boolean):void{
 			_autoResize = val;
@@ -532,7 +546,7 @@ package com.pblabs.rendering2D
 			_textDirty = true;
 			_textSizeDirty = true;
 		}
-
+		
 		public function get autoResizeDirection():String{ return _autoResizeDirection; }
 		public function set autoResizeDirection(val : String):void{
 			_autoResizeDirection = val;
@@ -540,7 +554,7 @@ package com.pblabs.rendering2D
 			_textDirty = true;
 			_textSizeDirty = true;
 		}
-
+		
 		public function get nativeTextField():TextField{ return _textDisplay; }
 		public function get bitmapTextField():PxTextField { return _bmFontObject; }
 	}
