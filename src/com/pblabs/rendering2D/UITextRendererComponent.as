@@ -62,7 +62,10 @@ package com.pblabs.rendering2D
 		override protected function onAdd():void
 		{
 			if(!_autoResizeDirection){
-				_autoResizeDirection = _autoResize ? "vertical" : "horizontal";
+				if(isComposedTextData)
+					_autoResizeDirection = "horizontal";
+				else
+					_autoResizeDirection = _autoResize ? "vertical" : "horizontal";
 			}
 			
 			if(!_textDisplay)
