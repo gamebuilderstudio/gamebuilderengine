@@ -42,7 +42,10 @@ package com.pblabs.engine.resource
             
          try
          {
-            _xml = new XML(xmlString);
+			 if(data is XML)
+				 _xml = data as XML;
+			 else if(xmlString)
+            	_xml = new XML(xmlString);
 			processLoadedContent(_xml);
          }
          catch (e:TypeError)

@@ -11,6 +11,7 @@ package com.pblabs.engine.resource.provider
     import com.pblabs.engine.resource.ImageResource;
     import com.pblabs.engine.resource.MP3Resource;
     import com.pblabs.engine.resource.Resource;
+    import com.pblabs.engine.resource.XMLResource;
     
     import flash.display.Bitmap;
     import flash.events.ErrorEvent;
@@ -19,6 +20,7 @@ package com.pblabs.engine.resource.provider
     import br.com.stimuli.loading.BulkLoader;
     import br.com.stimuli.loading.BulkProgressEvent;
     import br.com.stimuli.loading.loadingtypes.LoadingItem;
+    import br.com.stimuli.loading.loadingtypes.XMLItem;
     
     /**
      * The BulkLoaderResourceProvider  provides the ResourceManager with resources
@@ -76,6 +78,8 @@ package com.pblabs.engine.resource.provider
 				loaderType = "sound";
 			else if(type == ImageResource && url.indexOf(".atf") == -1)
 				loaderType = "image";
+			else if(type == XMLResource)
+				loaderType = "xml";
             loader.add(url, { id : resourceIdentifier, type: loaderType} );
             if (!loader.isRunning) loader.start();	
             
@@ -168,8 +172,11 @@ package com.pblabs.engine.resource.provider
             // if resource of current LoadingItem exists, initialize it. 			
             if (resources[(event.currentTarget as LoadingItem).id]!=null)
             {
-                // get content from bulkLoader and release memory
-                var content:* = loader.getContent( (event.currentTarget as LoadingItem).id , true);			   
+				var content:*;
+				if(event.currentTarget is XMLItem)
+					content = loader.getXML( (event.currentTarget as XMLItem).id , true);
+				else // get content from bulkLoader and release memory
+					content = loader.getContent( (event.currentTarget as LoadingItem).id , true);			   
                 
                 // initalize resource with the content from bulkloader						
                 if (content is Bitmap)
