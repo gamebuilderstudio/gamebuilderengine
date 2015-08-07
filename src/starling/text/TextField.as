@@ -271,8 +271,11 @@ package starling.text
 			sNativeTextField.autoSize = flash.text.TextFieldAutoSize.LEFT;
             
             // we try embedded fonts first, non-embedded fonts are just a fallback
-            if (sNativeTextField.textWidth == 0.0 || sNativeTextField.textHeight == 0.0)
+            if (sNativeTextField.textWidth == 0.0 || sNativeTextField.textHeight == 0.0){
                 sNativeTextField.embedFonts = false;
+				sNativeTextField.width = width;
+				sNativeTextField.height = height;
+			}
             
             formatText(sNativeTextField, textFormat);
             
