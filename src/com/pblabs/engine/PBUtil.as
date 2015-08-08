@@ -668,6 +668,7 @@ package com.pblabs.engine
 		/** Custom implementation of '[ARRAY].splice'. The native method always create temporary
 		 *  objects that have to be garbage collected. This implementation does not cause such
 		 *  issues. */
+		[Inline]
 		public static function splice(array : Object, startIndex:int, deleteCount:uint=uint.MAX_VALUE, insertee:*=null):void
 		{
 			var oldLength:uint  = array.length;
