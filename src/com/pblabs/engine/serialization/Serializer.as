@@ -8,6 +8,7 @@
  ******************************************************************************/
 package com.pblabs.engine.serialization
 {
+    import com.pblabs.engine.PBUtil;
     import com.pblabs.engine.core.OrderedArray;
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.entity.IEntity;
@@ -719,7 +720,7 @@ package com.pblabs.engine.serialization
                 var reference:ReferenceNote = _deferredReferences[i];
                 if (reference.resolve())
                 {
-                    _deferredReferences.splice(i, 1);
+					PBUtil.splice(_deferredReferences, i, 1);
                     i--;
                 }
             }
@@ -738,7 +739,8 @@ import com.pblabs.engine.debug.Logger;
 import com.pblabs.engine.entity.IEntity;
 import com.pblabs.engine.entity.IEntityComponent;
 import com.pblabs.engine.resource.Resource;
-import com.pblabs.engine.serialization.*;
+import com.pblabs.engine.serialization.Serializer;
+import com.pblabs.engine.serialization.TypeUtility;
 
 internal class ResourceNote
 {

@@ -9,6 +9,7 @@
 package com.pblabs.rendering2D
 {
 	import com.pblabs.engine.PBE;
+	import com.pblabs.engine.PBUtil;
 	import com.pblabs.engine.core.ObjectType;
 	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.debug.Profiler;
@@ -43,7 +44,7 @@ package com.pblabs.rendering2D
             return;
          }
          
-         _objectList.splice(index, 1);
+		 PBUtil.splice(_objectList, index, 1);
       }
 
       /**

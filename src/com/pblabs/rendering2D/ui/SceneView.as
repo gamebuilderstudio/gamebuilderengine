@@ -9,6 +9,7 @@
 package com.pblabs.rendering2D.ui
 {
     import com.pblabs.engine.PBE;
+    import com.pblabs.engine.PBUtil;
     
     import flash.display.DisplayObject;
     import flash.display.Sprite;
@@ -109,15 +110,15 @@ package com.pblabs.rendering2D.ui
 						var tmpData : Object = _pendingDisplayObjectAdditions[0];
 						if(this.numChildren >= tmpData.position){
 							addChildAt(tmpData.displayObject as DisplayObject, tmpData.position);
-							_pendingDisplayObjectAdditions.splice(0, 1);
+							PBUtil.splice(_pendingDisplayObjectAdditions, 0, 1);
 						}else{
-							tmpList.push(_pendingDisplayObjectAdditions.splice(0, 1));
+							tmpList[tmpList.length] = _pendingDisplayObjectAdditions.splice(0, 1);
 						}
 					}
 					_pendingDisplayObjectAdditions = tmpList;
 				}
 			}else{
-				_pendingDisplayObjectAdditions.push( {displayObject: dObj, position: index} );
+				_pendingDisplayObjectAdditions[_pendingDisplayObjectAdditions.length] = {displayObject: dObj, position: index};
 			}
         }
         

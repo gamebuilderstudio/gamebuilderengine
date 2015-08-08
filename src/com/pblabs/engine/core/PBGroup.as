@@ -8,6 +8,8 @@
  ******************************************************************************/
 package com.pblabs.engine.core
 {
+	import com.pblabs.engine.PBUtil;
+
     /**
      * A group which owns the objects contained it. When the PBGroup is
      * deleted, it deletes its owned objects. Assign a PBObject to a PBGroup
@@ -29,7 +31,7 @@ package com.pblabs.engine.core
             if(idx == -1)
                 return false;
             
-            items.splice(idx, 1);
+			PBUtil.splice(items, idx, 1);
             return true
         }
 

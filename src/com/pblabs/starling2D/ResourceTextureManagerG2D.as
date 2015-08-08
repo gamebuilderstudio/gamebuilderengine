@@ -1,5 +1,6 @@
 package com.pblabs.starling2D
 {
+	import com.pblabs.engine.PBUtil;
 	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.resource.ImageResource;
 	import com.pblabs.engine.resource.Resource;
@@ -50,7 +51,7 @@ package com.pblabs.starling2D
 					var originTexture : Object = _originTexturesMap[key][i]
 					if(_originTexturesMap[key][i] == originTexture){
 						
-						_originTexturesMap[key].splice(i, 1);
+						PBUtil.splice(_originTexturesMap[key], i, 1);
 						
 						if(!_originTexturesMap[key] || _originTexturesMap[key].length < 1){
 							delete _originTexturesMap[key];
@@ -104,7 +105,7 @@ package com.pblabs.starling2D
 				texture.root.onRestore = onTextureRestored;
 				_originTextureToBitmapDataMap[texture.root] = sourceBitmapData;
 				_originTexturesMap[key] = new Vector.<Texture>();
-				_originTexturesMap[key].push( texture );
+				_originTexturesMap[key][_originTexturesMap[key].length] = texture;
 				_textureReferenceCount[texture] = 1;
 				subtexture = Texture.fromTexture(texture);
 				subtexture.disposed.addOnce(releaseTexture);
@@ -145,7 +146,7 @@ package com.pblabs.starling2D
 					_originTextureToBitmapDataMap[texture.root] = resource.bitmapData;
 				}
 				_originTexturesMap[resource] = new Vector.<Texture>();
-				_originTexturesMap[resource].push( texture );
+				_originTexturesMap[resource][_originTexturesMap[resource].length] = texture;
 				_textureReferenceCount[texture] = 1;
 				subtexture = Texture.fromTexture(texture);
 				subtexture.disposed.addOnce(releaseTexture);
@@ -172,7 +173,7 @@ package com.pblabs.starling2D
 					var subtexture : Texture = Texture.fromTexture(texture);
 					subtexture.disposed.addOnce(releaseTexture);
 					_subTextureToOriginTextureMap[subtexture] = texture;
-					newTextureList.push(subtexture);
+					newTextureList[newTextureList.length] = subtexture;
 				}
 				return newTextureList;
 			}
@@ -192,7 +193,7 @@ package com.pblabs.starling2D
 				var atlasTexture : Texture = getTextureForResource(resource);
 				atlas = new TextureAtlas(atlasTexture);
 				_originAtlasMap[resource] = new Vector.<TextureAtlas>();
-				_originAtlasMap[resource].push( atlas );
+				_originAtlasMap[resource][_originAtlasMap[resource].length] = atlas;
 			}
 			return atlas;
 		}
@@ -277,7 +278,7 @@ package com.pblabs.starling2D
 					{
 						if(_originTexturesMap[key][i] == originTexture && originTexture in _textureReferenceCount && _textureReferenceCount[originTexture] < 1){
 							
-							_originTexturesMap[key].splice(i, 1);
+							PBUtil.splice(_originTexturesMap[key], i, 1);
 							if(!_originTexturesMap[key] || _originTexturesMap[key].length < 1){
 								delete _originTexturesMap[key];
 								deletedOriginTexture = true;

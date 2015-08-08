@@ -9,6 +9,7 @@
 package com.pblabs.engine.entity
 {
     import com.pblabs.engine.PBE;
+    import com.pblabs.engine.PBUtil;
     import com.pblabs.engine.core.PBObject;
     import com.pblabs.engine.core.PBSet;
     import com.pblabs.engine.debug.Logger;
@@ -288,7 +289,7 @@ package com.pblabs.engine.entity
                     
                     // TODO: Forcibly call register/unregister to ensure onAdd/onRemove semantics?
                     
-                    _deferredComponents.splice(i, 1);
+					PBUtil.splice(_deferredComponents, i, 1);
                     break;
                 }
 
@@ -449,7 +450,7 @@ package com.pblabs.engine.entity
 					index = i;
 			}     
 			if(index > -1)
-				_components.splice(index,1);
+				PBUtil.splice(_components, index, 1);
 			
 			if(component.name in _selfObject)
 				delete _selfObject[component.name];

@@ -9,6 +9,7 @@
 package com.pblabs.starling2D
 {
     import com.pblabs.engine.PBE;
+    import com.pblabs.engine.PBUtil;
     import com.pblabs.rendering2D.ui.IUITarget;
     
     import flash.display.StageAlign;
@@ -103,10 +104,10 @@ package com.pblabs.starling2D
 		public function addDisplayObject(dObj:Object):void
 		{
 			if(!_gpuCanvasContainer){
-				_delayedCalls.push( {func : addDisplayObject, params: [dObj] } );
+				_delayedCalls[_delayedCalls.length] = {func : addDisplayObject, params: [dObj] };
 				return;
 			}
-			_displayObjectList.push( dObj as DisplayObject );	
+			_displayObjectList[_displayObjectList.length] = dObj as DisplayObject;	
 			_gpuCanvasContainer.addChild( dObj as DisplayObject );
 		}
 		
@@ -137,7 +138,7 @@ package com.pblabs.starling2D
 			
 			var dIndex : int = _displayObjectList.indexOf(dObj as DisplayObject);
 			if(dIndex != -1)
-				_displayObjectList.splice(dIndex,1);	
+				PBUtil.splice(_displayObjectList, dIndex, 1);
 		}
 		
 		public function getDisplayObjectIndex(dObj:Object):int
@@ -150,7 +151,7 @@ package com.pblabs.starling2D
 		public function setDisplayObjectIndex(dObj:Object, index:int):void
 		{
 			if(!_gpuCanvasContainer){
-				_delayedCalls.push( {func : setDisplayObjectIndex, params: [dObj, index] } );
+				_delayedCalls[_delayedCalls.length] = {func : setDisplayObjectIndex, params: [dObj, index] };
 				return;
 			}
 			
@@ -166,16 +167,17 @@ package com.pblabs.starling2D
 						var tmpData : Object = _pendingDisplayObjectAdditions[i];
 						if(_gpuCanvasContainer.numChildren >= tmpData.position){
 							_gpuCanvasContainer.addChildAt(tmpData.displayObject as DisplayObject, tmpData.position);
-							_displayObjectList.splice(tmpData.position, 0, tmpData.displayObject as DisplayObject);
-							_pendingDisplayObjectAdditions.splice(0, 1);
+
+							PBUtil.splice(_displayObjectList, tmpData.position, 0, tmpData.displayObject);
+							PBUtil.splice(_pendingDisplayObjectAdditions, 0, 1);
 						}else{
-							tmpList.push(_pendingDisplayObjectAdditions.splice(0, 1));
+							tmpList[tmpList.length] = _pendingDisplayObjectAdditions.splice(0, 1);
 						}
 					}
 					_pendingDisplayObjectAdditions = tmpList;
 				}
 			}else{
-				_pendingDisplayObjectAdditions.push( {displayObject: dObj, position: index} );
+				_pendingDisplayObjectAdditions[_pendingDisplayObjectAdditions.length] = {displayObject: dObj, position: index};
 			}
 		}
 		

@@ -8,6 +8,7 @@
  ******************************************************************************/
 package com.pblabs.rendering2D.spritesheet
 {
+    import com.pblabs.engine.PBUtil;
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.entity.EntityComponent;
     import com.pblabs.rendering2D.modifier.Modifier;
@@ -137,7 +138,7 @@ package com.pblabs.rendering2D.spritesheet
 			{
 				// frame where loaded so splice the array
 				if (frames.length>value)
-					frames.splice(value,frames.length-value);
+					PBUtil.splice(frames, value, frames.length-value);
 			}
 		}
 		
@@ -231,7 +232,7 @@ package com.pblabs.rendering2D.spritesheet
 			if (frameCountCap>0)
 			{
 				// this frames array has to be capped because the frameCount was set manually to override	
-				frames.splice(frameCountCap,frames.length-frameCountCap);
+				PBUtil.splice(frames, frameCountCap, frames.length-frameCountCap);
 			}
 			
 			if (_defaultCenter)

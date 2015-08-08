@@ -8,6 +8,7 @@
  ******************************************************************************/
 package com.pblabs.starling2D
 {
+	import com.pblabs.engine.PBUtil;
 	import com.pblabs.rendering2D.DisplayObjectRenderer;
 	import com.pblabs.rendering2D.IDisplayObjectSceneLayer;
 	
@@ -87,7 +88,8 @@ package com.pblabs.starling2D
             
             // Apply the order.
             var updated:int = 0;
-            for(var i:int=0; i<rendererList.length; i++)
+			var len : int = rendererList.length;
+            for(var i:int=0; i < len; i++)
             {
                 var d:DisplayObject = rendererList[i].displayObjectG2D;
                 if(getChildAt(i) == d)
@@ -118,7 +120,7 @@ package com.pblabs.starling2D
             var idx:int = rendererList.indexOf(dor as DisplayObjectRendererG2D);
             if(idx == -1)
                 return;
-            rendererList.splice(idx, 1);
+			PBUtil.splice(rendererList, idx, 1);
             removeChild((dor as DisplayObjectRendererG2D).displayObjectG2D);
         }
 		

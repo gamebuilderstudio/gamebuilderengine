@@ -1,5 +1,6 @@
 package com.pblabs.starling2D.spritesheet
 {
+	import com.pblabs.engine.PBUtil;
 	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.rendering2D.spritesheet.CachedFramesDataMC;
 	import com.pblabs.rendering2D.spritesheet.SWFSpriteSheetComponent;
@@ -134,7 +135,7 @@ package com.pblabs.starling2D.spritesheet
 			if (frameCountCap>0)
 			{
 				// this frames array has to be capped because the frameCount was set manually to override	
-				frames.splice(frameCountCap,frames.length-frameCountCap);
+				PBUtil.splice(frames, frameCountCap, frames.length-frameCountCap);
 			}
 			
 			if (_defaultCenter)

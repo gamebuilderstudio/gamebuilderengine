@@ -253,7 +253,7 @@ package com.pblabs.nape
 		public function removeSpatialObject(object:ISpatialObject2D):void
 		{
 			if(object is INape2DSpatialComponent && _physicsObjectList.indexOf(object as INape2DSpatialComponent) != -1){
-				_physicsObjectList.splice(_physicsObjectList.indexOf(object as INape2DSpatialComponent), 1);
+				PBUtil.splice(_physicsObjectList, _physicsObjectList.indexOf(object as INape2DSpatialComponent), 1);
 			}else if(!(object is INape2DSpatialComponent)){
 				_otherItems.removeSpatialObject(object);
 			}

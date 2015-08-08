@@ -8,6 +8,7 @@
  ******************************************************************************/
 package com.pblabs.engine.core
 {
+    import com.pblabs.engine.PBUtil;
     import com.pblabs.engine.debug.Logger;
     
     import flash.events.Event;
@@ -84,7 +85,7 @@ package com.pblabs.engine.core
             
             // Yes, remove it.
             item.noteOutOfSet(this);
-            items.splice(idx, 1);
+			PBUtil.splice(items, idx, 1);
             return true;
         }
         

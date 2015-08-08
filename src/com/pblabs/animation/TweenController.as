@@ -9,6 +9,7 @@
 package com.pblabs.animation
 {
 	import com.pblabs.engine.PBE;
+	import com.pblabs.engine.PBUtil;
 	import com.pblabs.engine.core.IAnimatedObject;
 	import com.pblabs.engine.core.ITickedObject;
 	import com.pblabs.engine.entity.EntityComponent;
@@ -94,12 +95,12 @@ package com.pblabs.animation
 				case ITickedObject:
 					tweenIndex = instance.tickTweens.indexOf(tween);
 					if (tweenIndex>=0)
-						instance.tickTweens.splice(tweenIndex,1);
+						PBUtil.splice(instance.tickTweens, tweenIndex, 1);
 					break;
 				case IAnimatedObject:
 					tweenIndex = instance.frameTweens.indexOf(tween);
 					if (tweenIndex>=0)
-						instance.frameTweens.splice(tweenIndex,1);
+						PBUtil.splice(instance.frameTweens, tweenIndex, 1);
 					break;
 			}						
 		}	

@@ -8,6 +8,8 @@
  ******************************************************************************/
 package com.pblabs.rendering2D
 {
+    import com.pblabs.engine.PBUtil;
+    
     import flash.display.DisplayObject;
     import flash.display.Sprite;
     
@@ -104,7 +106,7 @@ package com.pblabs.rendering2D
             if(idx != -1)
                 throw new Error("Already added!");
             
-            rendererList.push(dor);
+            rendererList[rendererList.length] = dor;
             addChild(dor.displayObject);
             markDirty();
         }
@@ -114,7 +116,7 @@ package com.pblabs.rendering2D
             var idx:int = rendererList.indexOf(dor);
             if(idx == -1)
                 return;
-            rendererList.splice(idx, 1);
+			PBUtil.splice(rendererList, idx, 1);
             removeChild(dor.displayObject);
         }
 

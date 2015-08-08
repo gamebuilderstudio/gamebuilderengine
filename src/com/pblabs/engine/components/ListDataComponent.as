@@ -8,6 +8,7 @@
  ******************************************************************************/
 package com.pblabs.engine.components
 {
+   import com.pblabs.engine.PBUtil;
    import com.pblabs.engine.debug.Logger;
    import com.pblabs.engine.entity.EntityComponent;
    import com.pblabs.engine.serialization.ISerializable;
@@ -72,7 +73,7 @@ package com.pblabs.engine.components
 		   {
 			   this["item"+(i-1)] = this["item"+i];
 		   }
-		   _data.splice(index, 1);
+		   PBUtil.splice(_data, index, 1);
 		   delete this["item"+_data.length];
 		   refresh();
 	   }

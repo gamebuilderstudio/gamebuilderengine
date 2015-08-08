@@ -370,9 +370,9 @@ package com.pblabs.engine.core
             processObject.profilerKey = TypeUtility.getObjectClassName(object);
             
             if (position < 0 || position >= list.length)
-                list.push(processObject);
+                list[list.length] = processObject;
             else
-                list.splice(position, 0, processObject);
+				PBUtil.splice(list, position, 0, processObject);
         }
         
         /**
@@ -399,7 +399,7 @@ package com.pblabs.engine.core
                     }
                     else
                     {
-                        list.splice(i, 1);                        
+						PBUtil.splice(list, i, 1);
                     }
                     
                     return;
@@ -552,7 +552,7 @@ package com.pblabs.engine.core
                     if(animatedObjects[j])
                         continue;
                     
-                    animatedObjects.splice(j, 1);
+					PBUtil.splice(animatedObjects, j, 1);
                     j--;
 					listLen = animatedObjects.length;
                 }
@@ -562,7 +562,7 @@ package com.pblabs.engine.core
                     if(tickedObjects[k])
                         continue;
                     
-                    tickedObjects.splice(k, 1);
+					PBUtil.splice(tickedObjects, k, 1);
                     k--;
 					listLen = tickedObjects.length;
                 }

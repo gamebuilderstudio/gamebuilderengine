@@ -9,6 +9,7 @@
 package com.pblabs.engine.components
 {
     import com.pblabs.engine.PBE;
+    import com.pblabs.engine.PBUtil;
     import com.pblabs.engine.core.NameManager;
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.entity.EntityComponent;
@@ -60,7 +61,7 @@ package com.pblabs.engine.components
             var idx:int = _members.indexOf(member);
             if(idx == -1)
                 throw new Error("Removing a member which does not exist in this group.");
-            _members.splice(idx, 1);
+			PBUtil.splice(_members, idx, 1);
         }
       
         public function get entityList():Array

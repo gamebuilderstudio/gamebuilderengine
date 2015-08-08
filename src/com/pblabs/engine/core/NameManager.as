@@ -8,6 +8,7 @@
  ******************************************************************************/
 package com.pblabs.engine.core
 {
+    import com.pblabs.engine.PBUtil;
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.entity.IEntity;
     import com.pblabs.engine.entity.IEntityComponent;
@@ -76,7 +77,7 @@ package com.pblabs.engine.core
 				if(object.alias in _similarObjects && similarObjects)
 				{
 					if(similarObjects.indexOf(object) != -1)
-						similarObjects.splice( similarObjects.indexOf(object), 1 );
+						PBUtil.splice(similarObjects, similarObjects.indexOf(object), 1);
 					
 					if(_similarObjects[object.alias].length <= 0){
 						if(!isNameValid && (object.alias in _objects) && _objects[object.alias] == object){

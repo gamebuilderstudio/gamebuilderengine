@@ -22,16 +22,17 @@ package com.pblabs.rendering2D.spritesheet
 		
 		public function destroy():void
 		{
-			released.dispatch(this);
 			if(frames){
-				while(frames.length > 0)
+				var len : int = frames.length;
+				for(var i : int = 0; i < len; i++) 
 				{
-					frames[0].dispose();
-					frames.splice(0,1);
+					frames[i].dispose();
 				}
 			}
+			if(frames) frames.length = 0;
 			frames = null;
 			bounds = null;
+			released.dispatch(this);
 		}
 	}
 }

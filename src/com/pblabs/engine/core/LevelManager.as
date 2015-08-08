@@ -9,6 +9,7 @@
 package com.pblabs.engine.core
 {
    import com.pblabs.engine.PBE;
+   import com.pblabs.engine.PBUtil;
    import com.pblabs.engine.debug.Logger;
    import com.pblabs.engine.entity.IEntity;
    import com.pblabs.engine.resource.ExternalResourceFile;
@@ -496,7 +497,7 @@ package com.pblabs.engine.core
 		  {
 			  if(_pendingExternalResourceFiles[ri].fileName == resource.fileName)
 			  {
-				  _pendingExternalResourceFiles.splice(ri,1);
+				  PBUtil.splice(_pendingExternalResourceFiles, ri, 1);
 				  break;
 			  }
 		  }
@@ -519,7 +520,7 @@ package com.pblabs.engine.core
 		  {
 			  if(_pendingResourceFiles[ri].fileName == resource.filename)
 			  {
-				  _pendingResourceFiles.splice(ri,1);
+				  PBUtil.splice(_pendingResourceFiles, ri, 1);
 				  break;
 			  }
 		  }
@@ -794,7 +795,7 @@ package com.pblabs.engine.core
 			  var resourceDesc : ResourceDescription = levelDescription.resources[i];
 			  if( resourceDesc.fileName == filename )
 			  {
-				  levelDescription.resources.splice(i, 1);
+				  PBUtil.splice(levelDescription.resources, i, 1);
 				  return;
 			  }
 		  }
@@ -842,7 +843,7 @@ package com.pblabs.engine.core
             return;
          }
          
-         levelDescription.files.splice(fileIndex, 1);
+		 PBUtil.splice(levelDescription.files, fileIndex, 1);
       }
       
       /**
@@ -885,7 +886,7 @@ package com.pblabs.engine.core
             return;
          }
          
-         levelDescription.groups.splice(groupIndex, 1);
+		 PBUtil.splice(levelDescription.groups, groupIndex, 1);
       }
       
       /**

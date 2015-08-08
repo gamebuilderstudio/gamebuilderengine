@@ -15,7 +15,7 @@ package com.pblabs.engine
     import flash.geom.Point;
     import flash.geom.Rectangle;
     import flash.utils.Dictionary;
-
+    
     /**
      * Contains math related utility methods.
      */
@@ -664,5 +664,48 @@ package com.pblabs.engine
 			out.y = oy;
 			return out;
 		}
+		
+		/** Custom implementation of '[ARRAY].splice'. The native method always create temporary
+		 *  objects that have to be garbage collected. This implementation does not cause such
+		 *  issues. */
+		public static function splice(array : Object, startIndex:int, deleteCount:uint=uint.MAX_VALUE, insertee:*=null):void
+		{
+			var oldLength:uint  = array.length;
+			
+			if (startIndex < 0) startIndex += oldLength;
+			if (startIndex < 0) startIndex = 0; else if (startIndex > oldLength) startIndex = oldLength;
+			if (startIndex + deleteCount > oldLength) deleteCount = oldLength - startIndex;
+			
+			var i:int;
+			var insertCount:int = insertee ? 1 : 0;
+			var deltaLength:int = insertCount - deleteCount;
+			var newLength:uint  = oldLength + deltaLength;
+			var shiftCount:int  = oldLength - startIndex - deleteCount;
+			
+			if (deltaLength < 0)
+			{
+				i = startIndex + insertCount;
+				while (shiftCount)
+				{
+					array[i] = array[int(i - deltaLength)];
+					--shiftCount; ++i;
+				}
+				array.length = newLength;
+			}
+			else if (deltaLength > 0)
+			{
+				i = 1;
+				while (shiftCount)
+				{
+					array[int(newLength - i)] = array[int(oldLength - i)];
+					--shiftCount; ++i;
+				}
+				array.length = newLength;
+			}
+			
+			if (insertee)
+				array[startIndex] = insertee;
+		}
+		
     }
 }
