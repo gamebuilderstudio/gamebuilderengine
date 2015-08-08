@@ -61,7 +61,7 @@ package com.pblabs.testFramework
 		/**
 		 * <String, TestSuiteReport >
 		 */
-		private var testSuiteReports : Object = new Object(); 
+		private var testSuiteReports : Object = {}; 
 		
 		//--------------------------------------------------------------------------
 		//

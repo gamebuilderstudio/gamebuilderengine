@@ -119,7 +119,7 @@ package com.pblabs.animation
 				deltaVars = new Point();
 			else
 			if (toVars is Object)
-				deltaVars = new Object();
+				deltaVars = {};
 			// Tween is not yet running
 			_running = false;			
 			if (object!=null)
@@ -355,7 +355,7 @@ package com.pblabs.animation
 			var vf:*;
 			var vt:*;
 			if (fromVars==null) 
-				fromVars = new Object();
+				fromVars = {};
 			
 			if (object is PropertyReference)
 			{

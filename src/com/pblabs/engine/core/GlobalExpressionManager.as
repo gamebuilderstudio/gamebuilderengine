@@ -69,7 +69,7 @@ package com.pblabs.engine.core
 			for(var i : int = 1; i < 11; i++)
 			{
 				if(!objectContext.Game.Touch["TouchPoint"+i]) 
-					objectContext.Game.Touch["TouchPoint"+i] = new Object();
+					objectContext.Game.Touch["TouchPoint"+i] = {};
 
 				if(!_touchKeyStates) _touchKeyStates = new Vector.<InputState>();
 				
@@ -117,7 +117,7 @@ package com.pblabs.engine.core
 			}
 			
 			objectContext = PBE.GLOBAL_DYNAMIC_OBJECT;
-			if(!objectContext.Game) objectContext.Game = new Object();
+			if(!objectContext.Game) objectContext.Game = {};
 			if(!objectContext.Game.Mouse) objectContext.Game.Mouse = new DataComponent();
 			if(!objectContext.Game.Time) objectContext.Game.Time = new DataComponent();
 			if(!objectContext.Game.Screen) objectContext.Game.Screen = new DataComponent();

@@ -81,7 +81,7 @@ import org.flexunit.Assert;
 		[Test]
 		public function testCloneArray():void
 		{
-			var org:Array = [5, 6, "Hello", new Object()];
+			var org:Array = [5, 6, "Hello", {}];
 			var dup:Array = PBUtil.cloneArray(org);
 			
 			Assert.assertEquals(org.length, dup.length);

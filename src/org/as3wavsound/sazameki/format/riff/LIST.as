@@ -49,7 +49,7 @@ package org.as3wavsound.sazameki.format.riff {
 				bytes.position = 0;
 			}
 			
-			var obj:Object = new Object();
+			var obj:Object = {};
 			while (bytes.position < bytes.length) {
 				var currentName:String = bytes.readUTFBytes(4);
 				var current:int = bytes.readInt();

@@ -185,7 +185,7 @@ package com.pblabs.json
 		{
 			// create the object internally that we're going to
 			// attempt to parse from the tokenizer
-			var o:Object = new Object();
+			var o:Object = {};
 						
 			// store the string part of an object member so
 			// that we can assign it a value in the object

@@ -50,7 +50,7 @@ package com.pblabs.engine.scripting
 		public static var GlobalExpEntities : Object = {};
 		
 		private var _value:*;
-		private var _dynamicThisObject : Object = new Object();
+		private var _dynamicThisObject : Object = {};
 		private var _cachedProgram : *;
 		private var _byteCode : Array;
 		

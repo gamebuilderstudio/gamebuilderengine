@@ -64,7 +64,7 @@ public class VirtualMachine
 		
 		stack = [];
 		
-		global = new Object();
+		global = {};
 		global.__scope = null;
 		localObject = global;
 		thisObject = global;
@@ -99,9 +99,9 @@ public class VirtualMachine
 		else	
 			passedparms = parms;
 		
-		//return executeFunction(new Object(),passedparms,global[cname].__entryPoint,global[cname].__scope);
+		//return executeFunction({},passedparms,global[cname].__entryPoint,global[cname].__scope);
 	
-		this.thisObject = new Object();
+		this.thisObject = {};
 		localObject = {arguments: passedparms, __scope:global[cname].__scope, __parentenvironment:localObject};
 		
 		manageDynamicScopeVars(localObject);
@@ -884,7 +884,7 @@ public class VirtualMachine
 	public function OBJ (code:Array, pc:int) :*
 	{
 		var properties:* = code[pc+1];
-		var instance:Object = new Object();
+		var instance:Object = {};
 		var _stack:Array = stack;
 		for (var i:int=0; i<properties; ++i) {
 			var value:* = _stack.pop();

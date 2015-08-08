@@ -207,10 +207,10 @@ function AC_FL_RunContent(){
 }
 
 function AC_GetArgs(args, ext, srcParamName, classid, mimeType){
-  var ret = new Object();
-  ret.embedAttrs = new Object();
-  ret.params = new Object();
-  ret.objAttrs = new Object();
+  var ret = {};
+  ret.embedAttrs = {};
+  ret.params = {};
+  ret.objAttrs = {};
   for (var i=0; i < args.length; i=i+2){
     var currArg = args[i].toLowerCase();    
 

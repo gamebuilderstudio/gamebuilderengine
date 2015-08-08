@@ -197,7 +197,7 @@ public class CodeGenerator
 	
 	public function beginNewScope () : void
 	{
-		localVariableList.unshift(new Object());
+		localVariableList.unshift({});
 	}
 	public function closeScope () : void
 	{

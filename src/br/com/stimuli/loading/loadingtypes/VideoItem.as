@@ -63,7 +63,7 @@ package br.com.stimuli.loading.loadingtypes {
             stream.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus, false, 0, true);
             dummyEventTrigger = new Sprite();
             dummyEventTrigger.addEventListener(Event.ENTER_FRAME, createNetStreamEvent, false, 0, true);
-            var customClient:Object = new Object();
+            var customClient:Object = {};
             customClient.onCuePoint = function(...args):void{};
             customClient.onMetaData = onVideoMetadata;
             customClient.onPlayStatus = function(...args):void{};

@@ -62,7 +62,7 @@ package com.pblabs.engine
 		 * Primarily used with Expression References so that global values can be 
 		 * accessed when expressions are run in the game
 		 **/
-		public static const GLOBAL_DYNAMIC_OBJECT : Object = new Object();
+		public static const GLOBAL_DYNAMIC_OBJECT : Object = {};
         
         private static var _main:Sprite = null;	
         private static var _versionDetails:VersionDetails;
