@@ -1,7 +1,7 @@
 // =================================================================================================
 //
 //	Starling Framework
-//	Copyright 2011 Gamua OG. All Rights Reserved.
+//	Copyright 2011-2014 Gamua. All Rights Reserved.
 //
 //	This program is free software. You can redistribute and/or modify it
 //	in accordance with the terms of the accompanying license agreement.
@@ -10,9 +10,12 @@
 
 package starling.display
 {
+    import flash.errors.IllegalOperationError;
     import flash.geom.Matrix;
+    import flash.geom.Matrix3D;
     import flash.geom.Point;
     import flash.geom.Rectangle;
+    import flash.geom.Vector3D;
     import flash.system.Capabilities;
     import flash.ui.Mouse;
     import flash.ui.MouseCursor;
@@ -27,6 +30,7 @@ package starling.display
     import starling.events.TouchEvent;
     import starling.filters.FragmentFilter;
     import starling.utils.HAlign;
+    import starling.utils.MathUtil;
     import starling.utils.MatrixUtil;
     import starling.utils.VAlign;
     
@@ -124,8 +128,6 @@ package starling.display
      */
     public class DisplayObject extends EventDispatcher
     {
-        private static const TWO_PI:Number = Math.PI * 2.0;
-        
         // members
         
         private var mX:Number;
@@ -145,13 +147,22 @@ package starling.display
         private var mUseHandCursor:Boolean;
         private var mParent:DisplayObjectContainer;  
         private var mTransformationMatrix:Matrix;
+        private var mTransformationMatrix3D:Matrix3D;
         private var mOrientationChanged:Boolean;
         private var mFilter:FragmentFilter;
+        private var mIs3D:Boolean;
+        private var mMask:DisplayObject;
+        private var mIsMask:Boolean;
         
         /** Helper objects. */
         private static var sAncestors:Vector.<DisplayObject> = new <DisplayObject>[];
+        private static var sHelperPoint:Point = new Point();
+        private static var sHelperPoint3D:Vector3D = new Vector3D();
         private static var sHelperRect:Rectangle = new Rectangle();
         private static var sHelperMatrix:Matrix  = new Matrix();
+        private static var sHelperMatrixAlt:Matrix  = new Matrix();
+        private static var sHelperMatrix3D:Matrix3D  = new Matrix3D();
+        private static var sHelperMatrixAlt3D:Matrix3D  = new Matrix3D();
         
         /** @private */ 
         public function DisplayObject()
@@ -171,11 +182,13 @@ package starling.display
         }
         
         /** Disposes all resources of the display object. 
-          * GPU buffers are released, event listeners are removed, filters are disposed. */
+          * GPU buffers are released, event listeners are removed, filters and masks are disposed. */
         public function dispose():void
         {
             if (mFilter) mFilter.dispose();
+            if (mMask) mMask.dispose();
             removeEventListeners();
+            mask = null; // revert 'isMask' property, just to be sure.
         }
         
         /** Removes the object from its parent, if it has one, and optionally disposes it. */
@@ -230,23 +243,7 @@ package starling.display
             
             // 1. find a common parent of this and the target space
             
-            commonParent = null;
-            currentObject = this;
-            
-            while (currentObject)
-            {
-                sAncestors[sAncestors.length] = currentObject; // avoiding 'push'
-                currentObject = currentObject.mParent;
-            }
-            
-            currentObject = targetSpace;
-            while (currentObject && sAncestors.indexOf(currentObject) == -1)
-                currentObject = currentObject.mParent;
-            
-            sAncestors.length = 0;
-            
-            if (currentObject) commonParent = currentObject;
-            else throw new ArgumentError("Object not connected to target");
+            commonParent = findCommonParent(this, targetSpace);
             
             // 2. move up from this to common parent
             
@@ -276,7 +273,7 @@ package starling.display
             resultMatrix.concat(sHelperMatrix);
             
             return resultMatrix;
-        }        
+        }
         
         /** Returns a rectangle that completely encloses the object as it appears in another 
          *  coordinate system. If you pass a 'resultRectangle', the result will be stored in this 
@@ -293,19 +290,50 @@ package starling.display
         {
             // on a touch test, invisible or untouchable objects cause the test to fail
             if (forTouch && (!mVisible || !mTouchable)) return null;
+
+            // if we've got a mask and the hit occurs outside, fail
+            if (mMask && !hitTestMask(localPoint)) return null;
             
             // otherwise, check bounding box
             if (getBounds(this, sHelperRect).containsPoint(localPoint)) return this;
             else return null;
         }
-        
+
+        /** Checks if a certain point is inside the display object's mask. If there is no mask,
+         *  this method always returns <code>true</code> (because having no mask is equivalent
+         *  to having one that's infinitely big). */
+        public function hitTestMask(localPoint:Point):Boolean
+        {
+            if (mMask)
+            {
+                if (mMask.stage) getTransformationMatrix(mMask, sHelperMatrixAlt);
+                else
+                {
+                    sHelperMatrixAlt.copyFrom(mMask.transformationMatrix);
+                    sHelperMatrixAlt.invert();
+                }
+
+                MatrixUtil.transformPoint(sHelperMatrixAlt, localPoint, sHelperPoint);
+                return mMask.hitTest(sHelperPoint, true) != null;
+            }
+            else return true;
+        }
+
         /** Transforms a point from the local coordinate system to global (stage) coordinates.
          *  If you pass a 'resultPoint', the result will be stored in this point instead of 
          *  creating a new object. */
         public function localToGlobal(localPoint:Point, resultPoint:Point=null):Point
         {
-            getTransformationMatrix(base, sHelperMatrix);
-            return MatrixUtil.transformCoords(sHelperMatrix, localPoint.x, localPoint.y, resultPoint);
+            if (is3D)
+            {
+                sHelperPoint3D.setTo(localPoint.x, localPoint.y, 0);
+                return local3DToGlobal(sHelperPoint3D, resultPoint);
+            }
+            else
+            {
+                getTransformationMatrix(base, sHelperMatrixAlt);
+                return MatrixUtil.transformPoint(sHelperMatrixAlt, localPoint, resultPoint);
+            }
         }
         
         /** Transforms a point from global (stage) coordinates to the local coordinate system.
@@ -313,9 +341,18 @@ package starling.display
          *  creating a new object. */
         public function globalToLocal(globalPoint:Point, resultPoint:Point=null):Point
         {
-            getTransformationMatrix(base, sHelperMatrix);
-            sHelperMatrix.invert();
-            return MatrixUtil.transformCoords(sHelperMatrix, globalPoint.x, globalPoint.y, resultPoint);
+            if (is3D)
+            {
+                globalToLocal3D(globalPoint, sHelperPoint3D);
+                return MathUtil.intersectLineWithXYPlane(
+                    stage.cameraPosition, sHelperPoint3D, resultPoint);
+            }
+            else
+            {
+                getTransformationMatrix(base, sHelperMatrixAlt);
+                sHelperMatrixAlt.invert();
+                return MatrixUtil.transformPoint(sHelperMatrixAlt, globalPoint, resultPoint);
+            }
         }
         
         /** Renders the display object with the help of a support object. Never call this method
@@ -327,11 +364,12 @@ package starling.display
             throw new AbstractMethodError();
         }
         
-        /** Indicates if an object occupies any visible area. (Which is the case when its 'alpha', 
-         *  'scaleX' and 'scaleY' values are not zero, and its 'visible' property is enabled.) */
+        /** Indicates if an object occupies any visible area. This is the case when its 'alpha',
+         *  'scaleX' and 'scaleY' values are not zero, its 'visible' property is enabled, and
+         *  if it is not currently used as a mask for another display object. */
         public function get hasVisibleArea():Boolean
         {
-            return mAlpha != 0.0 && mVisible && mScaleX != 0.0 && mScaleY != 0.0;
+            return mAlpha != 0.0 && mVisible && !mIsMask && mScaleX != 0.0 && mScaleY != 0.0;
         }
         
         /** Moves the pivot point to a certain position within the local coordinate system
@@ -352,6 +390,116 @@ package starling.display
             else throw new ArgumentError("Invalid vertical alignment: " + vAlign);
         }
         
+        // 3D transformation
+
+        /** Creates a matrix that represents the transformation from the local coordinate system
+         *  to another. This method supports three dimensional objects created via 'Sprite3D'.
+         *  If you pass a 'resultMatrix', the result will be stored in this matrix
+         *  instead of creating a new object. */
+        public function getTransformationMatrix3D(targetSpace:DisplayObject,
+                                                  resultMatrix:Matrix3D=null):Matrix3D
+        {
+            var commonParent:DisplayObject;
+            var currentObject:DisplayObject;
+
+            if (resultMatrix) resultMatrix.identity();
+            else resultMatrix = new Matrix3D();
+
+            if (targetSpace == this)
+            {
+                return resultMatrix;
+            }
+            else if (targetSpace == mParent || (targetSpace == null && mParent == null))
+            {
+                resultMatrix.copyFrom(transformationMatrix3D);
+                return resultMatrix;
+            }
+            else if (targetSpace == null || targetSpace == base)
+            {
+                // targetCoordinateSpace 'null' represents the target space of the base object.
+                // -> move up from this to base
+
+                currentObject = this;
+                while (currentObject != targetSpace)
+                {
+                    resultMatrix.append(currentObject.transformationMatrix3D);
+                    currentObject = currentObject.mParent;
+                }
+
+                return resultMatrix;
+            }
+            else if (targetSpace.mParent == this) // optimization
+            {
+                targetSpace.getTransformationMatrix3D(this, resultMatrix);
+                resultMatrix.invert();
+
+                return resultMatrix;
+            }
+
+            // 1. find a common parent of this and the target space
+
+            commonParent = findCommonParent(this, targetSpace);
+
+            // 2. move up from this to common parent
+
+            currentObject = this;
+            while (currentObject != commonParent)
+            {
+                resultMatrix.append(currentObject.transformationMatrix3D);
+                currentObject = currentObject.mParent;
+            }
+
+            if (commonParent == targetSpace)
+                return resultMatrix;
+
+            // 3. now move up from target until we reach the common parent
+
+            sHelperMatrix3D.identity();
+            currentObject = targetSpace;
+            while (currentObject != commonParent)
+            {
+                sHelperMatrix3D.append(currentObject.transformationMatrix3D);
+                currentObject = currentObject.mParent;
+            }
+
+            // 4. now combine the two matrices
+
+            sHelperMatrix3D.invert();
+            resultMatrix.append(sHelperMatrix3D);
+
+            return resultMatrix;
+        }
+
+        /** Transforms a 3D point from the local coordinate system to global (stage) coordinates.
+         *  This is achieved by projecting the 3D point onto the (2D) view plane.
+         *
+         *  <p>If you pass a 'resultPoint', the result will be stored in this point instead of
+         *  creating a new object.</p> */
+        public function local3DToGlobal(localPoint:Vector3D, resultPoint:Point=null):Point
+        {
+            var stage:Stage = this.stage;
+            if (stage == null) throw new IllegalOperationError("Object not connected to stage");
+
+            getTransformationMatrix3D(stage, sHelperMatrixAlt3D);
+            MatrixUtil.transformPoint3D(sHelperMatrixAlt3D, localPoint, sHelperPoint3D);
+            return MathUtil.intersectLineWithXYPlane(
+                stage.cameraPosition, sHelperPoint3D, resultPoint);
+        }
+
+        /** Transforms a point from global (stage) coordinates to the 3D local coordinate system.
+         *  If you pass a 'resultPoint', the result will be stored in this point instead of
+         *  creating a new object. */
+        public function globalToLocal3D(globalPoint:Point, resultPoint:Vector3D=null):Vector3D
+        {
+            var stage:Stage = this.stage;
+            if (stage == null) throw new IllegalOperationError("Object not connected to stage");
+
+            getTransformationMatrix3D(stage, sHelperMatrixAlt3D);
+            sHelperMatrixAlt3D.invert();
+            return MatrixUtil.transformCoords3D(
+                sHelperMatrixAlt3D, globalPoint.x, globalPoint.y, 0, resultPoint);
+        }
+
         // internal methods
         
         /** @private */
@@ -369,6 +517,18 @@ package starling.display
                 mParent = value; 
         }
         
+        /** @private */
+        internal function setIs3D(value:Boolean):void
+        {
+            mIs3D = value;
+        }
+
+        /** @private */
+        internal function get isMask():Boolean
+        {
+            return mIsMask;
+        }
+
         // helpers
         
         private final function isEquivalent(a:Number, b:Number, epsilon:Number=0.0001):Boolean
@@ -376,18 +536,27 @@ package starling.display
             return (a - epsilon < b) && (a + epsilon > b);
         }
         
-        private final function normalizeAngle(angle:Number):Number
+        private final function findCommonParent(object1:DisplayObject,
+                                                object2:DisplayObject):DisplayObject
         {
-            // move to equivalent value in range [0 deg, 360 deg] without a loop
-            angle = angle % TWO_PI;
+            var currentObject:DisplayObject = object1;
 
-            // move to [-180 deg, +180 deg]
-            if (angle < -Math.PI) angle += TWO_PI;
-            if (angle >  Math.PI) angle -= TWO_PI;
+            while (currentObject)
+            {
+                sAncestors[sAncestors.length] = currentObject; // avoiding 'push'
+                currentObject = currentObject.mParent;
+            }
 
-            return angle;
+            currentObject = object2;
+            while (currentObject && sAncestors.indexOf(currentObject) == -1)
+                currentObject = currentObject.mParent;
+
+            sAncestors.length = 0;
+
+            if (currentObject) return currentObject;
+            else throw new ArgumentError("Object not connected to target");
         }
-        
+
         // stage event handling
         
         public override function dispatchEvent(event:Event):void
@@ -406,6 +575,7 @@ package starling.display
         // part of the stage, (b) it must not cause memory leaks when the user forgets to call
         // dispose and (c) there might be multiple listeners for this event.
         
+        /** @inheritDoc */
         public override function addEventListener(type:String, listener:Function):void
         {
             if (type == Event.ENTER_FRAME && !hasEventListener(type))
@@ -418,6 +588,7 @@ package starling.display
             super.addEventListener(type, listener);
         }
         
+        /** @inheritDoc */
         public override function removeEventListener(type:String, listener:Function):void
         {
             super.removeEventListener(type, listener);
@@ -430,6 +601,7 @@ package starling.display
             }
         }
         
+        /** @inheritDoc */
         public override function removeEventListeners(type:String=null):void
         {
             if ((type == null || type == Event.ENTER_FRAME) && hasEventListener(Event.ENTER_FRAME))
@@ -513,7 +685,7 @@ package starling.display
             
             return mTransformationMatrix; 
         }
-        
+
         public function set transformationMatrix(matrix:Matrix):void
         {
             const PI_Q:Number = Math.PI / 4.0;
@@ -548,6 +720,25 @@ package starling.display
             }
         }
         
+        /** The 3D transformation matrix of the object relative to its parent.
+         *
+         *  <p>For 2D objects, this property returns just a 3D version of the 2D transformation
+         *  matrix. Only the 'Sprite3D' class supports real 3D transformations.</p>
+         *
+         *  <p>CAUTION: not a copy, but the actual object!</p> */
+        public function get transformationMatrix3D():Matrix3D
+        {
+            // this method needs to be overriden in 3D-supporting subclasses (like Sprite3D).
+
+            if (mTransformationMatrix3D == null)
+                mTransformationMatrix3D = new Matrix3D();
+
+            return MatrixUtil.convertTo3D(transformationMatrix, mTransformationMatrix3D);
+        }
+
+        /** Indicates if this object or any of its parents is a 'Sprite3D' object. */
+        public function get is3D():Boolean { return mIs3D; }
+
         /** Indicates if the mouse cursor should transform into a hand while it's over the sprite. 
          *  @default false */
         public function get useHandCursor():Boolean { return mUseHandCursor; }
@@ -573,7 +764,9 @@ package starling.display
             return getBounds(mParent);
         }
         
-        /** The width of the object in pixels. */
+        /** The width of the object in pixels.
+         *  Note that for objects in a 3D space (connected to a Sprite3D), this value might not
+         *  be accurate until the object is part of the display list. */
         public function get width():Number { return getBounds(mParent, sHelperRect).width; }
         public function set width(value:Number):void
         {
@@ -585,7 +778,9 @@ package starling.display
             if (actualWidth != 0.0) scaleX = value / actualWidth;
         }
         
-        /** The height of the object in pixels. */
+        /** The height of the object in pixels.
+         *  Note that for objects in a 3D space (connected to a Sprite3D), this value might not
+         *  be accurate until the object is part of the display list. */
         public function get height():Number { return getBounds(mParent, sHelperRect).height; }
         public function set height(value:Number):void
         {
@@ -664,7 +859,7 @@ package starling.display
         public function get skewX():Number { return mSkewX; }
         public function set skewX(value:Number):void 
         {
-            value = normalizeAngle(value);
+            value = MathUtil.normalizeAngle(value);
             
             if (mSkewX != value)
             {
@@ -677,7 +872,7 @@ package starling.display
         public function get skewY():Number { return mSkewY; }
         public function set skewY(value:Number):void 
         {
-            value = normalizeAngle(value);
+            value = MathUtil.normalizeAngle(value);
             
             if (mSkewY != value)
             {
@@ -691,7 +886,7 @@ package starling.display
         public function get rotation():Number { return mRotation; }
         public function set rotation(value:Number):void 
         {
-            value = normalizeAngle(value);
+            value = MathUtil.normalizeAngle(value);
 
             if (mRotation != value)
             {            
@@ -734,7 +929,39 @@ package starling.display
          *  (since you might want to reuse it). */
         public function get filter():FragmentFilter { return mFilter; }
         public function set filter(value:FragmentFilter):void { mFilter = value; }
-        
+
+        /** The display object that acts as a mask for the current object.
+         *  Assign <code>null</code> to remove it.
+         *
+         *  <p>A pixel of the masked display object will only be drawn if it is within one of the
+         *  mask's polygons. Texture pixels and alpha values of the mask are not taken into
+         *  account. The mask object itself is never visible.</p>
+         *
+         *  <p>If the mask is part of the display list, masking will occur at exactly the
+         *  location it occupies on the stage. If it is not, the mask will be placed in the local
+         *  coordinate system of the target object (as if it was one of its children).</p>
+         *
+         *  <p>For rectangular masks, you can use simple quads; for other forms (like circles
+         *  or arbitrary shapes) it is recommended to use a 'Canvas' instance.</p>
+         *
+         *  <p>Beware that a mask will cause at least two additional draw calls: one to draw the
+         *  mask to the stencil buffer and one to erase it.</p>
+         *
+         *  @see Canvas
+         *  @default null
+         */
+        public function get mask():DisplayObject { return mMask; }
+        public function set mask(value:DisplayObject):void
+        {
+            if (mMask != value)
+            {
+                if (mMask) mMask.mIsMask = false;
+                if (value) value.mIsMask = true;
+
+                mMask = value;
+            }
+        }
+
         /** The display object container that contains this display object. */
         public function get parent():DisplayObjectContainer { return mParent; }
         

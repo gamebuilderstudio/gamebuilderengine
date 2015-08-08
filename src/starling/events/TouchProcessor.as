@@ -1,7 +1,7 @@
 // =================================================================================================
 //
 //	Starling Framework
-//	Copyright 2011 Gamua OG. All Rights Reserved.
+//	Copyright 2011-2014 Gamua. All Rights Reserved.
 //
 //	This program is free software. You can redistribute and/or modify it
 //	in accordance with the terms of the accompanying license agreement.
@@ -103,6 +103,7 @@ package starling.events
             var touch:Touch;
             
             mElapsedTime += passedTime;
+            sUpdatedTouches.length = 0;
             
             // remove old taps
             if (mLastTaps.length > 0)
@@ -147,9 +148,9 @@ package starling.events
          *  given touches. Called internally by "advanceTime". To calculate updated targets,
          *  the method will call "hitTest" on the "root" object.
          *  
-         *  @param touches:   a list of all touches that have changed just now.
-         *  @param shiftDown: indicates if the shift key was down when the touches occurred.
-         *  @param CtrlDown:  indicates if the ctrl or cmd key was down when the touches occurred.
+         *  @param touches    a list of all touches that have changed just now.
+         *  @param shiftDown  indicates if the shift key was down when the touches occurred.
+         *  @param ctrlDown   indicates if the ctrl or cmd key was down when the touches occurred.
          */
         protected function processTouches(touches:Vector.<Touch>,
                                           shiftDown:Boolean, ctrlDown:Boolean):void
@@ -233,6 +234,33 @@ package starling.events
             else                           exitY = mStage.stageHeight + offset;
             
             enqueue(0, TouchPhase.HOVER, exitX, exitY);
+        }
+
+        /** Force-end all current touches. Changes the phase of all touches to 'ENDED' and
+         *  immediately dispatches a new TouchEvent (if touches are present). Called automatically
+         *  when the app receives a 'DEACTIVATE' event. */
+        public function cancelTouches():void
+        {
+            if (mCurrentTouches.length > 0)
+            {
+                // abort touches
+                for each (var touch:Touch in mCurrentTouches)
+                {
+                    if (touch.phase == TouchPhase.BEGAN || touch.phase == TouchPhase.MOVED ||
+                        touch.phase == TouchPhase.STATIONARY)
+                    {
+                        touch.phase = TouchPhase.ENDED;
+                        touch.cancelled = true;
+                    }
+                }
+
+                // dispatch events
+                processTouches(mCurrentTouches, mShiftDown, mCtrlDown);
+            }
+
+            // purge touches
+            mCurrentTouches.length = 0;
+            mQueue.length = 0;
         }
         
         private function createOrUpdateTouch(touchID:int, phase:String,
@@ -422,25 +450,7 @@ package starling.events
         
         private function onInterruption(event:Object):void
         {
-            if (mCurrentTouches.length > 0)
-            {
-                // abort touches
-                for each (var touch:Touch in mCurrentTouches)
-                {
-                    if (touch.phase == TouchPhase.BEGAN || touch.phase == TouchPhase.MOVED ||
-                        touch.phase == TouchPhase.STATIONARY)
-                    {
-                        touch.phase = TouchPhase.ENDED;
-                    }
-                }
-
-                // dispatch events
-                processTouches(mCurrentTouches, mShiftDown, mCtrlDown);
-            }
-
-            // purge touches
-            mCurrentTouches.length = 0;
-            mQueue.length = 0;
+            cancelTouches();
         }
     }
 }

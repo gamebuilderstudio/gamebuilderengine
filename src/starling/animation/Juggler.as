@@ -1,7 +1,7 @@
 // =================================================================================================
 //
 //	Starling Framework
-//	Copyright 2011 Gamua OG. All Rights Reserved.
+//	Copyright 2011-2014 Gamua. All Rights Reserved.
 //
 //	This program is free software. You can redistribute and/or modify it
 //	in accordance with the terms of the accompanying license agreement.
@@ -61,7 +61,7 @@ package starling.animation
         {
             if (object && mObjects.indexOf(object) == -1) 
             {
-                mObjects.push(object);
+                mObjects[mObjects.length] = object;
             
                 var dispatcher:EventDispatcher = object as EventDispatcher;
                 if (dispatcher) dispatcher.addEventListener(Event.REMOVE_FROM_JUGGLER, onRemove);
@@ -191,9 +191,24 @@ package starling.animation
          *
          *  <p>To cancel the tween, call 'Juggler.removeTweens' with the same target, or pass
          *  the returned 'IAnimatable' instance to 'Juggler.remove()'. Do not use the returned
-         *  IAnimatable otherwise; it is taken from a pool and will be reused.</p> */
+         *  IAnimatable otherwise; it is taken from a pool and will be reused.</p>
+         *
+         *  <p>Note that some property types may be animated in a special way:</p>
+         *  <ul>
+         *    <li>If the property contains the string <code>color</code> or <code>Color</code>,
+         *        it will be treated as an unsigned integer with a color value
+         *        (e.g. <code>0xff0000</code> for red). Each color channel will be animated
+         *        individually.</li>
+         *    <li>The same happens if you append the string <code>#rgb</code> to the name.</li>
+         *    <li>If you append <code>#rad</code>, the property is treated as an angle in radians,
+         *        making sure it always uses the shortest possible arc for the rotation.</li>
+         *    <li>The string <code>#deg</code> does the same for angles in degrees.</li>
+         *  </ul>
+         */
         public function tween(target:Object, time:Number, properties:Object):IAnimatable
         {
+            if (target == null) throw new ArgumentError("target must not be null");
+
             var tween:Tween = Tween.starling_internal::fromPool(target, time);
             
             for (var property:String in properties)
@@ -202,7 +217,7 @@ package starling.animation
                 
                 if (tween.hasOwnProperty(property))
                     tween[property] = value;
-                else if (target.hasOwnProperty(property))
+                else if (target.hasOwnProperty(Tween.getPropertyName(property)))
                     tween.animate(property, value as Number);
                 else
                     throw new ArgumentError("Invalid property: " + property);

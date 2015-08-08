@@ -1,7 +1,7 @@
 // =================================================================================================
 //
 //	Starling Framework
-//	Copyright 2012 Gamua OG. All Rights Reserved.
+//	Copyright 2011-2014 Gamua. All Rights Reserved.
 //
 //	This program is free software. You can redistribute and/or modify it
 //	in accordance with the terms of the accompanying license agreement.
@@ -59,7 +59,7 @@ package starling.filters
         private static var sTmpMatrix2:Vector.<Number> = new <Number>[];
         
         /** Creates a new ColorMatrixFilter instance with the specified matrix. 
-         *  @param matrix: a vector of 20 items arranged as a 4x5 matrix.   
+         *  @param matrix a vector of 20 items arranged as a 4x5 matrix.
          */
         public function ColorMatrixFilter(matrix:Vector.<Number>=null)
         {
@@ -176,9 +176,9 @@ package starling.filters
         }
         
         /** Tints the image in a certain color, analog to what can be done in Flash Pro.
-         *  @param color: the RGB color with which the image should be tinted.
-         *  @param amount: the intensity with which tinting should be applied. Range (0, 1). */
-        public function tint(color:uint, amount:Number=1.0):void
+         *  @param color the RGB color with which the image should be tinted.
+         *  @param amount the intensity with which tinting should be applied. Range (0, 1). */
+        public function tint(color:uint, amount:Number=1.0):ColorMatrixFilter
         {
             var r:Number = Color.getRed(color)   / 255.0;
             var g:Number = Color.getGreen(color) / 255.0;
@@ -189,7 +189,7 @@ package starling.filters
             var gA:Number = amount * g;
             var bA:Number = amount * b;
 
-            concatValues(
+            return concatValues(
                 q + rA * LUMA_R, rA * LUMA_G, rA * LUMA_B, 0, 0,
                 gA * LUMA_R, q + gA * LUMA_G, gA * LUMA_B, 0, 0,
                 bA * LUMA_R, bA * LUMA_G, q + bA * LUMA_B, 0, 0,
