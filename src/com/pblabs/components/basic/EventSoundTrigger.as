@@ -24,7 +24,7 @@ package com.pblabs.components.basic
          * Sounds indexed by event type to trigger them.
          */
         [TypeHint(type="com.pblabs.engine.resource.MP3Resource")]
-        public var events:Array=new Array();
+        public var events:Array=[];
         
         /**
          * Play a sound when we are created?

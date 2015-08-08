@@ -131,7 +131,7 @@ package com.pblabs.rendering2D
        */
 	  public function getObjectsUnderPoint(worldPosition:Point, results:Array, mask:ObjectType = null):Boolean
       {
-         var tmpResults:Array = new Array();
+         var tmpResults:Array = [];
 		 // First use the normal spatial query...
 		 if(!queryCircle(worldPosition, 0, mask, tmpResults))
 			 return false;
@@ -143,7 +143,7 @@ package com.pblabs.rendering2D
             if (!tmp.pointOccupied(worldPosition, mask, PBE.scene))
                continue;
             if(!results)
-				results = new Array();
+				results = [];
             results.push(tmp);
             hitAny = true;
          }
@@ -160,7 +160,7 @@ package com.pblabs.rendering2D
 	   */
 	  public function getObjectsInRec(worldRec:Rectangle, results:Array):Boolean
 	  {
-		  var tmpResults:Array = new Array();
+		  var tmpResults:Array = [];
 		  
 		  // First use the normal spatial query...
 		  queryRectangle(worldRec, null, tmpResults)
@@ -193,7 +193,7 @@ package com.pblabs.rendering2D
          // We want to return the first hit among all our items. We'll be very lazy,
          // and simply check against every potential match, taking the closest hit.
          // This will suck for long raycasts, but most of them are quite short.
-         var results:Array = new Array();
+         var results:Array = [];
 		 _scratchRect.setTo(
 			 Math.min(start.x, end.x) - 0.5,
 			 Math.min(start.y, end.y) - 0.5, 

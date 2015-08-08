@@ -192,6 +192,6 @@ package com.pblabs.engine.core
 
 		private var _typeCount:uint = 0;
         private var _typeList:Dictionary = new Dictionary();
-        private var _bitList:Array = new Array();
+        private var _bitList:Array = [];
     }
 }

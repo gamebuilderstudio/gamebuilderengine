@@ -221,7 +221,7 @@ package com.pblabs.engine.core
          unloadCurrentLevel();
          
          _currentLevel = 0;
-         _levelDescriptions = new Array();
+         _levelDescriptions = [];
          _isReady = false;
       }
       
@@ -352,10 +352,10 @@ package com.pblabs.engine.core
          }
 		 
          // find file differences between the levels
-         _filesToLoad = new Array();
-		 var resourceFilesToLoad:Array = new Array();
-         var filesToUnload:Array = new Array();
-         var groupsToUnload:Array = new Array();
+         _filesToLoad = [];
+		 var resourceFilesToLoad:Array = [];
+         var filesToUnload:Array = [];
+         var groupsToUnload:Array = [];
          
 		 var currentLevelResourceFileList : Array
 		 var nextLevelResourceFileList : Array = [];
@@ -391,7 +391,7 @@ package com.pblabs.engine.core
 			 getLoadLists(doUnload ? _levelDescriptions[_currentLevel].files : null, _levelDescriptions[index].files, _filesToLoad, filesToUnload);
              
 			 // find group differences between the levels
-             _groupsToLoad = new Array();
+             _groupsToLoad = [];
              
              getLoadLists(doUnload ? _levelDescriptions[_currentLevel].groups : null, _levelDescriptions[index].groups, _groupsToLoad, groupsToUnload);
          }
@@ -582,7 +582,7 @@ package com.pblabs.engine.core
                continue;
             }
             
-            _loadedGroups[groupName] = new Array();
+            _loadedGroups[groupName] = [];
             for each (var groupEntity:IEntity in groupEntities)
 			{
                _loadedGroups[groupName].push(groupEntity);
@@ -613,7 +613,7 @@ package com.pblabs.engine.core
             return;
          }
          
-         var filesToUnload:Array = new Array();
+         var filesToUnload:Array = [];
          getLoadLists(_levelDescriptions[_currentLevel].files, null, null, filesToUnload);
          
 		 var loadedResourceFileList : Array = [];
@@ -624,7 +624,7 @@ package com.pblabs.engine.core
 		 if(loadedResourceFileList.length > 0)
 		 	getLoadLists(loadedResourceFileList, null, null, filesToUnload);
 
-		 var groupsToUnload:Array = new Array();
+		 var groupsToUnload:Array = [];
          getLoadLists(_levelDescriptions[_currentLevel].groups, null, null, groupsToUnload);
          
 		 dispatchEvent(new LevelEvent(LevelEvent.LEVEL_PRE_UNLOAD_EVENT, _currentLevel));
@@ -928,7 +928,7 @@ package com.pblabs.engine.core
       private var _isReady:Boolean = false;
       private var _isLevelLoaded:Boolean = false;
       private var _currentLevel:int = -1;
-      private var _levelDescriptions:Array = new Array();
+      private var _levelDescriptions:Array = [];
       
       private var _pendingFiles:int = 0;
 	  private var _pendingExternalResourceFiles : Vector.<ResourceDescription> = new Vector.<ResourceDescription>();
@@ -939,13 +939,13 @@ package com.pblabs.engine.core
 	  private var _levelFileLoadingStarted:Boolean = false;
       
       // array of filenames
-      private var _loadedFiles:Array = new Array();
+      private var _loadedFiles:Array = [];
       
       // dictionary of group names to array of entities
       private var _loadedGroups:Dictionary = new Dictionary();
       
       // array of entities
-      private var _loadedEntities:Array = new Array();
+      private var _loadedEntities:Array = [];
       
       private var _loadFileCallback:Function = null;
       private var _unloadFileCallback:Function = null;
@@ -963,8 +963,8 @@ class LevelDescription
    public var index:int = 0;
    
    public var resources:Vector.<ResourceDescription> = new Vector.<ResourceDescription>();
-   public var files:Array = new Array();
-   public var groups:Array = new Array();
+   public var files:Array = [];
+   public var groups:Array = [];
    
    public function getResourceDescription(filename : String):ResourceDescription
    {

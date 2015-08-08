@@ -22,7 +22,7 @@ package com.pblabs.components.basic
         public var lastDamageTimeFade:Number = 200;
         public var maxHealth:Number = 100;
         public var destroyOnDeath:Boolean = true;
-        public var damageModifier:Array = new Array();
+        public var damageModifier:Array = [];
         public var damageMagnitude:Number = 1.0;
         
         override protected function onAdd():void

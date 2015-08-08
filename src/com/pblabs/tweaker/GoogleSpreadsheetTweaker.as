@@ -73,13 +73,13 @@ package com.pblabs.tweaker
        * List of TweakerMapEntry instances mapping cells to properties.
        */
       [TypeHint(type="com.pblabs.tweaker.TweakerMapEntry")]
-      public var config:Array = new Array();
+      public var config:Array = [];
 
       /**
        * Groups let you assign patterns of cells and properties to multiple items.
        */
       [TypeHint(type="com.pblabs.tweaker.TweakerMapGroup")]
-      public var groups:Array = new Array();
+      public var groups:Array = [];
       
       override protected function onAdd():void
       {

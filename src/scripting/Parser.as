@@ -75,9 +75,9 @@ public class Parser implements IParser
 	{
 		scanner.rewind();
 		generator = new CodeGenerator();
-		breakLabelList = new Array();
-		continueLabelList = new Array();
-		functionStack = new Array();
+		breakLabelList = [];
+		continueLabelList = [];
+		functionStack = [];
 		nextToken();
 	}
 	

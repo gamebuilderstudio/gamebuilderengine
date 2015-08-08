@@ -78,7 +78,7 @@ package com.pblabs.engine.core
          */
         public function get typeNames():Array
         {
-            var array:Array = new Array();
+            var array:Array = [];
             for (var i:int = 0; i < PBE.objectTypeManager.typeCount; i++)
             {
                 if (_bits & (1 << i))

@@ -109,7 +109,7 @@ package com.pblabs.json
 		{
 			// create an array internally that we're going to attempt
 			// to parse from the tokenizer
-			var a:Array = new Array();
+			var a:Array = [];
 			
 			// grab the next token from the tokenizer to move
 			// past the opening [

@@ -57,7 +57,7 @@ package com.pblabs.nape
 		}
 		
 		public function generateBox(halfWidth:Number, halfHeight:Number):void {
-			_vertices = new Array();
+			_vertices = [];
 			_vertices.push(new Point( -halfWidth, -halfHeight));
 			_vertices.push(new Point( halfWidth, -halfHeight));
 			_vertices.push(new Point( halfWidth, halfHeight));

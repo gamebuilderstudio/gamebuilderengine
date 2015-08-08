@@ -177,7 +177,7 @@ package com.pblabs.engine.tests
         private function groupCallback():Array
         {
             // Make several entities using the entity callback.
-            var res:Array = new Array();
+            var res:Array = [];
             res.push(entityCallback());
             res.push(entityCallback());
             res.push(entityCallback());

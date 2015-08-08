@@ -729,7 +729,7 @@ package com.pblabs.engine.serialization
         private var _currentEntity:IEntity = null;
         private var _serializers:Dictionary = new Dictionary();
         private var _deserializers:Dictionary = new Dictionary();
-        private var _deferredReferences:Array = new Array();
+        private var _deferredReferences:Array = [];
         private var _resources:Dictionary = new Dictionary();
     }
 }

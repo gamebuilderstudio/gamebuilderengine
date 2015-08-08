@@ -137,8 +137,8 @@ package com.pblabs.animation
 		// Private variables
 		// -----------------------------------------------------------------
 		private static var _instance:TweenController = null		
-		private var tickTweens:Array = new Array();
-		private var frameTweens:Array = new Array();
+		private var tickTweens:Array = [];
+		private var frameTweens:Array = [];
 		
 	}		
 }

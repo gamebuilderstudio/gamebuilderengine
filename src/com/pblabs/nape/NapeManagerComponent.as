@@ -383,7 +383,7 @@ package com.pblabs.nape
 						continue;
 					}
 					if(!results)
-						results = new Array();
+						results = [];
 					results.push(curComponent);				
 				}
 				bodyList.clear();

@@ -44,9 +44,9 @@ public class CodeGenerator
 	
 	public function initialize () : void
 	{
-		code = new Array();
-		stackList = new Array();
-		localVariableList = new Array();
+		code = [];
+		stackList = [];
+		localVariableList = [];
 		
 		// reserved
 		put(null);

@@ -30,7 +30,7 @@ package com.pblabs.engine.mxml
       /**
        * The levels at which the level file will be loaded.
        */
-      public var levels:Array = new Array();
+      public var levels:Array = [];
       
       [Bindable]
       /**

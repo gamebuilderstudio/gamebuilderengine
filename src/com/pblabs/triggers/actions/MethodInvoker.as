@@ -21,7 +21,7 @@ package com.pblabs.triggers.actions
 		 * An Array of arguments to pass to the method
 		 * when it is called
 		 */		
-		public var args:Array = new Array();
+		public var args:Array = [];
 		
 		/**
 		 * This is should be set to <code>false</code> if you wish to pass 
@@ -36,7 +36,7 @@ package com.pblabs.triggers.actions
 		//______________________________________
 		override public function execute():*
 		{
-			var processedArguments:Array = new Array();
+			var processedArguments:Array = [];
 			
 			//process the arguments
 			for(var i:int=0; i<args.length; i++)

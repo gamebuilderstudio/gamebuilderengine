@@ -31,7 +31,7 @@ package
 		public static const BG : Class;
 		
 		private var sceneG2D : DisplayObjectSceneG2D;
-		private var renderList : Array = new Array();
+		private var renderList : Array = [];
 
 		public function StarlingMobileTest()
 		{

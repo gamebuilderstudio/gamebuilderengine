@@ -30,7 +30,7 @@ package com.pblabs.engine.mxml
       /**
        * The levels at which the group will be instantiated.
        */
-      public var levels:Array = new Array();
+      public var levels:Array = [];
       
       [Bindable]
       /**

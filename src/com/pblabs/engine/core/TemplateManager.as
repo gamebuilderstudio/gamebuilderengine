@@ -271,7 +271,7 @@ package com.pblabs.engine.core
 
 			try
 			{
-				var group:Array=new Array();
+				var group:Array=[];
 				if (!doInstantiateGroup(name, group, new Dictionary()))
 				{
 					for each (var entity:IEntity in group)
@@ -338,7 +338,7 @@ package com.pblabs.engine.core
 		public function removeXML(identifier:String):void
 		{
 
-			var thingsToDelete:Array=new Array();
+			var thingsToDelete:Array=[];
 
 			for (var name:String in _things)
 			{

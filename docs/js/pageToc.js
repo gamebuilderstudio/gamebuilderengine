@@ -54,7 +54,7 @@ tocGen.prototype.getId = function(ob){
 	return ob.id;
 }
 tocGen.prototype.getHeaders = function(parent){
-	var return_array = new Array();
+	var return_array = [];
 	var pat = new RegExp("H[1-6]");
 	for(var i=0;i<parent.childNodes.length;i++){
 		if(pat.test(parent.childNodes[i].nodeName)){

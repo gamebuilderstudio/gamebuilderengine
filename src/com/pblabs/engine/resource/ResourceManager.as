@@ -288,7 +288,7 @@ package com.pblabs.engine.resource
         /**
          * List of resource providers used to get resources. 
          */        
-        private var resourceProviders:Array = new Array();
+        private var resourceProviders:Array = [];
 
 		/**
 		 * resourceList is an arrayCollection of all resources. This can be displayed in a dropDown list
@@ -297,7 +297,7 @@ package com.pblabs.engine.resource
 		public function get resourceList():Array
 		{
 			if(_resourceList) _resourceList = [];
-			_resourceList = new Array();
+			_resourceList = [];
 			for each(var res : Resource in this._resources){
 				_resourceList.push({label: res.filename, data: res.filename, resourceType: getQualifiedClassName(res)})
 			}

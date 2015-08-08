@@ -327,7 +327,7 @@ package com.pblabs.engine.entity
         
         public function lookupComponentsByType(componentType:Class):Array
         {
-            var list:Array = new Array();
+            var list:Array = [];
             
 			var len : int = _components.length;
 			var component:IEntityComponent;
@@ -714,7 +714,7 @@ package com.pblabs.engine.entity
         private var _deferring:Boolean = true;
         
         protected var _components:Vector.<IEntityComponent> = new Vector.<IEntityComponent>();
-        protected var _deferredComponents:Array = new Array();
+        protected var _deferredComponents:Array = [];
         protected var _eventDispatcher:EventDispatcher = new EventDispatcher();
 		protected var _signalBus : Signal = new Signal();
     }

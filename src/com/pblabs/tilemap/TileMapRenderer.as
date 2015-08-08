@@ -39,7 +39,7 @@ package com.pblabs.tilemap
 		public var skipTileZero:Boolean = true;
 		
 		// Parsed out, ready to render tiles in individual BitmapDatas.
-		protected var _tileBitmaps:Array = new Array();
+		protected var _tileBitmaps:Array = [];
 		
 		// Dummy bitmap to display in place of broken tiles.
 		protected var _borkBitmap:BitmapData = new BitmapData(32, 32, true, 0x77FF00FF);

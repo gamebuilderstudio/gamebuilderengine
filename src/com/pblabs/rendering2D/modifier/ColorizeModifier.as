@@ -36,7 +36,7 @@ package com.pblabs.rendering2D.modifier
 		public override function modify(data:BitmapData, index:int=0, count:int=1):BitmapData
 		{			
 			// colorize this specific frame bitmap
-			var matrix:Array = new Array();
+			var matrix:Array = [];
 			matrix=matrix.concat(red);// red
 			matrix=matrix.concat(green);// green
 			matrix=matrix.concat(blue);// blue

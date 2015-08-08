@@ -226,7 +226,7 @@ package com.pblabs.engine.debug
          Logger.print(Profiler, entry);
          
          // Sort and draw our kids.
-         var tmpArray:Array = new Array();
+         var tmpArray:Array = [];
          for each(childPi in pi.children)
             tmpArray.push(childPi);
          tmpArray.sortOn("totalTime", Array.NUMERIC | Array.DESCENDING);

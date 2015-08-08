@@ -214,7 +214,7 @@ package com.pblabs.engine.resource.provider
          */
         protected function provideResources():Array
         {	
-            return new Array();				
+            return [];				
         }
         
         
@@ -329,7 +329,7 @@ package com.pblabs.engine.resource.provider
         protected var loader:BulkLoader = null;
         
         private var _phase:int = 1;
-        private var bulkResources:Array = new Array();
+        private var bulkResources:Array = [];
         
         private var onLoaded:Function = null;
         private var onProgress:Function = null;

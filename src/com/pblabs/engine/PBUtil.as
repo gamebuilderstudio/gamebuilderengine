@@ -415,7 +415,7 @@ package com.pblabs.engine
 		 */
 		public static function getSortedDictionaryKeys(dict:Object):Array
 		{
-			var keylist:Array = new Array();
+			var keylist:Array = [];
 			for (var key:String in dict) {
 				keylist.push(key);
 			}
@@ -429,7 +429,7 @@ package com.pblabs.engine
 		 */
 		public static function getSortedDictionaryValues(dict:Dictionary):Array
 		{
-			var valuelist:Array = new Array();
+			var valuelist:Array = [];
 			for each (var value:Object in dict) {
 				valuelist.push(value);
 			}

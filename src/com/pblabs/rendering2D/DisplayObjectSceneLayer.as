@@ -29,7 +29,7 @@ package com.pblabs.rendering2D
         /**
          * All the renderers in this layer. 
          */
-        public var rendererList:Array = new Array();
+        public var rendererList:Array = [];
         
         /**
          * Set to true when we need to resort the layer. 

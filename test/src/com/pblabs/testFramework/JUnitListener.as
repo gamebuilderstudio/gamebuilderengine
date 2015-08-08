@@ -49,8 +49,8 @@ package com.pblabs.testFramework
 		
 		private var lastFailedTest:IDescription;
 		
-		private var successes:Array = new Array();
-		private var ignores:Array = new Array();
+		private var successes:Array = [];
+		private var ignores:Array = [];
 		
 		private var outputDir:File;
         

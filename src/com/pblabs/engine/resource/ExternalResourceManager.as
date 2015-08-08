@@ -51,7 +51,7 @@ package com.pblabs.engine.resource
       {
          if (_resourceMap[_currentFileName] == null)
          {
-            _resourceMap[_currentFileName] = new Array();
+            _resourceMap[_currentFileName] = [];
          }
          _resourceMap[_currentFileName].push(resource);
       }

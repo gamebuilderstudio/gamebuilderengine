@@ -60,9 +60,9 @@ public class VirtualMachine
 	public function initialize () :void
 	{
 		programCounter = 1;
-		byteCode = new Array();
+		byteCode = [];
 		
-		stack = new Array();
+		stack = [];
 		
 		global = new Object();
 		global.__scope = null;

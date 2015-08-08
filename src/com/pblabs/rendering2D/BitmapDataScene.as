@@ -196,7 +196,7 @@ package com.pblabs.rendering2D
 			}
 		}
 		
-		private var _modifiers:Array = new Array();
+		private var _modifiers:Array = [];
 		private var _realRoot:Sprite;
 	}
 }

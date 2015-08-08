@@ -31,7 +31,7 @@ package com.pblabs.engine.components
 	   [EditorData(ignore="true")]
 	   public var updated : Signal = new Signal(ListDataComponent);
 	   
-	   private var _data : Array = new Array(); 
+	   private var _data : Array = []; 
 	   
 	   public function serialize(xml:XML):void
 	   {
@@ -132,7 +132,7 @@ package com.pblabs.engine.components
 		   super.onAdd();
 		   
 		   if(!_data){
-		     _data = new Array(); 
+		     _data = []; 
 		   }
 		   if(!updated){
 			   updated = new Signal(ListDataComponent); 

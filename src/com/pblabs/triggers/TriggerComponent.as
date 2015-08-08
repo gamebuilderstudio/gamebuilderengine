@@ -91,7 +91,7 @@ package com.pblabs.triggers
 		//______________________________________
 		private var _exit:Boolean;
 		private var _lastReturn:*;
-		private var _actions:Array = new Array();
+		private var _actions:Array = [];
 		private var _event:Event;
 		
 		//______________________________________ 

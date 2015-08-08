@@ -21,7 +21,7 @@ package com.pblabs.engine.components
      */
     public class GroupManagerComponent extends EntityComponent
     {
-        private var _members:Array = new Array();
+        private var _members:Array = [];
        
         public static var autoCreateNamedGroups:Boolean = true;
       
@@ -66,7 +66,7 @@ package com.pblabs.engine.components
       
         public function get entityList():Array
         {
-            var a:Array = new Array();
+            var a:Array = [];
          
             for each(var m:GroupMemberComponent in _members)
                 a.push(m.owner);
