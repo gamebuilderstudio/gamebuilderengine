@@ -100,9 +100,8 @@ package com.pblabs.starling2D
 				_subTextureToOriginTextureMap[subtexture] = texture;
 				return subtexture;
 			}else{
-				texture = Texture.fromBitmapData( sourceBitmapData, false, false, scaleFactor, "bgra", repeat);
+				texture = Texture.fromBitmapData( sourceBitmapData, false, false, scaleFactor, "bgra", repeat, onTextureRestored);
 				texture.disposed.addOnce(releaseTexture);
-				texture.root.onRestore = onTextureRestored;
 				_originTextureToBitmapDataMap[texture.root] = sourceBitmapData;
 				_originTexturesMap[key] = new Vector.<Texture>();
 				_originTexturesMap[key][_originTexturesMap[key].length] = texture;

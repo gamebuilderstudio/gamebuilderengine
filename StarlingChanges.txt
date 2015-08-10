@@ -5,6 +5,8 @@
 	- Added SharedOverride to Starling constructor
 	- Added disposed getter
 	
--Added getObjectsUnderPoint method to DisplayObjectContainer.as
--Add  implements IEventDispatcher to EventDispatcher
--Made ATF asynch property a generic value so true can be passed Texture.as
+- Added getObjectsUnderPoint method to DisplayObjectContainer.as
+- Add  implements IEventDispatcher to EventDispatcher
+- Made ATF asynch property a generic value so true can be passed Texture.as
+- Added "this" value to onRestore callback of ConcreteTexture.as
+- Added customScaleFactor to TextField.as class.
