@@ -120,8 +120,10 @@ package com.pblabs.rendering2D
 		protected function onStageMouseUp(event : MouseEvent):void
 		{
 			_stagePoint.setTo( event.stageX, event.stageY );
-			if(!_transformDirty && _startMouseDownPos.equals(_stagePoint) && !PBE.IN_EDITOR)
+			if(!_transformDirty && _startMouseDownPos.equals(_stagePoint) && !PBE.IN_EDITOR){
+				_worldScratchPoint.setTo(_transformMatrix.tx, _transformMatrix.ty);
 				toggleInputDisplay();
+			}
 		}
 		
 		protected function toggleInputDisplay():void
@@ -135,8 +137,7 @@ package com.pblabs.rendering2D
 			if( localBounds.containsPoint( localTextPoint ) && scene && _textDisplay.type == TextFieldType.INPUT && !_inputEnabled)
 			{
 				_textDisplay.selectable = true;
-				_worldScratchPoint.setTo(_transformMatrix.tx, _transformMatrix.ty);
-				var globalPoint : Point = scene.transformWorldToScreen( _worldScratchPoint );
+				var globalPoint : Point = getStagePointOfInputControl(_worldScratchPoint);
 				PBE.mainStage.addChild(_textDisplay);
 				_textDisplay.x = globalPoint.x;
 				_textDisplay.y = globalPoint.y;
@@ -187,6 +188,11 @@ package com.pblabs.rendering2D
 				this.alpha = 0;
 		}
 		
+		protected function getStagePointOfInputControl(localPoint : Point):Point
+		{
+			return scene.transformWorldToScreen( localPoint );
+		}
+
 		protected function getLocalPointOfStage(stagePoint : Point):Point
 		{
 			var localTextPoint : Point = scene ? this.transformWorldToObject( scene.transformScreenToWorld(stagePoint) ) : new Point();
@@ -439,7 +445,7 @@ package com.pblabs.rendering2D
 				_textDirty = true;
 				_textSizeDirty = true;
 			}
-			textFormatter.size = val * ResourceManager.scaleFactor;
+			textFormatter.size = val;
 			if(_textDisplay){
 				_textDisplay.setTextFormat(textFormatter);
 			}

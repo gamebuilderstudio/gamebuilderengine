@@ -8,9 +8,13 @@
  ******************************************************************************/
 package com.pblabs.starling2D
 {
+	import com.pblabs.engine.PBE;
 	import com.pblabs.engine.PBUtil;
+	import com.pblabs.engine.core.GlobalExpressionManager;
 	import com.pblabs.engine.core.ObjectType;
+	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.resource.ResourceEvent;
+	import com.pblabs.engine.resource.ResourceManager;
 	import com.pblabs.rendering2D.UITextRendererComponent;
 	
 	import flash.geom.Point;
@@ -96,11 +100,6 @@ package com.pblabs.starling2D
 			if(!skipCreation){
 				if(!gpuObject && !isComposedTextData)
 				{
-					var fontSize : int = int(textFormatter.size);
-					if(ResourceTextureManagerG2D.actualScaleFactor != ResourceTextureManagerG2D.scaleFactor)
-					{
-						fontSize *= ResourceTextureManagerG2D.actualScaleFactor;
-					}
 					gpuObject = new TextField(_size.x * _scale.x, _size.y * _scale.y, _text, textFormatter.font, fontSize, uint(textFormatter.color), Boolean(textFormatter.bold));
 					(gpuObject as TextField).customScaleFactor = ResourceTextureManagerG2D.actualScaleFactor;
 					(gpuObject as TextField).italic = Boolean(textFormatter.italic);
@@ -108,6 +107,7 @@ package com.pblabs.starling2D
 					(gpuObject as TextField).wordWrap = _wordWrap;
 					(gpuObject as TextField).hAlign = HAlign.LEFT;
 					(gpuObject as TextField).vAlign = VAlign.TOP;
+					
 					_textDirty = false;
 					_textSizeDirty = false;
 				}else if(!gpuObject && isComposedTextData && _fontData.isLoaded && _fontImage.isLoaded) {
@@ -158,6 +158,7 @@ package com.pblabs.starling2D
 			
 			_touchID = touch.id;
 			_stagePoint.setTo( touch.globalX, touch.globalY );
+			_worldScratchPoint.setTo(_transformMatrix.tx, _transformMatrix.ty);
 			toggleInputDisplay();
 			
 			if(_inputEnabled && gpuObject)
@@ -170,10 +171,26 @@ package com.pblabs.starling2D
 				buildFontObject();
 		}
 		
+		override protected function getStagePointOfInputControl(localPoint : Point):Point
+		{
+			var actualStageScaleFactorX : Number = PBE.mainStage.stageWidth / GlobalExpressionManager.instance.baseScreenSize.x;
+			var actualStageScaleFactorY : Number = PBE.mainStage.stageHeight / GlobalExpressionManager.instance.baseScreenSize.y;
+
+			if(gpuObject) (gpuObject as TextField).customScaleFactor = actualStageScaleFactorX;
+			_textDisplay.scaleX = actualStageScaleFactorX;
+			_textDisplay.scaleY = actualStageScaleFactorY;
+
+			localPoint = this.scene.transformWorldToScreen(localPoint);
+			localPoint.x *= actualStageScaleFactorX; 
+			localPoint.y *= actualStageScaleFactorY; 
+			//localPoint.x -= (this.scene.sceneView as SceneViewG2D).starlingInstance.viewPort.topLeft.x;
+			//localPoint.y -= (this.scene.sceneView as SceneViewG2D).starlingInstance.viewPort.topLeft.y;
+			return localPoint;
+		}
+
 		override protected function getLocalPointOfStage(stagePoint : Point):Point
 		{
-			var localTextPoint : Point = this.gpuObject ? this.gpuObject.globalToLocal(stagePoint) : stagePoint;
-			return localTextPoint;
+			return this.gpuObject ? this.gpuObject.globalToLocal(stagePoint) : stagePoint;
 		}
 		
 		override protected function buildFontObject():void

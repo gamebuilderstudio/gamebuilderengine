@@ -276,7 +276,7 @@ package starling.text
             }
 
             var textFormat:TextFormat = new TextFormat(mFontName, 
-                mFontSize, mColor, mBold, mItalic, mUnderline, null, null, hAlign);
+                mFontSize * scale, mColor, mBold, mItalic, mUnderline, null, null, hAlign);
             textFormat.kerning = mKerning;
             textFormat.leading = mLeading;
 
