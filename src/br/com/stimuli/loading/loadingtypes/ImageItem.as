@@ -75,6 +75,8 @@ package br.com.stimuli.loading.loadingtypes {
 	            _content = loader.content;
 	            super.onCompleteHandler(evt);
 	        }catch(e : SecurityError){
+				trace("Security Error On File = " + url.url );
+				trace(e.getStackTrace());
 	        	// we can still use the Loader object (no dice for accessing it as data
 	        	// though. Oh boy:
 	        	_content = loader;
@@ -89,11 +91,12 @@ package br.com.stimuli.loading.loadingtypes {
         
         override public function stop() : void{
             try{
-                if(loader){
+                if(loader && !_content){
                     loader.close();
                 }
             }catch(e : Error){
-                
+				trace("Failed To Stop the Loader For = " + url.url);
+                trace(e.getStackTrace());
             }
             super.stop();
         };
