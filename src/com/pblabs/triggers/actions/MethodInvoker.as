@@ -3,7 +3,6 @@ package com.pblabs.triggers.actions
 	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.entity.PropertyReference;
 	import com.pblabs.engine.scripting.ExpressionReference;
-	import com.pblabs.triggers.ITriggerComponent;
 
 	public class MethodInvoker extends BaseAction
 	{

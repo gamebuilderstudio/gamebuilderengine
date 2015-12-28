@@ -2,20 +2,16 @@ package com.pblabs.triggers.actions
 {
 	import avmplus.getQualifiedClassName;
 	
-	import com.pblabs.engine.PBE;
-	import com.pblabs.engine.components.DataComponent;
 	import com.pblabs.engine.components.ListDataComponent;
 	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.entity.PropertyReference;
 	import com.pblabs.engine.scripting.ExpressionReference;
 	import com.pblabs.triggers.actions.BaseAction;
-	import com.pblabs.triggers.actions.IAction;
-	
-	import flash.events.Event;
 	
 	public class ListAction extends BaseAction
 	{
 		public static var ACTIONTYPE_CLEAR : String = "clearList";
+		public static var ACTIONTYPE_PUSH : String = "pushOnList";
 		public static var ACTIONTYPE_INSERT : String = "inserIntoList";
 		public static var ACTIONTYPE_REMOVE : String = "removeFromList";
 		public static var ACTIONTYPE_REPLACE : String = "replaceListItem";
@@ -36,6 +32,7 @@ package com.pblabs.triggers.actions
 		 **/
 		public var listDataReference : PropertyReference;
 		
+		public var itemIndexExpression : ExpressionReference;
 		public var itemIndex : int = 0;
 		
 		private var _data : *;
@@ -53,10 +50,16 @@ package com.pblabs.triggers.actions
 				return;
 			}
 			
+			if(itemIndexExpression)
+				itemIndex = int(getExpressionValue(itemIndexExpression));
+			
 			if(actionType == ACTIONTYPE_INSERT)
 			{
 				_data = getExpressionValue(dataReference);
 				_listData.addItemAt(_data, itemIndex);
+			}else if(actionType == ACTIONTYPE_PUSH){
+				_data = getExpressionValue(dataReference);
+				_listData.push(_data);
 			}else if(actionType == ACTIONTYPE_REPLACE){
 				_data = getExpressionValue(dataReference);
 				_listData.replaceItemAt(_data, itemIndex);
@@ -69,6 +72,8 @@ package com.pblabs.triggers.actions
 		
 		override public function destroy():void
 		{
+			if(itemIndexExpression)
+				itemIndexExpression.destroy();
 			if(dataReference)
 				dataReference.destroy();
 			dataReference = null;
