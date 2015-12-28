@@ -41,7 +41,7 @@ package br.com.stimuli.loading.loadingtypes {
             try{
             	// TODO: test for security error thown.
 				if(!_context){
-					_context = new LoaderContext();
+					_context = new LoaderContext(true);
 				}
 				//Load the image in the background thread
 				if(_context is LoaderContext)

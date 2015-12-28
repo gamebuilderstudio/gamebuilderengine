@@ -37,16 +37,22 @@ package org.audiofx.mp3
 		 */
 		public var sound:Sound;
 		
+		public var errorMessage : String;
+		
 		/**
 		 *  Used to signal the loading of a sound by the <code>MP3FileReferenceLoader</code> following a call to <code>MP3FileReferenceLoader.getSound</code>
 		 *	@eventType complete
 		 *  @see org.audiofx.mp3.MP3FileReferenceLoader
 		 */
 		public static const COMPLETE:String="complete";
-		public function MP3SoundEvent(type:String, sound:Sound, bubbles:Boolean=false, cancelable:Boolean=false)
+		
+		public static const ON_ERROR:String="onFileParsingError";
+		
+		public function MP3SoundEvent(type:String, sound:Sound, bubbles:Boolean=false, cancelable:Boolean=false, errorMessage : String = null)
 		{
 			super(type, bubbles, cancelable);
 			this.sound=sound;
+			this.errorMessage = errorMessage;
 		}
 		
 	}

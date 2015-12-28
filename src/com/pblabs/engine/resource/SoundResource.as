@@ -8,8 +8,6 @@
  ******************************************************************************/
 package com.pblabs.engine.resource
 {
-    import com.pblabs.engine.debug.Logger;
-    
     import flash.events.Event;
     import flash.media.Sound;
     

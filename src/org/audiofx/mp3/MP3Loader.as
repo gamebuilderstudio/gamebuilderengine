@@ -23,10 +23,10 @@ package org.audiofx.mp3
 {
 	import flash.display.Loader;
 	import flash.display.LoaderInfo;
+	import flash.events.ErrorEvent;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.media.Sound;
-	import flash.net.FileReference;
 	import flash.system.LoaderContext;
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;
@@ -37,6 +37,7 @@ package org.audiofx.mp3
 	 * 
 	 */
 	[Event(name="complete", type="org.audiofx.mp3.MP3SoundEvent")]
+	[Event(name="onFileParsingError", type="org.audiofx.mp3.MP3SoundEvent")]
 
 	/**
 	 * Class for loading MP3 files into flash
@@ -51,6 +52,7 @@ package org.audiofx.mp3
 		{
 			mp3Parser=new MP3Parser();
 			mp3Parser.addEventListener(Event.COMPLETE,parserCompleteHandler);
+			mp3Parser.addEventListener(ErrorEvent.ERROR,parserErrorHandler);
 		}
 		
 		/**
@@ -65,6 +67,11 @@ package org.audiofx.mp3
 			generateSound(mp3Parser);
 		}
 
+		protected function parserErrorHandler(ev:ErrorEvent):void
+		{
+			this.dispatchEvent(new MP3SoundEvent(MP3SoundEvent.ON_ERROR, this.sound, false, false, ev.text));
+		}
+		
 		protected function parserCompleteHandler(ev:Event):void
 		{
 			//var parser:MP3Parser=ev.currentTarget as MP3Parser;

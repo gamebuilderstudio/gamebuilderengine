@@ -288,6 +288,8 @@ package com.pblabs.engine.resource
 			catch(e:Error)
 			{
 				Logger.error(this, "Load", "Failed to load! " + e.toString());
+				onFailed("Failed to load! - ("+e.errorID+") ["+e.message+"]");
+				return;
 			}
 			
 			onFailed("The resource type does not match the loaded content.");

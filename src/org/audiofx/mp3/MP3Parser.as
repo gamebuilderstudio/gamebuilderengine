@@ -22,6 +22,7 @@ THE SOFTWARE.
 
 package org.audiofx.mp3
 {
+	import flash.events.ErrorEvent;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.IOErrorEvent;
@@ -32,6 +33,8 @@ package org.audiofx.mp3
 	import flash.utils.ByteArray;
 	
 	[Event(name="complete", type="flash.events.Event")]
+	[Event(name="error", type="flash.events.ErrorEvent")]
+	
 	internal class MP3Parser extends EventDispatcher
 	{
 		private var mp3Data:ByteArray;
@@ -53,8 +56,12 @@ package org.audiofx.mp3
 		
 		public function loadFromByteArray(bytes : ByteArray):void
 		{
-			mp3Data = bytes;
-			currentPosition = getFirstHeaderPosition();
+			try{
+				mp3Data = bytes;
+				currentPosition = getFirstHeaderPosition();
+			}catch(e : Error){
+				this.dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, e.message, e.errorID));
+			}
 		}
 		
 		public function load(url:String):void
@@ -72,19 +79,24 @@ package org.audiofx.mp3
 		private function errorHandler(ev:IOErrorEvent):void
 		{
 			trace("error\n"+ev.text);
+			this.dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, ev.text, ev.errorID));
 		}
 		private function loaderCompleteHandler(ev:Event):void
 		{
-			mp3Data=ev.currentTarget.data as ByteArray;
-			currentPosition=getFirstHeaderPosition();
-			dispatchEvent(ev);
+			try{
+				mp3Data=ev.currentTarget.data as ByteArray;
+				currentPosition=getFirstHeaderPosition();
+				dispatchEvent(ev);
+			}catch(e : Error){
+				this.dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, e.message, e.errorID));
+			}
 		}
 		private function getFirstHeaderPosition():uint
 		{
 			mp3Data.position=0;
 			
 			
-			while(mp3Data.position<mp3Data.length)
+			while(mp3Data.position<mp3Data.length && mp3Data.bytesAvailable > 1)
 			{
 				var readPosition:uint=mp3Data.position;
 				var str:String=mp3Data.readMultiByte(3,"us-ascii");
@@ -122,7 +134,7 @@ package org.audiofx.mp3
 				}
 
 			}
-			throw(new Error("Could not locate first header. This isn't an MP3 file"));
+			throw(new Error("Could not locate first header. This isn't a properly formated MP3 file"));
 		}
 		internal function getNextFrame():ByteArraySegment
 		{
