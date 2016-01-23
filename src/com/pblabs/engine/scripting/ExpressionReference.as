@@ -164,9 +164,11 @@ package com.pblabs.engine.scripting
 				ExpressionUtils.importFunction(_globalGameObject, "setPoint", ExpressionUtils.setPoint);
 				ExpressionUtils.importFunction(_globalGameObject, "setRectangle", ExpressionUtils.setRectangle);
 				//ExpressionUtils.importFunction(_globalGameObject, "Entity", ExpressionUtils.getEntity);
+				ExpressionUtils.importFunction(_globalGameObject, "getTrajectoryOfAPointInTime", ExpressionUtils.getTrajectoryOfAPointInTime);
 				ExpressionUtils.importFunction(_globalGameObject, "magnitudeOfPoint", ExpressionUtils.magnitudeOfPoint);
 				ExpressionUtils.importFunction(_globalGameObject, "magnitude", ExpressionUtils.magnitude);
-				ExpressionUtils.importFunction(_globalGameObject, "rotationOfAngle", ExpressionUtils.rotationOfAngle);
+				ExpressionUtils.importFunction(_globalGameObject, "angleBetweenTwoPoints", ExpressionUtils.angleBetweenTwoPoints);
+				ExpressionUtils.importFunction(_globalGameObject, "angleOfAPoint", ExpressionUtils.angleOfAPoint);
 				ExpressionUtils.importFunction(_globalGameObject, "distance", ExpressionUtils.distance);
 				ExpressionUtils.importFunction(_globalGameObject, "distanceOfPoint", ExpressionUtils.distanceOfPoint);
 				ExpressionUtils.importFunction(_globalGameObject, "randomRange", ExpressionUtils.randomRange);
@@ -369,13 +371,21 @@ class ExpressionUtils{
 	}
 	
 	/**
-	 * Returns the rotation angle of two points in degress
+	 * Returns the rotation / angle of two points returned in degress
 	 **/
-	public static function rotationOfAngle(ptA : Point, ptB : Point):Number
+	public static function angleBetweenTwoPoints(ptA : Point, ptB : Point):Number
 	{
 		return Math.atan2((ptA.y - ptB.y), (ptA.x - ptB.x)) / Math.PI * 180;
 	}
 	
+	/**
+	 * Returns the rotation / angle of a point returned in degress
+	 **/
+	public static function angleOfAPoint(x : Number, y : Number):Number
+	{
+		return Math.atan2(y, x) / Math.PI * 180;
+	}
+
 	public static function setPoint(x : Number, y : Number):Point
 	{
 		return new Point(x,y);
@@ -399,6 +409,26 @@ class ExpressionUtils{
 	public static function fastFloor(v:Number) : int {
 		return int(v);
 	}
+	
+	/**
+	 * Returns the distance/magnitude between two values
+	 **/
+	public static function getTrajectoryOfAPointInTime(startX : Number, startY : Number, velocityX : Number, velocityY : Number, gravityX : Number, gravityY : Number, currentFrameRate : Number = 60, nTimeInFuture : Number = 1):Point
+	{
+		var t : Number = 1 / currentFrameRate;    
+		var stepVelocityX : Number = t * -velocityX; 
+		var stepVelocityY : Number = t * -velocityY;    
+		var stepGravityX : Number = t * t * -gravityX; 
+		var stepGravityY : Number = t * t * gravityY;
+		startX = -startX;
+		startY = -startY;    
+		var tpx : Number = startX + nTimeInFuture * stepVelocityX + 0.5 * (nTimeInFuture * nTimeInFuture + nTimeInFuture) * stepGravityX;
+		var tpy : Number = startY + nTimeInFuture * stepVelocityY + 0.5 * (nTimeInFuture * nTimeInFuture + nTimeInFuture) * stepGravityY;    
+		tpx = -tpx;
+		tpy = -tpy;    
+		return new Point(tpx, tpy); 
+	}
+	
 }
 
 class ExpressionByteCode
