@@ -57,7 +57,8 @@ package com.pblabs.engine.resource
 			wav:"com.pblabs.engine.resource.WAVResource",
 			json:"com.pblabs.engine.resource.JSONResource",
 			skel:"com.pblabs.engine.resource.JSONResource",
-			pex:"com.pblabs.engine.resource.XMLResource"
+			pex:"com.pblabs.engine.resource.XMLResource",
+			tmx:"com.pblabs.engine.resource.XMLResource"
         };
         
         /**
