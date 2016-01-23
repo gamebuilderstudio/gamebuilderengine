@@ -735,6 +735,7 @@ package com.pblabs.engine.serialization
 }
 
 import com.pblabs.engine.PBE;
+import com.pblabs.engine.core.OrderedArray;
 import com.pblabs.engine.debug.Logger;
 import com.pblabs.engine.entity.IEntity;
 import com.pblabs.engine.entity.IEntityComponent;
@@ -787,7 +788,10 @@ internal class ReferenceNote
             if (!namedObject)
                 return false;
             
-            owner[fieldName] = namedObject;
+			if(fieldName == "" && (owner is Array || owner is OrderedArray))
+				owner.push(namedObject);
+			else
+            	owner[fieldName] = namedObject;
             reportSuccess();
             return true;
         }
@@ -814,7 +818,10 @@ internal class ReferenceNote
                     return false;
             }
             
-            owner[fieldName] = component;
+			if(fieldName == "" && (owner is Array || owner is OrderedArray))
+				owner.push(component);
+			else
+            	owner[fieldName] = component;
             reportSuccess();
             return true;
         }
@@ -826,7 +833,10 @@ internal class ReferenceNote
             if (!localComponent)
                 return false;
             
-            owner[fieldName] = localComponent;
+			if(fieldName == "" && (owner is Array || owner is OrderedArray))
+				owner.push(localComponent);
+			else
+            	owner[fieldName] = localComponent;
             reportSuccess();
             return true;
         }
@@ -834,7 +844,10 @@ internal class ReferenceNote
         // Or instantiate a new entity.
         if (objectReference != "")
         {
-            owner[fieldName] = PBE.templateManager.instantiateEntity(objectReference);
+			if(fieldName == "" && (owner is Array || owner is OrderedArray))
+				owner.push( PBE.templateManager.instantiateEntity(objectReference) );
+			else
+            	owner[fieldName] = PBE.templateManager.instantiateEntity(objectReference);
             reportSuccess();
             return true;
         }
