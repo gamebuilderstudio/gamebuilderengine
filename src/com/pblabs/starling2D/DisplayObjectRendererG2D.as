@@ -18,6 +18,8 @@ package com.pblabs.starling2D
 	
 	import starling.core.Starling;
 	import starling.display.DisplayObject;
+	import starling.display.QuadBatch;
+	import starling.utils.MathUtil;
 	
 	/**
 	 * Abstract base renderer for Rendering Starling GPU 2D DisplayObjects. It wraps a starling DisplayObject, allows it
@@ -112,7 +114,7 @@ package com.pblabs.starling2D
 		{
 			super.onRemove();
 			if(gpuObject) {
-				if("texture" in gpuObject)
+				if(("texture" in gpuObject && !(gpuObject is QuadBatch)) || ("texture" in gpuObject && gpuObject is QuadBatch && (gpuObject as QuadBatch).ownsTexture))
 				{
 					gpuObject['texture'].dispose();
 				}
@@ -217,8 +219,8 @@ package com.pblabs.starling2D
 			if(_size && (_size.x > 0 || _size.y > 0))
 			{
 				gpuObject.getBounds(gpuObject, _boundsRec);
-				_tmpCombinedScale.x = _scale.x * (_size.x / _boundsRec.width);
-				_tmpCombinedScale.y = _scale.y * (_size.y / _boundsRec.height);
+				_tmpCombinedScale.x = MathUtil.clamp((_scale.x * (_size.x / _boundsRec.width)), -1000, 1);
+				_tmpCombinedScale.y = MathUtil.clamp((_scale.y * (_size.y / _boundsRec.height)), -1000, 1);
 			}
 			return _tmpCombinedScale;
 		}

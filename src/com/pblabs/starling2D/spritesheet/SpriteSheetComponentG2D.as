@@ -100,7 +100,7 @@ package com.pblabs.starling2D.spritesheet
 					var regionSubTexture : Texture = ResourceTextureManagerG2D.getTextureForAtlasRegion(atlas, frameName, frame, untrimmedFrame, isRotated);
 					_frames[i] = regionSubTexture;
 					
-					tmpBounds = isRotated ? new Rectangle(0,0,frame.height, frame.width) : frame;
+					tmpBounds = isRotated ? new Rectangle(0,0,frame.width, frame.height) : frame;
 					if(!_bounds){
 						_bounds = tmpBounds.clone();
 					}else{
