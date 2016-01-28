@@ -29,7 +29,7 @@ package com.pblabs.rendering2D
 	 */
 	public class TiledMapRenderer extends BitmapRenderer
 	{
-		public var clampCameraToSelf:Boolean = true;
+		public var clampCameraToSelf:Boolean = false;
 		
 		/**
 		 * Add tile sheets to this array in the order that they were used in the tile map.
