@@ -216,11 +216,11 @@ package com.pblabs.starling2D
 			
 			_tmpCombinedScale.x = _scale.x;
 			_tmpCombinedScale.y = _scale.y;
-			if(_size && (_size.x > 0 || _size.y > 0))
+			gpuObject.getBounds(gpuObject, _boundsRec);
+			if(_size && (_size.x > 0 && _size.y > 0) && _boundsRec && (_boundsRec.width > 0 && _boundsRec.height > 0))
 			{
-				gpuObject.getBounds(gpuObject, _boundsRec);
-				_tmpCombinedScale.x = MathUtil.clamp((_scale.x * (_size.x / _boundsRec.width)), -1000, 1);
-				_tmpCombinedScale.y = MathUtil.clamp((_scale.y * (_size.y / _boundsRec.height)), -1000, 1);
+				_tmpCombinedScale.x = _scale.x * (_size.x / _boundsRec.width);
+				_tmpCombinedScale.y = _scale.y * (_size.y / _boundsRec.height);
 			}
 			return _tmpCombinedScale;
 		}
