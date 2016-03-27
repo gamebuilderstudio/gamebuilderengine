@@ -5,7 +5,6 @@ package com.pblabs.rendering2D
 	import com.pblabs.engine.resource.DataResource;
 	import com.pblabs.engine.resource.ImageResource;
 	import com.pblabs.engine.resource.ResourceEvent;
-	import com.pblabs.engine.resource.ResourceManager;
 	import com.pblabs.rendering2D.BitmapRenderer;
 	
 	import flash.display.BitmapData;
@@ -136,25 +135,28 @@ package com.pblabs.rendering2D
 			var localTextPoint : Point = getLocalPointOfStage(_stagePoint);
 			if( localBounds.containsPoint( localTextPoint ) && scene && _textDisplay.type == TextFieldType.INPUT && !_inputEnabled)
 			{
-				_textDisplay.selectable = true;
+
+				if(autoResize)
+					_textDisplay.width = _textDisplay.width + 25;
+				
 				var globalPoint : Point = getStagePointOfInputControl(_worldScratchPoint);
 				PBE.mainStage.addChild(_textDisplay);
+				
+				_textDisplay.selectable = true;
 				_textDisplay.x = globalPoint.x;
 				_textDisplay.y = globalPoint.y;
+				_textDisplay.defaultTextFormat = textFormatter;
 				_textDisplay.setTextFormat(textFormatter);
 				var charIndex : int = _textDisplay.getCharIndexAtPoint(localTextPoint.x, localTextPoint.y);
 				PBE.mainStage.focus = _textDisplay;
 				_textDisplay.setSelection(charIndex, charIndex);
-				if(autoResize)
-					_textDisplay.width += 15;
 				
 				_previousAlpha = this._alpha;
 				_inputEnabled = true;
 				PBE.mainStage.focus = _textDisplay;
 				_textDisplay.requestSoftKeyboard();
 			}else if(!localBounds.containsPoint( localTextPoint ) && _inputEnabled){
-				hideInputField(null);
-				PBE.mainStage.focus = null;
+				_inputEnabled = false;
 			}
 		}
 		
@@ -465,13 +467,14 @@ package com.pblabs.rendering2D
 		
 		public function get text():String{ return _text; }
 		public function set text(val : String):void{
+			if(_text == val) return;
+			
 			if(!val || val == ""){
 				if(_textDisplay){
 					_textDisplay.text = _text = "";
 				}else{
 					_text = "";
 				}
-				_textDirty = true;
 			}else if(_text != val){
 				if(_textDisplay){
 					_textDisplay.text = _text = val;
@@ -479,9 +482,9 @@ package com.pblabs.rendering2D
 				}else{
 					_text = val;
 				}
-				_textSizeDirty = true;
-				_textDirty = true;
 			}
+			_textDirty = true;
+			_textSizeDirty = true;
 			if(_bmFontObject)
 				_bmFontObject.text = _text;
 		}
@@ -511,7 +514,7 @@ package com.pblabs.rendering2D
 			if(_textInputType == val)
 				return;
 			
-			if(val != TextFieldType.INPUT && _textInputType == TextFieldType.INPUT){
+			if(_textInputType == TextFieldType.INPUT && val != TextFieldType.INPUT){
 				PBE.mainStage.removeEventListener(MouseEvent.MOUSE_UP, onStageMouseUp, true);
 				PBE.mainStage.removeEventListener(MouseEvent.MOUSE_DOWN, onStageMouseDown, true);
 				_textDisplay.removeEventListener(Event.CHANGE, inputChanged);

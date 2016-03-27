@@ -12,11 +12,11 @@ package com.pblabs.starling2D
 	import com.pblabs.engine.PBUtil;
 	import com.pblabs.engine.core.GlobalExpressionManager;
 	import com.pblabs.engine.core.ObjectType;
-	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.resource.ResourceEvent;
-	import com.pblabs.engine.resource.ResourceManager;
 	import com.pblabs.rendering2D.UITextRendererComponent;
 	
+	import flash.events.Event;
+	import flash.events.FocusEvent;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.text.TextFieldType;
@@ -152,17 +152,16 @@ package com.pblabs.starling2D
 		
 		protected function onStageTouch(event : TouchEvent):void
 		{
-			var touch : Touch = event.getTouch(Starling.current.stage, TouchPhase.ENDED, _touchID);
+			var touch : Touch = event.getTouch(Starling.current.stage, TouchPhase.ENDED);
+			
 			if(!touch || touch.phase != TouchPhase.ENDED)
 				return;
 			
 			_touchID = touch.id;
-			_stagePoint.setTo( touch.globalX, touch.globalY );
+			_stagePoint.setTo( int(touch.globalX), int(touch.globalY) );
+
 			_worldScratchPoint.setTo(_transformMatrix.tx, _transformMatrix.ty);
 			toggleInputDisplay();
-			
-			if(_inputEnabled && gpuObject)
-				gpuObject.visible = false;
 		}
 		
 		override protected function paintTextToBitmap(reuseBitmap:Boolean=true):void
@@ -204,7 +203,8 @@ package com.pblabs.starling2D
 				buildFontObject();
 
 			if(autoResize && gpuObject){
-				var textSize : Rectangle = (gpuObject as TextField).getBounds(gpuObject);
+				
+				var textSize : Rectangle = _textDisplay.getBounds(_textDisplay);
 				_newTextSize.setTo(textSize.width, textSize.height);
 				
 				if(_newTextSize.x == 0 || _newTextSize.y == 0) 
@@ -333,14 +333,32 @@ package com.pblabs.starling2D
 		}
 
 		override public function set type(val : String):void{
-			if(_textInputType == TextFieldType.INPUT && val != TextFieldType.INPUT && Starling.current != null && Starling.current.stage != null)
+			if(_textInputType == val)
+				return;
+
+			if(_textInputType == TextFieldType.INPUT && val != TextFieldType.INPUT)
 			{
-				Starling.current.stage.removeEventListener(TouchEvent.TOUCH, onStageTouch);
+				if(Starling.current != null && Starling.current.stage != null)
+					Starling.current.stage.removeEventListener(TouchEvent.TOUCH, onStageTouch);
+				if(_textDisplay){
+					_textDisplay.removeEventListener(Event.CHANGE, inputChanged);
+					_textDisplay.removeEventListener(FocusEvent.FOCUS_OUT, hideInputField);
+				}
 			}
-			super.type = val;
-			if(_textInputType == TextFieldType.INPUT && Starling.current != null && Starling.current.stage != null)
+			
+			_textInputType = val;
+			_textDirty = true;
+			if(_textDisplay)
+				_textDisplay.type = _textInputType;
+
+			if(_textInputType == TextFieldType.INPUT)
 			{
-				Starling.current.stage.addEventListener(TouchEvent.TOUCH, onStageTouch);
+				if(Starling.current != null && Starling.current.stage != null)
+					Starling.current.stage.addEventListener(TouchEvent.TOUCH, onStageTouch);
+				if(_textDisplay){
+					_textDisplay.addEventListener(Event.CHANGE, inputChanged);
+					_textDisplay.addEventListener(FocusEvent.FOCUS_OUT, hideInputField);
+				}
 			}
 		}
 		
