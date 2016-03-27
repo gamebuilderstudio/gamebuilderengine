@@ -126,6 +126,7 @@ package com.pblabs.engine.core
 			if(!objectContext.Game.Controllers) objectContext.Game.Controllers = new DataComponent();
 			if(!objectContext.Game.Accelerometer) objectContext.Game.Accelerometer = new DataComponent();
 			if(!objectContext.Game.CurrentActionData) objectContext.Game.CurrentActionData = new DataComponent();
+			if(!objectContext.Game.CurrentCollisionData) objectContext.Game.CurrentCollisionData = new DataComponent();
 			if(!objectContext.Game.System) objectContext.Game.System = new DataComponent();
 			
 			var _os:String = Capabilities.os.toLowerCase();
@@ -169,6 +170,7 @@ package com.pblabs.engine.core
 			globalExpressionEntity.addComponent(objectContext.Game.Controllers, "Controllers");
 			globalExpressionEntity.addComponent(objectContext.Game.Accelerometer, "Accelerometer");
 			globalExpressionEntity.addComponent(objectContext.Game.CurrentActionData, "CurrentActionData");
+			globalExpressionEntity.addComponent(objectContext.Game.CurrentCollisionData, "CurrentCollisionData");
 			globalExpressionEntity.addComponent(objectContext.Game.System, "System");
 			
 			objectContext.Game.Controllers.deviceCount = 0;
