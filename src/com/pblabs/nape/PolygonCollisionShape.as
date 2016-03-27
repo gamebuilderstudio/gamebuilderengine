@@ -2,9 +2,7 @@ package com.pblabs.nape
 {
 	import flash.geom.Point;
 	
-	import nape.geom.GeomPoly;
 	import nape.geom.Vec2;
-	import nape.geom.Vec2List;
 	import nape.shape.Polygon;
 	import nape.shape.Shape;
 

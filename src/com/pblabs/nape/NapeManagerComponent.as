@@ -28,6 +28,7 @@ package com.pblabs.nape
 	import nape.geom.Vec2;
 	import nape.phys.Body;
 	import nape.phys.BodyList;
+	import nape.shape.Shape;
 	import nape.space.Broadphase;
 	import nape.space.Space;
 	import nape.util.ShapeDebug;
@@ -484,32 +485,48 @@ package com.pblabs.nape
 		{
 			var spatial1:NapeSpatialComponent = cb.int1.userData.spatial;
 			var spatial2:NapeSpatialComponent = cb.int2.userData.spatial;
-			var ce:CollisionEvent = new CollisionEvent(CollisionEvent.COLLISION_STOPPED_EVENT, spatial1, spatial2, new Point(), null, null);
+			var ce:CollisionEvent = new CollisionEvent(CollisionEvent.COLLISION_STOPPED_EVENT, spatial1, spatial2, null, null, new Point(), null);
+
 			if ( spatial1.owner )
 				spatial1.owner.eventDispatcher.dispatchEvent(ce);
 			if ( spatial2.owner )
 				spatial2.owner.eventDispatcher.dispatchEvent(ce);
-
 		}
 
 		private function dispatchCollisionEvents(arbiter:Arbiter, eventType:String):void
 		{
 			var spatial1:NapeSpatialComponent = arbiter.body1.userData.spatial;
 			var spatial2:NapeSpatialComponent = arbiter.body2.userData.spatial;
+
+			var shape1 : CollisionShape = findCollisionShape(spatial1, arbiter.shape1);
+			var shape2 : CollisionShape = findCollisionShape(spatial2, arbiter.shape2);
 			var ce:CollisionEvent;
 
 			var isCollision : Boolean = arbiter.isCollisionArbiter();
 			var isSensorTrigger : Boolean = arbiter.isSensorArbiter();
-			if ( isCollision )
+			if ( isCollision && arbiter.collisionArbiter)
 			{
-				ce = new CollisionEvent(eventType, spatial1, spatial2, new Point(arbiter.collisionArbiter.normal.x, arbiter.collisionArbiter.normal.y), arbiter.collisionArbiter.contacts, arbiter.collisionArbiter);
+				ce = new CollisionEvent(eventType, spatial1, spatial2, shape1, shape2, new Point(arbiter.collisionArbiter.normal.x, arbiter.collisionArbiter.normal.y), arbiter.collisionArbiter);
 			}else if( isSensorTrigger ){
-				ce = new CollisionEvent(eventType, spatial1, spatial2, new Point(), null, null);
+				ce = new CollisionEvent(eventType, spatial1, spatial2, shape1, shape2, new Point(), null);
 			}
 			if ( spatial1.owner)
 				spatial1.owner.eventDispatcher.dispatchEvent(ce);
 			if ( spatial2.owner)
 				spatial2.owner.eventDispatcher.dispatchEvent(ce);
+		}
+		
+		private function findCollisionShape(spatial : INape2DSpatialComponent, shape : Shape):CollisionShape
+		{
+			var colShape : CollisionShape;
+			var shape1 : CollisionShape;
+			var len : int = spatial.collisionShapes.length;
+			for(var i : int = 0; i < len; i++){
+				colShape = spatial.collisionShapes[i] as CollisionShape;
+				if(colShape.internalShape == shape)
+					return colShape;
+			}
+			return null;
 		}
 		
 		protected var _scale:Number = 1;

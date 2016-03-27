@@ -14,6 +14,19 @@ package com.pblabs.nape
 		{
 		}
 		
+		[EditorData(defaultValue="default")]
+		public function get name():String
+		{
+			return _name;
+		}
+		
+		public function set name(value:String):void
+		{
+			_name = value;
+			if(_shape && _shape.userData)
+				_shape.userData.name = _name;
+		}
+
 		[EditorData(defaultValue="1")]
 		public function get density():Number
 		{
@@ -136,7 +149,7 @@ package com.pblabs.nape
 			}
 			
 			_shape.userData.spatial = parent;
-			
+			_shape.userData.name = _name;
 			return _shape;
 		}
 		
@@ -179,5 +192,6 @@ package com.pblabs.nape
 		private var _restitution:Number = 0.0;
 		private var _shapeScale : Point = new Point(1,1);
 		private var _isTrigger:Boolean = false;
+		private var _name : String = "body";
 	}
 }

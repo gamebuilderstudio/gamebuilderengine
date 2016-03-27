@@ -4,6 +4,8 @@ package com.pblabs.physics
 
 	public interface IPhysicsShape
 	{
+		function get name():String;
+		function set name(value:String):void;
 		function get density():Number;
 		function set density(value:Number):void;
 		function get friction():Number;

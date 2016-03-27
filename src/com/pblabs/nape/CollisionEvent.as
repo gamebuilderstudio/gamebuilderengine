@@ -4,8 +4,6 @@ package com.pblabs.nape
 	import flash.geom.Point;
 	
 	import nape.dynamics.CollisionArbiter;
-	import nape.dynamics.Contact;
-	import nape.dynamics.ContactList;
 	
 	public class CollisionEvent extends Event
 	{
@@ -16,23 +14,25 @@ package com.pblabs.nape
 		
 		public var collider:NapeSpatialComponent = null;
 		public var collidee:NapeSpatialComponent = null;
+		public var colliderShape:CollisionShape = null;
+		public var collideeShape:CollisionShape = null;
 		public var normal:Point = null;
-		public var contacts:ContactList = null;
 		public var collisionArbiter:CollisionArbiter = null;
 		
-		public function CollisionEvent(type:String, collider:NapeSpatialComponent, collidee:NapeSpatialComponent, normal:Point, contacts:ContactList, arbiter:CollisionArbiter)
+		public function CollisionEvent(type:String, collider:NapeSpatialComponent, collidee:NapeSpatialComponent, colliderShape : CollisionShape, collideeShape : CollisionShape, normal:Point, collisionArbiter : CollisionArbiter)
 		{
 			super(type, bubbles, cancelable);
 			this.collider = collider;
 			this.collidee = collidee;
+			this.colliderShape = colliderShape;
+			this.collideeShape = collideeShape;
+			this.collisionArbiter = collisionArbiter;
 			this.normal = normal;
-			this.contacts = contacts;
-			this.collisionArbiter = arbiter;
 		}
 		
 		override public function clone():Event
 		{
-			return new CollisionEvent(type, collider, collidee, normal, contacts, collisionArbiter);
+			return new CollisionEvent(type, collider, collidee, colliderShape, collideeShape, normal, collisionArbiter);
 		}
 	}
 }
