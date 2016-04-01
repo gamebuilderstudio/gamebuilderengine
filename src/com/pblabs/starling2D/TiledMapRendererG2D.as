@@ -18,6 +18,7 @@ package com.pblabs.starling2D
 	import flash.display.BitmapData;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	
 	import starling.core.Starling;
 	import starling.display.Image;
@@ -82,7 +83,10 @@ package com.pblabs.starling2D
 			
 			if ( clampCameraToSelf && !PBE.IN_EDITOR)
 			{
-				scene.trackLimitRectangle = worldExtents;
+				var cameraBounds : Rectangle = worldExtents.clone();
+				cameraBounds.x = this.position.x;
+				cameraBounds.y = this.position.y;
+				scene.trackLimitRectangle = cameraBounds;
 			}
 			
 			// If we don't have any tiles yet...

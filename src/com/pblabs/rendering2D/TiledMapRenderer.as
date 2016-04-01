@@ -214,7 +214,10 @@ package com.pblabs.rendering2D
 				
 			if ( clampCameraToSelf && !PBE.IN_EDITOR)
 			{
-				scene.trackLimitRectangle = worldExtents;
+				var cameraBounds : Rectangle = worldExtents.clone();
+				cameraBounds.x = this.position.x;
+				cameraBounds.y = this.position.y;
+				scene.trackLimitRectangle = cameraBounds;
 			}
 			
 			// If we don't have any tiles yet...
