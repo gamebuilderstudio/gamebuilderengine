@@ -16,6 +16,7 @@ package com.pblabs.starling2D
 	import com.pblabs.tilemap.TiledTileLayer;
 	
 	import flash.display.BitmapData;
+	import flash.events.Event;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
@@ -30,6 +31,8 @@ package com.pblabs.starling2D
 	{
 		protected var _tileTextures : Vector.<Texture> = new Vector.<Texture>();
 		protected var _tileMatrix : Matrix = new Matrix();
+		private var _emptyTexture : Texture;
+		private var _imageContainerPool : Vector.<Image> = new Vector.<Image>();
 		
 		public function TiledMapRendererG2D()
 		{
@@ -55,8 +58,13 @@ package com.pblabs.starling2D
 		
 		override protected function onRemove():void
 		{
-			super.onRemove();
+			clearAllImageTiles(true);
 			_tileTextures.length = 0;
+			if(_emptyTexture)
+				_emptyTexture.dispose();
+			_emptyTexture = null;
+			
+			super.onRemove();
 		}
 		
 		override protected function buildG2DObject(skipCreation : Boolean = false):void
@@ -81,12 +89,12 @@ package com.pblabs.starling2D
 		{
 			if(!scene || (_tiledMapResource && !_tiledMapResource.isLoaded) || !gpuObject) return;
 			
-			if ( clampCameraToSelf && !PBE.IN_EDITOR)
+			if ( clampCameraToSelf && !PBE.IN_EDITOR) 
 			{
 				var cameraBounds : Rectangle = worldExtents.clone();
 				cameraBounds.x = this.position.x;
 				cameraBounds.y = this.position.y;
-				scene.trackLimitRectangle = cameraBounds;
+				scene.trackLimitRectangle = worldExtents;
 			}
 			
 			// If we don't have any tiles yet...
@@ -112,9 +120,10 @@ package com.pblabs.starling2D
 					}
 				}
 			}
-			if((gpuObject as Sprite).numChildren > 0){
-				(gpuObject as Sprite).removeChildren(0, -1, true);
-			}
+			if((gpuObject as Sprite).isFlattened)
+				(gpuObject as Sprite).unflatten();
+			
+			clearAllImageTiles();
 			
 			var tiledLayers : Vector.<TiledLayer> = _tiledLayers.getTileLayers();
 			for(var li : int = 0; li < tiledLayers.length; li++)
@@ -131,10 +140,16 @@ package com.pblabs.starling2D
 						// Get position of the tile.
 						_scratchCopyPoint.x = curX * _tileWidth;
 						_scratchCopyPoint.y = curRow * _tileHeight;
-
+						var tileImageData : Image;
 						if (tileIndex > 0 && tileIndex <= _tileTextures.length)
 						{
-							var tileImageData : Image = new Image(_tileTextures[tileIndex-1]);
+							if(_imageContainerPool.length < 1){
+								tileImageData = new Image(_tileTextures[tileIndex-1]);
+							}else{
+								tileImageData = _imageContainerPool.pop();
+								tileImageData.texture = _tileTextures[tileIndex-1];
+								tileImageData.readjustSize();
+							}
 							tileImageData.alpha = tiledLayer.opacity;
 							tileImageData.x = _scratchCopyPoint.x;
 							tileImageData.y = _scratchCopyPoint.y;
@@ -155,19 +170,57 @@ package com.pblabs.starling2D
 									}
 								}
 							}
+						}else{
+							if(!_emptyTexture)
+								_emptyTexture = Texture.empty(_tileWidth, _tileHeight, true, false);
+							if(_imageContainerPool.length < 1){
+								tileImageData = new Image(_emptyTexture);
+							}else{
+								tileImageData = _imageContainerPool.pop();
+								tileImageData.texture = _emptyTexture;
+								tileImageData.readjustSize();
+							}
+							tileImageData.x = _scratchCopyPoint.x;
+							tileImageData.y = _scratchCopyPoint.y;
+						}
+						if(tileImageData)
 							(gpuObject as Sprite).addChild(tileImageData);
-						} 
+						
 					}
 				}
 			}
+			(gpuObject as Sprite).flatten();
 			_mapDirty = false;
 			_transformDirty = true;
 			updateTransform();
+		}
+		
+		override protected function parseTileMapData(event : Event = null):void
+		{
+			super.parseTileMapData(event);
+			if(_emptyTexture)
+				_emptyTexture.dispose();
+			_emptyTexture = null;
 		}
 
 		protected function modifyTexture(data:Texture):Texture
 		{
 			return data;            
+		}
+		
+		private function clearAllImageTiles(dispose : Boolean = false):void
+		{
+			if(!gpuObject) return;
+			
+			if((gpuObject as Sprite).numChildren > 0){
+				var beginIndex : int = 0;
+				var endIndex : int = (gpuObject as Sprite).numChildren - 1;
+				for (var x:int=beginIndex; x <= endIndex; ++x){
+					var imageChild : Image = (gpuObject as Sprite).removeChildAt(beginIndex, dispose) as Image;
+					if(imageChild && _imageContainerPool.indexOf(imageChild) == -1 )
+						_imageContainerPool.push( imageChild );
+				}
+			}
 		}
 		
 		override public function set tileSheets(data : Array):void
