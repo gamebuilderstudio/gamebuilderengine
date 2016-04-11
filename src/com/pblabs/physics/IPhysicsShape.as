@@ -16,6 +16,6 @@ package com.pblabs.physics
 		function set isTrigger(value:Boolean):void;
 		function get shapeScale():Point;
 		function set shapeScale(value:Point):void;
-		
+		function get containerSpatial():IPhysics2DSpatial;
 	}
 }

@@ -1,5 +1,6 @@
 package com.pblabs.nape
 {
+	import com.pblabs.physics.IPhysics2DSpatial;
 	import com.pblabs.physics.IPhysicsShape;
 	
 	import flash.geom.Point;
@@ -162,6 +163,8 @@ package com.pblabs.nape
 		{
 			return new Shape();
 		}
+		
+		public function get containerSpatial():IPhysics2DSpatial { return _parent; }
 		
 		public function get internalShape():Shape { return _shape; }
 		

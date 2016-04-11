@@ -9,13 +9,20 @@
 package com.pblabs.rendering2D
 {
 	import com.pblabs.engine.PBE;
+	import com.pblabs.engine.entity.PropertyReference;
 	import com.pblabs.engine.resource.ResourceEvent;
 	import com.pblabs.engine.resource.XMLResource;
+	import com.pblabs.nape.CircleCollisionShape;
+	import com.pblabs.nape.CollisionShape;
+	import com.pblabs.nape.PolygonCollisionShape;
+	import com.pblabs.physics.IPhysics2DSpatial;
 	import com.pblabs.rendering2D.BitmapRenderer;
 	import com.pblabs.rendering2D.spritesheet.SpriteContainerComponent;
 	import com.pblabs.tilemap.TiledLayer;
 	import com.pblabs.tilemap.TiledLayers;
 	import com.pblabs.tilemap.TiledMap;
+	import com.pblabs.tilemap.TiledObject;
+	import com.pblabs.tilemap.TiledObjectLayer;
 	import com.pblabs.tilemap.TiledTileLayer;
 	
 	import flash.display.BitmapData;
@@ -50,6 +57,7 @@ package com.pblabs.rendering2D
 		private var _frameCache:BitmapData;
 		private var _alphaBitmap:BitmapData;
 		private var _tileRect : Rectangle = new Rectangle();
+		private var _collisionShapes : Array = [];
 		
 		public function TiledMapRenderer()
 		{
@@ -102,7 +110,7 @@ package com.pblabs.rendering2D
 			}
 
 			_tiledMapResource = data;
-			if(_tiledMapResource && _tiledMapResource.isLoaded)
+			if(isRegistered && owner && _tiledMapResource && _tiledMapResource.isLoaded)
 				parseTileMapData();
 			else if(_tiledMapResource)
 				_tiledMapResource.addEventListener(ResourceEvent.LOADED_EVENT, parseTileMapData);
@@ -148,9 +156,14 @@ package com.pblabs.rendering2D
 			{
 				setupDefaultTileLayer();
 			}
+			super.onAdd();
+			
+			if(!_tiledMap && isRegistered && owner && _tiledMapResource && _tiledMapResource.isLoaded)
+				parseTileMapData();
+			
 			if(_mapDirty)
 				paintTileMap();
-			super.onAdd();
+			
 		}
 		
 		override protected function onRemove():void
@@ -160,6 +173,9 @@ package com.pblabs.rendering2D
 			_tileBitmapDatas.length = 0;
 			if(_alphaBitmap) _alphaBitmap.dispose();
 			_tiledLayers = null;
+			
+			if(!PBE.IN_EDITOR)
+				cleanUpCollisionShapes();
 		}
 		
 		protected function setupDefaultTileLayer():void
@@ -205,7 +221,99 @@ package com.pblabs.rendering2D
 				var mapSize : Point = new Point(worldExtents.width, worldExtents.height);
 				this.owner.setProperty(sizeProperty, mapSize.clone());
 			}
+			
+			if(!PBE.IN_EDITOR && positionProperty)
+			{
+				cleanUpCollisionShapes();
+				
+				var collisionSpatial : IPhysics2DSpatial;
+				var spatialParts : Array = positionProperty.property.split(".");
+				spatialParts.pop();
+				var spatialName : String = spatialParts.join(".");
+				collisionSpatial = this.owner.getProperty( new PropertyReference(spatialName) ) as IPhysics2DSpatial;
+				if(collisionSpatial && collisionSpatial is IPhysics2DSpatial)
+				{
+					var tiledLayers : Vector.<TiledLayer> = _tiledLayers.getObjectLayers();
+					for(var li : int = 0; li < tiledLayers.length; li++)
+					{
+						if(tiledLayers[li] is TiledObjectLayer)
+						{
+							var tiledObjectsLayer : TiledObjectLayer = tiledLayers[li] as TiledObjectLayer;
+							for(var oi : int = 0; oi < tiledObjectsLayer.objects.length; oi++)
+							{
+								var tiledObject : TiledObject = tiledObjectsLayer.objects[oi] as TiledObject;
+								
+								if(tiledObject.type == "shape")
+								{ 
+									var collisionShape : CollisionShape;
+									var vertices : Array;
+									switch(tiledObject.shape){
+										case TiledObject.POLYGON:
+											collisionShape = new PolygonCollisionShape();
+											vertices = [];
+											tiledObject.points.filter(function(pt:Point, i:int, list:Vector.<Point>):Boolean { 
+												vertices[i] = new Point(tiledObject.x + pt.x, tiledObject.y + pt.y) ; return true; 
+											});
+											(collisionShape as PolygonCollisionShape).vertices = vertices;
+											break;
+										case TiledObject.RECTANGLE:
+											collisionShape = new PolygonCollisionShape();
+											vertices = [];
+											vertices.push(new Point(tiledObject.x, tiledObject.y));
+											vertices.push(new Point(tiledObject.x + tiledObject.width, tiledObject.y));
+											vertices.push(new Point(tiledObject.x + tiledObject.width, tiledObject.y + tiledObject.height));
+											vertices.push(new Point(tiledObject.x, tiledObject.y + tiledObject.height));
+											(collisionShape as PolygonCollisionShape).vertices = vertices;
+											break;
+										case TiledObject.ELLIPSE:
+											collisionShape = new CircleCollisionShape();
+											(collisionShape as CircleCollisionShape).radius = ((tiledObject.width + tiledObject.height) / 2)/2;
+											(collisionShape as CircleCollisionShape).position = new Point( tiledObject.x + (collisionShape as CircleCollisionShape).radius, tiledObject.y + (collisionShape as CircleCollisionShape).radius);
+											break;
+									}
+									for(var key : * in tiledObject.properties.properties)
+									{
+										if(key in (collisionShape as PolygonCollisionShape))
+											(collisionShape as PolygonCollisionShape)[key] = tiledObject.properties.properties[key];
+									}
+									if(collisionShape)
+									{
+										if("name" in tiledObject.properties.properties)
+											collisionShape.name = tiledObject.properties.properties.name;
+										_collisionShapes.push( collisionShape );
+									}
+								}
+							}
+						}
+					}
+					if(_collisionShapes.length > 0)
+					{
+						collisionSpatial.collisionShapes = collisionSpatial.collisionShapes.concat(_collisionShapes);
+					}
+				}
+			}
+			
 			_mapDirty = true;
+		}
+		
+		protected function cleanUpCollisionShapes():void
+		{
+			var collisionSpatial : IPhysics2DSpatial;
+			var len : int = _collisionShapes.length;
+			if(_collisionShapes && len > 0)
+			{
+				for(var ci : int = 0; ci < len; ci++)
+				{
+					collisionSpatial = _collisionShapes[ci].containerSpatial;
+					var shapeIndex : int = collisionSpatial.collisionShapes.indexOf(_collisionShapes[ci]);
+					if(shapeIndex > -1)
+					{
+						collisionSpatial.collisionShapes.splice(shapeIndex, 1);
+					}
+				}
+				collisionSpatial.collisionShapes = collisionSpatial.collisionShapes;
+			}
+			if(_collisionShapes) _collisionShapes.length = 0;
 		}
 		
 		protected function paintTileMap():void
@@ -264,43 +372,46 @@ package com.pblabs.rendering2D
 			var tiledLayers : Vector.<TiledLayer> = _tiledLayers.getTileLayers();
 			for(var li : int = 0; li < tiledLayers.length; li++)
 			{
-				var tiledLayer : TiledTileLayer = tiledLayers[li] as TiledTileLayer;
-				// Now, draw all our tiles.
-				for(var curRow:int = 0; curRow < tiledLayer.data.length; curRow++)
+				if(tiledLayers[li] is TiledTileLayer)
 				{
-					for(var curX:int = 0; curX < tiledLayer.data[curRow].length; curX++)
+					var tiledLayer : TiledTileLayer = tiledLayers[li] as TiledTileLayer;
+					// Now, draw all our tiles.
+					for(var curRow:int = 0; curRow < tiledLayer.data.length; curRow++)
 					{
-						var tileIndex:int = tiledLayer.data[curRow][curX];
-						
-						// Get position of the tile.
-						_scratchCopyPoint.x = curX * _tileWidth;
-						_scratchCopyPoint.y = curRow * _tileHeight;
-						
-						if (tileIndex > 0 && tileIndex <= _tileBitmapDatas.length)
+						for(var curX:int = 0; curX < tiledLayer.data[curRow].length; curX++)
 						{
-							var tileBitmapData : BitmapData = _tileBitmapDatas[tileIndex-1];
+							var tileIndex:int = tiledLayer.data[curRow][curX];
 							
-							if(_tiledMap)
+							// Get position of the tile.
+							_scratchCopyPoint.x = curX * _tileWidth;
+							_scratchCopyPoint.y = curRow * _tileHeight;
+							
+							if (tileIndex > 0 && tileIndex <= _tileBitmapDatas.length)
 							{
-								for(var ti : int = 0; ti < _tiledMap.tilesets.length; ti++)
+								var tileBitmapData : BitmapData = _tileBitmapDatas[tileIndex-1];
+								
+								if(_tiledMap)
 								{
-									if(tileIndex <= _tiledMap.tilesets[ti].firstGid)
+									for(var ti : int = 0; ti < _tiledMap.tilesets.length; ti++)
 									{
-										_tileRect.x = _tiledMap.tilesets[ti].tileOffset.x;
-										_tileRect.y = _tiledMap.tilesets[ti].tileOffset.y;
-										break;
+										if(tileIndex <= _tiledMap.tilesets[ti].firstGid)
+										{
+											_tileRect.x = _tiledMap.tilesets[ti].tileOffset.x;
+											_tileRect.y = _tiledMap.tilesets[ti].tileOffset.y;
+											break;
+										}
 									}
 								}
-							}
-							if(tiledLayer.opacity < 1)
-							{
-								if(!_alphaBitmap)
-									_alphaBitmap = new BitmapData(_tileRect.width, _tileRect.height, true, toARGB(0x0, (tiledLayer.opacity*255)));
-								_frameCache.copyPixels(tileBitmapData, _tileRect, _scratchCopyPoint, _alphaBitmap, null, true);
-							}else{
-								_frameCache.copyPixels(tileBitmapData, _tileRect, _scratchCopyPoint, null, null, true);
-							}
-						} 
+								if(tiledLayer.opacity < 1)
+								{
+									if(!_alphaBitmap)
+										_alphaBitmap = new BitmapData(_tileRect.width, _tileRect.height, true, toARGB(0x0, (tiledLayer.opacity*255)));
+									_frameCache.copyPixels(tileBitmapData, _tileRect, _scratchCopyPoint, _alphaBitmap, null, true);
+								}else{
+									_frameCache.copyPixels(tileBitmapData, _tileRect, _scratchCopyPoint, null, null, true);
+								}
+							} 
+						}
 					}
 				}
 			}

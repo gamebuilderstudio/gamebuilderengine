@@ -69,20 +69,13 @@ package com.pblabs.tilemap {
 		 */
 		private static function decompressByteArray(data:ByteArray, compression:String):ByteArray {
 			switch (compression) {
-				case "gzip":
-					//throw new Error("gzip is unsupported, change Tiled preferences to use zlib");
-					data.deflate();
-					data.position = 0;
-					return data;
 				case "zlib":
 					data.uncompress();
 					data.endian = Endian.LITTLE_ENDIAN;
 					return data;
-				case null:
+				default:
 					data.position = 0;
 					return data;
-				default:
-					throw new Error("Unsupported compression: " + compression);
 			}
 		}
 		

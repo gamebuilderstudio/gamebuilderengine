@@ -62,6 +62,14 @@ package com.pblabs.tilemap {
 		}
 
 		/**
+		 * Returns a vector of all object layers in order from bottom to top.
+		 * 
+		 * @return The vector of all object layers. 
+		 */
+		public function getObjectLayers():Vector.<TiledLayer> {
+			return layers.filter(function(el:TiledLayer, i:int, arr:Vector.<TiledLayer>):Boolean { return el is TiledObjectLayer; });
+		}
+		/**
 		 * Returns the number of layers in the map.
 		 * 
 		 * @return The number of layers. 

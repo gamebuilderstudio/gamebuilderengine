@@ -129,7 +129,7 @@ package com.pblabs.starling2D
 			for(var li : int = 0; li < tiledLayers.length; li++)
 			{
 				var tiledLayer : TiledTileLayer = tiledLayers[li] as TiledTileLayer;
-					
+				if(!tiledLayer) continue;
 				// Now, draw all our tiles.
 				for(var curRow:int = 0; curRow < tiledLayer.data.length; curRow++)
 				{
