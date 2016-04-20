@@ -169,14 +169,14 @@ package com.pblabs.engine.core
 		{
 			Profiler.enter("instantiateEntityFromCallBack");
 			// Check for a callback.
-			if (_things["CB_"+name])
+			if (_things["CB_"+alias])
 			{
-				if (_things["CB_"+name].groupCallback)
-					throw new Error("Thing '" + name + "' is a group callback!");
+				if (_things["CB_"+alias].groupCallback)
+					throw new Error("Thing '" + alias + "' is a group callback!");
 				
-				if (_things["CB_"+name].entityCallback)
+				if (_things["CB_"+alias].entityCallback)
 				{
-					var instantiated:IEntity=_things["CB_"+name].entityCallback( !alias ? name : null, alias, initialize);
+					var instantiated:IEntity=_things["CB_"+alias].entityCallback( !alias ? name : null, alias, initialize);
 					Profiler.exit("instantiateEntityFromCallBack");
 					return instantiated;
 				}
