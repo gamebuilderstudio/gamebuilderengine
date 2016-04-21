@@ -124,6 +124,7 @@ package com.pblabs.starling2D
 				if(_gpuCanvasContainer.contains(_displayObjectList[i]))
 					_gpuCanvasContainer.removeChild( _displayObjectList[i] );
 			}
+			_displayObjectList.length = 0;
 		}
 		
 		public function removeDisplayObject(dObj:Object):void
@@ -156,6 +157,13 @@ package com.pblabs.starling2D
 			}
 			
 			if(_gpuCanvasContainer.numChildren >= index){
+				//Already in list
+				var currentIndex : int = _displayObjectList.indexOf(dObj as DisplayObject);
+				if(currentIndex > -1)
+				{
+					PBUtil.splice(_displayObjectList, currentIndex, 1);
+				}
+				PBUtil.splice(_displayObjectList, index, 0, dObj as DisplayObject);
 				_gpuCanvasContainer.addChildAt(dObj as DisplayObject, index);
 				//Try and add any pending objects, This is needed incase scenes are added out of order
 				if(_pendingDisplayObjectAdditions.length > 0)
@@ -165,7 +173,8 @@ package com.pblabs.starling2D
 					for(var i : int = 0; i < pendingListLen; i++)
 					{
 						var tmpData : Object = _pendingDisplayObjectAdditions[i];
-						if(_gpuCanvasContainer.numChildren >= tmpData.position){
+						if(_gpuCanvasContainer.numChildren >= tmpData.position)
+						{
 							_gpuCanvasContainer.addChildAt(tmpData.displayObject as DisplayObject, tmpData.position);
 
 							PBUtil.splice(_displayObjectList, tmpData.position, 0, tmpData.displayObject);
