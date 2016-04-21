@@ -143,7 +143,7 @@ package com.pblabs.engine.components
 				var entity : IEntity;
 				if(i >= _listItems.length){
 					if(PBE.IS_SHIPPING_BUILD)
-						entity = PBE.templateManager.instantiateEntityFromCallBack(itemEntityName, itemEntityName, false);
+						entity = PBE.templateManager.instantiateEntityFromCallBack(null, itemEntityName, itemEntityName, false);
 					else
 						entity = PBE.templateManager.instantiateEntity(itemEntityName, true);
 						

@@ -140,7 +140,7 @@ package com.pblabs.engine.core
 					return null;
 				}
 
-				var entity:IEntity = CreateEntitiesUsingCallbacks && String("CB_"+name) in _things ? PBE.templateManager.instantiateEntityFromCallBack(name, null, !keepDeferred) : instantiateEntityFromXML(xml, keepDeferred);
+				var entity:IEntity = CreateEntitiesUsingCallbacks && String("CB_"+name) in _things ? PBE.templateManager.instantiateEntityFromCallBack(name, null, name, !keepDeferred) : instantiateEntityFromXML(xml, keepDeferred);
 				Profiler.exit("instantiateEntity");
 			}
 			catch (e:Error)
@@ -158,25 +158,26 @@ package com.pblabs.engine.core
 		 * refer to a template or entity. To instantiate groups, use instantiateGroup
 		 * instead.
 		 *
-		 * @param name The name of the entity or template to instantiate. This
-		 * corresponds to the name attribute on the template or entity tag in the XML.
+		 * @param name The new name of the newly created entity.
 		 * @param alias An alias to use for creating the entity or template. This will supress the duplicate name warnings.
 		 * Set this to null if you want to use the entity name as the new entities name instead of an alias.
+		 * @param entityTemplateName The name of the entity or template to instantiate. This
+		 * corresponds to the name attribute on the template or entity tag in the XML.
 		 *
 		 * @return The created entity, or null if it wasn't found.
 		 */
-		public function instantiateEntityFromCallBack(name:String, alias:String, initialize : Boolean = true):IEntity
+		public function instantiateEntityFromCallBack(name:String, alias:String, entityTemplateName : String, initialize : Boolean = true):IEntity
 		{
 			Profiler.enter("instantiateEntityFromCallBack");
 			// Check for a callback.
-			if (_things["CB_"+alias])
+			if (_things["CB_"+entityTemplateName])
 			{
-				if (_things["CB_"+alias].groupCallback)
-					throw new Error("Thing '" + alias + "' is a group callback!");
+				if (_things["CB_"+entityTemplateName].groupCallback)
+					throw new Error("Thing '" + entityTemplateName + "' is a group callback!");
 				
-				if (_things["CB_"+alias].entityCallback)
+				if (_things["CB_"+entityTemplateName].entityCallback)
 				{
-					var instantiated:IEntity=_things["CB_"+alias].entityCallback( !alias ? name : null, alias, initialize);
+					var instantiated:IEntity=_things["CB_"+entityTemplateName].entityCallback( !alias ? name : null, alias, initialize);
 					Profiler.exit("instantiateEntityFromCallBack");
 					return instantiated;
 				}
