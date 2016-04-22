@@ -25,7 +25,7 @@ package com.pblabs.sound
      */
     internal class SoundHandle implements ISoundHandle
     {
-        public function SoundHandle(_manager:SoundManager, _sound:Sound, __category:String, _pan:Number, _loopCount:int, _startDelay:Number, _initialSoundTransform : SoundTransform = null)
+        public function SoundHandle(_manager:SoundManager, _sound:Sound, __category:String, _pan:Number, _loopCount:int, _startDelay:Number, _initialSoundTransform : SoundTransform = null, onCompleteCallBack : Function = null)
         {
             manager = _manager;
             sound = _sound;
@@ -33,7 +33,7 @@ package com.pblabs.sound
             pan = _pan;
             loopCount = _loopCount;
             pausedPosition = _startDelay;
-            
+            _onCompleteCallBack = onCompleteCallBack;
             resume(_initialSoundTransform);
         }
         
@@ -73,7 +73,17 @@ package com.pblabs.sound
             _pan = value;
         }
         
-        public function get category():String
+		public function get onCompleteCallBack():Function
+		{
+			return _onCompleteCallBack;
+		}
+		
+		public function set onCompleteCallBack(value:Function):void
+		{
+			_onCompleteCallBack = onCompleteCallBack;
+		}
+
+		public function get category():String
         {
             return _category;
         }
@@ -129,6 +139,9 @@ package com.pblabs.sound
 			if(channel)
 				channel.removeEventListener(Event.SOUND_COMPLETE, onSoundComplete);
 
+			if(_onCompleteCallBack != null)
+				_onCompleteCallBack.apply(null, [this]);
+			_onCompleteCallBack = null;
             // since we're tracking the number of loops, decrement the count
             loopCount -= 1;
 
@@ -174,6 +187,7 @@ package com.pblabs.sound
         protected var loopCount:int = 0;
         protected var _volume:Number = 1;
         protected var _pan:Number = 0;
+		protected var _onCompleteCallBack : Function;
         
     }
 }

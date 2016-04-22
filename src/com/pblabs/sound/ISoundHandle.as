@@ -50,7 +50,13 @@ package com.pblabs.sound
         function set pan(value:Number):void;
         function get pan():Number;
         
-        /**
+		/**
+		 * The on complete callback that get triggered when the sound finishes playing
+		 */
+		function set onCompleteCallBack(value:Function):void;
+		function get onCompleteCallBack():Function;
+
+		/**
          * Under what category is the sound being tracked by the SoundManager?
          */
         function get category():String;
