@@ -38,6 +38,8 @@ package com.pblabs.rendering2D
 		public function set scale9Region(region : Rectangle):void
 		{
 			_scale9Region = region;
+			if(bitmap && _scale9Region)
+				bitmap.scale9Grid = _scale9Region;
 			_imageDataDirty = true;
 		}
 		
