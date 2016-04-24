@@ -409,7 +409,7 @@ package com.pblabs.rendering2D
                 posY = value.y;
             }
             
-            if (posX == _position.x && posY == _position.y)
+            if (posX === _position.x && posY === _position.y)
                 return;
             
             _position.x = posX;
@@ -439,7 +439,7 @@ package com.pblabs.rendering2D
                 posX = value;
             }
             
-            if (posX == _position.x)
+            if (posX === _position.x)
                 return;
             
             _position.x = posX;
@@ -468,7 +468,7 @@ package com.pblabs.rendering2D
                 posY = value;
             }
             
-            if (posY == _position.y)
+            if (posY === _position.y)
                 return;
             
             _position.y = posY;
