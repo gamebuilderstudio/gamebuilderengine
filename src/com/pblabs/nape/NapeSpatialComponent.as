@@ -94,7 +94,7 @@ package com.pblabs.nape
 		[EditorData(ignore="true")]
 		public function get objectMask():ObjectType
 		{
-			return _collidesWithTypes;
+			return _collisionType;
 		}
 		
 		public function get body():Body
