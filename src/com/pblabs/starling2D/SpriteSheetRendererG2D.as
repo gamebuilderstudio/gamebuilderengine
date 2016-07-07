@@ -67,7 +67,7 @@ package com.pblabs.starling2D
 		{
 			// Update the bitmapData.
 			var newTexture:Texture = getCurrentTexture();
-			if(newTexture != null && currentTexture != newTexture){
+			if(!currentTexture || (newTexture != null && currentTexture != newTexture)){
 				currentTexture = newTexture;
 				buildG2DObject();
 			}
@@ -177,10 +177,11 @@ package com.pblabs.starling2D
 				return;
 			}
 			if(!skipCreation){
-				if(!gpuObject && currentTexture){
+				if(!currentTexture) return;
+				if(!gpuObject){
 					//Create GPU Renderer Object
 					gpuObject = new Image(currentTexture);
-				}else if(gpuObject && currentTexture){
+				}else if(gpuObject){
 					(gpuObject as Image).texture = currentTexture;
 					(gpuObject as Image).readjustSize();
 				}
