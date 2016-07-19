@@ -1,13 +1,9 @@
 package com.pblabs.nape.constraints
 {
-	import com.pblabs.engine.PBE;
-	import com.pblabs.nape.NapeSpatialComponent;
-	
 	import flash.geom.Point;
 	
 	import nape.constraint.Constraint;
 	import nape.constraint.DistanceJoint;
-	import nape.geom.Vec2;
 
 	public class NapeDistanceJointComponent extends NapeConstraintComponent
 	{

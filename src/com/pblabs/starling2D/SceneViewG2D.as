@@ -55,8 +55,8 @@ package com.pblabs.starling2D
 					PBE.mainClass.addChildAt(this, 0);*/
 				
 				// Intelligent default size.
-				_width = PBE.mainStage.stage.stageWidth;
-				_height = PBE.mainStage.stage.stageHeight;
+				_width = PBE.mainStage.stageWidth;
+				_height = PBE.mainStage.stageHeight;
 
 				PBE.mainStage.scaleMode = StageScaleMode.NO_SCALE;
 				PBE.mainStage.align = StageAlign.TOP_LEFT;
@@ -75,7 +75,7 @@ package com.pblabs.starling2D
 						if(PBE.mainStage.stage3Ds[_stage3DIndex].context3D)
 							PBE.mainStage.stage3Ds[_stage3DIndex].context3D.clear();
 						
-						_starlingInstance = new Starling(Sprite, PBE.mainStage.stage, new Rectangle(0,0, width, height), PBE.mainStage.stage3Ds[_stage3DIndex], renderMode, profile, true);
+						_starlingInstance = new Starling(Sprite, PBE.mainStage, new Rectangle(0,0, width, height), PBE.mainStage.stage3Ds[_stage3DIndex], renderMode, profile, true);
 						_starlingInstance.addEventListener("context3DCreate", onContextCreated);
 						_starlingInstance.addEventListener("rootCreated", onRootInitialized);
 					}
@@ -263,12 +263,12 @@ package com.pblabs.starling2D
 		private function stage_deactivateHandler(event:Event):void
 		{
 			stopRendering();
-			PBE.mainStage.stage.addEventListener(Event.ACTIVATE, stage_activateHandler, false, 0, true);
+			PBE.mainStage.addEventListener(Event.ACTIVATE, stage_activateHandler, false, 0, true);
 		}
 		
 		private function stage_activateHandler(event:Event):void
 		{
-			PBE.mainStage.stage.removeEventListener(Event.ACTIVATE, stage_activateHandler);
+			PBE.mainStage.removeEventListener(Event.ACTIVATE, stage_activateHandler);
 			if(this._starlingInstance && !this._starlingInstance.isStarted)
 				this._starlingInstance.start();
 		}

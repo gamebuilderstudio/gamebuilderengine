@@ -175,6 +175,20 @@ package com.pblabs.rendering2D
 		 */
 		function get layers():Array;
 
+		/**
+		 * @private
+		 */
+		function get camera():Camera;
+
+		function get deadZoneEnabled():Boolean;
+		function set deadZoneEnabled(val : Boolean):void;
+
+		function get zoomEnabled():Boolean;
+		function set zoomEnabled(val : Boolean):void;
+		
+		function get rotationEnabled():Boolean;
+		function set rotationEnabled(val : Boolean):void;
+
 		function get layerIndex():int;
 		function set layerIndex(val : int):void;
 

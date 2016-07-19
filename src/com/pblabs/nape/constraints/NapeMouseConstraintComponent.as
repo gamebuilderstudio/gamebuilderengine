@@ -6,7 +6,6 @@ package com.pblabs.nape.constraints
 	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.nape.INape2DSpatialComponent;
 	import com.pblabs.nape.NapeManagerComponent;
-	import com.pblabs.physics.IPhysics2DSpatial;
 	
 	import flash.geom.Point;
 	
@@ -17,9 +16,7 @@ package com.pblabs.nape.constraints
 
 	public class NapeMouseConstraintComponent extends NapePivotJointComponent implements ITickedObject
 	{
-		private var _bodyList:Array = [];
 		private var _stagePoint : Point = new Point();
-		private var _worldPoint : Point = new Point();
 		private var _ignoreTimeScale : Boolean = false;
 		
 		public function NapeMouseConstraintComponent()
@@ -40,39 +37,49 @@ package com.pblabs.nape.constraints
 			_stagePoint.setTo(PBE.mainStage.mouseX, PBE.mainStage.mouseY);
 			if(PBE.inputManager.keyJustPressed(InputKey.MOUSE_BUTTON.keyCode))
 			{
-				_worldPoint.setTo( _stagePoint.x - _spatialManager.debugLayerPosition.x, _stagePoint.y - _spatialManager.debugLayerPosition.y );
-				_spatialManager.getObjectsUnderPoint(_worldPoint, _bodyList);
-				var wp:Vec2 = Vec2.get(_worldPoint.x, _worldPoint.y);
-				for (var i:int = 0; i < _bodyList.length; i++) {
-					if(!(_bodyList[i] is IPhysics2DSpatial))
-						continue;
-					var body:Body = _bodyList[i].body;
-					if (body.isDynamic() || body.isKinematic()) {
-						(_constraint as PivotJoint).body2 = body;
-						(_constraint as PivotJoint).anchor2.set( body.worldPointToLocal(wp, true) );
-						(_constraint as PivotJoint).active = true;
-						break;
+				if(_spatialManager is NapeManagerComponent)
+				{
+					var allSpatials : Vector.<INape2DSpatialComponent> = (_spatialManager as NapeManagerComponent).spatialObjectList;
+					var len : int = allSpatials.length;
+					
+					var wp:Vec2 = Vec2.get(_stagePoint.x, _stagePoint.y);
+					var objectFound : Boolean = false;
+					for (var i:int = 0; i < len; i++) 
+					{
+						var currentSpatial : INape2DSpatialComponent = allSpatials[i];
+						if(!currentSpatial.pointOccupied(_stagePoint, null, null, true))
+							continue;
+							
+						var body:Body = currentSpatial.body;
+						if (body.isDynamic() || body.isKinematic()) 
+						{
+							(_constraint as PivotJoint).body2 = body;
+							(_constraint as PivotJoint).anchor2.set( body.worldPointToLocal(wp, true) );
+							(_constraint as PivotJoint).active = true;
+							objectFound = true;
+							break;
+						}
 					}
+					// recycle nodes.
+					wp.dispose();
+					if(objectFound && (_constraint as PivotJoint).body2)
+						_constraint.active = true;
+					else
+						disableConstraint();
 				}
-				// recycle nodes.
-				wp.dispose();
-				if((_constraint as PivotJoint).body2)
-					_constraint.active = true;
-				_bodyList.length = 0;
 			}else if(PBE.inputManager.keyJustReleased(InputKey.MOUSE_BUTTON.keyCode)){
 				disableConstraint();
 			}
 			if(_constraint && _constraint.active && (_constraint as PivotJoint).body2 && (_constraint as PivotJoint).body2.space){
-				_worldPoint.setTo( _stagePoint.x - _spatialManager.debugLayerPosition.x, _stagePoint.y - _spatialManager.debugLayerPosition.y );
-				(_constraint as PivotJoint).anchor1.setxy(_worldPoint.x, _worldPoint.y);
+				(_constraint as PivotJoint).anchor1.setxy(_stagePoint.x * _spatialManager.inverseScale, _stagePoint.y * _spatialManager.inverseScale);
 				//(_constraint as PivotJoint).body2.angularVel *= 0.9;
-			}else{
-				disableConstraint();
 			}
 		}
 		
 		private function disableConstraint():void
 		{
+			if(!_constraint) return;
+			
 			_constraint.active = false;
 			(_constraint as PivotJoint).body2 = null;
 		}

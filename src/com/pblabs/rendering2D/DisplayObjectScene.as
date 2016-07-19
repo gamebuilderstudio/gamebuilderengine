@@ -42,7 +42,7 @@ package com.pblabs.rendering2D
          * 
          * @see zoom 
          */
-        public var maxZoom:Number = 1;
+        public var maxZoom:Number = 3;
         
         /**
          * How the scene is aligned relative to its position property.
@@ -110,6 +110,9 @@ package com.pblabs.rendering2D
 		protected var _lastPos : Point;
 		protected var _trackDifPoint : Point = new Point();
 		protected var _layerIndex : int = -1;
+		protected var _deadZoneEnabled : Boolean = false;
+		protected var _zoomEnabled : Boolean = true;
+		protected var _rotationEnabled : Boolean = true;
 		
         public function DisplayObjectScene()
         {
@@ -490,6 +493,7 @@ package com.pblabs.rendering2D
 					
 					_lastPos = tmpPosition;
 					
+					zoom = trackObject.scale.x;
 					position = position.subtract( _trackDifPoint );
 				}else{
 					position = tmpPosition;
@@ -620,6 +624,33 @@ package com.pblabs.rendering2D
 		public function get layers():Array
 		{
 			return _layers;
+		}
+
+		[EditorData(ignore="true")]
+		public function get camera():Camera{ return null; }
+		
+		/**
+		 * The center area of the camera that determines which region the camera will allow the tracked object to move without tracking it.
+		 **/
+		public function get deadZoneEnabled():Boolean { return _deadZoneEnabled; }
+		public function set deadZoneEnabled(val : Boolean):void {
+			_deadZoneEnabled = val;
+		}
+		
+		/**
+		 * The zoom on/off flag to enable the zooming of this scene.
+		 **/
+		public function get zoomEnabled():Boolean { return _zoomEnabled; }
+		public function set zoomEnabled(val : Boolean):void {
+			_zoomEnabled = val;
+		}
+		
+		/**
+		 * The rotation on/off flag to enable the rotation of this scene.
+		 **/
+		public function get rotationEnabled():Boolean { return _rotationEnabled; }
+		public function set rotationEnabled(val : Boolean):void {
+			_rotationEnabled = val;
 		}
 
 		public function sortSpatials(array:Array):void

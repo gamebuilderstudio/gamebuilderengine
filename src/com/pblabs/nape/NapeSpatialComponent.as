@@ -136,7 +136,7 @@ package com.pblabs.nape
 		{
 			if ( _body ){
 				var _scale : Number = _spatialManager.scale;
-				_position.setTo(_body.position.x*_scale, _body.position.y*_scale);
+				_position.setTo(int(_body.position.x*_scale), int(_body.position.y*_scale));
 			}
 			return _position;
 		}
@@ -145,7 +145,7 @@ package com.pblabs.nape
 		{
 			_position.setTo(value.x, value.y);
 			if ( _body )
-				_body.position.setxy(_position.x*_spatialManager.inverseScale, _position.y*_spatialManager.inverseScale);
+				_body.position.setxy(int(_position.x*_spatialManager.inverseScale), int(_position.y*_spatialManager.inverseScale));
 		}
 		
 		[EditorData(ignore="true", inspectable="true")]
@@ -153,14 +153,14 @@ package com.pblabs.nape
 		{
 			_position.setTo(value, _position.y);
 			if ( _body )
-				_body.position.setxy(_position.x*_spatialManager.inverseScale, _position.y*_spatialManager.inverseScale);
+				_body.position.setxy(int(_position.x*_spatialManager.inverseScale), int(_position.y*_spatialManager.inverseScale));
 		}
 		
 		public function get x():Number
 		{
 			if ( _body ){
 				var _scale : Number = _spatialManager.scale;
-				_position.setTo(_body.position.x*_scale, _body.position.y*_scale);
+				_position.setTo(int(_body.position.x*_scale), int(_body.position.y*_scale));
 			}
 			return _position.x;
 		}
@@ -170,14 +170,14 @@ package com.pblabs.nape
 		{
 			_position.setTo(_position.x, value);
 			if ( _body )
-				_body.position.setxy(_position.x*_spatialManager.inverseScale, _position.y*_spatialManager.inverseScale);
+				_body.position.setxy(int(_position.x*_spatialManager.inverseScale), int(_position.y*_spatialManager.inverseScale));
 		}
 		
 		public function get y():Number
 		{
 			if ( _body ){
 				var _scale : Number = _spatialManager.scale;
-				_position.setTo(_body.position.x*_scale, _body.position.y*_scale);
+				_position.setTo(int(_body.position.x*_scale), int(_body.position.y*_scale));
 			}
 			return _position.y;
 		}
@@ -401,11 +401,9 @@ package com.pblabs.nape
 			if(scene && convertFromStageCoordinates)
 				pos = scene.transformScreenToWorld(pos);
 			
-			if(spriteForPointChecks && scene && spriteForPointChecks.pointOccupied(pos, mask))
-				return true;
-			
-			//Check Nape body
-			if(_body && scene){
+			if(spriteForPointChecks && scene){
+				return spriteForPointChecks.pointOccupied(pos, mask);
+			}else if(_body){
 				var tempVec : Vec2 = Vec2.get(pos.x*_spatialManager.inverseScale, pos.y*_spatialManager.inverseScale);
 				var contained : Boolean = _body.contains( tempVec );
 				tempVec.dispose();

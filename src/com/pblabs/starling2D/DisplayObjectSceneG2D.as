@@ -15,7 +15,6 @@ package com.pblabs.starling2D
 	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.rendering2D.Camera;
 	import com.pblabs.rendering2D.DisplayObjectRenderer;
-	import com.pblabs.rendering2D.DisplayObjectSceneLayer;
 	import com.pblabs.rendering2D.ICachingLayer;
 	import com.pblabs.rendering2D.IDisplayObjectSceneLayer;
 	import com.pblabs.rendering2D.ILayerMouseHandler;
@@ -46,7 +45,7 @@ package com.pblabs.starling2D
 		 * 
 		 * @see zoom 
 		 */
-		public var maxZoom:Number = 1;
+		public var maxZoom:Number = 3;
 		
 		/**
 		 * How the scene is aligned relative to its position property.
@@ -116,6 +115,9 @@ package com.pblabs.starling2D
 		protected var _layerIndex : int = -1;
 		
 		protected var _camera : StarlingCamera;
+		protected var _deadZoneEnabled : Boolean = false;
+		protected var _zoomEnabled : Boolean = true;
+		protected var _rotationEnabled : Boolean = true;
 		
 		public function DisplayObjectSceneG2D()
 		{
@@ -138,6 +140,9 @@ package com.pblabs.starling2D
 		{
 			super.onRemove();
 			
+			if(_camera)
+				_camera.destroy();
+			_camera = null;
 			// Make sure we don't leave any lingering content.
 			if(_sceneView && _rootSprite)
 				_sceneView.removeDisplayObject(_rootSprite);
@@ -256,7 +261,7 @@ package com.pblabs.starling2D
 		
 		public function get sceneViewBounds():Rectangle
 		{
-			if(!sceneView)
+			if(!sceneView || !_camera)
 				return null;
 			
 			// Make sure we are up to date with latest track.
@@ -264,13 +269,10 @@ package com.pblabs.starling2D
 			
 			updateTransform();
 			
-			// What region of the scene are we currently viewing?
-			SceneAlignment.calculate(_tempPoint, sceneAlignment, sceneView.width / zoom, sceneView.height / zoom);
-			
-			_sceneViewBoundsCache.x = -position.x - _tempPoint.x; 
-			_sceneViewBoundsCache.y = -position.y - _tempPoint.y;
-			_sceneViewBoundsCache.width = sceneView.width / zoom;
-			_sceneViewBoundsCache.height = sceneView.height / zoom;
+			_sceneViewBoundsCache.x = _camera.camProxy.x; 
+			_sceneViewBoundsCache.y = _camera.camProxy.y;
+			_sceneViewBoundsCache.width = sceneView.width / _camera.camProxy.scale;
+			_sceneViewBoundsCache.height = sceneView.height / _camera.camProxy.scale;
 			
 			return _sceneViewBoundsCache;
 		}
@@ -455,12 +457,6 @@ package com.pblabs.starling2D
 				SceneAlignment.calculate(_tempPoint, sceneAlignment, sceneView.width, sceneView.height);
 				_rootSprite.x += _tempPoint.x;
 				_rootSprite.y += _tempPoint.y;
-			}else{
-				_rootSprite.scaleX = _rootSprite.scaleY = zoom;
-				_rootSprite.rotation = _rootRotation;
-				
-				_rootSprite.x = int(_rootPosition.x);
-				_rootSprite.y = int(_rootPosition.y);
 			}
 			
 			_transformDirty = false;
@@ -491,27 +487,41 @@ package com.pblabs.starling2D
 		{
 			if(trackObject)
 			{
+					
 				if(!_camera){
 					_camera = new StarlingCamera(_rootSprite);
-					_camera.setUp(trackObject, trackOffset, trackLimitRectangle);
+					_camera.setUp(trackObject, trackLimitRectangle, !trackByOffset ? new Point(0,0) : new Point( trackOffset.x / _camera.cameraLensWidth, trackOffset.y / _camera.cameraLensHeight) );
 				}
+				if(_camera.allowZoom != zoomEnabled) _camera.allowZoom = zoomEnabled;
+				if(_camera.allowRotation != rotationEnabled) _camera.allowRotation = rotationEnabled;
 				if(trackByOffset){
+					_camera.center.setTo(trackOffset.x / _camera.cameraLensWidth, trackOffset.y / _camera.cameraLensHeight);
 					if(_camera && _camera.target != trackObject)
 						_camera.target = trackObject;
 				}else{
+					_camera.center.setTo(0,0);
 					_camera.manualPosition = trackObject.position;
 				}
-				_camera.offset = trackOffset;
+				if(deadZoneEnabled)
+					_camera.deadZone.setTo(0, 0, trackObject.size.x, trackObject.size.y);
+				else if(_camera.deadZone.width != 0)
+					_camera.deadZone.setEmpty();
+				
 				_camera.bounds = trackLimitRectangle;
-				_camera.update();
-				if(trackByOffset){
-					_cameraPos.setTo(int(_camera.camProxy.x), int(_camera.camProxy.y));
-				}else{
-					_cameraPos.setTo(int(_camera.camProxy.x * -1), int(_camera.camProxy.y * -1));
+				if(zoomEnabled)
+				{
+					var tmpZoom : Number = PBUtil.clamp(trackObject.scale.x, minZoom, maxZoom);
+					_camera.setZoom( tmpZoom );
 				}
+				if(rotationEnabled) _camera.setRotation( trackObject.rotation );
+				_camera.update();
+				
+				_cameraPos.setTo(int(_camera.camProxy.x), int(_camera.camProxy.y));
 				position = _cameraPos;
+				zoom = _camera.camProxy.scale;
+				rotation = _camera.camProxy.rotation;
 			}else if(!trackObject && _camera){
-				_camera = null;
+				_camera.target = null;
 			}
 		}
 		
@@ -534,14 +544,14 @@ package com.pblabs.starling2D
 		
 		public function screenPan(deltaX:int, deltaY:int):void
 		{
-			if(deltaX == 0 && deltaY == 0)
+			if((deltaX == 0 && deltaY == 0) || !_camera)
 				return;
 			
-			// TODO: Take into account rotation so it's correct even when
-			//       rotating.
-			
-			_rootPosition.x -= deltaX / _zoom;
-			_rootPosition.y -= deltaY / _zoom;        
+			if(!_camera.followTarget)
+			{
+				_camera.manualPosition.x -= deltaX;
+				_camera.manualPosition.y -= deltaY;
+			}
 			_transformDirty = true;
 		}
 		
@@ -594,6 +604,7 @@ package com.pblabs.starling2D
 			_transformDirty = true;
 		}
 		
+		[EditorData(ignore="true")]
 		public function get sceneContainer():Object
 		{
 			return _rootSprite;
@@ -607,6 +618,7 @@ package com.pblabs.starling2D
 		 * Note this is only considered at layer setup time. Use getLayer() to
 		 * get a layer that is being actively used.
 		 */
+		[EditorData(ignore="true")]
 		public function get layers():Array
 		{
 			return _layers;
@@ -623,7 +635,36 @@ package com.pblabs.starling2D
 			}
 		}
 		
-		public function get camera():Camera{ return _camera; }
+		[EditorData(ignore="true")]
+		public function get camera():Camera{ 
+			if(!_camera)
+				_camera = new StarlingCamera(_rootSprite);
+			return _camera; 
+		}
+
+		/**
+		 * The center area of the camera that determines which region the camera will allow the tracked object to move without tracking it.
+		 **/
+		public function get deadZoneEnabled():Boolean { return _deadZoneEnabled; }
+		public function set deadZoneEnabled(val : Boolean):void {
+			_deadZoneEnabled = val;
+		}
+
+		/**
+		 * The zoom on/off flag to enable the zooming of this scene.
+		 **/
+		public function get zoomEnabled():Boolean { return _zoomEnabled; }
+		public function set zoomEnabled(val : Boolean):void {
+			_zoomEnabled = val;
+		}
+
+		/**
+		 * The rotation on/off flag to enable the rotation of this scene.
+		 **/
+		public function get rotationEnabled():Boolean { return _rotationEnabled; }
+		public function set rotationEnabled(val : Boolean):void {
+			_rotationEnabled = val;
+		}
 
 		public function sortSpatials(array:Array):void
 		{

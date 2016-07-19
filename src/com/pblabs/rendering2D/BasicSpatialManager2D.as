@@ -129,7 +129,7 @@ package com.pblabs.rendering2D
       /**
        * @inheritDoc
        */
-	  public function getObjectsUnderPoint(worldPosition:Point, results:Array, mask:ObjectType = null):Boolean
+	  public function getObjectsUnderPoint(worldPosition:Point, results:Array, mask:ObjectType = null, convertFromStageCoordinates : Boolean = false):Boolean
       {
          var tmpResults:Array = [];
 		 // First use the normal spatial query...
@@ -140,7 +140,7 @@ package com.pblabs.rendering2D
          var hitAny:Boolean = false;
          for each(var tmp:ISpatialObject2D in tmpResults)
          {
-            if (!tmp.pointOccupied(worldPosition, mask, PBE.scene))
+            if (!tmp.pointOccupied(worldPosition, mask, null, convertFromStageCoordinates))
                continue;
             if(!results)
 				results = [];

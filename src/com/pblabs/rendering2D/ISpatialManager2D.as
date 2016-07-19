@@ -73,7 +73,7 @@ package com.pblabs.rendering2D
        * @param mask Only consider objects that match this ObjectType. Null uses all types.
   	   * @return Found something under point or not.
        */
-      function getObjectsUnderPoint(worldPosition:Point, results:Array, mask:ObjectType = null):Boolean;
+      function getObjectsUnderPoint(worldPosition:Point, results:Array, mask:ObjectType = null, convertFromStageCoordinates : Boolean = false):Boolean;
 	  
 	  /**
 	   * Return all the spatial objects within a given rectangluar area. Objects can optionally implement

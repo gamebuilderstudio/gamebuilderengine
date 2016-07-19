@@ -1,18 +1,19 @@
 package com.pblabs.starling2D {
 	
-	import com.pblabs.engine.PBUtil;
-	import com.pblabs.engine.debug.Logger;
+	import com.pblabs.engine.util.MathUtil;
 	import com.pblabs.rendering2D.Camera;
 	
 	import flash.display.Sprite;
 	import flash.geom.Point;
-	import flash.geom.Rectangle;
 	
+	import starling.core.Starling;
 	import starling.display.Sprite;
+	import starling.events.ResizeEvent;
+	
+	
 	
 	/**
 	 * The Camera for the DisplayObjectSceneG2D.
-	 *
 	 */
 	public class StarlingCamera extends Camera
 	{
@@ -20,19 +21,28 @@ package com.pblabs.starling2D {
 		public function StarlingCamera(viewRoot:starling.display.Sprite)
 		{
 			super(viewRoot);
-			easing.setTo(1,1);
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		override protected function initialize():void {
 			super.initialize();// setup camera lens normally
 			
-			/*fix for different starling content scale factors. but super has already calculated cameraLensWidth and Height
-			so might need to be applied in a differeUt way.
-			var ce:CitrusEngine = CitrusEngine.getInstance();
-			cameraLensWidth = ce.stage.stageWidth / Starling.contentScaleFactor;
-			cameraLensHeight = ce.stage.stageHeight / Starling.contentScaleFactor;*/
+			cameraLensWidth = Starling.current.stage.stageWidth;
+			cameraLensHeight = Starling.current.stage.stageHeight;
 			
-			_aabbData = PBUtil.createAABBData(0, 0, cameraLensWidth / _camProxy.scale, cameraLensHeight / _camProxy.scale, _camProxy.rotation);
+			_aabbData = MathUtil.createAABBData(0, 0, cameraLensWidth / _camProxy.scale, cameraLensHeight / _camProxy.scale, _camProxy.rotation, _aabbData);
+			_m = (_viewRoot as starling.display.Sprite).transformationMatrix;
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		override protected function onResize(e : ResizeEvent):void
+		{
+			cameraLensWidth = Starling.current.stage.stageWidth;
+			cameraLensHeight = Starling.current.stage.stageHeight;
 		}
 		
 		/**
@@ -47,13 +57,27 @@ package com.pblabs.starling2D {
 				throw(new Error(this+" is not allowed to zoom. please set allowZoom to true."));
 		}
 		
-		override public function zoomFit(width:Number,height:Number):void
+		/**
+		 * @inheritDoc
+		 */
+		override public function zoomFit(width:Number,height:Number,storeInBaseZoom:Boolean = false):Number
 		{
 			if (_allowZoom)
 			{
-				var ratioX:Number =  width/cameraLensWidth;
-				var ratioY:Number = height/cameraLensHeight;
-				_zoom = 1/( (ratioX >= ratioY) ? ratioY : ratioX );
+				var ratio:Number;
+				if (cameraLensHeight / cameraLensWidth > height / width)
+					ratio = cameraLensWidth / width;
+				else
+					ratio = cameraLensHeight / height;
+				
+				if (storeInBaseZoom)
+				{
+					baseZoom = ratio;
+					_zoom = 1;
+					return ratio;
+				}
+				else
+					return _zoom = ratio;
 			}
 			else
 				throw(new Error(this+" is not allowed to zoom. please set allowZoom to true."));
@@ -96,11 +120,17 @@ package com.pblabs.starling2D {
 				throw(new Error(this+" is not allowed to zoom. please set allowZoom to true."));
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		override public function getZoom():Number
 		{
 			return _zoom;
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		override public function getRotation():Number
 		{
 			return _rotation;
@@ -115,152 +145,185 @@ package com.pblabs.starling2D {
 			if (!_allowZoom && !_allowRotation)
 			{
 				_aabbData.offsetX = _aabbData.offsetY = 0;
-				(_aabbData.rect as Rectangle).setTo(_ghostTarget.x, _ghostTarget.y, cameraLensWidth, cameraLensHeight);
+				_aabbData.rect.setTo(_ghostTarget.x, _ghostTarget.y, cameraLensWidth, cameraLensHeight);
 				return;
 			}
 			
 			if (_allowZoom && !_allowRotation)
 			{
 				_aabbData.offsetX = _aabbData.offsetY = 0;
-				(_aabbData.rect as Rectangle).setTo(_ghostTarget.x, _ghostTarget.y, cameraLensWidth / _camProxy.scale, cameraLensHeight / _camProxy.scale);
+				_aabbData.rect.setTo(_ghostTarget.x, _ghostTarget.y, cameraLensWidth / _camProxy.scale, cameraLensHeight / _camProxy.scale);
 				return;
 			}
 			
 			if (_allowRotation && _allowZoom)
 			{
-				_aabbData = PBUtil.createAABBData(_ghostTarget.x , _ghostTarget.y, cameraLensWidth / _camProxy.scale, cameraLensHeight / _camProxy.scale, - _camProxy.rotation);
+				_aabbData = MathUtil.createAABBData(_ghostTarget.x , _ghostTarget.y, cameraLensWidth / _camProxy.scale, cameraLensHeight / _camProxy.scale, - _camProxy.rotation, _aabbData);
 				return;
 			}
 			
 			if (!_allowZoom && _allowRotation)
 			{
-				_aabbData = PBUtil.createAABBData(_ghostTarget.x , _ghostTarget.y, cameraLensWidth, cameraLensHeight, - _camProxy.rotation);
+				_aabbData = MathUtil.createAABBData(_ghostTarget.x , _ghostTarget.y, cameraLensWidth, cameraLensHeight, - _camProxy.rotation, _aabbData);
 				return;
 			}
-		}
-		
-		private var _scratchAABBPos : Point = new Point();
-		private var _newGTPos : Point = new Point();
-		private var _newRotatedGTPos : Point = new Point();
-		private var _rotScaledOffset : Point = new Point();
-		private var _invRotTarget : Point = new Point();
-		override public function update():void
-		{
-			if (_allowRotation)
-			{
-				var diffRot:Number = _rotation - _camProxy.rotation;
-				var velocityRot:Number = diffRot * rotationEasing;
-				_camProxy.rotation += velocityRot;
-			}
-			
-			if (_allowZoom)
-			{
-				var diffZoom:Number = _zoom - _camProxy.scale;
-				var velocityZoom:Number = diffZoom * zoomEasing;
-				_camProxy.scale += velocityZoom;
-			}
-			
-			if (_target)
-			{
-				_targetPos.x = _target.x;
-				_targetPos.y = _target.y;
-				
-				var diffX:Number = _targetPos.x - _ghostTarget.x;
-				var diffY:Number = _targetPos.y - _ghostTarget.y;
-				var velocityX:Number = diffX * easing.x;
-				var velocityY:Number = diffY * easing.y;
-				
-				_ghostTarget.x += velocityX;
-				_ghostTarget.y += velocityY;
-				
-			}
-			else if (_manualPosition)
-			{
-				_ghostTarget.x = _manualPosition.x;
-				_ghostTarget.y = _manualPosition.y;
-			}
-			
-			_invRotTarget.setTo(_ghostTarget.x, _ghostTarget.y);
-			if(_allowRotation) 
-				_invRotTarget = PBUtil.rotatePoint(_invRotTarget, -_camProxy.rotation);
-			
-			_camProxy.x = -_invRotTarget.x * _camProxy.scale;
-			_camProxy.y = -_invRotTarget.y * _camProxy.scale;
-			
-			_camProxy.offsetX = offset.x;
-			_camProxy.offsetY = offset.y;
-			
-			_camProxy.x += _camProxy.offsetX;
-			_camProxy.y += _camProxy.offsetY;
-			
-			resetAABBData();
-			
-			if (bounds && _restrictZoom)
-			{
-				var lwratio:Number = _aabbData.rect.width*_camProxy.scale / bounds.width;
-				var lhratio:Number = _aabbData.rect.height*_camProxy.scale / bounds.height;
-				
-				if (_aabbData.rect.width > bounds.width)
-					_camProxy.scale = _zoom = lwratio;
-				else if (_aabbData.rect.height > bounds.height)
-					_camProxy.scale = _zoom = lhratio;
-				
-			}
-			
-			_rotScaledOffset.setTo(offset.x / _camProxy.scale, offset.y / _camProxy.scale);
-			if(_allowRotation){
-				_rotScaledOffset = PBUtil.rotatePoint( _rotScaledOffset, _camProxy.rotation);
-			}
-			
-			// move aabb
-			_aabbData.rect.x -= _rotScaledOffset.x;
-			_aabbData.rect.y -= _rotScaledOffset.y;
-			
-			if ( bounds && !bounds.containsRect(_aabbData.rect) )
-			{
-				
-				_scratchAABBPos.setTo(_aabbData.rect.x,_aabbData.rect.y);
-				
-				//x
-				if (_aabbData.rect.left <= bounds.left || _aabbData.rect.width >= bounds.width)
-					_scratchAABBPos.x = bounds.left;
-				else if (_aabbData.rect.right >= bounds.right)
-					_scratchAABBPos.x = bounds.right - _aabbData.rect.width;
-				
-				//y
-				if (_aabbData.rect.top <= bounds.top || _aabbData.rect.height >= bounds.height)
-					_scratchAABBPos.y = bounds.top;
-				else if (_aabbData.rect.bottom >= bounds.bottom)
-					_scratchAABBPos.y = bounds.bottom - _aabbData.rect.height;
-				
-				_newGTPos.setTo(_scratchAABBPos.x, _scratchAABBPos.y);
-				
-				_newGTPos.x -= _aabbData.offsetX;
-				_newGTPos.y -= _aabbData.offsetY;
-				
-				_newGTPos.x += _rotScaledOffset.x;
-				_newGTPos.y += _rotScaledOffset.y;
-				
-				var invGT:Point;
-				if(_allowRotation){
-					_newRotatedGTPos.setTo(_newGTPos.x, _newGTPos.y);
-					invGT = PBUtil.rotatePoint(_newRotatedGTPos, -_camProxy.rotation);
-				}else{
-					invGT = _newGTPos;
-				}
-				_camProxy.x = -invGT.x * _camProxy.scale + _camProxy.offsetX;
-				_camProxy.y = -invGT.y * _camProxy.scale + _camProxy.offsetY;
-				
-			}
-			_camPos = pointFromLocal(new Point(0, 0));
 			
 		}
 		
 		/**
-		 * This function renders what's happening with the camera in screen space.
-		 * This is helpful for debugging and/or creating a minimap of your level
-		 * in that same Sprite. you have to position it and scale it yourself!
+		 * @inheritDoc
+		 */
+		override public function update():void
+		{
+			super.update();
+			
+			offset.setTo(cameraLensWidth * center.x, cameraLensHeight * center.y);
+			
+			if (_target && followTarget)
+			{
+				if (_target.x <= camPos.x - (deadZone.width * .5) / _camProxy.scale || _target.x >= camPos.x + (deadZone.width * .5) / _camProxy.scale )
+					_targetPos.x = _target.x;			
+				
+				if (_target.y <= camPos.y - (deadZone.height * .5) / _camProxy.scale || _target.y >= camPos.y + (deadZone.height * .5) / _camProxy.scale)
+					_targetPos.y = _target.y;				
+				
+				_ghostTarget.x += (_targetPos.x - _ghostTarget.x) * easing.x;
+				_ghostTarget.y += (_targetPos.y - _ghostTarget.y) * easing.y;
+			}
+			else if (_manualPosition)
+			{
+				_ghostTarget.x = _manualPosition.x * -1;
+				_ghostTarget.y = _manualPosition.y * -1;
+			}
+			
+			if (_allowRotation)
+				_camProxy.rotation += (_rotation - _camProxy.rotation) * rotationEasing;
+			
+			resetAABBData();
+			
+			if (_allowZoom)
+			{
+				
+				_camProxy.scale += (mzoom - _camProxy.scale) * zoomEasing;
+				
+				if (bounds && (boundsMode == BOUNDS_MODE_AABB || boundsMode == BOUNDS_MODE_ADVANCED) )
+				{
+					var lwratio:Number = (_aabbData.rect.width*_camProxy.scale ) / bounds.width;
+					var lhratio:Number = (_aabbData.rect.height*_camProxy.scale ) / bounds.height;
+					
+					if (_aabbData.rect.width >= bounds.width)
+						_camProxy.scale = mzoom = lwratio;
+					else if (_aabbData.rect.height >= bounds.height)
+						_camProxy.scale = mzoom =  lhratio;
+				}
+				
+			}
+			
+			_camProxy.x = ghostTarget.x;
+			_camProxy.y = ghostTarget.y;
+			
+			MathUtil.rotatePoint(offset.x/_camProxy.scale, offset.y/_camProxy.scale, _camProxy.rotation, _b.rotoffset);
+			
+			if ( bounds )
+			{
+				
+				if (boundsMode == BOUNDS_MODE_AABB)
+				{
+					
+					_b.w2 = (_aabbData.rect.width - _b.rotoffset.x) + _aabbData.offsetX;
+					_b.h2 = (_aabbData.rect.height - _b.rotoffset.y) + _aabbData.offsetY;
+					
+					_b.bl = bounds.left + ( MathUtil.abs(_aabbData.offsetX) + _b.rotoffset.x );
+					_b.bt = bounds.top + ( MathUtil.abs(_aabbData.offsetY) + _b.rotoffset.y );
+					_b.br = bounds.right - ( (_aabbData.offsetX+_aabbData.rect.width) - _b.rotoffset.x );
+					_b.bb = bounds.bottom - ( (_aabbData.offsetY+_aabbData.rect.height) - _b.rotoffset.y);
+					
+					if (_camProxy.x < _b.bl)
+						_camProxy.x = _b.bl;
+					if (_camProxy.x > _b.br)
+						_camProxy.x = _b.br;
+					if (_camProxy.y < _b.bt)
+						_camProxy.y = _b.bt;
+					if (_camProxy.y > _b.bb)
+						_camProxy.y = _b.bb;
+					
+				}else if (boundsMode == BOUNDS_MODE_OFFSET)
+				{	
+					if (_camProxy.x < bounds.left)
+						_camProxy.x = bounds.left;
+					if (_camProxy.x > bounds.right)
+						_camProxy.x = bounds.right;
+					if (_camProxy.y < bounds.top)
+						_camProxy.y = bounds.top;
+					if (_camProxy.y > bounds.bottom)
+						_camProxy.y = bounds.bottom;
+					
+				}else if (boundsMode == BOUNDS_MODE_ADVANCED)
+				{
+					/**
+					 * Find the furthest camera corner from the offset point, and use the distance from offset to that corner
+					 * as the radius of the circle that will be restricted within the bounds.
+					 */
+					
+					if (offset.x <= cameraLensWidth * 0.5) //left
+					{
+						if (offset.y <= cameraLensHeight * 0.5) //top
+							_b.diag2 = MathUtil.DistanceBetweenTwoPoints(offset.x, cameraLensWidth, offset.y, cameraLensHeight);
+						else
+							_b.diag2 = MathUtil.DistanceBetweenTwoPoints(offset.x, cameraLensWidth, offset.y, 0);
+					}else
+					{
+						if (offset.y <= cameraLensHeight * 0.5) //top
+							_b.diag2 = MathUtil.DistanceBetweenTwoPoints(offset.x, 0, offset.y, cameraLensHeight);
+						else
+							_b.diag2 = offset.length;
+					}
+					
+					_b.diag2 /= _camProxy.scale;
+					
+					if (_camProxy.x < bounds.left + _b.diag2)
+						_camProxy.x = bounds.left + _b.diag2;
+					if (_camProxy.x > bounds.right - _b.diag2)
+						_camProxy.x = bounds.right - _b.diag2;
+					if (_camProxy.y < bounds.top + _b.diag2)
+						_camProxy.y = bounds.top + _b.diag2;
+					if (_camProxy.y > bounds.bottom - _b.diag2)
+						_camProxy.y = bounds.bottom - _b.diag2;
+				}
+			}
+			
+			if (parallaxMode == PARALLAX_MODE_TOPLEFT)
+			{
+				_m.identity();
+				_m.rotate(_camProxy.rotation);
+				_m.scale(1/_camProxy.scale, 1/_camProxy.scale);
+				_camProxy.offset = _m.transformPoint(offset);
+				_camProxy.offset.x *= -1;
+				_camProxy.offset.y *= -1;
+			}
+			
+			_aabbData.rect.x = _camProxy.x + _aabbData.offsetX - _b.rotoffset.x;
+			_aabbData.rect.y = _camProxy.y + _aabbData.offsetY - _b.rotoffset.y;
+			
+			//reset matrix
+			_m.identity();
+			//fake pivot
+			_m.translate( -_camProxy.x, -_camProxy.y);
+			//rotation
+			_m.rotate(_camProxy.rotation);
+			//zoom
+			_m.scale(_camProxy.scale, _camProxy.scale);
+			//offset
+			_m.translate(offset.x, offset.y);
+			
+			pointFromLocal(offset.x, offset.y, _camPos);
+			
+			(_viewRoot as starling.display.Sprite).transformationMatrix = _m;
+		}
+		
+		/**
 		 * @param	sprite a flash display sprite to render to.
+		 * @deprecated this is now obsolete and doesn't reflect exactly how the camera works as the system changed.
 		 */
 		public function renderDebug(sprite:flash.display.Sprite):void
 		{
@@ -268,7 +331,7 @@ package com.pblabs.starling2D {
 			var xo:Number, yo:Number, w:Number, h:Number;
 			
 			//create AABB of camera
-			var AABB:Object = PBUtil.createAABBData(
+			var AABB:Object = MathUtil.createAABBData(
 				
 				_ghostTarget.x ,
 				_ghostTarget.y ,
@@ -279,13 +342,16 @@ package com.pblabs.starling2D {
 			
 			sprite.graphics.clear();
 			
-			//draw bounds
-			sprite.graphics.lineStyle(1, 0xFF0000);
-			sprite.graphics.drawRect(
-				bounds.left,
-				bounds.top,
-				bounds.width,
-				bounds.height);
+			if (bounds)
+			{
+				//draw bounds
+				sprite.graphics.lineStyle(1, 0xFF0000);
+				sprite.graphics.drawRect(
+					bounds.left,
+					bounds.top,
+					bounds.width,
+					bounds.height);
+			}
 			
 			//draw targets
 			sprite.graphics.lineStyle(20, 0xFF0000);
@@ -294,8 +360,8 @@ package com.pblabs.starling2D {
 			sprite.graphics.drawCircle(_ghostTarget.x, _ghostTarget.y, 10);
 			
 			//rotate and scale offset.
-			var rotScaledOffset:Point = PBUtil.rotatePoint(
-				new Point(offset.x / _camProxy.scale, offset.y / _camProxy.scale),
+			var rotScaledOffset:Point = MathUtil.rotatePoint(
+				offset.x / _camProxy.scale, offset.y / _camProxy.scale,
 				_camProxy.rotation);
 			
 			//offset aabb rect according to rotated and scaled camera offset
@@ -404,28 +470,12 @@ package com.pblabs.starling2D {
 		}
 		
 		/**
-		 * The idea of pointFromLocal and pointToLocal is to manually do the calculations
-		 * for globalToLocal and localToGlobal and have understandable alternatives.
-		 * 
-		 * if using globalToLocal from _viewroot inside the update function and before setting viewroot's position
-		 * it will then do globalToLocal relative to the previous location and rotation of _viewroot (as
-		 * viewroot will not be already moved, scaled and rotated.) 
-		 * so it would be one frame behind...
-		 */
-		
-		/**
 		 *  equivalent of  globalToLocal.
 		 */
-		public function pointFromLocal(p:Point):Point
+		public function pointFromLocal(x:Number,y:Number,resultPoint:Point = null):Point
 		{
-			
-			return PBUtil.rotatePoint(
-				new Point(
-					(p.x - _camProxy.x) /_camProxy.scale, 
-					(p.y - _camProxy.y) /_camProxy.scale)
-				, _camProxy.rotation);
-			
-			//return (_viewRoot as Sprite).globalToLocal(p);
+			_p.setTo(x, y);
+			return (_viewRoot as starling.display.Sprite).globalToLocal(_p,resultPoint);
 		}
 		
 		/**
@@ -436,16 +486,25 @@ package com.pblabs.starling2D {
 			return (_viewRoot as starling.display.Sprite).localToGlobal(p);
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		override public function get allowZoom():Boolean
 		{
 			return _allowZoom;
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		override public function get allowRotation():Boolean
 		{
 			return _allowRotation;
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		override public function set allowZoom(value:Boolean):void
 		{
 			if (!value)
@@ -456,6 +515,9 @@ package com.pblabs.starling2D {
 			_allowZoom = value;
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		override public function set allowRotation(value:Boolean):void
 		{
 			if (!value)
@@ -464,16 +526,6 @@ package com.pblabs.starling2D {
 				_camProxy.rotation = 0;
 			}
 			_allowRotation = value;
-		}
-		
-		override public function set restrictZoom(value:Boolean):void
-		{
-			_restrictZoom = value;
-		}
-		
-		override public function get restrictZoom():Boolean
-		{
-			return _restrictZoom;
 		}
 		
 	}

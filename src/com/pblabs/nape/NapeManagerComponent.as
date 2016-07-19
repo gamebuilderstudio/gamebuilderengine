@@ -12,6 +12,8 @@ package com.pblabs.nape
 	import com.pblabs.rendering2D.RayHitInfo;
 	
 	import flash.display.DisplayObject;
+	import flash.events.Event;
+	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
@@ -224,12 +226,19 @@ package com.pblabs.nape
 				var trakedObjectFound : Boolean = false;
 				for(var i : int = 0; i < len; i++)
 				{
-					//Try to convert object body positions to global coordinate space
-					if(_physicsObjectList[i].spriteForPointChecks && _physicsObjectList[i].spriteForPointChecks.scene && "trackObject" in _physicsObjectList[i].spriteForPointChecks.scene && _physicsObjectList[i].spriteForPointChecks.scene["trackObject"] )
+					if(_physicsObjectList[i].spriteForPointChecks && _physicsObjectList[i].spriteForPointChecks.scene && "trackObject" in _physicsObjectList[i].spriteForPointChecks.scene && _physicsObjectList[i].spriteForPointChecks.scene["trackObject"] && _physicsObjectList[i].spriteForPointChecks.scene.sceneContainer )
 					{
 						trakedObjectFound = true;
-						_debugLayerPosition.copyFrom(_physicsObjectList[i].spriteForPointChecks.scene.position);
-						_shapeDebug.transform.setAs(1,0,0,1, _debugLayerPosition.x, _debugLayerPosition.y);
+						if(_physicsObjectList[i].spriteForPointChecks.scene.camera && _physicsObjectList[i].spriteForPointChecks.scene.camera.transformMatrix)
+						{
+							var m : Matrix = _physicsObjectList[i].spriteForPointChecks.scene.camera.transformMatrix;
+							_debugLayerPosition.setTo( m.tx, m.ty );
+							_shapeDebug.transform.setAs(m.a, m.c, m.b, m.d, m.tx, m.ty);
+						}else{
+							var _scale : Number = _physicsObjectList[i].spriteForPointChecks.scene.zoom;
+							_debugLayerPosition.setTo( _physicsObjectList[i].spriteForPointChecks.scene.sceneContainer.x, _physicsObjectList[i].spriteForPointChecks.scene.sceneContainer.y );
+							_shapeDebug.transform.setAs(_scale,0,0,_scale, _debugLayerPosition.x, _debugLayerPosition.y);
+						}
 						break;
 					}
 				}
@@ -364,7 +373,7 @@ package com.pblabs.nape
 		/**
 		 * @inheritDoc
 		 */
-		public function getObjectsUnderPoint(worldPosition:Point, results:Array, mask:ObjectType = null):Boolean
+		public function getObjectsUnderPoint(worldPosition:Point, results:Array, mask:ObjectType = null, convertFromStageCoordinates : Boolean = false):Boolean
 		{
 			var numFoundBodies:int = 0;
 			if(_space){
@@ -383,6 +392,8 @@ package com.pblabs.nape
 						Logger.error(this, "getObjectsUnderPoint", "Body user data must contain spatialComponent!");
 						continue;
 					}
+					if (!curComponent.pointOccupied(worldPosition, mask, null, convertFromStageCoordinates))
+						continue;
 					if(!results)
 						results = [];
 					results.push(curComponent);				
@@ -392,7 +403,7 @@ package com.pblabs.nape
 			}
 
 			// Let the other items have a turn.
-			numFoundBodies += _otherItems.getObjectsUnderPoint(worldPosition, results, mask)  ? 1 : 0;
+			numFoundBodies += _otherItems.getObjectsUnderPoint(worldPosition, results, mask, convertFromStageCoordinates)  ? 1 : 0;
 			
 			// If we made it anywhere with i, then we got a result.
 			return (numFoundBodies != 0);
@@ -447,15 +458,19 @@ package com.pblabs.nape
 		
 		private function initDebugDraw():void
 		{
-			if(_shapeDebug)
-				_shapeDebug.clear();
-			else
-				_shapeDebug = new ShapeDebug(PBUtil.clamp(PBE.mainStage.stageWidth*2, 10, 5000000), PBUtil.clamp(PBE.mainStage.stageHeight*2, 10, 5000000), 0x4D4D4D );
+			if(_shapeDebug){
+				_shapeDebug.flush();
+				if(!PBE.IN_EDITOR)
+					PBE.mainStage.removeChild( _shapeDebug.display );
+				_shapeDebug = null;
+			}
+			_shapeDebug = new ShapeDebug(PBUtil.clamp(PBE.mainStage.stageWidth, 10, 5000000), PBUtil.clamp(PBE.mainStage.stageHeight, 10, 5000000), 0x4D4D4D );
 			_shapeDebug.drawConstraints = true;
 			_shapeDebug.drawBodies = true;
 			_shapeDebug.thickness = 1;
 			if(!PBE.IN_EDITOR)
 				PBE.mainStage.addChild( _shapeDebug.display );
+			PBE.mainStage.addEventListener(Event.RESIZE, onResize);
 		}
 		
 		private function freeSpace():void
@@ -465,10 +480,20 @@ package com.pblabs.nape
 				_space.clear();
 			}
 			
-			if(_shapeDebug)
-				_shapeDebug.clear();
+			if(_shapeDebug){
+				if(!PBE.IN_EDITOR)
+					PBE.mainStage.removeChild( _shapeDebug.display );
+				_shapeDebug.flush();
+				_shapeDebug = null;
+			}
 			_shapeDebug = null;
 			_materialManager = null;
+			PBE.mainStage.removeEventListener(Event.RESIZE, onResize);
+		}
+		
+		private function onResize(event : Event):void
+		{
+			initDebugDraw();
 		}
 		
 		private function beginCollisionCallback(cb:InteractionCallback):void
