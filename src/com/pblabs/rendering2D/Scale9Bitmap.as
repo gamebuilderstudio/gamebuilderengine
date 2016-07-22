@@ -5,7 +5,8 @@
  */
 
 package com.pblabs.rendering2D {
-	import flash.display.Bitmap;	import flash.display.BitmapData;	import flash.geom.Matrix;	import flash.geom.Rectangle;	
+	import flash.display.Bitmap;	import flash.display.BitmapData;	import flash.geom.Matrix;	import flash.geom.Rectangle;	import flash.geom.Transform;
+
 	public class Scale9Bitmap extends Bitmap {
 
 		// ------------------------------------------------
@@ -27,7 +28,8 @@ package com.pblabs.rendering2D {
 		function Scale9Bitmap(bmpData : BitmapData = null, pixelSnapping : String = "auto", smoothing : Boolean = false) {
 			
 			// original bitmap
-			_originalBitmap = bmpData.clone();
+			if(bmpData)
+				_originalBitmap = bmpData;
 
 			// super constructor
 			super(_originalBitmap, pixelSnapping, smoothing);
@@ -43,14 +45,14 @@ package com.pblabs.rendering2D {
 		 * setter bitmapData
 		 */
 		override public function set bitmapData(bmpData : BitmapData) : void {
-			_originalBitmap = bmpData.clone();
+			_originalBitmap = bmpData;
 			if (_scale9Grid != null) {
 				if (!validGrid(_scale9Grid)) {
 					_scale9Grid = null;
 				}
 				setSize(width, height);
 			} else {
-				assignBitmapData(_originalBitmap.clone());
+				assignBitmapData(_originalBitmap);
 			}
 		} 
 
@@ -71,7 +73,7 @@ package com.pblabs.rendering2D {
 				setSize(width, h);
 			}
 		}
-
+		
 		/**
 		 * set scale9Grid
 		 */
@@ -83,7 +85,6 @@ package com.pblabs.rendering2D {
 					// then resize it (streched) to the previously set dimensions
 					var currentWidth : Number = width;					var currentHeight : Number = height;
 					_scale9Grid = null;
-					assignBitmapData(_originalBitmap.clone());
 					setSize(currentWidth, currentHeight);
 				} else {
 					if (!validGrid(r)) {
@@ -104,7 +105,7 @@ package com.pblabs.rendering2D {
 		 * Update the effective bitmapData
 		 */
 		private function assignBitmapData(bmp : BitmapData) : void {
-			if(super.bitmapData != _originalBitmap) super.bitmapData.dispose();
+			if(super.bitmapData && super.bitmapData != _originalBitmap) super.bitmapData.dispose();
 			super.bitmapData = bmp;
 		}
 

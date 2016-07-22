@@ -116,8 +116,8 @@ package com.pblabs.starling2D
 		
 		protected var _camera : StarlingCamera;
 		protected var _deadZoneEnabled : Boolean = false;
-		protected var _zoomEnabled : Boolean = true;
-		protected var _rotationEnabled : Boolean = true;
+		protected var _zoomEnabled : Boolean = false;
+		protected var _rotationEnabled : Boolean = false;
 		
 		public function DisplayObjectSceneG2D()
 		{

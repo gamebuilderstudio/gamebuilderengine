@@ -111,8 +111,8 @@ package com.pblabs.rendering2D
 		protected var _trackDifPoint : Point = new Point();
 		protected var _layerIndex : int = -1;
 		protected var _deadZoneEnabled : Boolean = false;
-		protected var _zoomEnabled : Boolean = true;
-		protected var _rotationEnabled : Boolean = true;
+		protected var _zoomEnabled : Boolean = false;
+		protected var _rotationEnabled : Boolean = false;
 		
         public function DisplayObjectScene()
         {

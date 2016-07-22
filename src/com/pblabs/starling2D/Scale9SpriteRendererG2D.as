@@ -47,6 +47,7 @@ package com.pblabs.starling2D
 			_scale9Region = region;
 		}
 
+		
 		override public function updateTransform(updateProps:Boolean = false):void
 		{
 			if(!gpuObject){
@@ -60,7 +61,7 @@ package com.pblabs.starling2D
 			var tmpScale : Point = combinedScale;
 			_transformMatrix.identity();
 			//_transformMatrix.scale(tmpScale.x, tmpScale.y);
-			_transformMatrix.translate(-_registrationPoint.x, -_registrationPoint.y);
+			_transformMatrix.translate(-_registrationPoint.x * tmpScale.x, -_registrationPoint.y * tmpScale.y);
 			_transformMatrix.rotate(PBUtil.getRadiansFromDegrees(_rotation + _rotationOffset));
 			_transformMatrix.translate((_position.x + _positionOffset.x), (_position.y + _positionOffset.y));
 			

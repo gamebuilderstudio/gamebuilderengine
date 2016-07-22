@@ -9,6 +9,8 @@
 package com.pblabs.rendering2D
 {
 	import com.pblabs.engine.PBUtil;
+	import com.pblabs.engine.core.ObjectType;
+	import com.pblabs.engine.debug.Logger;
 	
 	import flash.display.BitmapData;
 	import flash.geom.Point;
@@ -89,7 +91,7 @@ package com.pblabs.rendering2D
 			var tmpScale : Point = combinedScale;
 			_transformMatrix.identity();
 			//_transformMatrix.scale(_scale.x, _scale.y);
-			_transformMatrix.translate(-_registrationPoint.x, -_registrationPoint.y);
+			_transformMatrix.translate(-_registrationPoint.x * tmpScale.x, -_registrationPoint.y * tmpScale.y);
 			_transformMatrix.rotate(PBUtil.getRadiansFromDegrees(_rotation + _rotationOffset));
 			_transformMatrix.translate((_position.x + _positionOffset.x), (_position.y + _positionOffset.y));
 			
@@ -108,6 +110,26 @@ package com.pblabs.rendering2D
 		protected function get isValidRegion() : Boolean {
 			if(!originalBitmapData || !_scale9Region) return false;
 			return _scale9Region.right <= originalBitmapData.width && _scale9Region.bottom <= originalBitmapData.height;
+		}
+		
+		/**
+		 * Is the rendered object opaque at the request position in screen space?
+		 * @param pos Location in world space we are curious about.
+		 * @return True if object is opaque there.
+		 */
+		override public function pointOccupied(worldPosition:Point, mask:ObjectType):Boolean
+		{
+			if (!displayObject || !scene)
+				return false;
+			
+			// Sanity check.
+			if(displayObject.stage == null)
+				Logger.warn(this, "pointOccupied", "DisplayObject is not on stage, so hitTestPoint will probably not work right.");
+			
+			// This is the generic version, which uses hitTestPoint. hitTestPoint
+			// takes a coordinate in screen space, so do that.
+			worldPosition = scene.transformWorldToScreen(worldPosition);
+			return displayObject.hitTestPoint(worldPosition.x, worldPosition.y, true);
 		}
 	}
 }
