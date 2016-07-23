@@ -29,20 +29,13 @@ package com.pblabs.starling2D
 			super();
 		}
 		
-		override public function onFrame(elapsed:Number):void
-		{
-			super.onFrame(elapsed);
-			if(_imageDataDirty)
-				buildG2DObject();
-		}
-		
 		public function get scale9Region():Rectangle
 		{
 			return _scale9Region
 		}
 		public function set scale9Region(region : Rectangle):void
 		{
-			if(region && _scale9Region.equals(region))
+			if(region && !_scale9Region.equals(region))
 				_imageDataDirty = true;
 			_scale9Region = region;
 		}
@@ -84,7 +77,7 @@ package com.pblabs.starling2D
 			}
 			
 			if(!skipCreation){
-				if(!resource){
+				if(!resource || !_scale9Region){
 					super.buildG2DObject();
 					return;
 				}else{
@@ -98,6 +91,7 @@ package com.pblabs.starling2D
 							gpuObject = new Scale9Image( _scale9Textures );
 						else
 							(gpuObject as Scale9Image).textures = _scale9Textures;
+						(gpuObject as Scale9Image).readjustSize();
 					}
 				}
 				smoothing = _smoothing;

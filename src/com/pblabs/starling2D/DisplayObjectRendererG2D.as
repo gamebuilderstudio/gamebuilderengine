@@ -19,7 +19,6 @@ package com.pblabs.starling2D
 	import starling.core.Starling;
 	import starling.display.DisplayObject;
 	import starling.display.QuadBatch;
-	import starling.utils.MathUtil;
 	
 	/**
 	 * Abstract base renderer for Rendering Starling GPU 2D DisplayObjects. It wraps a starling DisplayObject, allows it

@@ -36,6 +36,13 @@ package com.pblabs.starling2D
 			_smoothing = false;
 		}
 
+		override public function onFrame(elapsed:Number):void
+		{
+			super.onFrame(elapsed);
+			if(_imageDataDirty)
+				buildG2DObject();
+		}
+
 		override protected function buildG2DObject(skipCreation : Boolean = false):void
 		{
 			if(!Starling.context && !skipCreation){
@@ -134,7 +141,6 @@ package com.pblabs.starling2D
 			_resource = res;
 			_resource.addEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
 			_imageDataDirty = true;
-			buildG2DObject();
 		}
 		
 		//----------------------------------------------------------
