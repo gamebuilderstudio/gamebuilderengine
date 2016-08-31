@@ -146,7 +146,7 @@ package com.pblabs.starling2D
 			// Make sure we don't leave any lingering content.
 			if(_sceneView && _rootSprite)
 				_sceneView.removeDisplayObject(_rootSprite);
-			
+			_sceneView = null;
 			_rootSprite.removeChildren(0);
 			_rootSprite.dispose();
 		}

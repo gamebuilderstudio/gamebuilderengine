@@ -459,10 +459,7 @@ package com.pblabs.nape
 		private function initDebugDraw():void
 		{
 			if(_shapeDebug){
-				_shapeDebug.flush();
-				if(!PBE.IN_EDITOR)
-					PBE.mainStage.removeChild( _shapeDebug.display );
-				_shapeDebug = null;
+				return;
 			}
 			_shapeDebug = new ShapeDebug(PBUtil.clamp(PBE.mainStage.stageWidth, 10, 5000000), PBUtil.clamp(PBE.mainStage.stageHeight, 10, 5000000), 0x4D4D4D );
 			_shapeDebug.drawConstraints = true;
@@ -493,7 +490,14 @@ package com.pblabs.nape
 		
 		private function onResize(event : Event):void
 		{
-			initDebugDraw();
+			if(_visualDebugging)
+				initDebugDraw();
+			
+			if(_shapeDebug)
+			{
+				_shapeDebug.display.width = PBUtil.clamp(PBE.mainStage.stageWidth, 10, 5000000);
+				_shapeDebug.display.height = PBUtil.clamp(PBE.mainStage.stageHeight, 10, 5000000);
+			}
 		}
 		
 		private function beginCollisionCallback(cb:InteractionCallback):void
