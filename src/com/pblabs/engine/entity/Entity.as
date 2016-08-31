@@ -188,9 +188,9 @@ package com.pblabs.engine.entity
                 
                 var componentName:String = componentXML.attribute("name");
                 var componentClassName:String = componentXML.attribute("type");
-                var component:IEntityComponent = null;
+                var component:IEntityComponent = lookupComponentByName(componentName);
                 
-                if (componentClassName.length > 0)
+				if (!component && componentClassName.length > 0)
                 {
                     // If it specifies a type, instantiate a component and add it.
                     component = TypeUtility.instantiate(componentClassName) as IEntityComponent;

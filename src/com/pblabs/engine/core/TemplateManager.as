@@ -500,7 +500,7 @@ package com.pblabs.engine.core
 				return false;
 			}
 
-			var templateXML:XML=getXML(templateName, "template");
+			var templateXML:XML=getXML(templateName, "template", "entity");
 			if (!templateXML)
 			{
 				Logger.warn(this, "instantiate", "Unable to find the template " + templateName + ".");
