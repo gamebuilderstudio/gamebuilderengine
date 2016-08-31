@@ -725,6 +725,27 @@ package com.pblabs.engine.serialization
                 }
             }
         }
+		
+		public function getMissingReferences():Array
+		{
+			return _deferredReferences;
+		}
+		
+		public function addMissingReference(object : *, fieldName : String, nameReference : String = null, componentReference : String = null, componentName : String = null, objectReference : String = null, _currentEntity : IEntity = null):void
+		{
+			var reference:ReferenceNote = new ReferenceNote();
+			reference.owner = object;
+			reference.fieldName = fieldName;
+			reference.nameReference = nameReference;
+			reference.componentReference = componentReference;
+			reference.componentName = componentName
+			reference.objectReference = objectReference;
+			reference.currentEntity = _currentEntity;
+			
+			if (!reference.resolve())
+				_deferredReferences.push(reference);
+		}
+
         
         private var _currentEntity:IEntity = null;
         private var _serializers:Dictionary = new Dictionary();
