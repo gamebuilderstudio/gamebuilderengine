@@ -64,10 +64,28 @@ package com.pblabs.engine.core
          * The level associated with this event.
          */
         public var level:int = -1;
+		
+		/**
+		 * The group objects not being unloaded
+		 */
+		public var groupsNotToUnload : Array;
 
-        public function LevelEvent(type:String, level:int, bubbles:Boolean=false, cancelable:Boolean=false)
+		/**
+		 * The group objects that are pending unloaded
+		 */
+		public var groupsToUnload : Array;
+
+		/**
+		 * The group objects that are loaded
+		 */
+		public var groupsLoaded : Array;
+
+		public function LevelEvent(type:String, level:int, groupNamesNotToUnload : Array = null, groupNamesToUnload : Array = null, groupNamesLoaded : Array = null, bubbles:Boolean=false, cancelable:Boolean=false)
         {
             this.level = level;
+			this.groupsNotToUnload = groupNamesNotToUnload;
+			this.groupsToUnload = groupNamesToUnload;
+			this.groupsLoaded = groupNamesLoaded;
             super(type, bubbles, cancelable);
         }
     }

@@ -97,7 +97,7 @@ package com.pblabs.engine.core
        */
       public function getlevelFiles(index:int):Array
       {
-         return _levelDescriptions[index].Files;
+         return _levelDescriptions[index].files;
       }
       
       /**
@@ -105,7 +105,7 @@ package com.pblabs.engine.core
        */
       public function getlevelGroups(index:int):Array
       {
-         return _levelDescriptions[index].Groups;
+         return _levelDescriptions[index].groups;
       }
 	  
 	  /**
@@ -386,6 +386,7 @@ package com.pblabs.engine.core
          }
          else
          {
+			 var sharedGroupsList : Array = [];
              var doUnload:Boolean = _isLevelLoaded && (_currentLevel != -1);
 
 			 getLoadLists(doUnload ? _levelDescriptions[_currentLevel].files : null, _levelDescriptions[index].files, _filesToLoad, filesToUnload);
@@ -393,14 +394,14 @@ package com.pblabs.engine.core
 			 // find group differences between the levels
              _groupsToLoad = [];
              
-             getLoadLists(doUnload ? _levelDescriptions[_currentLevel].groups : null, _levelDescriptions[index].groups, _groupsToLoad, groupsToUnload);
+             getLoadLists(doUnload ? _levelDescriptions[_currentLevel].groups : null, _levelDescriptions[index].groups, _groupsToLoad, groupsToUnload, sharedGroupsList);
          }
 
 		 if(_currentLevel > -1){
 	         // unload previous data
-			 dispatchEvent(new LevelEvent(LevelEvent.LEVEL_PRE_UNLOAD_EVENT, _currentLevel));
+			 dispatchEvent(new LevelEvent(LevelEvent.LEVEL_PRE_UNLOAD_EVENT, _currentLevel, sharedGroupsList, groupsToUnload));
 	         unload(filesToUnload, groupsToUnload);
-	         dispatchEvent(new LevelEvent(LevelEvent.LEVEL_UNLOADED_EVENT, _currentLevel));
+	         dispatchEvent(new LevelEvent(LevelEvent.LEVEL_UNLOADED_EVENT, _currentLevel, sharedGroupsList, groupsToUnload));
 		  }
          
          _currentLevel = index;
@@ -590,7 +591,7 @@ package com.pblabs.engine.core
          }
          
          _groupsToLoad = null;
-         dispatchEvent(new LevelEvent(LevelEvent.LEVEL_LOADED_EVENT, _currentLevel));
+         dispatchEvent(new LevelEvent(LevelEvent.LEVEL_LOADED_EVENT, _currentLevel, null, null, _groupsToLoad));
       }
       
       /**
@@ -627,14 +628,13 @@ package com.pblabs.engine.core
 		 var groupsToUnload:Array = [];
          getLoadLists(_levelDescriptions[_currentLevel].groups, null, null, groupsToUnload);
          
-		 dispatchEvent(new LevelEvent(LevelEvent.LEVEL_PRE_UNLOAD_EVENT, _currentLevel));
+		 dispatchEvent(new LevelEvent(LevelEvent.LEVEL_PRE_UNLOAD_EVENT, _currentLevel, null, groupsToUnload));
          unload(filesToUnload, groupsToUnload);
-         //dispatchEvent(new LevelEvent(LevelEvent.LEVEL_UNLOADED_EVENT, _currentLevel));
          
          _currentLevel = -1;
          _isLevelLoaded = false;
 		 
-		 dispatchEvent(new LevelEvent(LevelEvent.LEVEL_UNLOADED_EVENT, _currentLevel));
+		 dispatchEvent(new LevelEvent(LevelEvent.LEVEL_UNLOADED_EVENT, _currentLevel, null, groupsToUnload));
       }
       
       private function unload(filesToUnload:Array, groupsToUnload:Array):void
@@ -714,8 +714,8 @@ package com.pblabs.engine.core
 					{
 						if((_levelDescriptions[_currentLevel] as LevelDescription).resources[ri].externalBundle)
 							ExternalResourceManager.instance.unload(filename);
-						//else
-							//PBE.resourceManager.unload(filename, (_levelDescriptions[_currentLevel] as LevelDescription).resources[ri].resourceClassType);			
+						else
+							PBE.resourceManager.unload(filename, (_levelDescriptions[_currentLevel] as LevelDescription).resources[ri].resourceClassType);			
 					}
 				}
 			}
@@ -724,15 +724,18 @@ package com.pblabs.engine.core
          }
       }
       
-      private function getLoadLists(previousList:Array, nextList:Array, loadList:Array, unloadList:Array):void
+      private function getLoadLists(previousList:Array, nextList:Array, loadList:Array, unloadList:Array, sharedList:Array = null):void
       {
          if (nextList)
          {
             for each (var loadName:String in nextList)
             {
                // if it's in the previous list, don't need to load it
-               if (previousList && previousList.indexOf(loadName) != -1)
+               if (previousList && previousList.indexOf(loadName) != -1){
+				   if(sharedList && sharedList.indexOf(loadName) == -1)
+					   sharedList.push(loadName);
                   continue;
+			   }
             
                loadList.push(loadName);
             }
@@ -743,8 +746,11 @@ package com.pblabs.engine.core
             for each (var unloadName:String in previousList)
             {
                // if it's in the next list, don't need to unload it
-               if (nextList && nextList.indexOf(unloadName) != -1)
+               if (nextList && nextList.indexOf(unloadName) != -1){
+				   if(sharedList && sharedList.indexOf(loadName) == -1)
+					   sharedList.push(loadName);
                   continue;
+			   }
             
                unloadList.push(unloadName);
             }
