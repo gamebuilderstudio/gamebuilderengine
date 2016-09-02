@@ -359,6 +359,9 @@ package com.pblabs.nape
 		
 		public function set spatialManager(value:ISpatialManager2D):void
 		{
+			if(_spatialManager == value) 
+				return;
+			
 			destroyBody();
 			
 			if (_spatialManager)
@@ -464,10 +467,11 @@ package com.pblabs.nape
 		
 		override protected function onRemove():void
 		{
-			super.onRemove();
 			if (_spatialManager)
 				_spatialManager.removeSpatialObject(this);
+			_spatialManager = null;
 			destroyBody();
+			super.onRemove();
 		}
 		
 		override protected function onReset():void
@@ -495,6 +499,9 @@ package com.pblabs.nape
 				}
 				_body.space = null;
 				_body = null;
+				
+				if(!_spatialManager && this.owner)
+					this.owner.reset();
 			}
 		}
 		

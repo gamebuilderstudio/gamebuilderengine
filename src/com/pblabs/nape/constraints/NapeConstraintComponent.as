@@ -206,9 +206,10 @@ package com.pblabs.nape.constraints
 
 		protected function constructConstraint():void
 		{
-			_constraint = getConstraintInstance();
-			if(!_constraint){
-				if(!PBE.IN_EDITOR && !_delayedConstruction){
+			if(!_constraint)
+				_constraint = getConstraintInstance();
+			if(!_constraint || !_spatialManager || (_spatialManager is NapeManagerComponent && !(_spatialManager as NapeManagerComponent).space)){
+				if(!_delayedConstruction){
 					PBE.callLater(constructConstraint);
 					_delayedConstruction = true
 				}
@@ -227,16 +228,17 @@ package com.pblabs.nape.constraints
 				_constraint.maxError = _maxError;
 			else 
 				_constraint.maxError = Number.POSITIVE_INFINITY;
-			if(_spatialManager && _spatialManager is NapeManagerComponent)
-				_constraint.space = (_spatialManager as NapeManagerComponent).space;
 			_delayedConstruction = false;
 			
+			if(_spatialManager && _spatialManager is NapeManagerComponent)
+				_constraint.space = (_spatialManager as NapeManagerComponent).space;
+
 			drawConstraint();
 		}
 		
 		protected function destroyConstraint():void
 		{
-			if(_spatialManager && _spatialManager is NapeManagerComponent && (_spatialManager as NapeManagerComponent).space && _constraint){
+			if(_constraint && _spatialManager && _spatialManager is NapeManagerComponent && (_spatialManager as NapeManagerComponent).space){
 				var removed : Boolean = (_spatialManager as NapeManagerComponent).space.constraints.remove(_constraint);
 			}
 			if(_constraint)
@@ -262,6 +264,14 @@ package com.pblabs.nape.constraints
 			super.onRemove();
 		}
 		
+		override protected function onReset():void
+		{
+			if(!_constraint){
+				resetConstraint();
+			}
+			super.onRemove();
+		}
+
 		protected function drawConstraint():void
 		{
 			

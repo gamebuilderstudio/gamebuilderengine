@@ -1,5 +1,7 @@
 package com.pblabs.nape.constraints
 {
+	import com.pblabs.nape.NapeManagerComponent;
+	
 	import flash.geom.Point;
 	
 	import nape.constraint.Constraint;
@@ -79,7 +81,7 @@ package com.pblabs.nape.constraints
 		
 		override protected function getConstraintInstance():Constraint
 		{
-			if(!_spatial1 || !_spatial1.body || !_spatial2 || !_spatial2.body || !_spatialManager){
+			if(!_spatial1 || !_spatial1.body || !_spatial2 || !_spatial2.body || !_spatialManager || (_spatialManager is NapeManagerComponent && !(_spatialManager as NapeManagerComponent).space)){
 				return null;
 			}
 			var invScale:Number = _spatialManager.inverseScale;
