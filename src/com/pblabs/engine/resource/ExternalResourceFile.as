@@ -75,12 +75,16 @@ package com.pblabs.engine.resource
       {
          _didFail = true;
          dispatchEvent(new ResourceEvent(ResourceEvent.FAILED_EVENT, null));
+		 unload();
       }
       
       private function completeHandler(e:Event):void 
       {
 		_resourceBundle = new ExternalResourceBundle(_loader.content);
-        dispatchEvent(new ResourceEvent(ResourceEvent.LOADED_EVENT, null));
+		if(_resourceBundle)
+        	dispatchEvent(new ResourceEvent(ResourceEvent.LOADED_EVENT, null));
+		else
+			failHandler(null);
       }
       
       public function load(request:URLRequest):void

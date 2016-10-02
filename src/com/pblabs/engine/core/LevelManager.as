@@ -440,9 +440,9 @@ package com.pblabs.engine.core
 					   continue;
 				   }
 				   if(!ExternalResourceManager.instance.isLoadingBundle)
-				   		ExternalResourceManager.instance.load(filename, onExternalResourceBundleLoaded, onExternalResourceBundleFailedToLoad, true, true);
+				   		ExternalResourceManager.instance.load( filename, onExternalResourceBundleLoaded, onExternalResourceBundleFailedToLoad, true, true, resourceDesc.fileLocation );
 				   else
-				   _pendingExternalResourceFiles.push(resourceDesc);
+				   		_pendingExternalResourceFiles.push(resourceDesc);
 			   }else{
 				   
 				   resourceHandle = PBE.resourceManager.getResource(filename, resourceDesc.resourceClassType);
@@ -505,7 +505,7 @@ package com.pblabs.engine.core
 		  if(_pendingExternalResourceFiles.length > 0)
 		  {
 			  if(!ExternalResourceManager.instance.isLoadingBundle)
-				  ExternalResourceManager.instance.load(_pendingExternalResourceFiles[0].fileName, onExternalResourceBundleLoaded, onExternalResourceBundleFailedToLoad, false, true);
+				  ExternalResourceManager.instance.load(_pendingExternalResourceFiles[0].fileName, onExternalResourceBundleLoaded, onExternalResourceBundleFailedToLoad, false, true, _pendingExternalResourceFiles[0].fileLocation);
 		  }
 		  finishLoad();
 	  }

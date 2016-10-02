@@ -80,7 +80,7 @@ package com.pblabs.engine.resource
        * 
        * @see Resource
        */
-      public function load(filename:String, onLoaded:Function = null, onFailed:Function = null, forceReload:Boolean = false, useRootDomain : Boolean = false):Object
+      public function load(filename:String, onLoaded:Function = null, onFailed:Function = null, forceReload:Boolean = false, useRootDomain : Boolean = false, fileLocation:String = null):Object
       {
          // Can only load one resource file at a time
          if (_currentFileName)
@@ -96,7 +96,17 @@ package com.pblabs.engine.resource
             return null;
          }
          
-         // Look up the resource.
+		 if(!fileLocation)
+			 fileLocation = filename;
+		 
+		 //Check for multi-resolution location indicator.
+		 var resIndicator : String = "{@}";
+		 var resIndicatorIndex : int = fileLocation.indexOf(resIndicator);
+		 fileLocation = (scaleFactor == 1 && resIndicatorIndex > -1) ? fileLocation.replace(fileLocation.substr(resIndicatorIndex, resIndicator.length+1), "") : (resIndicatorIndex > -1) ? fileLocation.replace(resIndicator, "@x"+scaleFactor) : fileLocation;
+		 resIndicatorIndex = filename.indexOf(resIndicator);
+		 filename = resIndicatorIndex > -1 ? filename.replace(filename.substr(resIndicatorIndex, resIndicator.length+1), "") : filename;
+		 
+		 // Look up the resource.
          var resourceIdentifier:String = filename.toLowerCase();
          _currentFileName = resourceIdentifier;
          var externalResource:ExternalResourceFile = _resources[resourceIdentifier];
@@ -117,7 +127,7 @@ package com.pblabs.engine.resource
             
             // Store it in the resource dictionary.
             _resources[resourceIdentifier] = externalResource;
-            externalResource.load(new URLRequest(filename));
+            externalResource.load(new URLRequest(fileLocation));
          }
          
          // Deal with it if it already failed, already loaded, or if it is still pending.
@@ -192,7 +202,15 @@ package com.pblabs.engine.resource
 	  
 	  public function get isLoadingBundle():Boolean { return !_currentFileName ? false : true; }
       
-      /**
+	  /**
+	   * This is used to append the resolution scale to the image file path being loaded
+	   */
+	  public static function get scaleFactor():Number
+	  {
+		  return ResourceManager.scaleFactor;
+	  }
+
+	  /**
        * Properly mark a resource as failed-to-load.
        */
       private function fail(externalResource:ExternalResourceFile, onFailed:Function, message:String):void

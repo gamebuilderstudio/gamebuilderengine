@@ -81,8 +81,10 @@ package com.pblabs.engine.resource
 			
 			//Check for multi-resolution location indicator.
 			var resIndicator : String = "{@}";
-			fileLocation = (scaleFactor == 1 && fileLocation.indexOf(resIndicator) != -1) ? fileLocation.replace(fileLocation.substr(fileLocation.indexOf(resIndicator), resIndicator.length+1), "") : fileLocation.replace(resIndicator, "@x"+scaleFactor);
-			filename = filename.indexOf(resIndicator) != -1 ? filename.replace(filename.substr(filename.indexOf(resIndicator), resIndicator.length+1), "") : filename;
+			var resIndicatorIndex : int = fileLocation.indexOf(resIndicator);
+			fileLocation = (scaleFactor == 1 && resIndicatorIndex > -1) ? fileLocation.replace(fileLocation.substr(resIndicatorIndex, resIndicator.length+1), "") : (resIndicatorIndex > -1) ? fileLocation.replace(resIndicator, "@x"+scaleFactor) : fileLocation;
+			resIndicatorIndex = filename.indexOf(resIndicator);
+			filename = resIndicatorIndex > -1 ? filename.replace(filename.substr(resIndicatorIndex, resIndicator.length+1), "") : filename;
             
 			// Hack for MP3 and WAV files. TODO: Generalize this for arbitrary formats.
 			var fileExtension:String = PBUtil.getFileExtension(fileLocation).toLocaleLowerCase();
