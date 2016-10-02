@@ -7,6 +7,7 @@ package com.pblabs.nape
 	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.entity.EntityComponent;
 	import com.pblabs.physics.IPhysics2DManager;
+	import com.pblabs.physics.IPhysics2DSpatial;
 	import com.pblabs.rendering2D.BasicSpatialManager2D;
 	import com.pblabs.rendering2D.ISpatialObject2D;
 	import com.pblabs.rendering2D.RayHitInfo;
@@ -196,7 +197,7 @@ package com.pblabs.nape
 			_debugLayerPosition = value;
 		}
 
-		public function get spatialObjectList():Vector.<INape2DSpatialComponent>
+		public function get spatialObjectList():Vector.<IPhysics2DSpatial>
 		{
 			return _physicsObjectList.concat();
 		}
@@ -226,17 +227,18 @@ package com.pblabs.nape
 				var trakedObjectFound : Boolean = false;
 				for(var i : int = 0; i < len; i++)
 				{
-					if(_physicsObjectList[i].spriteForPointChecks && _physicsObjectList[i].spriteForPointChecks.scene && "trackObject" in _physicsObjectList[i].spriteForPointChecks.scene && _physicsObjectList[i].spriteForPointChecks.scene["trackObject"] && _physicsObjectList[i].spriteForPointChecks.scene.sceneContainer )
+					var spatialComponent : INape2DSpatialComponent = _physicsObjectList[i] as INape2DSpatialComponent;
+					if(spatialComponent && spatialComponent.spriteForPointChecks && spatialComponent.spriteForPointChecks.scene && "trackObject" in spatialComponent.spriteForPointChecks.scene && spatialComponent.spriteForPointChecks.scene["trackObject"] && spatialComponent.spriteForPointChecks.scene.sceneContainer )
 					{
 						trakedObjectFound = true;
-						if(_physicsObjectList[i].spriteForPointChecks.scene.camera && _physicsObjectList[i].spriteForPointChecks.scene.camera.transformMatrix)
+						if(spatialComponent.spriteForPointChecks.scene.camera && spatialComponent.spriteForPointChecks.scene.camera.transformMatrix)
 						{
-							var m : Matrix = _physicsObjectList[i].spriteForPointChecks.scene.camera.transformMatrix;
+							var m : Matrix = spatialComponent.spriteForPointChecks.scene.camera.transformMatrix;
 							_debugLayerPosition.setTo( m.tx, m.ty );
 							_shapeDebug.transform.setAs(m.a, m.c, m.b, m.d, m.tx, m.ty);
 						}else{
-							var _scale : Number = _physicsObjectList[i].spriteForPointChecks.scene.zoom;
-							_debugLayerPosition.setTo( _physicsObjectList[i].spriteForPointChecks.scene.sceneContainer.x, _physicsObjectList[i].spriteForPointChecks.scene.sceneContainer.y );
+							var _scale : Number = spatialComponent.spriteForPointChecks.scene.zoom;
+							_debugLayerPosition.setTo( spatialComponent.spriteForPointChecks.scene.sceneContainer.x, spatialComponent.spriteForPointChecks.scene.sceneContainer.y );
 							_shapeDebug.transform.setAs(_scale,0,0,_scale, _debugLayerPosition.x, _debugLayerPosition.y);
 						}
 						break;
@@ -251,20 +253,20 @@ package com.pblabs.nape
 		
 		public function addSpatialObject(object:ISpatialObject2D):void
 		{
-			if(object is INape2DSpatialComponent && _physicsObjectList.indexOf(object as INape2DSpatialComponent) == -1){
+			if(object is IPhysics2DSpatial && _physicsObjectList.indexOf(object as IPhysics2DSpatial) == -1){
 				_physicsObjectList.push( object );
 				if(!_space)
 					initSpace();			
-			}else if(!(object is INape2DSpatialComponent)){
+			}else if(!(object is IPhysics2DSpatial)){
 				_otherItems.addSpatialObject(object);
 			}
 		}
 		
 		public function removeSpatialObject(object:ISpatialObject2D):void
 		{
-			if(object is INape2DSpatialComponent && _physicsObjectList.indexOf(object as INape2DSpatialComponent) != -1){
-				PBUtil.splice(_physicsObjectList, _physicsObjectList.indexOf(object as INape2DSpatialComponent), 1);
-			}else if(!(object is INape2DSpatialComponent)){
+			if(object is IPhysics2DSpatial && _physicsObjectList.indexOf(object as IPhysics2DSpatial) != -1){
+				PBUtil.splice(_physicsObjectList, _physicsObjectList.indexOf(object as IPhysics2DSpatial), 1);
+			}else if(!(object is IPhysics2DSpatial)){
 				_otherItems.removeSpatialObject(object);
 			}
 		}
@@ -569,7 +571,7 @@ package com.pblabs.nape
 		protected var _allowSleep : Boolean = true;
 		protected var _worldBounds:Rectangle = new Rectangle(-5000, -5000, 10000, 10000);
 		protected var _queryInteraction:InteractionFilter = new InteractionFilter();
-		protected var _physicsObjectList:Vector.<INape2DSpatialComponent> = new Vector.<INape2DSpatialComponent>();
+		protected var _physicsObjectList:Vector.<IPhysics2DSpatial> = new Vector.<IPhysics2DSpatial>();
 		protected var _simulationTime : Number = 0;
 		protected var _debugLayerPosition:Point = new Point(0, 0);
 		

@@ -6,6 +6,7 @@ package com.pblabs.nape.constraints
 	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.nape.INape2DSpatialComponent;
 	import com.pblabs.nape.NapeManagerComponent;
+	import com.pblabs.physics.IPhysics2DSpatial;
 	
 	import flash.geom.Point;
 	
@@ -39,15 +40,15 @@ package com.pblabs.nape.constraints
 			{
 				if(_spatialManager is NapeManagerComponent)
 				{
-					var allSpatials : Vector.<INape2DSpatialComponent> = (_spatialManager as NapeManagerComponent).spatialObjectList;
+					var allSpatials : Vector.<IPhysics2DSpatial> = (_spatialManager as NapeManagerComponent).spatialObjectList;
 					var len : int = allSpatials.length;
 					
 					var wp:Vec2 = Vec2.get(_stagePoint.x, _stagePoint.y);
 					var objectFound : Boolean = false;
 					for (var i:int = 0; i < len; i++) 
 					{
-						var currentSpatial : INape2DSpatialComponent = allSpatials[i];
-						if(!currentSpatial.pointOccupied(_stagePoint, null, null, true))
+						var currentSpatial : INape2DSpatialComponent = allSpatials[i] as INape2DSpatialComponent;
+						if(!currentSpatial || !currentSpatial.pointOccupied(_stagePoint, null, null, true))
 							continue;
 							
 						var body:Body = currentSpatial.body;
