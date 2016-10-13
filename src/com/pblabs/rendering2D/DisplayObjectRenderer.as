@@ -53,7 +53,7 @@ package com.pblabs.rendering2D
          * if set this to false, positions will be handeled with numbers insteed of integers
          * makes slow movement smoother for example
          */
-        public var snapToNearestPixels:Boolean = true;
+        public var snapToNearestPixels:Boolean = false;
         
         /**
          * If set, scale is gotten from this property every frame.
@@ -395,19 +395,8 @@ package com.pblabs.rendering2D
          */
         public function set position(value:Point):void
         {
-            var posX:Number;
-            var posY:Number;
-            
-            if (snapToNearestPixels)
-            {
-                posX = int(value.x);
-                posY = int(value.y);
-            }
-            else
-            {
-                posX = value.x;
-                posY = value.y;
-            }
+            var posX:Number = value.x;
+            var posY:Number = value.y;
             
             if (posX === _position.x && posY === _position.y)
                 return;
@@ -428,16 +417,7 @@ package com.pblabs.rendering2D
         
         public function set x(value:Number):void
         {
-            var posX:Number;
-            
-            if(snapToNearestPixels)
-            {
-                posX = int(value);
-            }
-            else
-            {
-                posX = value;
-            }
+            var posX:Number = value;
             
             if (posX === _position.x)
                 return;
@@ -457,16 +437,7 @@ package com.pblabs.rendering2D
         
         public function set y(value:Number):void
         {
-            var posY:Number;
-            
-            if(snapToNearestPixels)
-            {
-                posY = int(value);
-            }
-            else
-            {
-                posY = value;
-            }
+            var posY:Number = value;
             
             if (posY === _position.y)
                 return;

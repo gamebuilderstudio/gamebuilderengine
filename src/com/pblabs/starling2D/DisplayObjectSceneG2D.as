@@ -490,7 +490,8 @@ package com.pblabs.starling2D
 					
 				if(!_camera){
 					_camera = new StarlingCamera(_rootSprite);
-					_camera.setUp(trackObject, trackLimitRectangle, !trackByOffset ? new Point(0,0) : new Point( trackOffset.x / _camera.cameraLensWidth, trackOffset.y / _camera.cameraLensHeight) );
+					_camera.setUp(trackObject, trackLimitRectangle, !trackByOffset ? new Point(0,0) : new Point( trackOffset.x / _camera.cameraLensWidth, trackOffset.y / _camera.cameraLensHeight), new Point(1,1) );
+					_camera.update();
 				}
 				if(_camera.allowZoom != zoomEnabled) _camera.allowZoom = zoomEnabled;
 				if(_camera.allowRotation != rotationEnabled) _camera.allowRotation = rotationEnabled;
@@ -515,8 +516,8 @@ package com.pblabs.starling2D
 				}
 				if(rotationEnabled) _camera.setRotation( trackObject.rotation );
 				_camera.update();
-				
-				_cameraPos.setTo(int(_camera.camProxy.x), int(_camera.camProxy.y));
+
+				_cameraPos.setTo(_camera.camProxy.x, _camera.camProxy.y);
 				position = _cameraPos;
 				zoom = _camera.camProxy.scale;
 				rotation = _camera.camProxy.rotation;
@@ -637,8 +638,6 @@ package com.pblabs.starling2D
 		
 		[EditorData(ignore="true")]
 		public function get camera():Camera{ 
-			if(!_camera)
-				_camera = new StarlingCamera(_rootSprite);
 			return _camera; 
 		}
 
