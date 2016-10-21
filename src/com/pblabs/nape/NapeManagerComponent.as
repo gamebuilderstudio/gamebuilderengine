@@ -133,8 +133,7 @@ package com.pblabs.nape
 			}else{
 				if(_shapeDebug){
 					_shapeDebug.clear();
-					if(!PBE.IN_EDITOR)
-						_shapeDebug = null;
+					PBE.mainStage.removeEventListener(Event.RESIZE, onResize);
 				}
 			}
 		}
@@ -485,17 +484,19 @@ package com.pblabs.nape
 				_shapeDebug.flush();
 				_shapeDebug = null;
 			}
+			if(_visualDebugging)
+				PBE.mainStage.removeEventListener(Event.RESIZE, onResize);
 			_shapeDebug = null;
 			_materialManager = null;
-			PBE.mainStage.removeEventListener(Event.RESIZE, onResize);
 		}
 		
 		private function onResize(event : Event):void
 		{
 			if(_visualDebugging)
 				initDebugDraw();
-			
-			if(_shapeDebug)
+			else
+				PBE.mainStage.removeEventListener(Event.RESIZE, onResize);
+			if(_shapeDebug && PBE.IN_EDITOR)
 			{
 				_shapeDebug.display.width = PBUtil.clamp(PBE.mainStage.stageWidth, 10, 5000000);
 				_shapeDebug.display.height = PBUtil.clamp(PBE.mainStage.stageHeight, 10, 5000000);
