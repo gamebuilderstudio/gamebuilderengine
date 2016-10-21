@@ -52,8 +52,6 @@ package com.pblabs.engine.core
                 _objects[object.name] = object;
             
             if(isAliasValid){
-				if(!isNameValid && !(object.alias in _objects))
-                	_objects[object.alias] = object;
 				if(!_similarObjects[object.alias])
 					_similarObjects[object.alias] = new Vector.<IPBObject>();
 				if(_similarObjects[object.alias].indexOf(object) == -1)
@@ -80,15 +78,8 @@ package com.pblabs.engine.core
 						PBUtil.splice(similarObjects, similarObjects.indexOf(object), 1);
 					
 					if(_similarObjects[object.alias].length <= 0){
-						if(!isNameValid && (object.alias in _objects) && _objects[object.alias] == object){
-							_objects[object.alias] = null;
-							delete _objects[object.alias];                  
-						}
 						_similarObjects[object.alias] = null;
 						delete _similarObjects[object.alias];
-					}else{
-						if((object.alias in _objects) && _objects[object.alias] == object)
-							_objects[object.alias] = similarObjects[similarObjects.length-1];
 					}
 				}
             }
