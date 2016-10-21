@@ -221,7 +221,7 @@ package com.pblabs.starling2D
 		public function get sceneView():IUITarget
 		{
 			if(!_sceneView && _sceneViewName)
-				sceneView = SceneViewG2D.findStarlingView(_sceneViewName) as IUITarget;
+				_sceneView = SceneViewG2D.findStarlingView(_sceneViewName) as IUITarget;
 			return _sceneView;
 		}
 		

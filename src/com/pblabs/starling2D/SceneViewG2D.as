@@ -38,13 +38,16 @@ package com.pblabs.starling2D
      */
     public class SceneViewG2D extends SceneViewG2DSprite implements IUITarget
     {
+		private var _starlingViewIndex : int = 0;
 		private var _starlingInstance : Starling;
 		private var _gpuCanvasContainer : Sprite;
 		
 		private var _delayedCalls : Vector.<Object> = new Vector.<Object>();
 		private var _displayObjectList : Vector.<DisplayObject> = new Vector.<DisplayObject>();
+		private var _sharedStarlingView : Boolean = false;
 		
 		private static var _starlingViewMap : Dictionary = new Dictionary();
+		private static var _starlingViewCount : int = 0;
 		private static var _stage3DIndex : int = -1;
 		
 		public function SceneViewG2D(renderMode : String = Context3DRenderMode.AUTO, profile : String = Context3DProfile.BASELINE_CONSTRAINED, forceNewInstanceCreation : Boolean = false)
@@ -66,6 +69,7 @@ package com.pblabs.starling2D
 					onContextCreated();
 					onRootInitialized();
 					_stage3DIndex = PBE.mainStage.stage3Ds.indexOf(_starlingInstance.context);
+					_sharedStarlingView = true;
 				}else{
 					if(!Starling.current || forceNewInstanceCreation){
 						Starling.multitouchEnabled = true; // useful on mobile devices
@@ -78,6 +82,10 @@ package com.pblabs.starling2D
 						_starlingInstance = new Starling(Sprite, PBE.mainStage, new Rectangle(0,0, width, height), PBE.mainStage.stage3Ds[_stage3DIndex], renderMode, profile, true);
 						_starlingInstance.addEventListener("context3DCreate", onContextCreated);
 						_starlingInstance.addEventListener("rootCreated", onRootInitialized);
+						_starlingInstance.start();
+
+						if(Capabilities.os.toLowerCase().indexOf("mac") == -1 && Capabilities.os.toLowerCase().indexOf("windows") == -1)
+							PBE.mainStage.addEventListener(Event.DEACTIVATE, stage_deactivateHandler, false, 0, true);
 					}
 				}
 				
@@ -85,13 +93,13 @@ package com.pblabs.starling2D
 					//_starlingInstance.enableErrorChecking = true;
 					//_starlingInstance.simulateMultitouch = true;
 				}
-				_starlingInstance.start();
-				name = "SceneView_"+_stage3DIndex;
+				name = "SceneView_"+_starlingViewCount;
 			
-				if(Capabilities.os.toLowerCase().indexOf("mac") == -1 && Capabilities.os.toLowerCase().indexOf("windows") == -1)
-					PBE.mainStage.addEventListener(Event.DEACTIVATE, stage_deactivateHandler, false, 0, true);
 			}
-			this.addEventListener("removedFromStage", onRemoved);
+			this.addEventListener("removedFromStage", onRemovedFromStage);
+			this.addEventListener("addedToStage", onAddedToStage);
+			
+			_starlingViewCount = _starlingViewCount+1;
 		}
 		
 		public static function findStarlingView(name : String):SceneViewG2D
@@ -204,14 +212,21 @@ package com.pblabs.starling2D
 		
 		public function dispose():void
 		{
-			this.removeEventListener("removedFromStage", onRemoved);
-			PBE.mainStage.removeEventListener(Event.DEACTIVATE, stage_deactivateHandler);
+			_starlingViewCount = _starlingViewCount - 1;
+			this.removeEventListener("removedFromStage", onRemovedFromStage);
+			this.removeEventListener("addedToStage", onAddedToStage);
 
-			_starlingInstance.removeEventListener("context3DCreate", onContextCreated);
-			_starlingInstance.removeEventListener("rootCreated", onRootInitialized);
-			_starlingInstance.stage.removeEventListener(TouchEvent.TOUCH, onTouch);
+			if(!_sharedStarlingView){
+				PBE.mainStage.removeEventListener(Event.DEACTIVATE, stage_deactivateHandler);
 
-			InitializationUtilG2D.disposed.dispatch();
+				_starlingInstance.removeEventListener("context3DCreate", onContextCreated);
+				_starlingInstance.removeEventListener("rootCreated", onRootInitialized);
+				_starlingInstance.stage.removeEventListener(TouchEvent.TOUCH, onTouch);
+
+				InitializationUtilG2D.disposed.dispatch();
+				
+				_stage3DIndex = _stage3DIndex - 1;
+			}
 
 			clearDisplayObjects();
 			
@@ -219,35 +234,53 @@ package com.pblabs.starling2D
 			
 			_disposed = true;
 			
-			_stage3DIndex = _stage3DIndex - 1;
-			_starlingInstance.dispose();
+			//if(_gpuCanvasContainer && _starlingInstance)
+				//(_starlingInstance.root as Sprite).removeChild(_gpuCanvasContainer);
+			if(_starlingViewCount < 1){
+				_starlingInstance.dispose();
+			}
 			_starlingInstance = null;
 			_gpuCanvasContainer = null;
 			delete _starlingViewMap[name];
 		}
 
-		private function onRemoved(event : *):void
+		private function onRemovedFromStage(event : *):void
 		{
-			
+			if(_gpuCanvasContainer && _starlingInstance)
+				(_starlingInstance.root as Sprite).removeChild(_gpuCanvasContainer);
+		}
+		
+		private function onAddedToStage(event : *):void
+		{
+			if(_gpuCanvasContainer && _starlingInstance)
+				(_starlingInstance.root as Sprite).addChild(_gpuCanvasContainer);
 		}
 		
 		private function onRootInitialized(event : * = null):void{
-			_gpuCanvasContainer = _starlingInstance.root as Sprite;
+			_gpuCanvasContainer = new Sprite();
+			if(this.stage != null) 
+				(_starlingInstance.root as Sprite).addChildAt(_gpuCanvasContainer, _starlingViewIndex);
+			
 			for each(var calls : Object in _delayedCalls)
 			{
 				(calls.func as Function).apply(this, calls.params);
 			}
-			//PBE.processManager.addAnimatedObject(this, 1000);
-			InitializationUtilG2D.initializeRenderers.dispatch();
-			
-			_starlingInstance.stage.addEventListener(TouchEvent.TOUCH, onTouch);
+			if(!_sharedStarlingView)
+			{
+				//PBE.processManager.addAnimatedObject(this, 1000);
+				InitializationUtilG2D.initializeRenderers.dispatch();
+				
+				_starlingInstance.stage.addEventListener(TouchEvent.TOUCH, onTouch);
+			}
 		}
 		
 		private var _touches : Vector.<Touch> = new Vector.<Touch>();
 		private function onTouch(event : TouchEvent):void
 		{
+			if(!_starlingInstance) return;
+			
 			_touches.length = 0;
-			event.getTouches(starlingInstance.stage, null, _touches);
+			event.getTouches(_starlingInstance.stage, null, _touches);
 			//TODO: Do a touch object conversion to a generic engine Touch object instead of 
 			//having the Starling dependency on the InputManager!!!
 			PBE.inputManager.simulateTouch(_touches);
@@ -314,18 +347,31 @@ package com.pblabs.starling2D
 			_starlingInstance.viewPort = newViewPort;
 		   
         }
+		
+		public function get viewIndex():int
+		{
+			return _starlingViewIndex;
+		}
+		
+		public function set viewIndex(value:int):void
+		{
+			_starlingViewIndex = value;
+			if(_gpuCanvasContainer && _starlingInstance && this.stage != null)
+				(_starlingInstance.root as Sprite).addChildAt(_gpuCanvasContainer, _starlingViewIndex);
+		}
+		
         
 		public function get canvasContainerG2D():DisplayObjectContainer{ return _gpuCanvasContainer; }
 		public function get starlingInstance():Starling { return _starlingInstance; }
         
 		override public function set name(value:String):void
 		{
-			if(_starlingViewMap.hasOwnProperty(value))
-				delete _starlingViewMap[value];
+			if(_starlingViewMap.hasOwnProperty(name))
+				delete _starlingViewMap[name];
 			
 			super.name = value;
 			
-			_starlingViewMap[value] = this
+			_starlingViewMap[value] = this;
 		}
 		
         private var _width:Number = 500;
