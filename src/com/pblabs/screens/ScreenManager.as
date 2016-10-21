@@ -9,13 +9,31 @@
 package com.pblabs.screens
 {
     import com.pblabs.engine.PBE;
-    import com.pblabs.engine.core.*;
+    import com.pblabs.engine.PBUtil;
+    import com.pblabs.engine.core.IAnimatedObject;
+    import com.pblabs.engine.core.ITickedObject;
+    import com.pblabs.engine.core.ScreenEvent;
     import com.pblabs.engine.debug.Logger;
     
-    import flash.events.*;
-    import flash.utils.*;
+    import flash.events.EventDispatcher;
+    import flash.utils.Dictionary;
 
-    /**
+	/**
+	 * @eventType com.pblabs.engine.core.ScreenEvent.SCREEN_SHOW
+	 */
+	[Event(name="SCREEN_SHOW", type="com.pblabs.engine.core.ScreenEvent")]
+	
+	/**
+	 * @eventType com.pblabs.engine.core.ScreenEvent.SCREEN_HIDE
+	 */
+	[Event(name="SCREEN_HIDE", type="com.pblabs.engine.core.ScreenEvent")]
+
+	/**
+	 * @eventType com.pblabs.engine.core.ScreenEvent.SCREEN_REMOVE
+	 */
+	[Event(name="SCREEN_REMOVE", type="com.pblabs.engine.core.ScreenEvent")]
+
+	/**
      * A simple system for managing a game's UI.
      * 
      * <p>The ScreenManager lets you have a set of named screens. The
@@ -33,7 +51,7 @@ package com.pblabs.screens
      * dialog or another element which only partially covers the screen,
      * you will probably want to use a different system.</p>
      */
-    public class ScreenManager implements IAnimatedObject, ITickedObject
+    public class ScreenManager extends EventDispatcher implements IAnimatedObject, ITickedObject
     {
         static private var _instance:ScreenManager;
         static public function get instance():ScreenManager
@@ -84,22 +102,34 @@ package com.pblabs.screens
          */
         private function set currentScreen(value:String):void
         {
-            if(_currentScreen)
+            if(_currentScreen && screenStack.indexOf(getScreenName(_currentScreen)) == -1)
             {
+				dispatchEvent(new ScreenEvent(ScreenEvent.SCREEN_HIDE, false, false, getScreenName(_currentScreen)));
                 _currentScreen.onHide();
 
                 _currentScreen = null;
             }
             
-            if(value)
+            if(value && _currentScreen != screenDictionary[value])
             {
                 _currentScreen = screenDictionary[value];
                 if(!_currentScreen)
                     throw new Error("No such screen '" + value + "'");
-
+				
+				dispatchEvent(new ScreenEvent(ScreenEvent.SCREEN_SHOW, false, false, value));
                 _currentScreen.onShow();
             }
         }
+		
+		private function getScreenName(screen : IScreen):String
+		{
+			for each(var screeName : String in screenDictionary)
+			{
+				if(screenDictionary[screeName] == screen)
+					return screeName;
+			}
+			return null;
+		}
         
         /**
          * @returns The screen currently being displayed, if any.
@@ -109,7 +139,15 @@ package com.pblabs.screens
             return _currentScreen;
         }
         
-        /**
+		/**
+		 * @returns The screen name of the screen currently being displayed, if any.
+		 */
+		public function getCurrentScreenName():String
+		{
+			return screenStack && screenStack.length > 0 ? screenStack[screenStack.length - 1] : null;
+		}
+
+		/**
          * Return true if a screen of given name exists. 
          * @param screenName Name of screen.
          * @return True if screen exists.
@@ -137,9 +175,13 @@ package com.pblabs.screens
          */
         public function push(screenName:String):void
         {
+			var currentScreenPos : int = screenStack.indexOf(screenName);
+			if(currentScreenPos > -1)
+				PBUtil.splice(screenStack, currentScreenPos, 1);
             screenStack.push(screenName);
 
-            screenParent.addChild(get(screenName));
+			var screenContext : * = get(screenName);
+            screenParent.addChildAt(screenContext, screenParent.numChildren);
 			currentScreen = screenName;
         }
         
@@ -156,10 +198,12 @@ package com.pblabs.screens
                 return;
             }
             
-            var oldScreen:Object = get(screenStack.pop());
-            currentScreen = screenStack[screenStack.length - 1];
+			var oldScreenName : String = screenStack.pop();
+            var oldScreen:Object = get(oldScreenName);
+			currentScreen = screenStack[screenStack.length - 1];
             
-            if(oldScreen && oldScreen.hasOwnProperty("parent") && oldScreen.parent)
+			dispatchEvent(new ScreenEvent(ScreenEvent.SCREEN_REMOVE, false, false, oldScreenName));
+			if(oldScreen && oldScreen.hasOwnProperty("parent") && oldScreen.parent)
                 oldScreen.parent.removeChild(oldScreen);
         }
         
