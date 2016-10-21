@@ -51,7 +51,7 @@ package com.pblabs.rendering2D.spritesheet
 		 */
 		public function get cached():Boolean { return _cached; }
 		public function set cached(val : Boolean):void{
-			if(_cached && !val)
+			if(_cached && !val && this.isLoaded)
 			{
 				var frameCache : CachedFramesData = getCachedFrames();
 				if(frameCache){
@@ -137,32 +137,41 @@ package com.pblabs.rendering2D.spritesheet
 		{
 			if(_image)
 			{
+				if(_cached){
+					var frameCache : CachedFramesData = getCachedFrames();
+					if(frameCache){
+						frameCache.referenceCount--;
+						frameCache.released.remove(onCacheReleased);
+					}
+				}
 				_image.removeEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
 			}
-			if(!value)
-				return;
 			
-			_loaded = value.isLoaded;
-			if(!_loaded){
-				value.addEventListener(ResourceEvent.LOADED_EVENT, onResourceLoaded);
-				value.addEventListener(ResourceEvent.FAILED_EVENT, onResourceLoadFailed);
-				_imageListenersAttached = true;
-				_loading = true;
-				return;
+			if(value){
+				_loaded = value.isLoaded;
+				if(!_loaded){
+					value.addEventListener(ResourceEvent.LOADED_EVENT, onResourceLoaded);
+					value.addEventListener(ResourceEvent.FAILED_EVENT, onResourceLoadFailed);
+					_imageAsynchLoadListenersAttached = true;
+					_loading = true;
+					return;
+				}
 			}
 			_failed = false;
 			
 			_image = value;
-			if(_imageListenersAttached){
-				_image.removeEventListener(ResourceEvent.LOADED_EVENT, onResourceLoaded);
-				_image.removeEventListener(ResourceEvent.FAILED_EVENT, onResourceLoadFailed);
-				_imageListenersAttached = false;
-			}
-			_image.addEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
-			if(_image) 
-				_imageFilename = _image.filename;
+
 			deleteFrames();
-			buildFrames();
+			if(_image){
+				if(_imageAsynchLoadListenersAttached){
+					_image.removeEventListener(ResourceEvent.LOADED_EVENT, onResourceLoaded);
+					_image.removeEventListener(ResourceEvent.FAILED_EVENT, onResourceLoadFailed);
+					_imageAsynchLoadListenersAttached = false;
+				}
+				_image.addEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
+				_imageFilename = _image.filename;
+				buildFrames();
+			}
 		}
 		
 		/**
@@ -246,7 +255,7 @@ package com.pblabs.rendering2D.spritesheet
 			var cachedFrames : CachedFramesData = getCachedFrames();
 			if (_cached && cachedFrames)
 			{
-				cachedFrames.released.addOnce(onCacheReleased);
+				cachedFrames.released.add(onCacheReleased);
 				cachedFrames.referenceCount += 1;
 				_divider = cachedFrames.divider ? cachedFrames.divider.copy(_divider) : _divider;
 				_bounds = cachedFrames.bounds ? cachedFrames.bounds : _bounds;
@@ -291,7 +300,7 @@ package com.pblabs.rendering2D.spritesheet
 
 			if(_cached){
 				var frameCache : CachedFramesData = new CachedFramesData(_frames, imageFilename, _divider, _bounds);
-				frameCache.released.addOnce(onCacheReleased);
+				frameCache.released.add(onCacheReleased);
 				frameCache.referenceCount += 1;
 				setCachedFrames(frameCache);
 			}
@@ -342,8 +351,9 @@ package com.pblabs.rendering2D.spritesheet
 				if(frameCache && frameCache.referenceCount > 0){
 					frameCache.referenceCount--;
 					frameCache.released.remove(onCacheReleased);
+				}else{
+					releaseCache();
 				}
-				releaseCache();					
 			}else{
 				var len : int = frames.length;
 				for(var i : int = 0; i < len; i++)
@@ -365,7 +375,8 @@ package com.pblabs.rendering2D.spritesheet
 			this.deleteFrames();
 			
 			if(_divider){
-				_divider.destroy();
+				if(!_cached || (_cached && frameCache.divider != _divider))
+					_divider.destroy();
 			}
 			_divider = null;
 			_bounds = null;
@@ -387,6 +398,7 @@ package com.pblabs.rendering2D.spritesheet
 				return;
 			}
 			delete _frameCache[getFramesCacheKey()];
+			frameCache.released.remove(onCacheReleased);
 			frameCache.destroy();
 		}
 		
@@ -454,7 +466,7 @@ package com.pblabs.rendering2D.spritesheet
 		 */
 		protected function getCachedFrames():CachedFramesData
 		{
-			if (!_cached) 
+			if (!_cached || !getFramesCacheKey()) 
 				return null;
 			
 			return _frameCache[getFramesCacheKey()] as CachedFramesData;
@@ -465,7 +477,7 @@ package com.pblabs.rendering2D.spritesheet
 		 */
 		protected function setCachedFrames(frames:CachedFramesData):void 
 		{
-			if (!_cached) 
+			if (!_cached || !getFramesCacheKey()) 
 				return;
 			_frameCache[getFramesCacheKey()] = frames;
 		}
@@ -495,6 +507,7 @@ package com.pblabs.rendering2D.spritesheet
 		protected var _forcedBitmaps:Array = null;
 		protected var _destroyed:Boolean = false;
 		protected var _cached:Boolean = true;
-		protected var _imageListenersAttached : Boolean = false;
+		protected var _cacheReleasePending:Boolean = false;
+		protected var _imageAsynchLoadListenersAttached : Boolean = false;
     }
 }

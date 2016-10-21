@@ -115,9 +115,11 @@ package com.pblabs.starling2D
 					}
 				}
 				
-				var spatial : ISpatialObject2D = this.owner.getProperty( currentSpatialRef ) as ISpatialObject2D;
-				if(spatial && spatial.spriteForPointChecks == this){
-					this.owner.setProperty( this.sizeProperty, newSize);
+				if(currentSpatialRef){
+					var spatial : ISpatialObject2D = this.owner.getProperty( currentSpatialRef ) as ISpatialObject2D;
+					if(spatial && spatial.spriteForPointChecks == this){
+						this.owner.setProperty( this.sizeProperty, newSize);
+					}
 				}
 			}else if(_overrideSizePerFrame && (this.size.x != tempTexture.width || this.size.y != tempTexture.height)){
 				this.size =  new Point(tempTexture.width, tempTexture.height);
