@@ -22,6 +22,6 @@ package com.pblabs.physics
 		function get debugDrawer() : DisplayObject;
 		function get debugLayerPosition():Point;
 		function set debugLayerPosition(value:Point):void;
-		function get spatialObjectList():Vector.<IPhysics2DSpatial>;
+		function get physicsSpatialsList():Vector.<IPhysics2DSpatial>;
 	}
 }

@@ -29,7 +29,8 @@ package com.pblabs.rendering2D
        */
       public function addSpatialObject(object:ISpatialObject2D):void
       {
-         _objectList.push(object);
+		  if(_spatialList.indexOf(object) == -1)
+         	_spatialList.push(object);
       }
       
       /**
@@ -37,14 +38,14 @@ package com.pblabs.rendering2D
        */
       public function removeSpatialObject(object:ISpatialObject2D):void
       {
-         var index:int = _objectList.indexOf(object);
+         var index:int = _spatialList.indexOf(object);
          if (index == -1)
          {
             Logger.warn(this, "removeSpatialObject", "The object was not found in this spatial manager.");
             return;
          }
          
-		 PBUtil.splice(_objectList, index, 1);
+		 PBUtil.splice(_spatialList, index, 1);
       }
 
       /**
@@ -60,15 +61,15 @@ package com.pblabs.rendering2D
       /**
        * @inheritDoc
        */
-      public function queryRectangle(box:Rectangle, mask:ObjectType, results:Array):Boolean
+      public function queryRectangle(box:Rectangle, mask:ObjectType, results:Array, checkSpatialBounds : Boolean = false):Boolean
       {
          Profiler.enter("QueryRectangle");
 
          var foundAny:Boolean = false;
-		 var len : int = _objectList.length;
+		 var len : int = _spatialList.length;
 		 for(var i : int = 0; i < len; i++)
 		 {
-			 var object:ISpatialObject2D = _objectList[i];
+			 var object:ISpatialObject2D = _spatialList[i];
 			if (mask != null)
 			{
 				if (!PBE.objectTypeManager.doTypesOverlap(object.objectMask, mask))
@@ -95,10 +96,10 @@ package com.pblabs.rendering2D
 
          var foundAny:Boolean = false;
          
-		 var len : int = _objectList.length;
+		 var len : int = _spatialList.length;
 		 for(var i : int = 0; i < len; i++)
 		 {
-			var object:ISpatialObject2D = _objectList[i];
+			var object:ISpatialObject2D = _spatialList[i];
 			if (mask != null)
 			{
 				if (!PBE.objectTypeManager.doTypesOverlap(object.objectMask, mask))
@@ -129,22 +130,27 @@ package com.pblabs.rendering2D
       /**
        * @inheritDoc
        */
-	  public function getObjectsUnderPoint(worldPosition:Point, results:Array, mask:ObjectType = null, convertFromStageCoordinates : Boolean = false):Boolean
+	  public function getObjectsUnderPoint(worldPosition:Point, results:Array, mask:ObjectType = null, convertFromStageCoordinates : Boolean = false, checkSpatialPixels : Boolean = true):Boolean
       {
-         var tmpResults:Array = [];
-		 // First use the normal spatial query...
-		 if(!queryCircle(worldPosition, 0, mask, tmpResults))
-			 return false;
-		 
          // Ok, now pass control to the objects and see what they think.
          var hitAny:Boolean = false;
-         for each(var tmp:ISpatialObject2D in tmpResults)
-         {
-            if (!tmp.pointOccupied(worldPosition, mask, null, convertFromStageCoordinates))
+		 for(var i : int = 0; i < _spatialList.length; i++)
+		 {
+			 var object:ISpatialObject2D = _spatialList[i];
+			 if (mask != null)
+			 {
+				 if (!PBE.objectTypeManager.doTypesOverlap(object.objectMask, mask))
+					 continue;
+			 }
+			 
+            if (checkSpatialPixels && !object.pointOccupied(worldPosition, mask, null, convertFromStageCoordinates))
                continue;
+			else if(!checkSpatialPixels && !object.worldExtents.containsPoint(worldPosition))
+				continue;
+				
             if(!results)
 				results = [];
-            results.push(tmp);
+            results.push(object);
             hitAny = true;
          }
          
@@ -158,19 +164,19 @@ package com.pblabs.rendering2D
 	  /**
 	   * @inheritDoc
 	   */
-	  public function getObjectsInRec(worldRec:Rectangle, results:Array):Boolean
+	  public function getObjectsInRec(worldRec:Rectangle, results:Array, checkSpatialBounds : Boolean = false):Boolean
 	  {
 		  var tmpResults:Array = [];
 		  
 		  // First use the normal spatial query...
-		  queryRectangle(worldRec, null, tmpResults)
+		  queryRectangle(worldRec, null, tmpResults, checkSpatialBounds)
 		  
 		  // Ok, now check the renderer on all spatials with one as a last resort to check their bounds.
 		  var hitAny:Boolean = false;
-		  var len : int = _objectList.length;
+		  var len : int = _spatialList.length;
 		  for(var i : int = 0; i < len; i++)
 		  {
-			  var tmp:ISpatialObject2D =  _objectList[i];
+			  var tmp:ISpatialObject2D =  _spatialList[i];
 			  if(results.indexOf( tmp ) != -1)
 				  continue;
 			  var rendererRec : Rectangle = tmp.worldExtents;
@@ -233,8 +239,13 @@ package com.pblabs.rendering2D
          
          return false;
       }
+	  
+	  public function get spatialsList():Vector.<ISpatialObject2D>
+	  {
+		  return _spatialList.concat();
+	  }
       
-      protected var _objectList:Vector.<ISpatialObject2D> = new Vector.<ISpatialObject2D>();
+      protected var _spatialList:Vector.<ISpatialObject2D> = new Vector.<ISpatialObject2D>();
 	  private var _scratchRect : Rectangle = new Rectangle();
 	  private var _tmpRect : Rectangle;
    }

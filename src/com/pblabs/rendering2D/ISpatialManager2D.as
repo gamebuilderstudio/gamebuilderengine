@@ -8,7 +8,6 @@
  ******************************************************************************/
 package com.pblabs.rendering2D
 {
-   import com.pblabs.engine.core.IAnimatedObject;
    import com.pblabs.engine.core.ObjectType;
    
    import flash.geom.Point;
@@ -48,9 +47,10 @@ package com.pblabs.rendering2D
        * queries. If you just want the results from one query, make sure to
        * set results.length=0; before you pass it to queryRectangle.</p>
        * 
+	   * @param checkSpatialBounds - is used to have the spatial manager check the world bounds of the spatial. Mainly used in a PhysicsSpatialManager
        * @return True if one or more objects were found and push()'ed to results.
        */ 
-      function queryRectangle(box:Rectangle, mask:ObjectType, results:Array):Boolean;
+      function queryRectangle(box:Rectangle, mask:ObjectType, results:Array, checkSpatialBounds : Boolean = false):Boolean;
       
       /**
        * Return all the spatial objects that overlap the specified circle.
@@ -73,7 +73,7 @@ package com.pblabs.rendering2D
        * @param mask Only consider objects that match this ObjectType. Null uses all types.
   	   * @return Found something under point or not.
        */
-      function getObjectsUnderPoint(worldPosition:Point, results:Array, mask:ObjectType = null, convertFromStageCoordinates : Boolean = false):Boolean;
+      function getObjectsUnderPoint(worldPosition:Point, results:Array, mask:ObjectType = null, convertFromStageCoordinates : Boolean = false, checkSpatialPixels : Boolean = true):Boolean;
 	  
 	  /**
 	   * Return all the spatial objects within a given rectangluar area. Objects can optionally implement
@@ -83,6 +83,9 @@ package com.pblabs.rendering2D
 	   * @param results An array into which ISpatialObject2Ds are added based on what is under point.
 	   * @return Found something within rectangluar area or not.
 	   */
-	  function getObjectsInRec(worldRec:Rectangle, results:Array):Boolean
+	  function getObjectsInRec(worldRec:Rectangle, results:Array, checkSpatialBounds : Boolean = false):Boolean
+		  
+	  function get spatialsList():Vector.<ISpatialObject2D>;
+
    }
 }

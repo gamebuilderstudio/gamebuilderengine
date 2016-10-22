@@ -40,7 +40,7 @@ package com.pblabs.nape.constraints
 			{
 				if(_spatialManager is NapeManagerComponent)
 				{
-					var allSpatials : Vector.<IPhysics2DSpatial> = (_spatialManager as NapeManagerComponent).spatialObjectList;
+					var allSpatials : Vector.<IPhysics2DSpatial> = (_spatialManager as NapeManagerComponent).physicsSpatialsList;
 					var len : int = allSpatials.length;
 					
 					var wp:Vec2 = Vec2.get(_stagePoint.x, _stagePoint.y);

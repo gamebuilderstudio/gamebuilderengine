@@ -196,9 +196,14 @@ package com.pblabs.nape
 			_debugLayerPosition = value;
 		}
 
-		public function get spatialObjectList():Vector.<IPhysics2DSpatial>
+		public function get physicsSpatialsList():Vector.<IPhysics2DSpatial>
 		{
 			return _physicsObjectList.concat();
+		}
+		
+		public function get spatialsList():Vector.<ISpatialObject2D>
+		{
+			return _otherItems.spatialsList;
 		}
 
 		public function onFrame(dt:Number):void
@@ -270,10 +275,11 @@ package com.pblabs.nape
 			}
 		}
 		
-		public function queryRectangle(box:Rectangle, mask:ObjectType, results:Array):Boolean
+		public function queryRectangle(box:Rectangle, mask:ObjectType, results:Array, checkSpatialBounds : Boolean = false):Boolean
 		{
 			var numFoundBodies:int = 0;
-			if(_space)
+			var i : int;
+			if(_space && !checkSpatialBounds)
 			{
 				if(box.width <= 1 || box.height <= 1)
 					box.inflate(5, 5);
@@ -287,7 +293,7 @@ package com.pblabs.nape
 				
 				var bodyList:BodyList = _space.bodiesInAABB(aabb, false, true, _queryInteraction);			
 				numFoundBodies = bodyList.length;
-				for(var i : int = 0; i < numFoundBodies; i++)
+				for(i = 0; i < numFoundBodies; i++)
 				{
 					var item : Body = bodyList.at(i);
 					var curComponent:NapeSpatialComponent = item.userData.spatial;
@@ -299,9 +305,16 @@ package com.pblabs.nape
 					results.push(curComponent);				
 				}
 				bodyList.clear();
+			}else if(checkSpatialBounds){
+				for(i = 0; i < _physicsObjectList.length; i++)
+				{
+					if(!_physicsObjectList[i].worldExtents.intersects(box))
+						continue;
+					results.push(_physicsObjectList[i]);				
+				}
 			}
 			// Let the other items have a turn.
-			numFoundBodies += _otherItems.queryRectangle(box, mask, results) ? 1 : 0;
+			numFoundBodies += _otherItems.queryRectangle(box, mask, results, checkSpatialBounds) ? 1 : 0;
 			
 			// If we made it anywhere with i, then we got a result.
 			return (numFoundBodies != 0);
@@ -374,17 +387,18 @@ package com.pblabs.nape
 		/**
 		 * @inheritDoc
 		 */
-		public function getObjectsUnderPoint(worldPosition:Point, results:Array, mask:ObjectType = null, convertFromStageCoordinates : Boolean = false):Boolean
+		public function getObjectsUnderPoint(worldPosition:Point, results:Array, mask:ObjectType = null, convertFromStageCoordinates : Boolean = false, checkSpatialPixels : Boolean = true):Boolean
 		{
 			var numFoundBodies:int = 0;
-			if(_space){
+			var i : int;
+			if(_space && !checkSpatialPixels){
 				_queryInteraction.collisionGroup = -1;
 				_queryInteraction.collisionMask = (mask ? mask.bits : -1);
 				var worldPoint : Vec2 = Vec2.get(worldPosition.x*inverseScale, worldPosition.y*inverseScale);
 				var bodyList:BodyList = _space.bodiesUnderPoint(worldPoint, _queryInteraction);
 				
 				numFoundBodies = bodyList.length;
-				for(var i : int = 0; i < numFoundBodies; i++)
+				for(i = 0; i < numFoundBodies; i++)
 				{
 					var item : Body = bodyList.at(i);
 					var curComponent:NapeSpatialComponent = item.userData.spatial;
@@ -401,10 +415,17 @@ package com.pblabs.nape
 				}
 				bodyList.clear();
 				worldPoint.dispose();
+			}else if(checkSpatialPixels){
+				for(i = 0; i < _physicsObjectList.length; i++)
+				{
+					if(!_physicsObjectList[i].pointOccupied(worldPosition, mask, null, convertFromStageCoordinates))
+						continue;
+					results.push(_physicsObjectList[i]);				
+				}
 			}
 
 			// Let the other items have a turn.
-			numFoundBodies += _otherItems.getObjectsUnderPoint(worldPosition, results, mask, convertFromStageCoordinates)  ? 1 : 0;
+			numFoundBodies += _otherItems.getObjectsUnderPoint(worldPosition, results, mask, convertFromStageCoordinates, checkSpatialPixels)  ? 1 : 0;
 			
 			// If we made it anywhere with i, then we got a result.
 			return (numFoundBodies != 0);
@@ -415,13 +436,13 @@ package com.pblabs.nape
 		/**
 		 * Grab all spatials within a rectangular region
 		 */
-		public function getObjectsInRec(worldRec:Rectangle, results:Array):Boolean
+		public function getObjectsInRec(worldRec:Rectangle, results:Array, checkSpatialBounds : Boolean = false):Boolean
 		{
 			// First use the normal spatial query...
-			queryRectangle(worldRec, null, results);
+			queryRectangle(worldRec, null, results, checkSpatialBounds);
 			
 			// Ok, now pass control to the objects and see what they think.
-			return _otherItems.getObjectsInRec(worldRec, results);
+			return _otherItems.getObjectsInRec(worldRec, results, checkSpatialBounds);
 		}
 
 		override protected function onAdd():void
