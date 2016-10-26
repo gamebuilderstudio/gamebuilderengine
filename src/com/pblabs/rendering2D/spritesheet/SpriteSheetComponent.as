@@ -375,7 +375,7 @@ package com.pblabs.rendering2D.spritesheet
 			this.deleteFrames();
 			
 			if(_divider){
-				if(!_cached || (_cached && frameCache.divider != _divider))
+				if(!_cached || (_cached && frameCache && frameCache.divider != _divider))
 					_divider.destroy();
 			}
 			_divider = null;
