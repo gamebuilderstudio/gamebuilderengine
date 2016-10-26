@@ -164,12 +164,12 @@ package com.pblabs.rendering2D
 	  /**
 	   * @inheritDoc
 	   */
-	  public function getObjectsInRec(worldRec:Rectangle, results:Array, checkSpatialBounds : Boolean = false):Boolean
+	  public function getObjectsInRec(worldRec:Rectangle, results:Array, checkSpatialPixels : Boolean = false):Boolean
 	  {
 		  var tmpResults:Array = [];
 		  
 		  // First use the normal spatial query...
-		  queryRectangle(worldRec, null, tmpResults, checkSpatialBounds)
+		  queryRectangle(worldRec, null, tmpResults, checkSpatialPixels)
 		  
 		  // Ok, now check the renderer on all spatials with one as a last resort to check their bounds.
 		  var hitAny:Boolean = false;

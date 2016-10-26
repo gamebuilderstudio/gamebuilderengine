@@ -81,9 +81,10 @@ package com.pblabs.rendering2D
 	   *
 	   * @param worldRec Rectangle in worldspace to check.
 	   * @param results An array into which ISpatialObject2Ds are added based on what is under point.
+	   * @param checkSpatialPixels will make sure that the attached renderer's pixel bounds are checked. So if there are transparent pixels around the border it will not be considered part of the bounds.
 	   * @return Found something within rectangluar area or not.
 	   */
-	  function getObjectsInRec(worldRec:Rectangle, results:Array, checkSpatialBounds : Boolean = false):Boolean
+	  function getObjectsInRec(worldRec:Rectangle, results:Array, checkSpatialPixels : Boolean = false):Boolean
 		  
 	  function get spatialsList():Vector.<ISpatialObject2D>;
 

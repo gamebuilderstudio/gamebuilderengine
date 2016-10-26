@@ -436,13 +436,13 @@ package com.pblabs.nape
 		/**
 		 * Grab all spatials within a rectangular region
 		 */
-		public function getObjectsInRec(worldRec:Rectangle, results:Array, checkSpatialBounds : Boolean = false):Boolean
+		public function getObjectsInRec(worldRec:Rectangle, results:Array, checkSpatialPixels : Boolean = false):Boolean
 		{
 			// First use the normal spatial query...
-			queryRectangle(worldRec, null, results, checkSpatialBounds);
+			queryRectangle(worldRec, null, results, checkSpatialPixels);
 			
 			// Ok, now pass control to the objects and see what they think.
-			return _otherItems.getObjectsInRec(worldRec, results, checkSpatialBounds);
+			return _otherItems.getObjectsInRec(worldRec, results, checkSpatialPixels);
 		}
 
 		override protected function onAdd():void
