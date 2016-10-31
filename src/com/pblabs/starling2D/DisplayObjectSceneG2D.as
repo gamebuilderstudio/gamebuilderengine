@@ -261,7 +261,7 @@ package com.pblabs.starling2D
 		
 		public function get sceneViewBounds():Rectangle
 		{
-			if(!sceneView || !_camera)
+			if(!sceneView)
 				return null;
 			
 			// Make sure we are up to date with latest track.
@@ -269,10 +269,10 @@ package com.pblabs.starling2D
 			
 			updateTransform();
 			
-			_sceneViewBoundsCache.x = _camera.camProxy.x; 
-			_sceneViewBoundsCache.y = _camera.camProxy.y;
-			_sceneViewBoundsCache.width = sceneView.width / _camera.camProxy.scale;
-			_sceneViewBoundsCache.height = sceneView.height / _camera.camProxy.scale;
+			_sceneViewBoundsCache.x = _rootPosition.x; 
+			_sceneViewBoundsCache.y = _rootPosition.y;
+			_sceneViewBoundsCache.width = sceneView.width / _zoom;
+			_sceneViewBoundsCache.height = sceneView.height / _zoom;
 			
 			return _sceneViewBoundsCache;
 		}
