@@ -18,10 +18,9 @@ package com.pblabs.rendering2D
     
 	public class SpriteSheetRenderer extends BitmapRenderer implements ISpriteSheetRenderer
 	{		
-		public var directionReference:PropertyReference;
-
 		protected var currentSpatialName : String;
 		protected var currentSpatialRef : PropertyReference;
+		protected var _directionReference : PropertyReference;
 		protected var _spriteSheetProperty : PropertyReference;
 		protected var _spriteSheet:ISpriteSheet;
 		protected var _spriteIndex:int = 0;
@@ -32,6 +31,11 @@ package com.pblabs.rendering2D
 			super.registrationPoint = value;
 			if(_spriteSheet)
 				_spriteSheet.center = _registrationPoint;
+		}
+
+		public function get directionReference():PropertyReference { return _directionReference; }
+		public function set directionReference(val : PropertyReference):void { 
+			_directionReference = val; 
 		}
 
 		public function get spriteSheetProperty():PropertyReference { return _spriteSheetProperty; }

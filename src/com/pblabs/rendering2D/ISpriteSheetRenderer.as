@@ -5,6 +5,8 @@ package com.pblabs.rendering2D
 
 	public interface ISpriteSheetRenderer
 	{
+		function get directionReference():PropertyReference;
+		function set directionReference(val : PropertyReference):void;
 		function get spriteSheetProperty():PropertyReference;
 		function set spriteSheetProperty(val : PropertyReference):void;
 		function get overrideSizePerFrame():Boolean;
