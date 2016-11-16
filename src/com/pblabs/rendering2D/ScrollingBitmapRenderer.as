@@ -9,6 +9,8 @@
 package com.pblabs.rendering2D
 {
 	import com.pblabs.engine.PBE;
+	import com.pblabs.engine.core.ObjectType;
+	import com.pblabs.engine.debug.Logger;
 	
 	import flash.display.BitmapData;
 	import flash.display.Sprite;
@@ -150,5 +152,24 @@ package com.pblabs.rendering2D
 			_transformDirty = false;
 		}
 
+		/**
+		 * Is the rendered object opaque at the request position in screen space?
+		 * @param pos Location in world space we are curious about.
+		 * @return True if object is opaque there.
+		 */
+		override public function pointOccupied(worldPosition:Point, mask:ObjectType):Boolean
+		{
+			if (!_displayObject || !scene)
+				return super.pointOccupied(worldPosition, mask);
+			
+			// Sanity check.
+			if(_displayObject.stage == null)
+				Logger.warn(this, "pointOccupied", "DisplayObject is not on stage, so hitTestPoint will probably not work right.");
+			
+			// This is the generic version, which uses hitTestPoint. hitTestPoint
+			// takes a coordinate in screen space, so do that.
+			worldPosition = scene.transformWorldToScreen(worldPosition);
+			return _displayObject.hitTestPoint(worldPosition.x, worldPosition.y, true);
+		}
 	}
 }
