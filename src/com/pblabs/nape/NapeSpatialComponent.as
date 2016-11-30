@@ -148,6 +148,26 @@ package com.pblabs.nape
 				_body.position.setxy(int(_position.x*_spatialManager.inverseScale), int(_position.y*_spatialManager.inverseScale));
 		}
 		
+		public function get horizontalPercent():Number
+		{
+			return _horizontalPercent;
+		}
+		
+		public function set horizontalPercent(value:Number):void
+		{
+			_horizontalPercent = value
+		}
+
+		public function get verticalPercent():Number
+		{
+			return _verticalPercent;
+		}
+		
+		public function set verticalPercent(value:Number):void
+		{
+			_verticalPercent = value
+		}
+		
 		[EditorData(ignore="true", inspectable="true")]
 		public function set x(value:Number):void
 		{
@@ -259,6 +279,16 @@ package com.pblabs.nape
 			_autoAlign = value;
 		}
 		
+		public function get pinned():Boolean
+		{
+			return _pinned;
+		}
+		
+		public function set pinned(value:Boolean):void
+		{
+			_pinned = value;
+		}
+
 		public function get canMove():Boolean
 		{
 			return _canMove;
@@ -387,6 +417,18 @@ package com.pblabs.nape
 			return _interactionFilter;
 		}
 		
+		override public function onTick(deltaTime:Number):void
+		{
+			super.onTick(deltaTime);
+			
+			if(_pinned && _spriteForPointChecks && !PBE.IN_EDITOR)
+			{
+				_pinnedPosition.setTo((PBE.mainStage.width * _horizontalPercent), (PBE.mainStage.height * _verticalPercent));
+				var tempScenePosition : Point = _spriteForPointChecks.scene.transformScreenToScene(_pinnedPosition);
+				position = tempScenePosition;
+			}
+		}
+
 		public function castRay(start:Point, end:Point, flags:ObjectType, result:RayHitInfo):Boolean
 		{
 			return false;
@@ -604,6 +646,10 @@ package com.pblabs.nape
 		protected var _collidesWithTypes:ObjectType = null;
 		protected var _collidesContinuously:Boolean = false;
 		protected var _gravity:Point = new Point(0,0);
+		protected var _pinned:Boolean = false;
+		protected var _horizontalPercent:Number = 0;
+		protected var _verticalPercent:Number = 0;
+		protected var _pinnedPosition:Point = new Point(0,0);
 		
 		protected var _debugLayerSceneTracking:Boolean = true;
 		protected var _linearVelocity:Point = new Point(0, 0);

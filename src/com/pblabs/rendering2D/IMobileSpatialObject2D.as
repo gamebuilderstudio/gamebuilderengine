@@ -16,6 +16,33 @@ package com.pblabs.rendering2D
    public interface IMobileSpatialObject2D extends ISpatialObject2D
    {
 	  /**
+	   * Pinned getter.
+	   */
+	  function get pinned():Boolean
+	  /**
+	   * Pinned setter.
+	   */
+	  function set pinned(value:Boolean):void;
+
+	  /**
+	   * HorizontalPercent getter.
+	   */
+	  function get horizontalPercent():Number
+	  /**
+	   * HorizontalPercent setter.
+	   */
+	  function set horizontalPercent(value:Number):void;
+
+	  /**
+	   * VerticalPercent getter.
+	   */
+	  function get verticalPercent():Number
+	  /**
+	   * VerticalPercent setter.
+	   */
+	  function set verticalPercent(value:Number):void;
+
+	  /**
 	   * Position getter.
 	   */
 	  function get position():Point;

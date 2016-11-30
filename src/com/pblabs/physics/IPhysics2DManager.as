@@ -13,8 +13,16 @@ package com.pblabs.physics
 		function set scale(value:Number):void;
 		function get allowSleep():Boolean;
 		function set allowSleep(value:Boolean):void;
+		
 		function get gravity():Point;
 		function set gravity(value:Point):void;
+		function get linearDrag():Number;
+		function set linearDrag(value:Number):void;
+		function get angularDrag():Number;
+		function set angularDrag(value:Number):void;
+		function get friction():Number;
+		function set friction(value:Number):void;
+			
 		function get worldBounds():Rectangle;
 		function set worldBounds(value:Rectangle):void;
 		function get visualDebugging():Boolean;

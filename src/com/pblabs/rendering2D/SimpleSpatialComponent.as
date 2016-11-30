@@ -51,7 +51,17 @@ package com.pblabs.rendering2D
             _size = value;
         }
         
-        public function get position():Point
+		public function get screenRelativePosition():Point
+		{
+			return _screenRelativePosition;
+		}
+		
+		public function set screenRelativePosition(value:Point):void
+		{
+			_screenRelativePosition.setTo(value.x, value.y);
+		}
+
+		public function get position():Point
         {
             return _position.clone();
         }
@@ -61,6 +71,36 @@ package com.pblabs.rendering2D
             _position.x = value.x;
             _position.y = value.y;
         }
+		
+		public function get pinned():Boolean
+		{
+			return _pinned;
+		}
+		
+		public function set pinned(value:Boolean):void
+		{
+			_pinned = value;
+		}
+		
+		public function get horizontalPercent():Number
+		{
+			return _horizontalPercent;
+		}
+		
+		public function set horizontalPercent(value:Number):void
+		{
+			_horizontalPercent = value
+		}
+		
+		public function get verticalPercent():Number
+		{
+			return _verticalPercent;
+		}
+		
+		public function set verticalPercent(value:Number):void
+		{
+			_verticalPercent = value
+		}
 		
         [EditorData(ignore="true", inspectable="true")]
         public function set x(value:Number):void
@@ -167,13 +207,22 @@ package com.pblabs.rendering2D
          */
         override public function onTick(tickRate:Number):void
         {
-            // Note we set directly, as position (the accessor) clones the point,
+			if(_pinned && _spriteForPointChecks && !PBE.IN_EDITOR)
+			{
+				_pinnedPosition.setTo((PBE.mainStage.width * _horizontalPercent), (PBE.mainStage.height * _verticalPercent));
+				var tempScenePosition : Point = _spriteForPointChecks.scene.transformScreenToScene(_pinnedPosition);
+				_position = tempScenePosition;
+			}
+
+			// Note we set directly, as position (the accessor) clones the point,
             // which would result in a nop.
 			if(!PBE.IN_EDITOR){
 	            _position.x += linearVelocity.x * tickRate;
 	            _position.y += linearVelocity.y * tickRate;
 	            _rotation   += angularVelocity * tickRate;
 			}
+			
+			super.onTick(tickRate);
         }
         
         /**
@@ -281,7 +330,13 @@ package com.pblabs.rendering2D
             return spriteForPointChecks.pointOccupied(pos, mask);
         }
         
-        private var _objectMask:ObjectType;
+		protected var _pinned:Boolean = false;
+		protected var _horizontalPercent:Number = 0;
+		protected var _verticalPercent:Number = 0;
+		protected var _pinnedPosition:Point = new Point(0,0);
+		protected var _screenRelativePosition:Point = new Point(0,0);
+
+		private var _objectMask:ObjectType;
         private var _spatialManager:ISpatialManager2D;
 		private var _worldExtents:Rectangle = new Rectangle();
     }

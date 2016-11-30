@@ -85,6 +85,45 @@ package com.pblabs.nape
 				_space.gravity.setxy(_gravity.x, _gravity.y);
 		}
 		
+		public function get linearDrag():Number
+		{
+			return _linearDrag;
+		}
+		
+		public function set linearDrag(value:Number):void
+		{
+			_linearDrag = value;
+			
+			if ( _space )
+				_space.worldLinearDrag = _linearDrag;
+		}
+		
+		public function get angularDrag():Number
+		{
+			return _angularDrag;
+		}
+		
+		public function set angularDrag(value:Number):void
+		{
+			_angularDrag = value;
+			
+			if ( _space )
+				_space.worldAngularDrag = _angularDrag;
+		}
+
+		public function get friction():Number
+		{
+			return _friction;
+		}
+		
+		public function set friction(value:Number):void
+		{
+			_friction = value;
+			
+			if ( _space )
+				_space.world.inertia = _friction;
+		}
+		
 		public function get velocityIterations():int
 		{
 			return _velocityIterations;
@@ -588,6 +627,9 @@ package com.pblabs.nape
 		protected var _velocityIterations:int = 10;
 		protected var _positionIterations:int = 10;
 		protected var _gravity:Point = new Point(0, 600);
+		protected var _linearDrag : Number = 0;
+		protected var _angularDrag : Number = 0;
+		protected var _friction : Number = 0;
 		protected var _otherItems:BasicSpatialManager2D = new BasicSpatialManager2D();
 		protected var _materialManager:NapeMaterialManager;
 		protected var _allowSleep : Boolean = true;
