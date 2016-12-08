@@ -13,16 +13,13 @@ package com.pblabs.starling2D
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
-	import feathers.display.Scale9Image;
-	import feathers.textures.Scale9Textures;
-	
 	import starling.core.Starling;
+	import starling.display.Image;
 	import starling.textures.Texture;
 
 	public final class Scale9SpriteRendererG2D extends SpriteRendererG2D
 	{
 		private var _scale9Region : Rectangle = new Rectangle(5,5,5,5);
-		private var _scale9Textures : Scale9Textures;
 		
 		public function Scale9SpriteRendererG2D()
 		{
@@ -54,7 +51,8 @@ package com.pblabs.starling2D
 			var tmpScale : Point = combinedScale;
 			_transformMatrix.identity();
 			//_transformMatrix.scale(tmpScale.x, tmpScale.y);
-			_transformMatrix.translate(-_registrationPoint.x * tmpScale.x, -_registrationPoint.y * tmpScale.y);
+			//_transformMatrix.translate(-_registrationPoint.x * tmpScale.x, -_registrationPoint.y * tmpScale.y);
+			_transformMatrix.translate(-_registrationPoint.x, -_registrationPoint.y);
 			_transformMatrix.rotate(PBUtil.getRadiansFromDegrees(_rotation + _rotationOffset));
 			_transformMatrix.translate((_position.x + _positionOffset.x), (_position.y + _positionOffset.y));
 			
@@ -83,15 +81,15 @@ package com.pblabs.starling2D
 				}else{
 					var texture : Texture = ResourceTextureManagerG2D.getTextureForResource(resource);
 					if(texture){
-						if(_scale9Textures) {
-							_scale9Textures.texture.dispose();
+						if(!gpuObject){
+							gpuObject = new Image( texture );
+						}else{
+							if((gpuObject as Image).texture)
+								( gpuObject as Image).texture.dispose();
+							(gpuObject as Image).texture = texture;
 						}
-						_scale9Textures = new Scale9Textures(texture, _scale9Region);
-						if(!gpuObject)
-							gpuObject = new Scale9Image( _scale9Textures );
-						else
-							(gpuObject as Scale9Image).textures = _scale9Textures;
-						(gpuObject as Scale9Image).readjustSize();
+						(gpuObject as Image).scale9Grid = _scale9Region;
+						(gpuObject as Image).readjustSize();
 					}
 				}
 				smoothing = _smoothing;

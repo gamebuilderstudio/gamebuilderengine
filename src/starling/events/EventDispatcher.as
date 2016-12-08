@@ -1,7 +1,7 @@
 // =================================================================================================
 //
 //	Starling Framework
-//	Copyright 2011-2014 Gamua. All Rights Reserved.
+//	Copyright Gamua GmbH. All Rights Reserved.
 //
 //	This program is free software. You can redistribute and/or modify it
 //	in accordance with the terms of the accompanying license agreement.
@@ -11,10 +11,10 @@
 package starling.events
 {
     import flash.utils.Dictionary;
-    
+
     import starling.core.starling_internal;
     import starling.display.DisplayObject;
-    
+
     use namespace starling_internal;
     
     /** The EventDispatcher class is the base class for all classes that dispatch events. 
@@ -35,9 +35,9 @@ package starling.events
      *  @see Event
      *  @see starling.display.DisplayObject DisplayObject
      */
-    public class EventDispatcher implements IEventDispatcher
+    public class EventDispatcher
     {
-        private var mEventListeners:Dictionary;
+        private var _eventListeners:Dictionary;
         
         /** Helper object. */
         private static var sBubbleChains:Array = [];
@@ -49,12 +49,12 @@ package starling.events
         /** Registers an event listener at a certain object. */
         public function addEventListener(type:String, listener:Function):void
         {
-            if (mEventListeners == null)
-                mEventListeners = new Dictionary();
+            if (_eventListeners == null)
+                _eventListeners = new Dictionary();
             
-            var listeners:Vector.<Function> = mEventListeners[type] as Vector.<Function>;
+            var listeners:Vector.<Function> = _eventListeners[type] as Vector.<Function>;
             if (listeners == null)
-                mEventListeners[type] = new <Function>[listener];
+                _eventListeners[type] = new <Function>[listener];
             else if (listeners.indexOf(listener) == -1) // check for duplicates
                 listeners[listeners.length] = listener; // avoid 'push'
         }
@@ -62,9 +62,9 @@ package starling.events
         /** Removes an event listener from the object. */
         public function removeEventListener(type:String, listener:Function):void
         {
-            if (mEventListeners)
+            if (_eventListeners)
             {
-                var listeners:Vector.<Function> = mEventListeners[type] as Vector.<Function>;
+                var listeners:Vector.<Function> = _eventListeners[type] as Vector.<Function>;
                 var numListeners:int = listeners ? listeners.length : 0;
 
                 if (numListeners > 0)
@@ -72,16 +72,17 @@ package starling.events
                     // we must not modify the original vector, but work on a copy.
                     // (see comment in 'invokeEvent')
 
-                    var index:int = 0;
-                    var restListeners:Vector.<Function> = new Vector.<Function>(numListeners-1);
+                    var index:int = listeners.indexOf(listener);
 
-                    for (var i:int=0; i<numListeners; ++i)
+                    if (index != -1)
                     {
-                        var otherListener:Function = listeners[i];
-                        if (otherListener != listener) restListeners[int(index++)] = otherListener;
-                    }
+                        var restListeners:Vector.<Function> = listeners.slice(0, index);
 
-                    mEventListeners[type] = restListeners;
+                        for (var i:int=index+1; i<numListeners; ++i)
+                            restListeners[i-1] = listeners[i];
+
+                        _eventListeners[type] = restListeners;
+                    }
                 }
             }
         }
@@ -90,10 +91,10 @@ package starling.events
          *  Be careful when removing all event listeners: you never know who else was listening. */
         public function removeEventListeners(type:String=null):void
         {
-            if (type && mEventListeners)
-                delete mEventListeners[type];
+            if (type && _eventListeners)
+                delete _eventListeners[type];
             else
-                mEventListeners = null;
+                _eventListeners = null;
         }
         
         /** Dispatches an event to all objects that have registered listeners for its type. 
@@ -104,7 +105,7 @@ package starling.events
         {
             var bubbles:Boolean = event.bubbles;
             
-            if (!bubbles && (mEventListeners == null || !(event.type in mEventListeners)))
+            if (!bubbles && (_eventListeners == null || !(event.type in _eventListeners)))
                 return; // no need to do anything
             
             // we save the current target and restore it later;
@@ -125,8 +126,8 @@ package starling.events
          *  method uses this method internally. */
         internal function invokeEvent(event:Event):Boolean
         {
-            var listeners:Vector.<Function> = mEventListeners ?
-                mEventListeners[event.type] as Vector.<Function> : null;
+            var listeners:Vector.<Function> = _eventListeners ?
+                _eventListeners[event.type] as Vector.<Function> : null;
             var numListeners:int = listeners == null ? 0 : listeners.length;
             
             if (numListeners)
@@ -197,11 +198,18 @@ package starling.events
             }
         }
         
-        /** Returns if there are listeners registered for a certain event type. */
-        public function hasEventListener(type:String):Boolean
+        /** If called with one argument, figures out if there are any listeners registered for
+         *  the given event type. If called with two arguments, also determines if a specific
+         *  listener is registered. */
+        public function hasEventListener(type:String, listener:Function=null):Boolean
         {
-            var listeners:Vector.<Function> = mEventListeners ? mEventListeners[type] : null;
-            return listeners ? listeners.length != 0 : false;
+            var listeners:Vector.<Function> = _eventListeners ? _eventListeners[type] : null;
+            if (listeners == null) return false;
+            else
+            {
+                if (listener != null) return listeners.indexOf(listener) != -1;
+                else return listeners.length != 0;
+            }
         }
     }
 }

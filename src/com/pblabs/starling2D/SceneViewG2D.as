@@ -10,6 +10,7 @@ package com.pblabs.starling2D
 {
     import com.pblabs.engine.PBE;
     import com.pblabs.engine.PBUtil;
+    import com.pblabs.engine.debug.Logger;
     import com.pblabs.rendering2D.ui.IUITarget;
     
     import flash.display.StageAlign;
@@ -73,13 +74,13 @@ package com.pblabs.starling2D
 				}else{
 					if(!Starling.current || forceNewInstanceCreation){
 						Starling.multitouchEnabled = true; // useful on mobile devices
-						Starling.handleLostContext = true; // deactivate on mobile devices (to save memory)
 						
 						_stage3DIndex = _stage3DIndex + 1;
 						if(PBE.mainStage.stage3Ds[_stage3DIndex].context3D)
 							PBE.mainStage.stage3Ds[_stage3DIndex].context3D.clear();
 						
-						_starlingInstance = new Starling(Sprite, PBE.mainStage, new Rectangle(0,0, width, height), PBE.mainStage.stage3Ds[_stage3DIndex], renderMode, profile, true);
+						_starlingInstance = new Starling(Sprite, PBE.mainStage, new Rectangle(0,0, width, height), PBE.mainStage.stage3Ds[_stage3DIndex], renderMode, profile);
+						_starlingInstance.skipUnchangedFrames = true;
 						_starlingInstance.addEventListener("context3DCreate", onContextCreated);
 						_starlingInstance.addEventListener("rootCreated", onRootInitialized);
 						_starlingInstance.start();
@@ -288,8 +289,9 @@ package com.pblabs.starling2D
 		
 		private function onContextCreated(event : * = null):void{
 			// set framerate to 32 in software mode
-			if (_starlingInstance.context.driverInfo.toLowerCase().indexOf("software") != -1) {
+			if (_starlingInstance && _starlingInstance.context.driverInfo.toLowerCase().indexOf("software") != -1) {
 				_starlingInstance.nativeStage.frameRate = 32;
+				Logger.info(this, "onContextCreated", "Running in Software mode Setting FPS to 32. ["+_starlingInstance.context.driverInfo.toLowerCase()+"]");
 			}
 		}
 		

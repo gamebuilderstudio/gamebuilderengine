@@ -18,7 +18,6 @@ package com.pblabs.starling2D
 	
 	import starling.core.Starling;
 	import starling.display.DisplayObject;
-	import starling.display.QuadBatch;
 	
 	/**
 	 * Abstract base renderer for Rendering Starling GPU 2D DisplayObjects. It wraps a starling DisplayObject, allows it
@@ -45,7 +44,6 @@ package com.pblabs.starling2D
 		
 		protected var gpuObject : DisplayObject;
 		protected var gpuObjectDirty : Boolean = false;
-		protected var _mouseEnabled:Boolean = false;
 
 		/**
 		 * @inheritDoc
@@ -113,7 +111,7 @@ package com.pblabs.starling2D
 		{
 			super.onRemove();
 			if(gpuObject) {
-				if(("texture" in gpuObject && !(gpuObject is QuadBatch)) || ("texture" in gpuObject && gpuObject is QuadBatch && (gpuObject as QuadBatch).ownsTexture))
+				if("texture" in gpuObject)
 				{
 					gpuObject['texture'].dispose();
 				}
@@ -227,16 +225,11 @@ package com.pblabs.starling2D
 		/**
 		 * @see Starling Sprite.touchable
 		 */
-		public function set mouseEnabled(value:Boolean):void
+		override public function set mouseEnabled(value:Boolean):void
 		{
-			_mouseEnabled = value;
+			super.mouseEnabled = value;
 			if(gpuObject)
 				gpuObject.touchable = _mouseEnabled;
-		}
-		
-		public function get mouseEnabled():Boolean
-		{
-			return _mouseEnabled;
 		}
 	}
 }

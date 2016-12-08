@@ -29,8 +29,7 @@ package com.pblabs.starling2D
 	import starling.text.TextField;
 	import starling.text.TextFieldAutoSize;
 	import starling.textures.Texture;
-	import starling.utils.HAlign;
-	import starling.utils.VAlign;
+	import starling.utils.Align;
 	
 	public class UITextRendererComponentG2D extends UITextRendererComponent
 	{
@@ -100,13 +99,17 @@ package com.pblabs.starling2D
 			if(!skipCreation){
 				if(!gpuObject && !isComposedTextData)
 				{
-					gpuObject = new TextField(_size.x * _scale.x, _size.y * _scale.y, _text, textFormatter.font, fontSize, uint(textFormatter.color), Boolean(textFormatter.bold));
+					gpuObject = new TextField(_size.x * _scale.x, _size.y * _scale.y, _text);
 					(gpuObject as TextField).customScaleFactor = ResourceTextureManagerG2D.actualScaleFactor;
-					(gpuObject as TextField).italic = Boolean(textFormatter.italic);
 					(gpuObject as TextField).autoSize = _autoResize ? _autoResizeDirection : "none";
 					(gpuObject as TextField).wordWrap = _wordWrap;
-					(gpuObject as TextField).hAlign = HAlign.LEFT;
-					(gpuObject as TextField).vAlign = VAlign.TOP;
+					(gpuObject as TextField).format.font = textFormatter.font;
+					(gpuObject as TextField).format.size = Number(textFormatter.size);
+					(gpuObject as TextField).format.color = uint(textFormatter.color);
+					(gpuObject as TextField).format.italic = Boolean(textFormatter.italic);
+					(gpuObject as TextField).format.bold = textFormatter.bold;
+					(gpuObject as TextField).format.horizontalAlign = Align.LEFT;
+					(gpuObject as TextField).format.verticalAlign = Align.TOP;
 					
 					_textDirty = false;
 					_textSizeDirty = false;
@@ -133,13 +136,18 @@ package com.pblabs.starling2D
 							bitmapFont = new BitmapFont(fontTexture, fontDataXML);
 							TextField.registerBitmapFont(bitmapFont, currentFontName);
 						}
-						gpuObject = new TextField(_size.x * _scale.x, _size.y * _scale.y, _text, currentFontName, bitmapFont.size, uint(textFormatter.color));
+						gpuObject = new TextField(_size.x * _scale.x, _size.y * _scale.y, _text);
 						(gpuObject as TextField).autoSize = _autoResize ? _autoResizeDirection : "none";
 						(gpuObject as TextField).autoScale = _autoResize;
 						(gpuObject as TextField).wordWrap = _wordWrap;
-						(gpuObject as TextField).hAlign = HAlign.LEFT;
-						(gpuObject as TextField).vAlign = VAlign.TOP;
-						
+						(gpuObject as TextField).format.font = currentFontName;
+						(gpuObject as TextField).format.size = bitmapFont.size;
+						(gpuObject as TextField).format.color = uint(textFormatter.color);
+						(gpuObject as TextField).format.italic = Boolean(textFormatter.italic);
+						(gpuObject as TextField).format.bold = textFormatter.bold;
+						(gpuObject as TextField).format.horizontalAlign = Align.LEFT;
+						(gpuObject as TextField).format.verticalAlign = Align.TOP;
+
 						_textDirty = false;
 						_textSizeDirty = false;
 					}
@@ -261,57 +269,57 @@ package com.pblabs.starling2D
 		
 		override public function get fontColor():uint{ 
 			if(gpuObject && gpuObject is TextField)
-				return (gpuObject as TextField).color;
+				return (gpuObject as TextField).format.color;
 			return uint(textFormatter.color);
 		}
 		override public function set fontColor(val : uint):void{
 			super.fontColor = val;
 			if(gpuObject && gpuObject is TextField)
-				(gpuObject as TextField).color = val;
+				(gpuObject as TextField).format.color = val;
 		}
 
 		override public function get fontBold():Boolean{ 
 			if(gpuObject && gpuObject is TextField)
-				return (gpuObject as TextField).bold;
+				return (gpuObject as TextField).format.bold;
 			return Boolean(textFormatter.bold);
 		}
 		override public function set fontBold(val : Boolean):void{
 			super.fontBold = val;
 			if(gpuObject && gpuObject is TextField)
-				(gpuObject as TextField).bold = val;
+				(gpuObject as TextField).format.bold = val;
 		}
 
 		override public function get fontItalic():Boolean{ 
 			if(gpuObject && gpuObject is TextField)
-				return (gpuObject as TextField).italic;
+				return (gpuObject as TextField).format.italic;
 			return Boolean(textFormatter.italic);
 		}
 		override public function set fontItalic(val : Boolean):void{
 			super.fontItalic = val;
 			if(gpuObject && gpuObject is TextField)
-				(gpuObject as TextField).italic = val;
+				(gpuObject as TextField).format.italic = val;
 		}
 
 		override public function get fontSize():Number{ 
 			if(gpuObject && gpuObject is TextField)
-				return (gpuObject as TextField).fontSize;
+				return (gpuObject as TextField).format.size;
 			return int(textFormatter.size); 
 		}
 		override public function set fontSize(val : Number):void{
 			super.fontSize = val;
 			if(gpuObject && gpuObject is TextField)
-				(gpuObject as TextField).fontSize = val;
+				(gpuObject as TextField).format.size = val;
 		}
 		
 		override public function get fontName():String{ 
 			if(gpuObject && gpuObject is TextField)
-				return (gpuObject as TextField).fontName;
+				return (gpuObject as TextField).format.font;
 			return textFormatter.font; 
 		}
 		override public function set fontName(val : String):void{
 			super.fontName = val;
 			if(gpuObject && gpuObject is TextField)
-				(gpuObject as TextField).fontName = val;
+				(gpuObject as TextField).format.font = val;
 		}
 		
 		override public function set text(val : String):void{

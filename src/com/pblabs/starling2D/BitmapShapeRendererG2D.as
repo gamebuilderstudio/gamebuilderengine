@@ -152,7 +152,7 @@ package com.pblabs.starling2D
 		}
 		
 		protected function get textureCacheKey():String{
-			return _isSquare + ":" + _isCircle + ":" + _radius + ":" + _fillColor + ":" + _fillAlpha + ":" + _lineColor + ":" + _lineSize + ":" + _lineAlpha + ":" + "_"+_size.x +","+_size.y+"_";
+			return _isSquare + ":" + _isCircle + ":" + _radius + ":" + _fillColor + ":" + _fillAlpha + ":" + _lineColor + ":" + _lineSize + ":" + _lineAlpha + ":" + "_"+_size.x +","+_size.y+"_"+_scale.x+"_"+_scale.y;
 		}
 		
 		/**
@@ -165,9 +165,9 @@ package com.pblabs.starling2D
 			if(gpuObject)
 			{
 				if(!_smoothing)
-					(gpuObject as Image).smoothing = TextureSmoothing.NONE;
+					(gpuObject as Image).textureSmoothing = TextureSmoothing.NONE;
 				else
-					(gpuObject as Image).smoothing = TextureSmoothing.TRILINEAR;
+					(gpuObject as Image).textureSmoothing = TextureSmoothing.TRILINEAR;
 			}
 		}
 	}

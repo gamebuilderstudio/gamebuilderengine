@@ -100,7 +100,8 @@ package com.pblabs.starling2D
 				_subTextureToOriginTextureMap[subtexture] = texture;
 				return subtexture;
 			}else{
-				texture = Texture.fromBitmapData( sourceBitmapData, false, false, scaleFactor, "bgra", repeat, onTextureRestored);
+				texture = Texture.fromBitmapData( sourceBitmapData, false, false, scaleFactor, "bgra", repeat);
+				texture.root.onRestore = onTextureRestored;
 				texture.disposed.addOnce(releaseTexture);
 				_originTextureToBitmapDataMap[texture.root] = sourceBitmapData;
 				_originTexturesMap[key] = new Vector.<Texture>();
@@ -136,14 +137,16 @@ package com.pblabs.starling2D
 					texture.disposed.addOnce(releaseTexture);
 					resource.dispose();
 				}else if(resource.isAtfImage && resource.atfData){
-					texture = Texture.fromAtfData(resource.atfData, scaleFactor, false, false, repeat, onTextureRestored);
+					//TODO: Add Asynch ATF Texture upload support
+					texture = Texture.fromAtfData(resource.atfData, scaleFactor, false, null, false);
 					texture.disposed.addOnce(releaseTexture);
 					_originTextureToBitmapDataMap[texture.root] = resource.atfData;
 				}else{
-					texture = Texture.fromBitmapData(resource.bitmapData, false, false, scaleFactor, "bgra", repeat, onTextureRestored);
+					texture = Texture.fromBitmapData(resource.bitmapData, false, false, scaleFactor, "bgra", repeat);
 					texture.disposed.addOnce(releaseTexture);
 					_originTextureToBitmapDataMap[texture.root] = resource.bitmapData;
 				}
+				texture.root.onRestore = onTextureRestored;
 				_originTexturesMap[resource] = new Vector.<Texture>();
 				_originTexturesMap[resource][_originTexturesMap[resource].length] = texture;
 				_textureReferenceCount[texture] = 1;
@@ -232,8 +235,10 @@ package com.pblabs.starling2D
 			return null;
 		}
 
-		private static function onTextureRestored(texture : Texture):void
+		private static function onTextureRestored(texture : Texture = null):void
 		{
+			if(!texture) return;
+			
 			if(texture.root in _originTextureToBitmapDataMap && _originTextureToBitmapDataMap[texture.root] is BitmapData)
 			{
 				texture.root.uploadBitmapData( _originTextureToBitmapDataMap[texture.root] as BitmapData );

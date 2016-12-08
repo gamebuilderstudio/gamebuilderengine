@@ -187,9 +187,9 @@ package com.pblabs.starling2D
 			if(gpuObject)
 			{
 				if(!_smoothing)
-					(gpuObject as Image).smoothing = TextureSmoothing.NONE;
+					(gpuObject as Image).textureSmoothing = TextureSmoothing.NONE;
 				else
-					(gpuObject as Image).smoothing = TextureSmoothing.BILINEAR;
+					(gpuObject as Image).textureSmoothing = TextureSmoothing.BILINEAR;
 			}
 		}
 		

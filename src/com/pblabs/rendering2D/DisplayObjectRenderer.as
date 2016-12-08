@@ -128,6 +128,7 @@ package com.pblabs.rendering2D
         protected var _layerIndexDirty:Boolean = true;
         protected var _zIndexDirty:Boolean = true;
         protected var _hitTestDirty:Boolean = true;
+		protected var _mouseEnabled:Boolean = true;
         
         protected var _inScene:Boolean = false;
         
@@ -590,6 +591,19 @@ package com.pblabs.rendering2D
 			return _transformMatrix;
 		}
 		
+		/**
+		 * Tourn interactivity checks on or off
+		 */
+		public function set mouseEnabled(value:Boolean):void
+		{
+			_mouseEnabled = value;
+		}
+		
+		public function get mouseEnabled():Boolean
+		{
+			return _mouseEnabled;
+		}
+		
         /**
          * Transform a point from world space to object space. 
          */
@@ -617,7 +631,7 @@ package com.pblabs.rendering2D
          */
         public function pointOccupied(worldPosition:Point, mask:ObjectType):Boolean
         {
-            if (!displayObject || !scene)
+            if (!_mouseEnabled || !displayObject || !scene)
                 return false;
             
             // Sanity check.

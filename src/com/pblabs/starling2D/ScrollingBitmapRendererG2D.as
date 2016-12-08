@@ -71,10 +71,11 @@ package com.pblabs.starling2D
 			textureCoordPt2.setTo(xx+hRatio, yy);
 			textureCoordPt3.setTo(xx, yy + vRatio);
 			textureCoordPt4.setTo(xx+hRatio, yy + vRatio);
-			imageText.setTexCoords(0, textureCoordPt1);//top left
-			imageText.setTexCoords(1, textureCoordPt2);//top right
-			imageText.setTexCoords(2, textureCoordPt3);//bottom left
-			imageText.setTexCoords(3, textureCoordPt4);//bottom right
+			
+			imageText.setTexCoords(0, textureCoordPt1.x, textureCoordPt1.y);//top left
+			imageText.setTexCoords(1, textureCoordPt2.x, textureCoordPt2.y);//top right
+			imageText.setTexCoords(2, textureCoordPt3.x, textureCoordPt3.y);//bottom left
+			imageText.setTexCoords(3, textureCoordPt4.x, textureCoordPt4.y);//bottom right
 
 			if(_initialDraw)
 				_initialDraw = false;
@@ -119,10 +120,10 @@ package com.pblabs.starling2D
 				textureCoordPt2.setTo(hRatio, 0);
 				textureCoordPt3.setTo(0, vRatio);
 				textureCoordPt4.setTo(hRatio, vRatio);
-				(gpuObject as Image).setTexCoords(0, textureCoordPt1);
-				(gpuObject as Image).setTexCoords(1, textureCoordPt2);
-				(gpuObject as Image).setTexCoords(2, textureCoordPt3);
-				(gpuObject as Image).setTexCoords(3, textureCoordPt4);
+				(gpuObject as Image).setTexCoords(0, textureCoordPt1.x, textureCoordPt1.y);//top left
+				(gpuObject as Image).setTexCoords(1, textureCoordPt2.x, textureCoordPt2.y);//top right
+				(gpuObject as Image).setTexCoords(2, textureCoordPt3.x, textureCoordPt3.y);//bottom left
+				(gpuObject as Image).setTexCoords(3, textureCoordPt4.x, textureCoordPt4.y);//bottom right
 				
 				skipCreation = true;
 				_imageDataDirty = false;

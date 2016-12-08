@@ -120,9 +120,6 @@ package com.pblabs.starling2D
 					}
 				}
 			}
-			if((gpuObject as Sprite).isFlattened)
-				(gpuObject as Sprite).unflatten();
-			
 			clearAllImageTiles();
 			
 			var tiledLayers : Vector.<TiledLayer> = _tiledLayers.getTileLayers();
@@ -154,9 +151,9 @@ package com.pblabs.starling2D
 							tileImageData.x = _scratchCopyPoint.x;
 							tileImageData.y = _scratchCopyPoint.y;
 							if(!_smoothing)
-								tileImageData.smoothing = TextureSmoothing.NONE;
+								tileImageData.textureSmoothing = TextureSmoothing.NONE;
 							else
-								tileImageData.smoothing = TextureSmoothing.TRILINEAR;
+								tileImageData.textureSmoothing = TextureSmoothing.TRILINEAR;
 							
 							if(_tiledMap)
 							{
@@ -189,7 +186,6 @@ package com.pblabs.starling2D
 					}
 				}
 			}
-			(gpuObject as Sprite).flatten();
 			_mapDirty = false;
 			_transformDirty = true;
 			updateTransform();
