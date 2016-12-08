@@ -109,6 +109,11 @@ package com.pblabs.rendering2D.spritesheet
 			return null;
 		}
 
+		public function isFrameAreaRotated(index : int):Boolean
+		{
+			return false;
+		}
+
 		/**
 		 * @inheritDoc
 		 */

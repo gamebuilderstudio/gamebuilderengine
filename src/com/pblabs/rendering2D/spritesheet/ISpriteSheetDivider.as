@@ -53,5 +53,7 @@ package com.pblabs.rendering2D.spritesheet
 		 * Used to clean up any resources the divider may have
 		 **/
 		function destroy():void;
-    }
+
+		function isFrameAreaRotated(val:int):Boolean;
+	}
 }

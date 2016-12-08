@@ -19,7 +19,6 @@ package com.pblabs.rendering2D.spritesheet
 		function getFrameAreaUnTrimmed(val:int):Rectangle;
 		function getFrameByName(name:String):Rectangle;
 		function getFrameIndexByName(name:String):int;
-		function isFrameAreaRotated(val:int):Boolean;
 		function get isLoaded():Boolean;
 	}
 }
