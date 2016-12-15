@@ -7,6 +7,7 @@ package com.pblabs.starling2D
 	import com.pblabs.engine.resource.ResourceManager;
 	
 	import flash.display.BitmapData;
+	import flash.events.Event;
 	import flash.geom.Rectangle;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
@@ -18,6 +19,7 @@ package com.pblabs.starling2D
 
 	public class ResourceTextureManagerG2D
 	{
+		private static var _originTextureToResourceIdUploadMap : Dictionary = new Dictionary(true);
 		private static var _originTextureToBitmapDataMap : Dictionary = new Dictionary(true);
 		private static var _originTexturesMap : Dictionary = new Dictionary();
 		private static var _originAtlasMap : Dictionary = new Dictionary(true);
@@ -100,7 +102,7 @@ package com.pblabs.starling2D
 				_subTextureToOriginTextureMap[subtexture] = texture;
 				return subtexture;
 			}else{
-				texture = Texture.fromBitmapData( sourceBitmapData, false, false, scaleFactor, "bgra", repeat);
+				texture = Texture.fromBitmapData( sourceBitmapData, false, false, scaleFactor, "bgra", repeat, textureUploadCallBack);
 				texture.root.onRestore = onTextureRestored;
 				texture.disposed.addOnce(releaseTexture);
 				_originTextureToBitmapDataMap[texture.root] = sourceBitmapData;
@@ -133,19 +135,20 @@ package com.pblabs.starling2D
 			}else{
 				//TODO: Add support for ATFImageResources in the future
 				if(resource.embeddedClass){
-					texture = Texture.fromEmbeddedAsset(resource.embeddedClass, false, false, scaleFactor, "bgra", repeat);
+					texture = Texture.fromEmbeddedAsset(resource.embeddedClass, false, false, scaleFactor, "bgra", repeat, textureUploadCallBack);
 					texture.disposed.addOnce(releaseTexture);
 					resource.dispose();
 				}else if(resource.isAtfImage && resource.atfData){
 					//TODO: Add Asynch ATF Texture upload support
-					texture = Texture.fromAtfData(resource.atfData, scaleFactor, false, null, false);
+					texture = Texture.fromAtfData(resource.atfData, scaleFactor, false, textureUploadCallBack, false);
 					texture.disposed.addOnce(releaseTexture);
 					_originTextureToBitmapDataMap[texture.root] = resource.atfData;
 				}else{
-					texture = Texture.fromBitmapData(resource.bitmapData, false, false, scaleFactor, "bgra", repeat);
+					texture = Texture.fromBitmapData(resource.bitmapData, false, false, scaleFactor, "bgra", repeat, textureUploadCallBack);
 					texture.disposed.addOnce(releaseTexture);
 					_originTextureToBitmapDataMap[texture.root] = resource.bitmapData;
 				}
+				_originTextureToResourceIdUploadMap[texture.root] = {resourceId: (resource.filename.toLowerCase() + String(ImageResource)), uploaded: false};
 				texture.root.onRestore = onTextureRestored;
 				_originTexturesMap[resource] = new Vector.<Texture>();
 				_originTexturesMap[resource][_originTexturesMap[resource].length] = texture;
@@ -159,12 +162,20 @@ package com.pblabs.starling2D
 			return null;
 		}
 		
+		public static function textureUploadCallBack(texture : Texture, event : Event):void
+		{
+			if(texture && texture.root in _originTextureToResourceIdUploadMap && event && event.type == Event.TEXTURE_READY)
+			{
+				_originTextureToResourceIdUploadMap[texture.root].uploaded = true;
+			}
+		}
+		
 		public static function getTexturesForResource(resource : Resource):Vector.<Texture>
 		{
 			if(!resource)
 				return null;
 			
-			if(_originTexturesMap[resource])
+			if(resource in _originTexturesMap && _originTexturesMap[resource])
 			{
 				var len : int = _originTexturesMap[resource].length;
 				var newTextureList : Vector.<Texture> = new Vector.<Texture>();

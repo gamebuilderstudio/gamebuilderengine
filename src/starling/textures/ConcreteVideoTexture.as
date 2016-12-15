@@ -62,7 +62,7 @@ package starling.textures
         private function onTextureReady(event:Event):void
         {
             base.removeEventListener(Event.TEXTURE_READY, onTextureReady);
-            execute(_textureReadyCallback, this);
+            execute(_textureReadyCallback, this, event);
             _textureReadyCallback = null;
         }
 
