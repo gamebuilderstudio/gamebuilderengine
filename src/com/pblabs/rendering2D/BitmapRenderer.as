@@ -176,7 +176,7 @@ package com.pblabs.rendering2D
         }
         
         static protected const zeroPoint:Point = new Point();
-		private var _modifiers:Array = [];
+		protected var _modifiers:Array = [];
 		protected var originalBitmapData:BitmapData;
     }
 }

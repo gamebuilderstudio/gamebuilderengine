@@ -96,6 +96,7 @@ package com.pblabs.starling2D
 					var texture : Texture = ResourceTextureManagerG2D.getTextureForResource(resource, true);
 					if(texture){
 						gpuObject = new Image(texture);
+						(gpuObject as Image).textureRepeat = true;
 					}
 				}else{
 					if((gpuObject as Image).texture)

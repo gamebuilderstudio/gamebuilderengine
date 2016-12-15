@@ -104,7 +104,12 @@ package com.pblabs.rendering2D
          */
         public var objectMask:ObjectType;
         
-        protected var _displayObject:DisplayObject;
+		/**
+		 * The renderer used as a mask for this renderer
+		 */
+		public var rendererMaskProperty:PropertyReference;
+
+		protected var _displayObject:DisplayObject;
         protected var _scene:IScene2D;
         
         protected var _layerIndex:int = 0;
@@ -121,6 +126,9 @@ package com.pblabs.rendering2D
         protected var _position:Point = new Point();
 		protected var _positionOffset:Point = new Point();
         protected var _size:Point = new Point();
+		
+		protected var _mask : DisplayObjectRenderer;
+		protected var _maskDirty : Boolean = false;
         
         protected var _transformMatrix:Matrix = new Matrix();
         
@@ -604,7 +612,26 @@ package com.pblabs.rendering2D
 			return _mouseEnabled;
 		}
 		
-        /**
+		public function get mask():DisplayObjectRenderer
+		{
+			return _mask;
+		}
+		
+		/**
+		 * Position of the renderer in scene space.
+		 *
+		 * @see worldPosition
+		 */
+		public function set mask(value:DisplayObjectRenderer):void
+		{
+			if (_mask == value)
+				return;
+			
+			_mask = value;
+			_maskDirty = true;
+		}
+
+		/**
          * Transform a point from world space to object space. 
          */
         public function transformWorldToObject(p:Point):Point
@@ -695,16 +722,30 @@ package com.pblabs.rendering2D
             
             updateProperties();
             
-            // Now that we've read all our properties, apply them to our transform.
+			if(_maskDirty)
+				updateMask();
+			
+			// Now that we've read all our properties, apply them to our transform.
             if (_transformDirty)
                 updateTransform();
         }
+		
+		protected function updateMask():void
+		{
+			if(!_displayObject) return;
+			
+			_displayObject.mask = _mask.displayObject;
+			_maskDirty = false;
+		}
         
         protected function updateProperties():void
         {
             if(!owner)
                 return;
             
+			if(rendererMaskProperty && !PBE.IN_EDITOR)
+				mask = owner.getProperty(rendererMaskProperty, _mask);
+				
             // Sync our zIndex.
             if (zIndexProperty)
                 zIndex = owner.getProperty(zIndexProperty, zIndex);

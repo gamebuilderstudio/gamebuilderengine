@@ -92,6 +92,17 @@ package com.pblabs.starling2D
 
 			_transformDirty = false;
 		}
+		
+		override protected function updateMask():void
+		{
+			if(!gpuObject || !(_mask is DisplayObjectRendererG2D)){
+				super.updateMask();
+				return;
+			}
+			
+			gpuObject.mask = (_mask as DisplayObjectRendererG2D).displayObjectG2D;
+			_maskDirty = false;
+		}
 
 		/**
 		 * Is the rendered object opaque at the request position in screen space?

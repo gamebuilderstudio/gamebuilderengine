@@ -88,9 +88,9 @@ package com.pblabs.starling2D
 			
 			var tempTexture : Texture;
 			if(directionReference)
-				tempTexture = modifyTexture(_spriteSheet.getTexture(_spriteIndex, owner.getProperty(directionReference) as Number));
+				tempTexture = _spriteSheet.getTexture(_spriteIndex, owner.getProperty(directionReference) as Number);
 			else
-				tempTexture = modifyTexture(_spriteSheet.getTexture(_spriteIndex));
+				tempTexture = _spriteSheet.getTexture(_spriteIndex);
 			
 			if(!tempTexture)
 				return null;
@@ -131,23 +131,6 @@ package com.pblabs.starling2D
 			
 			return tempTexture;
 			
-		}
-		
-		protected override function dataModified():void
-		{
-			// set the registration (alignment) point to the sprite's center
-			/*if (_spriteSheet.centered)
-				registrationPoint = new Point(currentTexture.width/2,currentTexture.height/2);*/
-		}
-		
-		protected override function modifyTexture(data:Texture):Texture
-		{
-			// this function is overridden so spriteIndex can be passed to 
-			// the applied modifiers
-			/*for (var m:int = 0; m<modifiers.length; m++)
-				data = (modifiers[m] as Modifier).modify(data, _spriteIndex, _spriteSheet.frameCount);
-			return data;*/     
-			return data;
 		}
 		
 		override protected function onAdd() : void

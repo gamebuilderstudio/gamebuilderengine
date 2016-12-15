@@ -10,24 +10,17 @@ package com.pblabs.starling2D
 {
 	import com.pblabs.engine.core.ObjectType;
 	import com.pblabs.engine.resource.ResourceManager;
-	import com.pblabs.rendering2D.BitmapShapeRenderer;
+	import com.pblabs.rendering2D.SimpleShapeRenderer;
 	
-	import flash.display.Bitmap;
-	import flash.display.BitmapData;
-	import flash.display.Graphics;
-	import flash.display.PixelSnapping;
-	import flash.display.Sprite;
-	import flash.geom.Matrix;
 	import flash.geom.Point;
-	import flash.geom.Rectangle;
 	
 	import starling.core.Starling;
-	import starling.display.Image;
-	import starling.textures.Texture;
-	import starling.textures.TextureSmoothing;
+	import starling.display.Canvas;
 	
-	public class BitmapShapeRendererG2D extends BitmapShapeRenderer
+	public class BitmapShapeRendererG2D extends SimpleShapeRenderer
 	{
+		protected var _smoothing:Boolean = false;
+
 		public function BitmapShapeRendererG2D()
 		{
 			_smoothing = false;
@@ -52,32 +45,27 @@ package com.pblabs.starling2D
 			}
 
 			if(!skipCreation){
-				try{
-					if((!bitmap || !bitmap.bitmapData) && !texture)
-					{
-						return;
-					}
-				}catch(e : Error){
-					return;
-				}
-				
 				if(!gpuObject){
-					var texture : Texture = ResourceTextureManagerG2D.getTextureByKey( textureCacheKey );
-					if(texture)
-					{
-						gpuObject = new Image(texture);
-					}else{
-						//Create GPU Renderer Object
-						gpuObject = new Image(ResourceTextureManagerG2D.getTextureForBitmapData( this.bitmap.bitmapData, textureCacheKey ));
-					}
-				}else if(_shapeDirty){
-					if((gpuObject as Image).texture)
-						( gpuObject as Image).texture.dispose();
-				
-					(gpuObject as Image).texture = texture = ResourceTextureManagerG2D.getTextureForBitmapData(this.bitmap.bitmapData, textureCacheKey);
-					(gpuObject as Image).readjustSize();
+					gpuObject = new Canvas();
 				}
-				smoothing = _smoothing;
+				
+				if(_shapeDirty)
+				{
+					(gpuObject as Canvas).clear();
+					(gpuObject as Canvas).beginFill(fillColor, fillAlpha);
+					
+					if(isSquare)
+						(gpuObject as Canvas).drawRectangle(0, 0, size.x, size.y);
+					else if(isCircle){
+						var radiansX : Number = 180 * (Math.PI/180);
+						var radiansY : Number = -90 * (Math.PI/180);
+						var x : int = radius * Math.cos(radiansX);
+						var y : int = radius * Math.sin(radiansY);
+						(gpuObject as Canvas).drawCircle(-x*ResourceManager.scaleFactor, -y*ResourceManager.scaleFactor, radius*ResourceManager.scaleFactor);
+					}
+					(gpuObject as Canvas).endFill();
+					_shapeDirty = false;
+				}
 			}
 			super.buildG2DObject();
 		}
@@ -94,81 +82,20 @@ package com.pblabs.starling2D
 				return;
 			}
 
-			if(!ResourceTextureManagerG2D.isATextureCachedWithKey( textureCacheKey ) || _shapeDirty){
-				
-				if(bitmap){
-					if(bitmap.bitmapData)
-						bitmap.bitmapData.dispose();
-					bitmap.bitmapData = null;
-				}
-				
-				if(!_shape)
-					_shape = new Sprite();
-				
-				// Get references.
-				var s:Sprite = _shape;
-				if(!s)
-					throw new Error("displayObject null or not a Sprite!");
-				var g:Graphics = s.graphics;
-				
-				// Don't forget to clear.
-				g.clear();
-				
-				// Prep line/fill settings.
-				g.lineStyle(lineSize, lineColor, lineAlpha);
-				g.beginFill(fillColor, fillAlpha);
-				
-				// Draw one or both shapes.
-				if(isSquare)
-					g.drawRect(0, 0, size.x*ResourceManager.scaleFactor, size.y*ResourceManager.scaleFactor);
-				
-				if(isCircle){
-					var radiansX : Number = 180 * (Math.PI/180);
-					var radiansY : Number = -90 * (Math.PI/180);
-					var x : int = radius * Math.cos(radiansX);
-					var y : int = radius * Math.sin(radiansY);
-					g.drawCircle(-x*ResourceManager.scaleFactor, -y*ResourceManager.scaleFactor, radius*ResourceManager.scaleFactor);
-				}
-				
-				g.endFill();
-				
-				if(!bitmap){
-					bitmap = new Bitmap();
-					bitmap.pixelSnapping = PixelSnapping.AUTO;
-					bitmap.blendMode = this._blendMode;
-				}
-				
-				if(isCircle || isSquare){
-					var bounds : Rectangle = s.getBounds( s );
-					var m : Matrix = new Matrix();
-					//_registrationPoint = new Point(-bounds.topLeft.x, -bounds.topLeft.y);
-					bitmap.bitmapData = new BitmapData(bounds.width, bounds.height, true, 0x000000);
-					bitmap.bitmapData.draw(s,m, s.transform.colorTransform, s.blendMode );
-					bitmap.smoothing = this._smoothing;
-				}
-			}
 			this.buildG2DObject();
-			_shapeDirty = false;
-		}
-		
-		protected function get textureCacheKey():String{
-			return _isSquare + ":" + _isCircle + ":" + _radius + ":" + _fillColor + ":" + _fillAlpha + ":" + _lineColor + ":" + _lineSize + ":" + _lineAlpha + ":" + "_"+_size.x +","+_size.y+"_"+_scale.x+"_"+_scale.y;
 		}
 		
 		/**
 		 * @see Bitmap.smoothing 
 		 */
 		[EditorData(ignore="true")]
-		override public function set smoothing(value:Boolean):void
+		public function set smoothing(value:Boolean):void
 		{
-			super.smoothing = value;
-			if(gpuObject)
-			{
-				if(!_smoothing)
-					(gpuObject as Image).textureSmoothing = TextureSmoothing.NONE;
-				else
-					(gpuObject as Image).textureSmoothing = TextureSmoothing.TRILINEAR;
-			}
+			_smoothing = value;
+		}
+		public function get smoothing():Boolean
+		{
+			return _smoothing;
 		}
 	}
 }

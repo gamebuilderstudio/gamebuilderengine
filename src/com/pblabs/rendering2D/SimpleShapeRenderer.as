@@ -211,7 +211,6 @@ package com.pblabs.rendering2D
 			
 			if(_shapeDirty)
 				redraw();
-
 		}
 		
 		override protected function onAdd():void

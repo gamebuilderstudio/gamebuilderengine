@@ -25,6 +25,13 @@ package com.pblabs.rendering2D.modifier
 			super();
 		}
 
+		protected var _label : String
+		public function get label():String { return _label; }
+		public function set label(value:String):void
+		{
+			_label=value;
+		}
+
 		/****************************************************************
 		 * This method needs to be overriden to apply modification
 		 * to a BitmapData object

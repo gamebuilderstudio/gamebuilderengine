@@ -10,13 +10,15 @@ package com.pblabs.starling2D
 {
 	import com.pblabs.engine.core.ObjectType;
 	import com.pblabs.rendering2D.BitmapRenderer;
+	import com.pblabs.starling2D.modifier.ModifierG2D;
 	
 	import flash.display.BitmapData;
 	import flash.geom.Point;
 	
 	import starling.core.Starling;
+	import starling.display.DisplayObject;
 	import starling.display.Image;
-	import starling.textures.Texture;
+	import starling.filters.FilterChain;
 	import starling.textures.TextureSmoothing;
 	
 	public class BitmapRendererG2D extends BitmapRenderer
@@ -55,15 +57,34 @@ package com.pblabs.starling2D
 				smoothing = _smoothing;
 				skipCreation = true;
 			}
+			modifyG2D(gpuObject);
 			super.buildG2DObject(skipCreation);
 			_imageDataDirty = false;
 		}
 		
-		protected function modifyTexture(data:Texture):Texture
+		protected function modifyG2D(object:DisplayObject):void
 		{
-			return data;            
+			if(!object) return;
+			
+			if(object.filter)
+				object.filter.dispose();
+			if(modifiers.length > 0)
+				object.filter = new FilterChain();
+			// loop and apply modifiers
+			for (var m:int = 0; m<modifiers.length; m++)
+				(modifiers[m] as ModifierG2D).modify(object);
 		}
 
+		override public function set modifiers(value:Array):void
+		{
+			_modifiers = value;
+			if (gpuObject)
+			{
+				modifyG2D(gpuObject);
+				dataModified();			
+			}				
+		}
+		
 		override public function set mouseEnabled(value:Boolean):void
 		{
 			_mouseEnabled = value;
@@ -84,21 +105,9 @@ package com.pblabs.starling2D
 				_imageDataDirty = true;
 			}
 
-			
-			// check if we should do modification
-			/*
-			if (modifiers.length>0 && originalBitmapData)
-			{
-				// apply all bitmapData modifiers
-				bitmap.bitmapData = modify(originalBitmapData.clone());
-				dataModified();			
-			}	
-			else	
-			*/					
-				bitmap.bitmapData = value;
+			bitmap.bitmapData = value;
 			
 			// Due to a bug, this has to be reset after setting bitmapData.
-			smoothing = _smoothing;
 			_transformDirty = true;
 			buildG2DObject();
 		}
