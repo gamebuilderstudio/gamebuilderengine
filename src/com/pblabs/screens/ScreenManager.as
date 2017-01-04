@@ -102,14 +102,6 @@ package com.pblabs.screens
          */
         private function set currentScreen(value:String):void
         {
-            if(_currentScreen && screenStack.indexOf(getScreenName(_currentScreen)) == -1)
-            {
-				dispatchEvent(new ScreenEvent(ScreenEvent.SCREEN_HIDE, false, false, getScreenName(_currentScreen)));
-                _currentScreen.onHide();
-
-                _currentScreen = null;
-            }
-            
             if(value && _currentScreen != screenDictionary[value])
             {
                 _currentScreen = screenDictionary[value];
@@ -164,7 +156,8 @@ package com.pblabs.screens
          */
         public function moveto(screenName:String):void
         {
-            pop();
+			if(screenStack && screenStack.length > 0)
+            	pop(false);
             push(screenName);
         }
         
@@ -175,14 +168,22 @@ package com.pblabs.screens
          */
         public function push(screenName:String):void
         {
+			if(!screenName) 
+				return;
+			
 			var currentScreenPos : int = screenStack.indexOf(screenName);
 			if(currentScreenPos > -1)
 				PBUtil.splice(screenStack, currentScreenPos, 1);
             screenStack.push(screenName);
 
 			var screenContext : * = get(screenName);
-            screenParent.addChildAt(screenContext, screenParent.numChildren);
-			currentScreen = screenName;
+			if("showDelay" in screenContext && screenContext.showDelay > 0){
+				PBE.processManager.schedule((screenContext.showDelay*1000), this, function(screen : *, screenName : *, parent : *):void{ parent.addChildAt(screen, parent.numChildren); this.currentScreen = screenName; }, screenContext, screenName, screenParent);
+			}else{
+           		screenParent.addChildAt(screenContext, screenParent.numChildren);
+				currentScreen = screenName;
+			}
+			
         }
         
         /**
@@ -190,7 +191,7 @@ package com.pblabs.screens
          * for returning to the previous screen when it push()ed to the
          * current one.
          */ 
-        public function pop():void
+        public function pop(autoChangeScreen : Boolean = true):void
         {
             if(screenStack.length == 0)
             {
@@ -200,11 +201,22 @@ package com.pblabs.screens
             
 			var oldScreenName : String = screenStack.pop();
             var oldScreen:Object = get(oldScreenName);
-			currentScreen = screenStack[screenStack.length - 1];
-            
-			dispatchEvent(new ScreenEvent(ScreenEvent.SCREEN_REMOVE, false, false, oldScreenName));
-			if(oldScreen && oldScreen.hasOwnProperty("parent") && oldScreen.parent)
-                oldScreen.parent.removeChild(oldScreen);
+			var newScreen:String = autoChangeScreen ? screenStack[screenStack.length - 1] : null;
+           
+			if(oldScreen){
+				dispatchEvent(new ScreenEvent(ScreenEvent.SCREEN_HIDE, false, false, oldScreenName));
+				oldScreen.onHide();
+			}
+			
+			if(oldScreen && oldScreen.hasOwnProperty("parent") && oldScreen.parent){
+				if("hideDelay" in oldScreen && oldScreen.hideDelay > 0){
+					PBE.processManager.schedule((oldScreen.hideDelay*1000), this, function(screen : Object, newScreen : Object):void{ if(newScreen) this.currentScreen = newScreen; dispatchEvent(new ScreenEvent(ScreenEvent.SCREEN_REMOVE, false, false, oldScreenName)); screen.parent.removeChild(screen); }, oldScreen, newScreen);
+				}else{
+					if(newScreen) this.currentScreen = newScreen;
+					dispatchEvent(new ScreenEvent(ScreenEvent.SCREEN_REMOVE, false, false, oldScreenName));
+					oldScreen.parent.removeChild(oldScreen);
+				}
+			}
         }
         
         /**
@@ -240,7 +252,7 @@ package com.pblabs.screens
         public var screenParent:Object = null;
 
         private var _currentScreen:IScreen = null;
-        private var screenStack:Array = [null];
+        private var screenStack:Array = [];
         private var screenDictionary:Dictionary = new Dictionary();
     }
 }

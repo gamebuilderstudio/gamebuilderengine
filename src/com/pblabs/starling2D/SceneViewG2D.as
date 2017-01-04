@@ -247,13 +247,13 @@ package com.pblabs.starling2D
 
 		private function onRemovedFromStage(event : *):void
 		{
-			if(_gpuCanvasContainer && _starlingInstance)
+			if(_gpuCanvasContainer && _starlingInstance && _gpuCanvasContainer.parent && (_starlingInstance.root as Sprite).contains(_gpuCanvasContainer))
 				(_starlingInstance.root as Sprite).removeChild(_gpuCanvasContainer);
 		}
 		
 		private function onAddedToStage(event : *):void
 		{
-			if(_gpuCanvasContainer && _starlingInstance)
+			if(_gpuCanvasContainer && _starlingInstance && !(_starlingInstance.root as Sprite).contains(_gpuCanvasContainer))
 				(_starlingInstance.root as Sprite).addChild(_gpuCanvasContainer);
 		}
 		
