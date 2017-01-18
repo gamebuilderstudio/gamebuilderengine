@@ -71,9 +71,7 @@ package com.pblabs.rendering2D
 				_textDisplay = new TextField();
 			_textDisplay.wordWrap = _wordWrap;
 			_textDisplay.multiline = _wordWrap;
-			_textDisplay.setTextFormat(textFormatter);
 			_textDisplay.mouseEnabled = true;
-			_textDisplay.autoSize = TextFieldAutoSize.LEFT;
 			
 			updateFontSize();
 			paintTextToBitmap();
@@ -106,7 +104,7 @@ package com.pblabs.rendering2D
 		
 		protected function inputChanged(event : Event):void
 		{
-			_textDisplay.setTextFormat(textFormatter);
+			_textDisplay.defaultTextFormat = textFormatter;
 			if(autoResize)
 				_textDisplay.width += 25;
 		}
@@ -146,7 +144,6 @@ package com.pblabs.rendering2D
 				_textDisplay.x = globalPoint.x;
 				_textDisplay.y = globalPoint.y;
 				_textDisplay.defaultTextFormat = textFormatter;
-				_textDisplay.setTextFormat(textFormatter);
 				var charIndex : int = _textDisplay.getCharIndexAtPoint(localTextPoint.x, localTextPoint.y);
 				PBE.mainStage.focus = _textDisplay;
 				_textDisplay.setSelection(charIndex, charIndex);
@@ -245,6 +242,12 @@ package com.pblabs.rendering2D
 				_bmFontObject.update();
 				textBitmapData = _bmFontObject.bitmapData;
 			}else if(!isComposedTextData) {
+				if(_textDisplay){
+					_textDisplay.text = _text;
+					if(_textDisplay.autoSize != TextFieldAutoSize.LEFT) _textDisplay.autoSize = TextFieldAutoSize.LEFT;
+					_textDisplay.type = _textInputType;
+					_textDisplay.defaultTextFormat = textFormatter;
+				}
 				if(!textBitmapData || _textSizeDirty || this.text == "" || !reuseBitmap)
 				{
 					if(textBitmapData)
@@ -408,10 +411,6 @@ package com.pblabs.rendering2D
 				_textDirty = true;
 			
 			textFormatter.color = val;
-			if(_textDisplay){
-				_textDisplay.textColor = val;
-				_textDisplay.setTextFormat(textFormatter);
-			}
 			if(_bmFontObject)
 				_bmFontObject.color = val;
 		}
@@ -424,9 +423,6 @@ package com.pblabs.rendering2D
 			}
 			
 			textFormatter.bold = val;
-			if(_textDisplay){
-				_textDisplay.setTextFormat(textFormatter);
-			}
 		}
 		
 		public function get fontItalic():Boolean{ return textFormatter.italic; }
@@ -436,9 +432,6 @@ package com.pblabs.rendering2D
 				_textSizeDirty = true;
 			}
 			textFormatter.italic = val;
-			if(_textDisplay){
-				_textDisplay.setTextFormat(textFormatter);
-			}
 		}
 		
 		public function get fontSize():Number{ return int(textFormatter.size); }
@@ -448,9 +441,6 @@ package com.pblabs.rendering2D
 				_textSizeDirty = true;
 			}
 			textFormatter.size = val;
-			if(_textDisplay){
-				_textDisplay.setTextFormat(textFormatter);
-			}
 		}
 		
 		public function get fontName():String{ return textFormatter.font; }
@@ -460,9 +450,6 @@ package com.pblabs.rendering2D
 				_textSizeDirty = true;
 			}
 			textFormatter.font = val;
-			if(_textDisplay){
-				_textDisplay.setTextFormat(textFormatter);
-			}
 		}
 		
 		public function get text():String{ return _text; }
@@ -470,18 +457,9 @@ package com.pblabs.rendering2D
 			if(_text == val) return;
 			
 			if(!val || val == ""){
-				if(_textDisplay){
-					_textDisplay.text = _text = "";
-				}else{
-					_text = "";
-				}
+				_text = "";
 			}else if(_text != val){
-				if(_textDisplay){
-					_textDisplay.text = _text = val;
-					_textDisplay.setTextFormat(textFormatter);
-				}else{
-					_text = val;
-				}
+				_text = val;
 			}
 			_textDirty = true;
 			_textSizeDirty = true;
@@ -522,8 +500,6 @@ package com.pblabs.rendering2D
 			}
 			_textInputType = val;
 			_textDirty = true;
-			if(_textDisplay)
-				_textDisplay.type = _textInputType;
 			if(_textInputType == TextFieldType.INPUT){
 				PBE.mainStage.addEventListener(MouseEvent.MOUSE_UP, onStageMouseUp, true);
 				PBE.mainStage.addEventListener(MouseEvent.MOUSE_DOWN, onStageMouseDown, true);

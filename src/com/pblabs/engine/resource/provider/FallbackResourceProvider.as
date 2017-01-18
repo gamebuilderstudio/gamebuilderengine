@@ -8,16 +8,6 @@
  ******************************************************************************/
 package com.pblabs.engine.resource.provider
 {
-	import br.com.stimuli.loading.BulkLoader;
-	import br.com.stimuli.loading.loadingtypes.LoadingItem;
-	
-	import com.pblabs.components.stateMachine.IMachine;
-	import com.pblabs.engine.resource.ImageResource;
-	import com.pblabs.engine.resource.Resource;
-	
-	import flash.events.ErrorEvent;
-	import flash.events.Event;
-	
     /**
      * The LoadedResourceProvider is used by the ResourceManager to request resources
      * that no other resource provider can provide.

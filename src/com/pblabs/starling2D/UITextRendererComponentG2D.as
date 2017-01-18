@@ -122,7 +122,7 @@ package com.pblabs.starling2D
 						{
 							if(bitmapFont && bitmapFont.texture.isDisposed){
 								ResourceTextureManagerG2D.releaseTexture(bitmapFont.texture);
-								TextField.unregisterBitmapFont(currentFontName);
+								TextField.unregisterCompositor(currentFontName);
 							}
 							
 							_fontData.data.position = 0;
@@ -134,7 +134,7 @@ package com.pblabs.starling2D
 							}
 							var fontTexture : Texture = ResourceTextureManagerG2D.getTextureForResource(_fontImage);
 							bitmapFont = new BitmapFont(fontTexture, fontDataXML);
-							TextField.registerBitmapFont(bitmapFont, currentFontName);
+							TextField.registerCompositor(bitmapFont, currentFontName);
 						}
 						gpuObject = new TextField(_size.x * _scale.x, _size.y * _scale.y, _text);
 						(gpuObject as TextField).autoSize = _autoResize ? _autoResizeDirection : "none";
@@ -250,7 +250,7 @@ package com.pblabs.starling2D
 			var currentFontName : String = fontName;
 			if(currentFontName && _bmFontObject && TextField.getBitmapFont(currentFontName))
 			{
-				TextField.unregisterBitmapFont(currentFontName, true);
+				TextField.unregisterCompositor(currentFontName, true);
 			}
 			if(gpuObject && _bmFontObject){
 				_bmFontObject.destroy();

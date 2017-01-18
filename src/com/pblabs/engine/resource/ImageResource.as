@@ -116,10 +116,15 @@ package com.pblabs.engine.resource
                 // Use the BitmapData to create a new Bitmap for this ImageResource 
 				processLoadedContent(bmd);
                 return;            	
-            }else if(data is ByteArray && isAtfImage){
+            }else if(data is ByteArray){
 				
-				processLoadedContent(data as ByteArray);
-				return;
+				if(!isAtfImage && (data as ByteArray).shareable)
+					data = convertBytes(data);
+				
+				if(isAtfImage){
+					processLoadedContent(data as ByteArray);
+					return;
+				}
 			}
             // Otherwise it must be a ByteArray, pass it over to the normal path.
             super.initialize(data);
@@ -145,7 +150,20 @@ package com.pblabs.engine.resource
             }
             return _bitmapData != null;
         }
-        
+		
+		private function convertBytes(bytes : ByteArray):ByteArray
+		{
+			var newBytes : ByteArray = new ByteArray();
+			if(bytes.shareable){
+				bytes.position = 0;
+				newBytes.writeBytes(bytes, 0, bytes.length);
+				bytes.clear();
+			}else{
+				newBytes = bytes;
+			}
+			return newBytes;
+		}
+		
         protected var _bitmapData:BitmapData = null;
 		protected var _atfData:ByteArray = null;
 		protected var _atfCallback : Function;

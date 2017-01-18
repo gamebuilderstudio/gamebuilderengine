@@ -228,7 +228,7 @@ package com.pblabs.rendering2D
         
         public function get scale():Point
         {
-            return _scale.clone();
+            return _scale;
         }
         
         /**
@@ -290,7 +290,7 @@ package com.pblabs.rendering2D
         {
             if(!_size)
                 return _size;
-            return _size.clone();
+            return _size;
         }
         
         public function get rotation():Number
@@ -394,7 +394,7 @@ package com.pblabs.rendering2D
 		
         public function get position():Point
         {
-            return _position.clone();
+            return _position;
         }
         
         /**

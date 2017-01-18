@@ -24,6 +24,7 @@ package com.pblabs.engine.core
    import flash.events.EventDispatcher;
    import flash.utils.Dictionary;
    import flash.utils.getDefinitionByName;
+   import flash.utils.setTimeout;
    
    import avmplus.getQualifiedClassName;
 
@@ -289,7 +290,10 @@ package com.pblabs.engine.core
             }
          }
          
-         start(_initialLevel);
+		 if(!_isReady)
+         	start(_initialLevel);
+		 else if (_initialLevel != -1)
+			loadLevel(_initialLevel);
       }
       
       /**
@@ -542,33 +546,45 @@ package com.pblabs.engine.core
          
 		 dispatchEvent(new LevelEvent(LevelEvent.LEVEL_PRE_LOAD_EVENT, _currentLevel));
 		
-         // load groups
+		 var currentLevelManager : LevelManager = PBE.levelManager;
+
+		 // load groups
 		 var len : int = _groupsToLoad.length;
-		 for(var i : int = 0; i < len; i++)
+		 loadGroup( (_groupsToLoad.shift() as String) );
+		 
+		 function loadGroup(groupName : String):void
 		 {
-			 var groupName:String = _groupsToLoad[i] as String;
-            if (_loadGroupCallback != null)
-            {
-               _loadGroupCallback(groupName);
-               continue;
-            }
-            
-            var groupEntities:Array = PBE.templateManager.instantiateGroup(groupName);
-            if (!groupEntities)
-            {
-               Logger.error(this, "LoadLevel", "Failed to instantiate the group " + groupName + ".");
-               continue;
-            }
-            
-            _loadedGroups[groupName] = [];
-            for each (var groupEntity:IEntity in groupEntities)
-			{
-               _loadedGroups[groupName].push(groupEntity);
+			 if (_loadGroupCallback != null)
+			 {
+				 _loadGroupCallback(groupName);
+			 }
+			 
+			 var groupEntities:Array = PBE.templateManager.instantiateGroup(groupName);
+			 if (!groupEntities)
+			 {
+				 Logger.error(currentLevelManager, "LoadLevel", "Failed to instantiate the group " + groupName + ".");
+			 }
+			 
+			 _loadedGroups[groupName] = [];
+			 for each (var groupEntity:IEntity in groupEntities)
+			 {
+				 _loadedGroups[groupName].push(groupEntity);
+			 }
+			 
+			 checkIfGroupsLoaded();
+		 }
+		 
+		 function checkIfGroupsLoaded():void
+		 {
+         	if(_groupsToLoad){
+				if(_groupsToLoad.length > 0){
+					PBE.processManager.schedule(100, currentLevelManager, loadGroup, _groupsToLoad.shift());
+				}else {
+					currentLevelManager.dispatchEvent(new LevelEvent(LevelEvent.LEVEL_LOADED_EVENT, _currentLevel, null, null, _groupsToLoad));
+					_groupsToLoad = null;
+				}
 			}
-         }
-         
-         _groupsToLoad = null;
-         dispatchEvent(new LevelEvent(LevelEvent.LEVEL_LOADED_EVENT, _currentLevel, null, null, _groupsToLoad));
+		 }
       }
       
       /**
