@@ -103,7 +103,7 @@ package com.pblabs.engine.serialization
                 if (!_serializers[typeName])
                     typeName = isSimpleType(object) ? "::DefaultSimple" : "::DefaultComplex";
                 
-                _serializers[typeName](object, xml);
+                _serializers[typeName](object, xml, typeName);
             }
         }
         
@@ -223,8 +223,10 @@ package com.pblabs.engine.serialization
             return String(xml);
         }
         
-        private function serializeSimple(object:*, xml:XML):void
+        private function serializeSimple(object:*, xml:XML, typeName:String):void
         {
+			if(typeName == "String")
+				xml.@type = typeName;
             xml.appendChild(object.toString());
         }
         
@@ -343,7 +345,7 @@ package com.pblabs.engine.serialization
             return path;
         }
         
-        private function serializeComplex(object:*, xml:XML):void
+        private function serializeComplex(object:*, xml:XML, typeName:String):void
         {
         	if(object==null) return;
         	
@@ -424,7 +426,8 @@ package com.pblabs.engine.serialization
 				
             }
 			
-            
+            if(object[propertyName] is String)
+				propertyXML.@type = "String";
             
             //Note (giggsy): I don't know why, but this code suddenly didn't compile anymore with FlashDevelop,
             //so I did the rewrite below :/
@@ -462,7 +465,7 @@ package com.pblabs.engine.serialization
             return (String(xml) == "true")
         }
         
-        private function serializeBoolean(object:*, xml:XML):void
+        private function serializeBoolean(object:*, xml:XML, typeName:String):void
         {
             if (object)
                 xml.appendChild("true");
@@ -516,7 +519,7 @@ package com.pblabs.engine.serialization
             return object;
         }
         
-        private function serializeDictionary(object:*, xml:XML):void
+        private function serializeDictionary(object:*, xml:XML, typeName:String):void
         {
             if (object == null)
                 return;
@@ -805,7 +808,7 @@ internal class ReferenceNote
         // Look up by name.
         if (nameReference != "")
         {
-            var namedObject:IEntity = PBE.nameManager.lookup(nameReference);
+            var namedObject:IEntity = PBE.nameManager.lookup(nameReference) || currentEntity;
             if (!namedObject)
                 return false;
             
@@ -820,7 +823,7 @@ internal class ReferenceNote
         // Look up a component on a named object by name (first) or type (second).
         if (componentReference != "")
         {
-            var componentObject:IEntity = PBE.nameManager.lookup(componentReference);
+            var componentObject:IEntity = PBE.nameManager.lookup(componentReference) || currentEntity;
             if (!componentObject)
                 return false;
             
