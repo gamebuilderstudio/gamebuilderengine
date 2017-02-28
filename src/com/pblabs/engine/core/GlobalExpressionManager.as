@@ -129,18 +129,24 @@ package com.pblabs.engine.core
 			if(!objectContext.Game.CurrentCollisionData) objectContext.Game.CurrentCollisionData = new DataComponent();
 			if(!objectContext.Game.System) objectContext.Game.System = new DataComponent();
 			
+			objectContext.Game.System.Environment = {};
+			objectContext.Game.System.Environment.Mac = false;
+			objectContext.Game.System.Environment.Windows = false;
+			objectContext.Game.System.Environment.IOS = false;
+			objectContext.Game.System.Environment.Android = false;
+			objectContext.Game.System.Environment.Web = false;
 			var _os:String = Capabilities.os.toLowerCase();
 			if(_os.indexOf("win") > -1)
 			{
-				objectContext.Game.System.Environment = "windows";
+				objectContext.Game.System.Environment.Windows = true;
 			}else if(_os.indexOf("mac") > -1){
-				objectContext.Game.System.Environment = "mac";
+				objectContext.Game.System.Environment.Mac = true;
 			}else if(_os.indexOf("iphone") > -1 || _os.indexOf("ipad") > -1 || _os.indexOf("ipod") > -1){
-				objectContext.Game.System.Environment = "ios";
+				objectContext.Game.System.Environment.IOS = true;
 			}else if(_os.indexOf("android") > -1 || _os.indexOf("linux") > -1){
-				objectContext.Game.System.Environment = "android";
+				objectContext.Game.System.Environment.Android = true;
 			}else{
-				objectContext.Game.System.Environment = "web";
+				objectContext.Game.System.Environment.Web = true;
 			}
 
 			if(Accelerometer.isSupported)
@@ -286,7 +292,7 @@ package com.pblabs.engine.core
 			Logger.debug(this, "orientationChange", "Orientation Changed To = " + (event as StageOrientationEvent).afterOrientation + " | From = " + (event as StageOrientationEvent).beforeOrientation);
 			
 			if( !PBE.mainStage.autoOrients && PBE.mainStage.orientation != _defaultOrientation ){
-				PBE.mainStage.setOrientation(_defaultOrientation);
+				PBE.mainStage.setOrientation((event as StageOrientationEvent).beforeOrientation);
 			}
 			
 			switch ((event as StageOrientationEvent).afterOrientation) { 
