@@ -155,7 +155,17 @@ package com.pblabs.nape
 		
 		public function set horizontalPercent(value:Number):void
 		{
-			_horizontalPercent = value
+			_horizontalPercent = value;
+		}
+
+		public function get horizontalEdge():String
+		{
+			return _horizontalEdge;
+		}
+		
+		public function set horizontalEdge(value:String):void
+		{
+			_horizontalEdge = value;
 		}
 
 		public function get verticalPercent():Number
@@ -165,9 +175,19 @@ package com.pblabs.nape
 		
 		public function set verticalPercent(value:Number):void
 		{
-			_verticalPercent = value
+			_verticalPercent = value;
 		}
 		
+		public function get verticalEdge():String
+		{
+			return _verticalEdge;
+		}
+		
+		public function set verticalEdge(value:String):void
+		{
+			_verticalEdge = value;
+		}
+
 		[EditorData(ignore="true", inspectable="true")]
 		public function set x(value:Number):void
 		{
@@ -423,7 +443,7 @@ package com.pblabs.nape
 			
 			if(_pinned && _spriteForPointChecks && !PBE.IN_EDITOR)
 			{
-				_pinnedPosition.setTo((PBE.mainStage.width * _horizontalPercent), (PBE.mainStage.height * _verticalPercent));
+				_pinnedPosition.setTo( ((_horizontalEdge == "right") ? (PBE.mainStage.width - (PBE.mainStage.width * _horizontalPercent)) : (PBE.mainStage.width * _horizontalPercent)), ((_verticalEdge == "bottom") ? (PBE.mainStage.height - (PBE.mainStage.height * _verticalPercent)) : (PBE.mainStage.height * _verticalPercent)) );
 				var tempScenePosition : Point = _spriteForPointChecks.scene.transformScreenToScene(_pinnedPosition);
 				position = tempScenePosition;
 			}
@@ -648,7 +668,9 @@ package com.pblabs.nape
 		protected var _gravity:Point = new Point(0,0);
 		protected var _pinned:Boolean = false;
 		protected var _horizontalPercent:Number = 0;
+		protected var _horizontalEdge:String = "left";
 		protected var _verticalPercent:Number = 0;
+		protected var _verticalEdge:String = "top";
 		protected var _pinnedPosition:Point = new Point(0,0);
 		
 		protected var _debugLayerSceneTracking:Boolean = true;

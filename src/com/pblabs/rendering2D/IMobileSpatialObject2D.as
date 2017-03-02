@@ -34,6 +34,15 @@ package com.pblabs.rendering2D
 	  function set horizontalPercent(value:Number):void;
 
 	  /**
+	   * horizontalEdge getter.
+	   */
+	  function get horizontalEdge():String
+	  /**
+	   * horizontalEdge setter.
+	   */
+	  function set horizontalEdge(value:String):void;
+
+	  /**
 	   * VerticalPercent getter.
 	   */
 	  function get verticalPercent():Number
@@ -42,6 +51,15 @@ package com.pblabs.rendering2D
 	   */
 	  function set verticalPercent(value:Number):void;
 
+	  /**
+	   * verticalEdge getter.
+	   */
+	  function get verticalEdge():String
+	  /**
+	   * verticalEdge setter.
+	   */
+	  function set verticalEdge(value:String):void;
+	  
 	  /**
 	   * Position getter.
 	   */

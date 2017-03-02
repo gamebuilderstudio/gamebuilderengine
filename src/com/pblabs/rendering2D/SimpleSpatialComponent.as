@@ -92,6 +92,16 @@ package com.pblabs.rendering2D
 			_horizontalPercent = value
 		}
 		
+		public function get horizontalEdge():String
+		{
+			return _horizontalEdge;
+		}
+		
+		public function set horizontalEdge(value:String):void
+		{
+			_horizontalEdge = value;
+		}
+		
 		public function get verticalPercent():Number
 		{
 			return _verticalPercent;
@@ -102,7 +112,17 @@ package com.pblabs.rendering2D
 			_verticalPercent = value
 		}
 		
-        [EditorData(ignore="true", inspectable="true")]
+		public function get verticalEdge():String
+		{
+			return _verticalEdge;
+		}
+		
+		public function set verticalEdge(value:String):void
+		{
+			_verticalEdge = value;
+		}
+
+		[EditorData(ignore="true", inspectable="true")]
         public function set x(value:Number):void
         {
             _position.x = value;
@@ -209,18 +229,16 @@ package com.pblabs.rendering2D
         {
 			if(_pinned && _spriteForPointChecks && !PBE.IN_EDITOR)
 			{
-				_pinnedPosition.setTo((PBE.mainStage.width * _horizontalPercent), (PBE.mainStage.height * _verticalPercent));
+				_pinnedPosition.setTo( ((_horizontalEdge == "right") ? (PBE.mainStage.width - (PBE.mainStage.width * _horizontalPercent)) : (PBE.mainStage.width * _horizontalPercent)), ((_verticalEdge == "bottom") ? (PBE.mainStage.height - (PBE.mainStage.height * _verticalPercent)) : (PBE.mainStage.height * _verticalPercent)) );
 				var tempScenePosition : Point = _spriteForPointChecks.scene.transformScreenToScene(_pinnedPosition);
 				_position = tempScenePosition;
-			}
-
-			// Note we set directly, as position (the accessor) clones the point,
-            // which would result in a nop.
-			if(!PBE.IN_EDITOR){
+			}else if(!PBE.IN_EDITOR){
+				// Note we set directly, as position (the accessor) clones the point,
+				// which would result in a nop.
 	            _position.x += linearVelocity.x * tickRate;
 	            _position.y += linearVelocity.y * tickRate;
-	            _rotation   += angularVelocity * tickRate;
 			}
+			_rotation   += angularVelocity * tickRate;
 			
 			super.onTick(tickRate);
         }
@@ -332,7 +350,9 @@ package com.pblabs.rendering2D
         
 		protected var _pinned:Boolean = false;
 		protected var _horizontalPercent:Number = 0;
+		protected var _horizontalEdge:String = "left";
 		protected var _verticalPercent:Number = 0;
+		protected var _verticalEdge:String = "top";
 		protected var _pinnedPosition:Point = new Point(0,0);
 		protected var _screenRelativePosition:Point = new Point(0,0);
 
