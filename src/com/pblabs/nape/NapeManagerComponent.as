@@ -4,6 +4,7 @@ package com.pblabs.nape
 	import com.pblabs.engine.PBUtil;
 	import com.pblabs.engine.core.IAnimatedObject;
 	import com.pblabs.engine.core.ObjectType;
+	import com.pblabs.engine.core.ProcessManager;
 	import com.pblabs.engine.debug.Logger;
 	import com.pblabs.engine.entity.EntityComponent;
 	import com.pblabs.physics.IPhysics2DManager;
@@ -260,7 +261,7 @@ package com.pblabs.nape
 				// Keep on stepping forward by fixed time step until amount of time
 				// needed has been simulated.
 				while (space.elapsedTime < _simulationTime) {
-					_space.step(1 / PBE.mainStage.frameRate, _velocityIterations, _positionIterations);
+					_space.step(ProcessManager.TICK_RATE, _velocityIterations, _positionIterations);
 				}
 				
 			}
@@ -624,8 +625,8 @@ package com.pblabs.nape
 		protected var _scale:Number = 1;
 		protected var _space:Space;
 		protected var _shapeDebug:ShapeDebug;
-		protected var _velocityIterations:int = 10;
-		protected var _positionIterations:int = 10;
+		protected var _velocityIterations:int = 15;
+		protected var _positionIterations:int = 15;
 		protected var _gravity:Point = new Point(0, 600);
 		protected var _linearDrag : Number = 0;
 		protected var _angularDrag : Number = 0;

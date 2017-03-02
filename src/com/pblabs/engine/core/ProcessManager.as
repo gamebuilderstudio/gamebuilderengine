@@ -13,7 +13,6 @@ package com.pblabs.engine.core
     import com.pblabs.engine.debug.ILogAppender;
     import com.pblabs.engine.debug.Logger;
     import com.pblabs.engine.debug.Profiler;
-    import com.pblabs.engine.entity.IEntityComponent;
     import com.pblabs.engine.serialization.TypeUtility;
     
     import flash.events.Event;
@@ -44,7 +43,7 @@ package com.pblabs.engine.core
         /**
          * The number of ticks that will happen every second.
          */
-        public static const TICKS_PER_SECOND:int = 30;
+        public static const TICKS_PER_SECOND:int = 60;
         
         /**
          * The rate at which ticks are fired, in seconds.

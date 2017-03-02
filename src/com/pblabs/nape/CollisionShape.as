@@ -31,54 +31,62 @@ package com.pblabs.nape
 		[EditorData(defaultValue="1")]
 		public function get density():Number
 		{
-			return _density;
+			return _shape && _shape.material ? _shape.material.density : _density;
 		}
 		
 		public function set density(value:Number):void
 		{
 			_density = value;
 			
-			if (_parent)
+			if (_parent && !_shape)
 				_parent.buildCollisionShapes();
+			else if(_shape)
+				_shape.material.density = _density;
 		}
 		
 		public function get friction():Number
 		{
-			return _friction;
+			return _shape && _shape.material ? _shape.material.dynamicFriction : _friction;
 		}
 		
 		public function set friction(value:Number):void
 		{
 			_friction = value;
 			
-			if (_parent)
+			if (_parent && !_shape)
 				_parent.buildCollisionShapes();
+			else if(_shape)
+				_shape.material.dynamicFriction = _friction;
 		}
 		
 		public function get rollingFriction():Number
 		{
-			return _rollingFriction;
+			return _shape && _shape.material ? _shape.material.rollingFriction : _rollingFriction;
 		}
 		
 		public function set rollingFriction(value:Number):void
 		{
 			_rollingFriction = value;
 			
-			if (_parent)
+			if (_parent && !_shape)
 				_parent.buildCollisionShapes();
+			else if(_shape)
+				_shape.material.rollingFriction = _rollingFriction;
 		}
 
 		public function get restitution():Number
 		{
-			return _restitution;
+			return _shape && _shape.material ? _shape.material.elasticity : _restitution;
 		}
 		
 		public function set restitution(value:Number):void
 		{
 			_restitution = value;
 			
-			if (_parent)
+			if (_parent && !_shape)
 				_parent.buildCollisionShapes();
+			else if(_shape)
+				_shape.material.elasticity = _restitution;
 		}
 
 		/**
@@ -113,14 +121,25 @@ package com.pblabs.nape
 		
 		public function get isTrigger():Boolean
 		{
-			return _isTrigger;
+			return _shape ? _shape.sensorEnabled : _isTrigger;
 		}
 		
 		public function set isTrigger(value:Boolean):void
 		{
 			_isTrigger = value;
-			if (_parent)
+			if (_parent && !_shape){
 				_parent.buildCollisionShapes();
+			}else if(_shape){
+				if(_isTrigger){
+					_shape.sensorEnabled = true;
+					if(!_parent.body.cbTypes.has(SENSORS))
+						_parent.body.cbTypes.add(SENSORS);
+				}else{
+					_shape.sensorEnabled = false;
+					if(_parent.body.cbTypes.has(SENSORS))
+						_parent.body.cbTypes.remove(SENSORS);
+				}
+			}
 		}
 
 		public function createShape(parent:NapeSpatialComponent, overwriteWithNewInstance : Boolean = true):Shape
@@ -134,6 +153,7 @@ package com.pblabs.nape
 			}else{
 				var matManager:NapeMaterialManager = (parent.spatialManager as NapeManagerComponent).materialManager;
 				materialObj = matManager.getMaterial(this.material);
+				materialObj = _internalMaterial = materialObj.copy();
 			}
 			if ( materialObj )
 				_shape.material = materialObj;
@@ -148,7 +168,6 @@ package com.pblabs.nape
 				if(_parent.body.cbTypes.has(SENSORS))
 					_parent.body.cbTypes.remove(SENSORS);
 			}
-			
 			_shape.userData.spatial = parent;
 			_shape.userData.name = _name;
 			return _shape;
