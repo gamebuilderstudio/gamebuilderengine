@@ -135,13 +135,16 @@ package com.pblabs.rendering2D.spritesheet
 		 */
 		public function set image(value:ImageResource):void
 		{
-			if(_image)
+			if(_image && _image != value)
 			{
 				if(_cached){
 					var frameCache : CachedFramesData = getCachedFrames();
 					if(frameCache){
 						frameCache.referenceCount--;
 						frameCache.released.remove(onCacheReleased);
+						if(frameCache.referenceCount < 1){
+							releaseCache();
+						}
 					}
 				}
 				_image.removeEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
@@ -171,6 +174,8 @@ package com.pblabs.rendering2D.spritesheet
 				_image.addEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
 				_imageFilename = _image.filename;
 				buildFrames();
+			}else{
+				_imageFilename = null;
 			}
 		}
 		
@@ -345,14 +350,13 @@ package com.pblabs.rendering2D.spritesheet
 		{
 			if(_destroyed) return;
 			
-			if(_cached){
+			if(_cached && _image){
 				var frameCache : CachedFramesData = getCachedFrames();
-				
-				if(frameCache && frameCache.referenceCount > 0){
+				if(frameCache){
 					frameCache.referenceCount--;
 					frameCache.released.remove(onCacheReleased);
-				}else{
-					releaseCache();
+					if(frameCache.referenceCount < 1)
+						releaseCache();
 				}
 			}else{
 				var len : int = frames.length;
@@ -374,10 +378,8 @@ package com.pblabs.rendering2D.spritesheet
 		
 			this.deleteFrames();
 			
-			if(_divider){
-				if(!_cached || (_cached && frameCache && frameCache.divider != _divider))
-					_divider.destroy();
-			}
+			if(_divider && (!_cached || (_cached && frameCache && frameCache.divider != _divider)))
+				_divider.destroy();
 			_divider = null;
 			_bounds = null;
 
@@ -386,7 +388,8 @@ package com.pblabs.rendering2D.spritesheet
 			if(_image){
 				_image.removeEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
 			}
-			image = null;
+			_image = null;
+			_imageFilename = null;
 			_loaded = false;
 			_destroyed = true;
 		}

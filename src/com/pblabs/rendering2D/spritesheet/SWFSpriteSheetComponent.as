@@ -70,10 +70,10 @@ package com.pblabs.rendering2D.spritesheet
 
         public function set swf(value:SWFResource):void
         {
-			if(_resource)
-				_resource.removeEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
 			if(_resource == value)
 				return;
+			if(_resource)
+				_resource.removeEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
             _resource = value;
 			_resource.addEventListener(ResourceEvent.UPDATED_EVENT, onResourceUpdated);
 			
