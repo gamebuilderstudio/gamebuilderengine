@@ -380,12 +380,12 @@ package com.pblabs.engine.core
 
 		 if (_forceUnload)
          {
-             _filesToLoad = _levelDescriptions[index].files;
-             _groupsToLoad = _levelDescriptions[index].groups;
+             _filesToLoad = _levelDescriptions[index].files.concat();
+             _groupsToLoad = _levelDescriptions[index].groups.concat();
 
              if (_currentLevel > -1 && _levelDescriptions[_currentLevel]) {
                  filesToUnload = filesToUnload.concat( _levelDescriptions[_currentLevel].files as Array );
-                 groupsToUnload = _levelDescriptions[_currentLevel].groups;
+                 groupsToUnload = groupsToUnload.concat( _levelDescriptions[_currentLevel].groups );
              }
          }
          else
@@ -398,7 +398,7 @@ package com.pblabs.engine.core
 			 // find group differences between the levels
              _groupsToLoad = [];
              
-             getLoadLists(doUnload ? _levelDescriptions[_currentLevel].groups : null, _levelDescriptions[index].groups, _groupsToLoad, groupsToUnload, sharedGroupsList);
+             getLoadLists((doUnload ? _levelDescriptions[_currentLevel].groups : null), _levelDescriptions[index].groups, _groupsToLoad, groupsToUnload, sharedGroupsList);
          }
 
 		 if(_currentLevel > -1){
@@ -548,6 +548,12 @@ package com.pblabs.engine.core
 		
 		 var currentLevelManager : LevelManager = PBE.levelManager;
 
+		 if(!_groupsToLoad || _groupsToLoad.length < 1)
+		 {
+			 Logger.error(this, "LoadLevel", "There are no objects to load for level " + _currentLevel + ". Level load canceled.");
+			 dispatchEvent(new LevelEvent(LevelEvent.LEVEL_LOAD_FAILED_EVENT, _currentLevel));
+			 return;
+		 }
 		 // load groups
 		 var len : int = _groupsToLoad.length;
 		 loadGroup( (_groupsToLoad.shift() as String) );
@@ -578,7 +584,7 @@ package com.pblabs.engine.core
 		 {
          	if(_groupsToLoad){
 				if(_groupsToLoad.length > 0){
-					PBE.processManager.schedule(100, currentLevelManager, loadGroup, _groupsToLoad.shift());
+					PBE.processManager.schedule(30, currentLevelManager, loadGroup, _groupsToLoad.shift());
 				}else {
 					currentLevelManager.dispatchEvent(new LevelEvent(LevelEvent.LEVEL_LOADED_EVENT, _currentLevel, null, null, _groupsToLoad));
 					_groupsToLoad = null;
