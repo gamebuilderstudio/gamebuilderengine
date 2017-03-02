@@ -316,8 +316,8 @@ package com.pblabs.starling2D {
 			//offset
 			_m.translate(offset.x, offset.y);
 			
-			pointFromLocal(offset.x, offset.y, _camPos);
-			
+			//pointFromLocal(offset.x, offset.y, _camPos);
+
 			(_viewRoot as starling.display.Sprite).transformationMatrix = _m;
 		}
 		

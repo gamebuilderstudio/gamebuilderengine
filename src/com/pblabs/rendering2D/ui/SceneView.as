@@ -31,7 +31,7 @@ package com.pblabs.rendering2D.ui
 		{
 			if(PBE.mainClass)
 			{
-				if(!PBE.mainClass.contains(this))
+				if(!PBE.mainClass.contains(this) && !PBE.IN_EDITOR)
 					PBE.mainClass.addChildAt(this, 0);
 				
 				// Intelligent default size.

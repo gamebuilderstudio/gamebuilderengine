@@ -41,7 +41,7 @@ package com.pblabs.rendering2D
 		protected var _autoResize : Boolean = true;
 		protected var _worldScratchPoint : Point = new Point();
 		protected var _text : String;
-		protected var _autoResizeDirection:String;
+		protected var _autoResizeDirection:String = "horizontal";
 		
 		private var _textSize : Point = new Point();
 		private var _minimumTextHeight : Number = 14;
@@ -60,13 +60,6 @@ package com.pblabs.rendering2D
 		
 		override protected function onAdd():void
 		{
-			if(!_autoResizeDirection){
-				if(isComposedTextData)
-					_autoResizeDirection = "horizontal";
-				else
-					_autoResizeDirection = _autoResize ? "vertical" : "horizontal";
-			}
-			
 			if(!_textDisplay)
 				_textDisplay = new TextField();
 			_textDisplay.wordWrap = _wordWrap;
@@ -182,6 +175,8 @@ package com.pblabs.rendering2D
 			if(_textDirty){
 				paintTextToBitmap();
 			}
+			_textDirty = false;
+			_textSizeDirty = false;
 			
 			if(_inputEnabled && this._alpha != 0)
 				this.alpha = 0;
@@ -242,11 +237,9 @@ package com.pblabs.rendering2D
 				_bmFontObject.update();
 				textBitmapData = _bmFontObject.bitmapData;
 			}else if(!isComposedTextData) {
-				if(_textDisplay){
-					_textDisplay.text = _text;
-					if(_textDisplay.autoSize != TextFieldAutoSize.LEFT) _textDisplay.autoSize = TextFieldAutoSize.LEFT;
-					_textDisplay.type = _textInputType;
+				if(!_textSizeDirty){
 					_textDisplay.defaultTextFormat = textFormatter;
+					_textDisplay.text = _text;
 				}
 				if(!textBitmapData || _textSizeDirty || this.text == "" || !reuseBitmap)
 				{
@@ -267,9 +260,6 @@ package com.pblabs.rendering2D
 			if(!textBitmapData) return;
 			
 			this.bitmapData = textBitmapData;
-			
-			_textDirty = false;
-			_textSizeDirty = false;
 		}
 		
 		protected var _newTextSize : Point = new Point();
@@ -278,6 +268,13 @@ package com.pblabs.rendering2D
 			if(!_bmFontObject)
 				buildFontObject();
 			
+			if(!isComposedTextData && _textDisplay){
+				_textDisplay.defaultTextFormat = textFormatter;
+				_textDisplay.text = _text;
+				if(_textDisplay.autoSize != TextFieldAutoSize.LEFT) 
+					_textDisplay.autoSize = TextFieldAutoSize.LEFT;
+				_textDisplay.type = _textInputType;
+			}
 			if(autoResize){
 				if(!isComposedTextData)
 				{
@@ -286,16 +283,6 @@ package com.pblabs.rendering2D
 				}else if(isComposedTextData && _bmFontObject) {
 					_bmFontObject.update();
 					_newTextSize.setTo( _bmFontObject.width, _bmFontObject.height );
-				}
-				
-				//Passing changed size through instead of auto size changes
-				if(_transformDirty){
-					_newTextSize.x = this._size.x;
-					_newTextSize.y = this._size.y;
-					if(!isComposedTextData) {
-						_textDisplay.width = this._size.x * this._scale.x;
-						_textDisplay.height = this._size.y * this._scale.y;
-					}
 				}
 				
 				if(isComposedTextData){
@@ -535,6 +522,7 @@ package com.pblabs.rendering2D
 			_textSizeDirty = true;
 		}
 		
+		[Inspectable(enumeration="horizontal,vertical")]
 		public function get autoResizeDirection():String{ return _autoResizeDirection; }
 		public function set autoResizeDirection(val : String):void{
 			_autoResizeDirection = val;

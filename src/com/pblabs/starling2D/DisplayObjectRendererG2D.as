@@ -13,6 +13,7 @@ package com.pblabs.starling2D
 	import com.pblabs.rendering2D.DisplayObjectRenderer;
 	import com.pblabs.starling2D.IGPURenderer;
 	
+	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
@@ -102,6 +103,22 @@ package com.pblabs.starling2D
 			
 			gpuObject.mask = (_mask as DisplayObjectRendererG2D).displayObjectG2D;
 			_maskDirty = false;
+		}
+		
+		/**
+		 * Transform a point from world space to object space. 
+		 */
+		override public function transformWorldToObject(p:Point):Point
+		{
+			return (gpuObject) ? gpuObject.globalToLocal(p) : super.transformWorldToObject(p);
+		}
+		
+		/**
+		 * Transform a point from object space to world space. 
+		 */
+		override public function transformObjectToWorld(p:Point):Point
+		{
+			return (gpuObject) ? gpuObject.localToGlobal(p) : super.transformObjectToWorld(p);            
 		}
 
 		/**
