@@ -19,7 +19,7 @@ package com.pblabs.triggers.actions
 		/**
 		 * The method used to show the screen
 		 **/
-		public var loadType : String;
+		public var loadType : String = OVERLAY_SCREEN;
 		/**
 		 * Transition effect
 		 **/
