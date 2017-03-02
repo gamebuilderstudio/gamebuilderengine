@@ -80,7 +80,10 @@ package starling.textures
 		
 		private function uploadAsync(source:BitmapData):void
 		{
-			if (sAsyncSupported && "uploadFromBitmapDataAsync" in base)
+			if(!"uploadFromBitmapDataAsync" in base)
+				sAsyncSupported = false;
+			
+			if (sAsyncSupported)
 			{
 				try { base["uploadFromBitmapDataAsync"](source); }
 				catch (error:Error)
